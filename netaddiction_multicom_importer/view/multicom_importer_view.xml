@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<openerp>
+  <data>
+   <record id="view_mlticom_importer" model="ir.ui.view">
+     <field name="name">Corrispondenze</field>
+     <field name="model">netaddiction.multiplayercom.importer</field>
+     <field name="arch" type="xml">
+       <tree>
+         <field name="entity_type"/>
+         <field name="odoo_id"/>
+         <field name="multiplayer_id"/>
+         <field name="name"/>
+       </tree>
+     </field>
+   </record>
+  </data>
+</openerp>
