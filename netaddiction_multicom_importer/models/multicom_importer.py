@@ -17,7 +17,7 @@ class Multicom_Importer(models.Model):
      def _get_odoo_name(self):
          mapping = {
             'category' : 'product.category',
-            'supplier' : 'res.partners',
+            'supplier' : 'res.partner',
             'order'    : 'sale.order',
             'customer' : 'res.partner',
             'product'  : 'product.product'
