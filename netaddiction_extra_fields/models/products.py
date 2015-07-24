@@ -8,6 +8,8 @@ class Products(models.Model):
     #campi override per rendere le varianti indipendenti dai template
     type = fields.Selection((('consu', 'Consumable'),('service','Service'),
         ('product','Stockable Product')), string='Product Type')
+    lst_price = fields.Float(string="Prezzo")
+    list_price = fields.Float(string="Prezzo Listino")
 
     #campi aggiunti
     published = fields.Boolean(string="Visibile sul Sito?")
