@@ -18,6 +18,6 @@
     'version': '0.1',
     'depends': ['base','product','sale','purchase'],
     'data' :[
-
+        'view/product.xml'
     ]
 }
