@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+        <record model="ir.actions.act_window" id="netaddiction_product_bonus_action_menu">
+            <field name="name">Prodotti Bonus</field>
+            <field name="res_model">netaddiction.product.bonus</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">Non ci sono prodotti bonus
+                </p>
+            </field>
+        </record>
+
+        <menuitem id="menu_netaddiction_product_bonus"
+          name="Prodotti Bonus"
+          parent="base.menu_product"
+          sequence="90"
+          action="netaddiction_product_bonus_action_menu"
+        />
+
+        <record model="ir.ui.view" id="netaddiction_product_bonus_form">
+            <field name="name">view.netaddiction_product_bonus_form</field>
+            <field name="model">netaddiction.product.bonus</field>
+            <field name="arch" type="xml">
+                <form string="product_bonus form">
+                    <sheet>
+                        <field name="id" invisible="True"/>
+                        <div class="oe_left" style="width: 500px;">
+                            <field name="image_medium" widget="image" class="oe_avatar oe_left"/>
+                            <div class="oe_title" style="width: 390px;">
+                                <label class="oe_edit_only" for="name" string="Product Name"/>
+                                <h1><field name="name" class="oe_inline"/></h1>
+                            </div>
+                            <div class="oe_left" name="options" groups="base.group_user">
+                                <div>
+                                    <field name="sale_ok"/>
+                                    <label for="sale_ok"/>
+                                </div>
+                                <div>
+                                    <field name="purchase_ok"/>
+                                    <label for="purchase_ok"/>
+                                </div>
+                            </div>
+                        </div>
+                        <notebook>
+                            <page string="Information">
+                                <group colspan="4">
+                                    <group>
+                                        <field name="type"/>
+                                        <field name="list_price"/>
+                                    </group>
+                                    <group>
+                                        <field name="active"/>
+                                        <field name="published"/>
+                                    </group>
+                                </group>
+                                <group colspan="4">
+                                    <field name="company_id"/>
+                                </group>
+                                <label for="bonus_parent_ids"/>
+                                <field name="bonus_parent_ids"/>
+                            </page>
+                        </notebook>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+        <record model="ir.ui.view" id="netaddiction_product_bonus_tree">
+            <field name="name">view.netaddiction_product_bonus_tree</field>
+            <field name="model">netaddiction.product.bonus</field>
+            <field name="arch" type="xml">
+                <tree name="Bonus list">
+                    <field name="name"/>
+                    <field name="type"/>
+                    <field name="active"/>
+                    <field name="published"/>
+                </tree>
+            </field>
+        </record>
+
+    </data>
+</openerp>

@@ -16,7 +16,7 @@
     'website': "http://www.netaddiction.it",
     'category': 'Technical Settings',
     'version': '0.1',
-    'depends': ['base','product','sale','purchase'],
+    'depends': ['base','product','sale','purchase','mrp'],
     'data' :[
         'view/product.xml'
     ]

@@ -25,6 +25,7 @@ class Sale_Order_Line(models.Model):
         values = result['value']
 
         #sostituisco il price_unit con il prezzo corretto
+        #qua devo intervenire anche con i prezzi scontati
         values.update({'price_unit' : product_data.lst_price })
         result['value']=values
         return result

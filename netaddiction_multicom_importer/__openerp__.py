@@ -19,7 +19,7 @@
     'version': '0.3',
 
     # any module necessary for this one to work correctly
-    'depends': ['base','product','sale'],
+    'depends': ['base','product','sale','mrp','purchase'],
 
     'data' :[
         'view/multicom_importer_menu.xml',
