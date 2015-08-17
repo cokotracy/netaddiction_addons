@@ -6,8 +6,11 @@
             <field name="model">product.product</field>
             <field name="inherit_id" ref="product.product_normal_form_view"/>
             <field name="arch" type="xml">
+                <field name="active" position="before">
+                    <field name="is_bonus" readonly="True"/>
+                </field>
                 <notebook>
-                    <page string="Bonus Associati">
+                    <page string="Bonus Associati" attrs="{'invisible':[('is_bonus', '=', True)]}">
                         <field name="bonus_products" />
                     </page>
                 </notebook>

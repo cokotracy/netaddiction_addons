@@ -8,7 +8,7 @@
     'author': "Netaddiction",
     'website': "http://www.netaddiction.it",
     'category': 'Technical Settings',
-    'version': '0.1',
+    'version': '0.5',
     'depends': ['base','product','sale','purchase','mrp'],
     'data' :[
         'views/bonus.xml',
