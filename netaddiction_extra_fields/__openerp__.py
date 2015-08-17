@@ -18,6 +18,7 @@
     'version': '0.1',
     'depends': ['base','product','sale','purchase','mrp'],
     'data' :[
-        'view/product.xml'
+        'view/product.xml',
+        'view/partner.xml'
     ]
 }
