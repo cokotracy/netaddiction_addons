@@ -96,6 +96,7 @@
                     <field name="type"/>
                     <field name="active"/>
                     <field name="published"/>
+                    <field name="bonus_parent_ids"/>
                 </tree>
             </field>
         </record>

@@ -9,7 +9,7 @@ class Products_Bonus(models.Model):
     }
 
     product_ref = fields.Many2one('product.product',ondelete="cascade",
-        string="Prodotto Corrispondente")
+        string="Prodotto Corrispondente",required="True")
     type = fields.Selection((('digital', 'Digitale'),('product','Prodotto Fisico')),
         string='Product Type',required="True")
 
@@ -29,11 +29,9 @@ class Products_Bonus(models.Model):
         product = res_id.product_ref
         tmpl = product.product_tmpl_id
 
-        print values
-        print self.type
-        # TODO: vedi se self.type è inizializzato altrimenti hai values
-        # da cui prendere i dati immessi
-        if self.type == 'product':
+        # aggiorna i campi del template e del product in modo da metterli in linea con
+        # il bonus
+        if values['type'] == 'product':
             product.write({'type' : 'product','is_bonus': True})
             tmpl.write({'type' : 'product'})
         else:
@@ -46,8 +44,32 @@ class Products_Bonus(models.Model):
 
         return res_id
 
-    # TODO: fare una cosa simile sull'update (write)
+    #override di unlink, così se viene cancellato il bonus,controlla prima
+    #il prodotto referente
+    @api.multi
+    def unlink(self):
+        for product in self.product_ref :
+            product.unlink()
+        return super(Products_Bonus, self).unlink()
 
+    @api.multi
+    def write(self,values):
+        if 'type' in values.keys():
+            if values['type']!='product':
+                values['type']='consu'
+
+        for product in self.product_ref :
+            product.write(values)
+            tmpl = product.product_tmpl_id
+            tmpl.write(values)
+
+        if values['type']=='consu':
+            values['type']='digital'
+
+        return super(Products_Bonus, self).write(values)
+
+    # TODO: non visualizzare mai i prodotti bonus nel listato prodotti ???
+    #       o comunque evitare modifiche lato product.product, si modifica solo lato product.bonus
     # TODO: aggiungere altre cose:
     # 2 - Altre funzionalità dei bonus, tipo i codici, il delivery dei codici etc.
 
