@@ -35,6 +35,8 @@ class Products_Bonus(models.Model):
             product.write({'type' : 'product','is_bonus': True})
             tmpl.write({'type' : 'product'})
         else:
+            # TODO: Ho arbitrariamente deciso che un digital bonus è un consumabile
+            #perchè può avere quantità limite (eventualmente modifichiamo)
             product.write({'type' : 'consu','is_bonus': True})
             tmpl.write({'type' : 'consu'})
 

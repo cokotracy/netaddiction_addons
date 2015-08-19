@@ -6,7 +6,6 @@
 
     'description': """
         1 - Modello con corrispondenze : id odoo, id multiplayer.com, tipo di entità\n
-        3 - aggiunge le province Italiane come state_id
     """,
 
     'author': "Netaddiction",
