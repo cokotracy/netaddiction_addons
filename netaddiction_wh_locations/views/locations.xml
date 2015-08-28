@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+        <record model="ir.actions.act_window" id="netaddiction_wh_locations_base">
+            <field name="name">Allocazioni Magazzino</field>
+            <field name="res_model">netaddiction.wh.locations</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">Non ci sono Allocazioni.
+                </p>
+            </field>
+        </record>
+
+        <menuitem id="menu_netaddiction_wh_locations"
+          name="Allocazioni Magazzino"
+          parent="stock.menu_stock_root"
+          sequence="12"
+        />
+
+        <menuitem id="submenu_netaddiction_wh_locations"
+          name="Allocazioni" parent="menu_netaddiction_wh_locations"
+          action="netaddiction_wh_locations_base"/>
+
+        <record model="ir.ui.view" id="netaddiction_wh_locations_tree">
+            <field name="name">view.netaddiction_wh_locations</field>
+            <field name="model">netaddiction.wh.locations</field>
+            <field name="arch" type="xml">
+                <tree name="Bonus list">
+                    <field name="name"/>
+                    <field name="barcode"/>
+                    <field name="company_id"/>
+                    <field name="stock_location_id"/>
+                </tree>
+            </field>
+        </record>
+
+    </data>
+</openerp>

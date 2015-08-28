@@ -12,6 +12,7 @@
                     <field name="is_default_delivery_address"
                             attrs="{'invisible':[('parent_id', '=', False)]}"/>
                 </field>
+
                 <xpath expr="//field[@name='child_ids']/form/sheet/div/field[@name='use_parent_address']"
                     position="replace">
                     <field name="parent_id" invisible="True"/>
@@ -27,6 +28,12 @@
                 <xpath expr="//field[@name='child_ids']/form/sheet/div/label[@for='use_parent_address']"
                     position="replace">
                 </xpath>
+
+                <xpath expr="//field[@name='child_ids']/kanban/templates/t[@t-name='kanban-box']" position="inside">
+                    <field name="is_default_delivery_address" invisible="1"/>
+                    <h4 attrs="{'invisible':[('is_default_delivery_address', '=', False)]}">INDIRIZZO DI DEFAULT</h4>
+                </xpath>
+
             </field>
         </record>
     </data>
