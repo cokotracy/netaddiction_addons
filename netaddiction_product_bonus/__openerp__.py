@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
 {
-    'name': "Netaddiction Product Bonus",
+    'name': "NetAddiction Product Bonus",
     'summary': "Funzionalità Prodotti Bonus",
     'description':"""
     PRODOTTI BONUS
         """,
-    'author': "Netaddiction",
+    'author': "NetAddiction",
     'website': "http://www.netaddiction.it",
     'category': 'Technical Settings',
     'version': '0.5',

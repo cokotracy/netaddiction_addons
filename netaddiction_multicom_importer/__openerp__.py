@@ -8,7 +8,7 @@
         1 - Modello con corrispondenze : id odoo, id multiplayer.com, tipo di entità\n
     """,
 
-    'author': "Netaddiction",
+    'author': "NetAddiction",
     'website': "http://www.netaddiction.it",
 
     # Categories can be used to filter modules in modules listing

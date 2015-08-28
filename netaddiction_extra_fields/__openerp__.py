@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 {
-    'name': "Netaddiction Extra Fields",
+    'name': "NetAddiction Extra Fields",
     'summary': "Aggiunge campi extra ad alcuni moduli",
     'description':"""Aggiunge campi extra ad alcuni moduli per il corretto
         funzionamento degli shop\n
@@ -12,7 +12,7 @@
             'out_date' = 'Data di uscita',
             'out_date_approx_type' = 'tipo di approssimazione sulla data'
         """,
-    'author': "Netaddiction",
+    'author': "NetAddiction",
     'website': "http://www.netaddiction.it",
     'category': 'Technical Settings',
     'version': '0.1',
