@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 {
-    'name': "Netaddiction Product Bonus",
+    'name': "NetAddiction Product Bonus",
     'summary': "Funzionalità Prodotti Bonus",
     'description':"""
     PRODOTTI BONUS\n
@@ -10,7 +10,7 @@
         - aggiunge campo 'bonus_products' e 'is_bonus', il primo mantiene l'ide del bonus referente e il secondo dice se quel prodotto è un bonus
 
         """,
-    'author': "Netaddiction",
+    'author': "NetAddiction",
     'website': "http://www.netaddiction.it",
     'category': 'Technical Settings',
     'version': '0.5',

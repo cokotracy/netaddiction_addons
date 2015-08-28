@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 {
-    'name': "Netaddiction Extra Fields",
+    'name': "NetAddiction Extra Fields",
     'summary': "Aggiunge campi extra ad alcuni moduli",
+
     'description':"""Aggiunge campi extra ad alcuni moduli per il corretto funzionamento degli shop\n
     Aggiunge viste personalizzate\n
         \n
@@ -18,6 +19,7 @@
         - override metodo 'product_id_change' per mettere prezzo giusto nel campro price_unit della linea d'ordine dopo aver effettuato la modifica del campo lst_price nel modello product
     """,
     'author': "Netaddiction",
+
     'website': "http://www.netaddiction.it",
     'category': 'Technical Settings',
     'version': '0.5',
