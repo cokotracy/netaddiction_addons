@@ -29,6 +29,18 @@
             </field>
         </record>
 
+        <!--sopra è per il template, questo è per la variante-->
+        <record model="ir.ui.view" id="view_product_form">
+            <field name="name">product.product.netaddiction.extrafields</field>
+            <field name="model">product.product</field>
+            <field name="inherit_id" ref="product.product_normal_form_view"/>
+            <field name="arch" type="xml">
+                <field name="ean13" position="replace">
+                    <field name="ean13" attrs="{'invisible': True}"/>
+                </field>
+            </field>
+        </record>
+
         <!--<record id="product_template_kanban_view" model="ir.ui.view">
             <field name="name">Product.template.product.kanban</field>
             <field name="model">product.template</field>
@@ -49,7 +61,7 @@
                                              <span t-if="record.default_code.value">
                                                  [<field name="default_code"/>]
                                               </span>
-                                             <field name="name"/> 
+                                             <field name="name"/>
                                         </a>
                                     </h4>
                                     <a name="%(product.product_variant_action)d" type="action">

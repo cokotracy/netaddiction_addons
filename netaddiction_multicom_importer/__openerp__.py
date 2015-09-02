@@ -5,7 +5,7 @@
     'summary': """Tutto quello che serve per importare multiplayer.com""",
 
     'description': """
-        1 - Modello con corrispondenze : id odoo, id multiplayer.com, tipo di entità\n
+        - Modello con corrispondenze : id odoo, id multiplayer.com, tipo di entità\n
     """,
 
     'author': "NetAddiction",

@@ -1,0 +1,26 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# * doozy etc
+#
+# Translators:
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2014
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo 8.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2015-01-21 14:08+0000\n"
+"PO-Revision-Date: 2015-05-29 12:58+0000\n"
+"Last-Translator: Martin Trigaux\n"
+"Language-Team: Italian (http://www.transifex.com/projects/p/odoo-8/language/it/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Language: it\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+
+#. module: product
+#: field:product.product,code:0 field:product.product,default_code:0
+#: field:product.template,default_code:0
+msgid "Internal Reference"
+msgstr "Barcode"

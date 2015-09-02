@@ -7,7 +7,7 @@ class Products(models.Model):
 
     #campi override per rendere le varianti indipendenti dai template
     type = fields.Selection((('consu', 'Consumable'),('service','Service'),
-        ('product','Prodotto Stoccabile')), string='Product Type')
+        ('product','Prodotto Stoccabile')), string='Tipo Prodotto', _translate="True")
     lst_price = fields.Float(string="Prezzo")
     list_price = fields.Float(string="Prezzo Listino")
     seller_ids = fields.One2many('product.supplierinfo', 'product_vrnt_id', 'Supplier')
@@ -25,7 +25,7 @@ class Template(models.Model):
 
     #campi override per rendere le varianti indipendenti dai template
     type = fields.Selection((('consu', 'Consumable'),('service','Service'),
-        ('product','Prodotto Stoccabile')), string='Product Type')
+        ('product','Prodotto Stoccabile')), string='Tipo Prodotto', _translate="True")
 
     #campi aggiunti
     published = fields.Boolean(string="Visibile sul Sito?")
