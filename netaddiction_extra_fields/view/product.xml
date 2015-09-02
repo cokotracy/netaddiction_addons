@@ -38,6 +38,23 @@
                     <field name="active"/>
                     <field name="published"/>
                 </field>
+                <xpath expr="//separator[@string='Suppliers']" position="attributes">
+                    <attribute name="invisible">True</attribute>
+                </xpath>
+                <field name="seller_ids" position="attributes">
+                    <attribute name="invisible">True</attribute>
+                </field>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="product_supplierinfo_form_view">
+            <field name="name">product.supplierinfo.form.view</field>
+            <field name="model">product.supplierinfo</field>
+            <field name="inherit_id" ref="product.product_supplierinfo_form_view"/>
+            <field name="arch" type="xml">
+                <field name="min_qty" position="after">
+                    <field name="avail_qty"/>
+                </field>
             </field>
         </record>
     </data>

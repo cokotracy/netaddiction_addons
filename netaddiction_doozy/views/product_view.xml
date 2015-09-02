@@ -7,13 +7,24 @@
             action="mrp.mrp_bom_form_action"
             sequence="5"/>
 
-        <record id="netaddiction_doozy_product_template_form" model="ir.ui.view">
+        <record id="product_template_only_form_view" model="ir.ui.view">
             <field name="name">product.template.product.form</field>
             <field name="model">product.template</field>
             <field name="inherit_id" ref="product.product_template_only_form_view"/>
             <field name="arch" type="xml">
-                <field name="ean13" position="replace">
-                    <field name="ean13" attrs="{'invisible': True}"/>
+                <field name="ean13" position="attributes">
+                    <attribute name="invisible">True</attribute>
+                </field>
+            </field>
+        </record>
+
+        <record id="product_normal_form_view" model="ir.ui.view">
+            <field name="name">product.product.form</field>
+            <field name="model">product.product</field>
+            <field name="inherit_id" ref="product.product_normal_form_view"/>
+            <field name="arch" type="xml">
+                <field name="ean13" position="attributes">
+                    <attribute name="invisible">True</attribute>
                 </field>
             </field>
         </record>
