@@ -24,3 +24,9 @@ msgstr ""
 #: field:product.template,default_code:0
 msgid "Internal Reference"
 msgstr "Barcode"
+
+#. module: product
+#: model:product.price.type,name:product.list_price
+#: field:product.product,lst_price:0 field:product.template,lst_price:0
+msgid "Public Price"
+msgstr "Prezzo Senza Iva"

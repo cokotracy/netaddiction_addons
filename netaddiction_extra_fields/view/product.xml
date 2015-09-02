@@ -6,6 +6,10 @@
             <field name="model">product.product</field>
             <field name="inherit_id" ref="product.product_normal_form_view"/>
             <field name="arch" type="xml">
+                <field name="lst_price" position="replace">
+                    <field name="final_price"/>
+                    <field name="lst_price" readonly="True" />
+                </field>
                 <field name="lst_price" position="after">
                     <field name="out_date"/>
                     <field name="out_date_approx_type" />
@@ -22,6 +26,10 @@
             <field name="model">product.template</field>
             <field name="inherit_id" ref="product.product_template_only_form_view"/>
             <field name="arch" type="xml">
+                <field name="list_price" position="replace">
+                    <field name="final_price"/>
+                    <field name="list_price" readonly="True" />
+                </field>
                 <field name="list_price" position="after">
                     <field name="out_date"/>
                     <field name="out_date_approx_type" />
