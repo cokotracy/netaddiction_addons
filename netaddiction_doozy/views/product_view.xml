@@ -30,6 +30,7 @@
                     <field name="seller_ids" mode="tree">
                         <tree string="example">
                             <field name="name"/>
+                            <field name="product_code"/>
                             <field name="avail_qty"/>
                             <field name="base_price"/>
                         </tree>
