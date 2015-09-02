@@ -7,6 +7,7 @@
         * Toglie il reference ID dal nome del prodotto
         * Aggiunge il menu Bundle all'area Vendite
         * Nasconde il campo per l'EAN13
+        * Nasconde i grouppi store,status e weigth in inventario product.product
     """,
     'author': "NetAddiction",
     'website': "http://www.netaddiction.it",
@@ -15,5 +16,6 @@
     'version': '0.1',
     'data': [
         'views/product_view.xml',
+        'views/products_inventory.xml'
     ]
 }

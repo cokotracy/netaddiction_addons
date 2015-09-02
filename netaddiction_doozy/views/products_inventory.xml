@@ -1,15 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <openerp>
     <data>
-        <record model="ir.ui.view" id="view_product_locations_form">
-            <field name="name">product.product.netaddiction.wh.locations</field>
+        <record model="ir.ui.view" id="view_product_inventory_form_doozy">
+            <field name="name">product.product.netaddiction.inventory.doozy</field>
             <field name="model">product.template</field>
             <field name="inherit_id" ref="stock.view_template_property_form"/>
             <field name="arch" type="xml">
                 <group name="store" position="replace">
-                    <group name="locations" string="Allocazioni" >
-                        <field name="product_wh_location_line_ids" nolabel="1" readonly="1"/>
-                    </group>
+                </group>
+                <group name="status" position="replace">
+                </group>
+                <group name="weight" position="replace">
                 </group>
             </field>
         </record>

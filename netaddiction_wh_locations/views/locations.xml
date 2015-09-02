@@ -35,5 +35,31 @@
             </field>
         </record>
 
+        <!--<record model="ir.ui.view" id="netaddiction_wh_locations_form">
+            <field name="name">view.netaddiction_wh_locations</field>
+            <field name="model">netaddiction.wh.locations</field>
+            <field name="arch" type="xml">
+                <form string="product_bonus form">
+                    <sheet>
+                        <field name="name"/>
+                        <field name="barcode"/>
+                        <field name="company_id"/>
+                        <field name="stock_location_id"/>
+                        <field name="wh_locations_line_ids"/>
+                    </sheet>
+                </form>
+            </field>
+        </record>-->
+
+        <record model="ir.ui.view" id="netaddiction_wh_locations_line_tree">
+            <field name="name">view.netaddiction_wh_locations_line</field>
+            <field name="model">netaddiction.wh.locations.line</field>
+            <field name="arch" type="xml">
+                <tree name="Locations list" editable="top">
+                    <field name="wh_location_id"/>
+                    <field name="qty"/>
+                </tree>
+            </field>
+        </record>
     </data>
 </openerp>
