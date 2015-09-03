@@ -89,4 +89,5 @@ class SupplierInfo(models.Model):
 
     #campi aggiunti
     product_vrnt_id = fields.Many2one('product.product', 'Product', required=True, ondelete='cascade', select=True)
-    avail_qty = fields.Float('Quantità disponibile')
+    avail_qty = fields.Float('Quantità disponibile', help="Il valore 0 non indica necessariamente l'assenza di disponibilità")
+    base_price = fields.Float(related='pricelist_ids.price', string='Prezzo base')

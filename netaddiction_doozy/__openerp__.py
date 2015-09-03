@@ -14,7 +14,7 @@
     'author': "NetAddiction",
     'website': "http://www.netaddiction.it",
     'category': 'Technical Settings',
-    'depends': ['base', 'product', 'mrp'],
+    'depends': ['base', 'product', 'mrp', 'netaddiction_extra_fields'],
     'version': '0.1',
     'data': [
         'views/product_view.xml',
