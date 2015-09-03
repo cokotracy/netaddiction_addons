@@ -84,7 +84,6 @@ class Template(models.Model):
     final_price = fields.Float(string="Prezzo al pubblico")
 
 
-
 class SupplierInfo(models.Model):
     _inherit = 'product.supplierinfo'
 
