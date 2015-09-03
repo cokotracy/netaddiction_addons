@@ -23,6 +23,12 @@
             <field name="model">product.product</field>
             <field name="inherit_id" ref="product.product_normal_form_view"/>
             <field name="arch" type="xml">
+                <xpath expr="//notebook/page[@string='Procurements']" position="attributes">
+                    <attribute name="string">Fornitore</attribute>
+                </xpath>
+                <group name="procurement" position="attributes">
+                    <attribute name="invisible">True</attribute>
+                </group>
                 <field name="ean13" position="attributes">
                     <attribute name="invisible">True</attribute>
                 </field>
@@ -36,7 +42,6 @@
                         </tree>
                     </field>
                 </field>
-            
             </field>
         </record>
 
