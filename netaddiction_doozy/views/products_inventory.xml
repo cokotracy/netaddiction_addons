@@ -1,17 +1,35 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <openerp>
     <data>
-        <record model="ir.ui.view" id="view_product_inventory_form_doozy">
-            <field name="name">product.product.netaddiction.inventory.doozy</field>
-            <field name="model">product.template</field>
-            <field name="inherit_id" ref="stock.view_template_property_form"/>
+
+        <record model="ir.ui.view" id="view_product_inventory_form_doozy_variant">
+            <field name="name">product.product.netaddiction.inventory.doozy.variant</field>
+            <field name="model">product.product</field>
+            <field name="inherit_id" ref="product.product_normal_form_view"/>
             <field name="arch" type="xml">
-                <group name="store" position="replace">
-                </group>
-                <group name="status" position="replace">
-                </group>
-                <group name="weight" position="replace">
-                </group>
+                <page string="Inventory" position="replace">
+                    <page string="Inventory">
+                        <group name="qtys" string="Quantità" col="4" >
+                            <label for="qty_available"/>
+                            <div>
+                                <field name="qty_available" class="oe_inline"/>
+                                <button name="295" string="⇒ Update" type="action" class="oe_link"/>
+                            </div>
+                            <field name="qty_available_now" class="oe_inline"/>
+                            <label for="incoming_qty"/>
+                            <div>
+                                <field name="incoming_qty" class="oe_inline"/>
+                                <button string="⇒ Request Procurement" name="297" type="action" class="oe_link"/>
+                            </div>
+                            <field name="outgoing_qty" class="oe_inline"/>
+                            <field name="virtual_available" class="oe_inline"/>
+                            <field name="qty_sum_suppliers" class="oe_inline"/>
+                        </group>
+                        <group name="locations" string="Allocazioni" >
+                            <field name="product_wh_location_line_ids" nolabel="1" readonly="1"/>
+                        </group>
+                    </page>
+                </page>
             </field>
         </record>
     </data>

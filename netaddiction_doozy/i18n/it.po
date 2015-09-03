@@ -30,3 +30,17 @@ msgstr "Barcode"
 #: field:product.product,lst_price:0 field:product.template,lst_price:0
 msgid "Public Price"
 msgstr "Prezzo Senza Iva"
+
+#. module: product
+#: field:product.product,virtual_available:0 field:product.template,virtual_available:0
+msgid "Forecast Quantity"
+msgstr "Quantità Prevista"
+
+#. module: stock
+#: help:product.product,virtual_available:0
+msgid ""
+"Forecast quantity (computed as Quantity On Hand - Outgoing + Incoming)\n"
+"In a context with a single Stock Location, this includes goods stored in this location, or any of its children.\n"
+"In a context with a single Warehouse, this includes goods stored in the Stock Location of this Warehouse, or any of its children.\n"
+"Otherwise, this includes goods stored in any Stock Location with 'internal' type."
+msgstr "Quantità Virtuale Attesa (Quantità Allocata - Quantità in uscita + Quantità in arrivo)"

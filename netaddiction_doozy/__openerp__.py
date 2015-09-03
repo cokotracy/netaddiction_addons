@@ -8,6 +8,8 @@
         * Aggiunge il menu Bundle all'area Vendite
         * Nasconde il campo per l'EAN13
         * Nasconde i grouppi store,status e weigth in inventario product.product
+        * Modifica la vista Tree dei product.product con i campi corretti
+        * Fa delle traduzioni
     """,
     'author': "NetAddiction",
     'website': "http://www.netaddiction.it",

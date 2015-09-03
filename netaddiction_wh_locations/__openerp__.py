@@ -13,6 +13,5 @@
     'depends': ['base','product','sale','purchase','mrp','stock'],
     'data' :[
         'views/locations.xml',
-        'views/products.xml'
     ]
 }

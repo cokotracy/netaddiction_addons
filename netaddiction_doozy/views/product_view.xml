@@ -36,19 +36,22 @@
                         </tree>
                     </field>
                 </field>
+            
             </field>
         </record>
 
-        <!--sopra è per il template, questo è per la variante-->
-        <record model="ir.ui.view" id="view_product_form">
-            <field name="name">product.product.netaddiction.extrafields</field>
+        <!--product.product tree view-->
+        <record model="ir.ui.view" id="doozy_product_product_tree__view">
+            <field name="name">product.product.doozy.tree.view</field>
             <field name="model">product.product</field>
-            <field name="inherit_id" ref="product.product_normal_form_view"/>
+            <field name="inherit_id" ref="product.product_product_tree_view"/>
             <field name="arch" type="xml">
-                <field name="ean13" position="replace">
-                    <field name="ean13" attrs="{'invisible': True}"/>
+                <field name="uom_id" position="replace">
+                </field>
+                <field name="default_code" position="replace">
                 </field>
             </field>
         </record>
+
     </data>
 </openerp>
