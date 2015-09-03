@@ -22,6 +22,21 @@ class Products(models.Model):
     #campo prezzo ivato
     final_price = fields.Float(string="Prezzo al pubblico")
 
+    qty_available_now = fields.Integer(string="Quantità Disponibile",compute="_get_qty_available_now",
+        help="Quantità Disponibile Adesso (qty in possesso - qty in uscita)")
+    qty_sum_suppliers = fields.Integer(string="Quantità dei fornitori", compute="_get_qty_suppliers",
+        help="Somma delle quantità dei fornitori")
+
+    @api.one
+    def _get_qty_available_now(self):
+        self.qty_available_now = int(self.qty_available) - int(self.outgoing_qty)
+    @api.one
+    def _get_qty_suppliers(self):
+        qty = 0
+        for sup in self.seller_ids:
+            qty = qty + int(sup.avail_qty)
+        self.qty_sum_suppliers = qty
+
     @api.multi
     def write(self,values):
         tassa = self.taxes_id.amount

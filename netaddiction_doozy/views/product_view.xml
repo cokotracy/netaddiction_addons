@@ -36,18 +36,7 @@
                         </tree>
                     </field>
                 </field>
-            </field>
-        </record>
-
-        <!--sopra è per il template, questo è per la variante-->
-        <record model="ir.ui.view" id="doozy_view_product_form">
-            <field name="name">product.product.netaddiction.doozy.form</field>
-            <field name="model">product.product</field>
-            <field name="inherit_id" ref="product.product_normal_form_view"/>
-            <field name="arch" type="xml">
-                <field name="ean13" position="replace">
-                    <field name="ean13" attrs="{'invisible': True}"/>
-                </field>
+            
             </field>
         </record>
 

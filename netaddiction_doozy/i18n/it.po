@@ -34,7 +34,7 @@ msgstr "Prezzo Senza Iva"
 #. module: product
 #: field:product.product,virtual_available:0 field:product.template,virtual_available:0
 msgid "Forecast Quantity"
-msgstr "Quantità Virtuale"
+msgstr "Quantità Prevista"
 
 #. module: stock
 #: help:product.product,virtual_available:0
