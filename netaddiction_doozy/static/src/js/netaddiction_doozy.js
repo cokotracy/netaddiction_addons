@@ -21,6 +21,7 @@ openerp.netaddiction_doozy.decimal_precision = function(instance) {
         'min_quantity',
         'min_qty',
         'produce_delay',
+        'quant',
         'quantity',
         'qty',
         'sale_delay',
