@@ -17,6 +17,7 @@
     'depends': ['base', 'product', 'mrp', 'netaddiction_extra_fields','stock'],
     'version': '0.1',
     'data': [
+        'views/_global.xml',
         'views/product_view.xml',
         'views/products_inventory.xml',
         'views/product_template.xml',

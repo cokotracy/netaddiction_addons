@@ -23,12 +23,27 @@
             <field name="model">product.product</field>
             <field name="inherit_id" ref="product.product_normal_form_view"/>
             <field name="arch" type="xml">
+                <xpath expr="//notebook/page[@string='Procurements']/separator[@string='Description for Suppliers']" position="attributes">
+                    <attribute name="invisible">True</attribute>
+                </xpath>
+                <xpath expr="//notebook/page[@string='Procurements']/separator[@string='Suppliers']" position="attributes">
+                    <attribute name="invisible">True</attribute>
+                </xpath>
+                <xpath expr="//notebook/page[@string='Procurements']" position="attributes">
+                    <attribute name="string">Fornitore</attribute>
+                </xpath>
+                <group name="procurement" position="attributes">
+                    <attribute name="invisible">True</attribute>
+                </group>
                 <field name="ean13" position="attributes">
+                    <attribute name="invisible">True</attribute>
+                </field>
+                <field name="description_purchase" position="attributes">
                     <attribute name="invisible">True</attribute>
                 </field>
                 <field name="seller_ids" position="replace">
                     <field name="seller_ids" mode="tree">
-                        <tree string="example">
+                        <tree>
                             <field name="name"/>
                             <field name="product_code"/>
                             <field name="avail_qty"/>
@@ -36,7 +51,6 @@
                         </tree>
                     </field>
                 </field>
-
             </field>
         </record>
 
@@ -73,6 +87,6 @@
 
         <!--fine inherit product tree-->
 
-        
+
     </data>
 </openerp>
