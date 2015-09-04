@@ -14,10 +14,11 @@
     'author': "NetAddiction",
     'website': "http://www.netaddiction.it",
     'category': 'Technical Settings',
-    'depends': ['base', 'product', 'mrp', 'netaddiction_extra_fields'],
+    'depends': ['base', 'product', 'mrp', 'netaddiction_extra_fields','stock'],
     'version': '0.1',
     'data': [
         'views/product_view.xml',
-        'views/products_inventory.xml'
+        'views/products_inventory.xml',
+        'views/product_template.xml',
     ]
 }

@@ -36,7 +36,7 @@
                         </tree>
                     </field>
                 </field>
-            
+
             </field>
         </record>
 
@@ -44,14 +44,35 @@
         <record model="ir.ui.view" id="doozy_product_product_tree__view">
             <field name="name">product.product.doozy.tree.view</field>
             <field name="model">product.product</field>
+            <field name="priority" eval="90"/>
             <field name="inherit_id" ref="product.product_product_tree_view"/>
             <field name="arch" type="xml">
+                <tree position="attributes">
+                    <attribute name="colors">
+                        red:virtual_available &lt; 0;
+                        #003300:virtual_available &gt; 0 and qty_available_now &lt; 0;
+                        #800000:is_bonus == True
+                    </attribute>
+                </tree>
                 <field name="uom_id" position="replace">
                 </field>
-                <field name="default_code" position="replace">
+                <field name="ean13" position="replace">
+                </field>
+                <field name="lst_price" position="before">
+                    <field name="final_price"/>
+                </field>
+                <field name="virtual_available" position="after">
+                    <field name="qty_available_now"/>
+                    <field name="active" />
+                    <field name="published" />
+                    <field name="is_bonus" invisible="True"/>
                 </field>
             </field>
         </record>
 
+
+        <!--fine inherit product tree-->
+
+        
     </data>
 </openerp>
