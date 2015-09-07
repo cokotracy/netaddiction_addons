@@ -15,6 +15,9 @@
                 <field name="ean13" position="attributes">
                     <attribute name="invisible">True</attribute>
                 </field>
+                <field name="default_code" position="attributes">
+                    <attribute name="invisible">True</attribute>
+                </field>
             </field>
         </record>
 

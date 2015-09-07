@@ -58,26 +58,26 @@ class Products(models.Model):
 
         return super(Products, self).write(values)
 
-        @api.multi
-        def create(self,values):
-            tassa = self.taxes_id.amount
-            final = self.final_price
+    #@api.multi
+    #def create(self,values,context = None):
+    #    tassa = self.taxes_id.amount
+    #    final = self.final_price
 
-            if 'taxes_id' in values.keys():
-                id_tax = values['taxes_id'][0][2]
-                if len(id_tax)>0:
-                    id_tax = id_tax[0]
+    #    if 'taxes_id' in values.keys():
+    #        id_tax = values['taxes_id'][0][2]
+    #        if len(id_tax)>0:
+    #            id_tax = id_tax[0]
 
-                tassa = self.env['account.tax'].search([('id','=',id_tax)]).amount
+    #        tassa = self.env['account.tax'].search([('id','=',id_tax)]).amount
 
-            if 'final_price' in values.keys():
-                final = values['final_price']
+    #    if 'final_price' in values.keys():
+    #        final = values['final_price']
 
-            detax = final / (float(1) + tassa)
-            deiva = round(detax,2)
-            values['list_price'] = deiva
+    #    detax = final / (float(1) + tassa)
+    #    deiva = round(detax,2)
+    #    values['list_price'] = deiva
 
-            return super(Products, self).create(values)
+    #    return super(Products, self).create(values,context)
 
 class Template(models.Model):
     _inherit = 'product.template'
@@ -98,6 +98,19 @@ class Template(models.Model):
     #campo prezzo ivato
     final_price = fields.Float(string="Prezzo al pubblico")
 
+    @api.model
+    def create(self,values):
+        new_id = super(Template, self).create(values)
+        for var in new_id.product_variant_ids:
+            attr={
+                'type' : values['type'],
+                'out_date' : values['out_date'],
+                'out_date_approx_type' : values['out_date_approx_type'],
+                'active' : values['type'],
+                'published' : values['published'],
+            }
+            var.write(attr)
+        return new_id
 
 class SupplierInfo(models.Model):
     _inherit = 'product.supplierinfo'
@@ -108,10 +121,21 @@ class SupplierInfo(models.Model):
         help="Il valore 0 non indica necessariamente l'assenza di disponibilità")
     base_price = fields.Float('Prezzo base', related='pricelist_ids.price')
 
-    def create(self, cr, uid, vals, context=None):
-        """
-        Imposta la foreign key verso il template per mantenere la retrocompatibilità.
-        """
-        vals['product_tmpl_id'] = context['active_id']
-        
-        return super(SupplierInfo, self).create(cr, uid, vals, context)
+    #uso le nuove api perchè sono più figo
+    @api.model
+    def create(self,values):
+        #cerco il variant attuale,
+        #mi prendo il template e correggo
+        obj = self.env['product.product'].search([('id','=',values['product_vrnt_id'])])
+        templ = obj.product_tmpl_id.id
+        values['product_tmpl_id']=templ
+        return super(SupplierInfo, self).create(values)
+
+
+    #def create(self, cr, uid, vals, context=None):
+    #    """
+    #    Imposta la foreign key verso il template per mantenere la retrocompatibilità.
+    #    """
+    #    #vals['product_tmpl_id'] = context['active_id']
+
+    #    return super(SupplierInfo, self).create(cr, uid, vals, context)

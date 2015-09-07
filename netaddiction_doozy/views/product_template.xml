@@ -23,12 +23,12 @@
                     <label for="purchase_ok" attrs="{'invisible':[('is_product_variant', '=', False)]}"/>
                 </label>
                 <page string="Information" position="replace">
-                    <page string="Information" attrs="{'invisible':[('is_product_variant', '=', False)]}">
+                    <page string="Information" >
                         <group colspan="4">
                             <group>
                                 <field name="type" on_change="onchange_type(type)"/>
-                                <field name="uom_id" on_change="onchange_uom(uom_id,uom_po_id)" groups="product.group_uom"/>
-                                <field name="list_price"/>
+                                <field name="uom_id" on_change="onchange_uom(uom_id,uom_po_id)" groups="product.group_uom" invisible="1"/>
+                                <field name="list_price" invisible="1"/>
                             </group>
                             <group>
                                 <field name="active"/>
@@ -81,40 +81,17 @@
                             <group name="sale_condition" string="Sale Conditions" colspan="3">
                                 <label for="warranty"/>
                                 <div>
-                                    <field name="warranty" class="oe_inline"/> months
+                                    <field name="warranty" class="oe_inline"/>
+                                </div>
+                                <label for="sale_delay"/>
+                                <div>
+                                    <field name="sale_delay" class="oe_inline" />
                                 </div>
                             </group>
-                            <group groups="product.group_uos" string="Unit of Measure">
-                                <field name="uos_id"/>
-                                <field name="uos_coeff"/>
-                                <field name="mes_type"/>
-                            </group>
-                        </group>
-                        <group name="website_and_pos" col="2">
-                        </group>
-                        <separator string="Description for Quotations"/>
-                        <field name="description_sale" placeholder="note to be displayed on quotations..."/>
-                    </page>
-                </page>
-                <page string="Accounting" position="replace">
-                    <page string="Accounting" groups="account.group_account_invoice"
-                        attrs="{'invisible':[('is_product_variant', '=', False)]}">
-                        <group>
-                            <label for="categ_id" string="Internal Category"/>
-                            <div><field name="categ_id" colspan="3" nolabel="1"/></div>
-                        </group>
-                        <group name="properties">
-                            <group>
-                                <field name="property_account_income" domain="[('type','=','other')]" groups="account.group_account_user"/>
-                                <field name="taxes_id" colspan="2" widget="many2many_tags"/>
-                            </group>
-                            <group>
-                                <field name="property_account_expense" domain="[('type','=','other')]" groups="account.group_account_user"/>
-                                <field name="supplier_taxes_id" colspan="2" widget="many2many_tags"/>
-                            </group>
                         </group>
                     </page>
                 </page>
+
 
             </field>
         </record>
