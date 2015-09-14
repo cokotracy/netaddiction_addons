@@ -6,8 +6,6 @@ class Products(models.Model):
     _inherit = 'product.product'
 
     #campi override per rendere le varianti indipendenti dai template
-    type = fields.Selection((('consu', 'Consumable'),('service','Service'),
-        ('product','Prodotto Stoccabile')), string='Tipo Prodotto', _translate="True")
     lst_price = fields.Float(string="Prezzo senza Iva")
     list_price = fields.Float(string="Prezzo Listino")
     seller_ids = fields.One2many('product.supplierinfo', 'product_vrnt_id', 'Supplier')
@@ -30,8 +28,12 @@ class Products(models.Model):
     @api.one
     def _get_qty_available_now(self):
         self.qty_available_now = int(self.qty_available) - int(self.outgoing_qty)
+
     @api.one
     def _get_qty_suppliers(self):
+        """
+        somma, se ci sono, tutte le quantità dei fornitori
+        """
         qty = 0
         for sup in self.seller_ids:
             qty = qty + int(sup.avail_qty)
@@ -39,45 +41,45 @@ class Products(models.Model):
 
     @api.multi
     def write(self,values):
-        tassa = self.taxes_id.amount
-        final = self.final_price
+        """
+        quando aggiorna il prodotto scorpora l'iva dal prezzo al pubblico
+        """
 
-        if 'taxes_id' in values.keys():
+        if len(self)==1:
+            for p in self:
+                tassa = p.taxes_id.amount
+                final = p.final_price
+
+                if 'taxes_id' in values.keys():
+                    id_tax = values['taxes_id'][0][2]
+                    if len(id_tax)>0:
+                        id_tax = id_tax[0]
+
+                    tassa = self.env['account.tax'].search([('id','=',id_tax)]).amount
+
+                if 'final_price' in values.keys():
+                    final = values['final_price']
+
+                detax = final / (float(1) + tassa)
+                deiva = round(detax,2)
+                values['list_price'] = deiva
+
+        return super(Products, self).write(values)
+
+    @api.model
+    def create(self,values):
+        if 'final_price' in values.keys() and 'taxes_id' in values.keys():
             id_tax = values['taxes_id'][0][2]
             if len(id_tax)>0:
                 id_tax = id_tax[0]
 
             tassa = self.env['account.tax'].search([('id','=',id_tax)]).amount
 
-        if 'final_price' in values.keys():
-            final = values['final_price']
+            detax = values['final_price'] / (float(1) + tassa)
+            deiva = round(detax,2)
+            values['list_price'] = deiva
 
-        detax = final / (float(1) + tassa)
-        deiva = round(detax,2)
-        values['list_price'] = deiva
-
-        return super(Products, self).write(values)
-
-    #@api.multi
-    #def create(self,values,context = None):
-    #    tassa = self.taxes_id.amount
-    #    final = self.final_price
-
-    #    if 'taxes_id' in values.keys():
-    #        id_tax = values['taxes_id'][0][2]
-    #        if len(id_tax)>0:
-    #            id_tax = id_tax[0]
-
-    #        tassa = self.env['account.tax'].search([('id','=',id_tax)]).amount
-
-    #    if 'final_price' in values.keys():
-    #        final = values['final_price']
-
-    #    detax = final / (float(1) + tassa)
-    #    deiva = round(detax,2)
-    #    values['list_price'] = deiva
-
-    #    return super(Products, self).create(values,context)
+        return  super(Products, self).create(values)
 
 class Template(models.Model):
     _inherit = 'product.template'
@@ -100,17 +102,28 @@ class Template(models.Model):
 
     @api.model
     def create(self,values):
+        """
+        questi sono alcuni campi separati che 'potrebbero' essere uguali tra
+        template e varianti (sono comunque modificabili singolarmente)
+        """
         new_id = super(Template, self).create(values)
-        for var in new_id.product_variant_ids:
-            attr={
-                'type' : values['type'],
-                'out_date' : values['out_date'],
-                'out_date_approx_type' : values['out_date_approx_type'],
-                'active' : values['type'],
-                'published' : values['published'],
-            }
-            var.write(attr)
+
+        attr={k: v for k, v in values.items() if k in ['out_date','out_date_approx_type','active','published']}
+
+        new_id.product_variant_ids.write(attr)
+
         return new_id
+
+    @api.multi
+    def write(self,values):
+
+        attr={k: v for k, v in values.items() if k in ['out_date','out_date_approx_type','active','published']}
+
+        self.product_variant_ids.write(attr)
+
+        return super(Template, self).write(values)
+
+
 
 class SupplierInfo(models.Model):
     _inherit = 'product.supplierinfo'
@@ -124,8 +137,10 @@ class SupplierInfo(models.Model):
     #uso le nuove api perchè sono più figo
     @api.model
     def create(self,values):
-        #cerco il variant attuale,
-        #mi prendo il template e correggo
+        """
+        cerco il variant attuale,
+        mi prendo il template e correggo
+        """
         obj = self.env['product.product'].search([('id','=',values['product_vrnt_id'])])
         templ = obj.product_tmpl_id.id
         values['product_tmpl_id']=templ

@@ -33,7 +33,7 @@ openerp.netaddiction_doozy.decimal_precision = function(instance) {
     instance.netaddiction_doozy.IntegerFieldFloat = instance.web.form.FieldFloat.extend({
         init: function(field_manager, node) {
             this._super.apply(this, [field_manager, node]);
-            
+
             if(float_to_int.indexOf(this.name) != -1) {
                 if(typeof this.digits != 'undefined') {
                     this.digits = [this.digits[0], 0];

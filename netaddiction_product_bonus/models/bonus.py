@@ -10,7 +10,7 @@ class Products_Bonus(models.Model):
 
     product_ref = fields.Many2one('product.product',ondelete="cascade",
         string="Prodotto Corrispondente",required="True")
-    type = fields.Selection((('digital', 'Digitale'),('product','Prodotto Fisico')),
+    type = fields.Selection((('service', 'Digitale'),('product','Prodotto Fisico')),
         string='Product Type',required="True")
 
     #uso domain per far si che i bonus vengano associati solo a prodotti normali
@@ -24,25 +24,15 @@ class Products_Bonus(models.Model):
     @api.model
     def create(self, values):
 
+        values['is_bonus'] = True
+
         res_id = super(Products_Bonus, self).create(values)
 
         product = res_id.product_ref
-        tmpl = product.product_tmpl_id
 
-        # aggiorna i campi del template e del product in modo da metterli in linea con
-        # il bonus
-        if values['type'] == 'product':
-            product.write({'type' : 'product','is_bonus': True})
-            tmpl.write({'type' : 'product'})
-        else:
-            # TODO: Ho arbitrariamente deciso che un digital bonus è un consumabile
-            #perchè può avere quantità limite (eventualmente modifichiamo)
-            product.write({'type' : 'consu','is_bonus': True})
-            tmpl.write({'type' : 'consu'})
+        attr={k: v for k, v in values.items() if k in ['company_id','active','published','type']}
 
-
-        tmpl.write({'list_price' : 0,'lst_price' : 0})
-
+        product.write(attr)
 
         return res_id
 
@@ -50,23 +40,15 @@ class Products_Bonus(models.Model):
     #il prodotto referente
     @api.multi
     def unlink(self):
-        for product in self.product_ref :
-            product.unlink()
+        self.product_ref.unlink()
+
         return super(Products_Bonus, self).unlink()
 
     @api.multi
     def write(self,values):
-        if 'type' in values.keys():
-            if values['type']!='product':
-                values['type']='consu'
+        attr={k: v for k, v in values.items() if k in ['company_id','active','published','type']}
 
-        for product in self.product_ref :
-            product.write(values)
-            tmpl = product.product_tmpl_id
-            tmpl.write(values)
-
-        if values['type']=='consu':
-            values['type']='digital'
+        self.product_ref.write(attr)
 
         return super(Products_Bonus, self).write(values)
 

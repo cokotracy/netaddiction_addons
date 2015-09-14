@@ -3,21 +3,17 @@
     'name': "NetAddiction Extra Fields",
     'summary': "Aggiunge campi extra ad alcuni moduli",
 
-    'description':"""Aggiunge campi extra ad alcuni moduli per il corretto funzionamento degli shop\n
+    'description':"""
+    Aggiunge campi extra ad alcuni moduli per il corretto funzionamento degli shop\n
     Aggiunge viste personalizzate\n
         \n
-    RES.PARTNER:\n
-        - campi: aggiunge 'is_default_delivery_address' per settare quell'indirizzo come default\n
-        - viste: estende vista form\n
-    PRODUCT.PRODUCT:\n
-        - campi: rende indipendenti i campi 'type','list_price' e 'lst_price' dal template, aggiunge 'out_date' (data di uscita),'out_date_approx_type'(approssimazione per la data),'published' (visibile sul sito)\n
-        - vista: estende vista form\n
-    PRODUCT.TEMPLATE:\n
-        - campi: aggiunge al campo 'type' il valore 'stockable', aggiunge 'out_date' (data di uscita),'out_date_approx_type'(approssimazione per la data),'published' (visibile sul sito)\n
-        - vista: estende vista form\n
-    SALE.ORDER.LINE:\n
-        - override metodo 'product_id_change' per mettere prezzo giusto nel campro price_unit della linea d'ordine dopo aver effettuato la modifica del campo lst_price nel modello product
-    """,
+        * *RES.PARTNER* aggiunto campo 'is_default_delivery_address.'
+        * *PRODUCT* il prezzo il tipo e i fornitori diventano indipendenti dal template,
+            il prezzo si inserisce ivato e all'atto del salvataggio gli scorpora l'iva,aggiunte quantità disponibile
+            e quantità totale fornitori.
+        * Modifica la vista dei PARTNER per mettere nei clienti l0indirizzo di default, aggiorna la vista
+            dei partner secondo le nuove regole.
+        * Piccole modifiche alla vista prodotti, aggiunge i campi nuovi""",
     'author': "Netaddiction",
 
     'website': "http://www.netaddiction.it",

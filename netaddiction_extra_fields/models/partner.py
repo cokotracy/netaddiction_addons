@@ -5,6 +5,7 @@ from openerp import models, fields, api
 class Partners(models.Model):
     _inherit = 'res.partner'
 
+    #campo booleano per indirizzo di default sui contatti dei clienti
     is_default_delivery_address = fields.Boolean(string="Indirizzo di Default")
 
     # TODO: quando salva e is_default_delivery_address is true allora deve mettere a false

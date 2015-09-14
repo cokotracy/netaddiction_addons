@@ -42,7 +42,7 @@
                 </page>
 
                 <page string="Procurements" position="replace">
-                    <page string="Procurements" groups="base.group_user" attrs="{'invisible':[('is_product_variant', '=', False)]}">
+                    <page string="Procurements" groups="base.group_user" attrs="{'invisible':['|',('type','=','service'),('is_product_variant', '=', False)]}">
                         <group name="procurement">
                             <group name="general">
                                 <field name="standard_price"/>
@@ -58,7 +58,7 @@
                     </page>
                 </page>
                 <page string="Inventory" position="replace">
-                    <page string="Inventory" attrs="{'invisible':[('is_product_variant', '=', False)]}">
+                    <page string="Inventory" attrs="{'invisible':['|',('is_product_variant', '=', False),('type','=','service')]}">
                         <group name="inventory">
                             <group name="status" string="Status">
                                 <field name="state"/>

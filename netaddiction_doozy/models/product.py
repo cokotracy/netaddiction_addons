@@ -30,7 +30,7 @@ class Product(models.Model):
 
 class Template(models.Model):
     _inherit = 'product.template'
-    
+
     @api.one
     @api.depends('qty_available')
     def _product_available_text(self, *args, **kwargs):
@@ -40,3 +40,5 @@ class Template(models.Model):
         self.qty_available_text = str(int(self.qty_available)) + _(' On Hand')
 
     qty_available_text = fields.Char(compute=_product_available_text)
+
+    #se riesco a fare l'override forse posso fare il redirect sul bonus
