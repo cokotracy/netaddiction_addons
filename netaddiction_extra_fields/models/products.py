@@ -141,9 +141,11 @@ class SupplierInfo(models.Model):
         cerco il variant attuale,
         mi prendo il template e correggo
         """
-        obj = self.env['product.product'].search([('id','=',values['product_vrnt_id'])])
-        templ = obj.product_tmpl_id.id
-        values['product_tmpl_id']=templ
+        if 'product_tmpl_id' not in values:
+            obj = self.env['product.product'].search([('id','=',values['product_vrnt_id'])])
+            templ = obj.product_tmpl_id.id
+            values['product_tmpl_id']=templ
+
         return super(SupplierInfo, self).create(values)
 
 
