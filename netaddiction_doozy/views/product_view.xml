@@ -104,10 +104,39 @@
                         <field name="name"/>
                     </a>
                 </xpath>
+                <xpath expr="//kanban/templates/t/div/div/h4" position="after">
+                    <div>
+                        <field name="categ_id"/>
+                    </div>
+                </xpath>
+                <xpath expr="//kanban/templates/t/div/div/div[@name='tags']" position="replace"/>
+
+                <xpath expr="//kanban/templates/t/div/div/ul" position="replace">
+                    <ul>
+                        <li> Quantità Totale: <field name="qty_available"/></li>
+                    </ul>
+                </xpath>
             </field>
         </record>
 
-
+        <record model="ir.ui.view" id="doozy_product_template_tree_view">
+            <field name="name">doozy.product.template.product.tree</field>
+            <field name="model">product.template</field>
+            <field name="priority" eval="70"/>
+            <field name="inherit_id" ref="product.product_template_tree_view"/>
+            <field name="arch" type="xml">
+                <field name="uom_id" position="replace">
+                </field>
+                <field name="state" position="attributes">
+                    <attribute name="invisible">True</attribute>
+                </field>
+                <field name="qty_available" position="replace">
+                </field>
+                <field name="virtual_available" position="attributes">
+                    <attribute name="invisible">True</attribute>
+                </field>
+            </field>
+        </record>
 
 
     </data>
