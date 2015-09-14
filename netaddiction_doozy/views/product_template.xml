@@ -160,11 +160,9 @@
             <field name="priority" eval="90"/>
             <field name="inherit_id" ref="mrp.product_template_form_view_bom_button"/>
             <field name="arch" type="xml">
-                <button name="375" position="replace">
-                    <button class="oe_inline oe_stat_button" name="375" type="action" attrs="{'invisible':[('type', '=', 'service')]}" icon="fa-flask">
-                        <field string="Bundle" name="bom_count" widget="statinfo"/>
-                    </button>
-                </button>
+                <xpath expr="//div[@name='buttons']/button/field[@name='bom_count']" position="replace">
+                    <field string="Bundle" name="bom_count" widget="statinfo"/>
+                </xpath>
                 <button name="action_view_mos" position="replace">
                     <button class="oe_inline oe_stat_button" name="action_view_mos" type="object"
                         invisible="1" icon="fa-list-alt">
@@ -181,9 +179,7 @@
             <field name="priority" eval="90"/>
             <field name="inherit_id" ref="stock.product_form_view_procurement_button"/>
             <field name="arch" type="xml">
-                <button name="331" position="replace">
-                </button>
-                <button name="330" position="replace"/>
+                <button string="Reordering Rules" position="replace"/>
                 <button name="action_view_routes" position="replace"/>
             </field>
         </record>
@@ -199,7 +195,7 @@
                         <field string="Bundle" name="bom_count" widget="statinfo"/>
                     </button>
                 </button>
-                <button name="377" position="replace"/>
+                <xpath expr="//div[@name='buttons']/button[@icon='fa-list-alt']" position="replace"/>
 
             </field>
         </record>

@@ -93,6 +93,22 @@
 
         <!--fine inherit product tree-->
 
+        <record model="ir.ui.view" id="doozy_product_template_kanban">
+            <field name="name">doozy.product.template.product.kanban</field>
+            <field name="model">product.template</field>
+            <field name="priority" eval="70"/>
+            <field name="inherit_id" ref="product.product_template_kanban_view"/>
+            <field name="arch" type="xml">
+                <xpath expr="//kanban/templates/t/div/div/h4/a[@type='open']" position="replace">
+                    <a type="open">
+                        <field name="name"/>
+                    </a>
+                </xpath>
+            </field>
+        </record>
+
+
+
 
     </data>
 </openerp>
