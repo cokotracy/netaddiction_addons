@@ -15,7 +15,13 @@ class Products(models.Model):
     out_date = fields.Date(string="Data di Uscita")
     out_date_approx_type = fields.Selection(string="Approssimazione Data",
         selection=(('accurate','Preciso'),('month','Mensile'),('quarter','Trimestrale'),
-        ('four','Quadrimestrale'),('year','Annuale')))
+        ('four','Quadrimestrale'),('year','Annuale')),
+        help="""Impatta sulla vista front end,
+        Preciso: la data inserita è quella di uscita,
+        Mensile: qualsiasi data inserita prende solo il mese e l'anno (es: in uscita nel mese di Dicembre 2019),
+        Trimestrale: prende l'anno e mese e calcola il trimestre(es:in uscita nel terzo trimestre 2019),
+        Quadrimestrale: prende anno e mese e calcola il quadrimestre(es:in uscita nel primo quadrimestre del 2019),
+        Annuale: prende solo l'anno (es: in uscita nel 2019)""" )
 
     #campo prezzo ivato
     final_price = fields.Float(string="Prezzo al pubblico")
@@ -95,10 +101,21 @@ class Template(models.Model):
     out_date = fields.Date(string="Data di Uscita")
     out_date_approx_type = fields.Selection(string="Approssimazione Data",
         selection=(('accurate','Preciso'),('month','Mensile'),('quarter','Trimestrale'),
-        ('four','Quadrimestrale'),('year','Annuale')))
+        ('four','Quadrimestrale'),('year','Annuale')),
+        help="""Impatta sulla vista front end,
+        Preciso: la data inserita è quella di uscita,
+        Mensile: qualsiasi data inserita prende solo il mese e l'anno (es: in uscita nel mese di Dicembre 2019),
+        Trimestrale: prende l'anno e mese e calcola il trimestre(es:in uscita nel terzo trimestre 2019),
+        Quadrimestrale: prende anno e mese e calcola il quadrimestre(es:in uscita nel primo quadrimestre del 2019),
+        Annuale: prende solo l'anno (es: in uscita nel 2019)""")
 
     #campo prezzo ivato
     final_price = fields.Float(string="Prezzo al pubblico")
+
+    #campi aggiunti per visualizzare anche le varianti con active=False
+    #Valutare se mantenerli
+    product_variant_count = fields.Integer(compute="_get_count_variants")
+
 
     @api.model
     def create(self,values):
@@ -122,6 +139,15 @@ class Template(models.Model):
         self.product_variant_ids.write(attr)
 
         return super(Template, self).write(values)
+
+    @api.one
+    def _get_count_variants(self):
+        """
+        sovrascrivo il campo product_variant_count per contare anche i prodotti non attivi
+        """
+        searched = [('product_tmpl_id','=',self.id),'|',('active','=',False),('active','=',True)]
+        result = self.env['product.product'].search(searched)
+        self.product_variant_count = len(result)
 
 
 

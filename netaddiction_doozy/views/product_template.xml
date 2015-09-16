@@ -97,6 +97,14 @@
         </record>
 
         <!--product.product tree view-->
+        <record model="ir.actions.act_window" id="product_variant_action">
+            <field name="name">Varianti Prodotto</field>
+            <field name="res_model">product.product</field>
+            <field name="view_mode">tree,form</field>
+            <field name="context">{'search_default_product_tmpl_id': [active_id], 'default_product_tmpl_id': active_id}</field>
+            <field name="domain">['|',('active','=',True),('active','=',False)]</field>
+        </record>
+
         <record model="ir.ui.view" id="doozy_product_template_only_form_view">
             <field name="name">product.template.product.form.doozy</field>
             <field name="model">product.template</field>
@@ -106,9 +114,10 @@
                 <page string="Variants" position="replace">
                     <page name="variants" string="Variants">
                         <div class="oe_right">
-                            <button class="oe_inline oe_stat_button" string="Variant Prices" name="116" type="action" icon="fa-strikethrough"/>
-                            <button class="oe_inline oe_stat_button" name="118" type="action" icon="fa-sitemap">
-                                <field string="Varianti" name="product_variant_count" widget="statinfo"/>
+
+                            <button class="oe_inline oe_stat_button" name="%(product_variant_action)d"
+                                type="action" icon="fa-sitemap" >
+                                <field string="Varianti" name="product_variant_count" widget="statinfo" />
                             </button>
                         </div>
                         <p class="oe_grey">
@@ -130,6 +139,7 @@
                                <field name="final_price"/>
                                <field name="qty_available" />
                                <field name="qty_available_now" />
+                               <field name="published" />
                            </tree>
                        </field>
                     </page>
