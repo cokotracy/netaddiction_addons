@@ -27,36 +27,33 @@
             <field name="inherit_id" ref="product.product_normal_form_view"/>
             <field name="arch" type="xml">
                 <field name="product_tmpl_id" position="replace">
+                    <label for="product_tmpl_id" class="oe_edit_only" style="font-size:13px" />
                     <field name="product_tmpl_id" required="False"/>
                 </field>
-                <xpath expr="//notebook/page[@string='Procurements']/separator[@string='Description for Suppliers']" position="attributes">
-                    <attribute name="invisible">True</attribute>
+                <field name="attribute_value_ids" position="replace">
+
+                </field>
+                <xpath expr="//sheet/div[@class='oe_left']" position="after">
+                    <separator string=""/>
+                        <label for="attribute_value_ids" string="Attributi"/>
+                        <field name="attribute_value_ids" readonly="False" widget="many2many_tags"/>
+                    <separator string=""/>
                 </xpath>
-                <xpath expr="//notebook/page[@string='Procurements']/separator[@string='Suppliers']" position="attributes">
-                    <attribute name="invisible">True</attribute>
-                </xpath>
-                <xpath expr="//notebook/page[@string='Procurements']" position="attributes">
-                    <attribute name="string">Fornitore</attribute>
-                </xpath>
-                <group name="procurement" position="attributes">
-                    <attribute name="invisible">True</attribute>
-                </group>
                 <field name="ean13" position="attributes">
                     <attribute name="invisible">True</attribute>
                 </field>
-                <field name="description_purchase" position="attributes">
-                    <attribute name="invisible">True</attribute>
-                </field>
-                <field name="seller_ids" position="replace">
-                    <field name="seller_ids" mode="tree">
-                        <tree>
-                            <field name="name"/>
-                            <field name="product_code"/>
-                            <field name="avail_qty"/>
-                            <field name="base_price"/>
-                        </tree>
-                    </field>
-                </field>
+                <notebook position="inside">
+                    <page string="Fornitori">
+                        <field name="seller_ids" mode="tree">
+                            <tree>
+                                <field name="name"/>
+                                <field name="product_code"/>
+                                <field name="avail_qty"/>
+                                <field name="base_price"/>
+                            </tree>
+                        </field>
+                    </page>
+                </notebook>
             </field>
         </record>
 

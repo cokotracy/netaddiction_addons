@@ -27,7 +27,6 @@ class Product(models.Model):
 
         return super(Product, self).name_get(cr, user, ids, context)
 
-
 class Template(models.Model):
     _inherit = 'product.template'
 
@@ -40,5 +39,6 @@ class Template(models.Model):
         self.qty_available_text = str(int(self.qty_available)) + _(' On Hand')
 
     qty_available_text = fields.Char(compute=_product_available_text)
+
 
     #se riesco a fare l'override forse posso fare il redirect sul bonus

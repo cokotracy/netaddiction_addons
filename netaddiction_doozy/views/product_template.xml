@@ -28,6 +28,7 @@
                             <group>
                                 <field name="type" on_change="onchange_type(type)"/>
                                 <field name="uom_id" on_change="onchange_uom(uom_id,uom_po_id)" groups="product.group_uom" invisible="1"/>
+                                <field name="uom_po_id" groups="product.group_uom" invisible="1"/>
                                 <field name="list_price" invisible="1"/>
                             </group>
                             <group>
@@ -35,63 +36,18 @@
                             </group>
                         </group>
                         <group colspan="4">
-                            <field name="company_id" groups="base.group_multi_company" widget="selection"/>
+                            <field name="company_id"  widget="selection"/>
                         </group>
                         <field name="description" placeholder="describe the product characteristics..."/>
                     </page>
                 </page>
-
-                <page string="Procurements" position="replace">
-                    <page string="Procurements" groups="base.group_user" attrs="{'invisible':['|',('type','=','service'),('is_product_variant', '=', False)]}">
-                        <group name="procurement">
-                            <group name="general">
-                                <field name="standard_price"/>
-                            </group>
-                            <group name="procurement_uom" groups="product.group_uom" string="Purchase">
-                                <field name="uom_po_id"/>
-                            </group>
-                        </group>
-                        <separator string="Suppliers"/>
-                        <field name="seller_ids"/>
-                        <separator string="Description for Suppliers"/>
-                        <field name="description_purchase" placeholder="This note will be displayed on requests for quotation..."/>
-                    </page>
+                <page string="Procurements" position="replace"/>
+                <page string="Inventory" position="attributes">
+                    <attribute name="invisible">['|',('type','=','service'),('is_product_variant', '=', False)]</attribute>
                 </page>
-                <page string="Inventory" position="replace">
-                    <page string="Inventory" attrs="{'invisible':['|',('is_product_variant', '=', False),('type','=','service')]}">
-                        <group name="inventory">
-                            <group name="status" string="Status">
-                                <field name="state"/>
-                                <field name="product_manager"/>
-                            </group>
-                            <group name="weight" string="Weights" attrs="{'invisible':[('type','=','service')]}">
-                                <field digits="(14, 3)" name="volume"/>
-                                <field name="weight"/>
-                                <field name="weight_net"/>
-                            </group>
-                        </group>
-                        <group name="packaging" string="Packaging" attrs="{'invisible':[('type','=','service')]}" groups="product.group_stock_packaging" colspan="4">
-                            <field name="packaging_ids" string="Configurations" context="{'tree_view_ref':'product.product_packaging_tree_view_product', 'form_view_ref': 'product.product_packaging_form_view_without_product'}"/>
-                        </group>
-                    </page>
+                <page string="Sales" position="attributes">
+                    <attribute name="invisible">['|',('sale_ok','=',False),('is_product_variant','=',False)]</attribute>
                 </page>
-                <page string="Sales" position="replace">
-                    <page string="Sales" attrs="{'invisible':['|',('sale_ok','=',False),('is_product_variant','=',False)]}" name="sales">
-                        <group name="sale">
-                            <group name="sale_condition" string="Sale Conditions" colspan="3">
-                                <label for="warranty"/>
-                                <div>
-                                    <field name="warranty" class="oe_inline"/>
-                                </div>
-                                <label for="sale_delay"/>
-                                <div>
-                                    <field name="sale_delay" class="oe_inline" />
-                                </div>
-                            </group>
-                        </group>
-                    </page>
-                </page>
-
 
             </field>
         </record>
@@ -120,12 +76,9 @@
                                 <field string="Varianti" name="product_variant_count" widget="statinfo" />
                             </button>
                         </div>
-                        <p class="oe_grey">
-                            <strong>Avviso</strong>: Aggiungendo o Cancellando gli attributri,
-                            si potrebbero cancellare e ricreare tutte le varianti corrispondenti,
-                            perdendo così ogni modifica effettuata.
-                        </p>
-                        <field name="attribute_line_ids" widget="one2many_list" context="{'show_attribute': False}">
+                        <field name="attribute_line_ids" widget="one2many_list"
+                            attrs="{'invisible': [('id','!=',False)]}"
+                            context="{'show_attribute': False}">
                            <tree string="Variants" editable="bottom">
                                <field name="attribute_id"/>
                                <field name="value_ids" widget="many2many_tags" options="{'no_create_edit': True}" domain="[('attribute_id', '=', attribute_id)]" context="{'default_attribute_id': attribute_id}"/>

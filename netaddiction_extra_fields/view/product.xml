@@ -34,12 +34,6 @@
                     <field name="active"/>
                     <field name="published"/>
                 </field>
-                <xpath expr="//separator[@string='Suppliers']" position="attributes">
-                    <attribute name="invisible">True</attribute>
-                </xpath>
-                <field name="seller_ids" position="attributes">
-                    <attribute name="invisible">True</attribute>
-                </field>
             </field>
         </record>
 
