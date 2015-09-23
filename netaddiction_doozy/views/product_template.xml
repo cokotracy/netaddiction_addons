@@ -36,7 +36,8 @@
                             </group>
                         </group>
                         <group colspan="4">
-                            <field name="company_id"  widget="selection"/>
+                            <label for="company_id" string="Sito"/>
+                            <field name="company_id" nolabel="1" widget="selection"/>
                         </group>
                         <field name="description" placeholder="describe the product characteristics..."/>
                     </page>
