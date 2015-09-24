@@ -5,7 +5,29 @@
             <field name="name">res.partner.form.netaddictioncustomer</field>
             <field name="model">res.partner</field>
             <field name="inherit_id" ref="base.view_partner_form"/>
+            <field name="priority" eval="80"/>
             <field name="arch" type="xml">
+                <field name="phone" position="replace"/>
+                <field name="mobile" position="replace"/>
+                <field name="fax" position="replace"/>
+                <field name="user_ids" position="replace"/>
+                <field name="email" position="replace"/>
+                <field name="birthdate" position="replace"/>
+
+                <xpath expr="//sheet/group/group" position="before">
+                    <group col="4">
+                        <field name="phone"/>
+                        <field name="mobile"/>
+                        <field name="fax"/>
+                        <field name="user_ids" invisible="1"/>
+                        <field name="email" widget="email" attrs="{'required': [('user_ids','!=', [])]}"/>
+                        <field name="birthdate"/>
+                        <field name="company_id"/>
+                    </group>
+                </xpath>
+                <xpath expr="//field[@name='image']"  position="replace">
+                    <field name="image"  attrs="{'invisible':[('customer', '=', True)]}"/>
+                </xpath>  
                 <xpath expr="//label[@string='Address']" position="replace">   
                      <label for="street"  attrs="{'invisible':[('customer', '=', True)]}"/>
                 </xpath>
@@ -50,7 +72,8 @@
                         <field name="state_id"  attrs="{'invisible':[('customer', '=', True)]}"/>              
                         <label for="state_id"  attrs="{'invisible':[('customer', '=', True)]}"/>
                     </div>
-                </xpath>
+                </xpath>      
+
             </field>
         </record>
     </data>
