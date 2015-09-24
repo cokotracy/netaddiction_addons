@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <record model="ir.ui.view" id="view_netaddiction_customer">
+            <field name="name">res.partner.form.netaddictioncustomer</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="base.view_partner_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//label[@string='Address']" position="replace">   
+                     <label for="street"  attrs="{'invisible':[('customer', '=', True)]}"/>
+                </xpath>
+                <xpath expr="//field[@name='street']"
+                    position="replace">    
+                    <div>      
+                        <field name="street"  attrs="{'invisible':[('customer', '=', True)]}"/>              
+                        <label for="street"  attrs="{'invisible':[('customer', '=', True)]}"/>
+                    </div>
+                </xpath>
+                <xpath expr="//field[@name='street2']"
+                    position="replace">    
+                    <div>      
+                        <field name="street2"  attrs="{'invisible':[('customer', '=', True)]}"/>              
+                        <label for="street2"  attrs="{'invisible':[('customer', '=', True)]}"/>
+                    </div>
+                </xpath>
+                <xpath expr="//field[@name='zip']"
+                    position="replace">    
+                    <div>      
+                        <field name="zip"  attrs="{'invisible':[('customer', '=', True)]}"/>              
+                        <label for="zip"  attrs="{'invisible':[('customer', '=', True)]}"/>
+                    </div>
+                </xpath>
+                <xpath expr="//field[@name='city']"
+                    position="replace">    
+                    <div>      
+                        <field name="city"  attrs="{'invisible':[('customer', '=', True)]}"/>              
+                        <label for="city"  attrs="{'invisible':[('customer', '=', True)]}"/>
+                    </div>
+                </xpath>
+                <xpath expr="//field[@name='country_id']"
+                    position="replace">    
+                    <div>      
+                        <field name="country_id"  attrs="{'invisible':[('customer', '=', True)]}"/>              
+                        <label for="country_id"  attrs="{'invisible':[('customer', '=', True)]}"/>
+                    </div>
+                </xpath>
+                <xpath expr="//field[@name='state_id']"
+                    position="replace">    
+                    <div>      
+                        <field name="state_id"  attrs="{'invisible':[('customer', '=', True)]}"/>              
+                        <label for="state_id"  attrs="{'invisible':[('customer', '=', True)]}"/>
+                    </div>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</openerp>
