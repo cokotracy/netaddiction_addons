@@ -13,13 +13,13 @@
                             <label for="qty_available"/>
                             <div>
                                 <field name="qty_available" class="oe_inline"/>
-                                <button name="295" string="⇒ Update" type="action" class="oe_link"/>
+                                <button name="%(action_view_change_product_quantity)d" string="⇒ Update" type="action" class="oe_link"/>
                             </div>
                             <field name="qty_available_now" class="oe_inline"/>
                             <label for="incoming_qty"/>
                             <div>
                                 <field name="incoming_qty" class="oe_inline"/>
-                                <button string="⇒ Request Procurement" name="297" type="action" class="oe_link"/>
+                                <button string="⇒ Request Procurement" name="%(stock.act_make_procurement)d" type="action" class="oe_link"/>
                             </div>
                             <field name="outgoing_qty" class="oe_inline"/>
                             <field name="virtual_available" class="oe_inline"/>
