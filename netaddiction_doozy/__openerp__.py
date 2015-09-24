@@ -22,5 +22,6 @@
         'views/products_inventory.xml',
         'views/product_template.xml',
         'views/product_template_search.xml',
+        'views/customers_view.xml',
     ]
 }
