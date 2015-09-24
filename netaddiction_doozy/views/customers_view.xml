@@ -7,14 +7,16 @@
             <field name="inherit_id" ref="base.view_partner_form"/>
             <field name="priority" eval="80"/>
             <field name="arch" type="xml">
-                <field name="phone" position="replace"/>
+                <!--<field name="phone" position="replace"/>
                 <field name="mobile" position="replace"/>
                 <field name="fax" position="replace"/>
                 <field name="user_ids" position="replace"/>
                 <field name="email" position="replace"/>
-                <field name="birthdate" position="replace"/>
+                <field name="website" position="replace"/>
+                <field name="function" position="replace"/>
+                <field name="title" position="replace"/>
 
-                <xpath expr="//sheet/group/group" position="before">
+                <xpath expr="//sheet/group" position="before">
                     <group col="4">
                         <field name="phone"/>
                         <field name="mobile"/>
@@ -24,55 +26,55 @@
                         <field name="birthdate"/>
                         <field name="company_id"/>
                     </group>
-                </xpath>
+                </xpath>-->
                 <xpath expr="//field[@name='image']"  position="replace">
                     <field name="image"  attrs="{'invisible':[('customer', '=', True)]}"/>
-                </xpath>  
-                <xpath expr="//label[@string='Address']" position="replace">   
+                </xpath>
+                <xpath expr="//label[@string='Address']" position="replace">
                      <label for="street"  attrs="{'invisible':[('customer', '=', True)]}"/>
                 </xpath>
                 <xpath expr="//field[@name='street']"
-                    position="replace">    
-                    <div>      
-                        <field name="street"  attrs="{'invisible':[('customer', '=', True)]}"/>              
+                    position="replace">
+                    <div>
+                        <field name="street"  attrs="{'invisible':[('customer', '=', True)]}"/>
                         <label for="street"  attrs="{'invisible':[('customer', '=', True)]}"/>
                     </div>
                 </xpath>
                 <xpath expr="//field[@name='street2']"
-                    position="replace">    
-                    <div>      
-                        <field name="street2"  attrs="{'invisible':[('customer', '=', True)]}"/>              
+                    position="replace">
+                    <div>
+                        <field name="street2"  attrs="{'invisible':[('customer', '=', True)]}"/>
                         <label for="street2"  attrs="{'invisible':[('customer', '=', True)]}"/>
                     </div>
                 </xpath>
                 <xpath expr="//field[@name='zip']"
-                    position="replace">    
-                    <div>      
-                        <field name="zip"  attrs="{'invisible':[('customer', '=', True)]}"/>              
+                    position="replace">
+                    <div>
+                        <field name="zip"  attrs="{'invisible':[('customer', '=', True)]}"/>
                         <label for="zip"  attrs="{'invisible':[('customer', '=', True)]}"/>
                     </div>
                 </xpath>
                 <xpath expr="//field[@name='city']"
-                    position="replace">    
-                    <div>      
-                        <field name="city"  attrs="{'invisible':[('customer', '=', True)]}"/>              
+                    position="replace">
+                    <div>
+                        <field name="city"  attrs="{'invisible':[('customer', '=', True)]}"/>
                         <label for="city"  attrs="{'invisible':[('customer', '=', True)]}"/>
                     </div>
                 </xpath>
                 <xpath expr="//field[@name='country_id']"
-                    position="replace">    
-                    <div>      
-                        <field name="country_id"  attrs="{'invisible':[('customer', '=', True)]}"/>              
+                    position="replace">
+                    <div>
+                        <field name="country_id"  attrs="{'invisible':[('customer', '=', True)]}"/>
                         <label for="country_id"  attrs="{'invisible':[('customer', '=', True)]}"/>
                     </div>
                 </xpath>
                 <xpath expr="//field[@name='state_id']"
-                    position="replace">    
-                    <div>      
-                        <field name="state_id"  attrs="{'invisible':[('customer', '=', True)]}"/>              
+                    position="replace">
+                    <div>
+                        <field name="state_id"  attrs="{'invisible':[('customer', '=', True)]}"/>
                         <label for="state_id"  attrs="{'invisible':[('customer', '=', True)]}"/>
                     </div>
-                </xpath>      
+                </xpath>
 
             </field>
         </record>
