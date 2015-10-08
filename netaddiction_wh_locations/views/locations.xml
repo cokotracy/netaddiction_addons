@@ -35,21 +35,26 @@
             </field>
         </record>
 
-        <!--<record model="ir.ui.view" id="netaddiction_wh_locations_form">
+        <record model="ir.ui.view" id="netaddiction_wh_locations_form">
             <field name="name">view.netaddiction_wh_locations</field>
             <field name="model">netaddiction.wh.locations</field>
             <field name="arch" type="xml">
-                <form string="product_bonus form">
+                <form string="Location">
                     <sheet>
-                        <field name="name"/>
-                        <field name="barcode"/>
-                        <field name="company_id"/>
-                        <field name="stock_location_id"/>
-                        <field name="wh_locations_line_ids"/>
+                        <group string="Allocazione Interna" name="location" colspan="4">
+                            <group name="loc_left" class="oe_left" col="2">
+                                <field name="name"/>
+                                <field name="barcode"/>
+                            </group>
+                            <group name="loc_r" class="oe_right" col="2">
+                                <field name="company_id"/>
+                                <field name="stock_location_id"/>
+                            </group>
+                        </group>
                     </sheet>
                 </form>
             </field>
-        </record>-->
+        </record>
 
         <record model="ir.ui.view" id="netaddiction_wh_locations_line_tree">
             <field name="name">view.netaddiction_wh_locations_line</field>

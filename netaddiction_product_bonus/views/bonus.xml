@@ -19,12 +19,12 @@
           action="netaddiction_product_bonus_action_menu"
         />
 
-        <menuitem id="menu_netaddiction_product_bonus_purchases"
+        <!--<menuitem id="menu_netaddiction_product_bonus_purchases"
           name="Prodotti Bonus"
           parent="purchase.menu_procurement_management_product"
           sequence="90"
           action="netaddiction_product_bonus_action_menu"
-        />
+        />-->
 
         <menuitem id="menu_netaddiction_product_bonus_manufacturing"
           name="Prodotti Bonus"
@@ -33,12 +33,12 @@
           action="netaddiction_product_bonus_action_menu"
         />
 
-        <menuitem id="menu_netaddiction_product_bonus_wharehouse"
+        <!--<menuitem id="menu_netaddiction_product_bonus_wharehouse"
           name="Prodotti Bonus"
           parent="stock.menu_stock_product"
           sequence="90"
           action="netaddiction_product_bonus_action_menu"
-        />
+        />-->
 
         <record model="ir.ui.view" id="netaddiction_product_bonus_form">
             <field name="name">view.netaddiction_product_bonus_form</field>

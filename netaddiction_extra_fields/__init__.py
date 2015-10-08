@@ -1,2 +1,2 @@
 # -*- coding: utf-8 -*-
-from models import products,partner,sale
+from models import products
