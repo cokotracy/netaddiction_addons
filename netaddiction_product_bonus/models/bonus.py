@@ -10,6 +10,8 @@ class Products_Bonus(models.Model):
 
     product_ref = fields.Many2one('product.product',ondelete="cascade",
         string="Prodotto Corrispondente",required="True")
+
+    #TODO use Selection_add
     type = fields.Selection((('service', 'Digitale'),('product','Prodotto Fisico')),
         string='Product Type',required="True")
 

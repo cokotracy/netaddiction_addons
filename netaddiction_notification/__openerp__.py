@@ -2,7 +2,6 @@
 {
     'name': "NetAddiction Notification",
     'summary': "Notifica nel log le modifiche effettuate",
-
     'description':"""
     Log per le modifiche
     """,
@@ -11,4 +10,7 @@
     'category': 'Technical Settings',
     'version': '0.5',
     'depends': ['base','product','sale','purchase','mrp','account','mail'],
+    'data' :[
+        'views/resconfigview.xml',
+    ]
 }

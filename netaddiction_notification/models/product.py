@@ -1,25 +1,44 @@
 # -*- coding: utf-8 -*-
 
 from openerp import models, fields, api
+from base_class import Notification
 
-class Products(models.Model):
+class Products(models.Model,Notification):
     _inherit = 'product.product'
 
-    #prendo ogni dato e lo butto in notifica
     @api.multi
     def write(self,values):
-        for product in self:
-            msg = ''
-            for key,value in values.items():
-                msg = msg + "<p>"+str(key)+": "+str(product[key])+" -> "+str(value)+"</p>"
-            attr = {
-                'subtype_id' : 2,
-                'res_id' : product.id,
-                'body' : msg,
-                'model' : 'product.product',
-                'author_id' : self.env.user.partner_id.id,
-                'message_type' : 'comment',
-            }
-            self.env['mail.message'].create(attr)
-
+        self._save_msg(self,values)
         return super(Products, self).write(values)
+
+    def message_related_field(self,older,new):
+        d = {}
+        prima = []
+        dopo=[]
+        msg = ''
+        for old in older:
+            d['Fornitore'] = str(old.name.name)
+            d['Codice Fornitore'] = str(old.product_code)
+            d['Quantita Disponibile'] = old.avail_qty
+            d['Prezzo'] = old.price
+            prima.append(d)
+
+        for n in new:
+            line_id = n[1]
+            searched = [('id','=',line_id)]
+            result = self.env['product.supplierinfo'].search(searched)
+            if n[2]:
+                attr={k: v for k, v in n[2].items() if k in ['name','product_code','avail_qty','price']}
+                # TODO: gestire meglio le aggiunte di fornitori e i nomi degli attributi
+                # in questo caso non prende il nome ma l'id del res partner
+                if len(result)>0:
+                    searched = [('id','=',attr['name'])]
+                    res = self.env['res.partner'].search(searched)
+                    attr['name'] = str(res.name)
+                dopo.append(attr)
+            else:
+                dopo.append('tolto fornitore '+str(result.name.name))
+
+        msg = msg + " <br> " + str(prima) + " <br>--------------<br> " + str(dopo)
+
+        return msg

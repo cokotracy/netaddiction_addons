@@ -36,7 +36,7 @@ class Products(models.Model):
         help="Vendite")
 
     #separo la descrizione e il nome
-    description = fields.Text(string="Descrizione")
+    description = fields.Html(string="Descrizione")
 
     bom_count = fields.Integer(compute="_get_sum_bom")
 
@@ -118,6 +118,12 @@ class Products(models.Model):
 
         return  super(Products, self).create(values)
 
+    @api.one
+    def toggle_published(self):
+        value = not self.published
+        attr = {'published':value}
+        self.write(attr)
+
 class Template(models.Model):
     _inherit = 'product.template'
 
@@ -142,7 +148,7 @@ class Template(models.Model):
     product_variant_count = fields.Integer(compute="_get_count_variants")
 
     #separo la descrizione e il nome
-    description = fields.Text(string="Descrizione")
+    description = fields.Html(string="Descrizione")
 
     @api.model
     def create(self,values):
