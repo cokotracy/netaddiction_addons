@@ -145,7 +145,9 @@ class Template(models.Model):
         Annuale: prende solo l'anno (es: in uscita nel 2019)""")
 
     #campi aggiunti per visualizzare anche le varianti con active=False
-    product_variant_count = fields.Integer(compute="_get_count_variants")
+    #da problemi con la funzione _compute_product_template_field in addons/product/product.py
+    #per questo motivo metto un altro conteggio in un altro campo
+    product_variant_count_bis = fields.Integer(compute="_get_count_variants")
 
     #separo la descrizione e il nome
     description = fields.Html(string="Descrizione")
@@ -180,7 +182,7 @@ class Template(models.Model):
         """
         searched = [('product_tmpl_id','=',self.id),'|',('active','=',False),('active','=',True)]
         result = self.env['product.product'].search(searched)
-        self.product_variant_count = len(result)
+        self.product_variant_count_bis = len(result)
 
     @api.one
     def toggle_published(self):

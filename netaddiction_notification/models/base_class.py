@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import HTMLParser
 from difflib import SequenceMatcher
 
 class Notification():
@@ -52,7 +53,7 @@ class Notification():
                     field_name = self._get_field_name(odoo,key,model_name)
                     change = self._get_data_field(odoo,obj,key,value)
 
-                    msg = msg + "<p><b>"+field_name+"</b>: "+change+"</p>"
+                    msg = msg + "<p><b>"+h.unescape(field_name)+"</b>: "+h.unescape(change)+"</p>"
 
                 attr = {
                     'subtype_id' : 2,

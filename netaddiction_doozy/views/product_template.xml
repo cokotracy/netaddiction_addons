@@ -32,6 +32,13 @@
             <field name="priority" eval="30"/>
             <field name="inherit_id" ref="product.product_template_form_view"/>
             <field name="arch" type="xml">
+                <field name="name" position="replace">
+                    <field name="name" />
+                    <b style="font-size:13px !important; color:red"
+                        attrs="{'invisible':[('is_product_variant', '=', True)]}"
+                        >Prodotto Padre</b>
+                </field>
+
                 <field name="sale_ok" position="before">
                     <field name="is_product_variant" invisible="True"/>
                 </field>
@@ -144,7 +151,7 @@
                     <button name="%(netaddiction_product_variant_action)d" type="action"
                         icon="fa-sitemap" class="oe_stat_button"
                         groups="product.group_product_variant">
-                        <field string="Varianti" name="product_variant_count" widget="statinfo" />
+                        <field string="Varianti" name="product_variant_count_bis" widget="statinfo" />
                     </button>
                 </button>
 
