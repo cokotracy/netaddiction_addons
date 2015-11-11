@@ -1,0 +1,62 @@
+<openerp>
+    <data>
+        <template id="index">
+            <head>
+                <title>Netaddiction Inventory APP</title>
+
+                <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+                <meta http-equiv="content-type" content="text/html, charset=utf-8" />
+
+                <meta name="viewport" content="width=device-width, initial-scale=1"/>
+
+                <!--carico il file template dove ho i javascript e i css-->
+                <t t-call-assets="netaddiction_inventory_app.assets"/>
+            </head>
+            <body>
+                <form action="/inventory/app/barcode" method="post" id="first_barcode">
+                    <label for="barcode">BARCODE</label>
+                    <input type="text" name="barcode" id="barcode"/>
+                    <input type="submit" value="VAI"/>
+                </form>
+            </body>
+        </template>
+
+        <template id="barcode">
+            <head>
+                <title>Netaddiction Inventory APP</title>
+
+                <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+                <meta http-equiv="content-type" content="text/html, charset=utf-8" />
+
+                <meta name="viewport" content="width=device-width, initial-scale=1"/>
+
+                <!--carico il file template dove ho i javascript e i css-->
+                <t t-call-assets="netaddiction_inventory_app.assets"/>
+            </head>
+            <body>
+                 <p><t t-esc="products.id"/> - <t t-esc="products.name"/> - <t t-esc="products.barcode"/></p>
+
+                <a t-attf-href="/inventory/app">INDETRO</a>
+            </body>
+        </template>
+
+        <template id="error">
+            <head>
+                <title>ERROR</title>
+
+                <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+                <meta http-equiv="content-type" content="text/html, charset=utf-8" />
+
+                <meta name="viewport" content="width=device-width, initial-scale=1"/>
+
+                <!--carico il file template dove ho i javascript e i css-->
+                <t t-call-assets="netaddiction_inventory_app.assets"/>
+            </head>
+            <body>
+                 <p><t t-esc="error.get_error_msg()"/></p>
+
+                <a t-attf-href="/inventory/app">INDETRO</a>
+            </body>
+        </template>
+    </data>
+</openerp>
