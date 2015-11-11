@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data noupdate="0">
+
+        <record id="netaddiction_cc_project_issue_form_view" model="ir.ui.view">
+            <field name="name">netaddiction.cc.project.issue.form.view</field>
+            <field name="model">project.issue</field>
+            <field name="priority" eval="30"/>
+            <field name="inherit_id" ref="project_issue.project_issue_form_view"/>
+            <field name="arch" type="xml">
+                <field name="partner_id" position="before">
+                    <field name="order_id"/>
+                </field>
+                <field name="kanban_state" position="attributes">
+                    <attribute name="invisible">True</attribute>
+                </field>
+                <field name="project_id" position="attributes">
+                    <attribute name="invisible">True</attribute>
+                </field>
+                <field name="task_id" position="attributes">
+                    <attribute name="invisible">True</attribute>
+                </field>
+
+                <field name="message_follower_ids" position="replace"/>
+                <field name="message_ids" position="replace"/>
+
+                <field name="description" position="replace">
+                    <br/>
+                    <field name="message_follower_ids" widget="mail_followers" groups="project.group_project_manager"/>
+                    <field name="message_ids" widget="mail_thread"/>
+                </field>
+            </field>
+        </record>
+
+
+
+    </data>
+</openerp>

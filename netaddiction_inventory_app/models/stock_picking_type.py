@@ -22,6 +22,11 @@ class StockPickingType(models.Model):
 
     @api.one
     def _get_picking_out_count(self):
+        """
+        Sostituisce la funziona di conteggio di default di odoo.
+        In questa versione se l'ordine di vendita risulta nello stato 'DONE' non appare
+        gli ordini da dover "processare" e mettere in lista prelievo
+        """
         obj = self.env['stock.picking']
         domains = {
             'count_picking_draft': [('state', '=', 'draft')],
@@ -33,10 +38,13 @@ class StockPickingType(models.Model):
         }
         result = {}
         for field in domains:
-            data = obj.read_group( domains[field] +
-                [('state', 'not in', ('done', 'cancel')), ('picking_type_id', 'in', self.ids)],
-                ['picking_type_id'], ['picking_type_id'])
-            count = dict(map(lambda x: (x['picking_type_id'] and x['picking_type_id'][0], x['picking_type_id_count']), data))
+            data = obj.search( domains[field] +
+                [('state', 'not in', ('done', 'cancel')), ('picking_type_id', 'in', self.ids)])
+            count=len(data)
+            for pick in data:
+                if len(pick.sale_id)>0:
+                    if pick.sale_id.state =='done':
+                        count = count -1
+
             for tid in self.ids:
-                self.update({field:count.get(tid, 0)})
-                
+                self.update({field:count})
