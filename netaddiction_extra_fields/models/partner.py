@@ -23,7 +23,7 @@ class Partner(models.Model):
                 #vediamo se almeno a un figlio è stato messo default delivery address a true
                 if 'child_ids' in values.keys():
                     for child in values['child_ids']:
-                        if child[2] and child[2]['is_default_delivery_address'] and child[1]:
+                        if child[2] and 'is_default_delivery_address' in child[2].keys() and child[2]['is_default_delivery_address'] and child[1]:
                             ids.append(child[1])
 
                     #se c'è almeno un figlio con default delivery address a true...
@@ -91,7 +91,7 @@ class Partner(models.Model):
             
         if  values['parent_id']:
 
-            if  values['is_default_delivery_address']:
+            if  'is_default_delivery_address' in values.keys() and values['is_default_delivery_address']:
                 id_father = values['parent_id']
                 father = self.env['res.partner'].search([('id','=',id_father)])
                 ids = []
