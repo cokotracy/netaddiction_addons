@@ -7,15 +7,11 @@ class Partner(models.Model):
 
     is_default_delivery_address = fields.Boolean(string="Indirizzo di Default")
 
-
-
-
-    # TODO: quando salva e is_default_delivery_address is true allora deve mettere a false
-    # tutti gli altri indirizzi.
     @api.one
     def write(self,values):
         """
         quando  aggiorno un partner controllo che solo un indirizzo del contatto abbia is_default_delivery_address = True
+        IMPORTANTE: se facendo edit del padre si cancella un figlio A e ad un altro figlio B si mette is_default_delivery_address a true, A non verrà cancellato perchè gli viene messo is is_default_delivery_address a false
         """
 
 
