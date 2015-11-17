@@ -42,7 +42,29 @@ class Partner(models.Model):
                                 if son.is_default_delivery_address :
                                     child[0] = 1
                                     child[2] = {'is_default_delivery_address': child[1] == ids[0] }
+                                    child[2]['Write_come_from_father'] = True
+                    else:
+                        #sto inserendo/modificando dei figli ma nessuno ha default delivery address a true
+                        #devo controllare di avere già un indirizzo di default altrimenti lo assegno a uno dei figli modificati/creati (impedisco la creazione dei primi contatti senza indirizzo di default)
+                        got_a_delivery_address = False
+                        for id_child in self.child_ids:
+                            son = self.search([('id','=',id_child.id)])
+                            got_a_delivery_address = got_a_delivery_address  or son.is_default_delivery_address
+                            if got_a_delivery_address:
+                                break
+                        if not got_a_delivery_address:
+                             #se aveva già altre modifiche gli aggiungo is default delivery address
+                            child = values['child_ids'][0]
+                            if child[2]:
+                                    child[2]['is_default_delivery_address'] = True
                                     child[2]['Write_come_from_father'] = True 
+                            #altrimenti lo registro in values
+                            else:
+                                    child[0] = 1
+                                    child[2] = {'is_default_delivery_address': True }
+                                    child[2]['Write_come_from_father'] = True
+
+
                            
 
         else:
@@ -60,8 +82,7 @@ class Partner(models.Model):
 
                                 for default_id in ids:
                                     new_values = {'is_default_delivery_address' : False, 'Write_come_from_father': True}
-                                    print "faccio il ciclo nella write questi sono gli id che metto a false"
-                                    print ids
+
                                     if default_id != self.id:
                                         son = self.search([('id','=',default_id)])
                                         son.write(new_values)
@@ -84,10 +105,7 @@ class Partner(models.Model):
         """
         quando  creo un partner controllo che solo un indirizzo del contatto abbia is_default_delivery_address = True
         """
-        print "(Create): ADESSSO PRINTO Values"
-        print values
-        print "(Create): adesso self.ids"
-        print self.ids
+
             
         if  values['parent_id']:
 
