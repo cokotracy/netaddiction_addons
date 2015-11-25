@@ -6,6 +6,7 @@ class Partner(models.Model):
     _inherit = 'res.partner'
 
     is_default_delivery_address = fields.Boolean(string="Indirizzo di Default")
+    company_address = fields.Char(string="Azienda")
 
     @api.one
     def write(self,values):
@@ -107,7 +108,7 @@ class Partner(models.Model):
         """
 
             
-        if  values['parent_id']:
+        if  'parent_id' in values.keys() and values['parent_id']:
 
             if  'is_default_delivery_address' in values.keys() and values['is_default_delivery_address']:
                 id_father = values['parent_id']
