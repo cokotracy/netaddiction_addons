@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <openerp>
     <data noupdate="0">
+        <delete model="ir.ui.menu" id="project_issue.menu_project_issue_track" />
+
+
         <record model="ir.actions.act_window" id="project_issue_categ_act0">
             <field name="name">Problematiche</field>
             <field name="res_model">project.issue</field>
@@ -11,12 +14,11 @@
             <field name="search_view_id" ref="project_issue.view_project_issue_filter"/>
             <field name="help" type="html">
                 <p>
-                    The Odoo issues tacker allows you to efficiently manage things
-                    like internal requests, software development bugs, customer
-                    complaints, project troubles, material breakdowns, etc.
+                   
                 </p>
             </field>
         </record>
+
         <!--Crea la funzionalità ed il gruppo associato-->
         <record model="ir.module.category" id="netaddiction_cc">
             <field name="name">Customer Care</field>
@@ -34,7 +36,7 @@
         <menuitem
             id="netaddiction_customer_care_menu"
             name="Customer Care"
-            sequence="10"
+            sequence="-1"
             groups="netaddiction_cc_user"
             action="project_issue_categ_act0"
         />
@@ -46,7 +48,7 @@
             <field name="perm_read" eval="1"/>
             <field name="perm_create" eval="1"/>
             <field name="perm_write" eval="1"/>
-            <field name="perm_unlink" eval="1"/>
+            <field name="perm_unlink" eval="0"/>
         </record>
         <record id="netaddiction_cc_model_project_tags" model="ir.model.access">
             <field name="name">Tags</field>
@@ -56,6 +58,24 @@
             <field name="perm_create" eval="1"/>
             <field name="perm_write" eval="1"/>
             <field name="perm_unlink" eval="0"/>
+        </record>
+        <record id="netaddiction_cc_model_sale_order" model="ir.model.access">
+            <field name="name">Ordini</field>
+            <field name="model_id" ref="sale.model_sale_order"/>
+            <field name="group_id" ref="netaddiction_cc_user"/>
+            <field name="perm_read" eval="1"/>
+            <field name="perm_create" eval="1"/>
+            <field name="perm_write" eval="1"/>
+            <field name="perm_unlink" eval="0"/>
+        </record>
+
+        <!--action server per le email ricevute-->
+        <record model="ir.actions.server" id="set_desc_to_msg">
+            <field name="name">Settare descrizione al messaggio</field>
+            <field name="model_id" ref="project_issue.model_project_issue"/>
+            <field name="code">
+model.search([('id', 'in', context['active_ids'])]).set_desc_from_msg()
+            </field>
         </record>
     </data>
 </openerp>

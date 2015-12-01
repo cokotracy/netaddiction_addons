@@ -8,6 +8,27 @@
             <field name="priority" eval="30"/>
             <field name="inherit_id" ref="project_issue.project_issue_form_view"/>
             <field name="arch" type="xml">
+                <field name="stage_id" position="before">
+                    <button name="ticket_working" type="workflow"
+                                string="Elabora"
+                                states="draft"/>
+                    <button name="ticket_close" type="workflow"
+                                string="Chiudi" states="working"
+                                class="oe_highlight"/>
+                    <field name="state" widget="statusbar"/>
+                </field>
+
+                <field name="priority" position="replace">
+                    <field name="priority" widget="select"/>
+                </field>
+
+                <field name="stage_id" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </field>
+                <field name="stage_id" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </field>
+
                 <field name="partner_id" position="before">
                     <field name="order_id"/>
                 </field>
@@ -24,14 +45,105 @@
                 <field name="message_follower_ids" position="replace"/>
                 <field name="message_ids" position="replace"/>
 
+                <field name="description" position="attributes">
+                    <attribute name="placeholder">Questa è la descrizione del problema che verrà inviata al cliente</attribute>
+                </field>
+
                 <field name="description" position="replace">
                     <br/>
+                    <field name="description" widget="html" />
+                </field>
+
+                <field name="description" position="after">
+                    <br/>
                     <field name="message_follower_ids" widget="mail_followers" groups="project.group_project_manager"/>
-                    <field name="message_ids" widget="mail_thread"/>
+                    <field name="message_ids" widget="mail_thread" attrs="{'invisible':[('id','=',False)]}"/>
                 </field>
             </field>
         </record>
 
+        <record id="netaddiction_cc_project_issue_tree_view" model="ir.ui.view">
+            <field name="name">netaddiction.cc.project.issue.tree.view</field>
+            <field name="model">project.issue</field>
+            <field name="priority" eval="30"/>
+            <field name="inherit_id" ref="project_issue.project_issue_tree_view"/>
+            <field name="arch" type="xml">
+                <field name="create_date" position="replace"/>
+                <field name="partner_id" position="after">
+                    <field name="order_id"/>
+                    <field name="email_from"/>
+                </field>
+                <field name="id" position="after">
+                    <field name="create_date"/>
+                </field>
+                <field name="project_id" position="attributes">
+                    <attribute name="invisible">True</attribute>
+                </field>
+                <field name="stage_id" position="replace">
+                    <field name="state" string="Stato"/>
+                </field>
+
+                <tree position="attributes">
+                    <attribute name="decoration-bf">state == 'draft'</attribute>
+                    <attribute name="decoration-danger">state == 'working'</attribute>
+                    <attribute name="decoration-muted">state == 'close'</attribute>
+                </tree>
+            </field>
+        </record>
+
+        <!--vista albero utente cc-->
+        <record id="netaddiction_cc_project_feature_tree_view" model="ir.ui.view">
+            <field name="name">netaddiction.cc.project.issue.feature.tree.view</field>
+            <field name="model">project.issue</field>
+            <field name="priority" eval="30"/>
+            <field name="inherit_id" ref="project_issue.project_feature_tree_view"/>
+            <field name="arch" type="xml">
+                <tree position="replace">
+                    <tree string="Feature Tracker Tree" decoration-muted="state == 'close'"
+                        decoration-danger="state == 'working'" decoration-bf="state == 'draft'">
+                        <field name="id"/>
+                        <field name="create_date"/>
+                        <field name="message_needaction" invisible="1"/>
+                        <field name="name" string="Oggetto"/>
+                        <field name="partner_id"/>
+                        <field name="order_id"/>
+                        <field name="email_from"/>
+                        <field name="priority" string="Priorità"/>
+                        <field name="user_id"/>
+                        <field name="state" string="Stato" widget="selection" readonly="1"/>
+                    </tree>
+                </tree>
+
+            </field>
+        </record>
+
+         <record id="netaddiction_cc_project_feature_search_view" model="ir.ui.view">
+            <field name="name">netaddiction.cc.project.issue.feature.search.view</field>
+            <field name="model">project.issue</field>
+            <field name="priority" eval="30"/>
+            <field name="inherit_id" ref="project_issue.view_project_issue_filter"/>
+            <field name="arch" type="xml">
+                <search position="replace">
+                    <search string="Issue Tracker Search">
+                        <field name="name" string="Problematica" filter_domain="['|', '|','|', '|',('id','=',self), ('partner_id','child_of',self),('email_from','ilike',self),('name','ilike',self),('order_id','ilike',self)]"/>
+                        <field name="id" string="Ticket ID"/>
+                        <field name="partner_id" operator="child_of"/>
+                        <field name="user_id"/>
+                        <field name="order_id"/>
+                        <field name="tag_ids"/>
+
+                        <filter string="Le mie Problematiche" domain="[('user_id','=',uid)]"/>
+                        <filter string="Non Assegnate" name="unassigned" domain="[('user_id', '=', False)]"/>
+                        <separator/>
+                        <filter string="Nuovi" name="draft" domain="[('state', '=', 'draft')]"/>
+                        <filter string="In Elaborazione" name="working" domain="[('state', '=', 'working')]"/>
+                        <filter string="Chiusi" name="close" domain="[('state', '=', 'close')]"/>
+                        <separator/>
+                    </search>
+                </search>
+
+            </field>
+        </record>
 
 
     </data>
