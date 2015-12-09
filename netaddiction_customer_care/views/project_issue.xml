@@ -22,6 +22,15 @@
                     <field name="priority" widget="select"/>
                 </field>
 
+                <field name="email_from" position="after">
+                    <field name="close_immediately" attrs="{'invisible':[('id','!=',False)]}"/>
+                </field>
+
+                <field name="user_id" position="before">
+                    <field name="company_id"/>
+                    <field name="issue_type_src" widget="selection"/>
+                </field>
+
                 <field name="stage_id" position="attributes">
                     <attribute name="invisible">1</attribute>
                 </field>
@@ -56,7 +65,7 @@
 
                 <field name="description" position="after">
                     <br/>
-                    <field name="message_follower_ids" widget="mail_followers" groups="project.group_project_manager"/>
+                    <field name="message_follower_ids" widget="mail_followers" attrs="{'invisible':1}"/>
                     <field name="message_ids" widget="mail_thread" attrs="{'invisible':[('id','=',False)]}"/>
                 </field>
             </field>
@@ -102,6 +111,8 @@
                     <tree string="Feature Tracker Tree" decoration-muted="state == 'close'"
                         decoration-danger="state == 'working'" decoration-bf="state == 'draft'">
                         <field name="id"/>
+                        <field name="unread_messages" string="Msg"/>
+                        <field name="issue_type_src"/>
                         <field name="create_date"/>
                         <field name="message_needaction" invisible="1"/>
                         <field name="name" string="Oggetto"/>
@@ -111,6 +122,7 @@
                         <field name="priority" string="Priorità"/>
                         <field name="user_id"/>
                         <field name="state" string="Stato" widget="selection" readonly="1"/>
+                        <field name="company_id"/>
                     </tree>
                 </tree>
 
@@ -139,6 +151,13 @@
                         <filter string="In Elaborazione" name="working" domain="[('state', '=', 'working')]"/>
                         <filter string="Chiusi" name="close" domain="[('state', '=', 'close')]"/>
                         <separator/>
+                        <filter string="Telefonici" name="phone" domain="[('issue_type_src', '=', 'phone')]"/>
+                        <filter string="Manuali" name="manual" domain="[('issue_type_src', '=', 'manual')]"/>
+                        <filter string="E-mail" name="email" domain="[('issue_type_src', '=', 'email')]"/>
+                        <filter string="Ebay" name="ebay" domain="[('issue_type_src', '=', 'ebay')]"/>
+                        <filter string="Facebook" name="fb" domain="[('issue_type_src', '=', 'fb')]"/>
+                        <separator/>
+                        <filter string="Messaggi non letti" name="msgs" domain="[('unread_messages', '!=', 0)]"/>
                     </search>
                 </search>
 
