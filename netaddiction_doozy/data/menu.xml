@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <delete model="ir.ui.menu" id="mail.mail_channel_menu_root_chat" />
+    </data>
+</openerp>

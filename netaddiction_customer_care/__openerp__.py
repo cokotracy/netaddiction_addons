@@ -13,5 +13,10 @@
     'data': [
         'data/user_group_cc.xml',
         'views/project_issue.xml',
-    ]
+        'data/workflow.xml',
+    ],
+    'qweb': ['static/src/xml/template.xml'],
+    'installable': True,
+    'application': True,
+    'auto_install': False,
 }

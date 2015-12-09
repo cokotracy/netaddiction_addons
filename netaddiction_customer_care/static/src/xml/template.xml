@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<templates id="netaddiction_chatter" xml:space="preserve">
+	<t t-extend="mail.Chatter">
+		<t t-jquery=".o_chatter_topbar" t-operation="replace">
+		 	<div class="o_chatter_topbar">
+                <button type="button" class="btn btn-sm btn-primary o_chatter_button_new_message" title="Manda una e-mail">
+                    Nuova E-mail
+                </button>
+                <button t-if="widget.options.display_log_button" class="btn btn-sm btn-link o_chatter_button_log_note" title="I followers non verranno notificati">
+                    Nuova nota interna
+                </button>
+           	</div>
+        </t>
+	</t>
+</templates>
