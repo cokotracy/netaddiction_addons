@@ -13,7 +13,7 @@
 
 	<t t-extend="mail.chat.NotificationTopButton">
 		<t t-jquery="li" t-operation="replace">
-
+			
 		</t>
 	</t>
 
@@ -24,3 +24,4 @@
 	</t>
 
 </templates>
+

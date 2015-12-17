@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <openerp>
     <data noupdate="0">
-        <delete model="ir.ui.menu" id="project_issue.menu_project_issue_track" />
-
 
         <record model="ir.actions.act_window" id="project_issue_categ_act0">
             <field name="name">Problematiche</field>
@@ -12,6 +10,20 @@
             <field name="view_id" eval="False"/>
             <field name="domain" eval=""/>
             <field name="search_view_id" ref="project_issue.view_project_issue_filter"/>
+            <field name="help" type="html">
+                <p>
+                   
+                </p>
+            </field>
+        </record>
+
+        <record model="ir.actions.act_window" id="netaddiction_cc_company_email">
+            <field name="name">Gestione Aziende</field>
+            <field name="res_model">netaddiction.project.issue.settings.companymail</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_id" eval="False"/>
+            <field name="domain" eval=""/>
             <field name="help" type="html">
                 <p>
                    
@@ -41,6 +53,11 @@
             action="project_issue_categ_act0"
         />
 
+        <menuitem id="netaddiction_customer_care_settings" parent="netaddiction_customer_care_menu" name="Settings" sequence="10"
+          groups="base.group_system"/>
+
+        <menuitem id="netaddiction_customer_care_company_email" parent="netaddiction_customer_care_settings" name="Gestione Aziende" sequence="11" action="netaddiction_cc_company_email" groups="base.group_system"/>
+
         <record id="netaddiction_cc_model_project_issue" model="ir.model.access">
             <field name="name">Problematica</field>
             <field name="model_id" ref="project_issue.model_project_issue"/>
@@ -66,6 +83,15 @@
             <field name="perm_read" eval="1"/>
             <field name="perm_create" eval="1"/>
             <field name="perm_write" eval="1"/>
+            <field name="perm_unlink" eval="0"/>
+        </record>
+        <record id="netaddiction_cc_setting_company_mail" model="ir.model.access">
+            <field name="name">Setting Company Mail</field>
+            <field name="model_id" ref="netaddiction_customer_care.model_netaddiction_project_issue_settings_companymail"/>
+            <field name="group_id" ref="netaddiction_cc_user"/>
+            <field name="perm_read" eval="1"/>
+            <field name="perm_create" eval="0"/>
+            <field name="perm_write" eval="0"/>
             <field name="perm_unlink" eval="0"/>
         </record>
 

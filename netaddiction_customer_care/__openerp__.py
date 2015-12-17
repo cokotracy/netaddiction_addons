@@ -13,6 +13,7 @@
     'data': [
         'data/user_group_cc.xml',
         'views/project_issue.xml',
+        'views/settings_company_mail.xml',
         'data/workflow.xml',
     ],
     'qweb': ['static/src/xml/template.xml'],
