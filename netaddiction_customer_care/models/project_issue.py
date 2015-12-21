@@ -58,22 +58,42 @@ class Issue(models.Model):
 
         if 'order_id' in values.keys():
             logger=True
-            message = message + u"<li>Ordine : " + str(self.order_id) + u" -> " +str(values['order_id']) + u"</li>"
+            new_order = False
+            if values['order_id'] is not False:
+                result = self.env['sale.order'].search([('id','=',int(values['order_id']))])
+                if len(result)>0:
+                    new_order = result.name
+            message = message + u"<li>Ordine : " + str(self.order_id.name) + u" -> " +str(new_order) + u"</li>"
         if 'company_id' in values.keys():
             logger=True
-            message = message + u"<li>Azienda : " + str(self.company_id) + u" -> " +str(values['company_id']) + u"</li>"
+            new_company = False
+            if values['company_id'] is not False:
+                result = self.env['res.company'].search([('id','=',int(values['company_id']))])
+                if len(result)>0:
+                    new_company = result.name
+            message = message + u"<li>Azienda : " + str(self.company_id.name) + u" -> " +str(new_company) + u"</li>"
         if 'issue_type_src' in values.keys():
             logger=True
             message = message + u"<li>Tipo : " + str(self.issue_type_src) + u" -> " +str(values['issue_type_src']) + u"</li>"
         if 'user_id' in values.keys():
             logger=True
-            message = message + u"<li>Assegnato a : " + str(self.user_id) + u" -> " +str(values['user_id']) + u"</li>"
+            new_user = False
+            if values['user_id'] is not False:
+                result = self.env['res.users'].search([('id','=',int(values['user_id']))])
+                if len(result)>0:
+                    new_user = result.name
+            message = message + u"<li>Assegnato a : " + str(self.user_id.name) + u" -> " +str(new_user) + u"</li>"
         if 'priority' in values.keys():
             logger=True
             message = message + u"<li>Priorità : " + str(self.priority) + u" -> " +str(values['priority']) + u"</li>"
         if 'partner_id' in values.keys():
+            new_user = False
+            if values['partner_id'] is not False:
+                result = self.env['res.partner'].search([('id','=',int(values['partner_id']))])
+                if len(result)>0:
+                    new_user = result.name
             logger=True
-            message = message + u"<li>Contatto : " + str(self.partner_id) + u" -> " +str(values['partner_id']) + u"</li>"
+            message = message + u"<li>Contatto : " + str(self.partner_id.name) + u" -> " +str(new_user) + u"</li>"
         if 'email_from' in values.keys():
             logger=True
             message = message + u"<li>E-mail : " + str(self.email_from) + u" -> " +str(values['email_from']) + u"</li>"
