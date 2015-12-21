@@ -3,4 +3,8 @@
     <data noupdate="1">
         <delete model="ir.ui.menu" id="mail.mail_channel_menu_root_chat" />
     </data>
+
+    <data noupdate="1">
+    	<delete model="ir.ui.menu" id="mail.menu_contacts" />
+    </data>
 </openerp>

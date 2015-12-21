@@ -9,6 +9,7 @@
                 <tree>
                     <field name="company_id"/>
                     <field name="email"/>
+                    <field name="template_id"/>
                 </tree>
             </field>
         </record>
@@ -26,6 +27,15 @@
                        	<group colspan="4">
                         	<field name="email"/>
                     	</group>
+                        <group colspan="4">
+                            <field name="template_id"/>
+                        </group>
+                        <group colspan="4">
+                            <field name="message_new" />
+                        </group>
+                        <group colspan="4">
+                            <field name="message_close" />
+                        </group>
                     </sheet>
                 </form>
             </field>

@@ -11,6 +11,9 @@ class CompanyMail(models.Model):
 
     company_id = fields.Many2one(comodel_name="res.company",string="Azienda",ondelete="restrict",required="True")
     email = fields.Char("E-mail",required="True")
+    template_id = fields.Many2one(comodel_name="mail.template",string="Template Email", ondelete="restrict")
+    message_new = fields.Text(string="Testo Email di richiesta ricevuta")
+    message_close = fields.Text(string="Testo Email di chiusura supporto")
 
     @api.one
     @api.constrains('company_id','email')

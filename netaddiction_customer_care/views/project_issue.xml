@@ -15,11 +15,20 @@
                     <button name="ticket_close" type="workflow"
                                 string="Chiudi" states="working"
                                 class="oe_highlight"/>
+                        
+                    <button string="Chiudi" name="action_reclose" type="object" class="oe_highlight" 
+                        attrs="{'invisible': [('state','!=','reopen')]}"/>      
+                    <button string="Riapri" name="action_reopen" type="object" class="oe_highlight" 
+                        attrs="{'invisible': [('state','!=','close')]}"/>   
                     <field name="state" widget="statusbar"/>
                 </field>
 
                 <field name="priority" position="replace">
                     <field name="priority" widget="select"/>
+                </field>
+
+                <field name="partner_id" position="replace">
+                    <field name="partner_id" domain="[('parent_id','=',False)]"/>
                 </field>
 
                 <field name="email_from" position="after">
@@ -34,11 +43,9 @@
                 <field name="stage_id" position="attributes">
                     <attribute name="invisible">1</attribute>
                 </field>
-                <field name="stage_id" position="attributes">
-                    <attribute name="invisible">1</attribute>
-                </field>
 
                 <field name="partner_id" position="before">
+                    <field name="satisfaction_rate" string="Tasso di soddisfazione" readonly="True"/>
                     <field name="order_id"/>
                 </field>
                 <field name="kanban_state" position="attributes">
@@ -66,8 +73,29 @@
                 <field name="description" position="after">
                     <br/>
                     <field name="message_follower_ids" widget="mail_followers" attrs="{'invisible':1}"/>
-                    <field name="message_ids" widget="mail_thread" attrs="{'invisible':[('id','=',False)]}"/>
+                    <field name="message_ids" widget="mail_thread" attrs="{'invisible':['|',('id','=',False),('state','=','draft')]}"/>
+                    <br/>
+                    <b attrs="{'invisible':[('state','!=','draft')]}">PER POTER RISPONDERE IL TICKET DEVE ESSERE NELLO STATO "IN ELABORAZIONE"</b>
                 </field>
+
+                <page name="extra_info" position="replace">
+                     <page string="Informazioni aggiuntive" name="extra_info" groups="project.group_project_manager,project.group_project_user,netaddiction_customer_care.netaddiction_cc_manager">
+                            <group>
+                                <group>
+                                    <field name="id"/>
+                                    <field name="day_open"/>
+                                    <field name="day_close"/>
+                                    <field name="working_hours_open" widget="float_time"/>
+                                    <field name="working_hours_close" widget="float_time"/>
+                                    <field name="inactivity_days"/>
+                                    <field name="days_since_creation"/>
+                                    <field name="legend_blocked" invisible="1"/>
+                                    <field name="legend_done" invisible="1"/>
+                                    <field name="legend_normal" invisible="1"/>
+                                </group>
+                            </group>
+                        </page>
+                </page>
             </field>
         </record>
 
@@ -96,6 +124,7 @@
                     <attribute name="decoration-bf">state == 'draft'</attribute>
                     <attribute name="decoration-danger">state == 'working'</attribute>
                     <attribute name="decoration-muted">state == 'close'</attribute>
+                    <attribute name="decoration-warning">state == 'reopen'</attribute>
                 </tree>
             </field>
         </record>
@@ -123,6 +152,9 @@
                         <field name="user_id"/>
                         <field name="state" string="Stato" widget="selection" readonly="1"/>
                         <field name="company_id"/>
+                        
+                        <field name="date_open"/>
+                        <field name="date_closed"/>
                     </tree>
                 </tree>
 
@@ -149,6 +181,7 @@
                         <separator/>
                         <filter string="Nuovi" name="draft" domain="[('state', '=', 'draft')]"/>
                         <filter string="In Elaborazione" name="working" domain="[('state', '=', 'working')]"/>
+                         <filter string="Riaperti" name="reopen" domain="[('state', '=', 'reopen')]"/>
                         <filter string="Chiusi" name="close" domain="[('state', '=', 'close')]"/>
                         <separator/>
                         <filter string="Telefonici" name="phone" domain="[('issue_type_src', '=', 'phone')]"/>
@@ -164,6 +197,6 @@
             </field>
         </record>
 
-
+        
     </data>
 </openerp>

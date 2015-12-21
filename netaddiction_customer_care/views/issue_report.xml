@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data noupdate="0">
+        <record id="netaddiction_cc_reports" model="ir.ui.view">
+            <field name="name">Customer Care Reports</field>
+            <field name="model">netaddiction.project.issue.report</field>
+            <field name="type">pivot</field>
+            <field name="arch" type="xml">
+                <pivot string="Project Issue">
+                    <field name="company_id" type="row"/>
+                    <field name="satisfaction_rate" type="row"/>
+                    <field name="create_date" interval="month" type="col"/>
+                    <field name="avg_whc" type="measure"/>
+                    <field name="avg_who" type="measure"/>
+                </pivot>
+            </field>
+        </record>
+
+        
+    </data>
+</openerp>

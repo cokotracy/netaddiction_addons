@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+    	<record id="netaddiction_cc_sale_order_button" model="ir.ui.view">
+            <field name="name">netaddiction.cc.sale.order.button</field>
+            <field name="model">sale.order</field>
+            <field name="priority" eval="90"/>
+            <field name="inherit_id" ref="sale.view_order_form"/>
+            <field name="arch" type="xml">
+            	<button name="action_view_invoice" position="after">
+            		<button class="oe_stat_button" type="action" name="%(netaddiction_customer_care.project_issue_categ_act0)d"
+                        context="{'search_default_order_id': id, 'default_order_id': id}"
+                        attrs="{'invisible': [('number_of_issue', '=', 0)]}"
+                        icon="fa-bug">
+                        <field  string="Problematiche" name="number_of_issue" widget="statinfo"/>
+                    </button>
+
+                    <button  class="oe_inline oe_stat_button" name="new_issue" 
+                        string="Crea Problematica" type="object" icon="fa-plus"/> 
+            	</button>
+            </field>
+        </record>
+    </data>
+</openerp>
