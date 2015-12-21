@@ -4,11 +4,13 @@ from openerp import models, fields, api
 
 class Partner(models.Model):
     _inherit = 'res.partner'
+  #  _name = 'netaddiction.partner'
 
     is_default_delivery_address = fields.Boolean(string="Indirizzo di Default")
     company_address = fields.Char(string="Azienda")
     rating = fields.Selection([('0','Negativo'), ('1','Medio'), ('2','Positivo')], string='Rating', default="2")
     email_rating = fields.Selection([('A+','A+'), ('A','A'), ('B','B'), ('C','C'), ('D','D'), ('E','E'), ('F','F'), ('','Non valutato')], string='Email Rating', default='')
+
 
     @api.one
     def write(self,values):
