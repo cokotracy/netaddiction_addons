@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+        <record model="ir.actions.act_window" id="netaddiction_sales_gift_base">
+            <field name="name">Gift</field>
+            <field name="res_model">netaddiction.gift</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">Non ci sono Gift.
+                </p>
+            </field>
+        </record>
+
+        <record model="ir.actions.act_window" id="netaddiction_sales_gift_type_base">
+            <field name="name">Gift type</field>
+            <field name="res_model">netaddiction.gift.type</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">Non ci sono Gift Type.
+                </p>
+            </field>
+        </record>
+
+        <menuitem id="menu_netaddiction_sales_gift"
+          name="Gift Menu"
+          parent="base.menu_sales"
+          sequence="12"
+        />
+
+        <menuitem id="submenu_netaddiction_sales_gift"
+          name="Gift" parent="menu_netaddiction_sales_gift"
+          action="netaddiction_sales_gift_base"/>
+
+        <record model="ir.ui.view" id="netaddiction_sales_gift_tree">
+            <field name="name">view.netaddiction_sales_gift_tree</field>
+            <field name="model">netaddiction.gift</field>
+            <field name="arch" type="xml">
+                <tree name="Gift list">
+                    <field name="value"/>
+                    <field name="partner_id"/>
+                    <field name="type_id"/>
+                </tree>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="netaddiction_sales_gift_form">
+            <field name="name">view.netaddiction_sales_gift_form</field>
+            <field name="model">netaddiction.gift</field>
+            <field name="arch" type="xml">
+                <form string="Gift Form">
+                    <sheet>
+                        <group string="Gift" name="gift" colspan="4">
+                            <group name="loc_left" class="oe_left" col="2">
+                                <field name="value"/>
+                                <field name="partner_id" domain="[('type','=','contact')]"/>
+                                <field name="type_id"/>
+                            </group>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <menuitem id="submenu_netaddiction_sales_gift_type"
+          name="Tipi di Gift" parent="menu_netaddiction_sales_gift"
+          action="netaddiction_sales_gift_type_base"/>
+
+        <record model="ir.ui.view" id="netaddiction_sales_gift_type_tree">
+            <field name="name">view.netaddiction_sales_gift_type</field>
+            <field name="model">netaddiction.gift.type</field>
+            <field name="arch" type="xml">
+                <tree name="Gift type list">
+                    <field name="reason"/>
+                    <field name="priority"/>
+                </tree>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="netaddiction_sales_gift_type_form">
+            <field name="name">view.netaddiction_sales_gift_type_form</field>
+            <field name="model">netaddiction.gift.type</field>
+            <field name="arch" type="xml">
+                <form string="Gift Type Form">
+                    <sheet>
+                        <group string="Gift Type" name="gift type" colspan="4">
+                            <group name="loc_left" class="oe_left" col="2">
+                                <field name="reason"/>
+                                <field name="priority"/>
+                            </group>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+    </data>
+</openerp>
+
+
+
+
