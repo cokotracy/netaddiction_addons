@@ -124,6 +124,14 @@ class Products(models.Model):
         attr = {'published':value}
         self.write(attr)
 
+    def _check_attribute_value_ids(self, cr, uid, ids, context=None):
+        
+        return True
+
+    _constraints = [
+        (_check_attribute_value_ids, 'Override', ['attribute_value_ids'])
+    ]
+
 class Template(models.Model):
     _inherit = 'product.template'
 
