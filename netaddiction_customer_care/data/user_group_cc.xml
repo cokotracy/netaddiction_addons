@@ -69,7 +69,7 @@
             id="netaddiction_customer_care_menu"
             name="Customer Care"
             sequence="-1"
-            groups="netaddiction_cc_user"
+            groups="netaddiction_cc_user,base.group_system"
             action="project_issue_categ_act0"
         />
 
