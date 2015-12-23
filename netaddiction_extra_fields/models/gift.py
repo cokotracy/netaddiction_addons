@@ -31,6 +31,17 @@ class Gift(models.Model):
         if self.partner_id is None or self.partner_id.type != 'contact' :
             raise ValidationError("Il gift può essere assegnato solo a clienti")
 
+
+    @api.one
+    @api.constrains('partner_id', 'type_id')
+    def _check_partner_id(self):
+        to_search=[
+            ('partner_id','=',self.partner_id.id),
+            ('type_id','=',self.type_id.id)]        
+        get = self.search(to_search)
+        if len(get)>1:
+            raise ValidationError("i seguenti tipi di gift esistono già per questo cliente")
+
    
 
 class GiftCustomer(models.Model):
@@ -49,11 +60,14 @@ class GiftCustomer(models.Model):
             for gift in gift_ids:
                 record.total += gift.value
 
+
 class GiftType(models.Model):
     _name = "netaddiction.gift.type"
     _rec_name = 'reason'
-    reason = fields.Char('Motivazione')
-    priority = fields.Selection([(0,'Molto Alta'),(1,'Alta'),(2,'Media'),(3,'Bassa'),(4,'Molto Bassa')], string='Priorità', default=2)
+    _sql_constraints = [
+    ('reason_unique', 'unique(reason)', 'Questo tipo di gift esiste già!')]
+    reason = fields.Char('Motivazione',required=True, unique=True)
+    priority = fields.Selection([(0,'Molto Alta'),(1,'Alta'),(2,'Media'),(3,'Bassa'),(4,'Molto Bassa')], string='Priorità', default=2,required=True)
     gift_ids = fields.One2many(
         comodel_name='netaddiction.gift',
         inverse_name='id',

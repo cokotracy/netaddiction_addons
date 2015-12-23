@@ -1,16 +1,23 @@
 # -*- coding: utf-8 -*-
 
 from openerp import models, fields, api
+from openerp.exceptions import ValidationError
 
 class Partner(models.Model):
     _inherit = 'res.partner'
-  #  _name = 'netaddiction.partner'
+    #_name = 'netaddiction.partner'
 
     is_default_delivery_address = fields.Boolean(string="Indirizzo di Default")
     company_address = fields.Char(string="Azienda")
     rating = fields.Selection([('0','Negativo'), ('1','Medio'), ('2','Positivo')], string='Rating', default="2")
     email_rating = fields.Selection([('A+','A+'), ('A','A'), ('B','B'), ('C','C'), ('D','D'), ('E','E'), ('F','F'), ('','Non valutato')], string='Email Rating', default='')
+    gift_ids = fields.One2many(
+        comodel_name='netaddiction.partner.gift',
+        inverse_name='gift_id',
+        string='Gift')
+    total_gift = fields.Float(compute='_compute_total_gift')
 
+  
 
     @api.one
     def write(self,values):
