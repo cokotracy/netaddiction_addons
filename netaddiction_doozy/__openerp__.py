@@ -13,8 +13,6 @@
     'data': [
         'views/product_template.xml',
         'views/product_product.xml',
-        'views/partner.xml',
-        'views/gift.xml',
         'data/menu.xml',
     ],
     'qweb': ['static/src/xml/template.xml'],
