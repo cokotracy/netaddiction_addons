@@ -1,0 +1,51 @@
+/***********
+BUTTON COLOR
+************/
+
+button.net_orange{
+    background-color:#E87E04;
+    border-color:#E87E04;
+    color:black;
+}
+button.net_orange:hover{
+    background-color:#F5AB35 ;
+    border-color:#F5AB35;
+}
+
+button.net_green{
+	background-color:#26A65B;
+    border-color:#26A65B;
+    color:black;
+}
+button.net_green:hover{
+    background-color:#2ECC71 ;
+    border-color:#2ECC71;
+}
+
+button.net_red{
+    background-color:#CF000F;
+    border-color:#CF000F;
+    color:black;
+}
+button.net_red:hover{
+    background-color:#EF4836 ;
+    border-color:#EF4836;
+}
+
+button.net_blue{
+    background-color:rgb(83, 130, 185);
+    border-color:rgb(83, 130, 185);
+    color:black;
+}
+button.net_blue:hover{
+    background-color:rgb(114, 159, 207) ;
+    border-color:rgb(114, 159, 207);
+}
+
+/*********
+FORM VIEW
+*********/
+.o_statusbar_buttons button{
+	height:28px !important;
+	margin-top: 1px !important;
+}

@@ -4,6 +4,12 @@
     'name': "NetAddiction Doozy",
     'summary': "Piccole migliorie all'interfaccia",
     'description': """
+    Viene caricato un nuovo css\n\n
+    BUTTON COLOR\n
+    - net_orange \n
+    - net_green \n
+    - net_red \n
+    - net_blue \n
     """,
     'author': "NetAddiction",
     'website': "http://www.netaddiction.it",
@@ -11,9 +17,8 @@
     'depends': ['base', 'product', 'mrp', 'netaddiction_extra_fields','stock','web'],
     'version': '0.1',
     'data': [
-        'views/product_template.xml',
-        'views/product_product.xml',
         'data/menu.xml',
+        'data/load_css.xml'
     ],
     'qweb': ['static/src/xml/template.xml'],
     'installable': True,

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+    	<record model="ir.ui.view" id="netaddiction_view_order">
+            <field name="name">netaddiction.sale.order</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale.view_order_form"/>
+            <field name="arch" type="xml">
+                <header position="replace">
+                    <header>
+                        <button name="action_processing" string="In lavorazione" type="object" states="sent,sale,problem" class="net_orange"/>
+
+                        <button name="action_problem" string="Problema" type="object" states="sent,sale,partial_done,processing" class="net_red"/>
+
+                        <button name="action_done" type="object" string="Completato" states="sale,problem,processing,partial_done" class="net_green"/>
+                        
+
+                        <field name="state" widget="statusbar" statusbar_visible="sale,processing,done"/>
+                    </header>
+                </header>
+            </field>
+        </record>
+    </data>
+</openerp>

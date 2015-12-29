@@ -294,6 +294,7 @@ class Issue(models.Model):
 
     def _post_mail(self,args,comment_else = True):
         template = self._get_template_email()
+        email = 0
         if len(template)>0:
             mail = template.with_context(message=args['body']).generate_email(self.id)
             mail['email_from'] = self._get_email_from()

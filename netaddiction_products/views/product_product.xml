@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <record id="stock_product_normal_form_view" model="ir.ui.view">
+            <field name="name">netaddiction.stock_product.product.form</field>
+            <field name="model">product.product</field>
+            <field name="priority" eval="30"/>
+            <field name="inherit_id" ref="stock.product_form_view_procurement_button"/>
+            <field name="arch" type="xml">
+                <button name="%(stock.product_open_quants)d" position="replace"/>
+
+                <button name="%(stock.product_open_orderpoint)d" position="replace">
+                    <button type="action"
+                         name="%(stock.product_open_orderpoint)d"
+                         attrs="{'invisible':['|',('type', '!=', 'product'),('nbr_reordering_rules', '==', 1)]}"
+                         class="oe_stat_button" icon="fa-refresh"
+                         groups="stock.group_stock_user,purchase.group_purchase_user">
+                         <field name="nbr_reordering_rules" widget="statinfo" string="Riordino Automatico"/>
+                     </button>
+                </button>
+                <button attrs="{'invisible':['|',('type', '!=', ['product', 'consu']),('nbr_reordering_rules', '!=', 1)]}" position="replace">
+                    <button type="object"
+                        name="%(stock.product_open_orderpoint)d"
+                        attrs="{'invisible':['|',('type', '!=', 'product'),('nbr_reordering_rules', '!=', 1)]}"
+                        class="oe_stat_button" icon="fa-refresh"
+                        groups="stock.group_stock_user,purchase.group_purchase_user">
+                        <div class="o_form_field o_stat_info mr4">
+                            <span class="o_stat_text">Min:</span>
+                            <span class="o_stat_text">Max:</span>
+                        </div>
+                        <div class="o_form_field o_stat_info">
+                            <span class="o_stat_value"><field name="reordering_min_qty"/></span>
+                            <span class="o_stat_value"><field name="reordering_max_qty"/></span>
+                        </div>
+
+                    </button>
+                </button>
+
+
+            </field>
+        </record>
+
+        <record id="product_product_form_view_bom_button" model="ir.ui.view">
+            <field name="name">netaddiction.product.product.procurement</field>
+            <field name="model">product.product</field>
+            <field name="inherit_id" ref="mrp.product_product_form_view_bom_button"/>
+            <field name="groups_id" eval="[(4, ref('mrp.group_mrp_user')),
+                (4,ref('netaddiction_extra_fields.netaddiction_data_entry_user'))]"/>
+            <field name="arch" type="xml">
+                <button name="action_view_bom" position="replace"/>
+                <button name="%(mrp.act_product_mrp_production)d" position="replace"/>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="netaddiction_product_form_view_sale_order_button">
+            <field name="name">netaddiction.product.product.sale.order</field>
+            <field name="model">product.product</field>
+            <field name="inherit_id" ref="sale.product_form_view_sale_order_button"/>
+            <field name="arch" type="xml">
+                <button name="%(sale.action_product_sale_list)d" position="replace"/>
+            </field>
+        </record>
+
+        <record id="product_normal_form_view" model="ir.ui.view">
+            <field name="name">netaddiction.product.product.form</field>
+            <field name="model">product.product</field>
+            <field name="priority" eval="30"/>
+            <field name="inherit_id" ref="product.product_normal_form_view"/>
+            <field name="arch" type="xml">
+                <field name="attribute_value_ids" position="replace"/>
+                <xpath expr="//div[@class='oe_title']" position="after">
+                    <separator string=""/>
+                    <label for="attribute_value_ids" string="Attributi"/>
+                    <field name="attribute_value_ids" widget="many2many_tags" groups="product.group_product_variant"/>
+                    <separator string=""/>
+                </xpath>
+
+                <button name="%(stock.action_view_change_product_quantity)d" position="replace">
+                    <button name="%(stock.action_view_change_product_quantity)d"
+                        string="Aggiorna Quantità"
+                        type="action"
+                        attrs="{'invisible': [('type', '!=', 'product')]}"
+                        groups="stock.group_stock_user"/>
+                </button>
+                <button  name="%(stock.act_make_procurement)d" position="replace">
+                    <button
+                        string="Richiesta Approvvigionamento"
+                        type="action"
+                        name="%(stock.act_make_procurement)d"
+                        attrs="{'invisible': [('type', '!=', 'product')]}"
+                        groups="stock.group_stock_user"/>
+                </button>
+                <!--forecasted,tolto per tutti-->
+                <button name="%(stock.action_stock_level_forecast_report_product)d" position="replace"/>
+
+                <div name="button_box" position="inside">
+                    <field string="Bundle" name="bom_count" widget="statinfo"
+                         groups="netaddiction_extra_fields.netaddiction_data_entry_user,mrp.group_mrp_user"
+                         invisible="1"/>
+                    <button class="oe_stat_button" name="action_view_bom" type="object"
+                        attrs="{'invisible':['|',('type', 'not in', ['product', 'consu']),('bom_count','=',0)]}" icon="fa-flask">
+                        <b >Bundle</b>
+                    </button>
+                    <button class="oe_stat_button" name="%(purchase.action_purchase_line_product_tree)d"
+                           type="action" icon="fa-shopping-cart"
+                           groups="stock.group_stock_user,purchase.group_purchase_user">
+                        <field string="Acquisti" name="purchase_count" widget="statinfo"
+                            groups="stock.group_stock_user,purchase.group_purchase_user"/>
+                    </button>
+
+                    <button class="oe_stat_button" name="%(sale.action_product_sale_list)d"
+                        type="action" icon="fa-usd"
+                        groups="stock.group_stock_user,purchase.group_purchase_user">
+                        <field string="Vendite" name="sales_count" widget="statinfo" />
+                    </button>
+
+                </div>
+
+                <notebook position="replace">
+                    <notebook>
+                        <page string="Informazioni Generali" name="information">
+                            <group name="general" col="4">
+                                <group name="group_general"  col="2" class="oe_left">
+                                    <field name="type" on_change="onchange_type(type, context)"/>
+                                    <field name="out_date"/>
+                                    <field name="out_date_approx_type" />
+                                    <field name="final_price" required="True"/>
+                                </group>
+                                <group name="group_general_right"  col="2" class="oe_right">
+                                    <field name="categ_id" options="{'no_create': True}"/>
+                                    <field name="company_id" groups="base.group_multi_company"
+                                        options="{'no_create': True}"/>
+                                    <field name="barcode" required="True"/>
+                                    <field name="lst_price" readonly="True" string="Prezzo Senza Iva"/>
+                                </group>
+                                <separator name="descr_separator"/>
+                                <group name="descr" colspan="4">
+                                    <b>Descrizione</b>
+                                </group>
+                                <group name="descr" colspan="4">
+                                    <field name="description" nolabel="1" widget="html"/>
+                                </group>
+                            </group>
+                        </page>
+                        <page string="Inventario" name="inventory_netaddiction">
+                            <group name="qtys"  col="4" >
+                                <label for="qty_available"/>
+                                <div>
+                                    <field name="qty_available" class="oe_inline"/>
+                                </div>
+                                <field name="qty_available_now" class="oe_inline"/>
+                                <label for="incoming_qty"/>
+                                <div>
+                                    <field name="incoming_qty" class="oe_inline"/>
+                                </div>
+                                <field name="outgoing_qty" class="oe_inline" />
+                                <field name="virtual_available" class="oe_inline" string="Quantità Prevista"/>
+                                <field name="qty_sum_suppliers" class="oe_inline"/>
+                            </group>
+                            <group name="locations" string="Allocazioni" >
+                                <field name="product_wh_location_line_ids" nolabel="1" readonly="1"/>
+                            </group>
+                        </page>
+                        <page string="Tasse" name="taxes_netaddiction">
+                            <group name="taxes"  col="4" >
+                                <field name="taxes_id" options="{'no_create': True}" widget="many2many_tags"/>
+                                <field name="supplier_taxes_id" options="{'no_create': True}" widget="many2many_tags"/>
+                            </group>
+                        </page>
+                        <page string="Fornitori" name="vendor_netaddiction">
+                            <field name="seller_ids" widget="one2many">
+                                <tree string="Seller_tree">
+                                    <field name="name" string="Fornitore"/>
+                                    <field name="product_code" string="Codice Fornitore"/>
+                                    <field name="avail_qty"/>
+                                    <field name="price"/>
+                                </tree>
+                            </field>
+                        </page>
+                    </notebook>
+                </notebook>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="product_supplierinfo_form_view">
+            <field name="name">netaddiction.product.supplierinfo.form.view</field>
+            <field name="model">product.supplierinfo</field>
+            <field name="inherit_id" ref="product.product_supplierinfo_form_view"/>
+            <field name="arch" type="xml">
+                <label for="price" position="before">
+                    <label for="avail_qty"/>
+                    <div>
+                        <field name="avail_qty" class="oe_inline"/>
+                    </div>
+                </label>
+            </field>
+        </record>
+
+
+    </data>
+</openerp>
