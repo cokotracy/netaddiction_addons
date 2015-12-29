@@ -480,6 +480,27 @@ class OrderIssue(models.Model):
                 'default_company_id':self.company_id.id},
         }
 
+class CustomerIssue(models.Model):
+    _inherit='res.partner'
+
+    @api.multi
+    def new_customer_issue(self):
+        view_id = self.env.ref('netaddiction_customer_care.netaddiction_cc_project_issue_form_view').id
+        
+        return {
+            'name':'Nuova Problematica',
+            'view_type':'form',
+            'view_mode':'tree',
+            'views' : [(view_id,'form')],
+            'res_model':'project.issue',
+            'view_id':view_id,
+            'type':'ir.actions.act_window',
+            'context':{
+                'default_issue_type_src':'manual',
+                'default_company_id':self.company_id.id,
+                'default_partner_id':self.id },
+        }
+
 
 class TagDropper(HTMLParser):
     def __init__(self, tags_to_drop, *args, **kwargs):

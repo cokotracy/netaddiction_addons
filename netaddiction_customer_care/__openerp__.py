@@ -15,6 +15,7 @@
         'views/project_issue.xml',
         'views/settings_company_mail.xml',
         'views/sale_order.xml',
+        'views/res_partner.xml',
         'data/workflow.xml',
         'views/issue_report.xml'
     ],

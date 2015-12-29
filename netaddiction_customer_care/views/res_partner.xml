@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+    	<record model="ir.ui.view" id="netaddiction_view_customer_issue">
+            <field name="name">netaddiction.view.customer.issue</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="project_issue.res_partner_issues_button_view"/>
+            <field name="arch" type="xml">
+            	<button name="%(project_issue.action_view_issues)d" position="before">
+            		<button  class="oe_inline oe_stat_button" name="new_customer_issue" 
+                        string="Crea Problematica" type="object" icon="fa-plus"/> 
+            	</button>
+            </field>
+        </record>
+    </data>
+</openerp>
