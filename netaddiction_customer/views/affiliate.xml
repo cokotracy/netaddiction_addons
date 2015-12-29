@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+        <record model="ir.actions.act_window" id="netaddiction_sales_affiliate_base">
+            <field name="name">Affiliati</field>
+            <field name="res_model">netaddiction.partner.affiliate</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">Non ci sono Affiliati.
+                </p>
+            </field>
+        </record>
+
+
+        <menuitem id="menu_netaddiction_sales_affiliate"
+          name="Affiliati"
+          parent="base.menu_sales"
+          sequence="5"
+          action= "netaddiction_sales_affiliate_base"
+        />
+
+       
+
+        <record model="ir.ui.view" id="netaddiction_sales_affiliate_tree">
+            <field name="name">view.netaddiction_sales_affiliate_tree</field>
+            <field name="model">netaddiction.partner.affiliate</field>
+            <field name="arch" type="xml">
+                <tree name="Affiliate list">
+                    <field name="name"/>
+                    <field name="control_code"/>
+                    <field name="commission_percent"/>
+                </tree>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="netaddiction_sales_affiliate_form">
+            <field name="name">view.netaddiction_sales_affiliate_form</field>
+            <field name="model">netaddiction.partner.affiliate</field>
+            <field name="arch" type="xml">
+                <form string="Affiliate Form">
+                    <sheet>
+                        <group string="Affiliate" name="affiliate" colspan="4">
+                            <group name="loc_left" class="oe_left" col="2">
+                                <field name="name"/>
+                                <field name="email"/>
+                                <field name="control_code"/>
+                                <field name="commission_percent"/>
+                                <field name="active"/>
+                            </group>
+                            <group name="loc_right" class="oe_right" col="2">
+                                <field name="homepage"/>
+                                <field name="phone"/>
+                                <field name="date_account_created"/>
+                                <field name="cookie_duration"/>
+                                <field name="exclude_from_cron"/>
+                            </group>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+
+    </data>
+</openerp>
+
+
+
+

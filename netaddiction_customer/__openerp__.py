@@ -13,6 +13,7 @@
     'data' :[
         'views/partner.xml',
         'views/gift.xml',
+        'views/affiliate.xml',
         'data/gift_type_data_entry.xml',
     ],
     'installable': True,

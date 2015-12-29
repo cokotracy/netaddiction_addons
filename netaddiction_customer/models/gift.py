@@ -17,9 +17,6 @@ class Gift(models.Model):
     @api.one
     @api.constrains('value')
     def _check_value(self):
-        print "VALUE"
-        print self.value
-        print self.type_id.reason
         if self.value < 0.0:
             self.value = 0.0
             raise ValidationError("Il valore del gift deve essere maggiore uguale a zero")
