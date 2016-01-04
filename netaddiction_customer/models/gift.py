@@ -45,7 +45,7 @@ class GiftCustomer(models.Model):
     _inherit = 'res.partner'
     gift_ids = fields.One2many(
         comodel_name='netaddiction.gift',
-        inverse_name='id',
+        inverse_name='partner_id',
         string='Gift')
     total_gift = fields.Float(compute='_compute_total_gift')
 
@@ -67,6 +67,6 @@ class GiftType(models.Model):
     priority = fields.Selection([(0,'Molto Alta'),(1,'Alta'),(2,'Media'),(3,'Bassa'),(4,'Molto Bassa')], string='Priorità', default=2,required=True)
     gift_ids = fields.One2many(
         comodel_name='netaddiction.gift',
-        inverse_name='id',
+        inverse_name='type_id',
         string='Gift')
 

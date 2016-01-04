@@ -24,17 +24,33 @@ class Affiliate(models.Model):
         if self.commission_percent < 0.0 or self.commission_percent > 100.0:
             raise ValidationError("Percentuale commissioni deve essere compreso tra 0 e 100")
 
-class GiftCustomer(models.Model):
+class AffiliateCustomer(models.Model):
     _inherit = 'res.partner'
-    affiliate_id = fields.Many2one(
+    affiliate_id = fields.One2many(
         comodel_name='netaddiction.partner.affiliate',
-        string='Dati Affiliato' )
-    total_gift = fields.Float(compute='_compute_total_gift')
+        string='Dati Affiliato',
+        inverse_name="partner_id" )
 
 
+    @api.constrains('affiliate_id')
+    def _constrains_set_a_id(self):
+        if len(self.affiliate_id) > 1:
+            raise openerp.exceptions.ValidationError('Questo cliente è già un affiliato!')
 
-    @api.depends('gift_ids')
-    def _compute_total_gift(self):
-        for record in self:
-            for gift in gift_ids:
-                record.total += gift.value
+    @api.multi
+    def new_customer_affiliate(self):
+
+        view_id = self.env.ref('netaddiction_customer.netaddiction_sales_affiliate_form').id
+        return {
+            'name':'Nuova Affiliato',
+            'view_type':'form',
+            'view_mode':'tree',
+            'views' : [(view_id,'form')],
+            'res_model':'netaddiction.partner.affiliate',
+            'view_id':view_id,
+            'type':'ir.actions.act_window',
+            'context':{
+                'default_partner_id' : self.id,
+                 },
+        }
+   

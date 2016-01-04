@@ -27,7 +27,7 @@
             <field name="model">netaddiction.partner.affiliate</field>
             <field name="arch" type="xml">
                 <tree name="Affiliate list">
-                    <field name="name"/>
+                    <field name="partner_id"/>
                     <field name="control_code"/>
                     <field name="commission_percent"/>
                 </tree>
@@ -42,15 +42,13 @@
                     <sheet>
                         <group string="Affiliate" name="affiliate" colspan="4">
                             <group name="loc_left" class="oe_left" col="2">
-                                <field name="name"/>
-                                <field name="email"/>
+                                <field name="partner_id" domain="[('type','=','contact')]"/>
                                 <field name="control_code"/>
                                 <field name="commission_percent"/>
                                 <field name="active"/>
                             </group>
                             <group name="loc_right" class="oe_right" col="2">
                                 <field name="homepage"/>
-                                <field name="phone"/>
                                 <field name="date_account_created"/>
                                 <field name="cookie_duration"/>
                                 <field name="exclude_from_cron"/>
@@ -58,6 +56,18 @@
                         </group>
                     </sheet>
                 </form>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="netaddiction_view_customer_affiliate">
+            <field name="name">netaddiction.view.customer.affiliate</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="netaddiction_view_partner"/>
+            <field name="arch" type="xml">
+            <xpath expr="//div[@name='button_box']" position="inside" >
+                    <button  class="oe_inline oe_stat_button" name="new_customer_affiliate" 
+                        string="Rendi Affiliato" type="object" icon="fa-plus" attrs="{'invisible': ['|',('parent_id', '!=', False),('affiliate_id', '!=',False )]}"/> 
+                </xpath>
             </field>
         </record>
 

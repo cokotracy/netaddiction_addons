@@ -11,11 +11,7 @@ class Partner(models.Model):
     company_address = fields.Char(string="Azienda")
     rating = fields.Selection([('0','Negativo'), ('1','Medio'), ('2','Positivo')], string='Rating', default="2")
     email_rating = fields.Selection([('A+','A+'), ('A','A'), ('B','B'), ('C','C'), ('D','D'), ('E','E'), ('F','F'), ('','Non valutato')], string='Email Rating', default='')
-    gift_ids = fields.One2many(
-        comodel_name='netaddiction.partner.gift',
-        inverse_name='gift_id',
-        string='Gift')
-    total_gift = fields.Float(compute='_compute_total_gift')
+
 
   
 
