@@ -8,17 +8,33 @@
             <field name="arch" type="xml">
                 <header position="replace">
                     <header>
-                        <button name="action_processing" string="In lavorazione" type="object" states="sent,sale,problem" class="net_orange"/>
 
-                        <button name="action_problem" string="Problema" type="object" states="sent,sale,partial_done,processing" class="net_red"/>
+                        <button name="action_problems" string="Problema" type="object" states="sent,sale,partial_done,processing" class="net_red"/>
 
-                        <button name="action_done" type="object" string="Completato" states="sale,problem,processing,partial_done" class="net_green"/>
+                        <button name="action_done" type="object" string="Completato" states="sale,problem,draft,partial_done" class="net_green"/>
                         
+                        <button name="action_cancel" states="draft,sent,sale,partial_done,draft,problem,done" type="object" string="Annulla"/>
 
-                        <field name="state" widget="statusbar" statusbar_visible="sale,processing,done"/>
+                        <field name="state" widget="statusbar" statusbar_visible="draft,sale,done"/>
                     </header>
+
+
                 </header>
             </field>
         </record>
+
+
+        <record model="ir.ui.view" id="netaddiction_view_order_delivery">
+            <field name="name">netaddiction.sale.order.delivery</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="delivery.view_order_form_with_carrier"/>
+            <field name="arch" type="xml">
+                <field name="carrier_id" position="replace">
+                    <field name="carrier_id" context="{'order_id': id}" class="oe_inline" options="{'no_create': True, 'no_open': True}" attrs="{'readonly':[('state','in',('sent'))]}"/>
+                </field>
+            </field>
+        </record>
+
+        
     </data>
 </openerp>

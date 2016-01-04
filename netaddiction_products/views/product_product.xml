@@ -157,9 +157,7 @@
                                 <field name="virtual_available" class="oe_inline" string="Quantità Prevista"/>
                                 <field name="qty_sum_suppliers" class="oe_inline"/>
                             </group>
-                            <group name="locations" string="Allocazioni" >
-                                <field name="product_wh_location_line_ids" nolabel="1" readonly="1"/>
-                            </group>
+                            
                         </page>
                         <page string="Tasse" name="taxes_netaddiction">
                             <group name="taxes"  col="4" >

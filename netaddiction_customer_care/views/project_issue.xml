@@ -28,7 +28,7 @@
                 </field>
 
                 <field name="partner_id" position="replace">
-                    <field name="partner_id" domain="[('parent_id','=',False)]"/>
+                    <field name="partner_id" domain="[('parent_id','=',False),('customer','=',True)]"/>
                 </field>
 
                 <field name="email_from" position="after">
@@ -73,7 +73,7 @@
                 <field name="description" position="after">
                     <br/>
                     <field name="message_follower_ids" widget="mail_followers" attrs="{'invisible':1}"/>
-                    <field name="message_ids" widget="mail_thread" attrs="{'invisible':['|',('id','=',False),('state','=','draft')]}"/>
+                    <field name="message_ids" widget="mail_thread"  attrs="{'invisible':['|',('id','=',False),('state','=','draft')]}" />
                     <br/>
                     <b attrs="{'invisible':[('state','!=','draft')]}">PER POTER RISPONDERE IL TICKET DEVE ESSERE NELLO STATO "IN ELABORAZIONE"</b>
                 </field>

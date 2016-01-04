@@ -66,5 +66,21 @@
                 </tree>
             </field>
         </record>
+
+        
+
+        <record id="product_normal_form_view_locations" model="ir.ui.view">
+            <field name="name">netaddiction.product.product.form.locations</field>
+            <field name="model">product.product</field>
+            <field name="priority" eval="30"/>
+            <field name="inherit_id" ref="product.product_normal_form_view"/>
+            <field name="arch" type="xml">
+                <page  name="inventory_netaddiction" position="inside">
+                    <group name="locations" string="Allocazioni" >
+                        <field name="product_wh_location_line_ids" nolabel="1" readonly="1"/>
+                    </group>
+                </page>
+            </field>
+        </record>
     </data>
 </openerp>
