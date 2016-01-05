@@ -135,19 +135,27 @@ class Partner(models.Model):
 
     @api.one
     def unlink(self):
-        if self.is_default_delivery_address:
-            for id_father in self.parent_id:
-                father = self.search([('id','=',id_father.id)])
-                ids = []
-                for id_child in father.child_ids:
-                    if id_child.id != self.id:
-                        son = self.search([('id','=',id_child.id)])
-                        if  not son.is_default_delivery_address:
-                            new_values = {'is_default_delivery_address' : True, 'Write_come_from_father': True}
-                            son.write(new_values)
-                            break 
+        " abbiamo deciso di non far cancellare i clienti. Li archiviamo."
+        self.active = False
+        if self.affiliate_id:
+            self.affiliate_id['active'] = False
+
+        # for id_child in self.child_ids:
+        #     id_child.active = False
+
+        # if self.is_default_delivery_address:
+        #     for id_father in self.parent_id:
+        #         father = self.search([('id','=',id_father.id)])
+        #         ids = []
+        #         for id_child in father.child_ids:
+        #             if id_child.id != self.id:
+        #                 son = self.search([('id','=',id_child.id)])
+        #                 if  not son.is_default_delivery_address:
+        #                     new_values = {'is_default_delivery_address' : True, 'Write_come_from_father': True}
+        #                     son.write(new_values)
+        #                     break 
 
                                    
 
-        return super(Partner, self).unlink()
+        # return super(Partner, self).unlink()
 

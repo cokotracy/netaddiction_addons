@@ -5,8 +5,9 @@ from openerp.exceptions import ValidationError
 
 class Affiliate(models.Model):
     _name = "netaddiction.partner.affiliate"
+    _rec_name = 'control_code'
 
-    active = fields.Boolean(string="Attivo")
+    active = fields.Boolean(string="Attivo", default=True)
     control_code = fields.Integer(string = "Codice di controllo")
     homepage = fields.Char(string = "Sito")
     commission_percent = fields.Float(string="Percentuale commissioni")
@@ -18,6 +19,12 @@ class Affiliate(models.Model):
         string="Cliente", required=True)
 
 
+    @api.model
+    def create(self,values):
+        myself = super(Affiliate, self).create(values)
+        self.env['res.partner'].search([('id','=',values['partner_id'])])[0]['affiliate_id'] = myself
+        return myself
+
     @api.one
     @api.constrains('commission_percent')
     def _check_value(self):
@@ -26,10 +33,10 @@ class Affiliate(models.Model):
 
 class AffiliateCustomer(models.Model):
     _inherit = 'res.partner'
-    affiliate_id = fields.One2many(
+    affiliate_id = fields.Many2one(
         comodel_name='netaddiction.partner.affiliate',
-        string='Dati Affiliato',
-        inverse_name="partner_id" )
+        string='Dati Affiliato')
+
 
 
     @api.constrains('affiliate_id')

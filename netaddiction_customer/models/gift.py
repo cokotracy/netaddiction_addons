@@ -40,7 +40,6 @@ class Gift(models.Model):
             raise ValidationError("i seguenti tipi di gift esistono già per questo cliente")
 
    
-
 class GiftCustomer(models.Model):
     _inherit = 'res.partner'
     gift_ids = fields.One2many(
@@ -53,9 +52,10 @@ class GiftCustomer(models.Model):
 
     @api.depends('gift_ids')
     def _compute_total_gift(self):
+        return
         for record in self:
             for gift in gift_ids:
-                record.total += gift.value
+                record.total_gift += gift.value
 
 
 class GiftType(models.Model):
