@@ -52,10 +52,10 @@ class GiftCustomer(models.Model):
 
     @api.depends('gift_ids')
     def _compute_total_gift(self):
-        return
         for record in self:
-            for gift in gift_ids:
+            for gift in record.gift_ids:
                 record.total_gift += gift.value
+
 
 
 class GiftType(models.Model):
