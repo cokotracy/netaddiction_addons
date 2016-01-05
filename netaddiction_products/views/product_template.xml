@@ -254,14 +254,14 @@
             <field name="model">product.template</field>
             <field name="inherit_id" ref="mrp.product_template_form_view_bom_button"/>
             <field name="groups_id" eval="[(4, ref('mrp.group_mrp_user')),
-                (4,ref('netaddiction_extra_fields.netaddiction_data_entry_user'))]"/>
+                (4,ref('netaddiction_products.netaddiction_data_entry_user'))]"/>
             <field name="arch" type="xml">
                 <button name="action_view_mos" position="replace"/>
                 <button name="%(mrp.template_open_bom)d" position="replace">
                     <button class="oe_stat_button" name="%(mrp.template_open_bom)d" type="action"
                         attrs="{'invisible':['|',('type', 'not in', ['product', 'consu']),('bom_count','=',0)]}" icon="fa-flask">
                         <field string="Bundle" name="bom_count" widget="statinfo"
-                            groups="netaddiction_extra_fields.netaddiction_data_entry_user,mrp.group_mrp_user" invisible="1"/>
+                            groups="netaddiction_products.netaddiction_data_entry_user,mrp.group_mrp_user" invisible="1"/>
                             <b >Bundle</b>
                     </button>
                 </button>

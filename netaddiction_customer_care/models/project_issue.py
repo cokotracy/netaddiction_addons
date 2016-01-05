@@ -7,7 +7,8 @@ import base64
 from HTMLParser import HTMLParser
 import email
 import re
-from datetime import datetime,date
+from datetime import datetime,date,timedelta
+from openerp.tools import DEFAULT_SERVER_DATETIME_FORMAT
 
 class Issue(models.Model):
     _inherit = 'project.issue'
@@ -21,7 +22,7 @@ class Issue(models.Model):
                 ('email','E-mail'),
                 ('ebay','Ebay'),
                 ('fb','Facebook'),
-            ],string="Tipo",default="phone")
+            ],string="Tipo")
     unread_messages = fields.Integer('Messaggi non letti')
 
     state = fields.Selection([
@@ -38,12 +39,28 @@ class Issue(models.Model):
         ('positive' , 'Positivo')
         ],default="none")
 
+    hour_for_assign = fields.Float('Tempo per assegnazione')
+    hour_for_close = fields.Float('Tempo per la chiusura')
+    hour_assign_to_close = fields.Float('Tempo dall\'assegnazione alla chiusura')
+
+    date_first_assign = fields.Datetime('Prima assegnazione')
+
+    number_email = fields.Integer('Numero di Email')
+
+    def days_difference_date(self,date1,date2):
+        diff = date2 -  date1
+        seconds = diff.total_seconds()
+        hour = seconds / 3600
+
+        return hour
+
     @api.model
     def create(self,values):
         res = super(Issue,self).create(values)
 
         if 'close_immediately' in values.keys():
             if values['close_immediately']:
+                res.action_working()
                 res.action_close()
 
         return res
@@ -141,6 +158,9 @@ class Issue(models.Model):
         self.user_id = self.env.user.id
         self.unread_messages = 0
 
+        self.date_first_assign = datetime.now()
+        self.hour_for_assign = self.days_difference_date(datetime.strptime(self.create_date, DEFAULT_SERVER_DATETIME_FORMAT),datetime.now())
+
         message = u"""
         Cambio Stato:<br>
         <ul>
@@ -157,6 +177,9 @@ class Issue(models.Model):
 
         #Setto la data di chiusura
         self.date_closed = datetime.now()
+
+        self.hour_for_close = self.days_difference_date(datetime.strptime(self.create_date, DEFAULT_SERVER_DATETIME_FORMAT),datetime.now())
+        self.hour_assign_to_close = self.days_difference_date(datetime.strptime(self.date_first_assign, DEFAULT_SERVER_DATETIME_FORMAT),datetime.now())
 
         message = {
             'body' : self._get_message_close()
@@ -296,6 +319,8 @@ class Issue(models.Model):
         template = self._get_template_email()
         email = 0
         if len(template)>0:
+            if self.number_email == 0:
+                args['body'] = args['body'] + ' ' + self.description
             mail = template.with_context(message=args['body']).generate_email(self.id)
             mail['email_from'] = self._get_email_from()
             mail['reply_to'] = self._get_email_from()
@@ -403,9 +428,14 @@ class Issue(models.Model):
 
             if 'fetchmail_cron_running' in ct.keys() and 'subtype_id' not in args.keys():
                 #email ricevuta
-                attr = {
-                    'issue_type_src' : 'email',
-                }
+                if self.issue_type_src is False:
+                    attr = {
+                        'issue_type_src' : 'email',
+                    }
+                else:
+                    attr = {}
+
+                attr['number_email'] = self.number_email + 1
                 
                 to = args['to']
                 res = self.env['netaddiction.project.issue.settings.companymail'].search([('email','ilike',to)])
@@ -427,6 +457,10 @@ class Issue(models.Model):
                     #qui è una email
                     res = self._post_mail(args)
                     self._zero_unread_message()
+                    attr = {
+                        'number_email' : self.number_email + 1,
+                    }
+                    self.write(attr)
 
             return res.id
 
