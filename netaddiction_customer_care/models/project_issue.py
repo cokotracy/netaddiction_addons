@@ -320,7 +320,7 @@ class Issue(models.Model):
         email = 0
         if len(template)>0:
             if self.number_email == 0:
-                args['body'] = args['body'] + ' ' + self.description
+                args['body'] = args['body'] 
             mail = template.with_context(message=args['body']).generate_email(self.id)
             mail['email_from'] = self._get_email_from()
             mail['reply_to'] = self._get_email_from()

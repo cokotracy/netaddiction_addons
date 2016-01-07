@@ -56,6 +56,7 @@
                 </label>
                 <!--Prezzi Varianti eliminato per tutti-->
                 <button name="%(product.product_attribute_value_action)d" position="replace"/>
+
                 <!--smart button-->
                 <!--ATTIVA/DISATTIVA disponibile per tutti-->
                 <button name="toggle_active" position="replace">
