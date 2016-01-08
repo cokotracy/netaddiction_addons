@@ -46,7 +46,8 @@ class GiftCustomer(models.Model):
         comodel_name='netaddiction.gift',
         inverse_name='partner_id',
         string='Gift')
-    total_gift = fields.Float(compute='_compute_total_gift')
+    total_gift = fields.Float(compute='_compute_total_gift', string='Totale gift')
+    got_gift = fields.Boolean(compute='_compute_got_gift')
 
 
 
@@ -55,6 +56,29 @@ class GiftCustomer(models.Model):
         for record in self:
             for gift in record.gift_ids:
                 record.total_gift += gift.value
+
+    @api.depends('gift_ids')
+    def _compute_got_gift(self):
+        for record in self:
+            record.got_gift = len(record.gift_ids) > 0
+
+    @api.multi
+    def new_customer_gift(self):
+
+        view_id = self.env.ref('netaddiction_customer.netaddiction_sales_gift_form').id
+        return {
+            'name':'Nuova Gift',
+            'view_type':'form',
+            'view_mode':'tree',
+            'views' : [(view_id,'form')],
+            'res_model':'netaddiction.gift',
+            'view_id':view_id,
+            'type':'ir.actions.act_window',
+            'context':{
+                'default_partner_id' : self.id,
+                 },
+        }
+
 
 
 

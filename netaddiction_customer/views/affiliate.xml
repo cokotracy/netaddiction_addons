@@ -44,7 +44,6 @@
                             <group name="loc_left" class="oe_left" col="2">
                                 <field name="partner_id" domain="[('type','=','contact')]"/>
                                 <field name="control_code"/>
-                                <field name="commission_percent"/>
                                 <field name="active"/>
                             </group>
                             <group name="loc_right" class="oe_right" col="2">
@@ -53,6 +52,9 @@
                                 <field name="cookie_duration"/>
                                 <field name="exclude_from_cron"/>
                             </group>
+                        </group>
+                        <group string="Commissioni" name="commission" colspan="1">
+                            <field name="commission_id"/>
                         </group>
                     </sheet>
                 </form>
@@ -66,10 +68,54 @@
             <field name="arch" type="xml">
             <xpath expr="//div[@name='button_box']" position="inside" >
                     <button  class="oe_inline oe_stat_button" name="new_customer_affiliate" 
-                        string="Rendi Affiliato" type="object" icon="fa-plus" attrs="{'invisible': ['|',('parent_id', '!=', False),('affiliate_id', '!=',False )]}"/> 
+                        string="Affiliazione" type="object" icon="fa-plus" attrs="{'invisible': ['|',('parent_id', '!=', False),('affiliate_id', '!=',False )]}"/> 
                 </xpath>
             </field>
         </record>
+
+
+        <record model="ir.actions.act_window" id="netaddiction_sales_affiliate_commission_base">
+            <field name="name">Commissioni Affiliati</field>
+            <field name="res_model">netaddiction.partner.affiliate.commission</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">Non ci sono Commissioni Affiliati.
+                </p>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="netaddiction_sales_affiliate_commission_tree">
+            <field name="name">view.netaddiction_sales_affiliate_commission_tree</field>
+            <field name="model">netaddiction.partner.affiliate.commission</field>
+            <field name="arch" type="xml">
+                <tree name="Affiliate list">
+                    <field name="category_id"/>
+                    <field name="attribute_id"/>
+                    <field name="commission_percent"/>
+                </tree>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="netaddiction_sales_affiliate_commission_form">
+            <field name="name">view.netaddiction_sales_affiliate_commission_form</field>
+            <field name="model">netaddiction.partner.affiliate.commission</field>
+            <field name="arch" type="xml">
+                <form string="Affiliate commission">
+                    <sheet>
+                        <group string="Commissioni" name="commission" colspan="4">
+                            <group name="loc_left" class="oe_left" col="2">
+                                <field name="commission_percent"/>
+                                <field name="category_id"/>
+                                <field name="attribute_id"/>
+                            </group>
+                            
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
 
 
     </data>

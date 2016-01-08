@@ -31,8 +31,9 @@
                             <field name="mobile" widget="phone" attrs="{'invisible':[('parent_id','!=', False)]}"/>
                             <field name="rating"  attrs="{'invisible':[('parent_id','!=', False)]}" />
                             <field name="function" placeholder="e.g. Sales Director" attrs="{'invisible': True}"/>
-                            <field name="affiliate_id" />
-                            <field name="gift_ids"  />
+                            <field name="affiliate_id" attrs="{'invisible': ['|',('parent_id', '!=', False),('affiliate_id', '=',False )]}"/>
+                            <field name="got_gift" invisible="1"/>
+                            <field name="gift_ids"  attrs="{'invisible': ['|',('parent_id', '!=', False),('got_gift', '=',False)]}"/>
                             <field name="total_gift" />
                             <field name="user_ids" invisible="1"/>
                             <field name="category_id" widget="many2many_tags" placeholder="Tags..."  attrs="{'invisible':True}"/>

@@ -8,7 +8,7 @@ class Affiliate(models.Model):
     _rec_name = 'control_code'
 
     active = fields.Boolean(string="Attivo", default=True)
-    control_code = fields.Integer(string = "Codice di controllo")
+    control_code = fields.Char(string = "Codice di controllo")
     homepage = fields.Char(string = "Sito")
     commission_percent = fields.Float(string="Percentuale commissioni")
     date_account_created = fields.Datetime(string="Data creazione")
@@ -17,6 +17,10 @@ class Affiliate(models.Model):
     partner_id = fields.Many2one(
         comodel_name='res.partner',
         string="Cliente", required=True)
+    commission_id = fields.One2many(
+        comodel_name='netaddiction.partner.affiliate.commission',
+        inverse_name='affiliate_id',
+        string='Commissioni')
 
 
     @api.model
@@ -25,12 +29,7 @@ class Affiliate(models.Model):
         self.env['res.partner'].search([('id','=',values['partner_id'])])[0]['affiliate_id'] = myself
         return myself
 
-    @api.one
-    @api.constrains('commission_percent')
-    def _check_value(self):
-        if self.commission_percent < 0.0 or self.commission_percent > 100.0:
-            raise ValidationError("Percentuale commissioni deve essere compreso tra 0 e 100")
-
+   
 class AffiliateCustomer(models.Model):
     _inherit = 'res.partner'
     affiliate_id = fields.Many2one(
@@ -61,3 +60,43 @@ class AffiliateCustomer(models.Model):
                  },
         }
    
+
+class AffiliateCommission(models.Model):
+    _name = "netaddiction.partner.affiliate.commission"
+
+    commission_percent = fields.Float(string="Percentuale commissioni")
+    category_id = fields.Many2one(
+        comodel_name='product.category',
+        string='Categoria')
+    attribute_id = fields.Many2one(
+        comodel_name='product.attribute.value',
+        string='Attributo')
+    affiliate_id = fields.Many2one(
+        comodel_name='netaddiction.partner.affiliate',
+        string='Affiliato', required=True)
+
+    @api.one
+    @api.constrains('commission_percent')
+    def _check_value(self):
+        if self.commission_percent < 0.0 or self.commission_percent > 100.0:
+            raise ValidationError("Percentuale commissioni deve essere compreso tra 0 e 100")
+
+    @api.one
+    @api.constrains('category_id','attribute_id')
+    def _constrains_set_a_id(self):
+        if len(self.category_id) > 0 and  len(self.attribute_id) > 0:
+            raise ValidationError('scegli una categoria o un attributo!')
+
+        if len(self.category_id) <= 0 and  len(self.attribute_id) <= 0:
+            raise ValidationError('scegli almeno una categoria o un attributo!')
+
+
+
+
+# class AttributeCommision(models.Model):
+#     _inherit = 'product.attribute.value'
+
+#     commission_id = fields.Many2one(
+#         comodel_name='netaddiction.partner.affiliate.commission')
+
+
