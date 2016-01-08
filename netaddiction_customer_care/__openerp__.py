@@ -18,6 +18,7 @@
         'views/res_partner.xml',
         'data/workflow.xml',
         'views/issue_report.xml',
+        'views/product.xml',
     ],
     'qweb': ['static/src/xml/template.xml'],
     'installable': True,

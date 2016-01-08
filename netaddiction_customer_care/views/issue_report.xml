@@ -8,10 +8,8 @@
             <field name="arch" type="xml">
                 <pivot string="Project Issue">
                     <field name="company_id" type="row"/>
-                    <field name="satisfaction_rate" type="row"/>
+                    <field name="state" type="row"/>
                     <field name="create_date" interval="month" type="col"/>
-                    <field name="avg_whc" type="measure"/>
-                    <field name="avg_who" type="measure"/>
                 </pivot>
             </field>
         </record>

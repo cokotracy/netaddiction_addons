@@ -23,6 +23,14 @@
                     <field name="state" widget="statusbar"/>
                 </field>
 
+                <field name="tag_ids" position="after">
+                    <field name="create_date"/>
+                </field>
+
+                <field name="tag_ids" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </field>
+
                 <field name="priority" position="replace">
                     <field name="priority" widget="select"/>
                 </field>
@@ -37,7 +45,7 @@
 
                 <field name="user_id" position="before">
                     <field name="company_id"/>
-                    <field name="issue_type_src" widget="selection"/>
+                    <field name="issue_type_src" widget="selection" required="1"/>
                 </field>
 
                 <field name="stage_id" position="attributes">
@@ -152,9 +160,6 @@
                         <field name="user_id"/>
                         <field name="state" string="Stato" widget="selection" readonly="1"/>
                         <field name="company_id"/>
-                        
-                        <field name="date_open"/>
-                        <field name="date_closed"/>
                     </tree>
                 </tree>
 
