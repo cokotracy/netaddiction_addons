@@ -170,15 +170,7 @@
             <field name="perm_write" eval="0"/>
             <field name="perm_unlink" eval="0"/>
         </record>
-        <record id="netaddiction_data_entry_user_acces_loc_line" model="ir.model.access">
-            <field name="name">Allocazioni</field>
-            <field name="model_id" search="[('model','=','netaddiction.wh.locations.line')]" model="ir.model"/>
-            <field name="group_id" ref="netaddiction_data_entry_user"/>
-            <field name="perm_read" eval="1"/>
-            <field name="perm_create" eval="0"/>
-            <field name="perm_write" eval="0"/>
-            <field name="perm_unlink" eval="0"/>
-        </record>
+       
 
 
     </data>
