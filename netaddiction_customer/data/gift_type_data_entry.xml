@@ -4,12 +4,17 @@
         <!--Crea la funzionalità ed il gruppo associato-->
         <record model="netaddiction.gift.type" id="netaddiction_gift_type_rimborsi">
             <field name="reason">Rimborso</field>
-            <field name="priority" eval="1"/>
+            <field name="priority" eval="2"/>
         </record>
 
        <record model="netaddiction.gift.type" id="netaddiction_gift_type_altro">
             <field name="reason">Altro</field>
-            <field name="priority" eval="2"/>
+            <field name="priority" eval="3"/>
+        </record>
+
+        <record model="netaddiction.gift.type" id="netaddiction_gift_type_affiliate">
+            <field name="reason">Affiliate</field>
+            <field name="priority" eval="1"/>
         </record>
 
     </data>

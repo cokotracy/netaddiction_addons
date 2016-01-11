@@ -88,7 +88,7 @@ class GiftType(models.Model):
     _sql_constraints = [
     ('reason_unique', 'unique(reason)', 'Questo tipo di gift esiste già!')]
     reason = fields.Char('Motivazione',required=True, unique=True)
-    priority = fields.Selection([(0,'Molto Alta'),(1,'Alta'),(2,'Media'),(3,'Bassa'),(4,'Molto Bassa')], string='Priorità', default=2,required=True)
+    priority = fields.Selection([(1,'Molto Alta'),(2,'Alta'),(3,'Media'),(4,'Bassa'),(5,'Molto Bassa')], string='Priorità', default=2,required=True)
     gift_ids = fields.One2many(
         comodel_name='netaddiction.gift',
         inverse_name='type_id',

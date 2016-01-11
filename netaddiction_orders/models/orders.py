@@ -15,6 +15,7 @@ class Orders(models.Model):
         ('cancel', 'Annullato'),
         ], string='Status', readonly=True, copy=False, index=True)
 
+
     ##############
     #ACTION STATE#
     ##############
@@ -55,7 +56,4 @@ class Orders(models.Model):
 
             else:
                 raise UserError(_('No carrier set for this order.'))
-
-
-
 
