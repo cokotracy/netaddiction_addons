@@ -64,13 +64,14 @@ class AffiliateCustomer(models.Model):
 class AffiliateCommission(models.Model):
     _name = "netaddiction.partner.affiliate.commission"
 
+
     commission_percent = fields.Float(string="Percentuale commissioni")
-    category_id = fields.Many2one(
-        comodel_name='product.category',
-        string='Categoria')
-    attribute_id = fields.Many2one(
-        comodel_name='product.attribute.value',
-        string='Attributo')
+    # category_id = fields.Many2one(
+    #     comodel_name='product.category',
+    #     string='Categoria')
+    expression_id = fields.Many2one(
+         comodel_name='netaddiction.expressions.expression',
+         string='Filtro prodotti')
     affiliate_id = fields.Many2one(
         comodel_name='netaddiction.partner.affiliate',
         string='Affiliato', required=True)
@@ -81,14 +82,14 @@ class AffiliateCommission(models.Model):
         if self.commission_percent < 0.0 or self.commission_percent > 100.0:
             raise ValidationError("Percentuale commissioni deve essere compreso tra 0 e 100")
 
-    @api.one
-    @api.constrains('category_id','attribute_id')
-    def _constrains_set_a_id(self):
-        if len(self.category_id) > 0 and  len(self.attribute_id) > 0:
-            raise ValidationError('scegli una categoria o un attributo!')
+    # @api.one
+    # @api.constrains('category_id','attribute_id')
+    # def _constrains_set_a_id(self):
+    #     if len(self.category_id) > 0 and  len(self.attribute_id) > 0:
+    #         raise ValidationError('scegli una categoria o un attributo!')
 
-        if len(self.category_id) <= 0 and  len(self.attribute_id) <= 0:
-            raise ValidationError('scegli almeno una categoria o un attributo!')
+    #     if len(self.category_id) <= 0 and  len(self.attribute_id) <= 0:
+    #         raise ValidationError('scegli almeno una categoria o un attributo!')
 
 
 

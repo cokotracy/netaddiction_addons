@@ -9,7 +9,7 @@
     'website': "http://www.netaddiction.it",
     'category': 'Technical Settings',
     'version': '0.1',
-    'depends': ['base','product','sale','purchase','mrp','stock'],
+    'depends': ['base','product','sale','purchase','mrp','stock','netaddiction_expressions'],
     'data' :[
         'views/partner.xml',
         'views/gift.xml',

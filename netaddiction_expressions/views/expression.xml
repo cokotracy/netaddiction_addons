@@ -50,9 +50,15 @@
             <field name="arch" type="xml">
                 <form string="Expression Form">
                     <sheet>
-                       <button  class="oe_inline oe_stat_button" name="find_products" 
-                        string="prodotti" type="object" icon="fa-plus" /> 
-                        <field name="title"/>
+                        <group string="Espressione" name="gift type" colspan="4">
+                            <group name="loc_left" class="oe_left" col="2">
+                                <field name="title"/>
+                            </group>
+                             <group name="loc_right" class="oe_right" col="2">
+                            <button  class="oe_highlight" name="find_products" 
+                        string=" vedi prodotti" type="object" /> 
+                            </group>
+                        </group>
                         <group string="Condizioni" name="conditions" colspan="4">
                             <group name="loc_left" class="oe_left" col="2">
                                <field name="condition_ids"/> 

@@ -19,7 +19,7 @@ class Expression(models.Model):
     _rec_name = 'title'
 
 
-    title = fields.Char(string="Nome", required=True)
+    title = fields.Char(string="Titolo", required=True)
     condition_ids = fields.One2many(
         comodel_name='netaddiction.expressions.condition',
         inverse_name='expression_id',

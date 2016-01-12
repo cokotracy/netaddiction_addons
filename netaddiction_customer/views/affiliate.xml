@@ -90,9 +90,11 @@
             <field name="model">netaddiction.partner.affiliate.commission</field>
             <field name="arch" type="xml">
                 <tree name="Affiliate list">
-                    <field name="category_id"/>
-                    <field name="attribute_id"/>
+
+                    <field name="expression_id"/> 
+<!--                     <field name="affiliate_id"/> -->
                     <field name="commission_percent"/>
+
                 </tree>
             </field>
         </record>
@@ -106,10 +108,10 @@
                         <group string="Commissioni" name="commission" colspan="4">
                             <group name="loc_left" class="oe_left" col="2">
                                 <field name="commission_percent"/>
-                                <field name="category_id"/>
-                                <field name="attribute_id"/>
+                                <field name="expression_id"/> 
+                                <!-- <field name="category_id"/>
+                                <field name="attribute_id"/> -->
                             </group>
-                            
                         </group>
                     </sheet>
                 </form>
