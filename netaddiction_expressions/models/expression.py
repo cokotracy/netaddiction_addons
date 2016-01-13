@@ -25,7 +25,7 @@ class Expression(models.Model):
         inverse_name='expression_id',
         string='Condizioni', required=True)
 
-    @api.one
+    @api.multi
     def find_products(self):
 
         domain = []
@@ -43,27 +43,19 @@ class Expression(models.Model):
             m2 = [condition.subject_id]
             domain.append((m1,op,m2))
 
-
-          
-       # domain = [('categ_id', 'in', [6]),('attribute_value_ids','in', [7])]
-        print domain
-
-        view_id = self.env.ref('product.product_search_form_view').id
-        print self.env['product.product'].search(domain)
-        print view_id
-        
+        view_id = self.env.ref('product.product_product_tree_view').id
 
         return {
-            'name':'amamma',
+            'name':'Lista Prodotto Espressione',
             'view_type':'form',
-            'view_mode':'tree, search, form',
-            'views' : [(view_id,'search')],
+            'view_mode':'tree, form',
+            'views' : [(view_id,'tree')],
             'res_model':'product.product',
-            'search_view_id':view_id,
+            'view_id':view_id,
+            'target': 'new',
             'type':'ir.actions.act_window',
-            'target': 'current',
-            'filter_domain': domain,
-#            'context' : {'search_default_categ_id' : [6]},
+            'domain': domain,
+            'context' : {},
         }
 
 
