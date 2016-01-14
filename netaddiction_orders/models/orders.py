@@ -6,7 +6,7 @@ class Orders(models.Model):
     _inherit = 'sale.order'
 
     state = fields.Selection([
-        ('draft', 'In Attesa'),
+        ('draft', 'Nuovo'),
         ('sent', 'Preventivo Inviato'),
         ('sale', 'In Lavorazione'),
         ('partial_done', 'Parzialmente Completato'),
@@ -23,6 +23,10 @@ class Orders(models.Model):
     @api.one 
     def action_problems(self):
         self.state = 'problem'
+
+    @api.one 
+    def action_partial_done(self):
+        self.state = 'partial_done'
 
     ##########
     #OVERRIDE#

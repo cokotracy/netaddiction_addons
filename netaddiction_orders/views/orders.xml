@@ -9,11 +9,15 @@
                 <header position="replace">
                     <header>
 
-                        <button name="action_problems" string="Problema" type="object" states="sent,sale,partial_done,processing" class="net_red"/>
+                        <button name="action_problems" string="Problema" type="object" states="sent,sale,partial_done,processing,draft" class="net_red"/>
 
-                        <button name="action_done" type="object" string="Completato" states="sale,problem,draft,partial_done" class="net_green"/>
-                        
+                        <button name="action_done" type="object" string="Completato" states="sale,partial_done" class="net_green"/>
+
                         <button name="action_cancel" states="draft,sent,sale,partial_done,draft,problem,done" type="object" string="Annulla"/>
+                        
+                        <button name="action_partial_done" states="sale" type="object" string="Parzialmente Completato"/>
+
+                        <button name="action_confirm" states="draft,problem" type="object" string="In lavorazione" class="net_orange"/>
 
                         <field name="state" widget="statusbar" statusbar_visible="draft,sale,done"/>
                     </header>
