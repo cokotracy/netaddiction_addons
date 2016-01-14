@@ -1,0 +1,20 @@
+<openerp>
+    <data>
+    	<template id="pick_up_index">
+            <t t-call="netaddiction_warehouse.header"/>
+                <t t-call="netaddiction_warehouse.top_menu">
+                    <t t-set="top_title" t-value="'PICK UP'"/>
+                </t>
+                <t t-call="netaddiction_warehouse.slide_menu"/>
+                <div id="content">
+                    <div t-foreach="waves" t-as="wave" class="block" >
+                        
+                            <a t-attf-href="/inventory/app/pick_up/{{wave.id}}" class="wave_link">
+                                <div class="block_content"><b><t t-esc="wave.display_name"/></b></div>
+                            </a>
+                        
+                    </div>
+                </div>
+        </template>
+    </data>
+</openerp>

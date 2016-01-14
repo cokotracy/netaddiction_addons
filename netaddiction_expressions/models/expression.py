@@ -52,7 +52,6 @@ class Expression(models.Model):
             'views' : [(view_id,'tree')],
             'res_model':'product.product',
             'view_id':view_id,
-            'target': 'new',
             'type':'ir.actions.act_window',
             'domain': domain,
             'context' : {},

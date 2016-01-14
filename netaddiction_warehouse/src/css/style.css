@@ -1,0 +1,174 @@
+body{
+	background-color: #D2D7D3;
+	font-family: Arial, Helvetica, sans-serif;
+	text-align:center;
+}
+
+a{
+	text-decoration: none;
+}
+
+/********
+TOP MENU
+********/
+#top_menu{
+	width: 100%;
+	height: 50px;
+	background-color: #BDC3C7;
+	position: fixed;
+	top: 0;
+	left: 0;
+	border-bottom: 2px solid #6C7A89;
+	padding-top: 2px;
+	padding-bottom: 2px;
+	padding-right: 2px;
+	line-height:70px;
+	color:#6C7A89;
+}
+
+.top_img{
+	height: 30px;
+	float:left;
+	margin-top: 20px;
+}
+
+.top_menu{
+	float:right;
+}
+
+/**********
+SLIDE MENU
+**********/
+
+#slide_menu{
+	top: 56px;
+    position: fixed;
+    right: 0;
+    height: 100%;
+    background-color: #BDC3C7;
+    border-left: 2px solid #6C7A89;
+    width: 0;
+}
+
+.link_menu {
+    width: 100%;
+    text-align: right;
+    height: 30px;
+    line-height: 30px;
+    border-bottom: 1px solid #6C7A89;
+}
+
+.link_menu a{
+	color: #6C7A89;
+	margin-right: 5px;
+    font-weight: bold;
+    display: block;
+    text-transform: uppercase;
+    text-overflow: ellipsis;
+}
+
+/*******
+CONTENT
+*******/
+
+#content{
+	margin-top:70px;
+}
+
+/****
+FORM
+****/
+form label{
+	width: 100%;
+    display: block;
+    text-align: center;
+}
+
+input[type="text"],input[type="number"], input[type="tel"]{
+	width: 100%;
+    margin-top: 10px;
+    height: 30px;
+    text-align: center;
+    -webkit-appearance: none;
+    margin-bottom: 10px;
+    font-size: 18px;
+    line-height: 30px;
+}
+
+input[type="submit"],input[type="button"]{
+	width: 100%;
+    margin-top: 10px;
+    height: 30px;
+    text-align: center;
+	border: none;
+    background-color: #BDC3C7;
+    -webkit-appearance: none;
+    margin-bottom: 10px;
+    font-size: 18px;
+    line-height: 30px;
+}
+
+/*****
+ERROR
+*****/
+
+.error_msg{
+	background-color: #EF4836;
+    text-transform: uppercase;
+    padding: 10px;
+}
+.done_msg{
+    background-color: #87D37C;
+    text-transform: uppercase;
+    padding: 10px;
+}
+
+/*****
+SEARCH
+*****/
+#bottom_sub{
+	position: absolute;
+    bottom: 10px;
+    left: 8px;
+    right: 8px;
+}
+
+.qty{
+	color: #EF4836;
+    font-weight: bold;
+}
+
+.search_title{
+	font-weight: bold;
+}
+
+/*********
+ALLOCATION
+*********/
+
+.allocation_list{
+    border-bottom: 2px solid;
+}
+
+
+.block{
+    border: 2px solid #6C7A89; 
+}
+
+.block_title{
+    border-bottom: 2px solid #6C7A89;
+    padding: 10px;
+    font-weight: bold;
+    color: #6C7A89;
+    background-color: #BDC3C7;
+}
+
+.block_content{
+    padding: 10px;
+    color: black;
+}
+
+.wave_link{
+    display: block;
+    background-color: #BDC3C7;
+}

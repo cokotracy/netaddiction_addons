@@ -3,6 +3,8 @@
 from openerp import models, fields, api
 from openerp.exceptions import ValidationError
 
+from error import Error
+
 ERROR_BARCODE = "Barcode già esistente"
 ERROR_NAME = "Nome già esistente"
 ERROR_PRODUCT_LOCATION = "Un prodotto non può essere allocato due volte nello stesso ripiano"
@@ -11,6 +13,8 @@ ERROR_QTY_MINUS = "Non puoi allocare una quantità minore di quella del prodotto
 
 class NetaddictionLocations(models.Model):
     _name = 'netaddiction.wh.locations'
+
+    _order = 'name'
 
     name = fields.Char(
         string="Nome",
@@ -57,6 +61,17 @@ class NetaddictionLocations(models.Model):
         if len(get)>0:
             raise ValidationError(ERROR_NAME)
 
+    @api.model
+    def check_barcode(self,barcode):
+        barcode = str(barcode).strip()
+        res = self.search([('barcode','=',barcode)])
+        if len(res)==0:
+            err = Error()
+            err.set_error_msg("Ripiano inesistente")
+            return err
+
+        return res
+
 class NetaddictionWhLocationsLine(models.Model):
     _name = 'netaddiction.wh.locations.line'
 
@@ -90,25 +105,74 @@ class NetaddictionWhLocationsLine(models.Model):
         if len(get)>0:
             raise ValidationError(ERROR_PRODUCT_LOCATIONS)
 
-    #@api.multi
-    #@api.constrains('qty','product_id')
-    #def _check_max_qty(self):
-    #    """
-    #    controlla che la qty totale delle allocazioni di quel prodotto non sia maggiore della quantità
-    #    del prodotto
-    #    """
-    #    qty_tot = self.product_id.qty_available
-    #    to_search = [('product_id','=',self.product_id.id)]
-    #    get = self.search(to_search)
-    #    qty_now = 0
-    #    for loc in get:
-    #        qty_now = qty_now + loc.qty
+    ######################
+    #FUNZIONI PER RICERCA#
+    ######################
+   
+    @api.model
+    def get_products(self,barcode):
+        result = self.search([('wh_location_id.barcode','=',barcode)])
 
-    #    if qty_now > qty_tot:
-    #        raise ValidationError(ERROR_QTY_PLUS)
+        if len(result)==0:
+            err = Error()
+            err.set_error_msg("Non sono stati trovati prodotti per il barcode")
+            return err
 
-    #    if qty_now < qty_tot:
-    #        raise ValidationError(ERROR_QTY_MINUS)
+        return result
+
+    ################
+    #FUNZIONI VARIE#
+    ################
+
+    @api.one 
+    def decrease(self,qta):
+        """
+        decrementa la quantità allocata di qta
+        """
+        diff = self.qty - qta
+
+        if diff < 0:
+            err = Error()
+            err.set_error_msg("Non puoi scaricare una quantità maggiore di quella allocata")
+            return err
+
+        if diff == 0:
+            self.unlink()
+        else:
+            self.write({'qty' : diff})
+
+        return True
+        # TODO: LOG
+
+    @api.one 
+    def increase(self,qta):
+        """
+        incrementa la quantità allocata di qta
+        """
+        
+        self.write({'qty' : self.qty + qta})
+
+        # TODO: LOG
+
+    @api.model
+    def allocate(self,product_id,qta,new_location_id):
+        """
+        alloca in new_location_id la qta di product_id
+        """
+        result = self.search([('product_id','=',product_id),('wh_location_id','=',new_location_id)])
+
+        if len(result)>0:
+            #è già presente una locazione con questo prodotto
+            #incremento
+            result.increase(qta)
+        else:
+
+            attr={
+               'product_id' : product_id,
+               'qty' : qta,
+               'wh_location_id' : new_location_id
+            }
+            self.create(attr)
 
 
 class Products(models.Model):

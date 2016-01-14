@@ -12,5 +12,14 @@
     'data' :[
         'views/locations.xml',
         'data/acl.xml',
-    ]
+        'templates/top_menu.xml',
+        'templates/inventory_app.xml',
+        'templates/assets.xml',
+        'templates/search.xml',
+        'templates/allocation.xml',
+        'templates/pick_up.xml',
+        'views/menu.xml',
+    ],
+    
+
 }

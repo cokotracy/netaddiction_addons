@@ -1,0 +1,55 @@
+<openerp>
+    <data>
+        <template id="header">
+            <head>
+                <title>Netaddiction Inventory APP</title>
+
+                <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+                <meta http-equiv="content-type" content="text/html, charset=utf-8" />
+
+                <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+                <meta name="format-detection" content="telephone=no" />
+
+                <!--carico il file template dove ho i javascript e i css-->
+                <t t-call-assets="netaddiction_warehouse.assets"/>
+            </head>
+            
+        </template>
+
+        <template id="index">
+            <t t-call="netaddiction_warehouse.header"/>
+            
+                <t t-call="netaddiction_warehouse.top_menu">
+                    <t t-set="top_title" t-value="'INVENTORY APP'"/>
+                </t>
+                <t t-call="netaddiction_warehouse.slide_menu"/>
+                <div id="content">
+                    <a href="/inventory/app/pick_up" class="block_link">
+                        <div id="waves" class="block">
+                            <div class="block_title">
+                                IN USCITA
+                            </div>
+                            <div class="block_content">
+                                DA FARE <b class="number_pick"><t t-esc="count_waves"/></b>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+            
+        </template>
+
+        <template id="error">
+            <t t-call="netaddiction_warehouse.header"/>
+                <t t-call="netaddiction_warehouse.top_menu">
+                    <t t-set="top_title" t-value="'ERRORE'"/>
+                </t>
+                <t t-call="netaddiction_warehouse.slide_menu"/>
+
+                <div id="content">
+                    <div class="error_msg"><t t-esc="error.get_error_msg()"/></div>
+                    
+                    
+                </div>
+        </template>
+    </data>
+</openerp>
