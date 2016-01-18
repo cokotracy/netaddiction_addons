@@ -75,6 +75,10 @@ class NetaddictionLocations(models.Model):
 class NetaddictionWhLocationsLine(models.Model):
     _name = 'netaddiction.wh.locations.line'
 
+    #ordino per la quantità in modo tale da terminare i ripiani
+    #con meno oggetti 
+    _order = 'qty'
+
     wh_location_id = fields.Many2one(
         comodel_name='netaddiction.wh.locations',
         string="Ripiano",

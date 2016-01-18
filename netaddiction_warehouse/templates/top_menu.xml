@@ -5,7 +5,7 @@
 	    		<a t-attf-href="{{top_back_url}}" id="back">
 	    			<img class="top_img" src="/netaddiction_warehouse/static/src/img/_back.png"/>
 	    		</a>
-	    		<b><t t-esc="top_title" /></b>
+	    		<b class="top_title"><t t-esc="top_title" /></b>
 	    		<a href="#" id="menu">
 	    			<img class="top_img top_menu" src="/netaddiction_warehouse/static/src/img/_menu.png"/>
 	    		</a>

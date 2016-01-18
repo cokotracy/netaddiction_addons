@@ -59,3 +59,27 @@ class Products(models.Model):
             print single_line.picking_id.picking_type_code
 
         return product
+
+    #########
+    #PICK UP#
+    #########
+    @api.multi 
+    def get_shelf_to_pick(self,qty):
+        """
+        Passando la quantità da pickuppare (qty), la funzione restituisce il/i ripiano/i 
+        da cui scaricare il prodotto in totale autonomia
+        ritorna una lista di dict {'location_id','quantità da scaricare'}
+        """
+        self.ensure_one()
+        shelf = {}
+        for alloc in self.product_wh_location_line_ids:
+            if qty>0:
+                if qty <= alloc.qty:
+                    shelf[alloc.wh_location_id] = int(qty) 
+                    qty = 0
+                else:
+                    shelf[alloc.wh_location_id] = int(alloc.qty) 
+                    qty = int(qty) - int(alloc.qty)
+
+        return shelf
+

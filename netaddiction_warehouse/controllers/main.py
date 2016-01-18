@@ -9,6 +9,8 @@ _logger = logging.getLogger(__name__)
 
 from ..models.error import Error
 
+from collections import defaultdict
+
 class InventoryApp(http.Controller):
 
     @http.route('/inventory/app', type='http', auth='user')
@@ -194,7 +196,7 @@ class InventoryApp(http.Controller):
         user = request.env['res.users'].search([('id','=',uid)])
 
         #prendo tutte le liste di prelievo in stato draft
-        waves = request.env['stock.picking.wave'].search([('state','=','draft')])
+        waves = request.env['stock.picking.wave'].search([('state','=','draft')]).sorted(key=lambda r: r.id)
 
         return request.render(
             'netaddiction_warehouse.pick_up_index', 
@@ -202,5 +204,39 @@ class InventoryApp(http.Controller):
                 'waves' : waves,
                 'user' : user,
                 'top_back_url' : '/inventory/app/',
+            }
+            )
+
+    @http.route('/inventory/app/pick_up/<wave_id>', type='http', auth='user')
+    def wave_pick_up(self, wave_id, debug=False, **k):
+        cr, uid, context, session = request.cr, request.uid, request.context, request.session
+        user = request.env['res.users'].search([('id','=',uid)])
+
+        #prendo tutte le liste di prelievo in stato draft
+        wave = request.env['stock.picking.wave'].search([('id','=',wave_id),
+            ('picking_ids.pack_operation_product_ids.state','in',['assigned','partially_available'])]
+            )
+
+        #prendo i prodotti raggruppati
+        products = wave.get_product_list()
+
+        #assegno i ripiani
+        datas = defaultdict(list)
+        for product,qtys in products.items():
+            shelf = product.get_shelf_to_pick(qtys['product_qty'] - qtys['qty_done'])
+            for s,q in shelf.items():
+                text = {'qta':q,'name':product.display_name}
+                datas[s.name].append(text)
+
+        sorted_list = sorted(datas.items(), key = lambda (k,v): k)
+
+            
+        return request.render(
+            'netaddiction_warehouse.wave', 
+            {
+                'user' : user,
+                'top_back_url' : '/inventory/app/pick_up',
+                'lists' : sorted_list,
+                'top_title' : wave.display_name
             }
             )

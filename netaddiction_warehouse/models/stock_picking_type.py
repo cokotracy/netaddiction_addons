@@ -7,6 +7,8 @@ import time
 from openerp.tools import DEFAULT_SERVER_DATETIME_FORMAT, DEFAULT_SERVER_DATE_FORMAT
 from error import Error
 
+from collections import defaultdict
+
 class StockPickingType(models.Model):
     _inherit = 'stock.picking.type'
 
@@ -48,3 +50,24 @@ class StockPickingType(models.Model):
 
             for tid in self.ids:
                 self.update({field:count})
+
+
+class StockPickingWave(models.Model):
+    _inherit = 'stock.picking.wave'
+
+    @api.multi
+    def get_product_list(self):
+        """
+        ritorna la lista dei prodotti e le quantità da pickuppare
+        """
+        self.ensure_one()
+        qtys = defaultdict(lambda: defaultdict(float))
+        products = {}
+        for picks in self.picking_ids:
+            for pick in picks.pack_operation_product_ids:
+                qtys[pick.product_id.barcode]['product_qty'] += pick.product_qty
+                qtys[pick.product_id.barcode]['remaining_qty'] += pick.remaining_qty
+                qtys[pick.product_id.barcode]['qty_done'] += pick.qty_done
+                products[pick.product_id] = qtys[pick.product_id.barcode]
+
+        return products
