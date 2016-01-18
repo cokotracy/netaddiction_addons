@@ -27,6 +27,24 @@
 
 
                 </header>
+
+
+                <xpath expr="//field[@name='payment_term_id']"
+                    position="replace">    
+                    <field name="payment_term_id" options="{'no_create': True}" attrs="{'invisible':True}"/>           
+                </xpath> 
+                <xpath expr="//field[@name='validity_date']"
+                    position="replace">    
+                    <field name="validity_date" attrs="{'invisible':True}"/>           
+                </xpath> 
+                <xpath expr="//field[@name='pricelist_id']"
+                    position="replace">    
+                    <field name="pricelist_id" groups="product.group_sale_pricelist" attrs="{'invisible':True}"/>           
+                </xpath> 
+                <xpath expr="//field[@name='order_line']" position="attributes">  
+                      <attribute name="attrs">{'readonly': [('state', 'in', ('done','cancel','sale','partial_done'))]}
+                      </attribute>   
+                </xpath> 
             </field>
         </record>
 

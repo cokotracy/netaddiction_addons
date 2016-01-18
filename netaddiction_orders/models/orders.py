@@ -15,6 +15,12 @@ class Orders(models.Model):
         ('cancel', 'Annullato'),
         ], string='Status', readonly=True, copy=False, index=True)
 
+    ip_address = fields.Char(string="Indirizzo IP")
+    delivery_option = fields.Selection([('all','tutto insieme'),('asap','non appena disponibile')], string='Opzione spedizione')
+
+    order_line = fields.One2many('sale.order.line', 'order_id', string='Order Lines', states={'cancel': [('readonly', True)], 'done': [('readonly', True)], 'sale': [('readonly', True)], 'partial_done': [('readonly', True)]}, copy=True)
+
+
 
     ##############
     #ACTION STATE#
@@ -60,4 +66,32 @@ class Orders(models.Model):
 
             else:
                 raise UserError(_('No carrier set for this order.'))
+
+    @api.multi
+    def action_cancel(self):
+        self._send_cancel_mail()
+        super(Orders, self).action_cancel()
+
+    @api.multi
+    def action_confirm(self):
+        # TODO: verificare il campo delivery_option
+        super(Orders, self).action_confirm()
+
+    @api.one
+    def _send_cancel_mail(self):
+        print self.partner_id.email
+        # TODO: modificare mittente e testo mail
+        body_html = '''cancellato ordine'''
+        values = {
+            'subject' : 'ordine cancellato',
+            'body_html': body_html,
+            'email_from' : 'no-reply',
+            'email_to' : self.partner_id.email,
+        }
+
+        email = self.env['mail.mail'].create(values)
+        email.send()
+
+
+        
 
