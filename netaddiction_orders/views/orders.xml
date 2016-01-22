@@ -13,18 +13,18 @@
 
                         <button name="action_done" type="object" string="Completato" states="sale,partial_done" class="btn btn-success fa fa-star"/>
 
-                        <button name="action_partial_done" states="sale" type="object" string="Parzialmente Completato"
+                        <button name="action_partial_done" states="sale,problem" type="object" string="Parzialmente Completato"
                             class="btn btn-warning fa fa-star-half-o"/>
 
                         <button name="action_confirm" states="draft,problem" type="object" string="In lavorazione" class="btn btn-warning fa fa-star-o"/>
 
-                        <button name="action_problems" string="Problema" type="object" states="sent,sale,processing,draft" class=" btn btn-danger fa fa-exclamation-triangle"/>
+                        <button name="action_problems" string="Problema" type="object" states="sent,sale,processing,partial_done,draft" class=" btn btn-danger fa fa-exclamation-triangle"/>
 
                         <button name="action_cancel" states="draft,sent,sale,partial_done,problem" type="object" class=" btn btn-danger fa fa-trash" string="Cancella Ordine"/>
 
                         <field name="state" widget="statusbar" statusbar_visible="draft,sale,done"/>
                     </header>
-
+                    <button name="231" string="Create Invoice" type="action" class="btn-primary" attrs="{'invisible': [('invoice_status', '!=', 'to invoice')]}"/>
 
                 </header>
 
@@ -41,8 +41,15 @@
                     position="replace">    
                     <field name="pricelist_id" groups="product.group_sale_pricelist" attrs="{'invisible':True}"/>           
                 </xpath> 
+                <xpath expr="//field[@name='carrier_id']" position="attributes">  
+                      <attribute name="attrs">
+                        {'readonly': [('state', 'in', ('done','cancel','sale','partial_done'))]}
+                      </attribute>   
+                </xpath> 
+
                 <xpath expr="//field[@name='order_line']" position="attributes">  
-                      <attribute name="attrs">{'readonly': [('state', 'in', ('done','cancel','sale','partial_done'))]}
+                      <attribute name="attrs">
+                        {'readonly': [('state', 'in', ('done','cancel','sale','partial_done'))]}
                       </attribute>   
                 </xpath> 
             </field>
@@ -60,6 +67,60 @@
             </field>
         </record>
 
+
+         <record id="netaddiction_view_order_feature_search_view" model="ir.ui.view">
+            <field name="name">netaddiction.order.search.view</field>
+            <field name="model">sale.order</field>
+            <field name="priority" eval="30"/>
+            <field name="inherit_id" ref="sale.view_sales_order_filter"/>
+            <field name="arch" type="xml">
+                <search position="replace">
+                    <search string="Search Sales Order">
+                    <field name="name" string="Sales Order" filter_domain="['|',('name','ilike',self),('client_order_ref','ilike',self)]"/>
+                    <field name="partner_id" operator="child_of"/>
+                    <field name="user_id"/>
+                    <field name="team_id" string="Sales Team"/>
+                    <field name="project_id"/>
+                    <field name="product_id"/>
+
+
+                    <filter string="Nuovi" name="draft" domain="[('state','=','draft')]" />
+                    <separator/>
+                    <filter string="In Lavorazione" name="sales" domain="[('state','=','sale')]"/>
+                    <filter string="Parzialmente Completati" domain="[('state','=','partial_done')]"/>
+                    <filter string="Completati" domain="[('state','=','done')]"/>
+                    <separator/>
+                    <filter string="Problema" domain="[('state','=','problem')]"/>
+                    <filter string="Annullati" domain="[('state','=','cancel')]"/>
+                    <separator/>                   
+                    <filter string="Unread Messages" name="message_needaction" domain="[('message_needaction','=',True)]"/>
+                    <group expand="0" string="Group By">
+                        <filter string="Salesperson" domain="[]" context="{'group_by':'user_id'}"/>
+                        <filter name="customer" string="Customer" domain="[]" context="{'group_by':'partner_id'}"/>
+                        <filter string="Order Month" domain="[]" context="{'group_by':'date_order'}"/>
+                    </group>
+
+                     
+                   </search>
+                </search>
+
+            </field>
+        </record>
         
+
+        <record model="ir.actions.act_window" id="sale.action_orders">
+                   <field name="domain">[('state', '!=', 'sent')]</field>
+        </record>
+
+
+
+ <record model="res.groups" id="group_invisible">
+        <field name="name">Hidden items</field>
+    </record>
+
+   <record id="sale.menu_sale_quotations" model="ir.ui.menu">
+        <field name="groups_id" eval="[(6, False, [ref('group_invisible')])]"/>
+    </record>
+
     </data>
 </openerp>
