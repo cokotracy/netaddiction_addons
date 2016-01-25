@@ -11,6 +11,7 @@ class Products(models.Model):
     def _get_product_from_barcode(self,barcode):
         attr=[('barcode','=',barcode)]
         product = self.search(attr)
+
         if len(product)==0:
             err = Error()
             err.set_error_msg("Barcode Inesistente")
@@ -19,20 +20,50 @@ class Products(models.Model):
         return product
 
     @api.model
-    def get_allocation(self,barcode):
-        product = self._get_product_from_barcode(barcode)  
-
-        if isinstance(product, Error):
-            return product
-
-        pid = product.id
-        result = self.env['netaddiction.wh.locations.line'].search([('product_id','=',pid)],order='wh_location_id')
+    def get_allocation(self):
+        result = self.env['netaddiction.wh.locations.line'].search([('product_id','=',self.id)],order='wh_location_id')
         if len(result)==0:
             err = Error()
             err.set_error_msg("Prodotto non presente nel magazzino")
             return err
 
         return result
+
+    ########################
+    #INVENTORY APP FUNCTION#
+    #ritorna un dict simile#
+    #ad un json per il web #
+    ########################
+    @api.model
+    def get_json_allocation(self,barcode):
+        """
+        ritorna un json con i dati per la ricerca per porodotto
+        """
+        product = self._get_product_from_barcode(barcode)  
+
+        if isinstance(product,Error):
+            return {'result' : 0, 'error' : product.get_error_msg()}
+
+        results = product.get_allocation()
+
+        if isinstance(results,Error):
+            return {'result' : 0, 'error' : results.get_error_msg()}
+
+        allocations = {
+            'result' : 1,
+            'product' : product.display_name,
+            'barcode' : product.barcode,
+            'product_id' : product.id,
+            'allocations' : []
+        }
+        for res in results:
+            allocations['allocations'].append({'shelf':res.wh_location_id.name,'qty':res.qty, 'line_id': res.id})
+
+        return allocations
+
+    ############################
+    #END INVENTORY APP FUNCTION#
+    ############################
 
     @api.model
     def get_picking_order(self,barcode):

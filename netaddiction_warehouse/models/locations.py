@@ -95,26 +95,11 @@ class NetaddictionWhLocationsLine(models.Model):
         default=1
         )
 
-    @api.multi
-    @api.constrains('product_id', 'wh_location_id')
-    def _check_multi_pid_location(self):
-        """
-        Controlla che un prodotto non venga allocata due volte nello stesso ripiano
-        """
-        to_search = [
-            ('id','!=',self.id),
-            ('product_id','=',self.product_id.id),
-            ('wh_location_id','=',self.wh_location_id.id)]
-        get = self.search(to_search)
-        if len(get)>0:
-            raise ValidationError(ERROR_PRODUCT_LOCATIONS)
-
-    ######################
-    #FUNZIONI PER RICERCA#
-    ######################
-   
     @api.model
     def get_products(self,barcode):
+        """
+        dato il barcode di un ripiano ritorna i prodotti allocati
+        """
         result = self.search([('wh_location_id.barcode','=',barcode)])
 
         if len(result)==0:
@@ -123,6 +108,78 @@ class NetaddictionWhLocationsLine(models.Model):
             return err
 
         return result
+
+    ########################
+    #INVENTORY APP FUNCTION#
+    #ritorna un dict simile#
+    #ad un json per il web #
+    ########################
+    @api.model
+    def get_json_products(self, barcode):
+        """
+        ritorna un json con i dati per la ricerca per ripiano
+        """
+        is_shelf = self.env['netaddiction.wh.locations'].check_barcode(barcode)
+        
+        if isinstance(is_shelf,Error):
+            return {'result' : 0, 'error' : is_shelf.get_error_msg()}
+
+        results = self.get_products(barcode)
+
+        if isinstance(results,Error):
+            return {'result' : 0, 'error' : results.get_error_msg()}
+
+        allocations = {
+            'result' : 1,
+            'shelf' : is_shelf.name,
+            'barcode' : barcode,
+            'products' : []
+        }
+
+        for res in results:
+            allocations['products'].append({
+                'product_name' : res.product_id.display_name,
+                'qty' : res.qty,
+                'barcode' : res.product_id.barcode
+                })
+
+        return allocations
+
+    @api.model
+    def put_json_new_allocation(self, barcode, qty, product_id, now_wh_line):
+        """
+        sposta la quantità qty dal ripiano barcode al new_shelf
+        """
+        is_shelf = self.env['netaddiction.wh.locations'].check_barcode(barcode)
+        
+        if isinstance(is_shelf,Error):
+            return {'result' : 0, 'error' : is_shelf.get_error_msg()}
+
+        new_shelf = is_shelf.id
+
+        this_line = self.search([('id','=',int(now_wh_line)),('product_id','=',int(product_id))])
+
+        if len(this_line) == 0:
+            return {'result' : 0, 'error' : 'Prodotto non più presente in questa locazione'}
+
+        if(this_line.wh_location_id.id == new_shelf):
+            return {'result' : 0, 'error' : 'Non puoi spostare un prodotto nella stessa locazione di partenza'}
+
+        dec = this_line.decrease(qty)
+        if isinstance(dec,Error):
+            return {'result' : 0, 'error' : dec.get_error_msg()}
+        
+        self.allocate(product_id,qty,new_shelf)
+
+        product = self.env['product.product'].search([('id','=',int(product_id))])
+        
+
+        return {'result' : 1, 'product_barcode' :product.barcode }
+
+        
+    ############################
+    #END INVENTORY APP FUNCTION#
+    ############################
 
     ################
     #FUNZIONI VARIE#
@@ -133,7 +190,7 @@ class NetaddictionWhLocationsLine(models.Model):
         """
         decrementa la quantità allocata di qta
         """
-        diff = self.qty - qta
+        diff = self.qty - int(qta)
 
         if diff < 0:
             err = Error()
@@ -146,25 +203,22 @@ class NetaddictionWhLocationsLine(models.Model):
             self.write({'qty' : diff})
 
         return True
-        # TODO: LOG
 
     @api.one 
     def increase(self,qta):
         """
         incrementa la quantità allocata di qta
         """
-        
-        self.write({'qty' : self.qty + qta})
+        self.write({'qty' : self.qty + int(qta)})
 
-        # TODO: LOG
 
     @api.model
     def allocate(self,product_id,qta,new_location_id):
         """
         alloca in new_location_id la qta di product_id
         """
-        result = self.search([('product_id','=',product_id),('wh_location_id','=',new_location_id)])
-
+        result = self.search([('product_id','=',int(product_id)),('wh_location_id','=',int(new_location_id))])
+        
         if len(result)>0:
             #è già presente una locazione con questo prodotto
             #incremento

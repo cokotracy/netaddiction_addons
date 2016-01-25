@@ -1,75 +1,39 @@
 <openerp>
     <data>
         <template id="search_from_product">
-            <t t-call="netaddiction_warehouse.header"/>
+            <t t-call="netaddiction_warehouse.header_top"/>
                 <t t-call="netaddiction_warehouse.top_menu">
-                    <t t-set="top_title" t-value="'CERCA'"/>
+                    <t t-set="top_title" t-value="'CERCA X PRODOTTO'"/>
                 </t>
                 <t t-call="netaddiction_warehouse.slide_menu"/>
                 <div id="content">
-                    <form action="/inventory/app/search/result_from_product" method="post" id="auto_form">
-                        <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
-                        <label for="barcode">BARCODE PRODOTTO</label>
-                        <input type="text" name="barcode" id="barcode" autocomplete="off"/>
+                    <form id="barcode-form">
+                        <label for="barcode" id="label_barcode">BARCODE PRODOTTO</label>
+                        <input type="text" name="barcode" id="barcode" autocomplete="off" data-function="get_allocation"/>
                         <input type="submit" value="CERCA"/>
                     </form>
-
-                    <a t-attf-href="/inventory/app/search/from_shelf" id="bottom_sub"><input type="submit" value="SCAFFALE"/></a>
+                    <div id="result"></div>
                 </div>
+                <div id="bottom_footer"><a t-attf-href="/inventory/app/search/from_shelf" id="bottom_sub"><input type="submit" value="SCAFFALE"/></a></div>
             
         </template>
+
 
         <template id="search_from_shelf">
-            <t t-call="netaddiction_warehouse.header"/>
+            <t t-call="netaddiction_warehouse.header_top"/>
                 <t t-call="netaddiction_warehouse.top_menu">
-                    <t t-set="top_title" t-value="'CERCA'"/>
+                    <t t-set="top_title" t-value="'CERCA X SCAFFALE'"/>
                 </t>
                 <t t-call="netaddiction_warehouse.slide_menu"/>
                 <div id="content">
-                    <form action="/inventory/app/search/result_from_shelf" method="post" id="auto_form">
-                        <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
-                        <label for="barcode">BARCODE SCAFFALE</label>
-                        <input type="text" name="barcode" id="barcode" autocomplete="off" />
-                        <input type="submit" value="CERCA"/>
+                    <form id="barcode-form">
+                        <label for="barcode" id="label_barcode">BARCODE SCAFFALE</label>
+                        <input type="text" name="barcode" id="barcode" autocomplete="off" data-function="get_products"/>
+                        <input type="submit"  value="CERCA"/>
                     </form>
-
-                    <a t-attf-href="/inventory/app/search/from_product" id="bottom_sub"><input type="submit" value="PRODOTTO"/></a>
+                    <div id="result"></div>
                 </div>
-            
-        </template>
-
-        <template id="result_from_product">
-            <t t-call="netaddiction_warehouse.header"/>
-                <t t-call="netaddiction_warehouse.top_menu">
-                    <t t-set="top_title" t-value="'CERCA'"/>
-                </t>
-                <t t-call="netaddiction_warehouse.slide_menu"/>
-                <div id="content">
-                    <p class="search_title">
-                        <t t-esc="product.id"/> - <t t-esc="product.display_name"/> - <t t-esc="product.barcode"/>
-                    </p> 
-                    <p t-foreach="allocations" t-as="alloc" class="search_list">
-                        <t t-esc="alloc.wh_location_id.name"/> - <b class="qty"><t t-esc="alloc.qty" /></b>
-                    </p>
-                </div>
-            
-        </template>
-
-        <template id="result_from_shelf">
-            <t t-call="netaddiction_warehouse.header"/>
-                <t t-call="netaddiction_warehouse.top_menu">
-                    <t t-set="top_title" t-value="'CERCA'"/>
-                </t>
-                <t t-call="netaddiction_warehouse.slide_menu"/>
-                <div id="content">
-                    <p class="search_title">
-                        <t t-esc="shelf.name"/> - <t t-esc="shelf.barcode"/>
-                    </p> 
-                    <p t-foreach="allocations" t-as="alloc" class="search_list">
-                        <t t-esc="alloc.product_id.id"/> - <t t-esc="alloc.product_id.display_name"/> - <b class="qty"><t t-esc="alloc.qty" /></b>
-                    </p> 
-                </div>
-            
+                <div id="bottom_footer"><a t-attf-href="/inventory/app/search/from_product" id="bottom_sub"><input type="submit" value="PRODOTTO"/></a></div>
         </template>
     </data>
 </openerp>

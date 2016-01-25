@@ -4,6 +4,8 @@ import werkzeug.utils
 
 from openerp import http
 from openerp.http import request
+from openerp.http import Response 
+from openerp.http import JsonRequest
 
 _logger = logging.getLogger(__name__)
 
@@ -50,55 +52,6 @@ class InventoryApp(http.Controller):
             'netaddiction_warehouse.search_from_shelf',
             {'user' : user ,'top_back_url' : '/inventory/app'}
             )
-
-    @http.route('/inventory/app/search/result_from_product', type='http', auth='user', csrf=False)
-    def get_allocation(self, debug=False, **k):
-        cr, uid, context, session = request.cr, request.uid, request.context, request.session
-        user = request.env['res.users'].search([('id','=',uid)])
-
-        products = request.env['product.product']
-        barcode = str(request.params['barcode']).strip()
-        result = products.get_allocation(barcode)
-        product = products.search([('barcode','=',barcode)])
-
-        if isinstance(result,Error):
-            return request.render(
-                'netaddiction_warehouse.error',
-                {'error' : result,'user' : user, 
-                'top_back_url' : '/inventory/app/search/from_product'}
-                )
-
-        return request.render(
-            'netaddiction_warehouse.result_from_product',
-            {'user' : user, 'allocations' : result,'product' : product,
-            'top_back_url' : '/inventory/app/search/from_product'}
-            )
-
-    @http.route('/inventory/app/search/result_from_shelf', type='http', auth='user', csrf=False)
-    def get_products_from_alloc(self, debug=False, **k):
-        cr, uid, context, session = request.cr, request.uid, request.context, request.session
-        user = request.env['res.users'].search([('id','=',uid)])
-
-        barcode = str(request.params['barcode']).strip()
-        
-        loc_line = request.env['netaddiction.wh.locations.line']
-        result = loc_line.get_products(barcode)
-
-        shelf = request.env['netaddiction.wh.locations'].search([('barcode','=',barcode)])
-
-
-        if isinstance(result,Error):
-            return request.render(
-                'netaddiction_warehouse.error',
-                {'error' : result,'user' : user, 
-                'top_back_url' : '/inventory/app/search/from_shelf'}
-                )
-
-        return request.render(
-            'netaddiction_warehouse.result_from_shelf',
-            {'user' : user, 'allocations' : result, 'shelf' : shelf,
-            'top_back_url' : '/inventory/app/search/from_shelf'}
-            )
         
     #############
     #ALLOCAZIONE#
@@ -113,79 +66,8 @@ class InventoryApp(http.Controller):
             {'user' : user ,'top_back_url' : '/inventory/app'}
             )
 
-    @http.route('/inventory/app/allocation/barcode', type='http', auth='user')
-    def allocation_result(self, debug=False, **k):
-        cr, uid, context, session = request.cr, request.uid, request.context, request.session
-        user = request.env['res.users'].search([('id','=',uid)])
-       
-        products = request.env['product.product']
-        barcode = str(request.params['barcode']).strip()
-        result = products.get_allocation(barcode)
-        product = products.search([('barcode','=',barcode)])
-
-        if isinstance(result,Error):
-            return request.render(
-                'netaddiction_warehouse.error',
-                {'error' : result,'user' : user, 
-                'top_back_url' : '/inventory/app/allocation'}
-                )
-
-        return request.render(
-            'netaddiction_warehouse.result_barcode',
-            {'user' : user, 'allocations' : result,'product' : product,
-            'top_back_url' : '/inventory/app/allocation'}
-            )
-
-    @http.route('/inventory/app/allocation/new_shelf', type='http', auth='user')
-    def new_shelf(self, debug=False, **k):
-        cr, uid, context, session = request.cr, request.uid, request.context, request.session
-        user = request.env['res.users'].search([('id','=',uid)])
-
-        qta = int(request.params['alloc_qty'])
-        new_shelf = str(request.params['new_shelf']).strip()
-        old_line_id = str(request.params['old_line_id']).strip()
-
-        new_location = request.env['netaddiction.wh.locations'].check_barcode(new_shelf)
-        if isinstance(new_location,Error):
-            return request.render(
-                'netaddiction_warehouse.error',
-                {'error' : new_location,'user' : user, 
-                'top_back_url' : '/inventory/app/allocation'}
-                )
-
-        old = request.env['netaddiction.wh.locations.line'].search([('id','=',old_line_id)])
-
-        diff = old.qty - qta
-        if diff < 0:
-            err = Error()
-            err.set_error_msg("Non puoi scaricare una quantità maggiore di quella allocata")
-            return request.render(
-                'netaddiction_warehouse.error',
-                {'error' : err,'user' : user, 
-                'top_back_url' : '/inventory/app/allocation'}
-                )
-        
-        product = old.product_id
-
-        request.env['netaddiction.wh.locations.line'].allocate(old.product_id.id,qta,new_location.id)
-
-        decrement = old.decrease(qta)
-
-        result = request.env['product.product'].get_allocation(product.barcode)
-        
-        if isinstance(result,Error):
-            return request.render(
-                'netaddiction_warehouse.error',
-                {'error' : result,'user' : user, 
-                'top_back_url' : '/inventory/app/allocation'}
-                )
-
-
-        return request.render(
-            'netaddiction_warehouse.result_barcode',
-            {'user' : user, 'allocations' : result,'product' : product,
-            'top_back_url' : '/inventory/app/allocation', 'message_done' : 'Allocazione Completata'}
-            )
+     #LINE DI DEMARCAZIONE: DA QUI IN POI E' ROBA VECCHIA DA CORREGGERE#
+          
 
     #########
     #PICK UP#
@@ -230,13 +112,35 @@ class InventoryApp(http.Controller):
 
         sorted_list = sorted(datas.items(), key = lambda (k,v): k)
 
-            
         return request.render(
             'netaddiction_warehouse.wave', 
             {
                 'user' : user,
                 'top_back_url' : '/inventory/app/pick_up',
                 'lists' : sorted_list,
-                'top_title' : wave.display_name
+                'top_title' : wave.display_name,
             }
             )
+
+    ##############
+    #JSON REQUEST#
+    ##############
+
+    @http.route('/inventory/app/pick_product', type="json", auth="user", csrf=False)
+    def pick_product(self):
+        data = request.jsonrequest
+        barcode = data['barcode']
+        product = request.env['product.product']._get_product_from_barcode(barcode)
+        result = ''
+
+        print request.context
+        print request.session
+        print request.params
+        if isinstance(product,Error):
+            result = product.get_error_msg()
+            return {
+                'error' : 1,
+                'result': result
+            }
+
+        result = request.env['stock.picking.wave'].is_in_wave(wave_id,product.id)

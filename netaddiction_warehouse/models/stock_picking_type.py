@@ -71,3 +71,8 @@ class StockPickingWave(models.Model):
                 products[pick.product_id] = qtys[pick.product_id.barcode]
 
         return products
+
+    @api.model
+    def is_in_wave(self,wave_id,product_id):
+        result = self.search([('id','=',int(wave_id)),(product_id,'in','picking_ids.pack_operation_product_ids.product_id')])
+        print result

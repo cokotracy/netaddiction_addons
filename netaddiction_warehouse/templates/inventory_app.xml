@@ -1,6 +1,6 @@
 <openerp>
     <data>
-        <template id="header">
+        <template id="header_top">
             <head>
                 <title>Netaddiction Inventory APP</title>
 
@@ -11,13 +11,15 @@
                 <meta name="format-detection" content="telephone=no" />
 
                 <!--carico il file template dove ho i javascript e i css-->
+                <t t-call-assets="web.assets_common"/>
+                <t t-call-assets="web.assets_backend"/>
                 <t t-call-assets="netaddiction_warehouse.assets"/>
             </head>
             
         </template>
 
         <template id="index">
-            <t t-call="netaddiction_warehouse.header"/>
+            <t t-call="netaddiction_warehouse.header_top"/>
             
                 <t t-call="netaddiction_warehouse.top_menu">
                     <t t-set="top_title" t-value="'INVENTORY APP'"/>
@@ -39,7 +41,7 @@
         </template>
 
         <template id="error">
-            <t t-call="netaddiction_warehouse.header"/>
+            <t t-call="netaddiction_warehouse.header_top"/>
                 <t t-call="netaddiction_warehouse.top_menu">
                     <t t-set="top_title" t-value="'ERRORE'"/>
                 </t>

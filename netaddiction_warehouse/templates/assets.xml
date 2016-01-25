@@ -2,13 +2,9 @@
 <openerp>
     <data>
         <template id="assets" name="netaddiction_warehouse assets">
-            <link rel="stylesheet" href="/netaddiction_warehouse/src/css/style.css" />
-
-            <script type="text/javascript" src="/netaddiction_warehouse/src/js/jquery-1.11.3.min.js"></script>
-            <script type="text/javascript" src="/netaddiction_warehouse/src/js/cordova-2.2.0.js"></script>
-            <script type="text/javascript" src="/netaddiction_warehouse/src/js/ScannerLib-Linea-2.0.0.js"></script>
-            <script type="text/javascript" src="/netaddiction_warehouse/src/js/script_sparino.js"></script>
-            <script type="text/javascript" src="/netaddiction_warehouse/src/js/slide_menu.js"></script>
+            <link rel="stylesheet" href="/netaddiction_warehouse/static/src/css/style.css" />
+            <script type="text/javascript" src="/netaddiction_warehouse/static/src/js/slide_menu.js"></script>
+            <script type="text/javascript" src="/netaddiction_warehouse/static/src/js/lib_barcode_reader.js"></script>
         </template>
     </data>
 </openerp>

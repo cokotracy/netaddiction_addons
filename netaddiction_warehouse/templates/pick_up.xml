@@ -1,7 +1,7 @@
 <openerp>
     <data>
     	<template id="pick_up_index">
-            <t t-call="netaddiction_warehouse.header"/>
+            <t t-call="netaddiction_warehouse.header_top"/>
                 <t t-call="netaddiction_warehouse.top_menu">
                     <t t-set="top_title" t-value="'PICK UP'"/>
                 </t>
@@ -18,12 +18,15 @@
         </template>
 
         <template id="wave">
-            <t t-call="netaddiction_warehouse.header"/>
+
+            <t t-call="netaddiction_warehouse.header_top"/>
                 <t t-call="netaddiction_warehouse.top_menu">
                     
                 </t>
                 <t t-call="netaddiction_warehouse.slide_menu"/>
                 <div id="content">
+                    <label for="barcode">BARCODE PRODOTTO</label>
+                    <input type="text" name="barcode" id="barcode" autocomplete="off" onchange="pick_up(this.value)"/>
                     <div t-foreach="lists" t-as="l" class="block" >
                         <div class="block_title">
                             <t t-esc="l[0]"/>
