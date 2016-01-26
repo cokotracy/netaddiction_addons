@@ -4,7 +4,7 @@ from openerp import models, fields, api
 from openerp.tools import float_is_zero, float_compare, DEFAULT_SERVER_DATETIME_FORMAT
 
 
-class Orders(models.Model):
+class Order(models.Model):
     _inherit = 'sale.order'
 
     state = fields.Selection([
@@ -82,7 +82,6 @@ class Orders(models.Model):
         for possible refunds created directly from existing invoices. This is necessary since such a
         refund is not directly linked to the SO.
         """
-        print "ORDER HERE"
         for order in self:
             invoice_ids = order.order_line.mapped('invoice_lines').mapped('invoice_id')
             # Search for refunds as well
@@ -102,7 +101,7 @@ class Orders(models.Model):
                 invoice_status = 'upselling'
             else:
                 invoice_status = 'no'
-            print invoice_status
+
 
             order.update({
                 'invoice_count': len(set(invoice_ids.ids + refund_ids.ids)),
@@ -113,16 +112,15 @@ class Orders(models.Model):
     @api.multi
     def action_cancel(self):
         self._send_cancel_mail()
-        super(Orders, self).action_cancel()
+        super(Order, self).action_cancel()
 
     @api.multi
     def action_confirm(self):
         # TODO: verificare il campo delivery_option
-        super(Orders, self).action_confirm()
+        super(Order, self).action_confirm()
 
     @api.one
     def _send_cancel_mail(self):
-        print self.partner_id.email
         # TODO: modificare mittente e testo mail
         body_html = '''cancellato ordine'''
         values = {
@@ -204,7 +202,6 @@ class SaleOrderLine(models.Model):
           is removed from the list.
         - invoiced: the quantity invoiced is larger or equal to the quantity ordered.
         """
-        print "ORDER LINE HERE"
         precision = self.env['decimal.precision'].precision_get('Product Unit of Measure')
         for line in self:
             if line.state not in ('sale', 'done','partial_done'):
@@ -218,7 +215,7 @@ class SaleOrderLine(models.Model):
                 line.invoice_status = 'invoiced'
             else:
                 line.invoice_status = 'no'
-            print line.invoice_status
+
 
 
     @api.depends('qty_invoiced', 'qty_delivered', 'product_uom_qty', 'order_id.state')
