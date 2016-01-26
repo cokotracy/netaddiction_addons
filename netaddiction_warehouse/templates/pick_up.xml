@@ -25,16 +25,23 @@
                 </t>
                 <t t-call="netaddiction_warehouse.slide_menu"/>
                 <div id="content">
-                    <label for="barcode">BARCODE PRODOTTO</label>
-                    <input type="text" name="barcode" id="barcode" autocomplete="off" onchange="pick_up(this.value)"/>
-                    <div t-foreach="lists" t-as="l" class="block" >
-                        <div class="block_title">
-                            <t t-esc="l[0]"/>
-                        </div>
-                        <div class="block_content">
-                            <p t-foreach="l[1]" t-as="prod">
-                                <b><t t-esc="prod['qta']"/></b> x <t t-esc="prod['name']"/>
-                            </p>
+                    <form id="barcode-form">
+                        <label for="barcode" id="label_barcode">BARCODE PRODOTTO</label>
+                        <input type="text" name="barcode" id="barcode" autocomplete="off" data-function="pick_up_barcode"/>
+                        <input type="submit" value="CERCA"/>
+                    </form>
+                    <div id="result">
+                        <div t-foreach="lists" t-as="l" class="block" >
+                            <div class="block_title">
+                                <t t-esc="l[0]"/>
+                            </div>
+                            <div class="block_content">
+                                <t t-foreach="l[1]" t-as="prod">
+                                    <div class="product_row" t-attf-data-barcode="{{prod['barcode']}}" t-attf-data-pid="{{prod['pid']}}" t-attf-data-shelf="{{l[0]}}" t-attf-data-shelf-id="{{prod['shelf_id']}}">
+                                        <b><t t-esc="prod['qta']"/></b> x <t t-esc="prod['name']"/>
+                                    </div>
+                                </t>
+                            </div>
                         </div>
                     </div>
                 </div>

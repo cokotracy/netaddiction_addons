@@ -78,7 +78,7 @@ class InventoryApp(http.Controller):
         user = request.env['res.users'].search([('id','=',uid)])
 
         #prendo tutte le liste di prelievo in stato draft
-        waves = request.env['stock.picking.wave'].search([('state','=','draft')]).sorted(key=lambda r: r.id)
+        waves = request.env['stock.picking.wave'].search([('state','in',['draft','in_progress'])]).sorted(key=lambda r: r.id)
 
         return request.render(
             'netaddiction_warehouse.pick_up_index', 
@@ -98,6 +98,8 @@ class InventoryApp(http.Controller):
         wave = request.env['stock.picking.wave'].search([('id','=',wave_id),
             ('picking_ids.pack_operation_product_ids.state','in',['assigned','partially_available'])]
             )
+        if wave.state == 'draft':
+            wave.write({'state': 'in_progress'})
 
         #prendo i prodotti raggruppati
         products = wave.get_product_list()
@@ -107,7 +109,7 @@ class InventoryApp(http.Controller):
         for product,qtys in products.items():
             shelf = product.get_shelf_to_pick(qtys['product_qty'] - qtys['qty_done'])
             for s,q in shelf.items():
-                text = {'qta':q,'name':product.display_name}
+                text = {'qta':q,'name':product.display_name, 'pid' : product.id, 'barcode':product.barcode, 'shelf_id':s.id}
                 datas[s.name].append(text)
 
         sorted_list = sorted(datas.items(), key = lambda (k,v): k)
@@ -121,26 +123,3 @@ class InventoryApp(http.Controller):
                 'top_title' : wave.display_name,
             }
             )
-
-    ##############
-    #JSON REQUEST#
-    ##############
-
-    @http.route('/inventory/app/pick_product', type="json", auth="user", csrf=False)
-    def pick_product(self):
-        data = request.jsonrequest
-        barcode = data['barcode']
-        product = request.env['product.product']._get_product_from_barcode(barcode)
-        result = ''
-
-        print request.context
-        print request.session
-        print request.params
-        if isinstance(product,Error):
-            result = product.get_error_msg()
-            return {
-                'error' : 1,
-                'result': result
-            }
-
-        result = request.env['stock.picking.wave'].is_in_wave(wave_id,product.id)

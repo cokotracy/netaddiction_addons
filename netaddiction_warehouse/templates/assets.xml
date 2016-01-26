@@ -3,6 +3,7 @@
     <data>
         <template id="assets" name="netaddiction_warehouse assets">
             <link rel="stylesheet" href="/netaddiction_warehouse/static/src/css/style.css" />
+            <script type="text/javascript" src="/netaddiction_warehouse/static/src/js/WebHub.js"></script>
             <script type="text/javascript" src="/netaddiction_warehouse/static/src/js/slide_menu.js"></script>
             <script type="text/javascript" src="/netaddiction_warehouse/static/src/js/lib_barcode_reader.js"></script>
         </template>
