@@ -10,7 +10,7 @@ class Condition(models.Model):
 
     value = fields.Boolean(string="Incluso?", default=True)
     subject_type = fields.Selection([('category','Categoria'),('attribute','Attributo'),('product','Prodotto')], string='Tipo Soggetto',required=True)
-    subject_id = fields.Integer(string = "Soggetto")
+    # subject_id = fields.Integer(string = "Soggetto")
     product_id = fields.Many2one(comodel_name ='product.product', string='Prodotto', ondelete='cascade', help="Specify a product if this rule only applies to one product. Keep empty otherwise.")
     categ_id = fields.Many2one(comodel_name ='product.category', string='Categoria', ondelete='cascade', help="Specify a product category if this rule only applies to products belonging to this category or its children categories. Keep empty otherwise.")
     attrib_id = fields.Many2one(comodel_name ='product.attribute.value', string='Attributo', ondelete='cascade', help="Specify a product Attribute if this rule only applies to products belonging to this attribute or its children categories. Keep empty otherwise.")
