@@ -29,14 +29,11 @@ class Expression(models.Model):
         string='Condizioni', required=True)
 
     @api.multi
-    def find_products(self):
+    def find_products_view(self):
 
         domain = []
         for condition in self.condition_ids:
-            if condition.value:
-                op = '='
-            else:
-                op = '!='
+            op = '=' if condition.value else '!='
 
             if condition.subject_type == 'category':
                 m1 = 'categ_id'
@@ -46,7 +43,6 @@ class Expression(models.Model):
                 m2 = condition.attrib_id.id
             elif condition.subject_type == 'product':
                 m1 = 'id'
-                op = '=' if condition.value else '!='
                 m2 = condition.product_id.id
 
     
@@ -65,5 +61,61 @@ class Expression(models.Model):
             'domain': domain,
             'context' : {},
         }
+
+    @api.multi
+    def find_products_view(self):
+
+        domain = []
+        for condition in self.condition_ids:
+            op = '=' if condition.value else '!='
+
+            if condition.subject_type == 'category':
+                m1 = 'categ_id'
+                m2 = condition.categ_id.id
+            elif condition.subject_type == 'attribute':
+                m1 = 'attribute_value_ids'
+                m2 = condition.attrib_id.id
+            elif condition.subject_type == 'product':
+                m1 = 'id'
+                m2 = condition.product_id.id
+
+    
+            domain.append((m1,op,m2))
+
+        view_id = self.env.ref('product.product_product_tree_view').id
+
+        return {
+            'name':'Lista Prodotto Espressione',
+            'view_type':'form',
+            'view_mode':'tree, form',
+            'views' : [(view_id,'tree')],
+            'res_model':'product.product',
+            'view_id':view_id,
+            'type':'ir.actions.act_window',
+            'domain': domain,
+            'context' : {},
+        }
+
+    @api.multi
+    def find_products_domain(self):
+
+        domain = []
+        for condition in self.condition_ids:
+            op = '=' if condition.value else '!='
+
+            if condition.subject_type == 'category':
+                m1 = 'categ_id'
+                m2 = condition.categ_id.id
+            elif condition.subject_type == 'attribute':
+                m1 = 'attribute_value_ids'
+                m2 = condition.attrib_id.id
+            elif condition.subject_type == 'product':
+                m1 = 'id'
+                m2 = condition.product_id.id
+
+    
+            domain.append((m1,op,m2))
+
+        return domain
 
 

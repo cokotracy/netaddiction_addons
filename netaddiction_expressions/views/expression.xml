@@ -55,7 +55,7 @@
                                 <field name="title"/>
                             </group>
                              <group name="loc_right" class="oe_right" col="2">
-                            <button  class="oe_highlight" name="find_products" 
+                            <button  class="oe_highlight" name="find_products_view" 
                         string=" vedi prodotti" type="object" /> 
                             </group>
                         </group>
