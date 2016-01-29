@@ -68,12 +68,18 @@
                                 <field name="qty_max_buyable"/>
                                 <field name="qty_limit"/>
                                 <field name="priority"/>
+                                <field name="offer_type" widget="radio"/>
+                                <field name="fixed_price" attrs="{'invisible':[('offer_type', '!=', 1)]}"/>
+                                <field name="percent_discount" attrs="{'invisible':[('offer_type', '!=', 2)]}" />%
+                            
+                            
                             </group>
                              <group name="loc_right" class="oe_right" col="2">
                                 <field name="date_start"/>
                                 <field name="date_end"/>
                                 <field name="qty_min"/>
                                 <field name="qty_selled"  attrs="{'readonly': 1}"/>
+                                
                             </group>
                         </group>
                         <group string="Espressioni" name="conditions" colspan="2">
@@ -124,11 +130,21 @@
                             <group name="loc_left" class="oe_left" col="2">
                                 <field name="author_id"/>
                                 <field name="company_id"/>
+                                <field name="qty_max_buyable"/>
+                                <field name="qty_limit"/>
                                 <field name="priority"/>
+                                <field name="offer_type" widget="radio"/>
+                                <field name="n" attrs="{'invisible':[('offer_type', '!=', 2)]}"/>
+                                <field name="m" attrs="{'invisible':[('offer_type', '!=', 2)]}" />
+                            
+                            
                             </group>
                              <group name="loc_right" class="oe_right" col="2">
                                 <field name="date_start"/>
                                 <field name="date_end"/>
+                                <field name="qty_min"/>
+                                <field name="qty_selled"  attrs="{'readonly': 1}"/>
+                                
                             </group>
                         </group>
                         <group string="Espressioni" name="conditions" colspan="2">
