@@ -30,20 +30,20 @@ class CatalogOffer(models.Model):
     
     @api.one
     @api.constrains('fixed_price','offer_type')
-    def _check_value(self):
+    def _check_fixed_price(self):
         if self.offer_type == 1 and self.fixed_price <= 0:
             raise ValidationError("Il valore del prezzo fisso non può essere minore  o uguale di zero")
 
     @api.one
     @api.constrains('percent_discount','offer_type')
-    def _check_value(self):
+    def _check_percent_discount(self):
         if self.offer_type == 2 and (self.percent_discount <= 0 or self.percent_discount > 100):
             raise ValidationError("Il valore dello sconto percentuale non può essere minore di 0 o maggiore di 100")
 
 
     @api.one
     @api.constrains('date_start', 'date_end')
-    def _check_partner_id(self):
+    def _check_dates(self):
        if(self.date_start >= self.date_end):
             raise ValidationError("Data fine offerta non può essere prima della data di inizio offerta")
 
@@ -94,13 +94,22 @@ class ShoppingCartOffer(models.Model):
     n = fields.Integer(string="N")
     m = fields.Integer(string="M")
 
-    #TODO: N < M, N>0, M>0
+
     
 
 
     @api.one
+    @api.constrains('n','m','offer_type')
+    def _check_n_m(self):
+        if(self.offer_type == 2):
+            if(self.n <= 0 or self.m <= 0):
+                raise ValidationError("n e m devono essere  > 0")
+            if(self.n <= self.m):
+                raise ValidationError("n deve essere maggiore di m! (es. 3x2)")
+
+    @api.one
     @api.constrains('date_start', 'date_end')
-    def _check_partner_id(self):
+    def _check_dates(self):
        if(self.date_start >= self.date_end):
             raise ValidationError("Data fine offerta non può essere prima della data di inizio offerta")
 
