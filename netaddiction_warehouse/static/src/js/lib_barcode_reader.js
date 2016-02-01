@@ -32,11 +32,15 @@ window.submitform = function(e){
 
 window.response_message = function(index){
     $('#result_shelfs').remove();
-    $('#barcode-form').before(window.shelfs[index]['name']);
+    var href = window.location.href;
+    var wave_id = href.substr(href.lastIndexOf('/') + 1);
+    
+    odoo_function['set_pick_up'](wave_id,window.shelfs[index]['id'],$('#barcode').val())
 }
 
 
 $(document).ready(function(){
+
     odoo.define('netaddiction_warehouse', function (require) {
         var utils = require('web.utils');
         var Model = require('web.Model');
@@ -49,6 +53,7 @@ $(document).ready(function(){
         var product = new Model('product.product');
         var allocations = new Model('netaddiction.wh.locations.line');
         var wave = new Model('stock.picking.wave');
+        var picking = new Model('stock.picking');
 
         odoo_function ={
         	'get_allocation': function get_allocation(barcode){
@@ -177,6 +182,23 @@ $(document).ready(function(){
                                     window.shelfs.push({'name' : $(products[0]).attr('data-shelf'), 'id' :$(products[0]).attr('data-shelf-id') })
                                     response_message(0);
                                 }
+                            },
+            'set_pick_up' : function set_pick_up(wave_id,shelf_id,barcode){
+                                wave.call('wave_pick_ip',[barcode,shelf_id,wave_id])
+                                $('.product_row').each(function(index,value){
+                                    if($(value).attr('data-barcode') == barcode && $(value).attr('data-shelf-id')==shelf_id){
+                                        window.setTimeout(function() {window.scrollTo(value,{duration:0});}, 0);
+                                        $(value).css('background-color','#87D37C').slideUp(1000);
+                                        setTimeout(function() {
+                                          $(value).remove();
+                                        }, 1000);
+                                        block = $(this).closest('.block').find('.product_row');
+                                        if(block.length==1){
+                                            $(this).closest('.block').slideUp(1000)
+                                        }
+                                    }
+                                });
+                                
                             },
         }
         

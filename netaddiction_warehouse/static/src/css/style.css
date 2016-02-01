@@ -1,7 +1,6 @@
 body{
 	background-color: #D2D7D3;
 	/*font-family: Arial, Helvetica, sans-serif;*/
-	text-align:center;
     overflow:auto;
 }
 
@@ -29,6 +28,7 @@ TOP MENU
 	padding-right: 2px;
 	line-height:40px;
 	color:#6C7A89;
+    text-align:center;
 }
 
 .top_img{
@@ -39,6 +39,7 @@ TOP MENU
 
 .top_menu{
 	float:right;
+    text-align:center;
 }
 
 .top_title{
@@ -58,6 +59,7 @@ SLIDE MENU
     border-left: 2px solid #6C7A89;
     width: 0;
     z-index: 9;
+    text-align:center;
 }
 
 .link_menu {
@@ -85,6 +87,7 @@ CONTENT
 	margin-top:45px;
     padding-left:5px;
     padding-right:5px;
+    text-align:center;
 }
 
 /****
@@ -199,4 +202,8 @@ ALLOCATION
     background-color: #D2D7D3;
     height: 50px;
     width: 100%;
+}
+
+.in_progress{
+    background-color: #F89406;
 }

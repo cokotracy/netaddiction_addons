@@ -20,7 +20,8 @@
         'views/issue_report.xml',
         'views/product.xml',
     ],
-    'qweb': ['static/src/xml/template.xml'],
+    # TODO: sistemare il template correttamente da un bug
+    #'qweb': ['static/src/xml/template.xml'],
     'installable': True,
     'application': True,
     'auto_install': False,

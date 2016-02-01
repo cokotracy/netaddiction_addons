@@ -32,7 +32,8 @@
                                 IN USCITA
                             </div>
                             <div class="block_content">
-                                DA FARE <b class="number_pick"><t t-esc="count_waves"/></b>
+                                DA FARE <b class="number_pick"><t t-esc="count_waves_draft"/></b><br/>
+                                IN PROGRESS <b class="number_pick"><t t-esc="count_waves_progress"/></b>
                             </div>
                         </div>
                     </a>

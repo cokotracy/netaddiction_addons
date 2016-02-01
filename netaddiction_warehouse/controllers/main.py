@@ -18,16 +18,22 @@ class InventoryApp(http.Controller):
     @http.route('/inventory/app', type='http', auth='user')
     def index(self, debug=False, **k):
         cr, uid, context, session = request.cr, request.uid, request.context, request.session
+
+        if not request.session.uid:
+            return http.local_redirect('/web/login?redirect=/inventory/app')
+
         user = request.env['res.users'].search([('id','=',uid)])
 
         #prendo tutte le liste di prelievo in stato draft
         waves = request.env['stock.picking.wave'].search([('state','=','draft')])
+        waves_in_progress = request.env['stock.picking.wave'].search([('state','=','in_progress')])
 
         return request.render(
             'netaddiction_warehouse.index',
             {
                 'user' : user ,
-                'count_waves' : len(waves),
+                'count_waves_draft' : len(waves),
+                'count_waves_progress' : len(waves_in_progress)
             }
             )
 
@@ -65,8 +71,6 @@ class InventoryApp(http.Controller):
             'netaddiction_warehouse.allocation',
             {'user' : user ,'top_back_url' : '/inventory/app'}
             )
-
-     #LINE DI DEMARCAZIONE: DA QUI IN POI E' ROBA VECCHIA DA CORREGGERE#
           
 
     #########

@@ -76,3 +76,63 @@ class StockPickingWave(models.Model):
     def is_in_wave(self,wave_id,product_id):
         result = self.search([('id','=',int(wave_id)),(product_id,'in','picking_ids.pack_operation_product_ids.product_id')])
         print result
+
+    ########################
+    #INVENTORY APP FUNCTION#
+    #ritorna un dict simile#
+    #ad un json per il web #
+    ########################
+    @api.model
+    def wave_pick_ip(self,product_barcode,shelf_id,wave_id):
+        result = self.search([('id','=',int(wave_id))])
+        if len(result) == 0:
+            err = Error()
+            err.set_error_msg("Problema nel recuperare la lista prodotti o barcode mancante")
+            return err
+
+        result.picking_ids.set_pick_up(product_barcode,shelf_id)
+
+    ############################
+    #END INVENTORY APP FUNCTION#
+    ############################
+
+class StockPicking(models.Model):
+    _inherit = 'stock.picking'
+
+    ########################
+    #INVENTORY APP FUNCTION#
+    #ritorna un dict simile#
+    #ad un json per il web #
+    ########################
+    @api.multi
+    def set_pick_up(self,product_barcode,shelf_id):
+        """
+        per ogni stock picking eseguo
+        """
+        product_lines = []
+        for pick in self:
+            product_lines += ([x for x in pick.pack_operation_product_ids if x.product_id.barcode == product_barcode])
+           
+        for line in product_lines:
+            qty_line = int(line.product_qty) - int(line.qty_done)
+            for shelf in line.product_id.product_wh_location_line_ids:
+                #se i ripiani sono uguali significa che devo scalare la quantità
+                if shelf.wh_location_id.id == int(shelf_id):
+                    if qty_line < int(shelf.qty):
+                        shelf.write({'qty' : shelf.qty - qty_line})
+                        line.write({'qty_done': line.qty_done + float(qty_line)})
+                        qty_line = 0
+                    elif qty_line == int(shelf.qty):
+                        shelf.unlink()
+                        line.write({'qty_done': line.qty_done + float(qty_line)})
+                        qty_line = 0
+                    else:
+                        qty_line = qty_line - int(shelf.qty)
+                        line.write({'qty_done': float(shelf.qty)})
+                        shelf.unlink()
+
+
+
+    ############################
+    #END INVENTORY APP FUNCTION#
+    ############################

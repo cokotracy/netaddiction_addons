@@ -19,6 +19,7 @@
         'templates/allocation.xml',
         'templates/pick_up.xml',
         'views/menu.xml',
+        'templates/widget_backoffice.xml'
     ],
     'qweb':[
         "static/src/xml/*.xml",

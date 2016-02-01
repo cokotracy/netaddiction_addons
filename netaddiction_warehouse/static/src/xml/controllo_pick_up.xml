@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<templates id="netaddiction_warehouse_controllo_pickup" xml:space="preserve">
+	
+	<t t-name="control_pick_up_form">
+		<div class="cp_block_content form_control">
+			<label for="cp_barcode">BARCODE PRODOTTO</label>
+			<input type="text" name="cp_barcode" id="cp_barcode" value="" autofocus="autofocus" aucomplete="off"/>
+		</div>
+	</t>
+
+	<t t-name="wave_lists">
+		<div id="cp_content">
+			<t t-foreach="widget.waves" t-as="wave">
+				<div class="cp_block" t-attf-data-wave_id="{{wave.id}}">
+					<a href="#" class="cp_wave_link">
+						<div class="cp_block_content">
+							<t t-esc="wave.display_name"/>
+						</div>
+					</a>
+				</div>
+			</t>
+		</div>
+	</t>
+
+	<t t-name="stock_picking_list">
+		<t t-foreach="widget.pickings" t-as="pick">
+			<div class="cp_block picking_list">
+				<div class="cp_block_title ">
+					<a href="#" class="action_orders"><t t-esc="pick.origin"/></a> - <a href="#" class="action_pickings"><t t-esc="pick.display_name"/></a>
+				</div>
+				<div class="cp_block_content">
+						<input type="text" name="order_barcode" id="order_barcode"/>
+						<div t-attf-class="line_picks_{{pick.id}}" >
+						</div>
+				</div>
+			</div>
+		</t>
+	</t>
+
+</templates>

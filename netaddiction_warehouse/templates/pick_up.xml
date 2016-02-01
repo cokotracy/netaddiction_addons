@@ -10,7 +10,7 @@
                     <div t-foreach="waves" t-as="wave" class="block" >
                         
                             <a t-attf-href="/inventory/app/pick_up/{{wave.id}}" class="wave_link">
-                                <div class="block_content"><b><t t-esc="wave.display_name"/></b></div>
+                                <div t-attf-class="block_content {{wave.state}}"><b><t t-esc="wave.display_name"/></b></div>
                             </a>
                         
                     </div>

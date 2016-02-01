@@ -35,6 +35,15 @@ class Products(models.Model):
     #ad un json per il web #
     ########################
     @api.model
+    def check_product(self,barcode):
+        product = self._get_product_from_barcode(barcode)
+        if isinstance(product,Error):
+            return {'result' : 0, 'error' : product.get_error_msg()}
+
+        return {'result' : 1 , 'product_id' : product.id}
+
+
+    @api.model
     def get_json_allocation(self,barcode):
         """
         ritorna un json con i dati per la ricerca per porodotto
