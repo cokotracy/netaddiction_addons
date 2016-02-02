@@ -75,7 +75,7 @@
                             
                             </group>
                              <group name="loc_right" class="oe_right" col="2">
-                                <field name="date_start"/>
+                                <field name="date_start" widget="datetime"/>
                                 <field name="date_end"/>
                                 <field name="qty_min"/>
                                 <field name="qty_selled"  attrs="{'readonly': 1}"/>

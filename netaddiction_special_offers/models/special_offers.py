@@ -13,8 +13,8 @@ class CatalogOffer(models.Model):
     expression_id = fields.Many2one(comodel_name='netaddiction.expressions.expression', string='Espressione', required=True)
     company_id = fields.Many2one(comodel_name='res.company', string='Company', required=True)
     author_id = fields.Many2one(comodel_name='res.users',string='Autore', required=True)
-    date_start = fields.Date('Start Date', help="Data di inizio della offerta", required=True)
-    date_end = fields.Date('End Date', help="Data di fine dell'offerta", required=True)
+    date_start = fields.Datetime('Start Date', help="Data di inizio della offerta", required=True)
+    date_end = fields.Datetime('End Date', help="Data di fine dell'offerta", required=True)
     list_prod = fields.One2many(comodel_name='product.product',compute='populate_products')
     priority = fields.Selection([(1,'1'),(2,'2'),(3,'3'),(4,'4'),(5,'5'),(6,'6'),(7,'7'),(8,'8'),(9,'9'),(10,'10')], string='Priorità', default=1,required=True)
     qty_max_buyable = fields.Integer( string='Quantità massima acquistabile', help = "Quantità massima di prodotti acquistabili in unavendibili in questa offerta. 0 è illimitato", required=True)
@@ -44,7 +44,12 @@ class CatalogOffer(models.Model):
     @api.one
     @api.constrains('date_start', 'date_end')
     def _check_dates(self):
-       if(self.date_start >= self.date_end):
+        #print self.date_start
+        #print self.date_end
+        #print self.date_start >= self.date_end
+       # print self.date_start == self.date_end
+        #print self.date_start - self.date_end
+        if(self.date_start >= self.date_end):
             raise ValidationError("Data fine offerta non può essere prima della data di inizio offerta")
 
     @api.model
@@ -82,8 +87,8 @@ class ShoppingCartOffer(models.Model):
     expression_id = fields.Many2one(comodel_name='netaddiction.expressions.expression', string='Espressione', required=True)
     author_id = fields.Many2one(comodel_name='res.users',string='Autore', required=True)
     company_id = fields.Many2one(comodel_name='res.company', string='Company', required=True)
-    date_start = fields.Date('Start Date', help="Data di inizio della offerta", required=True)
-    date_end = fields.Date('End Date', help="Data di fine dell'offerta", required=True)
+    date_start = fields.Datetime('Start Date', help="Data di inizio della offerta", required=True)
+    date_end = fields.Datetime('End Date', help="Data di fine dell'offerta", required=True)
     list_prod = fields.One2many(comodel_name='product.product',compute='populate_products')
     priority = fields.Selection([(1,'1'),(2,'2'),(3,'3'),(4,'4'),(5,'5'),(6,'6'),(7,'7'),(8,'8'),(9,'9'),(10,'10')], string='Priorità', default=1,required=True)
     qty_max_buyable = fields.Integer( string='Quantità massima acquistabile', help = "Quantità massima di prodotti acquistabili in unavendibili in questa offerta. 0 è illimitato", required=True)
