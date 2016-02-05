@@ -99,6 +99,17 @@ class StockPickingWave(models.Model):
 class StockPicking(models.Model):
     _inherit = 'stock.picking'
 
+    #CAMPO PER CONTARE I PEZZI DA SPEDIRE#
+    number_of_pieces = fields.Integer(string="Pezzi",compute="_get_number_of_pieces")
+
+    @api.one
+    def _get_number_of_pieces(self):
+        pieces = 0
+        for line in self.pack_operation_product_ids:
+            pieces = pieces + line.qty_done
+
+        self.number_of_pieces = pieces
+
     ########################
     #INVENTORY APP FUNCTION#
     #ritorna un dict simile#
@@ -136,3 +147,27 @@ class StockPicking(models.Model):
     ############################
     #END INVENTORY APP FUNCTION#
     ############################
+
+    ################################
+    #FUNCTION PER CONTROLLO PICK UP#
+    ################################
+    @api.model
+    def do_validate_orders(self,pick_id):
+        this = self.search([('id','=',int(pick_id))])
+        if this.check_backorder(this):
+            wiz_id = self.env['stock.backorder.confirmation'].create({'pick_id': this.id})
+            wiz_id.process()
+            backorder_pick = self.env['stock.picking'].search([('backorder_id', '=', this.id)])
+            backorder_pick.write({'wave_id' : None})
+        else:
+            order = self.env['sale.order'].search([('name','=',this.origin)])
+            order.action_done()
+
+
+        this.do_new_transfer()
+        count = self.search([('wave_id','=',this.wave_id.id),('state','not in',['draft','cancel','done'])])
+        if len(count) == 0:
+            this.wave_id.done()
+
+
+        

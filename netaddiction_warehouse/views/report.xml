@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+    	<report
+            id="netaddiction_bolla_di_spedizione"
+            model="stock.picking"
+            string="Bolla di Spedizione"
+            report_type="qweb-html"
+            name="netaddiction_warehouse.bolla_di_spedizione"
+            file="netaddiction_warehouse.bolla_di_spedizione"
+        />
+    </data>
+</openerp>

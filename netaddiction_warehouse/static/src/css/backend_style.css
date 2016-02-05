@@ -54,3 +54,8 @@
     margin-bottom: 10px;
     text-align: center;
 }
+
+#validate_order{
+    float:right;
+    margin-top: -4px;
+}
