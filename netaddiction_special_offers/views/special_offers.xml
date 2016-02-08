@@ -23,6 +23,17 @@
             </field>
         </record>
 
+        <record model="ir.actions.act_window" id="netaddiction_special_offers_product_line">
+            <field name="name">Product Line</field>
+            <field name="res_model">netaddiction.specialoffer.product_line</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">No product line.
+                </p>
+            </field>
+        </record>
+
         <menuitem id="menu_netaddiction_special_offers"
           name="Offerte Menu"
           parent="base.menu_sales"
@@ -53,10 +64,10 @@
                 <form string="special_offers_catalog Form">
                     <sheet>
                     <div class="oe_button_box" name="button_box">
-                        <button name="toggle_active" type="object" groups="base.group_no_one" class="oe_stat_button" icon="fa-archive">
-                            <field name="active" widget="boolean_button" options="{&quot;terminology&quot;: &quot;archive&quot;}"/>
-                        </button>
-                    </div>
+                            <button name="toggle_active" type="object" class="oe_stat_button" icon="fa-archive">
+                                <field name="active" widget="boolean_button" options="{&quot;terminology&quot;: &quot;archive&quot;}"/>
+                            </button>
+                        </div>
 
                     <div class="oe_title">
                         <h1><field name="name" placeholder="Titolo offerta catalogo..."/></h1>
@@ -65,30 +76,64 @@
                             <group name="loc_left" class="oe_left" col="2">
                                 <field name="author_id"/>
                                 <field name="company_id"/>
-                                <field name="qty_max_buyable"/>
-                                <field name="qty_limit"/>
                                 <field name="priority"/>
-                                <field name="offer_type" widget="radio"/>
-                                <field name="fixed_price" attrs="{'invisible':[('offer_type', '!=', 1)]}"/>
-                                <field name="percent_discount" attrs="{'invisible':[('offer_type', '!=', 2)]}" />%
-                            
+                                <field name="filter_type"/>
                             
                             </group>
                              <group name="loc_right" class="oe_right" col="2">
                                 <field name="date_start" widget="datetime"/>
                                 <field name="date_end"/>
-                                <field name="qty_min"/>
                                 <field name="qty_selled"  attrs="{'readonly': 1}"/>
                                 
                             </group>
                         </group>
-                        <group string="Espressioni" name="conditions" colspan="2">
-                            <group name="loc_left" class="oe_left" col="2">
-                               <field name="expression_id"/> 
-
+  <!--                       <group string="product list" name="conditions" colspan="2" attrs= "{'invisible':[('filter_type', '!=', 2)]}">
+                            <group name="loc_left" class="oe_left" col="2"> -->
+                              <!--  <field name="products_list"/>  -->
+                               <h1 attrs= "{'invisible':[('filter_type', '!=', 2)]}">Lista Prodotti</h1>
+                                <field name="products_list" mode="tree,kanban" attrs= "{'invisible':[('filter_type', '!=', 2)]}">
+                                <form string="Sales Order Lines">
+                                    <field name="product_id" />
+                                     <field name="qty_max_buyable" />
+                                      <field name="qty_limit" />
+                                       <field name="qty_min" />
+                                        <field name="offer_type"/>
+                                        <field name="fixed_price" attrs="{'invisible':[('offer_type', '!=', 1)]}"/>
+                                <field name="percent_discount" attrs="{'invisible':[('offer_type', '!=', 2)]}" />
+                                  </form >
+                                  <tree string="Sales Order Lines" editable="bottom">
+                                    <field name="product_id" />
+                                     <field name="qty_max_buyable" />
+                                      <field name="qty_limit" />
+                                       <field name="qty_min" />
+                                        <field name="offer_type"/>
+                                        <field name="fixed_price" attrs="{'invisible':[('offer_type', '!=', 1)]}"/>
+                                    <field name="percent_discount" attrs="{'invisible':[('offer_type', '!=', 2)]}" />
+                                 
+                                </tree>
+                              </field>
+                                    
+<!-- 
                             </group>
+                        </group> -->
+                        <div attrs= "{'invisible':[('filter_type', '!=', 1)]}">
+                            <h1 >Espressione</h1>
+                        <group  name="conditions" colspan="2" >
+                            <group name="loc_left" class="oe_left" col="2">
+                                <field name="qty_max_buyable"/>
+                                <field name="qty_limit"/>
+                                <field name="qty_min"/>
+                                <field name="offer_type" widget="radio"/>
+                                <field name="fixed_price" attrs="{'invisible':[('offer_type', '!=', 1)]}"/>
+                                <field name="percent_discount" attrs="{'invisible':[('offer_type', '!=', 2)]}" />
+                               <field name="expression_id"/> 
+                                
+                            </group>
+                            
                          </group>
-                        <field name="list_prod" />
+                         <field name="list_prod" />
+                     </div>
+                        
                      </sheet>
                 </form>
             </field>
@@ -118,10 +163,10 @@
                 <form string="Condition Form">
                     <sheet>
                     <div class="oe_button_box" name="button_box">
-                        <button name="toggle_active" type="object" groups="base.group_no_one" class="oe_stat_button" icon="fa-archive">
-                            <field name="active" widget="boolean_button" options="{&quot;terminology&quot;: &quot;archive&quot;}"/>
-                        </button>
-                    </div>
+                            <button name="toggle_active" type="object" class="oe_stat_button" icon="fa-archive">
+                                <field name="active" widget="boolean_button" options="{&quot;terminology&quot;: &quot;archive&quot;}"/>
+                            </button>
+                        </div>
                     <div class="oe_title">
                         <h1><field name="name" placeholder="Titolo offerta carrello..."/></h1>
                     </div>
@@ -134,9 +179,11 @@
                                 <field name="qty_limit"/>
                                 <field name="priority"/>
                                 <field name="offer_type" widget="radio"/>
-                                <field name="n" attrs="{'invisible':[('offer_type', '!=', 2)]}"/>
+                                <field name="n" attrs="{'invisible':[('offer_type', '=', 1)]}"/>
                                 <field name="m" attrs="{'invisible':[('offer_type', '!=', 2)]}" />
-                            
+                                <field name="n_price" attrs="{'invisible':[('offer_type', '!=', 3)]}" />
+                                <field name="bundle_price" attrs="{'invisible':[('offer_type', '!=', 1)]}" />
+                                <field name="filter_type"/>
                             
                             </group>
                              <group name="loc_right" class="oe_right" col="2">
@@ -147,16 +194,61 @@
                                 
                             </group>
                         </group>
-                        <group string="Espressioni" name="conditions" colspan="2">
-                            <group name="loc_left" class="oe_left" col="2">
-                               <field name="expression_id"/> 
-
+                         <h1 attrs= "{'invisible':[('filter_type', '!=', 2)]}">Lista Prodotti</h1>
+                                <field name="products_list" mode="tree,kanban" attrs= "{'invisible':[('filter_type', '!=', 2)]}">
+                                <form string="Sales Order Lines">
+                                    <field name="product_id" />
+                                     <field name="qty_max_buyable" />
+                                      <field name="qty_limit" />
+                                       <field name="qty_min" />
+                                        
+                                  </form >
+                                  <tree string="Sales Order Lines" editable="bottom">
+                                    <field name="product_id" />
+                                     <field name="qty_max_buyable" />
+                                      <field name="qty_limit" />
+                                       <field name="qty_min" />
+                                       
+                                 
+                                </tree>
+                              </field>
+                                    
+<!-- 
                             </group>
+                        </group> -->
+                        <div attrs= "{'invisible':[('filter_type', '!=', 1)]}">
+                            <h1 >Espressione</h1>
+                        <group  name="conditions" colspan="2" >
+                            <group name="loc_left" class="oe_left" col="2">
+                                
+                               <field name="expression_id"/> 
+                                
+                            </group>
+                            
                          </group>
-                          
-                        <field name="list_prod" />
+                         <field name="list_prod" />
+                     </div>
                     </sheet>
                 </form>
+            </field>
+        </record>
+
+
+
+       <record model="ir.ui.view" id="netaddiction_special_offers_product_line_tree">
+            <field name="name">netaddiction_special_offers_product_line_tree</field>
+            <field name="model">netaddiction.specialoffer.product_line</field>
+            <field name="arch" type="xml">
+                <tree name="special_offers_catalog list">
+                    <field name="product_id"/>
+                    <field name="offer_catalog_id"/>
+                    <field name="qty_max_buyable"/>
+                    <field name="qty_limit"/>
+                    <field name="qty_min"/>
+                    <field name="offer_type"/>
+                    <field name="fixed_price"/>
+                    <field name="percent_discount"/>
+                </tree>
             </field>
         </record>
 
