@@ -15,7 +15,6 @@ class CatalogOffer(models.Model):
     author_id = fields.Many2one(comodel_name='res.users',string='Autore', required=True)
     date_start = fields.Datetime('Start Date', help="Data di inizio della offerta", required=True)
     date_end = fields.Datetime('End Date', help="Data di fine dell'offerta", required=True)
-    list_prod = fields.One2many(comodel_name='product.product',compute='populate_products')
     priority = fields.Selection([(1,'1'),(2,'2'),(3,'3'),(4,'4'),(5,'5'),(6,'6'),(7,'7'),(8,'8'),(9,'9'),(10,'10')], string='Priorità', default=1,required=True)
     qty_max_buyable = fields.Integer( string='Quantità massima acquistabile', help = "Quantità massima di prodotti acquistabili in un singolo ordine in questa offerta. 0 è illimitato" )
     qty_limit = fields.Integer( string='Quantità limite', help = "Quantità limite di prodotti vendibili in questa offerta. 0 è illimitato")
@@ -25,35 +24,29 @@ class CatalogOffer(models.Model):
     fixed_price = fields.Integer(string="Prezzo fisso")
     percent_discount = fields.Integer(string="Sconto Percentuale")
     products_list = fields.One2many('netaddiction.specialoffer.product_line', 'offer_catalog_id', string='Lista prodotti')
-    filter_type = fields.Selection([(1,'Espressione'),(2,"lista prodotti")], required=True)
+    # filter_type = fields.Selection([(1,'Espressione'),(2,"lista prodotti")], required=True)
 
     #BUG noto: se nella vista scrivi -1 su fixed price  poi cambi a percent discount riesci a scrivere il -1
     #TODO:Non funziona bene nella vista, da sistemare
     
     @api.one
-    @api.constrains('fixed_price','offer_type','filter_type')
+    @api.constrains('fixed_price','offer_type')
     def _check_fixed_price(self):
-        if self.filter_type == 1 and self.offer_type == 1 and self.fixed_price <= 0:
+        if  self.offer_type == 1 and self.fixed_price <= 0:
             raise ValidationError("Il valore del prezzo fisso non può essere minore  o uguale di zero")
 
     @api.one
-    @api.constrains('percent_discount','offer_type','filter_type')
+    @api.constrains('percent_discount','offer_type')
     def _check_percent_discount(self):
-        if self.filter_type == 1 and self.offer_type == 2 and (self.percent_discount <= 0 or self.percent_discount > 100):
+        if self.offer_type == 2 and (self.percent_discount <= 0 or self.percent_discount > 100):
             raise ValidationError("Il valore dello sconto percentuale non può essere minore di 0 o maggiore di 100")
 
     @api.one
-    @api.constrains('filter_type', 'products_list')
+    @api.constrains('products_list')
     def _check_product_list(self):
-        if self.filter_type == 2 and len(self.products_list) <1:
+        if len(self.products_list) <1:
              raise ValidationError("Inserisci almeno un prodotto nella lista")
 
-    @api.one
-    @api.constrains('filter_type', 'expression_id')
-    def _check_expression(self):
-
-        if self.filter_type == 1 and  len(self.expression_id) < 1:
-             raise ValidationError("Scegli una Espressione")
 
 
     @api.one
@@ -79,15 +72,24 @@ class CatalogOffer(models.Model):
 
 
     @api.multi
-    def populate_products(self):
-        if self.filter_type == 1:
+    def populate_products_from_expression(self):
+        if self.expression_id:
             dom = self.expression_id.find_products_domain()
-            ids =[]
+            ids = []
+            to_add =[]
+            for pl in self.products_list:
+                ids.append(pl.product_id.id)
+            print ids
             for prod in self.env['product.product'].search(dom):
-                ids.append(prod.id)
-            self.list_prod = [(6,0,ids)]
-        else:
-            self.list_prod = []
+                if( prod.id not in ids):
+                    to_add.append(self.env['netaddiction.specialoffer.product_line'].create({'product_id':prod.id, 'offer_catalog_id' : self.id, 'qty_max_buyable' : self.qty_max_buyable,'qty_limit': self.qty_limit, 'qty_min':self.qty_min,'offer_type':self.offer_type,'percent_discount':self.percent_discount,'fixed_price': self.fixed_price}))
+            products_list = [(0,0, to_add)]
+
+
+    @api.multi
+    def remove_products(self):
+         for pl in self.products_list:
+                pl.unlink()
 
 
 
@@ -190,17 +192,20 @@ class ShoppingCartOffer(models.Model):
 class ProductLine(models.Model):
 
     _name = "netaddiction.specialoffer.product_line"
+    _order = "priority"
 
 
     product_id = fields.Many2one('product.product', string='Product', domain=[('sale_ok', '=', True)], change_default=True, ondelete='restrict', required=True)
-    offer_catalog_id = fields.Many2one('netaddiction.specialoffer.catalog', string='Offerta catalogo', ondelete='cascade', index=True, copy=False)
-    offer_cart_id = fields.Many2one('netaddiction.specialoffer.cart', string='Offerta carrello', ondelete='cascade', index=True, copy=False)
+    offer_catalog_id = fields.Many2one('netaddiction.specialoffer.catalog', string='Offerta catalogo', index=True, copy=False)
+    offer_cart_id = fields.Many2one('netaddiction.specialoffer.cart', string='Offerta carrello',  index=True, copy=False)
     qty_max_buyable = fields.Integer( string='Quantità massima acquistabile', help = "Quantità massima di prodotti acquistabili in un singolo ordine in questa offerta. 0 è illimitato", required=True)
     qty_limit = fields.Integer( string='Quantità limite', help = "Quantità limite di prodotti vendibili in questa offerta. 0 è illimitato", required=True)
     qty_min = fields.Integer( string='Quantità minima acquisto', help = "Quantità minima di prodotti da inserire nel carrello per attivare l'offerta.", required=True)
     fixed_price = fields.Integer(string="Prezzo fisso")
     percent_discount = fields.Integer(string="Sconto Percentuale")
     offer_type = fields.Selection([(1,'Prezzo Fisso'),(2,'Percentuale')], string='Tipo Offerta')
+    qty_selled = fields.Integer( string='Quantità venduta', default=0)
+    priority = fields.Integer(string="priorità",compute='find_priority', default = 0, store = True)
 
     @api.one
     @api.constrains('fixed_price','offer_type')
@@ -213,5 +218,15 @@ class ProductLine(models.Model):
     def _check_percent_discount(self):
         if self.offer_type == 2 and (self.percent_discount <= 0 or self.percent_discount > 100):
             raise ValidationError("Il valore dello sconto percentuale non può essere minore di 0 o maggiore di 100")
+
+    @api.multi
+    def find_priority(self):
+        for record in self:
+            if (record.offer_catalog_id ): 
+                record.priority = record.offer_catalog_id .priority
+            else: 
+                record.priority = record.offer_cart_id.priority
+
+        
 
 

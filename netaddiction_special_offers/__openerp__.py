@@ -12,6 +12,7 @@
     'depends': ['base','product','sale','purchase','mrp','stock','netaddiction_expressions'],
     'data' :[
         'views/special_offers.xml',
+        'views/offer_product.xml'
     ],
     'installable': True,
     'application': True,
