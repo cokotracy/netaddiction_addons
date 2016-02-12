@@ -23,9 +23,9 @@
             </field>
         </record>
 
-        <record model="ir.actions.act_window" id="netaddiction_special_offers_product_line">
-            <field name="name">Product Line</field>
-            <field name="res_model">netaddiction.specialoffer.product_line</field>
+        <record model="ir.actions.act_window" id="netaddiction_special_offers_catalog_line">
+            <field name="name">Offer catalog Line</field>
+            <field name="res_model">netaddiction.specialoffer.offer_catalog_line</field>
             <field name="view_type">form</field>
             <field name="view_mode">tree,form</field>
             <field name="help" type="html">
@@ -88,7 +88,7 @@
                             </group>
                         </group>
                         <div >
-                        <group  name="conditions" colspan="2" >
+                        <group  name="conditions" colspan="2" string= "opzioni offerta" >
                             <group name="loc_left" class="oe_left" col="2">
                                 <field name="qty_max_buyable"/>
                                 <field name="qty_limit"/>
@@ -96,16 +96,23 @@
                                 <field name="offer_type" widget="radio"/>
                                 <field name="fixed_price" attrs="{'invisible':[('offer_type', '!=', 1)]}"/>
                                 <field name="percent_discount" attrs="{'invisible':[('offer_type', '!=', 2)]}" />
-                               <field name="expression_id"/> 
-                               <button  class="oe_highlight" name="populate_products_from_expression" 
-                                string="inserisci espressione" type="object" /> 
-                               <button  class="oe_highlight" name="remove_products" 
-                                string="rimuovi prodotti" type="object" /> 
+                                <button  class="oe_highlight" name="modify_products" 
+                                string="applica ai prodotti" type="object" /> 
+
                                 
                             </group>
                             
                          </group>
-                        
+                        <group  name="conditions" colspan="2" string= "espressione" >
+                            <group name="loc_left" class="oe_left" col="2">
+                                                               <field name="expression_id"/> 
+                               <button  class="oe_highlight" name="populate_products_from_expression" 
+                                string="inserisci espressione" type="object" /> 
+                               <button  class="oe_highlight" name="remove_products" 
+                                string="rimuovi prodotti" type="object" /> 
+                        </group>
+                            
+                         </group>
                      </div>
 
                      <h1 >Lista Prodotti</h1>
@@ -195,7 +202,7 @@
                                 
                             </group>
                         </group>
-                         <h1 attrs= "{'invisible':[('filter_type', '!=', 2)]}">Lista Prodotti</h1>
+                        <!--  <h1 attrs= "{'invisible':[('filter_type', '!=', 2)]}">Lista Prodotti</h1>
                                 <field name="products_list" mode="tree,kanban" attrs= "{'invisible':[('filter_type', '!=', 2)]}">
                                 <form string="Sales Order Lines">
                                     <field name="product_id" />
@@ -212,7 +219,7 @@
                                        
                                  
                                 </tree>
-                              </field>
+                              </field> -->
                                     
 <!-- 
                             </group>
@@ -236,9 +243,9 @@
 
 
 
-       <record model="ir.ui.view" id="netaddiction_special_offers_product_line_tree">
-            <field name="name">netaddiction_special_offers_product_line_tree</field>
-            <field name="model">netaddiction.specialoffer.product_line</field>
+       <record model="ir.ui.view" id="netaddiction_special_offers_catalog_line_tree">
+            <field name="name">netaddiction_special_offers_catalog_line_tree</field>
+            <field name="model">netaddiction.specialoffer.offer_catalog_line</field>
             <field name="arch" type="xml">
                 <tree name="special_offers_catalog list">
                     <field name="product_id"/>
