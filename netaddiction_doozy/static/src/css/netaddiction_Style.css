@@ -52,3 +52,10 @@ FORM VIEW
 	height:28px !important;
 	margin-top: 1px !important;
 }
+
+/**************
+SHEET MOD GRAFICHE
+**************/
+.oe_form_sheet{
+    max-width: 80% !important;
+}

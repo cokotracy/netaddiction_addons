@@ -116,8 +116,8 @@
                      </div>
 
                      <h1 >Lista Prodotti</h1>
-                                <field name="products_list" mode="tree,kanban" >
-                                <form string="Sales Order Lines">
+                                <field name="products_list" mode="tree,kanban" domain="['|',('product_list.active','=',True),('product_list.active','=',False)]" >
+                                <form string="Sales Order Lines" domain="['|',('product_list.active','=',True),('product_list.active','=',False)]">
                                     <field name="product_id" />
                                      <field name="qty_max_buyable" />
                                       <field name="qty_limit" />
@@ -127,8 +127,9 @@
                                 <field name="percent_discount" attrs="{'invisible':[('offer_type', '!=', 2)]}" />
                                 <field name="qty_selled" attrs="{'readonly': 1}"/>
                                 <field name="priority" attrs="{'readonly': 1}"/>
+                                <field name="active" />
                                   </form >
-                                  <tree string="Sales Order Lines" editable="bottom">
+                                  <tree string="Sales Order Lines" editable="bottom" domain="['|',('product_list.active','=',True),('product_list.active','=',False)]">
                                     <field name="product_id" />
                                      <field name="qty_max_buyable" />
                                       <field name="qty_limit" />
@@ -138,6 +139,7 @@
                                     <field name="percent_discount" attrs="{'invisible':[('offer_type', '!=', 2)]}" />
                                     <field name="qty_selled" attrs="{'readonly': 1}" />
                                     <field name="priority" attrs="{'readonly': 1}"/>
+                                    <field name="active" />
                                  
                                 </tree>
                               </field>

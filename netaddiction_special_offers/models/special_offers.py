@@ -216,7 +216,8 @@ class OfferCatalogLine(models.Model):
     _order = "priority"
     
 
-
+    active = fields.Boolean(default=True,
+        help="By unchecking the active field, you may hide a fiscal position without deleting it.")
     product_id = fields.Many2one('product.product', string='Product', domain=[('sale_ok', '=', True)], change_default=True, ondelete='restrict', required=True)
     offer_catalog_id = fields.Many2one('netaddiction.specialoffer.catalog', string='Offerta catalogo', index=True, copy=False, required=True)
     qty_max_buyable = fields.Integer( string='Quantità massima acquistabile', help = "Quantità massima di prodotti acquistabili in un singolo ordine in questa offerta. 0 è illimitato", required=True)
