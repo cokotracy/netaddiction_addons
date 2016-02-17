@@ -25,7 +25,7 @@ class Products(models.Model):
         Quadrimestrale: prende anno e mese e calcola il quadrimestre(es:in uscita nel primo quadrimestre del 2019),
         Annuale: prende solo l'anno (es: in uscita nel 2019)""" )
     qty_available_now = fields.Integer(string="Quantità Disponibile",compute="_get_qty_available_now",
-        help="Quantità Disponibile Adesso (qty in possesso - qty in uscita)")
+        help="Quantità Disponibile Adesso (qty in possesso - qty in uscita)",search="_search_available_now")
     qty_sum_suppliers = fields.Integer(string="Quantità dei fornitori", compute="_get_qty_suppliers",
         help="Somma delle quantità dei fornitori")
 
@@ -61,6 +61,28 @@ class Products(models.Model):
     @api.one
     def _get_qty_available_now(self):
         self.qty_available_now = int(self.qty_available) - int(self.outgoing_qty)
+
+    def _search_available_now(self, operator, value):
+        ids = []
+        result = self.search([('active','=',True)])
+        for res in result:
+            if operator == '<':
+                if res.qty_available_now < value:
+                    ids.append(res.id)
+            if operator == '==':
+                if res.qty_available_now == value:
+                    ids.append(res.id)
+            if operator == '>':
+                if res.qty_available_now > value:
+                    ids.append(res.id)
+            if operator == '<=':
+                if res.qty_available_now <= value:
+                    ids.append(res.id)
+            if operator == '>=':
+                if res.qty_available_now >= value:
+                    ids.append(res.id)
+                    
+        return [('id','in',ids)]
 
     @api.one
     def _get_qty_suppliers(self):

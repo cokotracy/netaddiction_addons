@@ -132,7 +132,9 @@
                                         options="{'no_create': True}"/>
                                     <field name="barcode" required="True"/>
                                     <field name="lst_price" readonly="True" string="Prezzo Senza Iva"/>
+                                    
                                 </group>
+
                                 <separator name="descr_separator"/>
                                 <group name="descr" colspan="4">
                                     <b>Descrizione</b>
@@ -156,6 +158,10 @@
                                 <field name="outgoing_qty" class="oe_inline" />
                                 <field name="virtual_available" class="oe_inline" string="Quantità Prevista"/>
                                 <field name="qty_sum_suppliers" class="oe_inline"/>
+                            </group>
+                            <group string="Valorizzazione Inventario" col="4">
+                                <field name="property_cost_method" groups="stock_account.group_inventory_valuation"/>
+                                <field name="property_valuation"/>
                             </group>
                             
                         </page>

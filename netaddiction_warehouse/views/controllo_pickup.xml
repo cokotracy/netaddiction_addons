@@ -4,18 +4,18 @@
         <template id="netaddiction_warehouse_assets_backend" name="netaddiction_warehouse_assets_backend" inherit_id="web.assets_backend">
             <xpath expr="." position="inside">
                 <link rel="stylesheet" href="/netaddiction_warehouse/static/src/css/backend_style.css" />
-                <script type="text/javascript" src="/netaddiction_warehouse/static/src/js/widget.js"/>
+                <script type="text/javascript" src="/netaddiction_warehouse/static/src/js/controllo_pickup.js"/>
             </xpath>
         </template>
 
 
-        <record id="action_home_page" model="ir.actions.client">
+        <record id="action_controllo_pickup_2" model="ir.actions.client">
             <field name="name">Controllo Pick Up</field>
-            <field name="tag">netaddiction_warehouse.controllo_pickup.homepage</field>
+            <field name="tag">netaddiction_warehouse.controllo_pickup</field>
         </record>
 
-        <menuitem id="netaddiction_warehouse_pick_up" name="Controllo Pick Up" parent="stock.menu_stock_warehouse_mgmt"
-            action="action_home_page"/>
+        <menuitem id="netaddiction_warehouse_controllo_pickup" name="Controllo Pick Up" parent="stock.menu_stock_warehouse_mgmt"
+            action="action_controllo_pickup_2"/>
 
         
     </data>

@@ -19,9 +19,9 @@
         'templates/allocation.xml',
         'templates/pick_up.xml',
         'views/menu.xml',
-        'templates/widget_backoffice.xml',
         'views/report.xml',
-        'views/bolla_di_spedizione.xml'
+        'views/bolla_di_spedizione.xml',
+        'views/controllo_pickup.xml'
     ],
     'qweb':[
         "static/src/xml/*.xml",

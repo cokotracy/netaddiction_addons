@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+    	<template id="netaddiction_purchase_orders_assets_backend" name="netaddiction_purchase_orders_assets_backend" inherit_id="web.assets_backend">
+            <xpath expr="." position="inside">
+                <link rel="stylesheet" href="/netaddiction_purchase_orders/static/src/css/product_list.css" />
+                <script type="text/javascript" src="/netaddiction_purchase_orders/static/src/js/widget.js"/>
+            </xpath>
+        </template>
+
+
+        <record id="netaddiction_purchase_home_page" model="ir.actions.client">
+            <field name="name">Da Acquistare</field>
+            <field name="tag">netaddiction_purchase_orders.product_list</field>
+        </record>
+
+        <menuitem id="netaddiction_purchase_orders_product_list" name="Da Acquistare" parent="purchase.menu_purchase_control"
+            action="netaddiction_purchase_home_page" sequence="1"/>
+    </data>
+</openerp>
