@@ -26,20 +26,19 @@ class CatalogOffer(models.Model):
     products_list = fields.One2many('netaddiction.specialoffer.offer_catalog_line', 'offer_catalog_id', string='Lista prodotti')
     # filter_type = fields.Selection([(1,'Espressione'),(2,"lista prodotti")], required=True)
 
-    #BUG noto: se nella vista scrivi -1 su fixed price  poi cambi a percent discount riesci a scrivere il -1
-    #TODO:Non funziona bene nella vista, da sistemare
+    #tolte queste funzioni perchè vengono controllate nella catalog line
     
-    @api.one
-    @api.constrains('fixed_price','offer_type')
-    def _check_fixed_price(self):
-        if  self.offer_type == 1 and self.fixed_price <= 0:
-            raise ValidationError("Il valore del prezzo fisso non può essere minore  o uguale di zero")
+    # @api.one
+    # @api.constrains('fixed_price','offer_type')
+    # def _check_fixed_price(self):
+    #     if  self.offer_type == 1 and self.fixed_price <= 0:
+    #         raise ValidationError("Il valore del prezzo fisso non può essere minore  o uguale di zero")
 
-    @api.one
-    @api.constrains('percent_discount','offer_type')
-    def _check_percent_discount(self):
-        if self.offer_type == 2 and (self.percent_discount <= 0 or self.percent_discount > 100):
-            raise ValidationError("Il valore dello sconto percentuale non può essere minore di 0 o maggiore di 100")
+    # @api.one
+    # @api.constrains('percent_discount','offer_type')
+    # def _check_percent_discount(self):
+    #     if self.offer_type == 2 and (self.percent_discount <= 0 or self.percent_discount > 100):
+    #        raise ValidationError("Il valore dello sconto percentuale non può essere minore di 0 o maggiore di 100")
 
     # @api.one
     # @api.constrains('products_list')
@@ -78,7 +77,7 @@ class CatalogOffer(models.Model):
         return  super(CatalogOffer, self).create(values)
 
 
-    @api.multi
+    @api.one
     def populate_products_from_expression(self):
         if self.expression_id:
             dom = self.expression_id.find_products_domain()
@@ -90,15 +89,19 @@ class CatalogOffer(models.Model):
             for prod in self.env['product.product'].search(dom):
                 if( prod.id not in ids):
                     to_add.append(self.env['netaddiction.specialoffer.offer_catalog_line'].create({'product_id':prod.id, 'offer_catalog_id' : self.id, 'qty_max_buyable' : self.qty_max_buyable,'qty_limit': self.qty_limit, 'qty_min':self.qty_min,'offer_type':self.offer_type,'percent_discount':self.percent_discount,'fixed_price': self.fixed_price, 'priority' : self.priority}))
-            products_list = [(0,0, to_add)]
+            #self.products_list = [(0,0, to_add)]
 
 
     @api.multi
     def remove_products(self):
+        #in caso serva di cancellare tutte le order line
         # for pl2 in self.env['netaddiction.specialoffer.offer_catalog_line'].search([("create_uid","=",1)]):
         #     pl2.unlink()
-        for pl in self.products_list:
-            pl.unlink()
+            
+        for offer in self:
+            for pl in offer.products_list:
+                pl.unlink()
+        
 
     @api.multi
     def modify_products(self):
@@ -217,7 +220,7 @@ class OfferCatalogLine(models.Model):
     
 
     active = fields.Boolean(default=True,
-        help="By unchecking the active field, you may hide a fiscal position without deleting it.")
+        help="Spuntato = offerta attiva, Non Spuntato = offerta spenta")
     product_id = fields.Many2one('product.product', string='Product', domain=[('sale_ok', '=', True)], change_default=True, ondelete='restrict', required=True)
     offer_catalog_id = fields.Many2one('netaddiction.specialoffer.catalog', string='Offerta catalogo', index=True, copy=False, required=True)
     qty_max_buyable = fields.Integer( string='Quantità massima acquistabile', help = "Quantità massima di prodotti acquistabili in un singolo ordine in questa offerta. 0 è illimitato", required=True)
@@ -226,7 +229,7 @@ class OfferCatalogLine(models.Model):
     fixed_price = fields.Integer(string="Prezzo fisso")
     percent_discount = fields.Integer(string="Sconto Percentuale")
     offer_type = fields.Selection([(1,'Prezzo Fisso'),(2,'Percentuale')], string='Tipo Offerta')
-    qty_selled = fields.Integer( string='Quantità venduta', default=0)
+    qty_selled = fields.Float( string='Quantità venduta', default=0.0)
     priority = fields.Integer(string="priorità", default = 0)
 
     @api.one

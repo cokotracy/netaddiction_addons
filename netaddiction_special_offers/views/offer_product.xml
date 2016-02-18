@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <record id="offer_product_normal_form_view" model="ir.ui.view">
+            <field name="name">netaddiction.offer_product.product.form</field>
+            <field name="model">product.product</field>
+            <field name="priority" eval="30"/>
+            <field name="inherit_id" ref="netaddiction_products.product_normal_form_view"/>
+            <field name="arch" type="xml">
+            <xpath expr="//page[@name='vendor_netaddiction']" position='after'>  
+            <page string="Offerte" name="offers_netaddiction">
+
+                    
+                       
+
+
+
+                        <group  name="conditions" colspan="2" >
+                            <group name="loc_left" class="oe_left" col="2">
+                                <field name="fake_price"/> 
+                               <field name="offer_price"/>
+                             
+                                
+                            </group>
+                            
+                         </group>
+                        
+             
+
+                     <h1 >Lista Offerte</h1>
+                                <field name="offer_lines" mode="tree,kanban" >
+                             
+                                  <tree string="Sales Order Lines" editable="bottom">
+                                       <field name="offer_catalog_id" attrs="{'readonly': 1}"/>
+                                     <field name="qty_max_buyable" attrs="{'readonly': 1}"/>
+                                      <field name="qty_limit" attrs="{'readonly': 1}"/>
+                                       <field name="qty_min" attrs="{'readonly': 1}"/>
+                                        <field name="offer_type" attrs="{'readonly': 1}" />
+                                        <field name="fixed_price" attrs="{'invisible':[('offer_type', '!=', 1)]}"/>
+                                	<field name="percent_discount" attrs="{'invisible':[('offer_type', '!=', 2)]}" />
+                                <field name="qty_selled" attrs="{'readonly': 1}"/>
+                                <field name="priority" attrs="{'readonly': 1}"/>
+                                 
+                                </tree>
+                              </field>
+                         </page> 
+                </xpath> 
+
+
+            </field>
+            </record>
+
+
+<record model="ir.ui.view" id="netaddiction_view_order_line">
+            <field name="name">netaddiction.sale.order.line</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale.view_order_form"/>
+            <field name="arch" type="xml">
+<!--                 <xpath expr="//notebook/page/field[@name='order_line']/tree/field[@name='name']"
+                   position="replace">  
+
+                </xpath>  -->
+
+                <xpath expr="//notebook/page/field[@name='order_line']/tree/field[@name='price_subtotal']"
+                    position="after">    
+                    <field name="offer_price_unit" string="Prz.Off"/>    
+                    <field name="price_total" />
+                    <field name="offer_type" />    
+                    <field name="fixed_price" /> 
+                    <field name="percent_discount" string="% sconto"/> 
+                    <field name="offer_name" />    
+                    <field name="offer_author_id" />       
+                </xpath> 
+
+
+ </field>
+        </record>
+        
+    </data>
+</openerp>
