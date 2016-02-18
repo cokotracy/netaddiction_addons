@@ -19,11 +19,12 @@ class CatalogOffer(models.Model):
     qty_max_buyable = fields.Integer( string='Quantità massima acquistabile', help = "Quantità massima di prodotti acquistabili in un singolo ordine in questa offerta. 0 è illimitato" )
     qty_limit = fields.Integer( string='Quantità limite', help = "Quantità limite di prodotti vendibili in questa offerta. 0 è illimitato")
     qty_min = fields.Integer( string='Quantità minima acquisto', help = "Quantità minima di prodotti da inserire nel carrello per attivare l'offerta.")
-    qty_selled = fields.Integer( string='Quantità venduta', default=0)
+    qty_selled = fields.Float( string='Quantità venduta', default=0.0, compute="_compute_qty_selled")
     offer_type = fields.Selection([(1,'Prezzo Fisso'),(2,'Percentuale')], string='Tipo Offerta', default=2)
     fixed_price = fields.Integer(string="Prezzo fisso")
     percent_discount = fields.Integer(string="Sconto Percentuale")
     products_list = fields.One2many('netaddiction.specialoffer.offer_catalog_line', 'offer_catalog_id', string='Lista prodotti')
+
     # filter_type = fields.Selection([(1,'Espressione'),(2,"lista prodotti")], required=True)
 
     #tolte queste funzioni perchè vengono controllate nella catalog line
@@ -113,6 +114,24 @@ class CatalogOffer(models.Model):
             pl.percent_discount = self.percent_discount
             pl.fixed_price = self.fixed_price
             pl.priority = self.priority
+
+    @api.one
+    def turn_off(self):
+        for pl in offer.products_list:
+            pl.active = False
+        self.active = False
+
+
+    @api.multi
+    def _compute_qty_selled(self):
+        for offer in self:
+            temp = 0.0
+            for pl in offer.products_list:
+                 temp += pl.qty_selled
+            for pl in self.env['netaddiction.specialoffer.offer_catalog_line'].search([('offer_catalog_id','=',offer.id),('active','=',False)]):
+                temp += pl.qty_selled
+            #search for inactive offers
+            offer.qty_selled = temp
 
 
 
