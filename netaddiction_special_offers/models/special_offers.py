@@ -24,6 +24,7 @@ class CatalogOffer(models.Model):
     fixed_price = fields.Integer(string="Prezzo fisso")
     percent_discount = fields.Integer(string="Sconto Percentuale")
     products_list = fields.One2many('netaddiction.specialoffer.offer_catalog_line', 'offer_catalog_id', string='Lista prodotti')
+    cron_job = fields.Integer()
 
     # filter_type = fields.Selection([(1,'Espressione'),(2,"lista prodotti")], required=True)
 
@@ -48,6 +49,13 @@ class CatalogOffer(models.Model):
     #          raise ValidationError("Inserisci almeno un prodotto nella lista")
 
 
+    @api.one
+    @api.constrains('active')
+    def _check_active(self):
+        if not self.active:
+            for pl in self.products_list:
+                pl.active = False
+            
 
     @api.one
     @api.constrains('date_start', 'date_end')
@@ -55,6 +63,9 @@ class CatalogOffer(models.Model):
 
         if(self.date_start >= self.date_end):
             raise ValidationError("Data fine offerta non può essere prima della data di inizio offerta")
+        print self.cron_job
+        for cron in self.env['ir.cron'].search([('id','=',self.cron_job)]):
+            cron.nextcall = self.date_end
 
 
     @api.one
@@ -117,9 +128,12 @@ class CatalogOffer(models.Model):
 
     @api.one
     def turn_off(self):
-        for pl in offer.products_list:
+        for pl in self.products_list:
             pl.active = False
-        self.active = False
+           
+        self.write({'active' : False})
+
+        
 
 
     @api.multi
@@ -133,7 +147,31 @@ class CatalogOffer(models.Model):
             #search for inactive offers
             offer.qty_selled = temp
 
+    @api.model
+    def create(self, vals):
+        res = super(CatalogOffer, self).create(vals)
+        #creiamo il cron
+        timesheet_id = 1
+        nextcall = res.date_end
+        print nextcall
+        print res.id
+        print vals['author_id']
+        name = "Cron job per offerta id %s" %res.id
+        res.cron_job = res.pool.get('ir.cron').create(self.env.cr,self.env.uid,{
+                'name': name,
+                'user_id': vals['author_id'],
+                'model': 'netaddiction.specialoffer.catalog',
+                'function': 'turn_off',
+                'nextcall': nextcall,
+                'args': repr([res.id]),
+                'numbercall' : "1",
 
+            })
+        
+ 
+        
+ 
+        return res
 
 
 class ShoppingCartOffer(models.Model):
