@@ -7,7 +7,7 @@ class OfferOrder(models.Model):
     @api.one
     def action_problems(self):
     	for line in self.order_line:
-    		if( line.offer_price_unit and self.state == 'draft' ):
+    		if( line.offer_price_unit and self.state == 'draft' and not line.negate_offer ):
     		 	offer_line = self.product_id.offer_lines[0] if len(self.product_id.offer_lines) >0 else None
     		 	if offer_line:
     		 		offer_line.qty_selled += line.product_uom_qty
@@ -20,7 +20,7 @@ class OfferOrder(models.Model):
     def action_confirm(self):
     	for order in self:
     		for line in self.order_line:
-    			if( line.offer_price_unit and self.state == 'draft' ):
+    			if( line.offer_price_unit and self.state == 'draft' and not line.negate_offer ):
     		 		offer_line = self.product_id.offer_lines[0] if len(self.product_id.offer_lines) >0 else None
     		 		if offer_line:
     		 			offer_line.qty_selled += line.product_uom_qty
@@ -33,7 +33,7 @@ class OfferOrder(models.Model):
         self._send_cancel_mail()
         for order in self:
         	for line in self.order_line:
-        		if( line.offer_price_unit and self.state != 'draft'):
+        		if( line.offer_price_unit and self.state != 'draft' and not line.negate_offer):
         			offer_line = self.product_id.offer_lines[0] if len(self.product_id.offer_lines) >0 else None
     		 	if offer_line:
     		 		offer_line.qty_selled -= line.product_uom_qty

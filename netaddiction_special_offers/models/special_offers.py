@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from openerp import models, fields, api
 from openerp.exceptions import ValidationError
+from openerp import SUPERUSER_ID
 
 
 class CatalogOffer(models.Model):
@@ -24,29 +25,8 @@ class CatalogOffer(models.Model):
     fixed_price = fields.Integer(string="Prezzo fisso")
     percent_discount = fields.Integer(string="Sconto Percentuale")
     products_list = fields.One2many('netaddiction.specialoffer.offer_catalog_line', 'offer_catalog_id', string='Lista prodotti')
-    cron_job = fields.Integer()
-
-    # filter_type = fields.Selection([(1,'Espressione'),(2,"lista prodotti")], required=True)
-
-    #tolte queste funzioni perchè vengono controllate nella catalog line
-    
-    # @api.one
-    # @api.constrains('fixed_price','offer_type')
-    # def _check_fixed_price(self):
-    #     if  self.offer_type == 1 and self.fixed_price <= 0:
-    #         raise ValidationError("Il valore del prezzo fisso non può essere minore  o uguale di zero")
-
-    # @api.one
-    # @api.constrains('percent_discount','offer_type')
-    # def _check_percent_discount(self):
-    #     if self.offer_type == 2 and (self.percent_discount <= 0 or self.percent_discount > 100):
-    #        raise ValidationError("Il valore dello sconto percentuale non può essere minore di 0 o maggiore di 100")
-
-    # @api.one
-    # @api.constrains('products_list')
-    # def _check_product_list(self):
-    #     if len(self.products_list) <1:
-    #          raise ValidationError("Inserisci almeno un prodotto nella lista")
+    end_cron_job = fields.Integer()
+    start_cron_job = fields.Integer()
 
 
     @api.one
@@ -63,8 +43,7 @@ class CatalogOffer(models.Model):
 
         if(self.date_start >= self.date_end):
             raise ValidationError("Data fine offerta non può essere prima della data di inizio offerta")
-        print self.cron_job
-        for cron in self.env['ir.cron'].search([('id','=',self.cron_job)]):
+        for cron in self.env['ir.cron'].search([('id','=',self.end_cron_job)]):
             cron.nextcall = self.date_end
 
 
@@ -97,7 +76,7 @@ class CatalogOffer(models.Model):
             to_add =[]
             for pl in self.products_list:
                 ids.append(pl.product_id.id)
-            print ids
+
             for prod in self.env['product.product'].search(dom):
                 if( prod.id not in ids):
                     to_add.append(self.env['netaddiction.specialoffer.offer_catalog_line'].create({'product_id':prod.id, 'offer_catalog_id' : self.id, 'qty_max_buyable' : self.qty_max_buyable,'qty_limit': self.qty_limit, 'qty_min':self.qty_min,'offer_type':self.offer_type,'percent_discount':self.percent_discount,'fixed_price': self.fixed_price, 'priority' : self.priority}))
@@ -133,6 +112,13 @@ class CatalogOffer(models.Model):
            
         self.write({'active' : False})
 
+    @api.one
+    def turn_on(self):
+        for pl in self.env['netaddiction.specialoffer.offer_catalog_line'].search([('offer_catalog_id','=',self.id),('active','=',False)]):
+            pl.active = True
+           
+        self.write({'active' : True})
+
         
 
 
@@ -153,13 +139,10 @@ class CatalogOffer(models.Model):
         #creiamo il cron
         timesheet_id = 1
         nextcall = res.date_end
-        print nextcall
-        print res.id
-        print vals['author_id']
-        name = "Cron job per offerta id %s" %res.id
-        res.cron_job = res.pool.get('ir.cron').create(self.env.cr,self.env.uid,{
+        name = "[Scadenza]Cron job per offerta id %s" %res.id
+        res.end_cron_job = res.pool.get('ir.cron').create(self.env.cr,self.env.uid,{
                 'name': name,
-                'user_id': vals['author_id'],
+                'user_id': SUPERUSER_ID,
                 'model': 'netaddiction.specialoffer.catalog',
                 'function': 'turn_off',
                 'nextcall': nextcall,
@@ -167,10 +150,24 @@ class CatalogOffer(models.Model):
                 'numbercall' : "1",
 
             })
+        if res.date_start > fields.Date.today():
+            res.active = False
+            for pl in res.products_list:
+                pl.active = False
+            timesheet_id = 1
+            nextcall = res.date_start
+            name = "[Inizio]Cron job per offerta id %s" %res.id
+            res.end_cron_job = res.pool.get('ir.cron').create(self.env.cr,self.env.uid,{
+                'name': name,
+                'user_id': SUPERUSER_ID,
+                'model': 'netaddiction.specialoffer.catalog',
+                'function': 'turn_on',
+                'nextcall': nextcall,
+                'args': repr([res.id]),
+                'numbercall' : "1",
+
+            })            
         
- 
-        
- 
         return res
 
 
