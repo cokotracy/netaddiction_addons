@@ -21,7 +21,7 @@
         'views/menu.xml',
         'views/report.xml',
         'views/bolla_di_spedizione.xml',
-        'views/controllo_pickup.xml'
+        'views/controllo_pickup.xml',
     ],
     'qweb':[
         "static/src/xml/*.xml",

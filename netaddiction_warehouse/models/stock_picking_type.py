@@ -55,6 +55,8 @@ class StockPickingType(models.Model):
 class StockPickingWave(models.Model):
     _inherit = 'stock.picking.wave'
 
+    in_exit = fields.Boolean(string="In uscita",default=False)
+
     @api.multi
     def get_product_list(self):
         """
@@ -95,6 +97,62 @@ class StockPickingWave(models.Model):
     ############################
     #END INVENTORY APP FUNCTION#
     ############################
+
+    ########
+    #CARICO#
+    ########
+    @api.model
+    def create_purchase_list(self,name,picking_orders):
+        """
+        crea una wave purhcase, nei picking_orders prende solo quelli non completati
+        """
+        ids = []
+        for pick in picking_orders:
+            for p in pick:
+                res = self.env['stock.picking'].search([('id','=',p),('state','!=','done')])
+                if len(res)>0:
+                    for r in res:
+                        ids.append(r.id)
+
+        attr = {
+            'name' : name,
+            'picking_ids' : [(6,0,ids)],
+            'in_exit' : True,
+        }
+
+        new = self.create(attr)
+        new.confirm_picking()
+
+        return {'id' : new.id}
+
+    @api.model
+    def close_and_validate(self,wave):
+        #prendo la locazione 0/0/0
+        loc_id = self.env['netaddiction.wh.locations'].search([('barcode','=','0000000001')])
+        this_wave = self.search([('id','=',int(wave))])
+
+        for out in this_wave.picking_ids:
+            #se trovo almeno un rigo con qty_done > 0 allora posso validare l'ordine ed eventualmente creare il backorder
+            validate = False
+            for op in out.pack_operation_product_ids:
+                if op.qty_done > 0:
+                    validate = True
+                    self.env['netaddiction.wh.locations.line'].allocate(op.product_id.id,op.qty_done,loc_id.id)
+
+            if validate:
+                if out.check_backorder(out):
+                    wiz_id = self.env['stock.backorder.confirmation'].create({'pick_id': out.id})
+                    wiz_id.process()
+                    backorder_pick = self.env['stock.picking'].search([('backorder_id', '=', out.id)])
+                    backorder_pick.write({'wave_id' : None})
+                else:
+                    order = self.env['purchase.order'].search([('name','=',out.origin)])
+                    order.button_done()
+                out.do_new_transfer()
+            else:
+                out.write({'wave_id' : None})
+
+        this_wave.done()
 
 class StockPicking(models.Model):
     _inherit = 'stock.picking'
@@ -169,6 +227,32 @@ class StockPicking(models.Model):
         if len(count) == 0:
             this.wave_id.done()
 
+    @api.model
+    def do_multi_validate_orders(self,picks):
+        for p in picks:
+            self.do_validate_orders(p)
 
 
-        
+class StockOperation(models.Model):
+    _inherit = 'stock.pack.operation'
+
+    ########
+    #CARICO#
+    ########
+    @api.model
+    def complete_operation(self,ids,qta):
+        """
+        completa le righe dell'ordine di consegna in entrata per il carico
+        in base alla qta passata per il prodotto presente nelle righe (ids)
+        """
+        operations = self.search([('id','in',ids)])
+        to_remove = qta
+        for op in operations:
+            residual = int(op.product_qty) - int(op.qty_done)
+            if residual >= to_remove:
+                op.write({'qty_done' : op.qty_done + to_remove})
+                to_remove = 0
+                break
+            if residual < to_remove:
+                op.write({'qty_done' : op.qty_done + residual})
+                to_remove = to_remove - residual

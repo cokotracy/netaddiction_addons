@@ -47,7 +47,8 @@ openerp.netaddiction_warehouse = function(instance, local) {
     local.controllo_pickup = instance.Widget.extend({
     	start: function() {
     		self = this
-         	return new instance.web.Model('stock.picking.wave').query(['display_name','id']).filter([['state','=','in_progress']]).all().then(function(filtered){
+         	return new instance.web.Model('stock.picking.wave').query(['display_name','id']).filter([['state','=','in_progress'],['in_exit','=',false]]).all().then(function(filtered){
+                console.log(filtered)
                 var list = new local.homepage(self,filtered);
 				list.appendTo(self.$el);
             });   
@@ -174,8 +175,11 @@ openerp.netaddiction_warehouse = function(instance, local) {
             $('.nprod').each(function(index,value){
                 if(parseInt($(value).text())==1){
                     trs.push(parseInt($(value).closest('tr').attr('data-id')))
+                    disable_tr($(value).closest('tr'));
                 }
             })
+            new instance.web.Model('stock.picking').call('do_multi_validate_orders',[trs])
+
             data = {
                 'ids': trs,
                 'model': 'stock.picking',
@@ -315,6 +319,214 @@ openerp.netaddiction_warehouse = function(instance, local) {
     });
 
 
+    /**CARICO**/
+    function count_products(this_cgo){
+        var number_tot = 0;
+        var number_prod = 0;
+        for (i in this_cgo.products){
+            number_prod = number_prod + 1;
+            number_tot = number_tot + parseInt(this_cgo.products[i])
+        }
+        $('#number_tot').text(number_tot);
+        $('#number_prod').text(number_prod);
+    }
+
+    function list_products(this_cgo){
+        for (p in this_cgo.products){
+            tr = '<tr><td class="qty_ordered">'+this_cgo.products_ordered[p]+'</td><td class="qty">'+this_cgo.products[p]+'</td><td class="pname">'+p+'</td></tr>';
+            $('#purchase_in_product_list tbody').append(tr);
+        }
+    }
+
+    local.carico = instance.Widget.extend({
+        start: function() {
+            this_carico = this
+            new instance.web.Model('res.partner').query(['id','name']).filter([['supplier','=',true],['active','=',true],['parent_id','=',false],['company_id','=',parseInt(session.company_id)]]).all().then(function(suppliers){
+                var choose = new local.carico_choose(this_carico,suppliers);
+                choose.appendTo(this_carico.$el);
+            })
+        },
+    });
+
+    local.carico_choose = instance.Widget.extend({
+        template : 'carico_choose',
+        events : {
+            "click #gotoCarico" : "GoToCarico",
+            "change #c_supplier" : "SearchWave"
+        },
+        init: function(parent,suppliers){
+            this_choose = this;
+            this_choose._super(parent);
+            this_choose.suppliers = suppliers;
+        },
+        GoToCarico : function(e){
+            supplier_id = $('#c_supplier').val();
+            document_number = $('#document_number').val();
+            wave = $('#waves_supplier').val();
+            
+            message = '';
+            if (supplier_id == ''){
+                message = message + "<li><b>Fornitore</b> mancante</li>";
+            }
+            if (document_number == ''){
+                message = message + "<li><b>Numero Documento</b> mancante</li>";
+            }
+            
+            if(wave!=undefined){
+                document_number = $('#waves_supplier option:selected').text();
+                return new instance.web.Model('res.partner').query(['id','name']).filter([['id','=',parseInt(supplier_id)]]).first().then(function(sup){
+                    nuovo = new local.carico_go(this_carico,supplier_id,sup.name,document_number,wave);
+                    this_choose.destroy();
+                    nuovo.appendTo(this_carico.$el);
+                });
+            }
+
+            if(message!=''){
+                return this_choose.do_warn('ERRORE',message);
+            }
+
+            return new instance.web.Model('res.partner').query(['id','name']).filter([['id','=',parseInt(supplier_id)]]).first().then(function(sup){
+                return new instance.web.Model('purchase.order').query(['id','partner_id','picking_ids']).filter([['partner_id','=',parseInt(supplier_id)],['state','=','purchase']]).all().then(function(pord){
+                    
+                    if (pord.length==0){
+                        return this_choose.do_warn("NESSUN ORDINE","Non esistono ordini di acquisto per il fornitore selezionato. Non puoi procedere oltre.");
+                    }
+                    
+                    var ids = [];
+                    for (i in pord){
+                        ids.push(pord[i].picking_ids);
+                    }
+
+                    new instance.web.Model('stock.picking.wave').call('create_purchase_list',[document_number,ids]).then(function(result){
+                        wave = result.id
+                        nuovo = new local.carico_go(this_carico,supplier_id,sup.name,document_number,wave);
+                        this_choose.destroy();
+                        nuovo.appendTo(this_carico.$el);
+                    })
+                })
+            })
+            
+        },
+        SearchWave : function(e){
+            var sup_id = $(e.currentTarget).val()
+            $('.wave_row').remove();
+            return new instance.web.Model('stock.picking.wave').query(['id','name']).filter([['in_exit','=',true],['state','=','in_progress'],['picking_ids.partner_id','=',parseInt(sup_id)]]).all().then(function(waves){
+                if( waves.length>0){
+                    html = '<tr class="oe_form_group_row wave_row"><td><b>Lista Aperta</b></td><td><select id="waves_supplier">';
+                    for (i in waves){
+                        html = html + '<option value="'+waves[i].id+'" selected="selected">'+waves[i].name+'</option>';
+                    }
+                    html = html = html + '</td></tr>';
+                    $('.supplier_tr_row').after(html)
+                }
+            })
+        }
+    });
+
+    local.carico_go = instance.Widget.extend({
+        template : "carico_go",
+        events : {
+            "change #search" : "doBarcode",
+            "click #close_wave" : "Validate"
+        },
+        init : function(parent,supplier_id,supplier_name,document_number,wave){
+            this_cgo = this;
+            this_cgo._super(parent);
+            this_cgo.supplier_id = parseInt(supplier_id);
+            this_cgo.document_number = document_number;
+            this_cgo.wave = parseFloat(wave);
+            this_cgo.supplier_name = supplier_name;
+            this_cgo.products = {};
+            this_cgo.products_ordered = {};
+            new instance.web.Model('stock.picking.wave').query(['id','picking_ids']).filter([['id','=',this_cgo.wave]]).first().then(function(result){
+                if(result != null){
+                    ids = []
+                    for (p in result.picking_ids){
+                        ids.push(result.picking_ids[p]);
+                    }
+                    new instance.web.Model('stock.pack.operation').query(['id','product_id','product_qty','qty_done']).filter([['qty_done','>',0],['picking_id','in',ids]]).all().then(function(line){
+                        var pqty = 0;
+                        for (l in line){
+                            pqty = pqty + parseInt(line[l].product_qty)
+                            if (line[l].product_id[1] in this_cgo.products){
+                                this_cgo.products[line[l].product_id[1]] = parseInt(this_cgo.products[line[l].product_id[1]]) + line[l].qty_done;
+                                
+                            }else{
+                                this_cgo.products[line[l].product_id[1]] = line[l].qty_done;
+                            }
+                            this_cgo.products_ordered[line[l].product_id[1]] = pqty
+                            
+                        }
+                        count_products(this_cgo)
+                        list_products(this_cgo)
+                    })
+
+                }
+            });
+
+       },
+       doBarcode : function(e){
+            var barcode = $(e.currentTarget).val();
+            var qta = parseInt($('#qta').val());
+
+            $(e.currentTarget).val('').focus();
+            $('#qta').val(1);
+
+            if (qta < 0){
+                return this_cgo.do_warn("QUANTITA NEGATIVA","La quantità caricata non può essere negativa");
+            }
+            new instance.web.Model('stock.pack.operation').query(['id','product_id','product_qty','qty_done']).filter([['picking_id.wave_id','=',this_cgo.wave],['product_id.barcode','=',barcode]]).all().then(function(line){
+                var results = []
+                var qty_residual = 0;
+                var pqty = 0;
+                var ids = [];
+                for(i in line){
+                    pqty = pqty + parseInt(line[i].product_qty)
+                    if (line[i].product_qty>line[i].qty_done){
+                        results.push(line[i])
+                        qty_residual = qty_residual + line[i].product_qty - line[i].qty_done;
+                        ids.push(line[i].id)
+                    }
+                }
+                if (results.length==0){
+                   return this_cgo.do_warn("BARCODE INESISTENTE","Il prodotto non è presente nella lista di carico o è già stato caricato");
+                }
+
+                if(qta > qty_residual){
+                    return this_cgo.do_warn("QUANTITA MAGGIORE","Puoi caricari al massimo <b>"+qty_residual+"</b> pezzi del prodotto. Contatta il tuo responsabile per i rimanenti.");
+                }
+
+                new instance.web.Model('stock.pack.operation').call('complete_operation',[ids,qta])
+                
+                if (line[0].product_id[1] in this_cgo.products){
+                    this_cgo.products[line[0].product_id[1]] = parseInt(this_cgo.products[line[0].product_id[1]]) + qta;
+                }else{
+                    this_cgo.products[line[0].product_id[1]] = qta
+                }
+                this_cgo.products_ordered[line[0].product_id[1]] = pqty
+
+                this_cgo.do_notify("CARICATO",qta + ' x ' + line[0].product_id[1])
+                   
+                $('#purchase_in_product_list tbody').html('');
+                count_products(this_cgo)
+                list_products(this_cgo)
+
+            });
+           
+       },
+       Validate : function(e){
+            this_cgo.do_notify("CARICO COMPLETO",'');
+            $('.oe-cp-search-view').remove();
+            $('#qta').remove();
+            $('#close_wave').remove();
+            new instance.web.Model('stock.picking.wave').call('close_and_validate',[this_cgo.wave]);
+            
+       }
+    });
+
     instance.web.client_actions.add(
         'netaddiction_warehouse.controllo_pickup', 'instance.netaddiction_warehouse.controllo_pickup');
+
+    instance.web.client_actions.add(
+       'netaddiction_warehouse.carico', 'instance.netaddiction_warehouse.carico');  
 }
