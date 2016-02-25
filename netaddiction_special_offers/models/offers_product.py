@@ -8,15 +8,16 @@ class OffersProducts(models.Model):
     fake_price = fields.Float(string="Prezzo Falso")
     offer_price = fields.Float(string="Prezzo con offerta applicata", compute='compute_offer_price')
 
-    offer_lines = fields.One2many('netaddiction.specialoffer.offer_catalog_line', 'product_id', string='offerte')
+    offer_catalog_lines = fields.One2many('netaddiction.specialoffer.offer_catalog_line', 'product_id', string='offerte catalogo')
+    offer_cart_lines = fields.One2many('netaddiction.specialoffer.offer_cart_line', 'product_id', string='offerte carrello')
 
 
     @api.one
     def compute_offer_price(self):
     	
-    	if self.offer_lines:
+    	if self.offer_catalog_lines:
     		
-    		curr_off = self.offer_lines[0]
+    		curr_off = self.offer_catalog_lines[0]
     		if curr_off:
     			self.offer_price = curr_off.fixed_price if curr_off.offer_type == 1 else (self.final_price - (self.final_price/100)*curr_off.percent_discount)
     		else:
@@ -43,7 +44,7 @@ class OffersCatalogSaleOrderLine(models.Model):
     def _compute_offer_unit(self):
         for line in self:
 
-            offer_line = line.product_id.offer_lines[0] if len(line.product_id.offer_lines) >0 else None
+            offer_line = line.product_id.offer_catalog_lines[0] if len(line.product_id.offer_catalog_lines) >0 else None
             if offer_line:
                 offer = offer_line.offer_catalog_id
                 if not self.negate_offer and self._check_offer_validity(offer,offer_line,line.product_id,line.product_uom_qty):

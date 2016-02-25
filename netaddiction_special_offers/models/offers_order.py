@@ -8,7 +8,7 @@ class OfferOrder(models.Model):
     def action_problems(self):
     	for line in self.order_line:
     		if( line.offer_price_unit and self.state == 'draft' and not line.negate_offer ):
-    		 	offer_line = self.product_id.offer_lines[0] if len(self.product_id.offer_lines) >0 else None
+    		 	offer_line = self.product_id.offer_catalog_lines[0] if len(self.product_id.offer_catalog_lines) >0 else None
     		 	if offer_line:
     		 		offer_line.qty_selled += line.product_uom_qty
     		 		offer_line.active = offer_line.qty_selled <= offer_line.qty_limit
@@ -21,7 +21,7 @@ class OfferOrder(models.Model):
     	for order in self:
     		for line in self.order_line:
     			if( line.offer_price_unit and self.state == 'draft' and not line.negate_offer ):
-    		 		offer_line = self.product_id.offer_lines[0] if len(self.product_id.offer_lines) >0 else None
+    		 		offer_line = self.product_id.offer_catalog_lines[0] if len(self.product_id.offer_catalog_lines) >0 else None
     		 		if offer_line:
     		 			offer_line.qty_selled += line.product_uom_qty
     		 			offer_line.active = offer_line.qty_selled <= offer_line.qty_limit
@@ -34,7 +34,7 @@ class OfferOrder(models.Model):
         for order in self:
         	for line in self.order_line:
         		if( line.offer_price_unit and self.state != 'draft' and not line.negate_offer):
-        			offer_line = self.product_id.offer_lines[0] if len(self.product_id.offer_lines) >0 else None
+        			offer_line = self.product_id.offer_catalog_lines[0] if len(self.product_id.offer_catalog_lines) >0 else None
     		 	if offer_line:
     		 		offer_line.qty_selled -= line.product_uom_qty
         super(OfferOrder, self).action_cancel()
@@ -42,3 +42,30 @@ class OfferOrder(models.Model):
 
 
    #comportamento su offerte spente: vanno riattivate sempre manualmente
+
+    def process_cart_offers(self):
+
+        #creo la lista degli id prodotto e delle offerte carrello
+        product_order_list = []
+        offers_set = set()
+        for ol in self.order_line:
+            i = 0
+            if len(ol.product_id.offer_catalog_lines) > 0:
+                offers_set.add(ol.product_id.offer_catalog_lines[0])
+
+            while i < ol.product_uom_qty:
+                product_order_list.append(ol.product_id.id)
+                i +=1
+        offers_list = list(offers_set)
+        offers_list.sort(key=lambda offer: offer.priority)
+
+        print "product list %s" % product_order_list
+        print "offer set %s" % offers_set
+        print "offer list %s" % offers_list
+
+
+
+
+
+        verified_prod = [prod for prod in prod_list if prod in offer_list ]
+        
