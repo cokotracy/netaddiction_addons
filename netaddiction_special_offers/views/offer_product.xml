@@ -83,7 +83,7 @@
 
                 <xpath expr="//notebook/page/field[@name='order_line']/tree/field[@name='price_subtotal']"
                     position="after">    
-                    <field name="offer_price_unit" string="Prz.Off"/>    
+                   <!--  <field name="offer_price_unit" string="Prz.Off"/>   -->  
                     <field name="offer_type" />    
                     <field name="fixed_price" /> 
                     <field name="percent_discount" string="% sconto"/> 
@@ -94,8 +94,23 @@
                 </xpath> 
 
 
- </field>
+          </field>
         </record>
         
+
+
+  <record model="ir.ui.view" id="netaddiction_view_order_test">
+            <field name="name">netaddiction.sale.order.test</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale.view_order_form"/>
+            <field name="arch" type="xml">
+              <xpath expr="//field[@name='partner_id']"
+                    position="after">    
+                    <button  class="oe_highlight" name="process_cart_offers" 
+                                string="test" type="object" />           
+                </xpath> 
+
+              </field>
+        </record>
     </data>
 </openerp>

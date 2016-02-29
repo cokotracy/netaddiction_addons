@@ -29,7 +29,7 @@ class OffersProducts(models.Model):
 class OffersCatalogSaleOrderLine(models.Model):
     _inherit = 'sale.order.line'
 
-    offer_price_unit = fields.Float(default=None, string='Prezzo Offerta',compute='_compute_offer_unit',readonly=True, store=True)
+    #offer_price_unit = fields.Float(default=None, string='Prezzo Offerta',compute='_compute_offer_unit',readonly=True, store=True)
 
     fixed_price = fields.Integer(string="Prezzo fisso")
     percent_discount = fields.Integer(string="Sconto Percentuale")
@@ -39,37 +39,37 @@ class OffersCatalogSaleOrderLine(models.Model):
     negate_offer = fields.Boolean(string="Ignora offerta", default=False)
 
 
-    @api.multi
-    @api.depends('product_id','product_uom_qty','negate_offer')
-    def _compute_offer_unit(self):
-        for line in self:
+    # @api.multi
+    # @api.depends('product_id','product_uom_qty','negate_offer')
+    # def _compute_offer_unit(self):
+    #     for line in self:
 
-            offer_line = line.product_id.offer_catalog_lines[0] if len(line.product_id.offer_catalog_lines) >0 else None
-            if offer_line:
-                offer = offer_line.offer_catalog_id
-                if not self.negate_offer and self._check_offer_validity(offer,offer_line,line.product_id,line.product_uom_qty):
-                    line.offer_type = offer_line.offer_type
-                    line.percent_discount = offer_line.percent_discount
-                    line.fixed_price = offer_line.fixed_price
-                    line.offer_author_id = offer.author_id
-                    line.offer_name = offer.name
-                    line.offer_price_unit = line.product_id.offer_price
+    #         offer_line = line.product_id.offer_catalog_lines[0] if len(line.product_id.offer_catalog_lines) >0 else None
+    #         if offer_line:
+    #             offer = offer_line.offer_catalog_id
+    #             if not line.negate_offer and line._check_offer_validity(offer,offer_line,line.product_id,line.product_uom_qty):
+    #                 line.offer_type = offer_line.offer_type
+    #                 line.percent_discount = offer_line.percent_discount
+    #                 line.fixed_price = offer_line.fixed_price
+    #                 line.offer_author_id = offer.author_id
+    #                 line.offer_name = offer.name
+    #                 line.offer_price_unit = line.product_id.offer_price
 
-                else:
-                    line.offer_price_unit = None
-                    line.offer_type = None
-                    line.percent_discount = None
-                    line.fixed_price = None
-                    line.offer_author_id = None
-                    line.offer_name = None
+    #             else:
+    #                 line.offer_price_unit = None
+    #                 line.offer_type = None
+    #                 line.percent_discount = None
+    #                 line.fixed_price = None
+    #                 line.offer_author_id = None
+    #                 line.offer_name = None
                     
-            else:
-                line.offer_price_unit = None
-                line.offer_type = None
-                line.percent_discount = None
-                line.fixed_price = None
-                line.offer_author_id = None
-                line.offer_name = None
+    #         else:
+    #             line.offer_price_unit = None
+    #             line.offer_type = None
+    #             line.percent_discount = None
+    #             line.fixed_price = None
+    #             line.offer_author_id = None
+    #             line.offer_name = None
 
     def _check_offer_validity(self,offer,offer_line,product,uom_quantity):
         if(offer.date_end > fields.Date.today()):
@@ -92,33 +92,124 @@ class OffersCatalogSaleOrderLine(models.Model):
         else:
             return False
 
-    @api.depends('product_uom_qty', 'discount', 'price_unit', 'tax_id','offer_price_unit','negate_offer')
-    def _compute_amount(self):
-        """
-        Compute the amounts of the SO line.
-        """
-        for line in self:
-            if(not line.offer_price_unit or line.negate_offer ):
-                price = line.price_unit * (1 - (line.discount or 0.0) / 100.0)
-                taxes = line.tax_id.compute_all(price, line.order_id.currency_id, line.product_uom_qty, product=line.product_id, partner=line.order_id.partner_id)
+    # @api.depends('product_uom_qty', 'discount', 'price_unit', 'tax_id','offer_price_unit','negate_offer')
+    # def _compute_amount(self):
+    #     """
+    #     Compute the amounts of the SO line.
+    #     """
+    #     for line in self:
+    #         if(not line.offer_price_unit or line.negate_offer ):
+    #             price = line.price_unit * (1 - (line.discount or 0.0) / 100.0)
+    #             taxes = line.tax_id.compute_all(price, line.order_id.currency_id, line.product_uom_qty, product=line.product_id, partner=line.order_id.partner_id)
             
-                line.update({
-                    'price_tax': taxes['total_included'] - taxes['total_excluded'],
-                    'price_total': taxes['total_included'],
-                    'price_subtotal': taxes['total_excluded'],
-                })
+    #             line.update({
+    #                 'price_tax': taxes['total_included'] - taxes['total_excluded'],
+    #                 'price_total': taxes['total_included'],
+    #                 'price_subtotal': taxes['total_excluded'],
+    #             })
+    #         else:
+
+    #             tassa = line.tax_id.amount
+
+    #             detax = line.offer_price_unit / (float(1) + float(tassa/100))
+    #             deiva = round(detax,2)
+    #             taxes = line.tax_id.compute_all(deiva, line.order_id.currency_id, line.product_uom_qty, product=line.product_id, partner=line.order_id.partner_id)
+    #             line.update({
+    #                 'price_tax': taxes['total_included'] - taxes['total_excluded'],
+    #                 'price_total': taxes['total_included'],
+    #                 'price_subtotal': taxes['total_excluded'],
+    #             })
+
+
+    @api.multi
+    @api.onchange('product_id','negate_offer')
+    def product_id_change(self):
+        if not self.product_id:
+            return {'domain': {'product_uom': []}}
+
+        vals = {}
+        domain = {'product_uom': [('category_id', '=', self.product_id.uom_id.category_id.id)]}
+        if not (self.product_uom and (self.product_id.uom_id.category_id.id == self.product_uom.category_id.id)):
+            vals['product_uom'] = self.product_id.uom_id
+
+        product = self.product_id.with_context(
+            lang=self.order_id.partner_id.lang,
+            partner=self.order_id.partner_id.id,
+            quantity=self.product_uom_qty,
+            date=self.order_id.date_order,
+            pricelist=self.order_id.pricelist_id.id,
+            uom=self.product_uom.id
+        )
+
+        name = product.name_get()[0][1]
+        if product.description_sale:
+            name += '\n' + product.description_sale
+        vals['name'] = name
+
+        self._compute_tax_id()
+
+        if self.order_id.pricelist_id and self.order_id.partner_id:
+            #controlli offerta catalogo
+            
+            offer_line = self.product_id.offer_catalog_lines[0] if len(self.product_id.offer_catalog_lines) >0 else None
+            if offer_line:
+                offer = offer_line.offer_catalog_id
+                if not self.negate_offer and self._check_offer_validity(offer,offer_line,self.product_id,self.product_uom_qty):
+                    self.offer_type = offer_line.offer_type
+                    # vals['price_unit'] = self.env['account.tax']._fix_tax_included_price(product.offer_price, product.taxes_id, self.tax_id)
+                    self.percent_discount = offer_line.percent_discount
+                    self.fixed_price = offer_line.fixed_price
+                    self.offer_author_id = offer.author_id
+                    self.offer_name = offer.name
+                    tassa = self.tax_id.amount
+                    detax = self.product_id.offer_price / (float(1) + float(tassa/100))
+                    deiva = round(detax,2)
+                    vals['price_unit'] = deiva
+                    
+
+                else:
+                    self.offer_price_unit = None
+                    self.offer_type = None
+                    self.percent_discount = None
+                    self.fixed_price = None
+                    self.offer_author_id = None
+                    self.offer_name = None
+                    vals['price_unit'] = self.env['account.tax']._fix_tax_included_price(product.price, product.taxes_id, self.tax_id)
+                    
             else:
+                self.offer_price_unit = None
+                self.offer_type = None
+                self.percent_discount = None
+                self.fixed_price = None
+                self.offer_author_id = None
+                self.offer_name = None
+                vals['price_unit'] = self.env['account.tax']._fix_tax_included_price(product.price, product.taxes_id, self.tax_id)
+        self.update(vals)
+        return {'domain': domain}
 
-                tassa = line.tax_id.amount
-
-                detax = line.offer_price_unit / (float(1) + float(tassa/100))
+    @api.model
+    def create(self,values):
+        res = super(OffersCatalogSaleOrderLine, self).create(values)
+        offer_line = res.product_id.offer_catalog_lines[0] if len(res.product_id.offer_catalog_lines) >0 else None
+        print "1"
+        if offer_line:
+            print "2"
+            offer = offer_line.offer_catalog_id
+            if not res.negate_offer and self._check_offer_validity(offer,offer_line,res.product_id,res.product_uom_qty):
+                print "3"
+                res.offer_type = offer_line.offer_type
+                # vals['price_unit'] = res.env['account.tax']._fix_tax_included_price(product.offer_price, product.taxes_id, res.tax_id)
+                res.percent_discount = offer_line.percent_discount
+                res.fixed_price = offer_line.fixed_price
+                res.offer_author_id = offer.author_id
+                res.offer_name = offer.name
+                tassa = res.tax_id.amount
+                detax = res.product_id.offer_price / (float(1) + float(tassa/100))
                 deiva = round(detax,2)
-                taxes = line.tax_id.compute_all(deiva, line.order_id.currency_id, line.product_uom_qty, product=line.product_id, partner=line.order_id.partner_id)
-                line.update({
-                    'price_tax': taxes['total_included'] - taxes['total_excluded'],
-                    'price_total': taxes['total_included'],
-                    'price_subtotal': taxes['total_excluded'],
-                })
+                res.price_unit = deiva
+        return res
+
+
 
 
 # class OffersCatalogSaleOrder(models.Model):

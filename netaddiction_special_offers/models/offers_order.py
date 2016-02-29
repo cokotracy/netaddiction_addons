@@ -42,7 +42,7 @@ class OfferOrder(models.Model):
 
 
    #comportamento su offerte spente: vanno riattivate sempre manualmente
-
+    @api.one
     def process_cart_offers(self):
 
         #creo la lista degli id prodotto e delle offerte carrello
@@ -50,8 +50,9 @@ class OfferOrder(models.Model):
         offers_set = set()
         for ol in self.order_line:
             i = 0
-            if len(ol.product_id.offer_catalog_lines) > 0:
-                offers_set.add(ol.product_id.offer_catalog_lines[0])
+           # print "product %s offer catalog lenght %s" %(ol.product_id,len(ol.product_id.offer_cart_lines))
+            if len(ol.product_id.offer_cart_lines) > 0:
+                offers_set.add(ol.product_id.offer_cart_lines[0].offer_cart_id)
 
             while i < ol.product_uom_qty:
                 product_order_list.append(ol.product_id.id)
@@ -67,5 +68,4 @@ class OfferOrder(models.Model):
 
 
 
-        verified_prod = [prod for prod in prod_list if prod in offer_list ]
         

@@ -82,7 +82,7 @@ class CatalogOffer(models.Model):
                 'numbercall' : "1",
 
             })
-        if res.date_start > fields.Date.today():
+        if res.date_start > fields.Datetime.now():
             res.active = False
             for pl in res.products_list:
                 pl.active = False
@@ -317,7 +317,9 @@ class ShoppingCartOffer(models.Model):
                 'numbercall' : "1",
 
             })
-        if res.date_start > fields.Date.today():
+        if res.date_start > fields.Datetime.now():
+
+
             res.active = False
             for pl in res.products_list:
                 pl.active = False
