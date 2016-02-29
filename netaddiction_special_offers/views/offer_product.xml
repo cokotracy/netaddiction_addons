@@ -82,13 +82,18 @@
                 </xpath>  -->
 
                 <xpath expr="//notebook/page/field[@name='order_line']/tree/field[@name='price_subtotal']"
-                    position="after">    
+                    position="before">    
                    <!--  <field name="offer_price_unit" string="Prz.Off"/>   -->  
                     <field name="offer_type" />    
                     <field name="fixed_price" /> 
                     <field name="percent_discount" string="% sconto"/> 
                     <field name="offer_name" />    
                     <field name="offer_author_id" /> 
+   
+                </xpath> 
+
+                <xpath expr="//notebook/page/field[@name='order_line']/tree/field[@name='price_subtotal']"
+                    position="after">    
                     <field name="price_total"  />   
                     <field name="negate_offer"  />    
                 </xpath> 
