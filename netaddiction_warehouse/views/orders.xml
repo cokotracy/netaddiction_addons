@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+    	<record model="ir.ui.view" id="netaddiction_warehouse_view_order">
+            <field name="name">netaddiction.warehouse.sale.order</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale.view_order_form"/>
+            <field name="arch" type="xml">
+            	<div name="button_box" >
+            		<button class="oe_stat_button">
+                        <field  string="# Resi" name="count_reverse" widget="statinfo"/>
+                    </button>
+            	</div>
+            </field>
+        </record>
+    </data>
+</openerp>

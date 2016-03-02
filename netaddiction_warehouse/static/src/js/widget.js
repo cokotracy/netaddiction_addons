@@ -524,9 +524,12 @@ openerp.netaddiction_warehouse = function(instance, local) {
        }
     });
 
+    
     instance.web.client_actions.add(
         'netaddiction_warehouse.controllo_pickup', 'instance.netaddiction_warehouse.controllo_pickup');
 
     instance.web.client_actions.add(
        'netaddiction_warehouse.carico', 'instance.netaddiction_warehouse.carico');  
+
 }
+

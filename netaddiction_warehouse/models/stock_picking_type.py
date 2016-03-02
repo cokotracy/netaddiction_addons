@@ -232,6 +232,16 @@ class StockPicking(models.Model):
         for p in picks:
             self.do_validate_orders(p)
 
+    @api.model 
+    def create_reverse(self,attr):
+        obj = self.create(attr)
+        obj.action_confirm()
+        for line in obj.pack_operation_product_ids:
+            line.write({'qty_done' : line.product_qty})
+
+        obj.do_new_transfer()
+
+
 
 class StockOperation(models.Model):
     _inherit = 'stock.pack.operation'

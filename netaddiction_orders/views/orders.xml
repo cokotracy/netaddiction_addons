@@ -22,7 +22,7 @@
 
                         <button name="action_cancel" states="draft,sent,sale,partial_done,problem" type="object" class=" btn btn-danger fa fa-trash" string="Cancella Ordine"/>
 
-                        <button name="231" string="Fattura" type="action" class="btn-primary fa fa-pencil-square-o" attrs="{'invisible': [('invoice_status', '!=', 'to invoice')]}"/>
+                        <button name="sale.action_view_sale_advance_payment_inv" string="Fattura" type="action" class="btn-primary fa fa-pencil-square-o" attrs="{'invisible': [('invoice_status', '!=', 'to invoice')]}"/>
 
                         <field name="state" widget="statusbar" statusbar_visible="draft,sale,done"/>
 

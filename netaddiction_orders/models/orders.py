@@ -217,7 +217,6 @@ class SaleOrderLine(models.Model):
                 line.invoice_status = 'no'
 
 
-
     @api.depends('qty_invoiced', 'qty_delivered', 'product_uom_qty', 'order_id.state')
     def _get_to_invoice_qty(self):
         """
@@ -232,7 +231,3 @@ class SaleOrderLine(models.Model):
                     line.qty_to_invoice = line.qty_delivered - line.qty_invoiced
             else:
                 line.qty_to_invoice = 0
-
-
-
-

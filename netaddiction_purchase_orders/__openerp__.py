@@ -14,7 +14,8 @@
     'depends': ['base','product','sale','purchase','mrp','account'],
     'data' : [
         'views/purchase_product_list.xml',
-        'views/purchase_order_line.xml'
+        'views/purchase_order_line.xml',
+        'views/purchase_invoice.xml'
     ],
     'qweb':[
         "static/src/xml/*.xml",

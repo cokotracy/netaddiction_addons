@@ -1,2 +1,2 @@
 # -*- coding: utf-8 -*-
-import orders, discount
+import orders
