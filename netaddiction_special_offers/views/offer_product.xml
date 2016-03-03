@@ -111,7 +111,7 @@
             <field name="arch" type="xml">
               <xpath expr="//field[@name='partner_id']"
                     position="after">    
-                    <button  class="oe_highlight" name="process_cart_offers" 
+                    <button  class="oe_highlight" name="extract_cart_offers" 
                                 string="test" type="object" />           
                 </xpath> 
 

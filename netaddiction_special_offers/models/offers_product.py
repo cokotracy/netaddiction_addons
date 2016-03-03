@@ -33,7 +33,7 @@ class OffersCatalogSaleOrderLine(models.Model):
 
     fixed_price = fields.Integer(string="Prezzo fisso")
     percent_discount = fields.Integer(string="Sconto Percentuale")
-    offer_type = fields.Selection([(1,'Prezzo Fisso'),(2,'Percentuale')], string='Tipo Offerta')
+    offer_type = fields.Selection([(1,'Prezzo Fisso'),(2,'Percentuale')], string='Tipo Offerta', default=None)
     offer_author_id = fields.Many2one(comodel_name='res.users',string='Autore offerta')
     offer_name = fields.Char(string='Offerta')
     negate_offer = fields.Boolean(string="Ignora offerta", default=False)
@@ -75,7 +75,6 @@ class OffersCatalogSaleOrderLine(models.Model):
     @api.multi
     @api.onchange('product_id','negate_offer')
     def product_id_change(self):
-        print "HERE"
         if not self.product_id:
             return {'domain': {'product_uom': []}}
 
@@ -195,14 +194,11 @@ class OffersCatalogSaleOrderLine(models.Model):
     def create(self,values):
         res = super(OffersCatalogSaleOrderLine, self).create(values)
         offer_line = res.product_id.offer_catalog_lines[0] if len(res.product_id.offer_catalog_lines) >0 else None
-        print "1"
         if offer_line:
-            print "2"
             offer = offer_line.offer_catalog_id
             if not res.negate_offer and self._check_offer_validity(offer,offer_line,res.product_id,res.product_uom_qty):
-                print "3"
+
                 res.offer_type = offer_line.offer_type
-                # vals['price_unit'] = res.env['account.tax']._fix_tax_included_price(product.offer_price, product.taxes_id, res.tax_id)
                 res.percent_discount = offer_line.percent_discount
                 res.fixed_price = offer_line.fixed_price
                 res.offer_author_id = offer.author_id
