@@ -6,12 +6,22 @@
             <field name="model">sale.order</field>
             <field name="inherit_id" ref="sale.view_order_form"/>
             <field name="arch" type="xml">
-            	<div name="button_box" >
-            		<button class="oe_stat_button">
+            	<field name="state" position="before">
+            		<field name="is_reversible" invisible="1"/>
+            		<button name="netaddiction_warehouse.action_reso_cliente" string="Reso" type="action" class="btn-primary" attrs="{'invisible': ['|',('state', '!=', 'done'),('is_reversible','=',False)]}" />
+            	</field>
+            	<xpath expr="//button[@name='action_view_invoice']" position="before">
+                    <button type="object" name="open_reverse" class="oe_stat_button" attrs="{'invisible': [('count_reverse', '=', 0)]}" context="{'search_default_origin': name}" icon="fa-exchange">
                         <field  string="# Resi" name="count_reverse" widget="statinfo"/>
                     </button>
-            	</div>
+                </xpath>
+                <xpath expr="//notebook/page/field[@name='order_line']/tree/field[@name='qty_delivered']"
+                    position="after">    
+                    <field name="qty_reverse" />    
+                </xpath> 
             </field>
         </record>
+
+
     </data>
 </openerp>

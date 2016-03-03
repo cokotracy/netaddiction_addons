@@ -28,8 +28,21 @@ odoo.define('netaddiction_warehouse.reso_cliente', function (require) {
                         self.operations[configs[i].netaddiction_op_type]['default_location_dest_id'] = res.default_location_dest_id[0];
                     })
                 }
-                new Model('sale.order.line').query(['product_id','product_qty','qty_delivered','qty_invoiced']).filter([['order_id','=',parseInt(self.active_order_id)]]).all().then(function(active_order_line){
-                    self.active_order_line = active_order_line;
+                new Model('netaddiction.wh.locations').query(['id']).filter([['company_id','=',session.company_id],['barcode','=','0000000002']]).first().then(function(loc){
+                    self.location_reverse = loc.id;
+                })
+
+                new Model('sale.order.line').query(['product_id','product_qty','qty_delivered','qty_invoiced','qty_reverse']).filter([['order_id','=',parseInt(self.active_order_id)]]).all().then(function(active_order_line){
+                    var lines = []
+                    for (var l in active_order_line){
+                        if (parseInt(active_order_line[l].qty_delivered) > 0){
+                            if (parseInt(active_order_line[l].qty_delivered) - parseInt(active_order_line[l].qty_reverse) > 0){
+                                active_order_line[l].qty_delivered = parseInt(active_order_line[l].qty_delivered) - parseInt(active_order_line[l].qty_reverse);
+                                lines.push(active_order_line[l])
+                            }
+                        }
+                        self.active_order_line = lines;
+                    }
 
                     new Model('sale.order').query(['picking_ids','partner_id','name']).filter([['id','=',self.active_order_id]]).first().then(function(result){
                         self.active_order = result;
@@ -101,6 +114,9 @@ odoo.define('netaddiction_warehouse.reso_cliente', function (require) {
             if (count_scrapped>0){
                 this.scrap(scrapped_lines);
             }
+            if (count_reverse>0){
+                this.resale(reverse_lines);
+            }
         },
         scrap : function(scraped_lines){
             var pack_operation_product_ids = []
@@ -123,7 +139,38 @@ odoo.define('netaddiction_warehouse.reso_cliente', function (require) {
                 'sale_id' : parseInt(self.active_order_id),
                 'pack_operation_product_ids' : pack_operation_product_ids,
             }
-            new Model('stock.picking').call('create_reverse',[attr]);
+            new Model('stock.picking').call('create_reverse_scraped',[attr]);
+            this.do_notify("RESO COMPLETATO","Il reso è stato completato");
+            return this.getParent().close();
+        },
+        resale : function(resale_lines){
+            var pack_operation_product_ids = []
+            for (var s in resale_lines){
+                var new_line = [0,0,{
+                    'product_id' : parseInt(resale_lines[s]['pid']),
+                    'product_qty' : parseInt(resale_lines[s]['qta']),
+                    'location_id' : parseInt(self.operations.reverse_resale.default_location_src_id),
+                    'location_dest_id' : parseInt(self.operations.reverse_resale.default_location_dest_id),
+                    'product_uom_id' : 1
+                }];
+                pack_operation_product_ids.push(new_line)
+                new Model('netaddiction.wh.locations.line').call('allocate',[parseInt(resale_lines[s]['pid']),parseInt(resale_lines[s]['qta']),parseInt(self.location_reverse)]);
+            }
+            var attr = {
+                'partner_id' : parseInt(self.active_order.partner_id[0]),
+                'origin' : self.active_order.name,
+                'location_dest_id' : parseInt(self.operations.reverse_resale.default_location_dest_id),
+                'picking_type_id' : parseInt(self.operations.reverse_resale.operation_type_id),
+                'location_id' : parseInt(self.operations.reverse_resale.default_location_src_id),
+                'sale_id' : parseInt(self.active_order_id),
+                'pack_operation_product_ids' : pack_operation_product_ids,
+            }
+
+            
+            new Model('stock.picking').call('create_reverse',[attr]).then(function(e){
+
+                location.reload();
+            });
             this.do_notify("RESO COMPLETATO","Il reso è stato completato");
             return this.getParent().close();
         }
