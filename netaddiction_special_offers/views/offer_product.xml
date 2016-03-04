@@ -102,6 +102,58 @@
           </field>
         </record>
         
+         <record model="ir.ui.view" id="netaddiction_view_order_cart_offers">
+            <field name="name">netaddiction.sale.order.cartoffers</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale.view_order_form"/>
+            <field name="arch" type="xml">
+              <xpath expr="//notebook/page"
+                    position="after">    
+                    <page string="Offerte carrello">
+                      <field name="offers_cart" mode="tree,kanban" >
+
+                                  <tree string="Offer Cart Line" editable="bottom">
+                                     <field name="product_id" attrs="{'readonly': 1}"/>
+                                     <field name="offer_type" attrs="{'readonly': 1}"/>
+                                     <field name="qty" attrs="{'readonly': 1}"/>
+                                     <field name="offer_name" attrs="{'readonly': 1}" />
+                                    <field name="offer_author_id" attrs="{'readonly': 1}"/>
+                                    <field name="n" attrs="{'readonly': 1}"/>
+                                    <field name="m" attrs="{'readonly': 1}"/>
+                                    <field name="bundle_price" attrs="{'readonly': 1}"/>
+                                    <field name="n_price" attrs="{'readonly': 1}"/>
+                                 
+                                </tree>
+                              </field>
+                    </page>
+                </xpath> 
+
+              </field>
+        </record>
+
+               <record model="ir.ui.view" id="netaddiction_order_specialoffer_cart_history_tree" >
+            <field name="name">netaddiction.order.specialoffer.cart.history_tree</field>
+            <field name="model">netaddiction.order.specialoffer.cart.history</field>
+            <field name="arch" type="xml">
+                <tree name="special_offers_cart list" editable="bottom">
+
+
+
+                       <field name="product_id" attrs="{'readonly': 1}"/>
+                                     <field name="offer_type" attrs="{'readonly': 1}"/>
+                                     <field name="qty" attrs="{'readonly': 1}"/>
+                                     <field name="offer_name" attrs="{'readonly': 1}" />
+                                    <field name="offer_author_id" attrs="{'readonly': 1}"/>
+                                    <field name="n" attrs="{'readonly': 1}"/>
+                                    <field name="m" attrs="{'readonly': 1}"/>
+                                    <field name="bundle_price" attrs="{'readonly': 1}"/>
+                                    <field name="n_price" attrs="{'readonly': 1}"/>
+                </tree>
+            </field>
+        </record>
+
+
+
 
 
   <record model="ir.ui.view" id="netaddiction_view_order_test">

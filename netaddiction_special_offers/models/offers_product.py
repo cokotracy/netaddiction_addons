@@ -58,11 +58,13 @@ class OffersCatalogSaleOrderLine(models.Model):
                 #ritorno false e l'offerta non viene applicata
                 return False
             if(offer_line.qty_limit > 0 and offer_line.qty_selled + uom_quantity > offer_line.qty_limit):
-                offer_line.qty_selled += uom_quantity
+                #questa cosa va fatta solo in action confirm!
+                #offer_line.qty_selled += uom_quantity
                 #TODO: aggiungi notifica (e manda mail a riccardo in action problems)
                 #molto importante perchè così quando viene chiamato action_confirm l'ordine viene spostato in problem
-                offer_line.active =False
-                return False
+                #offer_line.active =False
+                #return False
+                pass
 
             
             return True

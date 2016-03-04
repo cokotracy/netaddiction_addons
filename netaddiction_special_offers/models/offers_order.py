@@ -4,7 +4,7 @@ from openerp import models, fields, api
 class OfferOrder(models.Model):
     _inherit = 'sale.order'
 
-    offers_cart = fields.Many2one('netaddiction.specialoffer.offer_cart_line', string='offerte carrello attive')
+    offers_cart = fields.One2many('netaddiction.order.specialoffer.cart.history','order_id', string='offerte carrello attive')
 
     @api.one
     def action_problems(self):
@@ -118,8 +118,13 @@ class OfferOrder(models.Model):
         print "----------"
 
 #controllo scadenze offerta
-        #for offer in offer_list:
-            #self._verify_cart_offers(offer,offer_dict[offer])
+        for offer in offer_list:
+            print "offer type: " 
+            print offer.offer_type
+            self._verify_cart_offers(offer,offer_dict[offer])
+
+        print "offers cart:"
+        print self.offers_cart
 
 
     @api.one
@@ -131,6 +136,7 @@ class OfferOrder(models.Model):
                 
             elif(offer.offer_type == 2):
                #nxm
+               print "n x m"
                self._apply_n_x_m(offer,order_lines)
 
             elif (offer.offer_type == 3):
@@ -140,34 +146,55 @@ class OfferOrder(models.Model):
        
     @api.one
     def _apply_n_x_m(self,offer,order_lines):
+        #in caso serva di cancellare tutte le order line
+        for pl2 in self.env['netaddiction.order.specialoffer.cart.history'].search([("create_uid","=",1)]):
+            pl2.unlink()
+        print "calling apply nxm for offer %s" %offer.name
         tot_qty = 0
         for ol in order_lines:
             tot_qty += ol.product_uom_qty
 
         if tot_qty >= offer.n and offer.n > 0:
+            print "A)"
             part = tot_qty//offer.n
             num_prod_for_free = part * (offer.n - offer.m)
             i = 0
             #order lines non prodotti
-            order_line.sort(key=lambda ol: ol.price_unit)
+            order_lines.sort(key=lambda ol: ol.price_unit)
+            print len (order_lines)
+            print order_lines
             while i < num_prod_for_free:
+                print "B)"
                 ol = order_lines[i] if order_lines[i] else None
+                print "prodotto %s quantità %s" % (ol.product_id,ol.product_uom_qty)
                 if(ol and ol.product_uom_qty <= num_prod_for_free - i):
+                    print "C)"
                     offer_line = ol.product_id.offer_cart_lines[0]
                     if (offer_line.qty_max_buyable > 0 and ol.product_uom_qty > offer_line.qty_max_buyable):
                             raise QtyMaxBuyableException(ol.product_id.name)
                     else:
                         ol.price_unit = 0.0
-                        i += ol.product_uom_qty
+                        i += int(ol.product_uom_qty)
+                        self.env['netaddiction.order.specialoffer.cart.history'].create({'product_id' : ol.product_id.id, 'order_id' : self.id, 'offer_type':offer_line.offer_type, 'qty' : ol.product_uom_qty,'n' :offer_line.offer_cart_id.n,'m' :offer_line.offer_cart_id.m,'bundle_price': offer_line.offer_cart_id.bundle_price, 'offer_author_id' :offer_line.offer_cart_id.author_id.id, 'offer_name' : offer_line.offer_cart_id.name })
                         
-                else:
+                elif ol:
+                    offer_line = ol.product_id.offer_cart_lines[0]
+                    print "split line"
                     self._split_order_line(ol,num_prod_for_free -i,ol.product_uom_qty - (num_prod_for_free -i))
                     ol.price_unit = 0.0
+                    self.env['netaddiction.order.specialoffer.cart.history'].create({'product_id' : ol.product_id.id, 'order_id' : self.id, 'offer_type':offer_line.offer_type, 'qty' : ol.product_uom_qty,'n' :offer_line.offer_cart_id.n,'m' :offer_line.offer_cart_id.m,'bundle_price': offer_line.offer_cart_id.bundle_price, 'offer_author_id' :offer_line.offer_cart_id.author_id.id, 'offer_name' : offer_line.offer_cart_id.name })
                     #spezza le linee
 
                     i = num_prod_for_free
-            for ol in order_lines:
-                self.offers_cart = [(4, ol.product_id.offer_cart_lines[0], _)]
+#sposta sopra solo per le linee incluse nell'offerta
+            # for ol in order_lines:
+            #     offer_line = ol.product_id.offer_cart_lines[0]
+            #     self.env['sale.order.line'].create({'product_id' : ol.product_id, 'order_id' : self.id, 'offer_type':offer_line.offer_type, 'qty' : ol.product_uom_qty,'n' :offer_line.n,'m' :offer_line.m,'bundle_price': offer_line.bundle_price, 'offer_author_id' :offer_line.offer_author_id, 'offer_name' : offer_line.offer_name })
+            #     print "add offer line"
+            #     if(offer_line.qty_limit > 0 and offer_line.qty_selled + ol.product_uom_qty > offer_line.qty_limit):
+            #         #TODO: aggiungi notifica (e manda mail a riccardo in action problems)
+            #         #molto importante perchè così quando viene chiamato action_confirm l'ordine viene spostato in problem
+            #         pass
 
     @api.one
     def _split_order_line(self,order_line,qty_1,qty_2):
@@ -178,12 +205,35 @@ class OfferOrder(models.Model):
         if qty_1 + qty_2 != order_line.product_uom_qty:
             return None
         else:
+            print "x"
             order_line.product_uom_qty = qty_1
+            print "y"
             order_line.product_uom_change()
-            return self.env['sale.order.line'].create({'product_id':order_line.product_id, 'order_id' : self.id, 'product_uom_qty' : qty_2})
-
-
             
+            print "z"
+            print qty_1
+            print qty_2
+            ret = self.env['sale.order.line'].create({'product_id':order_line.product_id.id, 'order_id' : self.id, 'product_uom' : order_line.product_uom.id,'product_uom_qty' : qty_2 , 'name' : order_line.name,})
+            ret.product_id_change()
+            return ret
+
+
+class OrderOfferCartHistory(models.Model):
+
+    _name = "netaddiction.order.specialoffer.cart.history"
+    
+    
+
+    product_id = fields.Many2one('product.product', string='Product', domain=[('sale_ok', '=', True)], change_default=True, ondelete='restrict', required=True)
+    offer_type = fields.Selection([(1,'Bundle'),(2,'n x m'),(3,'n x prezzo')], string='Tipo Offerta', default=2,required=True)
+    qty = fields.Integer(string = "quantità")
+    n = fields.Integer(string="N")
+    m = fields.Integer(string="M")
+    bundle_price = fields.Integer(string="Prezzo bundle")
+    n_price = fields.Integer(string= "Prezzo Prodotti")
+    offer_author_id = fields.Many2one(comodel_name='res.users',string='Autore offerta')
+    offer_name = fields.Char(string='Offerta')
+    order_id = fields.Many2one(comodel_name='sale.order', string='Ordine',index=True, copy=False, required=True)
 
 
 
