@@ -170,6 +170,7 @@ class OfferOrder(models.Model):
                 if(ol and ol.product_uom_qty <= num_prod_for_free - i):
                     print "C)"
                     offer_line = ol.product_id.offer_cart_lines[0]
+                    ptint "qty_max_buyable %s" %offer_line.qty_max_buyable
                     if (offer_line.qty_max_buyable > 0 and ol.product_uom_qty > offer_line.qty_max_buyable):
                             raise QtyMaxBuyableException(ol.product_id.name)
                     else:
@@ -178,6 +179,8 @@ class OfferOrder(models.Model):
                         self.env['netaddiction.order.specialoffer.cart.history'].create({'product_id' : ol.product_id.id, 'order_id' : self.id, 'offer_type':offer_line.offer_type, 'qty' : ol.product_uom_qty,'n' :offer_line.offer_cart_id.n,'m' :offer_line.offer_cart_id.m,'bundle_price': offer_line.offer_cart_id.bundle_price, 'offer_author_id' :offer_line.offer_cart_id.author_id.id, 'offer_name' : offer_line.offer_cart_id.name })
                         
                 elif ol:
+                    if (offer_line.qty_max_buyable > 0 and ol.product_uom_qty > offer_line.qty_max_buyable):
+                            raise QtyMaxBuyableException(ol.product_id.name)
                     offer_line = ol.product_id.offer_cart_lines[0]
                     print "split line"
                     self._split_order_line(ol,num_prod_for_free -i,ol.product_uom_qty - (num_prod_for_free -i))
