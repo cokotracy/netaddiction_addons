@@ -20,14 +20,23 @@ odoo.define('netaddiction_warehouse.reso_cliente', function (require) {
             self.active_order_id = action.context.active_id;
             self.operations = {};
             new Model('netaddiction.warehouse.operations.settings').query([]).filter([['company_id','=',session.company_id]]).all().then(function(configs){
+                var ids_conf = []
+                var config_conf = []
                 for (var i in configs){
                     self.operations[configs[i].netaddiction_op_type]={}
                     self.operations[configs[i].netaddiction_op_type]['operation_type_id'] = configs[i].operation[0];
-                    new Model('stock.picking.type').query(['default_location_src_id','default_location_dest_id']).filter([['id','=',configs[i].operation[0]]]).first().then(function(res){
-                        self.operations[configs[i].netaddiction_op_type]['default_location_src_id'] = res.default_location_src_id[0];
-                        self.operations[configs[i].netaddiction_op_type]['default_location_dest_id'] = res.default_location_dest_id[0];
-                    })
+                    ids_conf.push(parseInt(configs[i].operation[0]));
+                    config_conf.push(configs[i].netaddiction_op_type);
                 }
+
+                new Model('stock.picking.type').query(['default_location_src_id','default_location_dest_id']).filter([['id','in',ids_conf]]).all().then(function(res){
+                       for (var r in res){
+                            self.operations[config_conf[r]]['default_location_src_id'] = res[r].default_location_src_id
+                            self.operations[config_conf[r]]['default_location_dest_id'] = res[r].default_location_dest_id
+                       }
+                        
+                })
+
                 new Model('netaddiction.wh.locations').query(['id']).filter([['company_id','=',session.company_id],['barcode','=','0000000002']]).first().then(function(loc){
                     self.location_reverse = loc.id;
                 })
@@ -139,7 +148,10 @@ odoo.define('netaddiction_warehouse.reso_cliente', function (require) {
                 'sale_id' : parseInt(self.active_order_id),
                 'pack_operation_product_ids' : pack_operation_product_ids,
             }
-            new Model('stock.picking').call('create_reverse_scraped',[attr]);
+            new Model('stock.picking').call('create_reverse',[attr]).then(function(e){
+
+                location.reload();
+            });
             this.do_notify("RESO COMPLETATO","Il reso è stato completato");
             return this.getParent().close();
         },
