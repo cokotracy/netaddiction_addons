@@ -310,7 +310,7 @@
             </field>
         </record>
 
-        <record id="netaddiction_sale_button_template" model="ir.ui.view">
+        <!--<record id="netaddiction_sale_button_template" model="ir.ui.view">
             <field name="name">netaddiction.product.template.sale.button</field>
             <field name="model">product.template</field>
             <field name="priority">30</field>
@@ -320,7 +320,7 @@
                         <attribute name="invisible">1</attribute>
                </button>
             </field>
-        </record>
+        </record>-->
 
     </data>
 </openerp>
