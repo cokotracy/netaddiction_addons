@@ -115,7 +115,7 @@ class CatalogOffer(models.Model):
             for prod in self.env['product.product'].search(dom):
                 if( prod.id not in ids):
                     to_add.append(self.env['netaddiction.specialoffer.offer_catalog_line'].create({'product_id':prod.id, 'offer_catalog_id' : self.id, 'qty_max_buyable' : self.qty_max_buyable,'qty_limit': self.qty_limit, 'qty_min':self.qty_min,'offer_type':self.offer_type,'percent_discount':self.percent_discount,'fixed_price': self.fixed_price, 'priority' : self.priority}))
-            #self.products_list = [(0,0, to_add)]
+            
 
 
     @api.multi
@@ -225,7 +225,7 @@ class ShoppingCartOffer(models.Model):
     priority = fields.Selection([(1,'1'),(2,'2'),(3,'3'),(4,'4'),(5,'5'),(6,'6'),(7,'7'),(8,'8'),(9,'9'),(10,'10')], string='Priorità', default=1,required=True)
     qty_max_buyable = fields.Integer( string='Quantità massima acquistabile', help = "Quantità massima di prodotti acquistabili in un singolo ordine in questa offerta. 0 è illimitato", required=True)
     qty_limit = fields.Integer( string='Quantità limite', help = "Quantità limite di prodotti vendibili in questa offerta. 0 è illimitato", required=True)
-    qty_selled = fields.Integer( string='Quantità venduta', default=0)
+    qty_selled = fields.Integer( string='Quantità venduta', default=0.0, compute="_compute_qty_selled")
     offer_type = fields.Selection([(1,'Bundle'),(2,'n x m'),(3,'n x prezzo')], string='Tipo Offerta', default=2,required=True)
     n = fields.Integer(string="N")
     m = fields.Integer(string="M")
@@ -278,13 +278,19 @@ class ShoppingCartOffer(models.Model):
 
     @api.one
     def turn_off(self):
-        #TODO
-        return 
+        for pl in self.products_list:
+            pl.active = False
+           
+        self.write({'active' : False})
 
     @api.one
     def turn_on(self):
-        #TODO
-        return
+        for pl in self.env['netaddiction.specialoffer.offer_cart_line'].search([('offer_cart_id','=',self.id),('active','=',False)]):
+            pl.active = True
+           
+        self.write({'active' : True})
+
+
 
 
 
@@ -372,6 +378,16 @@ class ShoppingCartOffer(models.Model):
             pl.offer_type = self.offer_type
             pl.priority = self.priority
 
+    @api.multi
+    def _compute_qty_selled(self):
+        for offer in self:
+            temp = 0.0
+            for pl in offer.products_list:
+                 temp += pl.qty_selled
+            for pl in self.env['netaddiction.specialoffer.offer_cart_line'].search([('offer_cart_id','=',offer.id),('active','=',False)]):
+                temp += pl.qty_selled
+            #search for inactive offers
+            offer.qty_selled = temp
 
 
        

@@ -52,19 +52,19 @@ class OffersCatalogSaleOrderLine(models.Model):
         """
         if(offer.date_end > fields.Date.today()):
             if(offer_line.qty_max_buyable > 0 and uom_quantity > offer_line.qty_max_buyable):
-                raise QtyMaxBuyableException(product.name)
+                raise QtyMaxBuyableException(product.name, product.id)
                 
             if(uom_quantity < offer_line.qty_min):
                 #ritorno false e l'offerta non viene applicata
                 return False
-            if(offer_line.qty_limit > 0 and offer_line.qty_selled + uom_quantity > offer_line.qty_limit):
+            #if(offer_line.qty_limit > 0 and offer_line.qty_selled + uom_quantity > offer_line.qty_limit):
                 #questa cosa va fatta solo in action confirm!
                 #offer_line.qty_selled += uom_quantity
                 #TODO: aggiungi notifica (e manda mail a riccardo in action problems)
                 #molto importante perchè così quando viene chiamato action_confirm l'ordine viene spostato in problem
                 #offer_line.active =False
                 #return False
-                pass
+                #pass
 
             
             return True
@@ -214,8 +214,13 @@ class OffersCatalogSaleOrderLine(models.Model):
 
 
 class QtyMaxBuyableException(ValueError):
-    def __init__(self, value):
+    def __init__(self, prod_str, prod_id):
         self.var_name = 'qty_max_buyable'
-        self.prod = value
+        self.prod = prod_str
+        self.prod_id = prod_id
     def __str__(self):
-        return "Quantità massima acquistabile in offerta ecceduta %s" %self.prod
+        s = u"Quantity massima acquistabile in offerta ecceduta %s id: %s " %(self.prod, self.prod_id)
+        return s
+    def __repr__(self):
+        s = u"Quantity massima acquistabile in offerta ecceduta %s id: %s" %(self.prod, self.prod_id)
+        return s
