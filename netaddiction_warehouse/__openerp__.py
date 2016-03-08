@@ -22,7 +22,6 @@
         'views/report.xml',
         'views/bolla_di_spedizione.xml',
         'views/controllo_pickup.xml',
-        'views/resi.xml',
         'views/settings_menu.xml',
         'views/orders.xml'
     ],
