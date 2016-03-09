@@ -349,21 +349,37 @@ openerp.netaddiction_warehouse = function(instance, local) {
     });
 
     local.carico_choose = instance.Widget.extend({
-        template : 'carico_choose',
-        events : {
+        //template : 'carico_choose',
+        /*events : {
             "click #gotoCarico" : "GoToCarico",
             "change #c_supplier" : "SearchWave"
-        },
+        },*/
         init: function(parent,suppliers){
             this_choose = this;
             this_choose._super(parent);
             this_choose.suppliers = suppliers;
+            var options ={
+                    title: "Carico da Fornitore - ", 
+                    subtitle: 'Scegli il Fornitore',
+                    size: 'large',
+                    dialogClass: '',
+                    $content: instance.web.qweb.render('carico_choose2',{suppliers:suppliers}),
+                    buttons: [{text: _t("Chiudi"), close: true, classes:"btn-primary"},{text:"Avanti",classes:"btn-success",click : this.GoToCarico}]
+                }
+            this_choose.dial = new instance.web.Dialog(this,options)
+            this_choose.dial.open();
+
+            $('#c_supplier').change(function(e){
+                this_choose.SearchWave(e);
+            })
         },
         GoToCarico : function(e){
-            supplier_id = $('#c_supplier').val();
-            document_number = $('#document_number').val();
-            wave = $('#waves_supplier').val();
+            var modal_content = e.currentTarget.closest('.modal-content');
+            var supplier_id = $(modal_content).find('#c_supplier').val();
+            var document_number = $(modal_content).find('#document_number').val();
+            wave = $(modal_content).find('#waves_supplier').val();
             
+            this_choose.dial.close();
             message = '';
             if (supplier_id == ''){
                 message = message + "<li><b>Fornitore</b> mancante</li>";
@@ -373,9 +389,11 @@ openerp.netaddiction_warehouse = function(instance, local) {
             }
             
             if(wave!=undefined){
+
                 document_number = $('#waves_supplier option:selected').text();
                 return new instance.web.Model('res.partner').query(['id','name']).filter([['id','=',parseInt(supplier_id)]]).first().then(function(sup){
                     nuovo = new local.carico_go(this_carico,supplier_id,sup.name,document_number,wave);
+
                     this_choose.destroy();
                     nuovo.appendTo(this_carico.$el);
                 });
@@ -438,8 +456,11 @@ openerp.netaddiction_warehouse = function(instance, local) {
             this_cgo.supplier_name = supplier_name;
             this_cgo.products = {};
             this_cgo.products_ordered = {};
-            new instance.web.Model('stock.picking.wave').query(['id','picking_ids']).filter([['id','=',this_cgo.wave]]).first().then(function(result){
+            new instance.web.Model('stock.picking.wave').query(['id','name','picking_ids']).filter([['id','=',this_cgo.wave]]).first().then(function(result){
+                
                 if(result != null){
+                    this_cgo.document_number = result.name
+                    
                     ids = []
                     for (p in result.picking_ids){
                         ids.push(result.picking_ids[p]);

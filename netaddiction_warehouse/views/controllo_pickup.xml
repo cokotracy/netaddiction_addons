@@ -6,6 +6,7 @@
                 <link rel="stylesheet" href="/netaddiction_warehouse/static/src/css/backend_style.css" />
                 <script type="text/javascript" src="/netaddiction_warehouse/static/src/js/widget.js"/>
                 <script type="text/javascript" src="/netaddiction_warehouse/static/src/js/reso_cliente.js"/>
+                <script type="text/javascript" src="/netaddiction_warehouse/static/src/js/reso_fornitore.js"/>
             </xpath>
         </template>
 
@@ -30,5 +31,13 @@
             <field name="name">Reso Cliente</field>
             <field name="tag">netaddiction_warehouse.reso_cliente</field>
         </record>
+
+        <record id="netaddiction_warehouse_suppliers_reverse" model="ir.actions.client">
+            <field name="name">Reso a Fornitore</field>
+            <field name="tag">netaddiction_warehouse.supplier_reverse</field>
+        </record>
+
+        <menuitem id="netaddiction_warehouse_suppliers_reverse_menu" name="Reso a Fornitore" parent="purchase.menu_purchase_control"
+            action="netaddiction_warehouse_suppliers_reverse" sequence="70"/>
     </data>
 </openerp>

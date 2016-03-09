@@ -70,16 +70,16 @@
                                 <div title="Quantità Prevista (Magaz - Out + In)">Prevista</div>
                             </th>
                             <th data-id="inorder" class="oe_list_header_char oe_sortable">
-                                <div title="Quantità in ordini bozza">Bozza</div>
+                                <div title="Quantità in ordini di acquisto in bozza">Bozza</div>
                             </th>
                             <th data-id="qty_available" class="oe_list_header_char oe_sortable">
                                 <div title="Quantità Magazzino">Magaz</div>
                             </th>
                             <th data-id="order_qty" class="oe_list_header_char oe_sortable">
-                                <div>Da Ord</div>
+                                <div title="Quantità da Ordinare">Da Ord</div>
                             </th>
                             <th data-id="seller" class="oe_list_header_char oe_sortable">
-                                <div title="Quantità da Ordinare">Fornitore</div>
+                                <div >Fornitore</div>
                             </th>
                             
                         </tr>

@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<templates id="netaddiction_supplier_reverse" xml:space="preserve">
+    <t t-name="dialog_content_supplier_reverse">
+    	<select id="select_supplier_reverse">
+	        <option value="" selected="selected"></option>
+	        <t t-foreach="suppliers" t-as="supplier">
+	        	<option t-attf-value="{{supplier.id}}"><t t-esc="supplier.name"/></option>
+	        </t>
+	    </select>
+   	</t>
+
+   	<t t-name="super_block">
+   		<div class="oe-control-panel">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-md-6 oe-cp-title">
+                        <ol class="oe-view-title breadcrumb"><li class="active"><t t-esc="title"/></li></ol>
+                    </div>
+                    <div class="oe-cp-search-view col-md-6">
+                        
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6 oe-button-column">
+                        <div class="oe-cp-buttons">
+                            <div class="oe_list_buttons">
+                                
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+   	</t>
+
+   	<t t-name="page_supplier_reverse">
+   		<t t-call="super_block">
+		    <t t-set="title" >
+		    	<t t-esc="widget.supplier_id"/>
+		    </t>
+		</t>
+   	</t>
+
+
+</templates>
