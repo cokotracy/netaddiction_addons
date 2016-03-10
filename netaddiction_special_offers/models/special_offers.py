@@ -414,6 +414,17 @@ class OfferCartLine(models.Model):
     @api.constrains('offer_cart_id')
     def _check_priority(self):
         self.priority = self.offer_cart_id[0].priority   
+
+    @api.one
+    @api.constrains('active')
+    def _check_active_bundle(self):
+        if self.offer_type == 1 and not self.active and  self.offer_cart_id.active:
+            self.offer_cart_id.active = False
+            for pl in self.offer_cart_id.products_list:
+                if pl.id != self.id:
+                    pl.active = False
+           
+
            
 
         
