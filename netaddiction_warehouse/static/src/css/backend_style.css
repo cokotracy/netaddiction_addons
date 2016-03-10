@@ -29,3 +29,12 @@
 .choose_form input, .choose_form select{
     width: 100%;
 }
+
+/*RESO FORNITORE*/
+#select_supplier_reverse{
+    width: 80%;
+    margin: 0 auto;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+    

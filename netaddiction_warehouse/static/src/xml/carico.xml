@@ -42,7 +42,7 @@
 	        							<td  colspan="1" width="50%">
 	        								<select id="c_supplier">
 	        									<option value="" selected="selected"></option>
-	        									<t t-foreach="widget.suppliers" t-as="supplier">
+	        									<t t-foreach="suppliers" t-as="supplier">
 	        										<option t-attf-value="{{supplier.id}}"><t t-esc="supplier.name"/></option>
 	        									</t>
 	        								</select>
@@ -66,6 +66,36 @@
         	</div>
         </div>
         
+	</t>
+
+	<t t-name="carico_choose2">
+							<table border="0" cellpadding="0" cellspacing="0" class="oe_form_group choose_form">
+	        					<tbody>
+	        						<tr class="oe_form_group_row supplier_tr_row">
+	        							<td  colspan="1" width="50%">
+	        								<b>Fornitore</b>
+	        							</td>
+	        							<td  colspan="1" width="50%">
+	        								<select id="c_supplier">
+	        									<option value="" selected="selected"></option>
+	        									<t t-foreach="suppliers" t-as="supplier">
+	        										<option t-attf-value="{{supplier.id}}"><t t-esc="supplier.name"/></option>
+	        									</t>
+	        								</select>
+	        							</td>
+	        						</tr>
+	        						
+	        						<tr class="oe_form_group_row">
+	        							<td  colspan="1" width="50%">
+	        								<b>Numero Documento</b>
+	        							</td>
+	        							<td  colspan="1" width="50%">
+	        								<input type="text" id="document_number"/>
+	        							</td>
+	        						</tr>
+	        						
+	        					</tbody>
+	        				</table>
 	</t>
 
 	<t t-name="carico_go">
