@@ -13,7 +13,10 @@ class Products(models.Model):
     #campo prezzo ivato
     final_price = fields.Float(string="Prezzo al pubblico")
     #campi aggiuntivi
-    published = fields.Boolean(string="Visibile sul Sito?",default="True")
+    purchasable = fields.Boolean(string="Acquistabile",default="True")
+
+    visible = fields.Boolean(string="Visibile",default="True")
+
     out_date = fields.Date(string="Data di Uscita")
     out_date_approx_type = fields.Selection(string="Approssimazione Data",
         selection=(('accurate','Preciso'),('month','Mensile'),('quarter','Trimestrale'),
@@ -24,10 +27,19 @@ class Products(models.Model):
         Trimestrale: prende l'anno e mese e calcola il trimestre(es:in uscita nel terzo trimestre 2019),
         Quadrimestrale: prende anno e mese e calcola il quadrimestre(es:in uscita nel primo quadrimestre del 2019),
         Annuale: prende solo l'anno (es: in uscita nel 2019)""" )
+
+    available_date = fields.Date(string="Data disponibilità")
+
     qty_available_now = fields.Integer(string="Quantità Disponibile",compute="_get_qty_available_now",
         help="Quantità Disponibile Adesso (qty in possesso - qty in uscita)",search="_search_available_now")
     qty_sum_suppliers = fields.Integer(string="Quantità dei fornitori", compute="_get_qty_suppliers",
         help="Somma delle quantità dei fornitori")
+
+    qty_single_order = fields.Integer(string="Quantità massima ordinabile" , help="Quantità massima ordinabile per singolo ordine/cliente")
+
+    qty_limit = fields.Integer(string="Quantità limite", help="Imposta la quantità limite prodotto (qty disponibile == qty_limit accade Azione)")
+    limit_action = fields.Selection(string="Azione limite", help="Se qty_limit impostata decide cosa fare al raggiungimento di tale qty",
+            selection= (('nothing','Nessuna Azione'),('no_purchasable','Metto Esaurito'),('deactive','Spengo')))
 
     #override per calcolare meglio gli acquisti
     purchase_count = fields.Integer(string="Acquisti", compute="_get_sum_purchases",
@@ -141,9 +153,15 @@ class Products(models.Model):
         return  super(Products, self).create(values)
 
     @api.one
-    def toggle_published(self):
-        value = not self.published
-        attr = {'published':value}
+    def toggle_purchasable(self):
+        value = not self.purchasable
+        attr = {'purchasable':value}
+        self.write(attr)
+
+    @api.one
+    def toggle_visible(self):
+        value = not self.visible
+        attr = {'visible':value}
         self.write(attr)
 
     def _check_attribute_value_ids(self, cr, uid, ids, context=None):
@@ -162,7 +180,8 @@ class Template(models.Model):
     list_price = fields.Float(string="Prezzo Listino")
 
     #campi aggiunti
-    published = fields.Boolean(string="Visibile sul Sito?",default="True")
+    purchasable = fields.Boolean(string="Acquistabile",default="True")
+    visible = fields.Boolean(string="Visibile",default="True")
     out_date = fields.Date(string="Data di Uscita")
     out_date_approx_type = fields.Selection(string="Approssimazione Data",
         selection=(('accurate','Preciso'),('month','Mensile'),('quarter','Trimestrale'),
@@ -173,6 +192,8 @@ class Template(models.Model):
         Trimestrale: prende l'anno e mese e calcola il trimestre(es:in uscita nel terzo trimestre 2019),
         Quadrimestrale: prende anno e mese e calcola il quadrimestre(es:in uscita nel primo quadrimestre del 2019),
         Annuale: prende solo l'anno (es: in uscita nel 2019)""")
+
+    available_date = fields.Date(string="Data disponibilità")
 
     #campi aggiunti per visualizzare anche le varianti con active=False
     #da problemi con la funzione _compute_product_template_field in addons/product/product.py
@@ -190,7 +211,7 @@ class Template(models.Model):
         """
         new_id = super(Template, self).create(values)
 
-        attr={k: v for k, v in values.items() if k in ['out_date','out_date_approx_type','active','published','description']}
+        attr={k: v for k, v in values.items() if k in ['available_date','out_date','out_date_approx_type','active','purchasable','description','visible']}
 
         new_id.product_variant_ids.write(attr)
 
@@ -199,7 +220,7 @@ class Template(models.Model):
     @api.multi
     def write(self,values):
 
-        attr={k: v for k, v in values.items() if k in ['out_date','out_date_approx_type','active','published','description']}
+        attr={k: v for k, v in values.items() if k in ['available_date','out_date','out_date_approx_type','active','purchasable','description','visible']}
 
         self.product_variant_ids.write(attr)
 
@@ -215,9 +236,15 @@ class Template(models.Model):
         self.product_variant_count_bis = len(result)
 
     @api.one
-    def toggle_published(self):
-        value = not self.published
-        attr = {'published':value}
+    def toggle_purchasable(self):
+        value = not self.purchasable
+        attr = {'purchasable':value}
+        self.write(attr)
+
+    @api.one
+    def toggle_visible(self):
+        value = not self.visible
+        attr = {'visible':value}
         self.write(attr)
 
 class SupplierInfo(models.Model):

@@ -128,6 +128,7 @@
                                 </group>
                                 <group name="group_general_right"  col="2" class="oe_right">
                                     <field name="categ_id" options="{'no_create': True}"/>
+                                    <field name="available_date" />
                                     <field name="company_id" groups="base.group_multi_company"
                                         options="{'no_create': True}"/>
                                     <field name="barcode" required="True"/>
@@ -159,11 +160,25 @@
                                 <field name="virtual_available" class="oe_inline" string="Quantità Prevista"/>
                                 <field name="qty_sum_suppliers" class="oe_inline"/>
                             </group>
+                            <group string="Azioni quantità" col="4">
+                                <field name="qty_limit" class="oe_inline" />
+                                <field name="limit_action" class="oe_inline" />
+                                <field name="qty_single_order" class="oe_inline" />
+                            </group>
                             <group string="Valorizzazione Inventario" col="4">
                                 <field name="property_cost_method" groups="stock_account.group_inventory_valuation"/>
                                 <field name="property_valuation"/>
                             </group>
                             
+                        </page>
+                        <page string="Extra Dati" name="extra_datas">
+                            <field name="extra_data" readonly="1">
+                                <tree string="extra_data_tree">
+                                    <field name="key_type"/>
+                                    <field name="key"/>
+                                    <field name="value"/>
+                                </tree>
+                            </field>
                         </page>
                         <page string="Tasse" name="taxes_netaddiction">
                             <group name="taxes"  col="4" >

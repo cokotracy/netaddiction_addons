@@ -63,24 +63,34 @@
                     <button name="toggle_active" type="object"
                             class="oe_stat_button" icon="fa-archive">
                         <field name="active" invisible="1"/>
-                        <label for="active" string="Attivo"
+                        <label for="active" string="Acceso"
                             style="color:green;font-weight:normal"
                             attrs="{'invisible':[('active','=',False)]}"/>
                         <label for="active" style="color:red;font-weight:normal"
-                            string="Inattivo" attrs="{'invisible':[('active','=',True)]}"/>
+                            string="Spento" attrs="{'invisible':[('active','=',True)]}"/>
                     </button>
                 </button>
                 <button name="toggle_active" position="after">
-                    <button name="toggle_published" type="object"
+                    <button name="toggle_purchasable" type="object"
                             class="oe_stat_button" icon="fa-check">
-                        <label for="published" string="Visibile"
+                        <label for="purchasable" string="Acquistabile"
                             style="color:green;font-weight:normal"
-                            attrs="{'invisible':[('published','=',False)]}"/>
-                        <label for="published" style="color:red;font-weight:normal"
-                            string="Nascosto" attrs="{'invisible':[('published','=',True)]}"/>
-                        <field name="published" invisible="1" />
+                            attrs="{'invisible':[('purchasable','=',False)]}"/>
+                        <label for="purchasable" style="color:red;font-weight:normal"
+                            string="Esaurito" attrs="{'invisible':[('purchasable','=',True)]}"/>
+                        <field name="purchasable" invisible="1" />
+                    </button>
+                    <button name="toggle_visible" type="object"
+                            class="oe_stat_button" icon="fa-check">
+                        <label for="visible" string="Visibile"
+                            style="color:green;font-weight:normal"
+                            attrs="{'invisible':[('visible','=',False)]}"/>
+                        <label for="visible" style="color:red;font-weight:normal"
+                            string="Nascosto" attrs="{'invisible':[('visible','=',True)]}"/>
+                        <field name="visible" invisible="1" />
                     </button>
                 </button>
+
 
                 <!--inventory-->
                 <field name="categ_id" position="replace"/>
@@ -98,6 +108,7 @@
                     </group>
                     <group name="group_general_right"  col="2" class="oe_right">
                         <field name="categ_id" options="{'no_create': True}"/>
+                        <field name="available_date"/>
                         <field name="company_id" groups="base.group_multi_company"
                             options="{'no_create': True}"/>
                     </group>
@@ -182,7 +193,7 @@
                             <field name="final_price"/>
                             <field name="qty_available" />
                             <field name="qty_available_now" />
-                            <field name="published" />
+                            <field name="purchasable" />
                         </tree>
                     </field>
                 </field>

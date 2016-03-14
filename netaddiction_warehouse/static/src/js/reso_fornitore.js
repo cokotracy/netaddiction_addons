@@ -34,7 +34,12 @@ odoo.define('netaddiction_warehouse.supplier_reverse', function (require) {
         },
         goNext : function(e){
             var sup_id = $('#select_supplier_reverse').val();
-            var supplier_reverse = new page_supplier_reverse(null,sup_id);
+            var name = $('#select_supplier_reverse :selected').text();
+            var supplier = {
+                'id' : sup_id,
+                'name' : name
+            }
+            var supplier_reverse = new page_supplier_reverse(null,supplier);
             supplier_reverse.appendTo('.oe_client_action');
             this.destroy();
         }
@@ -42,9 +47,29 @@ odoo.define('netaddiction_warehouse.supplier_reverse', function (require) {
 
     var page_supplier_reverse = Widget.extend({
         template : 'page_supplier_reverse',
-        init : function(parent,sup_id){
+        events : {
+            'click .change_reverse_pick' : 'doChangeListReverse'
+        },
+        init : function(parent,supplier){
             this._super()
-            this.supplier_id = sup_id;
+            this.supplier = supplier;
+            this.get_scraped_products(this.supplier.id);
+        },
+        doChangeListReverse : function(e){
+            $('.change_reverse_pick').removeClass('active_reverse');
+            $(e.currentTarget).addClass('active_reverse');
+            var id = $(e.currentTarget).attr('id');
+            this.get_product_list(id);
+        },
+        get_product_list : function(wharehouse){
+            if(wharehouse == 'scrapped_wh_link'){
+                this.get_scraped_products(this.supplier.id);
+            }else{
+                this.get_wh_products(this.supplier.id);
+            }
+        },
+        get_scraped_products : function(supplier_id){
+            
         }
     });
 

@@ -38,3 +38,22 @@
     margin-bottom: 10px;
 }
     
+#scrapped_wh,#normal_wh{
+    padding:0;
+    border-top: 1px solid #afafb6;
+}
+
+#scrapped_wh{
+    border-right:1px solid #afafb6;
+}
+
+#scrapped_wh_link,#normal_wh_link{
+    display:block;
+    height:100%;
+    text-align:center;
+    line-height: 29px;
+}
+
+.active_reverse{
+    background-color: white;
+}

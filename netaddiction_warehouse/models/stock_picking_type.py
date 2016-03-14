@@ -241,6 +241,10 @@ class StockPicking(models.Model):
 
         obj.do_new_transfer()
 
+        move = self.env['stock.move'].search([('picking_id','=',obj.id)])
+        move.write({'origin' : obj.origin})
+
+
 
 
 class StockOperation(models.Model):

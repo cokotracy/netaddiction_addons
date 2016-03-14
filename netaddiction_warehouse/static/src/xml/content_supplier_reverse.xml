@@ -15,7 +15,7 @@
             <div class="container-fluid">
                 <div class="row">
                     <div class="col-md-6 oe-cp-title">
-                        <ol class="oe-view-title breadcrumb"><li class="active"><t t-esc="title"/></li></ol>
+                        <ol class="oe-view-title breadcrumb"><li class="active">Reso per <b><t t-esc="title"/></b></li></ol>
                     </div>
                     <div class="oe-cp-search-view col-md-6">
                         
@@ -30,6 +30,14 @@
                         </div>
                     </div>
                 </div>
+                <div class="row" style="padding-bottom:0">
+                    <div class="col-md-6 oe-button-column" id="scrapped_wh">
+                      <a id="scrapped_wh_link" class="active_reverse change_reverse_pick">DIFETTATI</a>
+                    </div>
+                    <div class="col-md-6 oe-button-column" id="normal_wh">
+                      <a id="normal_wh_link" class="change_reverse_pick">MAGAZZINO</a>
+                    </div>
+                </div>
             </div>
         </div>
    	</t>
@@ -37,7 +45,7 @@
    	<t t-name="page_supplier_reverse">
    		<t t-call="super_block">
 		    <t t-set="title" >
-		    	<t t-esc="widget.supplier_id"/>
+		    	<t t-esc="widget.supplier.name"/>
 		    </t>
 		</t>
    	</t>
