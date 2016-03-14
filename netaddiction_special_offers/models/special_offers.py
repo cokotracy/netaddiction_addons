@@ -427,6 +427,32 @@ class OfferCartLine(models.Model):
 
            
 
-        
+class BonusOffer(models.Model):     
+    _name = "netaddiction.specialoffer.bonus"
+
+
+    name = fields.Char(string='Titolo', required=True)
+    active = fields.Boolean(string='Attivo', help="Permette di spengere l'offerta senza cancellarla",default=True)
+    author_id = fields.Many2one(comodel_name='res.users',string='Autore', required=True)
+    company_id = fields.Many2one(comodel_name='res.company', string='Company', required=True)
+    qty_limit = fields.Integer( string='Quantità limite', help = "Quantità limite di prodotti vendibili in questa offerta. 0 è illimitato", required=True)
+    qty_selled = fields.Float( string='Quantità venduta', default=0.0)
+    
+    
+    products_list = fields.One2many('netaddiction.specialoffer.bonus_offer_line', 'bonus_offer_id', string='Lista prodotti')
+
+
+class BonusOfferLine(models.Model):
+
+    _name = "netaddiction.specialoffer.bonus_offer_line"
+
+    
+
+    active = fields.Boolean(default=True,
+        help="Spuntato = offerta attiva, Non Spuntato = offerta spenta")
+    product_id = fields.Many2one('product.product', string='Product', domain=[('sale_ok', '=', True)], change_default=True, ondelete='restrict', required=True)
+    bonus_offer_id = fields.Many2one('netaddiction.specialoffer.bonus', string='Offerta Carrello', index=True, copy=False, required=True)
+    qty_selled = fields.Float( string='Quantità venduta', default=0.0)
+
 
 

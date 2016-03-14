@@ -10,6 +10,7 @@ class OffersProducts(models.Model):
 
     offer_catalog_lines = fields.One2many('netaddiction.specialoffer.offer_catalog_line', 'product_id', string='offerte catalogo')
     offer_cart_lines = fields.One2many('netaddiction.specialoffer.offer_cart_line', 'product_id', string='offerte carrello')
+    offer_bonus_lines = fields.One2many('netaddiction.specialoffer.bonus_offer_line', 'product_id', string='bonus')
 
 
     @api.one
