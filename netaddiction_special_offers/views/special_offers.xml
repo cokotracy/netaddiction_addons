@@ -308,11 +308,11 @@
           name="Bonus" parent="menu_netaddiction_special_offers"
           action="netaddiction_special_offers_bonus_base"/>
 
-        <record model="ir.ui.view" id="netaddiction_special_offers_cart_tree">
-            <field name="name">view.netaddiction_special_offers_cart</field>
+        <record model="ir.ui.view" id="netaddiction_special_offers_bonus_tree">
+            <field name="name">view.netaddiction_special_offers_bonus</field>
             <field name="model">netaddiction.specialoffer.bonus</field>
             <field name="arch" type="xml">
-                 <tree name="special_offers_catalog list">
+                 <tree name="special_offers_bonus list">
                     <field name="name"/>
                     <field name="author_id"/>
 
