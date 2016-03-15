@@ -36,10 +36,11 @@ class OfferOrder(models.Model):
 
         problems = False
         if( self.state == 'draft'):
-            for line in self.offers_cart:
-                    offer_line = line.product_id.offer_cart_lines[0] if len(line.product_id.offer_cart_lines[0]) >0 else None
+            for och in self.offers_cart:
+
+                    offer_line = och.offer_cart_line
                     if offer_line:
-                        offer_line.qty_selled += line.qty
+                        offer_line.qty_selled += och.qty
                         offer_line.active = offer_line.qty_limit == 0 or offer_line.qty_selled <= offer_line.qty_limit
                     if(offer_line.qty_limit >0 and offer_line.qty_selled > offer_line.qty_limit):
                         problems = True
@@ -80,7 +81,7 @@ class OfferOrder(models.Model):
                             offer_line.qty_selled -= line.product_uom_qty
                 #offerte carrello
                 for och in order.offers_cart:
-                    offer_line = och.product_id.offer_cart_lines[0] if len(och.product_id.offer_cart_lines[0]) >0 else None
+                    offer_line = och.offer_cart_line
                     if offer_line:
                         offer_line.qty_selled -= och.qty
 
@@ -97,36 +98,66 @@ class OfferOrder(models.Model):
         """
         #cancello tutte le history line di questo ordine
         for och in self.env['netaddiction.order.specialoffer.cart.history'].search([("order_id","=",self.id)]):
+            #TODO CONTROLLARE CHE I PREZZI TORNINO DI DEFAULT!
             och.unlink()
-        #chiavi = offerte carrello che hanno una possibilità di essere applicate a questo ordine
-        #valori = lista di (order_line)
-        offer_dict = {} 
-        #lista ordinata per priorità di offerte carrello che hanno una possibilità di essere applicate a questo ordine
-        offer_list = []
-        for ol in self.order_line:
+        # #chiavi = offerte carrello che hanno una possibilità di essere applicate a questo ordine
+        # #valori = lista di (order_line)
+        # offer_dict = {} 
+        # #lista ordinata per priorità di offerte carrello che hanno una possibilità di essere applicate a questo ordine
+        # offer_list = []
+        # for ol in self.order_line:
            
-            if len(ol.product_id.offer_cart_lines) > 0:
-                offer = ol.product_id.offer_cart_lines[0].offer_cart_id
-                if offer not in offer_dict:
-                    prod_list =[]
-                    prod_list.append(ol)
-                    offer_dict[offer] = prod_list
-                else:
-                    offer_dict[offer].append(ol)
+        #     if len(ol.product_id.offer_cart_lines) > 0:
+        #         offer = ol.product_id.offer_cart_lines[0].offer_cart_id
+        #         if offer not in offer_dict:
+        #             prod_list =[]
+        #             prod_list.append(ol)
+        #             offer_dict[offer] = prod_list
+        #         else:
+        #             offer_dict[offer].append(ol)
 
+
+        # offer_list = offer_dict.keys()
+        # offer_list.sort(key=lambda offer: offer.priority)
+        # order_lines = [o for o in self.order_line]
+        
+        # #controllo scadenze offerta
+        # for offer in offer_list:
+        #     self._verify_cart_offers(offer,offer_dict[offer])
+
+
+        # new version
+
+        offer_list = []
+        #offer ->[lista product id]
+        offer_dict = {}
+        #order lines utilizzabili
+        order_lines_usables = []
+        for ol in self.order_line:
+            if len(ol.product_id.offer_cart_lines) > 0:
+                #considero solo order lines che hanno almeno una offerta carrello ME GUSTA
+                order_lines_usables.append(ol.id) 
+                for offer in ol.product_id.offer_cart_lines:
+                    if offer.offer_cart_id not in offer_dict:
+                        prod_list =[]
+                        prod_list.append(ol.product_id.id)
+                        offer_dict[offer.offer_cart_id] = prod_list
+                    else:
+                        offer_dict[offer.offer_cart_id].append(ol.product_id.id)
 
         offer_list = offer_dict.keys()
         offer_list.sort(key=lambda offer: offer.priority)
-        order_lines = [o for o in self.order_line]
-        
-        #controllo scadenze offerta
+
         for offer in offer_list:
-            self._verify_cart_offers(offer,offer_dict[offer])
+            if not order_lines_usables:
+                break
+            self._verify_cart_offers(offer,offer_dict[offer],order_lines_usables)
+
 
 
 
     @api.one
-    def _verify_cart_offers(self,offer,order_lines):
+    def _verify_cart_offers(self,offer,pid_list,order_lines_usables):
         """Verifica se l'offerta offer è verificata per le linee order_lines e in caso la applica
         """
         #controllo scadenze offerta
@@ -134,23 +165,29 @@ class OfferOrder(models.Model):
             if(offer.offer_type == 1):
                 #bundle
                 print "bundle"
-                self._apply_bundle(offer,order_lines)
+                #self._apply_bundle(offer,order_lines)
+                pass
                 
                 
             elif(offer.offer_type == 2):
                #nxm
                print "n x m"
-               self._apply_n_x_m(offer,order_lines)
+               self._apply_n_x_m(offer,pid_list,order_lines_usables)
 
             elif (offer.offer_type == 3):
                 #nxprezzo
                 print "n x price"
-                self._apply_n_x_price(offer,order_lines)
+                self._apply_n_x_price(self,offer,pid_list,order_lines_usables)
+                
        
     @api.one
-    def _apply_n_x_m(self,offer,order_lines):
+    def _apply_n_x_m(self,offer,pid_list,order_lines_usables):
         """ applica l'offerta n x m offer alle order_lines in questo ordine
         """
+        order_lines =[]
+        for ol in self.order_line:
+            if ol.id in order_lines_usables and ol.product_id.id in pid_list:
+                order_lines.append(ol)
         tot_qty = 0
         for ol in order_lines:
             tot_qty += ol.product_uom_qty
@@ -161,24 +198,36 @@ class OfferOrder(models.Model):
             num_prod_for_free = part * (offer.n - offer.m)
             #ordino le order lines per price unit crescente
             order_lines.sort(key=lambda ol: ol.price_unit)
-            self._create_offer_cart_history_n(offer.n * part, order_lines)
+            self._create_offer_cart_history_n(offer.n * part, order_lines,offer)
             i = 0
-            while i < num_prod_for_free:
-                ol = order_lines[i] if order_lines[i] else None
-                if(ol and ol.product_uom_qty <= num_prod_for_free - i):
+            for ol in order_lines:
+               
+                if(ol.product_uom_qty <= num_prod_for_free - i):
                     ol.price_unit = 0.0
+                    order_lines_usables.remove(ol.id)
                     i += int(ol.product_uom_qty)
                         
                 elif ol:
                     #spezza le linee
-                    self._split_order_line(ol,num_prod_for_free -i,ol.product_uom_qty - (num_prod_for_free -i))
+                    res = self._split_order_line(ol,num_prod_for_free -i,ol.product_uom_qty - (num_prod_for_free -i))
+                    order_lines_usables.remove(ol.id)
                     ol.price_unit = 0.0
+                    new_ol = res[0] if res[0] else None
+                    if new_ol:
+                        order_lines_usables.append(new_ol.id)
                     i = num_prod_for_free
+                #EXIT CONDITION
+                if i >= num_prod_for_free:
+                    break
 
     @api.one
-    def _apply_n_x_price(self,offer,order_lines):
+    def _apply_n_x_price(self,offer,pid_list,order_lines_usables):
         """ applica l'offerta n x prezzo offer alle order_lines in questo ordine
         """
+        order_lines =[]
+        for ol in self.order_line:
+            if ol.id in order_lines_usables and ol.product_id.id in pid_list:
+                order_lines.append(ol)
         tot_qty = 0
         for ol in order_lines:
             tot_qty += ol.product_uom_qty
@@ -188,19 +237,28 @@ class OfferOrder(models.Model):
             num_prod_to_reduce = part * offer.n
             #ordino le order lines per price unit crescente
             order_lines.sort(key=lambda ol: ol.price_unit)
-            self._create_offer_cart_history_n(offer.n * part, order_lines)
+            self._create_offer_cart_history_n(offer.n * part, order_lines,offer)
             i = 0
-            while i < num_prod_to_reduce:
-                ol = order_lines[i] if order_lines[i] else None
+            for ol in order_lines:
+            
                 if(ol and ol.product_uom_qty <= num_prod_to_reduce - i):
                     ol.price_unit = offer.fixed_price
+                    order_lines_usables.remove(ol.id)
                     i += int(ol.product_uom_qty)
                         
                 elif ol:
                     #spezza le linee
-                    self._split_order_line(ol,num_prod_to_reduce -i,ol.product_uom_qty - (num_prod_to_reduce -i))
+                    res = self._split_order_line(ol,num_prod_to_reduce -i,ol.product_uom_qty - (num_prod_to_reduce -i))
                     ol.price_unit = offer.fixed_price
+                    order_lines_usables.remove(ol.id)
+                    new_ol = res[0] if res[0] else None
+                    if new_ol:
+                        order_lines_usables.append(new_ol.id)
                     i = num_prod_to_reduce
+
+                #EXIT CONDITION
+                if i >= num_prod_to_reduce:
+                    break
 
     @api.one
     def _apply_bundle(self,offer,order_lines):
@@ -213,9 +271,9 @@ class OfferOrder(models.Model):
             while i < ol.product_uom_qty:
                 order_prods.append(ol.product_id.id)
                 i += 1
-        print "A"
+
         if len(order_prods) >= len(bundle_prods):
-            print "B"
+
             order_cnt = Counter(order_prods)
             bundle_cnt = Counter(bundle_prods)
             bundle_verified = True
@@ -226,7 +284,7 @@ class OfferOrder(models.Model):
             if bundle_verified:
                 #history e cambio prezzi
                 #matches = [ol for ol in order_lines if ol.product_id.id in bundle_prods]
-                self._create_offer_cart_history_bundles(bundle_cnt,order_lines)
+                self._create_offer_cart_history_bundles(bundle_cnt,order_lines,offer)
                 tot = 0
                 for ol in order_lines:
                     if ol.product_uom_qty >bundle_cnt[ol.product_id.id]:
@@ -269,34 +327,51 @@ class OfferOrder(models.Model):
             return ret
 
     @api.one
-    def _create_offer_cart_history_n(self,num, order_lines):
+    def _create_offer_cart_history_n(self,num, order_lines,offer):
         """ Questo metodo crea le OrderOfferCartHistory per l'offerta nxm o nxprice che accomuna tutte le order_lines. Le order_lines vengono visitate dall'inizio fino al raggiungimento di num (quindi le order_lines devono essere già ordinate secondo un criterio sensato)
             num = numero di prodotti a cui deve essere applicata l'offerta (anche quelli che non saranno scontati nel caso del n x m)
             Raise QtyMaxBuyableException nel caso in cui sia stata superata una qty_max_buyable
         """
         i = 0
-        while i < num:
-            ol = order_lines[i] if order_lines[i] else None
-            if ol:
-                to_add = ol.product_uom_qty if (i + ol.product_uom_qty < num) else (num - i)
-                offer_line = ol.product_id.offer_cart_lines[0]
-                if (offer_line.qty_max_buyable > 0 and to_add > offer_line.qty_max_buyable):
-                    #pulizia dei record history già creati
+
+        for ol in order_lines:
+            
+
+            to_add = int(ol.product_uom_qty) if (i + ol.product_uom_qty < num) else (num - i)
+            offer_line = None
+            for ofcl in ol.product_id.offer_cart_lines:
+                if ofcl.offer_cart_id.id == offer.id:
+                    offer_line = ofcl
+                    break
+            if offer_line:
+                
+                if offer_line.qty_max_buyable > 0 and to_add > offer_line.qty_max_buyable:
+                #pulizia dei record history già creati
                     offers_cart_history = self.env['netaddiction.order.specialoffer.cart.history'].search([("order_id","=",self.id),("offer_name","=",offer_line.offer_cart_id.name)])
                     for och in offers_cart_history:
                         och.unlink()
                     raise QtyMaxBuyableException(ol.product_id.name,ol.product_id.id)
                 else:
-                    self.env['netaddiction.order.specialoffer.cart.history'].create({'product_id' : ol.product_id.id, 'order_id' : self.id, 'offer_type':offer_line.offer_type, 'qty' : to_add,'n' :offer_line.offer_cart_id.n,'m' :offer_line.offer_cart_id.m,'bundle_price': offer_line.offer_cart_id.bundle_price, 'offer_author_id' :offer_line.offer_cart_id.author_id.id, 'offer_name' : offer_line.offer_cart_id.name })
+                    
+                    self.env['netaddiction.order.specialoffer.cart.history'].create({'product_id' : ol.product_id.id, 'order_id' : self.id, 'offer_type':offer_line.offer_type, 'qty' : to_add,'n' :offer_line.offer_cart_id.n,'m' :offer_line.offer_cart_id.m,'bundle_price': offer_line.offer_cart_id.bundle_price, 'offer_author_id' :offer_line.offer_cart_id.author_id.id, 'offer_name' : offer_line.offer_cart_id.name,  'offer_cart_line' : offer_line.id })
                     i +=  to_add
+            #EXIT CONDITION
+            if i >= num:
+                break
+
+
     @api.one
-    def _create_offer_cart_history_bundles(self,bundle_cnt, order_lines):
+    def _create_offer_cart_history_bundles(self,bundle_cnt, order_lines,offer):
         """ Questo metodo crea le OrderOfferCartHistory per l'offerta BUNDLE che accomuna tutte le order_lines. Le order_lines vengono visitate tutte
             bundle_cnt = Counter per i prodotti nel bundle
             Raise QtyMaxBuyableException nel caso in cui sia stata superata una qty_max_buyable
         """
         for ol in order_lines:
-            offer_line = ol.product_id.offer_cart_lines[0]
+            offer_line = None
+            for ofcl in ol.product_id.offer_cart_lines:
+                if ofcl.offer_cart_id.id == offer.id:
+                    offer_line = ofcl
+                    break
             if (offer_line.qty_max_buyable > 0 and bundle_cnt[ol.product_id.id] > offer_line.qty_max_buyable):
                 #pulizia dei record history già creati
                 offers_cart_history = self.env['netaddiction.order.specialoffer.cart.history'].search([("order_id","=",self.id),("offer_name","=",offer_line.offer_cart_id.name)])
@@ -304,7 +379,7 @@ class OfferOrder(models.Model):
                     och.unlink()
                 raise QtyMaxBuyableException(ol.product_id.name,ol.product_id.id)
             else:
-                self.env['netaddiction.order.specialoffer.cart.history'].create({'product_id' : ol.product_id.id, 'order_id' : self.id, 'offer_type':offer_line.offer_type, 'qty' : bundle_cnt[ol.product_id.id],'n' :offer_line.offer_cart_id.n,'m' :offer_line.offer_cart_id.m,'bundle_price': offer_line.offer_cart_id.bundle_price, 'offer_author_id' :offer_line.offer_cart_id.author_id.id, 'offer_name' : offer_line.offer_cart_id.name })
+                self.env['netaddiction.order.specialoffer.cart.history'].create({'product_id' : ol.product_id.id, 'order_id' : self.id, 'offer_type':offer_line.offer_type, 'qty' : bundle_cnt[ol.product_id.id],'n' :offer_line.offer_cart_id.n,'m' :offer_line.offer_cart_id.m,'bundle_price': offer_line.offer_cart_id.bundle_price, 'offer_author_id' :offer_line.offer_cart_id.author_id.id, 'offer_name' : offer_line.offer_cart_id.name, 'offer_cart_line' : offer_line.id })
 
     
     def _find_bundle_unit_price(self,ol,tot,bundle_price):
@@ -338,6 +413,8 @@ class OrderOfferCartHistory(models.Model):
     offer_author_id = fields.Many2one(comodel_name='res.users',string='Autore offerta')
     offer_name = fields.Char(string='Offerta')
     order_id = fields.Many2one(comodel_name='sale.order', string='Ordine',index=True, copy=False, required=True)
+    offer_cart_line = fields.Many2one(comodel_name='netaddiction.specialoffer.offer_cart_line')
+
 
 
 
