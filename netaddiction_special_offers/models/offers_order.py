@@ -87,6 +87,39 @@ class OfferOrder(models.Model):
 
         super(OfferOrder, self).action_cancel()
 
+    @api.one
+    def reset_cart(self):
+        """Annulla tutte le offerte carrello e riaccorpa le linee separate
+        """
+        #elimina le offert cart history unlink 
+        if len(self.offers_cart) > 0:
+            for och in self.env['netaddiction.order.specialoffer.cart.history'].search([("order_id","=",self.id)]):
+                och.unlink()
+
+            order_lines = [ol for ol in self.order_line]
+            #ordino le order lines per product_id
+            order_lines.sort(key=lambda ol: ol.product_id.id)
+
+            i = 0
+            while i < len(order_lines):
+                curr_ol = order_lines[i]
+                j = i +1
+                next_ol = order_lines[j] if j < len(order_lines) else None
+                while next_ol and next_ol.product_id.id == curr_ol.product_id.id:
+                #riaccorpa le linee for ol in self.order_lines
+                    curr_ol.product_uom_qty += next_ol.product_uom_qty
+                    order_lines.remove(next_ol)
+                    next_ol.unlink()
+                    j += 1
+                    next_ol = order_lines[j] if j < len(order_lines) else None
+                #resetta i prezzi
+                curr_ol.product_id_change()
+                i = j
+
+
+
+        
+            
 
 
     #comportamento su offerte spente: vanno riattivate sempre manualmente
@@ -97,34 +130,7 @@ class OfferOrder(models.Model):
             Raise QtyMaxBuyableException nel caso in cui sia stata superata una qty_max_buyable
         """
         #cancello tutte le history line di questo ordine
-        for och in self.env['netaddiction.order.specialoffer.cart.history'].search([("order_id","=",self.id)]):
-            #TODO CONTROLLARE CHE I PREZZI TORNINO DI DEFAULT!
-            och.unlink()
-        # #chiavi = offerte carrello che hanno una possibilità di essere applicate a questo ordine
-        # #valori = lista di (order_line)
-        # offer_dict = {} 
-        # #lista ordinata per priorità di offerte carrello che hanno una possibilità di essere applicate a questo ordine
-        # offer_list = []
-        # for ol in self.order_line:
-           
-        #     if len(ol.product_id.offer_cart_lines) > 0:
-        #         offer = ol.product_id.offer_cart_lines[0].offer_cart_id
-        #         if offer not in offer_dict:
-        #             prod_list =[]
-        #             prod_list.append(ol)
-        #             offer_dict[offer] = prod_list
-        #         else:
-        #             offer_dict[offer].append(ol)
-
-
-        # offer_list = offer_dict.keys()
-        # offer_list.sort(key=lambda offer: offer.priority)
-        # order_lines = [o for o in self.order_line]
-        
-        # #controllo scadenze offerta
-        # for offer in offer_list:
-        #     self._verify_cart_offers(offer,offer_dict[offer])
-
+        self.reset_cart()
 
         # new version
 
@@ -164,19 +170,16 @@ class OfferOrder(models.Model):
         if(offer.date_end > fields.Datetime.now()):
             if(offer.offer_type == 1):
                 #bundle
-                print "bundle"
                 self._apply_bundle(offer,pid_list,order_lines_usables)
                 
                 
                 
             elif(offer.offer_type == 2):
                #nxm
-               print "n x m"
                self._apply_n_x_m(offer,pid_list,order_lines_usables)
 
             elif (offer.offer_type == 3):
                 #nxprezzo
-                print "n x price"
                 self._apply_n_x_price(offer,pid_list,order_lines_usables)
                 
        
@@ -312,8 +315,6 @@ class OfferOrder(models.Model):
                 for ol in order_lines:
                     #qui siamo sicuri che product_uom_qty = bundle_cnt[ol.product_id.id]
                     res = self._find_bundle_unit_price(ol,tot,bundle_price)
-                    print type(res)
-                    print res
                     ol.price_unit = res
                         
                 

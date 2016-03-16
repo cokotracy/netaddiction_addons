@@ -165,7 +165,9 @@
               <xpath expr="//div[@name='button_box']"
                     position="after">    
                     <button  class="oe_highlight" name="extract_cart_offers" 
-                                string="Applica Offerte Carrello" type="object" />           
+                                string="Applica Offerte Carrello" type="object" />
+                    <button  class="oe_highlight" name="reset_cart" 
+                                string="Reset Offerte Carrello" type="object" />              
                 </xpath> 
 
               </field>
