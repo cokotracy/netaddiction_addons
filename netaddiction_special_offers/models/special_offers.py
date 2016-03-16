@@ -22,7 +22,7 @@ class CatalogOffer(models.Model):
     qty_min = fields.Integer( string='Quantità minima acquisto', help = "Quantità minima di prodotti da inserire nel carrello per attivare l'offerta.")
     qty_selled = fields.Float( string='Quantità venduta', default=0.0, compute="_compute_qty_selled")
     offer_type = fields.Selection([(1,'Prezzo Fisso'),(2,'Percentuale')], string='Tipo Offerta', default=2)
-    fixed_price = fields.Integer(string="Prezzo fisso")
+    fixed_price = fields.Float(string="Prezzo fisso")
     percent_discount = fields.Integer(string="Sconto Percentuale")
     products_list = fields.One2many('netaddiction.specialoffer.offer_catalog_line', 'offer_catalog_id', string='Lista prodotti')
     end_cron_job = fields.Integer()
@@ -182,7 +182,7 @@ class OfferCatalogLine(models.Model):
     qty_max_buyable = fields.Integer( string='Quantità massima acquistabile', help = "Quantità massima di prodotti acquistabili in un singolo ordine in questa offerta. 0 è illimitato", required=True)
     qty_limit = fields.Integer( string='Quantità limite', help = "Quantità limite di prodotti vendibili in questa offerta. 0 è illimitato", required=True)
     qty_min = fields.Integer( string='Quantità minima acquisto', help = "Quantità minima di prodotti da inserire nel carrello per attivare l'offerta.", required=True)
-    fixed_price = fields.Integer(string="Prezzo fisso")
+    fixed_price = fields.Float(string="Prezzo fisso")
     percent_discount = fields.Integer(string="Sconto Percentuale")
     offer_type = fields.Selection([(1,'Prezzo Fisso'),(2,'Percentuale')], string='Tipo Offerta')
     qty_selled = fields.Float( string='Quantità venduta', default=0.0)
@@ -421,7 +421,7 @@ class OfferCartLine(models.Model):
     @api.constrains('offer_cart_id')
     def _check_priority(self):
         self.priority = self.offer_cart_id[0].priority
-        self.offer_type = self.offer_catalog_id[0].offer_type   
+        self.offer_type = self.offer_cart_id[0].offer_type   
 
     @api.one
     @api.constrains('active')
