@@ -165,8 +165,8 @@ class OfferOrder(models.Model):
             if(offer.offer_type == 1):
                 #bundle
                 print "bundle"
-                #self._apply_bundle(offer,order_lines)
-                pass
+                self._apply_bundle(offer,pid_list,order_lines_usables)
+                
                 
                 
             elif(offer.offer_type == 2):
@@ -177,7 +177,7 @@ class OfferOrder(models.Model):
             elif (offer.offer_type == 3):
                 #nxprezzo
                 print "n x price"
-                self._apply_n_x_price(self,offer,pid_list,order_lines_usables)
+                self._apply_n_x_price(offer,pid_list,order_lines_usables)
                 
        
     @api.one
@@ -242,14 +242,20 @@ class OfferOrder(models.Model):
             for ol in order_lines:
             
                 if(ol and ol.product_uom_qty <= num_prod_to_reduce - i):
-                    ol.price_unit = offer.fixed_price
+                    tax = ol.tax_id.amount
+                    detax = offer.n_price / (float(1) + float(tax/100))
+                    deiva = round(detax,2)
+                    ol.price_unit = deiva
                     order_lines_usables.remove(ol.id)
                     i += int(ol.product_uom_qty)
                         
                 elif ol:
                     #spezza le linee
                     res = self._split_order_line(ol,num_prod_to_reduce -i,ol.product_uom_qty - (num_prod_to_reduce -i))
-                    ol.price_unit = offer.fixed_price
+                    tax = ol.tax_id.amount
+                    detax = offer.n_price / (float(1) + float(tax/100))
+                    deiva = round(detax,2)
+                    ol.price_unit = deiva
                     order_lines_usables.remove(ol.id)
                     new_ol = res[0] if res[0] else None
                     if new_ol:
@@ -261,9 +267,15 @@ class OfferOrder(models.Model):
                     break
 
     @api.one
-    def _apply_bundle(self,offer,order_lines):
+    def _apply_bundle(self,offer,pid_list,order_lines_usables):
         """ applica l'offerta bundle offer alle order_lines in questo ordine
         """
+
+        order_lines =[]
+        for ol in self.order_line:
+            if ol.id in order_lines_usables and ol.product_id.id in pid_list:
+                order_lines.append(ol)
+
         bundle_prods =[ocl.product_id.id for ocl in offer.products_list]
         order_prods = []
         for ol in order_lines:
@@ -289,8 +301,12 @@ class OfferOrder(models.Model):
                 for ol in order_lines:
                     if ol.product_uom_qty >bundle_cnt[ol.product_id.id]:
                         #split line
-                        self._split_order_line(ol,bundle_cnt[ol.product_id.id],ol.product_uom_qty - bundle_cnt[ol.product_id.id])
+                        res = self._split_order_line(ol,bundle_cnt[ol.product_id.id],ol.product_uom_qty - bundle_cnt[ol.product_id.id])
+                        new_ol = res[0] if res[0] else None
+                        if new_ol:
+                            order_lines_usables.append(new_ol.id)
 
+                    order_lines_usables.remove(ol.id)
                     tot += ol.price_total
                 bundle_price = offer.bundle_price
                 for ol in order_lines:
@@ -353,7 +369,7 @@ class OfferOrder(models.Model):
                     raise QtyMaxBuyableException(ol.product_id.name,ol.product_id.id)
                 else:
                     
-                    self.env['netaddiction.order.specialoffer.cart.history'].create({'product_id' : ol.product_id.id, 'order_id' : self.id, 'offer_type':offer_line.offer_type, 'qty' : to_add,'n' :offer_line.offer_cart_id.n,'m' :offer_line.offer_cart_id.m,'bundle_price': offer_line.offer_cart_id.bundle_price, 'offer_author_id' :offer_line.offer_cart_id.author_id.id, 'offer_name' : offer_line.offer_cart_id.name,  'offer_cart_line' : offer_line.id })
+                    self.env['netaddiction.order.specialoffer.cart.history'].create({'product_id' : ol.product_id.id, 'order_id' : self.id, 'offer_type':offer_line.offer_type, 'qty' : to_add,'n' :offer_line.offer_cart_id.n,'m' :offer_line.offer_cart_id.m,'bundle_price': offer_line.offer_cart_id.bundle_price, 'offer_author_id' :offer_line.offer_cart_id.author_id.id, 'offer_name' : offer_line.offer_cart_id.name,  'offer_cart_line' : offer_line.id , 'n_price' : offer.n_price})
                     i +=  to_add
             #EXIT CONDITION
             if i >= num:
@@ -392,7 +408,6 @@ class OfferOrder(models.Model):
         tax = ol.tax_id.amount
         detax = full_price / (float(1) + float(tax/100))
         deiva = round(detax,2)
-        print deiva
         return float(deiva)
 
 
@@ -408,8 +423,8 @@ class OrderOfferCartHistory(models.Model):
     qty = fields.Integer(string = "quantità")
     n = fields.Integer(string="N")
     m = fields.Integer(string="M")
-    bundle_price = fields.Integer(string="Prezzo bundle")
-    n_price = fields.Integer(string= "Prezzo Prodotti")
+    bundle_price = fields.Float(string="Prezzo bundle")
+    n_price = fields.Float(string= "Prezzo Prodotti")
     offer_author_id = fields.Many2one(comodel_name='res.users',string='Autore offerta')
     offer_name = fields.Char(string='Offerta')
     order_id = fields.Many2one(comodel_name='sale.order', string='Ordine',index=True, copy=False, required=True)

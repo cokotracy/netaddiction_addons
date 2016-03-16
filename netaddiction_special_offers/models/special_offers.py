@@ -205,6 +205,7 @@ class OfferCatalogLine(models.Model):
     @api.constrains('offer_catalog_id')
     def _check_priority(self):
         self.priority = self.offer_catalog_id[0].priority
+        self.offer_type = self.offer_catalog_id[0].offer_type
 
     
 
@@ -229,13 +230,19 @@ class ShoppingCartOffer(models.Model):
     offer_type = fields.Selection([(1,'Bundle'),(2,'n x m'),(3,'n x prezzo')], string='Tipo Offerta', default=2,required=True)
     n = fields.Integer(string="N")
     m = fields.Integer(string="M")
-    bundle_price = fields.Integer(string="Prezzo bundle")
-    n_price = fields.Integer(string= "Prezzo Prodotti")
+    bundle_price = fields.Float(string="Prezzo bundle")
+    n_price = fields.Float(string= "Prezzo Prodotti")
     products_list = fields.One2many('netaddiction.specialoffer.offer_cart_line', 'offer_cart_id', string='Lista prodotti')
     end_cron_job = fields.Integer()
     start_cron_job = fields.Integer()
 
 
+    @api.one
+    @api.constrains('active')
+    def _check_active(self):
+        if not self.active:
+            for pl in self.products_list:
+                pl.active = False
 
     @api.one
     @api.constrains('priority')
@@ -413,7 +420,8 @@ class OfferCartLine(models.Model):
     @api.one
     @api.constrains('offer_cart_id')
     def _check_priority(self):
-        self.priority = self.offer_cart_id[0].priority   
+        self.priority = self.offer_cart_id[0].priority
+        self.offer_type = self.offer_catalog_id[0].offer_type   
 
     @api.one
     @api.constrains('active')
