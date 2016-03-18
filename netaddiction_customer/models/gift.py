@@ -5,6 +5,7 @@ from openerp.exceptions import ValidationError
 
 class Gift(models.Model):
     _name = "netaddiction.gift"
+
     partner_id = fields.Many2one(
         comodel_name='res.partner',
         string="Cliente", required=True)
@@ -78,6 +79,20 @@ class GiftCustomer(models.Model):
                 'default_partner_id' : self.id,
                  },
         }
+
+
+    @api.one
+    def remove_gift_value(self,to_rmv):
+        if self.got_gift:
+            remaining = to_rmv
+            for gift in self.gift_ids:
+                if gift.value > remaining:
+                    gift.value -= remaining
+                    remaining = 0.0
+                    break
+                else:
+                    remaining -= gift.value
+                    gift.unlink()
 
 
 

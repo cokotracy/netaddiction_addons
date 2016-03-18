@@ -108,6 +108,24 @@
             </field>
         </record>
 
+
+
+        <record model="ir.ui.view" id="netaddiction_view_order_gift">
+            <field name="name">netaddiction.sale.order.gift</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale.view_order_form"/>
+            <field name="arch" type="xml">
+
+              <xpath expr="//field[@name='amount_tax']"
+                    position="after">    
+                    <field name="gift_discount"/>
+                       
+                </xpath> 
+
+            </field>
+        </record>
+
+
     </data>
 </openerp>
 
