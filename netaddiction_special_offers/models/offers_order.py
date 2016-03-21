@@ -9,83 +9,83 @@ class OfferOrder(models.Model):
     offers_cart = fields.One2many('netaddiction.order.specialoffer.cart.history','order_id', string='offerte carrello attive')
 
     
-    def _check_offers_catalog(self):
-        """controlla le offerte catalogo e aggiorna le quantità vendute.
-        returns True se qualche prodotto ha superato la qty_limit per la sua offerta catalogo corrispondente
-        False altrimenti
-        """
-        problems = False
-        if( self.state == 'draft'):
-            for line in self.order_line:
-                if( line.offer_type and  not line.negate_offer ):
-                    offer_line = line.product_id.offer_catalog_lines[0] if len(line.product_id.offer_catalog_lines) >0 else None
-                    if offer_line:
-                        offer_line.qty_selled += line.product_uom_qty
-                        offer_line.active = offer_line.qty_limit == 0 or offer_line.qty_selled <= offer_line.qty_limit
-                    if(offer_line.qty_limit >0 and offer_line.qty_selled > offer_line.qty_limit):
-                        problems = True
+    # def _check_offers_catalog(self):
+    #     """controlla le offerte catalogo e aggiorna le quantità vendute.
+    #     returns True se qualche prodotto ha superato la qty_limit per la sua offerta catalogo corrispondente
+    #     False altrimenti
+    #     """
+    #     problems = False
+    #     if( self.state == 'draft'):
+    #         for line in self.order_line:
+    #             if( line.offer_type and  not line.negate_offer ):
+    #                 offer_line = line.product_id.offer_catalog_lines[0] if len(line.product_id.offer_catalog_lines) >0 else None
+    #                 if offer_line:
+    #                     offer_line.qty_selled += line.product_uom_qty
+    #                     offer_line.active = offer_line.qty_limit == 0 or offer_line.qty_selled <= offer_line.qty_limit
+    #                 if(offer_line.qty_limit >0 and offer_line.qty_selled > offer_line.qty_limit):
+    #                     problems = True
 
-        return problems
+    #     return problems
 
     
-    def _check_offers_cart(self):
-        """controlla le offerte carrello e aggiorna le quantità vendute.
-        returns True se qualche prodotto ha superato la qty_limit per la sua offerta carrello corrispondente
-        False altrimenti
-        """
+    # def _check_offers_cart(self):
+    #     """controlla le offerte carrello e aggiorna le quantità vendute.
+    #     returns True se qualche prodotto ha superato la qty_limit per la sua offerta carrello corrispondente
+    #     False altrimenti
+    #     """
 
-        problems = False
-        if( self.state == 'draft'):
-            for och in self.offers_cart:
+    #     problems = False
+    #     if( self.state == 'draft'):
+    #         for och in self.offers_cart:
 
-                    offer_line = och.offer_cart_line
-                    if offer_line:
-                        offer_line.qty_selled += och.qty
-                        offer_line.active = offer_line.qty_limit == 0 or offer_line.qty_selled <= offer_line.qty_limit
-                    if(offer_line.qty_limit >0 and offer_line.qty_selled > offer_line.qty_limit):
-                        problems = True
+    #                 offer_line = och.offer_cart_line
+    #                 if offer_line:
+    #                     offer_line.qty_selled += och.qty
+    #                     offer_line.active = offer_line.qty_limit == 0 or offer_line.qty_selled <= offer_line.qty_limit
+    #                 if(offer_line.qty_limit >0 and offer_line.qty_selled > offer_line.qty_limit):
+    #                     problems = True
 
-        return problems
+    #     return problems
 
-    @api.one
-    def action_problems(self):
-        self._check_offers_catalog()
-        self._check_offers_cart()
-    	self.state = 'problem'
+    # @api.one
+    # def action_problems(self):
+    #     self._check_offers_catalog()
+    #     self._check_offers_cart()
+    # 	self.state = 'problem'
 
 
-    @api.multi
-    def action_confirm(self):
-        problems = False
-    	for order in self:
-            problems = order._check_offers_catalog() 
-            problems = order._check_offers_cart() or problems
-            #TODO se c'è un commento spostare in problem non in sale
-            if problems:
-            #TODO aggiungere il commento sul perchè
-                order.state = 'problem'
-            else:
-                super(OfferOrder, order).action_confirm()
+    # @api.multi
+    # def action_confirm(self):
+    #     problems = False
+    # 	for order in self:
+    #         problems = order._check_offers_catalog() 
+    #         problems = order._check_offers_cart() or problems
+    #         #TODO se c'è un commento spostare in problem non in sale
+    #         if problems:
+    #         #TODO aggiungere il commento sul perchè
+    #             order.state = 'problem'
+    #         else:
+    #             super(OfferOrder, order).action_confirm()
     
-    @api.multi
-    def action_cancel(self):
-        #N.B. offerte mai riattivate manualmente
-        self._send_cancel_mail()
-        for order in self:
-            if (order.state != 'draft'):
-                #offerte catalogo
-                for line in order.order_line:
-                    if( line.offer_type  and not line.negate_offer):
-                        offer_line = order.product_id.offer_catalog_lines[0] if len(order.product_id.offer_catalog_lines) >0 else None
-                        if offer_line:
-                            offer_line.qty_selled -= line.product_uom_qty
-                #offerte carrello
-                for och in order.offers_cart:
-                    offer_line = och.offer_cart_line
-                    if offer_line:
-                        offer_line.qty_selled -= och.qty
+    # @api.multi
+    # def action_cancel(self):
+    #     #N.B. offerte mai riattivate manualmente
+    #     self._send_cancel_mail()
+    #     for order in self:
+    #         if (order.state != 'draft'):
+    #             #offerte catalogo
+    #             for line in order.order_line:
+    #                 if( line.offer_type  and not line.negate_offer):
+    #                     offer_line = order.product_id.offer_catalog_lines[0] if len(order.product_id.offer_catalog_lines) >0 else None
+    #                     if offer_line:
+    #                         offer_line.qty_selled -= line.product_uom_qty
+    #             #offerte carrello
+    #             for och in order.offers_cart:
+    #                 offer_line = och.offer_cart_line
+    #                 if offer_line:
+    #                     offer_line.qty_selled -= och.qty
 
-        super(OfferOrder, self).action_cancel()
+    #     super(OfferOrder, self).action_cancel()
 
     @api.one
     def reset_cart(self):
@@ -115,6 +115,7 @@ class OfferOrder(models.Model):
                 #resetta i prezzi
                 curr_ol.product_id_change()
                 i = j
+            self._amount_all()
 
 
 
@@ -158,6 +159,7 @@ class OfferOrder(models.Model):
             if not order_lines_usables:
                 break
             self._verify_cart_offers(offer,offer_dict[offer],order_lines_usables)
+        self._amount_all()
 
 
 

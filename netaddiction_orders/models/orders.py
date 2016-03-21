@@ -109,15 +109,7 @@ class Order(models.Model):
                 'invoice_status': invoice_status
             })
 
-    @api.multi
-    def action_cancel(self):
-        self._send_cancel_mail()
-        super(Order, self).action_cancel()
 
-    @api.multi
-    def action_confirm(self):
-        # TODO: verificare il campo delivery_option
-        super(Order, self).action_confirm()
 
     @api.one
     def _send_cancel_mail(self):
@@ -147,6 +139,97 @@ class Order(models.Model):
         self.ensure_one()
         if (self.state == 'sale'):
                 self.write({'state': 'partial_done'})
+
+    def _check_offers_catalog(self):
+        """controlla le offerte catalogo e aggiorna le quantità vendute.
+        returns True se qualche prodotto ha superato la qty_limit per la sua offerta catalogo corrispondente
+        False altrimenti
+        """
+        problems = False
+        if( self.state == 'draft'):
+            for line in self.order_line:
+                if( line.offer_type and  not line.negate_offer ):
+                    offer_line = line.product_id.offer_catalog_lines[0] if len(line.product_id.offer_catalog_lines) >0 else None
+                    if offer_line:
+                        offer_line.qty_selled += line.product_uom_qty
+                        offer_line.active = offer_line.qty_limit == 0 or offer_line.qty_selled <= offer_line.qty_limit
+                    if(offer_line.qty_limit >0 and offer_line.qty_selled > offer_line.qty_limit):
+                        problems = True
+
+        return problems
+
+    
+    def _check_offers_cart(self):
+        """controlla le offerte carrello e aggiorna le quantità vendute.
+        returns True se qualche prodotto ha superato la qty_limit per la sua offerta carrello corrispondente
+        False altrimenti
+        """
+
+        problems = False
+        if( self.state == 'draft'):
+            for och in self.offers_cart:
+
+                    offer_line = och.offer_cart_line
+                    if offer_line:
+                        offer_line.qty_selled += och.qty
+                        offer_line.active = offer_line.qty_limit == 0 or offer_line.qty_selled <= offer_line.qty_limit
+                    if(offer_line.qty_limit >0 and offer_line.qty_selled > offer_line.qty_limit):
+                        problems = True
+
+        return problems
+
+    @api.one
+    def action_problems(self):
+        self._check_offers_catalog()
+        self._check_offers_cart()
+        self.state = 'problem'
+
+
+    @api.multi
+    def action_confirm(self):
+        problems = False
+        for order in self:
+            problems = order._check_offers_catalog() 
+            problems = order._check_offers_cart() or problems
+            #TODO se c'è un commento spostare in problem non in sale
+            if problems or order.amount_total < 0:
+            #TODO aggiungere il commento sul perchè
+                order.state = 'problem'
+            else:
+                super(Order, order).action_confirm()
+                if order.gift_discount > 0.0:
+                    order.partner_id.remove_gift_value(order.gift_discount)
+    
+    @api.multi
+    def action_cancel(self):
+        #N.B. offerte mai riattivate manualmente
+        self._send_cancel_mail()
+        for order in self:
+            if (order.state != 'draft'):
+                #offerte catalogo
+                for line in order.order_line:
+                    if( line.offer_type  and not line.negate_offer):
+                        offer_line = order.product_id.offer_catalog_lines[0] if len(order.product_id.offer_catalog_lines) >0 else None
+                        if offer_line:
+                            offer_line.qty_selled -= line.product_uom_qty
+                #offerte carrello
+                for och in order.offers_cart:
+                    offer_line = och.offer_cart_line
+                    if offer_line:
+                        offer_line.qty_selled -= och.qty
+                #TODO ristorare gifts?
+
+
+        super(Order, self).action_cancel()
+
+    @api.depends('order_line.price_total')
+    def _amount_all(self):
+        super(Order,self)._amount_all()
+        for order in self:
+            order._compute_gift_amount()
+
+
+
 
 
 
