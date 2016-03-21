@@ -8,7 +8,7 @@ class GiftOrder(models.Model):
 
     @api.depends('order_line.price_total')
     def _amount_all(self):
-        super(GiftOrder,self)._amount_all
+        super(GiftOrder,self)._amount_all()
         for order in self:
             if order.partner_id.got_gift:
                 tot = 0.0

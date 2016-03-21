@@ -32,9 +32,6 @@
                             <field name="rating"  attrs="{'invisible':[('parent_id','!=', False)]}" />
                             <field name="function" placeholder="e.g. Sales Director" attrs="{'invisible': True}"/>
                             <field name="affiliate_id" attrs="{'invisible': ['|',('parent_id', '!=', False),('affiliate_id', '=',False )]}"/>
-                            <field name="got_gift" invisible="1"/>
-                            <field name="gift_ids"  attrs="{'invisible': ['|',('parent_id', '!=', False),('got_gift', '=',False)]}"/>
-                            <field name="total_gift" />
                             <field name="user_ids" invisible="1"/>
                             <field name="category_id" widget="many2many_tags" placeholder="Tags..."  attrs="{'invisible':True}"/>
                   </xpath>
@@ -132,7 +129,19 @@
                         <attribute name="attrs">{'invisible': [('customer', '=', True)]}</attribute>
             
                 </xpath>
-            </field>
+                <xpath expr="//page[@name='sales_purchases']" position='after'>  
+                <page string="Gift" name="gift_netaddiction">
+                    <group name="loc_left" class="oe_left" col="2">
+                                                <field name="got_gift" />
+                                                <field name="total_gift" />
+                            <field name="gift_ids"  attrs="{'invisible': ['|',('parent_id', '!=', False),('got_gift', '=',False)]}"/>
+
+                       </group>     
+                </page>
+                </xpath>
+
+
+                </field>
     
         </record>
 

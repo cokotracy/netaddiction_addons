@@ -48,7 +48,7 @@ class GiftCustomer(models.Model):
         inverse_name='partner_id',
         string='Gift')
     total_gift = fields.Float(compute='_compute_total_gift', string='Totale gift')
-    got_gift = fields.Boolean(compute='_compute_got_gift')
+    got_gift = fields.Boolean(compute='_compute_got_gift', string='ha gift?')
 
 
 
@@ -85,7 +85,9 @@ class GiftCustomer(models.Model):
     def remove_gift_value(self,to_rmv):
         if self.got_gift:
             remaining = to_rmv
-            for gift in self.gift_ids:
+            gifts = [gift for gift in self.gift_ids]
+            gifts.sort(key=lambda gift: gift.type_id.priority)
+            for gift in gifts:
                 if gift.value > remaining:
                     gift.value -= remaining
                     remaining = 0.0
