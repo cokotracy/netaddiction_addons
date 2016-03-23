@@ -12,8 +12,9 @@ class Products(models.Model):
     list_price = fields.Float(string="Prezzo Listino")
     #campo prezzo ivato
     final_price = fields.Float(string="Prezzo al pubblico")
+    
     #campi aggiuntivi
-    purchasable = fields.Boolean(string="Acquistabile",default="True")
+    sale_ok = fields.Boolean(string="Acquistabile",default="True")
 
     visible = fields.Boolean(string="Visibile",default="True")
 
@@ -154,9 +155,7 @@ class Products(models.Model):
 
     @api.one
     def toggle_purchasable(self):
-        value = not self.purchasable
-        attr = {'purchasable':value}
-        self.write(attr)
+        self.sale_ok = not self.sale_ok
 
     @api.one
     def toggle_visible(self):
@@ -180,7 +179,7 @@ class Template(models.Model):
     list_price = fields.Float(string="Prezzo Listino")
 
     #campi aggiunti
-    purchasable = fields.Boolean(string="Acquistabile",default="True")
+    sale_ok = fields.Boolean(string="Acquistabile",default="True")
     visible = fields.Boolean(string="Visibile",default="True")
     out_date = fields.Date(string="Data di Uscita")
     out_date_approx_type = fields.Selection(string="Approssimazione Data",
@@ -211,7 +210,7 @@ class Template(models.Model):
         """
         new_id = super(Template, self).create(values)
 
-        attr={k: v for k, v in values.items() if k in ['available_date','out_date','out_date_approx_type','active','purchasable','description','visible']}
+        attr={k: v for k, v in values.items() if k in ['available_date','out_date','out_date_approx_type','active','sale_ok','description','visible']}
 
         new_id.product_variant_ids.write(attr)
 
@@ -220,7 +219,7 @@ class Template(models.Model):
     @api.multi
     def write(self,values):
 
-        attr={k: v for k, v in values.items() if k in ['available_date','out_date','out_date_approx_type','active','purchasable','description','visible']}
+        attr={k: v for k, v in values.items() if k in ['available_date','out_date','out_date_approx_type','active','sale_ok','description','visible']}
 
         self.product_variant_ids.write(attr)
 
@@ -237,9 +236,7 @@ class Template(models.Model):
 
     @api.one
     def toggle_purchasable(self):
-        value = not self.purchasable
-        attr = {'purchasable':value}
-        self.write(attr)
+        self.sale_ok = not self.sale_ok
 
     @api.one
     def toggle_visible(self):

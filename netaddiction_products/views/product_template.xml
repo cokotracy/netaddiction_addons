@@ -43,7 +43,7 @@
                     <field name="is_product_variant" invisible="True"/>
                 </field>
                 <field name="sale_ok" position="replace">
-                    <field name="sale_ok" attrs="{'invisible':[('is_product_variant', '=', False)]}"/>
+                    <!--<field name="sale_ok" attrs="{'invisible':[('is_product_variant', '=', False)]}"/>-->
                 </field>
                 <field name="purchase_ok" position="replace">
                     <field name="purchase_ok" attrs="{'invisible':[('is_product_variant', '=', False)]}"/>
@@ -52,7 +52,7 @@
                     <label for="sale_ok" attrs="{'invisible':[('is_product_variant', '=', False)]}"/>
                 </label>
                 <label for="purchase_ok" position="replace">
-                    <label for="purchase_ok" attrs="{'invisible':[('is_product_variant', '=', False)]}"/>
+                    <!--<label for="purchase_ok" attrs="{'invisible':[('is_product_variant', '=', False)]}"/>-->
                 </label>
                 <!--Prezzi Varianti eliminato per tutti-->
                 <button name="%(product.product_attribute_value_action)d" position="replace"/>
@@ -73,12 +73,12 @@
                 <button name="toggle_active" position="after">
                     <button name="toggle_purchasable" type="object"
                             class="oe_stat_button" icon="fa-check">
-                        <label for="purchasable" string="Acquistabile"
+                        <label for="sale_ok" string="Acquistabile"
                             style="color:green;font-weight:normal"
-                            attrs="{'invisible':[('purchasable','=',False)]}"/>
-                        <label for="purchasable" style="color:red;font-weight:normal"
-                            string="Esaurito" attrs="{'invisible':[('purchasable','=',True)]}"/>
-                        <field name="purchasable" invisible="1" />
+                            attrs="{'invisible':[('sale_ok','=',False)]}"/>
+                        <label for="sale_ok" style="color:red;font-weight:normal"
+                            string="Esaurito" attrs="{'invisible':[('sale_ok','=',True)]}"/>
+                        <field name="sale_ok" invisible="1" />
                     </button>
                     <button name="toggle_visible" type="object"
                             class="oe_stat_button" icon="fa-check">
@@ -193,7 +193,7 @@
                             <field name="final_price"/>
                             <field name="qty_available" />
                             <field name="qty_available_now" />
-                            <field name="purchasable" />
+                            <field name="sale_ok" />
                         </tree>
                     </field>
                 </field>
