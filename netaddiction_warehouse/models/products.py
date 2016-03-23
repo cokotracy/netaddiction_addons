@@ -97,4 +97,3 @@ class Products(models.Model):
                     qty = int(qty) - int(alloc.qty)
 
         return shelf
-

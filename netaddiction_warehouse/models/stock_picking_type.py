@@ -3,7 +3,7 @@
 from openerp import models, fields, api
 from datetime import date, datetime
 from dateutil import relativedelta
-import time
+import time, json
 from openerp.tools import DEFAULT_SERVER_DATETIME_FORMAT, DEFAULT_SERVER_DATE_FORMAT
 from error import Error
 
@@ -56,6 +56,7 @@ class StockPickingWave(models.Model):
     _inherit = 'stock.picking.wave'
 
     in_exit = fields.Boolean(string="In uscita",default=False)
+    reverse_supplier = fields.Boolean(string="Resi a Fornitore",default=False) 
 
     @api.multi
     def get_product_list(self):
@@ -244,6 +245,89 @@ class StockPicking(models.Model):
         move = self.env['stock.move'].search([('picking_id','=',obj.id)])
         move.write({'origin' : obj.origin})
 
+    @api.model
+    def create_supplier_reverse(self,products,supplier,operations):
+        """
+        crea i picking per il reso a fornitore.
+        products è un oggetto passato dal client products = {scraped:array[id:qta],commercial:array[id:qta]}
+        supplier è l'id del fornitore a cui fare il reso.
+        """   
+        supplier = self.env['res.partner'].search([('id','=',int(supplier))])
+
+        products = json.loads(products)
+        operations = json.loads(operations)
+        
+        wh = operations['reverse_supplier']['default_location_src_id'][0]
+        supp_wh = operations['reverse_supplier']['default_location_dest_id'][0]
+        scraped_wh = operations['reverse_supplier_scraped']['default_location_src_id'][0]
+
+        scrape_type = operations['reverse_supplier_scraped']['operation_type_id']
+        commercial_type = operations['reverse_supplier']['operation_type_id']
+
+        #prendo in esame i resi difettati
+        pack_operation_scrapeds = []
+        if len(products['scraped']) > 0:
+            for prod in products['scraped']:
+                line = (0,0,{
+                    'product_id' : int(prod['pid']),
+                    'product_qty' : int(prod['qta']),
+                    'location_id' : int(scraped_wh),
+                    'location_dest_id' : int(supp_wh),
+                    'product_uom_id' : 1
+                });
+                pack_operation_scrapeds.append(line)
+
+        #prendo in esame i resi commerciali
+        pack_operation_commercial = []
+        if len(products['commercial']) > 0:
+            for prod in products['commercial']:
+                line = (0,0,{
+                    'product_id' : int(prod['pid']),
+                    'product_qty' : int(prod['qta']),
+                    'location_id' : int(wh),
+                    'location_dest_id' : int(supp_wh),
+                    'product_uom_id' : 1
+                });
+                pack_operation_commercial.append(line)
+
+        #preparo gli attributi per il picking
+        pick_scrape = {
+                'partner_id' : int(supplier),
+                'origin' : 'Reso a Fornitore Difettati %s' % supplier.name,
+                'location_dest_id' : int(supp_wh),
+                'picking_type_id' : scrape_type,
+                'location_id' : int(scraped_wh),
+                'pack_operation_product_ids' : pack_operation_scrapeds,
+            }
+
+        pick_commercial = {
+                'partner_id' : int(supplier),
+                'origin' : 'Reso a Fornitore Difettati %s' % supplier.name,
+                'location_dest_id' : int(supp_wh),
+                'picking_type_id' : commercial_type,
+                'location_id' : int(wh),
+                'pack_operation_product_ids' : pack_operation_commercial,
+            }
+
+        ids = []
+
+        if len(products['scraped']) > 0:
+            obj = self.create(pick_scrape)
+            obj.action_confirm()
+            ids.append(obj.id)
+        if len(products['commercial']) > 0:
+            obj = self.create(pick_commercial)
+            obj.action_confirm()
+            ids.append(obj.id)
+
+
+        wave = {
+            'name' : 'Reso a Fornitore %s' % supplier.name,
+            'picking_ids' : [(6,0,ids)],
+            'reverse_supplier' : True,
+        }
+
+        self.env['stock.picking.wave'].create(wave)
 
 
 
