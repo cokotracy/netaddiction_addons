@@ -7,6 +7,9 @@ class OfferOrder(models.Model):
     _inherit = 'sale.order'
 
     offers_cart = fields.One2many('netaddiction.order.specialoffer.cart.history','order_id', string='offerte carrello attive')
+    offers_vaucher = fields.One2many('netaddiction.order.specialoffer.vaucher.history','order_id', string='offerte vaucher attive')
+    vaucher_string = fields.Char(string='Codice Vaucher')
+
 
     
     # def _check_offers_catalog(self):
@@ -86,6 +89,57 @@ class OfferOrder(models.Model):
     #                     offer_line.qty_selled -= och.qty
 
     #     super(OfferOrder, self).action_cancel()
+    #     
+    
+    @api.one
+    def reset_vaucher(self):
+        if len(self.offers_vaucher) > 0:
+            for ovh in self.env['netaddiction.order.specialoffer.vaucher.history'].search([("order_id","=",self.id)]):
+                ovh.order_line.product_id_change()
+                ovh.unlink()
+            self._amount_all()
+
+
+
+    @api.one
+    def apply_vaucher(self):
+        if self.vaucher_string and len(self.offers_vaucher)==0:
+            offer = self.env['netaddiction.specialoffer.vaucher'].search([("code","=",self.vaucher_string)])
+            if offer:
+                offer = offer[0]
+                if offer.offer_type == 3:
+                    #TODO scalare spese di spedizione
+                    pass
+                else:
+
+                    offer_ids = [ol.product_id.id for ol in offer.products_list]
+                    offer_cart_history_id =[och.product_id.id for och in self.offers_cart]
+                    for ol in self.order_line:
+                        print ol.product_id.name
+                        print ol.product_id.id in offer_ids
+                        print ol.product_id.id in offer_cart_history_id 
+                        print ol.offer_type
+                        if (ol.product_id.id in offer_ids) and (not  ol.product_id.id in offer_cart_history_id) and (not ol.offer_type) :
+                            tax = ol.tax_id.amount
+                            if offer.offer_type == 1:
+                                #sconto fsso 
+                                detax = offer.fixed_discount/ (float(1) + float(tax/100))
+                                deiva = round(detax,2)
+                                new_price = ol.price_unit - deiva
+                                ol.price_unit = new_price if new_price > float(0) else float(0)
+                            else:
+                                #percentuale
+                                tax = ol.tax_id.amount
+                                discount = (ol.price_total/100)*offer.percent_discount
+                                detax = discount / (float(1) + float(tax/100))
+                                deiva = round(detax,2)
+                                new_price = ol.price_unit - deiva
+                                ol.price_unit = new_price if new_price > float(0) else float(0)
+                                #applica offerta vaucher e crea history
+                            self.env['netaddiction.order.specialoffer.vaucher.history'].create({'product_id' : ol.product_id.id, 'order_id' : self.id, 'offer_type':offer.offer_type, 'qty' : ol.product_uom_qty, 'offer_author_id' : offer.author_id.id, 'offer_name' : offer.name, 'offer_id' : offer.id, 'fixed_discount':offer.fixed_discount, 'percent_discount': offer.percent_discount, 'offer_type': offer.offer_type,'order_line': ol.id})
+                self._amount_all()
+                            
+
 
     @api.one
     def reset_cart(self):
@@ -432,6 +486,25 @@ class OrderOfferCartHistory(models.Model):
     offer_name = fields.Char(string='Offerta')
     order_id = fields.Many2one(comodel_name='sale.order', string='Ordine',index=True, copy=False, required=True)
     offer_cart_line = fields.Many2one(comodel_name='netaddiction.specialoffer.offer_cart_line')
+
+
+class OrderOfferVaucherHistory(models.Model):
+
+    _name = "netaddiction.order.specialoffer.vaucher.history"
+    
+    
+
+    product_id = fields.Many2one('product.product', string='Product', domain=[('sale_ok', '=', True)], change_default=True, ondelete='restrict', required=True)
+    offer_type = fields.Selection([(1,'Sconto Fisso'),(2,'Percentuale'),(3,'Spedizioni Gratis')], string='Tipo Offerta', default=1)
+    qty = fields.Integer(string = "quantità")
+    offer_author_id = fields.Many2one(comodel_name='res.users',string='Autore offerta')
+    offer_name = fields.Char(string='Offerta')
+    offer_id = fields.Many2one(comodel_name='netaddiction.specialoffer.vaucher')
+    order_id = fields.Many2one(comodel_name='sale.order', string='Ordine',index=True, copy=False, required=True)
+    fixed_discount = fields.Float(string="Sconto fisso")
+    percent_discount = fields.Integer(string="Sconto Percentuale")
+    offer_type = fields.Selection([(1,'Sconto Fisso'),(2,'Percentuale'),(3,'Spedizioni Gratis')], string='Tipo Offerta', default=1)
+    order_line = fields.Many2one(comodel_name='sale.order.line')
 
 
 

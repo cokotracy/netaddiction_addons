@@ -107,9 +107,15 @@
             <field name="model">sale.order</field>
             <field name="inherit_id" ref="sale.view_order_form"/>
             <field name="arch" type="xml">
+
+
+
+
               <xpath expr="//notebook/page"
                     position="after">    
-                    <page string="Offerte carrello">
+                    <page string="Offerte">
+                                                    <br/>
+                             <h2>Offerte Carrello</h2>
                       <field name="offers_cart" mode="tree,kanban" >
 
                                   <tree string="Offer Cart Line" editable="bottom">
@@ -125,6 +131,25 @@
                                  
                                 </tree>
                               </field>
+                              <br/>
+                              <br/>
+                             <h2>Offerte Vaucher</h2>
+
+                               <field name="offers_vaucher" mode="tree,kanban" >
+
+                                  <tree string="Offer Vaucher Line" editable="bottom">
+                                     <field name="product_id" attrs="{'readonly': 1}"/>
+                                     <field name="offer_type" attrs="{'readonly': 1}"/>
+                                     <field name="qty" attrs="{'readonly': 1}"/>
+                                     <field name="offer_name" attrs="{'readonly': 1}" />
+                                    <field name="offer_author_id" attrs="{'readonly': 1}"/>
+
+                                    <field name="fixed_discount" attrs="{'readonly': 1}"/>
+                                    <field name="percent_discount" attrs="{'readonly': 1}"/>
+                                 
+                                </tree>
+                              </field>
+
                     </page>
                 </xpath> 
 
@@ -153,6 +178,28 @@
         </record>
 
 
+        <record model="ir.ui.view" id="netaddiction_order_specialoffer_vaucher_history_tree" >
+            <field name="name">netaddiction.order.specialoffer.vaucher.history_tree</field>
+            <field name="model">netaddiction.order.specialoffer.vaucher.history</field>
+            <field name="arch" type="xml">
+                <tree name="special_offers_vaucher list" editable="bottom">
+
+
+
+                       <field name="product_id" attrs="{'readonly': 1}"/>
+                                       <field name="product_id" attrs="{'readonly': 1}"/>
+                                     <field name="offer_type" attrs="{'readonly': 1}"/>
+                                     <field name="qty" attrs="{'readonly': 1}"/>
+                                     <field name="offer_name" attrs="{'readonly': 1}" />
+                                    <field name="offer_author_id" attrs="{'readonly': 1}"/>
+
+                                    <field name="fixed_discount" attrs="{'readonly': 1}"/>
+                                    <field name="percent_discount" attrs="{'readonly': 1}"/>
+                </tree>
+            </field>
+        </record>
+
+
 
 
 
@@ -162,13 +209,32 @@
             <field name="inherit_id" ref="sale.view_order_form"/>
             <field name="arch" type="xml">
 
-              <xpath expr="//div[@name='button_box']"
-                    position="after">    
+              <xpath expr="//field[@name='name']"
+                    position="after">  
+                    <group>  
                     <button  class="oe_highlight" name="extract_cart_offers" 
-                                string="Applica Offerte Carrello" type="object" />
+                                string="Applica Offerte Carrello" type="object" states="draft"/>
                     <button  class="oe_highlight" name="reset_cart" 
-                                string="Reset Offerte Carrello" type="object" />              
+                                string="Reset Offerte Carrello" type="object" states="draft"/>    
+                    </group>          
                 </xpath> 
+
+
+                <xpath expr="//notebook"
+                    position="before"> 
+                    <group class="oe_left" col="2">
+                          <group> 
+                            <field name="vaucher_string"/>
+                        </group>
+                     <group> 
+                            <button  class="oe_highlight" name="apply_vaucher" 
+                                string="Applica Vaucher" type="object" states="draft" />
+                            <button  class="oe_highlight" name="reset_vaucher" 
+                                string="Reset Vaucher" type="object" states="draft" />
+                      </group>
+                    </group>
+
+                </xpath>  
 
               </field>
         </record>

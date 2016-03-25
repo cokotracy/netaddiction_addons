@@ -152,7 +152,7 @@ class Order(models.Model):
                     offer_line = line.product_id.offer_catalog_lines[0] if len(line.product_id.offer_catalog_lines) >0 else None
                     if offer_line:
                         offer_line.qty_selled += line.product_uom_qty
-                        offer_line.active = offer_line.qty_limit == 0 or offer_line.qty_selled <= offer_line.qty_limit
+                        offer_line.active = offer_line.qty_limit == 0 or offer_line.qty_selled < offer_line.qty_limit
                     if(offer_line.qty_limit >0 and offer_line.qty_selled > offer_line.qty_limit):
                         problems = True
 
@@ -172,25 +172,48 @@ class Order(models.Model):
                     offer_line = och.offer_cart_line
                     if offer_line:
                         offer_line.qty_selled += och.qty
-                        offer_line.active = offer_line.qty_limit == 0 or offer_line.qty_selled <= offer_line.qty_limit
+                        offer_line.active = offer_line.qty_limit == 0 or offer_line.qty_selled < offer_line.qty_limit
                     if(offer_line.qty_limit >0 and offer_line.qty_selled > offer_line.qty_limit):
                         problems = True
 
         return problems
 
+
+    def _check_offers_vaucher(self):
+        """controlla le offerte vaucher e aggiorna le quantità vendute.
+        returns True se qualche prodotto ha superato la qty_limit per la sua offerta carrello corrispondente
+        False altrimenti
+        """
+
+        problems = False
+        if( self.state == 'draft'):
+            for ovh in self.offers_vaucher:
+
+                    offer = ovh.offer_id
+                    if offer:
+                        offer.qty_selled += ovh.qty
+                        offer.active = offer.qty_limit == 0 or offer.qty_selled < offer.qty_limit
+                    if(offer.qty_limit >0 and offer.qty_selled > offer.qty_limit):
+                        problems = True
+
+        return problems
+
+
     @api.one
     def action_problems(self):
         self._check_offers_catalog()
         self._check_offers_cart()
+        self._check_offers_vaucher()
         self.state = 'problem'
 
 
     @api.multi
     def action_confirm(self):
-        problems = False
         for order in self:
+            problems = False
             problems = order._check_offers_catalog() 
             problems = order._check_offers_cart() or problems
+            problems = order._check_offers_vaucher() or problems
             #TODO se c'è un commento spostare in problem non in sale
             if problems or order.amount_total < 0:
             #TODO aggiungere il commento sul perchè

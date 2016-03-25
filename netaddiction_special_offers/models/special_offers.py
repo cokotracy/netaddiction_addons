@@ -458,9 +458,185 @@ class BonusOfferLine(models.Model):
 
     active = fields.Boolean(default=True,
         help="Spuntato = offerta attiva, Non Spuntato = offerta spenta")
-    product_id = fields.Many2one('product.product', string='Product', domain=[('sale_ok', '=', True)], change_default=True, ondelete='restrict', required=True)
+    product_id = fields.Many2one('product.product', string='Product', change_default=True, ondelete='restrict', required=True)
     bonus_offer_id = fields.Many2one('netaddiction.specialoffer.bonus', string='Offerta Carrello', index=True, copy=False, required=True)
     qty_selled = fields.Float( string='Quantità venduta', default=0.0)
+
+
+class VaucherOffer(models.Model):
+
+    _name = "netaddiction.specialoffer.vaucher"
+
+    name = fields.Char(string='Titolo', required=True)
+    active = fields.Boolean(string='Attivo', help="Permette di spengere l'offerta senza cancellarla",default=True)
+    author_id = fields.Many2one(comodel_name='res.users',string='Autore', required=True)
+    company_id = fields.Many2one(comodel_name='res.company', string='Company', required=True)
+    expression_id = fields.Many2one(comodel_name='netaddiction.expressions.expression', string='Espressione')
+    date_start = fields.Datetime('Start Date', help="Data di inizio della offerta", required=True)
+    date_end = fields.Datetime('End Date', help="Data di fine dell'offerta", required=True)
+    qty_limit = fields.Integer( string='Quantità limite', help = "Quantità limite di prodotti vendibili in questa offerta. 0 è illimitato", required=True)
+    qty_selled = fields.Float( string='Quantità venduta', default=0.0)
+    code = fields.Char(string='Codice Vaucher', required=True)
+    offer_type = fields.Selection([(1,'Sconto Fisso'),(2,'Percentuale'),(3,'Spedizioni Gratis')], string='Tipo Offerta', default=1)
+    fixed_discount = fields.Float(string="Sconto fisso")
+    percent_discount = fields.Integer(string="Sconto Percentuale")
+    one_user = fields.Boolean(string='Associa a un solo utente', default=False)
+    associated_user = fields.Many2one(comodel_name='res.users',string='Beneficiario', default=None)
+    end_cron_job = fields.Integer()
+    start_cron_job = fields.Integer()
+    products_list = fields.One2many('netaddiction.specialoffer.offer_vaucher_line', 'offer_vaucher_id', string='Lista prodotti')
+
+
+    @api.one
+    @api.constrains('active')
+    def _check_active(self):
+        if not self.active:
+            for pl in self.products_list:
+                pl.active = False
+            
+
+    @api.one
+    @api.constrains('date_start', 'date_end')
+    def _check_dates(self):
+
+        if(self.date_start >= self.date_end):
+            raise ValidationError("Data fine offerta non può essere prima della data di inizio offerta")
+        for cron in self.env['ir.cron'].search([('id','=',self.end_cron_job)]):
+            cron.nextcall = self.date_end
+
+
+
+    @api.model
+    def create(self,values):
+        
+        """
+        quando  creo una offerta verifico anche che le date siano dopo la data corrente
+        e creo i cron
+        """
+        now = fields.Date.today()
+        if (values['date_start'] and values['date_start'] < now): 
+            raise ValidationError("Data inizio offerta non può essere prima della data odierna")
+        elif (values['date_end'] and values['date_end'] < now): 
+            raise ValidationError("Data fine offerta non può essere prima della data odierna")
+
+        res = super(VaucherOffer, self).create(values)
+
+
+        timesheet_id = 1
+        nextcall = res.date_end
+        name = "[Scadenza]Cron job per offerta id %s" %res.id
+        res.end_cron_job = res.pool.get('ir.cron').create(self.env.cr,self.env.uid,{
+                'name': name,
+                'user_id': SUPERUSER_ID,
+                'model': 'netaddiction.specialoffer.vaucher',
+                'function': 'turn_off',
+                'nextcall': nextcall,
+                'args': repr([res.id]),
+                'numbercall' : "1",
+
+            })
+        if res.date_start > fields.Datetime.now():
+            res.active = False
+            for pl in res.products_list:
+                pl.active = False
+            timesheet_id = 1
+            nextcall = res.date_start
+            name = "[Inizio]Cron job per offerta id %s" %res.id
+            res.end_cron_job = res.pool.get('ir.cron').create(self.env.cr,self.env.uid,{
+                'name': name,
+                'user_id': SUPERUSER_ID,
+                'model': 'netaddiction.specialoffer.vaucher',
+                'function': 'turn_on',
+                'nextcall': nextcall,
+                'args': repr([res.id]),
+                'numbercall' : "1",
+
+            })            
+        
+        return res
+
+
+    @api.one
+    def populate_products_from_expression(self):
+        if self.expression_id:
+            dom = self.expression_id.find_products_domain()
+            ids = []
+            to_add =[]
+            for pl in self.products_list:
+                ids.append(pl.product_id.id)
+
+            for prod in self.env['product.product'].search(dom):
+                if( prod.id not in ids):
+                    to_add.append(self.env['netaddiction.specialoffer.offer_vaucher_line'].create({'product_id':prod.id, 'offer_vaucher_id' : self.id, 'qty_limit' : self.qty_limit, 'offer_type':self.offer_type,'percent_discount':self.percent_discount,'fixed_discount': self.fixed_discount}))
+            
+
+
+    @api.multi
+    def remove_products(self):
+        #in caso serva di cancellare tutte le order line
+        # for pl2 in self.env['netaddiction.specialoffer.offer_catalog_line'].search([("create_uid","=",1)]):
+        #     pl2.unlink()
+            
+        for offer in self:
+            for pl in offer.products_list:
+                pl.unlink()
+        
+
+    @api.multi
+    def modify_products(self):
+        for pl in self.products_list:
+            pl.qty_max_buyable = self.qty_max_buyable
+            pl.offer_type = self.offer_type
+            pl.percent_discount = self.percent_discount
+            pl.fixed_discount = self.fixed_discount
+    @api.one
+    def turn_off(self):
+        for pl in self.products_list:
+            pl.active = False
+           
+        self.write({'active' : False})
+
+    @api.one
+    def turn_on(self):
+        for pl in self.env['netaddiction.specialoffer.offer_vaucher_line'].search([('offer_vaucher_id','=',self.id),('active','=',False)]):
+            pl.active = True
+           
+        self.write({'active' : True})
+
+        
+
+
+
+
+
+
+class VaucherOfferLine(models.Model):
+
+    _name = "netaddiction.specialoffer.offer_vaucher_line"
+
+    
+
+    active = fields.Boolean(default=True,
+        help="Spuntato = offerta attiva, Non Spuntato = offerta spenta")
+    product_id = fields.Many2one('product.product', string='Product', domain=[('sale_ok', '=', True)], change_default=True, ondelete='restrict', required=True)
+    offer_vaucher_id = fields.Many2one('netaddiction.specialoffer.vaucher', string='Offerta Vaucher', index=True, copy=False, required=True)
+
+
+    @api.one
+    @api.constrains('fixed_price','offer_type')
+    def _check_fixed_price(self):
+        if self.offer_type == 1 and self.fixed_price <= 0:
+            raise ValidationError("Il valore del prezzo fisso non può essere minore  o uguale di zero")
+
+    @api.one
+    @api.constrains('percent_discount','offer_type')
+    def _check_percent_discount(self):
+        if self.offer_type == 2 and (self.percent_discount <= 0 or self.percent_discount > 100):
+            raise ValidationError("Il valore dello sconto percentuale non può essere minore di 0 o maggiore di 100")
+
+
+
+
 
 
 
