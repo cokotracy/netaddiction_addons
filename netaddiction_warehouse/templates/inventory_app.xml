@@ -37,6 +37,17 @@
                             </div>
                         </div>
                     </a>
+                    <a href="/inventory/app/pick_up_reverse" class="block_link">
+                        <div id="waves" class="block">
+                            <div class="block_title">
+                                RESI A FORNITORE
+                            </div>
+                            <div class="block_content">
+                                DA FARE <b class="number_pick"><t t-esc="count_waves_reverse"/></b><br/>
+                                IN PROGRESS <b class="number_pick"><t t-esc="count_waves_progress_reverse"/></b>
+                            </div>
+                        </div>
+                    </a>
                 </div>
             
         </template>

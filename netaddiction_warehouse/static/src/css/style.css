@@ -140,6 +140,14 @@ ERROR
     margin-bottom: 10px;
 }
 
+#close_reverse{
+    width: 100%;
+    margin-bottom: 20px;
+    border: none;
+    height: 30px;
+    background-color: #BDC3C7;
+}
+
 /*****
 SEARCH
 *****/

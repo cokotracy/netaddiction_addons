@@ -151,6 +151,9 @@
 		                    <th>
 		                        Nome
 		                    </th>
+		                    <th>
+		                        Prezzi di carico
+		                    </th>
 		                </tr>
 		            </thead>
 		            <tfoot>

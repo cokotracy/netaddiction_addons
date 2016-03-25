@@ -55,7 +55,7 @@ class StockPickingType(models.Model):
 class StockPickingWave(models.Model):
     _inherit = 'stock.picking.wave'
 
-    in_exit = fields.Boolean(string="In uscita",default=False)
+    in_exit = fields.Boolean(string="In uscita",default=False) #FORSE DA CAMBIARE IN_ENTRATA (in realtà se true è una lista purchase)
     reverse_supplier = fields.Boolean(string="Resi a Fornitore",default=False) 
 
     @api.multi
@@ -63,14 +63,29 @@ class StockPickingWave(models.Model):
         """
         ritorna la lista dei prodotti e le quantità da pickuppare
         """
+        scraped_type = self.env['netaddiction.warehouse.operations.settings'].search([('company_id','=',self.env.user.company_id.id),('netaddiction_op_type','=','reverse_supplier_scraped')])
+        wh = scraped_type.operation.default_location_src_id.id
+        scrape_id = scraped_type.operation.id
+
         self.ensure_one()
         qtys = defaultdict(lambda: defaultdict(float))
         products = {}
         for picks in self.picking_ids:
+            if picks.picking_type_id.id == scrape_id:
+                is_scraped = True
+            else:
+                is_scraped = False
+
             for pick in picks.pack_operation_product_ids:
-                qtys[pick.product_id.barcode]['product_qty'] += pick.product_qty
-                qtys[pick.product_id.barcode]['remaining_qty'] += pick.remaining_qty
-                qtys[pick.product_id.barcode]['qty_done'] += pick.qty_done
+                if is_scraped is False:
+                    qtys[pick.product_id.barcode]['product_qty'] += pick.product_qty
+                    qtys[pick.product_id.barcode]['remaining_qty'] += pick.remaining_qty
+                    qtys[pick.product_id.barcode]['qty_done'] += pick.qty_done
+                    qty_scraped = 0
+                else:
+                    qty_scraped = pick.product_qty
+                qtys[pick.product_id.barcode]['qty_scraped'] += (qty_scraped - pick.qty_done)
+                qtys[pick.product_id.barcode]['scraped_wh'] = 'dif'
                 products[pick.product_id] = qtys[pick.product_id.barcode]
 
         return products
@@ -79,6 +94,33 @@ class StockPickingWave(models.Model):
     def is_in_wave(self,wave_id,product_id):
         result = self.search([('id','=',int(wave_id)),(product_id,'in','picking_ids.pack_operation_product_ids.product_id')])
         print result
+
+    @api.model
+    def close_reverse(self,wave_id):
+        this_wave = self.search([('id','=',int(wave_id))])
+
+        for out in this_wave.picking_ids:
+            #se trovo almeno un rigo con qty_done > 0 allora posso validare l'ordine ed eventualmente creare il backorder
+            validate = False
+            for op in out.pack_operation_product_ids:
+                if op.qty_done > 0:
+                    validate = True
+
+            if validate:
+                if out.check_backorder(out):
+                    wiz_id = self.env['stock.backorder.confirmation'].create({'pick_id': out.id})
+                    wiz_id.process()
+                    backorder_pick = self.env['stock.picking'].search([('backorder_id', '=', out.id)])
+                    backorder_pick.write({'wave_id' : None})
+                else:
+                    order = self.env['purchase.order'].search([('name','=',out.origin)])
+                    order.button_done()
+                out.do_new_transfer()
+            else:
+                out.write({'wave_id' : None})
+
+        this_wave.done()
+
 
     ########################
     #INVENTORY APP FUNCTION#
@@ -179,27 +221,38 @@ class StockPicking(models.Model):
         """
         per ogni stock picking eseguo
         """
-        product_lines = []
-        for pick in self:
-            product_lines += ([x for x in pick.pack_operation_product_ids if x.product_id.barcode == product_barcode])
-           
-        for line in product_lines:
-            qty_line = int(line.product_qty) - int(line.qty_done)
-            for shelf in line.product_id.product_wh_location_line_ids:
-                #se i ripiani sono uguali significa che devo scalare la quantità
-                if shelf.wh_location_id.id == int(shelf_id):
-                    if qty_line < int(shelf.qty):
-                        shelf.write({'qty' : shelf.qty - qty_line})
-                        line.write({'qty_done': line.qty_done + float(qty_line)})
-                        qty_line = 0
-                    elif qty_line == int(shelf.qty):
-                        shelf.unlink()
-                        line.write({'qty_done': line.qty_done + float(qty_line)})
-                        qty_line = 0
-                    else:
-                        qty_line = qty_line - int(shelf.qty)
-                        line.write({'qty_done': float(shelf.qty)})
-                        shelf.unlink()
+        scraped_type = self.env['netaddiction.warehouse.operations.settings'].search([('company_id','=',self.env.user.company_id.id),('netaddiction_op_type','=','reverse_supplier_scraped')])
+        wh = scraped_type.operation.default_location_src_id.id
+        scrape_id = scraped_type.operation.id
+
+        if shelf_id == 'dif':
+            product_lines = []
+            for pick in self:
+                if pick.picking_type_id.id == scrape_id:
+                    product_lines += ([x for x in pick.pack_operation_product_ids if x.product_id.barcode == product_barcode])
+            for line in product_lines:       
+                line.write({'qty_done': line.product_qty})
+        else:
+            product_lines = []
+            for pick in self:
+                product_lines += ([x for x in pick.pack_operation_product_ids if x.product_id.barcode == product_barcode])
+            for line in product_lines:
+                qty_line = int(line.product_qty) - int(line.qty_done)
+                for shelf in line.product_id.product_wh_location_line_ids:
+                    #se i ripiani sono uguali significa che devo scalare la quantità
+                    if shelf.wh_location_id.id == int(shelf_id):
+                        if qty_line < int(shelf.qty):
+                            shelf.write({'qty' : shelf.qty - qty_line})
+                            line.write({'qty_done': line.qty_done + float(qty_line)})
+                            qty_line = 0
+                        elif qty_line == int(shelf.qty):
+                            shelf.unlink()
+                            line.write({'qty_done': line.qty_done + float(qty_line)})
+                            qty_line = 0
+                        else:
+                            qty_line = qty_line - int(shelf.qty)
+                            line.write({'qty_done': float(shelf.qty)})
+                            shelf.unlink()
 
 
 

@@ -25,15 +25,20 @@ class InventoryApp(http.Controller):
         user = request.env['res.users'].search([('id','=',uid)])
 
         #prendo tutte le liste di prelievo in stato draft
-        waves = request.env['stock.picking.wave'].search([('state','=','draft')])
-        waves_in_progress = request.env['stock.picking.wave'].search([('state','=','in_progress')])
+        waves = request.env['stock.picking.wave'].search([('state','=','draft'),('in_exit','=',False),('reverse_supplier','=',False)])
+        waves_in_progress = request.env['stock.picking.wave'].search([('state','=','in_progress'),('in_exit','=',False),('reverse_supplier','=',False)])
+
+        waves_reverse = request.env['stock.picking.wave'].search([('state','=','draft'),('reverse_supplier','=',True)])
+        waves_in_progress_reverse = request.env['stock.picking.wave'].search([('state','=','in_progress'),('reverse_supplier','=',True)])
 
         return request.render(
             'netaddiction_warehouse.index',
             {
                 'user' : user ,
                 'count_waves_draft' : len(waves),
-                'count_waves_progress' : len(waves_in_progress)
+                'count_waves_progress' : len(waves_in_progress),
+                'count_waves_reverse' : len(waves_reverse),
+                'count_waves_progress_reverse' : len(waves_in_progress_reverse)
             }
             )
 
@@ -82,10 +87,27 @@ class InventoryApp(http.Controller):
         user = request.env['res.users'].search([('id','=',uid)])
 
         #prendo tutte le liste di prelievo in stato draft
-        waves = request.env['stock.picking.wave'].search([('state','in',['draft','in_progress'])]).sorted(key=lambda r: r.id)
+        waves = request.env['stock.picking.wave'].search([('state','in',['draft','in_progress']),('in_exit','=',False),('reverse_supplier','=',False)]).sorted(key=lambda r: r.id)
 
         return request.render(
             'netaddiction_warehouse.pick_up_index', 
+            {
+                'waves' : waves,
+                'user' : user,
+                'top_back_url' : '/inventory/app/',
+            }
+            )
+
+    @http.route('/inventory/app/pick_up_reverse', type='http', auth='user')
+    def index_pick_up_reverse(self, debug=False, **k):
+        cr, uid, context, session = request.cr, request.uid, request.context, request.session
+        user = request.env['res.users'].search([('id','=',uid)])
+
+        #prendo tutte le liste di prelievo in stato draft
+        waves = request.env['stock.picking.wave'].search([('state','in',['draft','in_progress']),('reverse_supplier','=',True)]).sorted(key=lambda r: r.id)
+
+        return request.render(
+            'netaddiction_warehouse.pick_up_reverse_index', 
             {
                 'waves' : waves,
                 'user' : user,
@@ -105,9 +127,13 @@ class InventoryApp(http.Controller):
         if wave.state == 'draft':
             wave.write({'state': 'in_progress'})
 
+        if wave.reverse_supplier == True:
+            is_reverse = True
+        else:
+            is_reverse = False
+
         #prendo i prodotti raggruppati
         products = wave.get_product_list()
-
         #assegno i ripiani
         datas = defaultdict(list)
         for product,qtys in products.items():
@@ -115,6 +141,10 @@ class InventoryApp(http.Controller):
             for s,q in shelf.items():
                 text = {'qta':q,'name':product.display_name, 'pid' : product.id, 'barcode':product.barcode, 'shelf_id':s.id}
                 datas[s.name].append(text)
+            if qtys['qty_scraped']>0:
+                text = {'qta':int(qtys['qty_scraped']),'name':product.display_name, 'pid' : product.id, 'barcode':product.barcode, 'shelf_id':qtys['scraped_wh']}
+                datas['Magazzino Difettati'].append(text)
+            
 
         sorted_list = sorted(datas.items(), key = lambda (k,v): k)
 
@@ -125,5 +155,7 @@ class InventoryApp(http.Controller):
                 'top_back_url' : '/inventory/app/pick_up',
                 'lists' : sorted_list,
                 'top_title' : wave.display_name,
+                'is_reverse' : is_reverse
             }
             )
+

@@ -207,6 +207,14 @@ $(document).ready(function(){
            submitform(e);
         });
 
+        $('#close_reverse').on('click', function(e) {
+            var href = window.location.href;
+            var wave_id = href.substr(href.lastIndexOf('/') + 1);
+            new Model('stock.picking.wave').call('close_reverse',[wave_id]).then(function(e){
+                $('#barcode-form').before('<div class="done_msg">LISTA CHIUSA</div>');
+            })
+        });
+
         window.back = function(title,func,elem){
             $('.error_msg').remove();
             $('#result').html('').before(core.qweb.render("barcode_form",{title : title,data_function: func}));

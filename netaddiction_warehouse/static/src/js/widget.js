@@ -47,7 +47,7 @@ openerp.netaddiction_warehouse = function(instance, local) {
     local.controllo_pickup = instance.Widget.extend({
     	start: function() {
     		self = this
-         	return new instance.web.Model('stock.picking.wave').query(['display_name','id']).filter([['state','=','in_progress'],['in_exit','=',false]]).all().then(function(filtered){
+         	return new instance.web.Model('stock.picking.wave').query(['display_name','id']).filter([['state','=','in_progress'],['in_exit','=',false],['reverse_supplier','=',false]]).all().then(function(filtered){
                 console.log(filtered)
                 var list = new local.homepage(self,filtered);
 				list.appendTo(self.$el);
@@ -333,9 +333,44 @@ openerp.netaddiction_warehouse = function(instance, local) {
 
     function list_products(this_cgo){
         for (p in this_cgo.products){
-            tr = '<tr><td class="qty_ordered">'+this_cgo.products_ordered[p]+'</td><td class="qty">'+this_cgo.products[p]+'</td><td class="pname">'+p+'</td></tr>';
+            tr = '<tr><td class="qty_ordered">'+this_cgo.products_ordered[p]+'</td><td class="qty">'+this_cgo.products[p]+'</td><td class="pname">'+p+'</td><td class="price_'+this_cgo.pid[p]+'"></tr></tr>';
             $('#purchase_in_product_list tbody').append(tr);
         }
+        get_price(this_cgo.pid)
+    }
+
+    function get_price(pids){
+        ids = []
+        for (p in pids){
+            ids.push(parseInt(pids[p]))
+        }
+        price = {}
+        new instance.web.Model('purchase.order.line').query(['price_unit','product_id','product_qty','order_id']).filter([['product_id','in',ids],['order_id.state','=','purchase']]).all().then(function(result){
+            
+            for (p in result){
+                if (result[p].product_id[0] in price){
+                    if(result[p].price_unit in price[result[p].product_id[0]]){
+                        price[result[p].product_id[0]][result[p].price_unit] += result[p].product_qty
+                    }else{
+                        price[result[p].product_id[0]][result[p].price_unit] = result[p].product_qty
+                    }
+                }else{
+                    price[result[p].product_id[0]]={}
+                    price[result[p].product_id[0]][result[p].price_unit] = result[p].product_qty
+                }
+
+               
+            }
+           
+           for ( pid in price){
+                str = ''
+                for (pr in price[pid]){
+                    str = str + '<span title="qta '+price[pid][pr]+'">' + pr + '</span>   '
+                }
+                $('.price_'+pid).html(str)
+           }
+            
+        });
     }
 
     local.carico = instance.Widget.extend({
@@ -456,6 +491,7 @@ openerp.netaddiction_warehouse = function(instance, local) {
             this_cgo.supplier_name = supplier_name;
             this_cgo.products = {};
             this_cgo.products_ordered = {};
+            this_cgo.pid = {}
             new instance.web.Model('stock.picking.wave').query(['id','name','picking_ids']).filter([['id','=',this_cgo.wave]]).first().then(function(result){
                 
                 if(result != null){
@@ -467,11 +503,12 @@ openerp.netaddiction_warehouse = function(instance, local) {
                     }
                     new instance.web.Model('stock.pack.operation').query(['id','product_id','product_qty','qty_done']).filter([['qty_done','>',0],['picking_id','in',ids]]).all().then(function(line){
                         var pqty = 0;
+                        
                         for (l in line){
+                            this_cgo.pid[line[l].product_id[1]] = line[l].product_id[0];
                             pqty = pqty + parseInt(line[l].product_qty)
                             if (line[l].product_id[1] in this_cgo.products){
-                                this_cgo.products[line[l].product_id[1]] = parseInt(this_cgo.products[line[l].product_id[1]]) + line[l].qty_done;
-                                
+                                this_cgo.products[line[l].product_id[1]] = parseInt(this_cgo.products[line[l].product_id[1]]) + line[l].qty_done; 
                             }else{
                                 this_cgo.products[line[l].product_id[1]] = line[l].qty_done;
                             }
@@ -525,6 +562,7 @@ openerp.netaddiction_warehouse = function(instance, local) {
                     this_cgo.products[line[0].product_id[1]] = qta
                 }
                 this_cgo.products_ordered[line[0].product_id[1]] = pqty
+                this_cgo.pid[line[0].product_id[1]] = line[0].product_id[0];
 
                 this_cgo.do_notify("CARICATO",qta + ' x ' + line[0].product_id[1])
                    
