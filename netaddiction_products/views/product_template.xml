@@ -190,7 +190,8 @@
                         <tree string="new_list_variants">
                             <field name="barcode"/>
                             <field name="attribute_value_ids"/>
-                            <field name="final_price"/>
+                            <field name="final_price" string="Prezzo Listino"/>
+                            <field name="special_price" string="Prezzo Offerta Base"/>
                             <field name="qty_available" />
                             <field name="qty_available_now" />
                             <field name="sale_ok" />

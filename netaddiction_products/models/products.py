@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from openerp import models, fields, api
+import openerp.addons.decimal_precision as dp
 
 class Products(models.Model):
     _inherit = 'product.product'
@@ -8,10 +9,11 @@ class Products(models.Model):
     #separazione listini di acquisto
     seller_ids = fields.One2many('product.supplierinfo', 'product_id', 'Supplier')
     #separazione prezzo di  vendita e creazione prezzo ivato e senza iva
-    lst_price = fields.Float(string="Prezzo senza Iva")
-    list_price = fields.Float(string="Prezzo Listino")
+    lst_price = fields.Float(string="Prezzo senza Iva", digits_compute= dp.get_precision('Product Price'))
+    list_price = fields.Float(string="Prezzo di vendita deivato", compute="_get_price", digits_compute= dp.get_precision('Product Price'))
     #campo prezzo ivato
-    final_price = fields.Float(string="Prezzo al pubblico")
+    final_price = fields.Float(string="Prezzo Listino", digits_compute= dp.get_precision('Product Price'))
+    special_price = fields.Float(string="Prezzo offerta base", digits_compute= dp.get_precision('Product Price'), default="0.00")
     
     #campi aggiuntivi
     sale_ok = fields.Boolean(string="Acquistabile",default="True")
@@ -107,51 +109,24 @@ class Products(models.Model):
             qty = qty + int(sup.avail_qty)
         self.qty_sum_suppliers = qty
 
-    @api.multi
-    def write(self,values):
-        """
-        quando aggiorna il prodotto scorpora l'iva dal prezzo al pubblico
-        """
+    @api.depends('final_price','special_price')
+    def _get_price(self):
+        for p in self:
+            tassa = p.taxes_id.amount
 
-        if len(self)==1:
-            for p in self:
-                tassa = p.taxes_id.amount
-                final = p.final_price
+            if p.special_price > 0.00:
+                price = p.special_price
+            else:
+                price = p.final_price
 
+            if tassa:
+                detax = price / (float(1) + float(tassa/100))
+            else:
+                detax = price
 
-                if 'taxes_id' in values.keys():
-                    id_tax = values['taxes_id'][0][2]
-                    if len(id_tax)>0:
-                        id_tax = id_tax[0]
-
-                    tassa = self.env['account.tax'].search([('id','=',id_tax)]).amount
+            p.list_price = round(detax,2)
 
 
-                if 'final_price' in values.keys():
-                    final = values['final_price']
-
-                detax = final / (float(1) + float(tassa/100))
-
-                deiva = round(detax,2)
-
-                values['list_price'] = deiva
-
-        return super(Products, self).write(values)
-
-    @api.model
-    def create(self,values):
-        if 'final_price' in values.keys() and 'taxes_id' in values.keys():
-            id_tax = values['taxes_id'][0][2]
-            if len(id_tax)>0:
-                id_tax = id_tax[0]
-
-            tassa = self.env['account.tax'].search([('id','=',id_tax)]).amount
-
-            detax = values['final_price'] / (float(1) + float(tassa/100))
-            deiva = round(detax,2)
-            values['list_price'] = deiva
-
-        return  super(Products, self).create(values)
 
     @api.one
     def toggle_purchasable(self):
@@ -163,6 +138,7 @@ class Products(models.Model):
         attr = {'visible':value}
         self.write(attr)
 
+    #uccido la constrains di un unico attributo per tipo
     def _check_attribute_value_ids(self, cr, uid, ids, context=None):
         
         return True
