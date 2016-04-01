@@ -126,7 +126,9 @@ class Products(models.Model):
 
             p.list_price = round(detax,2)
 
-
+    @api.one
+    def get_actual_price(self):
+        return self.special_price if (self.special_price>0.00) else self.final_price
 
     @api.one
     def toggle_purchasable(self):
