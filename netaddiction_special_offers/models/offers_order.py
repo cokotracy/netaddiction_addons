@@ -11,85 +11,7 @@ class OfferOrder(models.Model):
     vaucher_string = fields.Char(string='Codice Vaucher')
 
 
-    
-    # def _check_offers_catalog(self):
-    #     """controlla le offerte catalogo e aggiorna le quantità vendute.
-    #     returns True se qualche prodotto ha superato la qty_limit per la sua offerta catalogo corrispondente
-    #     False altrimenti
-    #     """
-    #     problems = False
-    #     if( self.state == 'draft'):
-    #         for line in self.order_line:
-    #             if( line.offer_type and  not line.negate_offer ):
-    #                 offer_line = line.product_id.offer_catalog_lines[0] if len(line.product_id.offer_catalog_lines) >0 else None
-    #                 if offer_line:
-    #                     offer_line.qty_selled += line.product_uom_qty
-    #                     offer_line.active = offer_line.qty_limit == 0 or offer_line.qty_selled <= offer_line.qty_limit
-    #                 if(offer_line.qty_limit >0 and offer_line.qty_selled > offer_line.qty_limit):
-    #                     problems = True
-
-    #     return problems
-
-    
-    # def _check_offers_cart(self):
-    #     """controlla le offerte carrello e aggiorna le quantità vendute.
-    #     returns True se qualche prodotto ha superato la qty_limit per la sua offerta carrello corrispondente
-    #     False altrimenti
-    #     """
-
-    #     problems = False
-    #     if( self.state == 'draft'):
-    #         for och in self.offers_cart:
-
-    #                 offer_line = och.offer_cart_line
-    #                 if offer_line:
-    #                     offer_line.qty_selled += och.qty
-    #                     offer_line.active = offer_line.qty_limit == 0 or offer_line.qty_selled <= offer_line.qty_limit
-    #                 if(offer_line.qty_limit >0 and offer_line.qty_selled > offer_line.qty_limit):
-    #                     problems = True
-
-    #     return problems
-
-    # @api.one
-    # def action_problems(self):
-    #     self._check_offers_catalog()
-    #     self._check_offers_cart()
-    # 	self.state = 'problem'
-
-
-    # @api.multi
-    # def action_confirm(self):
-    #     problems = False
-    # 	for order in self:
-    #         problems = order._check_offers_catalog() 
-    #         problems = order._check_offers_cart() or problems
-    #         #TODO se c'è un commento spostare in problem non in sale
-    #         if problems:
-    #         #TODO aggiungere il commento sul perchè
-    #             order.state = 'problem'
-    #         else:
-    #             super(OfferOrder, order).action_confirm()
-    
-    # @api.multi
-    # def action_cancel(self):
-    #     #N.B. offerte mai riattivate manualmente
-    #     self._send_cancel_mail()
-    #     for order in self:
-    #         if (order.state != 'draft'):
-    #             #offerte catalogo
-    #             for line in order.order_line:
-    #                 if( line.offer_type  and not line.negate_offer):
-    #                     offer_line = order.product_id.offer_catalog_lines[0] if len(order.product_id.offer_catalog_lines) >0 else None
-    #                     if offer_line:
-    #                         offer_line.qty_selled -= line.product_uom_qty
-    #             #offerte carrello
-    #             for och in order.offers_cart:
-    #                 offer_line = och.offer_cart_line
-    #                 if offer_line:
-    #                     offer_line.qty_selled -= och.qty
-
-    #     super(OfferOrder, self).action_cancel()
-    #     
+  
     
     @api.one
     def reset_vaucher(self):
@@ -103,6 +25,9 @@ class OfferOrder(models.Model):
 
     @api.one
     def apply_vaucher(self):
+        if not self.pricelist_id or self.pricelist_id.id != 1:
+            return
+
         if self.vaucher_string and len(self.offers_vaucher)==0:
             offer = self.env['netaddiction.specialoffer.vaucher'].search([("code","=",self.vaucher_string)])
             if offer:
@@ -115,10 +40,6 @@ class OfferOrder(models.Model):
                     offer_ids = [ol.product_id.id for ol in offer.products_list]
                     offer_cart_history_id =[och.product_id.id for och in self.offers_cart]
                     for ol in self.order_line:
-                        print ol.product_id.name
-                        print ol.product_id.id in offer_ids
-                        print ol.product_id.id in offer_cart_history_id 
-                        print ol.offer_type
                         if (ol.product_id.id in offer_ids) and (not  ol.product_id.id in offer_cart_history_id) and (not ol.offer_type) :
                             tax = ol.tax_id.amount
                             if offer.offer_type == 1:
@@ -184,6 +105,11 @@ class OfferOrder(models.Model):
             Ritorna la lista delle offerte ordinata per priorità
             Raise QtyMaxBuyableException nel caso in cui sia stata superata una qty_max_buyable
         """
+
+        if not self.pricelist_id or self.pricelist_id.id != 1:
+            return
+
+
         #cancello tutte le history line di questo ordine
         self.reset_cart()
 

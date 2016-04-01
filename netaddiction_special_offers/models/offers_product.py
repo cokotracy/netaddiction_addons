@@ -20,7 +20,7 @@ class OffersProducts(models.Model):
     		
     		curr_off = self.offer_catalog_lines[0]
     		if curr_off:
-    			self.offer_price = curr_off.fixed_price if curr_off.offer_type == 1 else (self.final_price - (self.final_price/100)*curr_off.percent_discount)
+    			self.offer_price = curr_off.fixed_price if curr_off.offer_type == 1 else (self.get_actual_price() - (self.get_actual_price()/100)*curr_off.percent_discount)
     		else:
     			self.offer_price =  0.0
 
@@ -106,7 +106,7 @@ class OffersCatalogSaleOrderLine(models.Model):
             #controlli offerta catalogo
             
             offer_line = self.product_id.offer_catalog_lines[0] if len(self.product_id.offer_catalog_lines) >0 else None
-            if offer_line:
+            if offer_line and self.order_id.pricelist_id.id == 1:
                 offer = offer_line.offer_catalog_id
                 if not self.negate_offer and self._check_offer_validity(offer,offer_line,self.product_id,self.product_uom_qty):
                     self.offer_type = offer_line.offer_type
@@ -160,7 +160,7 @@ class OffersCatalogSaleOrderLine(models.Model):
 
 
             offer_line = self.product_id.offer_catalog_lines[0] if len(self.product_id.offer_catalog_lines) >0 else None
-            if offer_line:
+            if offer_line and self.order_id.pricelist_id and self.order_id.pricelist_id.id == 1:
                 offer = offer_line.offer_catalog_id
                 if not self.negate_offer and self._check_offer_validity(offer,offer_line,self.product_id,self.product_uom_qty):
                     self.offer_type = offer_line.offer_type
@@ -197,7 +197,7 @@ class OffersCatalogSaleOrderLine(models.Model):
     def create(self,values):
         res = super(OffersCatalogSaleOrderLine, self).create(values)
         offer_line = res.product_id.offer_catalog_lines[0] if len(res.product_id.offer_catalog_lines) >0 else None
-        if offer_line:
+        if offer_line and self.order_id.pricelist_id and self.order_id.pricelist_id.id == 1:
             offer = offer_line.offer_catalog_id
             if not res.negate_offer and self._check_offer_validity(offer,offer_line,res.product_id,res.product_uom_qty):
 
