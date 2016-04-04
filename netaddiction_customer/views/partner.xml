@@ -151,14 +151,14 @@
             <field name="inherit_id" ref="account.view_partner_property_form"/>
             <field name="arch" type="xml">
             <xpath expr="//page[@name='accounting']/group/group[@name='acc_sale']" position="attributes">
-                        <attribute name="attrs">{'invisible': [('customer', '=', True)]}</attribute>
+                        <attribute name="attrs">{'invisible': [('customer', '=', False)]}</attribute>
             
                 </xpath>
             <xpath expr="//page[@name='accounting']/group/group[@name='acc_purchase']" position="attributes">
-                        <attribute name="attrs">{'invisible': [('customer', '=', True)]}</attribute>
+                        <attribute name="attrs">{'invisible': [('supplier', '=', False)]}</attribute>
             
                 </xpath>
-            <xpath expr="//page[@name='accounting']/group/group[@name='accounting_entries']" position="attributes">
+            <!--<xpath expr="//page[@name='accounting']/group/group[@name='accounting_entries']" position="attributes">
                         <attribute name="attrs">{'invisible': [('customer', '=', True)]}</attribute>
             
                 </xpath>
@@ -169,7 +169,7 @@
                           <xpath expr="//page[@name='accounting']/group/group[@name='fiscal_information']/field[@name='property_account_position_id']" position="attributes">
                         <attribute name="attrs">{'invisible': [('customer', '=', True)]}</attribute>
             
-                </xpath>
+                </xpath>-->
             </field>
         </record>
     </data>

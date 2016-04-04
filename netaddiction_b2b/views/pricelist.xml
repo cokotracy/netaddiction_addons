@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+    	<record model="ir.ui.view" id="netaddiction_pricelist_b2b">
+            <field name="name">netaddiction.product.pricelist.b2b</field>
+            <field name="model">product.pricelist</field>
+            <field name="inherit_id" ref="product.product_pricelist_view"/>
+            <field name="arch" type="xml">
+                <field name="item_ids" position="before">
+                    <label for="expression">Espressione</label>
+                    <field name="expression"/>
+                    <button type="object" name="populate_item_ids_from_expression" string="Aggiungi Prodotti"/>
+                </field>
+            </field>
+        </record>
+    </data>
+</openerp>

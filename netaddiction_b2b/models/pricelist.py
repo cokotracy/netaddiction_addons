@@ -16,6 +16,8 @@ class product_pricelist(models.Model):
 
     _inherit = "product.pricelist"
 
+    expression = fields.Many2one(comodel_name='netaddiction.expressions.expression', string='Espressione')
+
     def _price_rule_get_multi(self, cr, uid, pricelist, products_by_qty_by_partner, context=None):
         """
         Serve a dare il prezzo corretto alla pricelist: se l'offer_price è inferiore al prezzo dell'attuale pricelist
@@ -42,3 +44,20 @@ class product_pricelist(models.Model):
             results[pid] = (real_price,other_val)
 
         return results
+
+    @api.one
+    def populate_item_ids_from_expression(self):
+        if self.expression:
+            dom = self.expression.find_products_domain()
+            ids = []
+
+        for prod in self.env['product.product'].search(dom):
+            attr = {
+                'applied_on' : '0_product_variant',
+                'product_id' : prod.id,
+                'compute_price' : 'formula',
+                'base' : 'final_price_deiva',
+                'price_discount' : 20,
+                'pricelist_id' : self.id
+            }
+            self.env['product.pricelist.item'].create(attr)

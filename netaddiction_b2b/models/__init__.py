@@ -1,2 +1,2 @@
 # -*- coding: utf-8 -*-
-import pricelist, products
+import pricelist, products, customers

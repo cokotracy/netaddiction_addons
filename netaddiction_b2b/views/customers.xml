@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+    	<record model="ir.ui.view" id="netaddiction_customers_b2b">
+            <field name="name">netaddiction.res.partner.b2b</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="base.view_partner_form"/>
+            <field name="arch" type="xml">
+            	<field name="parent_id" position="before">
+            		<field name="is_b2b" invisible="True"/>
+            		<b attrs="{'invisible' : [('is_b2b', '=', False)]}" style="color:red">B2B</b><br/>
+            	</field>
+            </field>
+        </record>
+    </data>
+</openerp>

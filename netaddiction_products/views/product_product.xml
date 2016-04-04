@@ -134,7 +134,7 @@
                                         options="{'no_create': True}"/>
                                     <field name="barcode" required="True"/>
                                     <field name="lst_price" readonly="True" string="Prezzo al Pubblico Deivato"/>
-                                    
+                                    <field name="standard_price" readonly="True"/>
                                 </group>
 
                                 <separator name="descr_separator"/>

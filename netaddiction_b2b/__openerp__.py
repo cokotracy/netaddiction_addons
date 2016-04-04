@@ -13,6 +13,7 @@
     'version': '1',
     'depends': ['base','product','sale','purchase','mrp','account','netaddiction_products','netaddiction_special_offers'],
     'data': [
-        
+        'views/customers.xml',
+        'views/pricelist.xml'
     ]
 }
