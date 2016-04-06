@@ -36,6 +36,8 @@ class product_pricelist(models.Model):
 
             if tassa:
                 detax = obj.offer_price / (float(1) + float(tassa/100))
+            else:
+                detax = obj.offer_price
 
             offer_detax = round(detax,2)
             
