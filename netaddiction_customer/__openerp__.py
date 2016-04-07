@@ -15,6 +15,7 @@
         'views/gift.xml',
         'views/affiliate.xml',
         'data/gift_type_data_entry.xml',
+        'data/affiliate_salt.xml',
     ],
     'installable': True,
     'application': True,

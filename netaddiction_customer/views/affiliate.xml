@@ -53,9 +53,35 @@
                                 <field name="exclude_from_cron"/>
                             </group>
                         </group>
+                        <notebook>
+                        <page string="Commissioni" name="affiliate_commission">
                         <group string="Commissioni" name="commission" colspan="1">
                             <field name="commission_id"/>
                         </group>
+                    </page>
+                        <page string="Ordini" name="affiliate_orders">
+                        <group name="orders" colspan="2">
+                            <group>
+                            <field name="tot"/>
+                            <field name="tot_completed"/>
+                            <field name="tot_problems"/>
+                            </group>
+                            <group>
+                            <field name="tot_cancelled"/>
+                            <field name="tot_gift_history" readonly="1"/>
+                        </group>
+                        </group>
+                        <field name="orders_history" readonly="1" mode="tree,kanban" >
+
+                                  <tree string="ordini" editable="bottom">
+                                     <field name="order_id" attrs="{'readonly': 1}"/>
+                                     <field name="affiliate_id" attrs="{'readonly': 1}"/>
+                                     <field name="commission" attrs="{'readonly': 1}"/>
+                                 
+                                </tree>
+                              </field>
+                    </page>
+                    </notebook>
                     </sheet>
                 </form>
             </field>

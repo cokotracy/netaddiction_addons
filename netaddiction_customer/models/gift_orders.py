@@ -4,7 +4,7 @@ from openerp import models, fields, api
 class GiftOrder(models.Model):
     _inherit = 'sale.order'
 
-    gift_discount = fields.Monetary(string='sconto gift', default=0.0)
+    gift_discount = fields.Float(string='sconto gift', default=0.0)
 
 
     @api.one
