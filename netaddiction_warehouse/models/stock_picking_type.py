@@ -287,7 +287,53 @@ class StockPicking(models.Model):
             self.do_validate_orders(p)
 
     @api.model 
-    def create_reverse(self,attr):
+    def create_reverse(self,attr,order_id):
+        #INIZIO CREAZIONE NOTA DI CREDITO
+        order = self.env['sale.order'].search([('id','=',int(order_id))])
+        
+        pids = {}
+        count = {}
+        #si prende i prodotti e le quantità di ogni rigo picking segnato come reso
+        for line in attr['pack_operation_product_ids']:
+            pids[int(line[2]['product_id'])] = line[2]['product_qty']
+            count[int(line[2]['product_id'])] = line[2]['product_qty']
+
+        #trova le fatture per quell'ordine con quei prodotti
+        invoices = self.env['account.invoice'].search([('origin','=',order.name),('invoice_line_ids.product_id','in',pids.keys())])
+        
+        #per ogni rigo fattura controlla che quel prodotto si presente tra i prodotti resi
+        #Lavora le quantità in modo da poter modificare la nota di credito creata con i dati corretti
+        #in to_credit ritorna gli id delle fatture su cui effettuare le note di credito
+        to_credit = []
+        for inv in invoices:
+            for line in inv.invoice_line_ids:
+                if line.product_id.id in count.keys():
+                    if count[line.product_id.id] <= line.quantity:
+                        to_credit.append(inv)
+                        count.pop(line.product_id.id)
+                    else:
+                        to_credit.append(inv)
+                        count[line.product_id.id] -= line.quantity
+        to_credit = set(to_credit)
+
+        #per ogni fattura trovata create la nota di credito in data odierna
+        #analizza le righe fattura per correggere i dati dei prodotti con quelli estratti precedentemente
+        for inv in to_credit:
+            ids = inv.refund(datetime.now(),datetime.now(),'Reso per ordine %s' % inv.origin)
+            for i in ids:
+                for line in i.invoice_line_ids:
+                    if line.product_id.id in pids.keys() and pids[line.product_id.id]>0:
+                        if pids[line.product_id.id] == line.quantity:
+                            pids[line.product_id.id] = 0
+                        elif pids[line.product_id.id] < line.quantity:
+                            line.write({'quantity' : pids[line.product_id.id]})
+                            pids[line.product_id.id] = 0
+                        else:
+                            pids[line.product_id.id] -= line.quantity
+                    else:
+                        line.unlink()
+        #FINE CREAZIONE NOTA DI CREDITO
+
         obj = self.create(attr)
         obj.action_confirm()
         for line in obj.pack_operation_product_ids:
@@ -319,6 +365,7 @@ class StockPicking(models.Model):
 
         #prendo in esame i resi difettati
         pack_operation_scrapeds = []
+
         if len(products['scraped']) > 0:
             for prod in products['scraped']:
                 line = (0,0,{
@@ -328,6 +375,7 @@ class StockPicking(models.Model):
                     'location_dest_id' : int(supp_wh),
                     'product_uom_id' : 1
                 });
+
                 pack_operation_scrapeds.append(line)
 
         #prendo in esame i resi commerciali
@@ -355,7 +403,7 @@ class StockPicking(models.Model):
 
         pick_commercial = {
                 'partner_id' : int(supplier),
-                'origin' : 'Reso a Fornitore Difettati %s' % supplier.name,
+                'origin' : 'Reso a Fornitore Commerciali %s' % supplier.name,
                 'location_dest_id' : int(supp_wh),
                 'picking_type_id' : commercial_type,
                 'location_id' : int(wh),
@@ -380,7 +428,8 @@ class StockPicking(models.Model):
             'reverse_supplier' : True,
         }
 
-        self.env['stock.picking.wave'].create(wave)
+        wl = self.env['stock.picking.wave'].create(wave)
+        wl.write({'name' : wl.name + ' - %s' % wl.id})
 
 
 

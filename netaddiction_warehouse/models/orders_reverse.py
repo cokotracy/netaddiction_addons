@@ -13,6 +13,11 @@ class OrdersReverse(models.Model):
 
     @api.one
     def _count_reverse(self):
+        """
+        Si prende i settings per i resi ['reverse_scrape','reverse_resale']
+        Trova tutti i picking effettuati per queste tipologie 
+        Li conta e aggiorna count_reverse
+        """
         picking_type_id = self.env['netaddiction.warehouse.operations.settings'].search([('netaddiction_op_type','in',['reverse_scrape','reverse_resale']),('company_id','=',self.env.user.company_id.id)])
         ids = []
         for i in picking_type_id:
@@ -22,6 +27,12 @@ class OrdersReverse(models.Model):
 
     @api.one
     def is_reversible_func(self):
+        """
+        Prende tutti i resi per questo sale.order.
+        Ogni rigo reso lo confronta con i righi ordine e per ogni rigo estre le quantità di quel prodotto da 
+        poter ancora rendere.
+        Se la quantità dda poter rendere è maggiore di zero allora ritorna True
+        """
         picking_type_id = self.env['netaddiction.warehouse.operations.settings'].search([('netaddiction_op_type','in',['reverse_scrape','reverse_resale']),('company_id','=',self.env.user.company_id.id)])
         ids = []
         for i in picking_type_id:
@@ -54,6 +65,7 @@ class OrdersReverse(models.Model):
         	self.is_reversible = True
 
         return to_reverse
+
     #action view per i resi
     @api.multi
     def open_reverse(self):
@@ -81,6 +93,9 @@ class OrderLineReverse(models.Model):
 
     @api.one
     def _get_qty_reverse(self):
+        """
+        Conta la quantità resa per quel rigo ordine
+        """
         picking_type_id = self.env['netaddiction.warehouse.operations.settings'].search([('netaddiction_op_type','in',['reverse_scrape','reverse_resale']),('company_id','=',self.env.user.company_id.id)])
         ids = []
         for i in picking_type_id:

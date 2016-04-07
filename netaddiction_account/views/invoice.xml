@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+    	<record model="ir.ui.view" id="netaddiction_invoice">
+            <field name="name">netaddiction.invoice</field>
+            <field name="model">account.invoice</field>
+            <field name="inherit_id" ref="account.invoice_form"/>
+            <field name="arch" type="xml">
+            	<field name="date_invoice" position="before">
+                    <field name="is_customer_invoice" attr="{'invisible':[('journal_id', '=', 1)]}" string="Fattura Cliente"/>
+            	</field>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="netaddiction_invoice_form">
+            <field name="name">netaddiction.invoice.form</field>
+            <field name="model">account.invoice</field>
+            <field name="inherit_id" ref="account.invoice_supplier_form"/>
+            <field name="arch" type="xml">
+                <field name="partner_id" position="replace">
+                    <field name="partner_id" context="{'search_default_supplier':1, 'default_supplier':1, 'default_customer':0,'default_parent_id' : False}" domain="[('supplier','=',True),('parent_id','=',False)]"/>
+                </field>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="netaddiction_purchase_account_invoice">
+            <field name="name">netaddiction.puchase.account.invoice</field>
+            <field name="model">account.invoice</field>
+            <field name="inherit_id" ref="purchase.view_invoice_supplier_purchase_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='purchase_id']" position="after">
+                    <field name="choose_wave_id" />
+                    <field name="create_credit_note"/>
+                </xpath>
+            </field>
+        </record>
+
+        <!--Search-->
+        <record model="ir.ui.view" id="netaddiction_invoice_customer_search">
+            <field name="name">netaddiction.invoice.customer.search</field>
+            <field name="model">account.invoice</field>
+            <field name="inherit_id" ref="account.view_account_invoice_filter"/>
+            <field name="arch" type="xml">
+                 <filter name="refunds" position="after">
+                    <filter name="real_invoice" string="Fatture" domain="[('is_customer_invoice','=',1),('type','in',['out_invoice','in_invoice'])]"/>
+                    <filter name="invoice_ric" string="Ricevute" domain="[('is_customer_invoice','!=',1),('type','in',['out_invoice','in_invoice'])]"/>
+                  
+                 </filter>
+                 <filter name="invoices" position="replace"/>
+            </field>
+        </record>
+    </data>
+</openerp>

@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+    	<record id="netaddiction_registr_corrispettivi" model="ir.ui.view">
+            <field name="name">Registro Corrispettivi</field>
+            <field name="model">account.invoice.line</field>
+            <field name="type">pivot</field>
+            <field name="arch" type="xml">
+                <pivot string="Invoice Line">
+                    <field name="create_date" interval="month" type="row"/>
+                    <field name="price_subtotal" type="measure"/>
+                </pivot>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="netaddiction_registro_corrispettivi_search">
+            <field name="name">netaddiction.registro.corrispettivi.search</field>
+            <field name="model">account.invoice.line</field>
+            <field name="type">search</field>
+            <field name="arch" type="xml">
+            	<search>
+	                <filter name="Iva 22%" domain="[('invoice_line_tax_ids','like','22')]"/>
+	                <filter name="Iva 4%" domain="[('invoice_line_tax_ids','like','4')]"/>
+	                <separator/>
+	                <filter name="Non Pagate" domain="[('invoice_id.state','!=','paid')]"/>
+	                <filter name="Pagate" domain="[('invoice_id.state','=','paid')]"/>
+	            </search>
+            </field>
+        </record>
+
+        <record id="netaddiction_action_registro_corrispettivi" model="ir.actions.act_window">
+            <field name="name">Registro Corrispettivi</field>
+            <field name="res_model">account.invoice.line</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">pivot</field>
+            <field name="search_view_id" ref="netaddiction_registro_corrispettivi_search"/>
+        </record>
+
+        <menuitem action="netaddiction_action_registro_corrispettivi" id="netaddiction_menu_registro_corrispettivi" parent="account.menu_finance_receivables" sequence="10" name="Registro Corrispettivi"/>
+
+
+
+    </data>
+</openerp>

@@ -73,7 +73,7 @@ odoo.define('netaddiction_warehouse.reso_cliente', function (require) {
                 
             var dial = new Dialog(parent,options)
             dial.open()
-            var reso = new content_reso(dial,self.active_order_line);
+            var reso = new content_reso(dial,self.active_order_line,self.active_order_id);
             reso.appendTo(dial.$el)
         },
         process_reverse : function(e){
@@ -84,9 +84,10 @@ odoo.define('netaddiction_warehouse.reso_cliente', function (require) {
 
     var content_reso = Widget.extend({
         template : 'content_reso',
-        init: function(parent,order_line){
+        init: function(parent,order_line,order_id){
             this._super(parent);
             this.order_line = order_line;
+            this.active_order = order_id;
         },
         process_reverse : function(){
             /*Qua invece self è reverse e this è giustamente il widget stesso*/
@@ -128,6 +129,7 @@ odoo.define('netaddiction_warehouse.reso_cliente', function (require) {
             }
         },
         scrap : function(scraped_lines){
+            var oid = this.active_order;
             var pack_operation_product_ids = []
             for (var s in scraped_lines){
                 var new_line = [0,0,{
@@ -148,7 +150,7 @@ odoo.define('netaddiction_warehouse.reso_cliente', function (require) {
                 'sale_id' : parseInt(self.active_order_id),
                 'pack_operation_product_ids' : pack_operation_product_ids,
             }
-            new Model('stock.picking').call('create_reverse',[attr]).then(function(e){
+            new Model('stock.picking').call('create_reverse',[attr,oid]).then(function(e){
 
                 location.reload();
             });
@@ -156,6 +158,7 @@ odoo.define('netaddiction_warehouse.reso_cliente', function (require) {
             return this.getParent().close();
         },
         resale : function(resale_lines){
+            var oid = this.active_order;
             var pack_operation_product_ids = []
             for (var s in resale_lines){
                 var new_line = [0,0,{
@@ -179,7 +182,7 @@ odoo.define('netaddiction_warehouse.reso_cliente', function (require) {
             }
 
             
-            new Model('stock.picking').call('create_reverse',[attr]).then(function(e){
+            new Model('stock.picking').call('create_reverse',[attr,oid]).then(function(e){
 
                 location.reload();
             });
