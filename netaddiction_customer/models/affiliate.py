@@ -89,11 +89,8 @@ class Affiliate(models.Model):
         return hashids.encode(self.control_code)
 
     def check_order(self, order):
-        print "HERE3.1"
         gift_gained = 0.0
-        print "HERE3.2"
         for commission in self.commission_id:
-            print "HERE3.3"
             expression = commission.expression_id
             dom = expression.find_products_domain()
             prod_ids = [pl.id for pl in self.env['product.product'].search(dom)]
@@ -201,14 +198,15 @@ class AffiliateUtilities(models.TransientModel):
         hashids = Hashids(salt=salt)
         order = self.env["sale.order"].search([("id","=",order_id)])
         affiliate = self.env["netaddiction.partner.affiliate"].search([("control_code","=",hashids.decode(hashed_affiliate_id))])
-        print  order
-        print affiliate
-        affiliate.orders_id = []
         if order and affiliate:
-            print "HERE"
-            print "HERE2"
-            commission_value = affiliate.check_order(order)
-            self.env["netaddiction.partner.affiliate.order.history"].create({'order_id': order.id, 'affiliate_id':affiliate.id,'commission':commission_value})
-            affiliate.tot_gift_history += commission_value
-            print "HERE4"
+            order_ids = [oh.order_id.id for oh in affiliate.orders_history]
+            print order_ids
+            if order.id not in order_ids:
+                commission_value = affiliate.check_order(order)
+                self.env["netaddiction.partner.affiliate.order.history"].create({'order_id': order.id, 'affiliate_id':affiliate.id,'commission':commission_value})
+                affiliate.tot_gift_history += commission_value
+            else:
+                print "NONO"
+
+
 
