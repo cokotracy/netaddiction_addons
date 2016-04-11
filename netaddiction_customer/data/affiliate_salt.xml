@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data noupdate="0">
+        <!--Crea la funzionalità ed il gruppo associato-->
+        <record id="affiliate_salt" model="ir.config_parameter">
+            <field name="key">affiliate.salt</field>
+            <field name="value">Provaprova</field>
+        </record>
+    </data>
+</openerp>
