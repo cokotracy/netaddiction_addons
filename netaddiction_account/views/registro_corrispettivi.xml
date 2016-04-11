@@ -8,7 +8,10 @@
             <field name="arch" type="xml">
                 <pivot string="Invoice Line">
                     <field name="create_date" interval="month" type="row"/>
+                    <field name="quantity" type="measure"/>
                     <field name="price_subtotal" type="measure"/>
+                    <field name="price_compute_tax" type="measure"/>
+                    <field name="tax_value" type="measure"/>
                 </pivot>
             </field>
         </record>
@@ -21,6 +24,7 @@
             	<search>
 	                <filter name="Iva 22%" domain="[('invoice_line_tax_ids','like','22')]"/>
 	                <filter name="Iva 4%" domain="[('invoice_line_tax_ids','like','4')]"/>
+	                <filter name="Iva Esente" domain="['|','|',('invoice_line_tax_ids','=',False),('invoice_line_tax_ids','like','Fuori'),('invoice_line_tax_ids','like','374')]"/>
 	                <separator/>
 	                <filter name="Non Pagate" domain="[('invoice_id.state','!=','paid')]"/>
 	                <filter name="Pagate" domain="[('invoice_id.state','=','paid')]"/>
