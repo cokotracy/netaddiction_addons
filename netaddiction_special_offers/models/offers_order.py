@@ -57,7 +57,8 @@ class OfferOrder(models.Model):
                                 new_price = ol.price_unit - deiva
                                 ol.price_unit = new_price if new_price > float(0) else float(0)
                                 #applica offerta vaucher e crea history
-                            self.env['netaddiction.order.specialoffer.vaucher.history'].create({'product_id' : ol.product_id.id, 'order_id' : self.id, 'offer_type':offer.offer_type, 'qty' : ol.product_uom_qty, 'offer_author_id' : offer.author_id.id, 'offer_name' : offer.name, 'offer_id' : offer.id, 'fixed_discount':offer.fixed_discount, 'percent_discount': offer.percent_discount, 'offer_type': offer.offer_type,'order_line': ol.id})
+                            ovh = self.env['netaddiction.order.specialoffer.vaucher.history'].create({'product_id' : ol.product_id.id, 'order_id' : self.id, 'offer_type':offer.offer_type, 'qty' : ol.product_uom_qty, 'offer_author_id' : offer.author_id.id, 'offer_name' : offer.name, 'offer_id' : offer.id, 'fixed_discount':offer.fixed_discount, 'percent_discount': offer.percent_discount, 'offer_type': offer.offer_type,'order_line': ol.id})
+                            ol.offer_vaucher_history = ovh.id
                 self._amount_all()
                             
 
@@ -352,7 +353,8 @@ class OfferOrder(models.Model):
                     raise QtyMaxBuyableException(ol.product_id.name,ol.product_id.id)
                 else:
                     
-                    self.env['netaddiction.order.specialoffer.cart.history'].create({'product_id' : ol.product_id.id, 'order_id' : self.id, 'offer_type':offer_line.offer_type, 'qty' : to_add,'n' :offer_line.offer_cart_id.n,'m' :offer_line.offer_cart_id.m,'bundle_price': offer_line.offer_cart_id.bundle_price, 'offer_author_id' :offer_line.offer_cart_id.author_id.id, 'offer_name' : offer_line.offer_cart_id.name,  'offer_cart_line' : offer_line.id , 'n_price' : offer.n_price})
+                    och = self.env['netaddiction.order.specialoffer.cart.history'].create({'product_id' : ol.product_id.id, 'order_id' : self.id, 'offer_type':offer_line.offer_type, 'qty' : to_add,'n' :offer_line.offer_cart_id.n,'m' :offer_line.offer_cart_id.m,'bundle_price': offer_line.offer_cart_id.bundle_price, 'offer_author_id' :offer_line.offer_cart_id.author_id.id, 'offer_name' : offer_line.offer_cart_id.name,  'offer_cart_line' : offer_line.id , 'n_price' : offer.n_price, 'order_line': ol.id})
+                    ol.offer_cart_history = och.id
                     i +=  to_add
             #EXIT CONDITION
             if i >= num:
@@ -378,7 +380,8 @@ class OfferOrder(models.Model):
                     och.unlink()
                 raise QtyMaxBuyableException(ol.product_id.name,ol.product_id.id)
             else:
-                self.env['netaddiction.order.specialoffer.cart.history'].create({'product_id' : ol.product_id.id, 'order_id' : self.id, 'offer_type':offer_line.offer_type, 'qty' : bundle_cnt[ol.product_id.id],'n' :offer_line.offer_cart_id.n,'m' :offer_line.offer_cart_id.m,'bundle_price': offer_line.offer_cart_id.bundle_price, 'offer_author_id' :offer_line.offer_cart_id.author_id.id, 'offer_name' : offer_line.offer_cart_id.name, 'offer_cart_line' : offer_line.id })
+                och = self.env['netaddiction.order.specialoffer.cart.history'].create({'product_id' : ol.product_id.id, 'order_id' : self.id, 'offer_type':offer_line.offer_type, 'qty' : bundle_cnt[ol.product_id.id],'n' :offer_line.offer_cart_id.n,'m' :offer_line.offer_cart_id.m,'bundle_price': offer_line.offer_cart_id.bundle_price, 'offer_author_id' :offer_line.offer_cart_id.author_id.id, 'offer_name' : offer_line.offer_cart_id.name, 'offer_cart_line' : offer_line.id, 'order_line': ol.id })
+                ol.offer_cart_history = och.id
 
     
     def _find_bundle_unit_price(self,ol,tot,bundle_price):
@@ -412,6 +415,7 @@ class OrderOfferCartHistory(models.Model):
     offer_name = fields.Char(string='Offerta')
     order_id = fields.Many2one(comodel_name='sale.order', string='Ordine',index=True, copy=False, required=True)
     offer_cart_line = fields.Many2one(comodel_name='netaddiction.specialoffer.offer_cart_line')
+    order_line = fields.Many2one(comodel_name='sale.order.line')
 
 
 class OrderOfferVaucherHistory(models.Model):

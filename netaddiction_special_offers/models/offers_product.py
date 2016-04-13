@@ -38,6 +38,8 @@ class OffersCatalogSaleOrderLine(models.Model):
     offer_author_id = fields.Many2one(comodel_name='res.users',string='Autore offerta')
     offer_name = fields.Char(string='Offerta')
     negate_offer = fields.Boolean(string="Ignora offerta", default=False)
+    offer_cart_history = fields.Many2one('netaddiction.order.specialoffer.cart.history', string='offerte carrello attive')
+    offer_vaucher_history = fields.Many2one('netaddiction.order.specialoffer.vaucher.history', string='offerte vaucher attive')
 
 
 
