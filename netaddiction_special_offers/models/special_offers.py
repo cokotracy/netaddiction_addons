@@ -28,6 +28,10 @@ class CatalogOffer(models.Model):
     end_cron_job = fields.Integer()
     start_cron_job = fields.Integer()
 
+    _sql_constraints = [
+            ('name', 'unique(name)', 'Nome offerta deve essere unico!'),
+    ]
+
 
     @api.one
     @api.constrains('active')
@@ -188,6 +192,8 @@ class OfferCatalogLine(models.Model):
     qty_selled = fields.Float( string='Quantità venduta', default=0.0)
     priority = fields.Integer(string="priorità", default = 0)
 
+
+
     @api.one
     @api.constrains('fixed_price','offer_type')
     def _check_fixed_price(self):
@@ -235,6 +241,10 @@ class ShoppingCartOffer(models.Model):
     products_list = fields.One2many('netaddiction.specialoffer.offer_cart_line', 'offer_cart_id', string='Lista prodotti')
     end_cron_job = fields.Integer()
     start_cron_job = fields.Integer()
+
+    _sql_constraints = [
+            ('name', 'unique(name)', 'Nome offerta deve essere unico!'),
+    ]
 
 
     @api.one
@@ -449,6 +459,10 @@ class BonusOffer(models.Model):
     
     products_list = fields.One2many('netaddiction.specialoffer.bonus_offer_line', 'bonus_offer_id', string='Lista prodotti')
 
+    _sql_constraints = [
+            ('name', 'unique(name)', 'Nome offerta deve essere unico!'),
+    ]
+
 
 class BonusOfferLine(models.Model):
 
@@ -485,6 +499,10 @@ class VaucherOffer(models.Model):
     end_cron_job = fields.Integer()
     start_cron_job = fields.Integer()
     products_list = fields.One2many('netaddiction.specialoffer.offer_vaucher_line', 'offer_vaucher_id', string='Lista prodotti')
+
+    _sql_constraints = [
+            ('name', 'unique(name)', 'Nome offerta deve essere unico!'),
+    ]
 
 
     @api.one
