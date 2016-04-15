@@ -203,6 +203,9 @@ class StockPicking(models.Model):
     #CAMPO PER CONTARE I PEZZI DA SPEDIRE#
     number_of_pieces = fields.Integer(string="Pezzi",compute="_get_number_of_pieces")
 
+    barcode = fields.Char(string="Barcode Spedizione")
+    track_number = fields.Char(string="Numero di Tracciamento")
+
     @api.one
     def _get_number_of_pieces(self):
         pieces = 0
@@ -274,7 +277,6 @@ class StockPicking(models.Model):
         else:
             order = self.env['sale.order'].search([('name','=',this.origin)])
             order.action_done()
-
 
         this.do_new_transfer()
         count = self.search([('wave_id','=',this.wave_id.id),('state','not in',['draft','cancel','done'])])

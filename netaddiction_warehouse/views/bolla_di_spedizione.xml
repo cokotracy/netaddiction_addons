@@ -13,10 +13,10 @@
                 <t t-foreach="docs" t-as="o">
                         
                         <div class="page">
-                            <table width="548" border="0" cellspacing="0" cellpadding="0" style="font-family:Arial, Helvetica, sans-serif; font-size:12px; font-weight:bold; line-height:14px; margin:0px; padding:0px; ">
+                            <table  border="0" cellspacing="0" cellpadding="0" style="font-family:Arial, Helvetica, sans-serif; font-size:12px; font-weight:bold; line-height:14px; margin:0px; padding:0px; ">
                                 <tr>
                                     <td align="left" valign="top" style="font-family:Arial, Helvetica, sans-serif; font-size:12px; font-weight:bold; line-height:14px;">
-                                        <table width="548" border="0" cellspacing="0" cellpadding="0" style="font-family:Arial, Helvetica, sans-serif; font-size:12px; font-weight:bold; line-height:14px; margin:0px; padding:0px; ">
+                                        <table  border="0" cellspacing="0" cellpadding="0" style="font-family:Arial, Helvetica, sans-serif; font-size:12px; font-weight:bold; line-height:14px; margin:0px; padding:0px; ">
                                             <tr>
                                                 <td width="215" align="left" valign="middle"><span t-field="o.company_id.logo" t-field-options="{&quot;widget&quot;: &quot;image&quot;, &quot;class&quot;: &quot;img-rounded&quot;}" /></td>
                                                 <td width="333" rowspan="2" align="right" valign="top">
@@ -37,7 +37,7 @@
                                             </tr>
                                             <tr>
                                                 <td height="11" colspan="2" align="left" valign="middle" style="font-family:Arial, Helvetica, sans-serif; font-size:12px; font-weight:bold; line-height:14px;">
-                                                    <table width="548" border="0" cellspacing="0" cellpadding="0">
+                                                    <table  border="0" cellspacing="0" cellpadding="0">
                                                         <tbody>
                                                             <tr>
                                                                 <td width="100" align="left" valign="top" style="font-family:Arial, Helvetica, sans-serif; font-size:16px; font-weight:bold; line-height:18px;"><br/>
@@ -102,7 +102,7 @@
                                 </tr>
                                 <tr>
                                     <td>
-                                        <table width="548" border="0" cellspacing="0" cellpadding="0" style="padding-top:5px;">
+                                        <table  border="0" cellspacing="0" cellpadding="0" style="padding-top:5px;">
                                         <tbody><tr>
                                             <td width="274" height="16" align="left" valign="middle" style="font-size:12px;"><em><strong>Cliente:</strong></em></td>
                                             <td width="274" height="16" align="left" valign="middle" style="font-size:12px;"><em><strong>Indirizzo di Consegna:</strong></em></td>
@@ -146,7 +146,7 @@
                                 </tr>
                                 <tr>
                                     <td align="center" valign="middle">
-                                        <table width="548" border="0" cellspacing="1" cellpadding="0">
+                                        <table  border="0" cellspacing="1" cellpadding="0">
                                             <tbody>
                                                 <tr>
                                                     <td width="25" align="center" valign="middle" style="background-color:black; font-size:9px; text-align:center; line-height:12px; color:white;"><strong>Q.tà</strong></td>
@@ -155,34 +155,40 @@
                                                     <td width="45" align="center" valign="middle" style="background-color:black; font-size:9px; text-align:center; line-height:12px; color:white;"><strong>Prz.€</strong></td>
                                                     <td width="45" align="center" valign="middle" style="background-color:black; font-size:9px; text-align:center; line-height:12px; color:white;"><strong>Tot.€</strong></td>
                                                 </tr>
+                                                <t t-set="subtotal" t-value="0"/>
+                                                <t t-set="subtotal_tax" t-value="0"/>
                                                 <t t-foreach="o.pack_operation_product_ids" t-as="line">
                                                     <t t-foreach="o.sale_id.order_line" t-as="order_line">
                                                         <t t-if="line.product_id.id == order_line.product_id.id">
-                                                            <tr>
-                                                                <td align="center" valign="middle" style="background-color:#FFFFFF; font-size:14px; line-height:14px; padding:3px 0px; border-bottom:3px solid black;">
-                                                                    <strong><span t-esc="int(float(line.qty_done))" /></strong>
-                                                                </td>
-                                                                <td align="center" valign="middle" style="background-color:#000000; font-size:14px; line-height:14px; padding:5px 2px; border-bottom:3px solid black; color:#FFF">
-                                                                    <strong style="color:#FFFFFF"></strong>
-                                                                </td>
-                                                                <td align="left" valign="middle" style="background-color:#FFFFFF; font-size:12px; line-height:12px; padding:5px; border-bottom:3px solid black;font-weight:normal !important">
-                                                                    <t t-esc="line.product_id.display_name"/><br/>
-                                                                    <span style="font-size:11px; float:left; margin-top:5px; margin-right:20px;">SKU: <strong><t t-esc="line.product_id.id"/></strong></span>
-                                                                    <span style="font-size:11px; float:left; margin-top:5px;">BARCODE: <strong><t t-esc="line.product_id.barcode"/></strong></span>
-                                                                </td>
-                                                                <td align="left" valign="middle" style="background-color:#FFFFFF; font-size:12px; line-height:12px; padding:5px; border-bottom:3px solid black;font-weight:normal !important">
-                                                                    <t t-esc="order_line.price_unit"/>
-                                                                </td>
-                                                                <td align="left" valign="middle" style="background-color:#FFFFFF; font-size:12px; line-height:12px; padding:5px; border-bottom:3px solid black;font-weight:normal !important">
-                                                                    <t t-esc="order_line.price_total"/>
-                                                                </td>
-                                                            </tr>
+                                                            <t t-if="order_line.qty_delivered > 0">
+                                                                <t t-set="subtotal" t-value="subtotal + order_line.price_subtotal"/>
+                                                                <t t-set="subtotal_tax" t-value="subtotal_tax - order_line.price_subtotal + order_line.price_total "/>
+                                                                <tr>
+                                                                    <td align="center" valign="middle" style="background-color:#FFFFFF; font-size:14px; line-height:14px; padding:3px 0px; border-bottom:3px solid black;">
+                                                                        <strong><span t-esc="int(float(order_line.qty_delivered))" /></strong>
+                                                                    </td>
+                                                                    <td align="center" valign="middle" style="background-color:#000000; font-size:14px; line-height:14px; padding:5px 2px; border-bottom:3px solid black; color:#FFF">
+                                                                        <strong style="color:#FFFFFF"><span t-esc="line.product_id.categ_id.name" /></strong>
+                                                                    </td>
+                                                                    <td align="left" valign="middle" style="background-color:#FFFFFF; font-size:12px; line-height:12px; padding:5px; border-bottom:3px solid black;font-weight:normal !important">
+                                                                        <t t-esc="line.product_id.display_name"/><br/>
+                                                                        <span style="font-size:11px; float:left; margin-top:5px; margin-right:20px;">SKU: <strong><t t-esc="line.product_id.id"/></strong></span>
+                                                                        <span style="font-size:11px; float:left; margin-top:5px;">BARCODE: <strong><t t-esc="line.product_id.barcode"/></strong></span>
+                                                                    </td>
+                                                                    <td align="left" valign="middle" style="background-color:#FFFFFF; font-size:12px; line-height:12px; padding:5px; border-bottom:3px solid black;font-weight:normal !important">
+                                                                        <t t-esc="order_line.price_unit"/>
+                                                                    </td>
+                                                                    <td align="left" valign="middle" style="background-color:#FFFFFF; font-size:12px; line-height:12px; padding:5px; border-bottom:3px solid black;font-weight:normal !important">
+                                                                        <t t-esc="order_line.price_subtotal"/>
+                                                                    </td>
+                                                                </tr>
+                                                            </t>
                                                         </t>
                                                     </t>
                                                 </t>
                                                 <tr>
                                                     <td colspan="6" align="left" valign="top" style="padding-bottom:3px; border-bottom:1px solid black;">
-                                                        <table width="548" border="0" cellspacing="0" cellpadding="0">
+                                                        <table  border="0" cellspacing="0" cellpadding="0">
                                                             <tr>
                                                                 <td width="367" align="left" valign="top" style="padding:5px 2px 2px 2px;">
                                                                     <!-- TODO: Commenti-->
@@ -194,16 +200,27 @@
                                                                                 <strong>Imponibile:</strong>
                                                                             </td>
                                                                             <td width="60" align="right" valign="middle" style="font-size:12px; line-height:16px;">
-                                                                                <strong><t t-esc="o.sale_id.amount_untaxed"/></strong>
+                                                                                <strong><t t-esc="subtotal"/></strong>
                                                                             </td>
                                                                         </tr>
-                                                                        <!-- TODO: mettere gift,spese spedizioni etc-->
+
+                                                                        <tr>
+                                                                            <td width="110" align="right" valign="middle" style="font-size:12px; line-height:14px;">
+                                                                                <strong><t t-esc="o.carrier_id.name"/>:</strong>
+                                                                            </td>
+                                                                            <td width="60" align="right" valign="middle" style="font-size:12px; line-height:16px;">
+                                                                                <strong><t t-esc="o.carrier_price"/></strong>
+                                                                            </td>
+                                                                        </tr>
+                                                                        <t t-set="carrier_tax" t-value="o.carrier_price * 1.22"/>
+
                                                                         <tr>
                                                                             <td width="110" align="right" valign="middle" style="font-size:12px; line-height:14px;">
                                                                                 <strong>Tasse:</strong>
                                                                             </td>
                                                                             <td width="60" align="right" valign="middle" style="font-size:12px; line-height:16px;">
-                                                                                <strong><t t-esc="o.sale_id.amount_tax"/></strong>
+                                                                                <t t-set="tax" t-value="subtotal_tax + carrier_tax"/>
+                                                                                <strong><t t-esc="round(tax,2)"/></strong>
                                                                             </td>
                                                                         </tr>
                                                                         <tr>
@@ -211,7 +228,8 @@
                                                                                 <strong>Totale:</strong>
                                                                             </td>
                                                                             <td width="60" align="right" valign="middle" style="font-size:12px; line-height:16px;">
-                                                                                <strong><t t-esc="o.sale_id.amount_total"/></strong>
+                                                                                <t t-set="total" t-value="tax + subtotal"/>
+                                                                                <strong><t t-esc="round(total,2)"/></strong>
                                                                             </td>
                                                                         </tr>
                                                                             
