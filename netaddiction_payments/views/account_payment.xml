@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+         <record model="ir.ui.view" id="netaddiction_view_order_payments">
+            <field name="name">netaddiction.sale.order.payments</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale.view_order_form"/>
+            <field name="arch" type="xml">
+
+
+
+
+              <xpath expr="//notebook/page"
+                    position="after">    
+                    <page string="Pagamenti">
+                        <br/>
+                      <field name="account_payment_ids" />
+
+                              
+                    </page>
+                </xpath> 
+
+          </field>
+          </record>
+
+        <record model="ir.ui.view" id="netaddiction_view_account_payments">
+            <field name="name">netaddiction.account.payments</field>
+            <field name="model">account.payment</field>
+            <field name="inherit_id" ref="account.view_account_payment_form"/>
+            <field name="arch" type="xml">
+
+
+
+
+              <xpath expr="//field[@name='amount']"
+                    position="after">    
+                   
+                      <field name="order_id" />
+
+            
+                </xpath> 
+          </field>
+          </record>
+
+
+
+          </data>
+</openerp>
