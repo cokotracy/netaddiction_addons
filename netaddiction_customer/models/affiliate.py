@@ -200,13 +200,11 @@ class AffiliateUtilities(models.TransientModel):
         affiliate = self.env["netaddiction.partner.affiliate"].search([("control_code","=",hashids.decode(hashed_affiliate_id))])
         if order and affiliate:
             order_ids = [oh.order_id.id for oh in affiliate.orders_history]
-            print order_ids
             if order.id not in order_ids:
                 commission_value = affiliate.check_order(order)
                 self.env["netaddiction.partner.affiliate.order.history"].create({'order_id': order.id, 'affiliate_id':affiliate.id,'commission':commission_value})
                 affiliate.tot_gift_history += commission_value
-            else:
-                print "NONO"
+            
 
 
 

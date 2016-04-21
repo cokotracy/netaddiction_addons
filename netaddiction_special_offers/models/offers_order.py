@@ -76,6 +76,8 @@ class OfferOrder(models.Model):
             #ordino le order lines per product_id
             order_lines.sort(key=lambda ol: ol.product_id.id)
 
+            
+
             i = 0
             while i < len(order_lines):
                 curr_ol = order_lines[i]
@@ -84,7 +86,6 @@ class OfferOrder(models.Model):
                 while next_ol and next_ol.product_id.id == curr_ol.product_id.id:
                 #riaccorpa le linee for ol in self.order_lines
                     curr_ol.product_uom_qty += next_ol.product_uom_qty
-                    order_lines.remove(next_ol)
                     next_ol.unlink()
                     j += 1
                     next_ol = order_lines[j] if j < len(order_lines) else None
@@ -256,49 +257,52 @@ class OfferOrder(models.Model):
     def _apply_bundle(self,offer,pid_list,order_lines_usables):
         """ applica l'offerta bundle offer alle order_lines in questo ordine
         """
+        bundle_verified = True
+        while bundle_verified:
+            order_lines =[]
+            for ol in self.order_line:
+                if ol.id in order_lines_usables and ol.product_id.id in pid_list:
+                    order_lines.append(ol)
 
-        order_lines =[]
-        for ol in self.order_line:
-            if ol.id in order_lines_usables and ol.product_id.id in pid_list:
-                order_lines.append(ol)
+            bundle_prods =[ocl.product_id.id for ocl in offer.products_list]
+            order_prods = []
+            for ol in order_lines:
+                i = 0
+                while i < ol.product_uom_qty:
+                    order_prods.append(ol.product_id.id)
+                    i += 1
 
-        bundle_prods =[ocl.product_id.id for ocl in offer.products_list]
-        order_prods = []
-        for ol in order_lines:
-            i = 0
-            while i < ol.product_uom_qty:
-                order_prods.append(ol.product_id.id)
-                i += 1
+            if len(order_prods) >= len(bundle_prods):
 
-        if len(order_prods) >= len(bundle_prods):
+                order_cnt = Counter(order_prods)
+                bundle_cnt = Counter(bundle_prods)
+                bundle_verified = True
+                for bundle_pid in bundle_prods:
+                    if bundle_cnt[bundle_pid] > order_cnt[bundle_pid]:
+                        bundle_verified = False
+                        break
+                if bundle_verified:
+                    #history e cambio prezzi
+                    #matches = [ol for ol in order_lines if ol.product_id.id in bundle_prods]
+                    self._create_offer_cart_history_bundles(bundle_cnt,order_lines,offer)
+                    tot = 0
+                    for ol in order_lines:
+                        if ol.product_uom_qty >bundle_cnt[ol.product_id.id]:
+                            #split line
+                            res = self._split_order_line(ol,bundle_cnt[ol.product_id.id],ol.product_uom_qty - bundle_cnt[ol.product_id.id])
+                            new_ol = res[0] if res[0] else None
+                            if new_ol:
+                                order_lines_usables.append(new_ol.id)
 
-            order_cnt = Counter(order_prods)
-            bundle_cnt = Counter(bundle_prods)
-            bundle_verified = True
-            for bundle_pid in bundle_prods:
-                if bundle_cnt[bundle_pid] > order_cnt[bundle_pid]:
-                    bundle_verified = False
-                    break
-            if bundle_verified:
-                #history e cambio prezzi
-                #matches = [ol for ol in order_lines if ol.product_id.id in bundle_prods]
-                self._create_offer_cart_history_bundles(bundle_cnt,order_lines,offer)
-                tot = 0
-                for ol in order_lines:
-                    if ol.product_uom_qty >bundle_cnt[ol.product_id.id]:
-                        #split line
-                        res = self._split_order_line(ol,bundle_cnt[ol.product_id.id],ol.product_uom_qty - bundle_cnt[ol.product_id.id])
-                        new_ol = res[0] if res[0] else None
-                        if new_ol:
-                            order_lines_usables.append(new_ol.id)
-
-                    order_lines_usables.remove(ol.id)
-                    tot += ol.price_total
-                bundle_price = offer.bundle_price
-                for ol in order_lines:
-                    #qui siamo sicuri che product_uom_qty = bundle_cnt[ol.product_id.id]
-                    res = self._find_bundle_unit_price(ol,tot,bundle_price)
-                    ol.price_unit = res
+                        order_lines_usables.remove(ol.id)
+                        tot += ol.price_total
+                    bundle_price = offer.bundle_price
+                    for ol in order_lines:
+                        #qui siamo sicuri che product_uom_qty = bundle_cnt[ol.product_id.id]
+                        res = self._find_bundle_unit_price(ol,tot,bundle_price)
+                        ol.price_unit = res
+            else: 
+                bundle_verified = False
                         
                 
 
