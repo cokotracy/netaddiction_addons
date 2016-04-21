@@ -34,7 +34,7 @@ class OffersCatalogSaleOrderLine(models.Model):
 
     fixed_price = fields.Integer(string="Prezzo fisso")
     percent_discount = fields.Integer(string="Sconto Percentuale")
-    offer_type = fields.Selection([(1,'Prezzo Fisso'),(2,'Percentuale')], string='Tipo Offerta', default=None)
+    offer_type = fields.Selection([(1,'Prezzo Fisso'),(2,'Percentuale'),(3,'Spedizioni Gratis')], string='Tipo Offerta', default=None)
     offer_author_id = fields.Many2one(comodel_name='res.users',string='Autore offerta')
     offer_name = fields.Char(string='Offerta')
     negate_offer = fields.Boolean(string="Ignora offerta", default=False)

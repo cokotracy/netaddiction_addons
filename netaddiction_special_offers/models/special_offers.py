@@ -233,7 +233,7 @@ class ShoppingCartOffer(models.Model):
     qty_max_buyable = fields.Integer( string='Quantità massima acquistabile', help = "Quantità massima di prodotti acquistabili in un singolo ordine in questa offerta. 0 è illimitato", required=True)
     qty_limit = fields.Integer( string='Quantità limite', help = "Quantità limite di prodotti vendibili in questa offerta. 0 è illimitato", required=True)
     qty_selled = fields.Integer( string='Quantità venduta', default=0.0, compute="_compute_qty_selled")
-    offer_type = fields.Selection([(1,'Bundle'),(2,'n x m'),(3,'n x prezzo')], string='Tipo Offerta', default=2,required=True)
+    offer_type = fields.Selection([(1,'Bundle'),(2,'n x m'),(3,'n x prezzo'),(4,'Spedizioni Gratis')], string='Tipo Offerta', default=2,required=True)
     n = fields.Integer(string="N")
     m = fields.Integer(string="M")
     bundle_price = fields.Float(string="Prezzo bundle")
@@ -420,7 +420,7 @@ class OfferCartLine(models.Model):
     offer_cart_id = fields.Many2one('netaddiction.specialoffer.cart', string='Offerta Carrello', index=True, copy=False, required=True)
     qty_max_buyable = fields.Integer( string='Quantità massima acquistabile', help = "Quantità massima di prodotti acquistabili in un singolo ordine in questa offerta. 0 è illimitato", required=True)
     qty_limit = fields.Integer( string='Quantità limite', help = "Quantità limite di prodotti vendibili in questa offerta. 0 è illimitato", required=True)
-    offer_type = fields.Selection([(1,'Bundle'),(2,'n x m'),(3,'n x prezzo')], string='Tipo Offerta', default=2,required=True)
+    offer_type = fields.Selection([(1,'Bundle'),(2,'n x m'),(3,'n x prezzo'),(4,'Spedizioni Gratis')], string='Tipo Offerta', default=2,required=True)
     priority = fields.Integer(string="priorità", default = 0)
     qty_selled = fields.Float( string='Quantità venduta', default=0.0)
 

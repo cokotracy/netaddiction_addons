@@ -9,6 +9,7 @@ class OfferOrder(models.Model):
     offers_cart = fields.One2many('netaddiction.order.specialoffer.cart.history','order_id', string='offerte carrello attive')
     offers_vaucher = fields.One2many('netaddiction.order.specialoffer.vaucher.history','order_id', string='offerte vaucher attive')
     vaucher_string = fields.Char(string='Codice Vaucher')
+    free_ship_prod = fields.Many2many('product.product', string='Prodotti con spedizione gratuita')
 
 
   
@@ -34,7 +35,8 @@ class OfferOrder(models.Model):
                 offer = offer[0]
                 if offer.offer_type == 3:
                     #TODO scalare spese di spedizione
-                    pass
+                    ovh = self.env['netaddiction.order.specialoffer.vaucher.history'].create({ 'order_id' : self.id, 'offer_type':offer.offer_type,  'offer_author_id' : offer.author_id.id, 'offer_name' : offer.name, 'offer_id' : offer.id, 'fixed_discount':offer.fixed_discount, 'percent_discount': offer.percent_discount, 'offer_type': offer.offer_type})
+                    
                 else:
 
                     offer_ids = [ol.product_id.id for ol in offer.products_list]
@@ -127,12 +129,16 @@ class OfferOrder(models.Model):
                 #considero solo order lines che hanno almeno una offerta carrello ME GUSTA
                 order_lines_usables.append(ol.id) 
                 for offer in ol.product_id.offer_cart_lines:
-                    if offer.offer_cart_id not in offer_dict:
-                        prod_list =[]
-                        prod_list.append(ol.product_id.id)
-                        offer_dict[offer.offer_cart_id] = prod_list
+                    if offer.offer_type == 4:
+                        #spedizioni gratis
+                        self.free_ship_prod = [(4,ol.product_id.id)]
                     else:
-                        offer_dict[offer.offer_cart_id].append(ol.product_id.id)
+                        if offer.offer_cart_id not in offer_dict:
+                            prod_list =[]
+                            prod_list.append(ol.product_id.id)
+                            offer_dict[offer.offer_cart_id] = prod_list
+                        else:
+                            offer_dict[offer.offer_cart_id].append(ol.product_id.id)
 
         offer_list = offer_dict.keys()
         offer_list.sort(key=lambda offer: offer.priority)
@@ -428,7 +434,7 @@ class OrderOfferVaucherHistory(models.Model):
     
     
 
-    product_id = fields.Many2one('product.product', string='Product', domain=[('sale_ok', '=', True)], change_default=True, ondelete='restrict', required=True)
+    product_id = fields.Many2one('product.product', string='Product', domain=[('sale_ok', '=', True)], change_default=True, ondelete='restrict')
     offer_type = fields.Selection([(1,'Sconto Fisso'),(2,'Percentuale'),(3,'Spedizioni Gratis')], string='Tipo Offerta', default=1)
     qty = fields.Integer(string = "quantità")
     offer_author_id = fields.Many2one(comodel_name='res.users',string='Autore offerta')

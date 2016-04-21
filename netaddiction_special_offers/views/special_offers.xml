@@ -294,7 +294,7 @@
                                 <field name="qty_max_buyable"/>
                                 <field name="qty_limit"/>
                                 <field name="offer_type" widget="radio"/>
-                                <field name="n" attrs="{'invisible':[('offer_type', '=', 1)]}"/>
+                                <field name="n" attrs="{'invisible':['|',('offer_type', '=', 1),('offer_type', '=', 4)]}"/>
                                 <field name="m" attrs="{'invisible':[('offer_type', '!=', 2)]}" />
                                 <field name="n_price" attrs="{'invisible':[('offer_type', '!=', 3)]}" />
                                 <field name="bundle_price" attrs="{'invisible':[('offer_type', '!=', 1)]}" />

@@ -149,6 +149,10 @@
                                  
                                 </tree>
                               </field>
+                              <br/>
+                              <br/>
+                              <h2>Spedizioni gratis</h2>
+                              <field name="free_ship_prod" mode="tree,kanban" />
 
                     </page>
                 </xpath> 
