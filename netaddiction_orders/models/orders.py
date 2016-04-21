@@ -18,8 +18,6 @@ class Order(models.Model):
     ], string='Status', readonly=True, copy=False, index=True)
 
     ip_address = fields.Char(string="Indirizzo IP")
-    delivery_option = fields.Selection([('all', 'tutto insieme'), ('asap', 'non appena disponibile')],
-                                       string='Opzione spedizione')
 
     ##############
     # ACTION STATE#
@@ -250,12 +248,6 @@ class Order(models.Model):
         super(Order,self)._amount_all()
         for order in self:
             order._compute_gift_amount()
-
-
-
-
-
-
 
 
 class SaleOrderLine(models.Model):

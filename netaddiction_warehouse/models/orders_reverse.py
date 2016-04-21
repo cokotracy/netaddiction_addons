@@ -11,6 +11,7 @@ class OrdersReverse(models.Model):
 
     is_reversible = fields.Boolean(string="Reversibile" ,compute="is_reversible_func")
 
+
     @api.one
     def _count_reverse(self):
         """
@@ -90,6 +91,8 @@ class OrderLineReverse(models.Model):
     _inherit = "sale.order.line"
 
     qty_reverse = fields.Integer(string = "Reso", compute = "_get_qty_reverse")
+
+    stock_line_ids = fields.Many2many(string="Linee spedizione collegate",comodel_name="stock.pack.operation")
 
     @api.one
     def _get_qty_reverse(self):

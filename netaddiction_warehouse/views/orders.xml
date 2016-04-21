@@ -19,6 +19,8 @@
                     position="after">    
                     <field name="qty_reverse" />    
                 </xpath> 
+
+                
             </field>
         </record>
 

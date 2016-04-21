@@ -7,9 +7,25 @@
             <field name="inherit_id" ref="product.product_pricelist_view"/>
             <field name="arch" type="xml">
                 <field name="item_ids" position="before">
-                    <label for="expression">Espressione</label>
-                    <field name="expression"/>
-                    <button type="object" name="populate_item_ids_from_expression" string="Aggiungi Prodotti"/>
+                    <group>
+                        <group>
+                            <field name="expression"/>
+                        </group>
+                        <group>
+                            <button type="object" name="populate_item_ids_from_expression" string="Aggiungi Prodotti" class="btn btn-primary"/>
+                        </group>
+                    </group>
+                    <group>
+                        <group>                            
+                            <field name="carrier_id"/>
+                        </group>
+                        <group>
+                            <field name="carrier_price"/>
+                        </group>
+                        <group>
+                            <field name="carrier_gratis"/>
+                        </group>
+                    </group>
                 </field>
             </field>
         </record>

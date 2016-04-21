@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+    	<record model="ir.ui.view" id="netaddiction_warehouse_view_order">
+            <field name="name">netaddiction.warehouse.sale.order</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale.view_order_form"/>
+            <field name="arch" type="xml">
+            	<field name="pricelist_id" position="before">
+                    <fiel name="delivery_option" />
+            	</field>
+            </field>
+        </record>
+
+
+    </data>
+</openerp>
