@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+    	<record model="ir.ui.view" id="netaddiction_view_partner">
+            <field name="name">res.partner.netaddiction.extrafields</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="base.view_partner_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//page[@name='sales_purchases']/group/group[field[@name='ref']]" position="before">
+                        <field name="supplier_priority" attrs="{'invisible':[('customer','=',True)]}"/>
+                        <field name="supplier_delivery_time" attrs="{'invisible':[('customer','=',True)]}"/>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</openerp>

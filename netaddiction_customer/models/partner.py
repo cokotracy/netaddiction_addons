@@ -12,9 +12,6 @@ class Partner(models.Model):
     rating = fields.Selection([('0','Negativo'), ('1','Medio'), ('2','Positivo')], string='Rating', default="2")
     email_rating = fields.Selection([('A+','A+'), ('A','A'), ('B','B'), ('C','C'), ('D','D'), ('E','E'), ('F','F'), ('','Non valutato')], string='Email Rating', default='')
 
-
-  
-
     @api.one
     def write(self,values):
         """

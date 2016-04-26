@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+    	<record id="delivery_product_normal_form_view" model="ir.ui.view">
+            <field name="name">netaddiction.delivery.normal.product.form</field>
+            <field name="model">product.product</field>
+            <field name="priority" eval="30"/>
+            <field name="inherit_id" ref="netaddiction_products.product_normal_form_view"/>
+            <field name="arch" type="xml">
+            	<field name="available_date" position="after">
+            		<field name="days_available" readonly="True"/>
+            	</field>
+            </field>
+        </record>
+    </data>
+</openerp>

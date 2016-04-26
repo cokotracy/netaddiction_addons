@@ -203,9 +203,6 @@ class StockPicking(models.Model):
     #CAMPO PER CONTARE I PEZZI DA SPEDIRE#
     number_of_pieces = fields.Integer(string="Pezzi",compute="_get_number_of_pieces")
 
-    barcode = fields.Char(string="Barcode Spedizione")
-    track_number = fields.Char(string="Numero di Tracciamento")
-
     @api.one
     def _get_number_of_pieces(self):
         pieces = 0
@@ -263,30 +260,7 @@ class StockPicking(models.Model):
     #END INVENTORY APP FUNCTION#
     ############################
 
-    ################################
-    #FUNCTION PER CONTROLLO PICK UP#
-    ################################
-    @api.model
-    def do_validate_orders(self,pick_id):
-        this = self.search([('id','=',int(pick_id))])
-        if this.check_backorder(this):
-            wiz_id = self.env['stock.backorder.confirmation'].create({'pick_id': this.id})
-            wiz_id.process()
-            backorder_pick = self.env['stock.picking'].search([('backorder_id', '=', this.id)])
-            backorder_pick.write({'wave_id' : None})
-        else:
-            order = self.env['sale.order'].search([('name','=',this.origin)])
-            order.action_done()
-
-        this.do_new_transfer()
-        count = self.search([('wave_id','=',this.wave_id.id),('state','not in',['draft','cancel','done'])])
-        if len(count) == 0:
-            this.wave_id.done()
-
-    @api.model
-    def do_multi_validate_orders(self,picks):
-        for p in picks:
-            self.do_validate_orders(p)
+    
 
     @api.model 
     def create_reverse(self,attr,order_id):

@@ -50,7 +50,10 @@
                                                                     <table cellpadding="0" cellspacing="0" border="0">
                                                                         <tbody>
                                                                             <tr>
-                                                                                <td><!-- TODO: BARCODE--></td>
+                                                                                <td>
+                                                                                    <img t-if="o.delivery_barcode" t-att-src="'/report/barcode/?type=%s&amp;value=%s&amp;width=%s&amp;height=%s' % ('Code128', o.delivery_barcode, 448, 100)" style="width:100%;height:60%;margin-right:0 !important"/>
+                                                                                    <center><span t-field="o.delivery_barcode"/></center>
+                                                                                </td>
                                                                             </tr>
                                                                         </tbody>
                                                                     </table>
@@ -157,34 +160,30 @@
                                                 </tr>
                                                 <t t-set="subtotal" t-value="0"/>
                                                 <t t-set="subtotal_tax" t-value="0"/>
-                                                <t t-foreach="o.pack_operation_product_ids" t-as="line">
-                                                    <t t-foreach="o.sale_id.order_line" t-as="order_line">
-                                                        <t t-if="line.product_id.id == order_line.product_id.id">
-                                                            <t t-if="order_line.qty_delivered > 0">
-                                                                <t t-set="subtotal" t-value="subtotal + order_line.price_subtotal"/>
-                                                                <t t-set="subtotal_tax" t-value="subtotal_tax - order_line.price_subtotal + order_line.price_total "/>
-                                                                <tr>
-                                                                    <td align="center" valign="middle" style="background-color:#FFFFFF; font-size:14px; line-height:14px; padding:3px 0px; border-bottom:3px solid black;">
-                                                                        <strong><span t-esc="int(float(order_line.qty_delivered))" /></strong>
-                                                                    </td>
-                                                                    <td align="center" valign="middle" style="background-color:#000000; font-size:14px; line-height:14px; padding:5px 2px; border-bottom:3px solid black; color:#FFF">
-                                                                        <strong style="color:#FFFFFF"><span t-esc="line.product_id.categ_id.name" /></strong>
-                                                                    </td>
-                                                                    <td align="left" valign="middle" style="background-color:#FFFFFF; font-size:12px; line-height:12px; padding:5px; border-bottom:3px solid black;font-weight:normal !important">
-                                                                        <t t-esc="line.product_id.display_name"/><br/>
-                                                                        <span style="font-size:11px; float:left; margin-top:5px; margin-right:20px;">SKU: <strong><t t-esc="line.product_id.id"/></strong></span>
-                                                                        <span style="font-size:11px; float:left; margin-top:5px;">BARCODE: <strong><t t-esc="line.product_id.barcode"/></strong></span>
-                                                                    </td>
-                                                                    <td align="left" valign="middle" style="background-color:#FFFFFF; font-size:12px; line-height:12px; padding:5px; border-bottom:3px solid black;font-weight:normal !important">
-                                                                        <t t-esc="order_line.price_unit"/>
-                                                                    </td>
-                                                                    <td align="left" valign="middle" style="background-color:#FFFFFF; font-size:12px; line-height:12px; padding:5px; border-bottom:3px solid black;font-weight:normal !important">
-                                                                        <t t-esc="order_line.price_subtotal"/>
-                                                                    </td>
-                                                                </tr>
-                                                            </t>
-                                                        </t>
-                                                    </t>
+                                                <t t-foreach="o.group_id.procurement_ids" t-as="procurement">
+                                                    <t t-set="subtotal" t-value="subtotal + procurement.sale_line_id.price_subtotal"/>
+                                                    <t t-set="subtotal_tax" t-value="subtotal_tax + procurement.sale_line_id.price_tax"/>
+
+                                                    <tr>
+                                                        <td align="center" valign="middle" style="background-color:#FFFFFF; font-size:14px; line-height:14px; padding:3px 0px; border-bottom:3px solid black;">
+                                                            <strong><span t-esc="int(float(procurement.sale_line_id.product_qty))" /></strong>
+                                                        </td>
+                                                    
+                                                        <td align="center" valign="middle" style="background-color:#000000; font-size:14px; line-height:14px; padding:5px 2px; border-bottom:3px solid black; color:#FFF">
+                                                            <strong style="color:#FFFFFF"><span t-esc="procurement.sale_line_id.product_id.categ_id.name" /></strong>
+                                                        </td>
+                                                        <td align="left" valign="middle" style="background-color:#FFFFFF; font-size:12px; line-height:12px; padding:5px; border-bottom:3px solid black;font-weight:normal !important">
+                                                            <t t-esc="procurement.sale_line_id.product_id.display_name"/><br/>
+                                                            <span style="font-size:11px; float:left; margin-top:5px; margin-right:20px;">SKU: <strong><t t-esc="procurement.sale_line_id.product_id.id"/></strong></span>
+                                                            <span style="font-size:11px; float:left; margin-top:5px;">BARCODE: <strong><t t-esc="procurement.sale_line_id.product_id.barcode"/></strong></span>
+                                                        </td>
+                                                        <td align="left" valign="middle" style="background-color:#FFFFFF; font-size:12px; line-height:12px; padding:5px; border-bottom:3px solid black;font-weight:normal !important">
+                                                            <t t-esc="procurement.sale_line_id.price_unit"/>
+                                                        </td>
+                                                        <td align="left" valign="middle" style="background-color:#FFFFFF; font-size:12px; line-height:12px; padding:5px; border-bottom:3px solid black;font-weight:normal !important">
+                                                            <t t-esc="procurement.sale_line_id.price_subtotal"/>
+                                                        </td>
+                                                    </tr>
                                                 </t>
                                                 <tr>
                                                     <td colspan="6" align="left" valign="top" style="padding-bottom:3px; border-bottom:1px solid black;">
@@ -212,7 +211,7 @@
                                                                                 <strong><t t-esc="o.carrier_price"/></strong>
                                                                             </td>
                                                                         </tr>
-                                                                        <t t-set="carrier_tax" t-value="o.carrier_price * 1.22"/>
+                                                                        <t t-set="carrier_tax" t-value="o.carrier_price * 0.22"/>
 
                                                                         <tr>
                                                                             <td width="110" align="right" valign="middle" style="font-size:12px; line-height:14px;">
@@ -228,7 +227,7 @@
                                                                                 <strong>Totale:</strong>
                                                                             </td>
                                                                             <td width="60" align="right" valign="middle" style="font-size:12px; line-height:16px;">
-                                                                                <t t-set="total" t-value="tax + subtotal"/>
+                                                                                <t t-set="total" t-value="tax + subtotal + o.carrier_price"/>
                                                                                 <strong><t t-esc="round(total,2)"/></strong>
                                                                             </td>
                                                                         </tr>

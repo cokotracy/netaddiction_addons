@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+    	<record model="ir.ui.view" id="netaddiction_delivery_view_order">
+            <field name="name">netaddiction.delivery.sale.order</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale.view_order_form"/>
+            <field name="arch" type="xml">
+            	<field name="pricelist_id" position="before">
+                    <field name="delivery_option" />
+            	</field>
+            </field>
+        </record>
+
+
+        <record model="ir.ui.view" id="netaddiction_delivery_picking">
+            <field name="name">netaddiction.delivery.picking</field>
+            <field name="model">stock.picking</field>
+            <field name="inherit_id" ref="delivery.view_picking_withcarrier_out_form"/>
+            <field name="arch" type="xml">
+                <field name="carrier_id" position="after">
+                    <field name="delivery_barcode" readonly="True"/>
+                </field>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="netaddiction_delivery_carrier">
+            <field name="name">netaddiction.delivery.carrier</field>
+            <field name="model">delivery.carrier</field>
+            <field name="inherit_id" ref="delivery.view_delivery_carrier_form"/>
+            <field name="arch" type="xml">
+                <field name="delivery_type" position="after">
+                    <field name="time_to_shipping" />
+                </field>
+            </field>
+        </record>
+
+    </data>
+</openerp>

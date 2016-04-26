@@ -129,6 +129,7 @@
                         <attribute name="attrs">{'invisible': [('customer', '=', True)]}</attribute>
             
                 </xpath>
+
                 <xpath expr="//page[@name='sales_purchases']" position='after'>  
                 <page string="Gift" name="gift_netaddiction">
                     <group name="loc_left" class="oe_left" col="2">

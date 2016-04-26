@@ -1,11 +1,57 @@
 # -*- coding: utf-8 -*-
 
 from openerp import models, fields, api
-
+import datetime
 from error import Error
 
 class Products(models.Model):
     _inherit = 'product.product'
+
+    days_available = fields.Integer(string="Disponibile Tra (in giorni)",help="Calcola tra quanto potrebbe essere disponibile, se zero è disponibile immediatamente",
+            compute="_get_days_available")
+
+    @api.one 
+    def _get_days_available(self):
+        today = datetime.date.today()
+        self.days_available = self.calculate_days_available(self.qty_available_now)
+
+    @api.multi
+    def calculate_days_available(self,qty):
+        """funzione di appoggio che calcola la disponibilità del prodotto in base ad una ipotetica quantità che gli
+        viene passata, ad esempio se vuoi comprare 2 qty di un prodotto a disponibilità 1 ti dice eventualmente
+        la seconda quantità quando potrebbe essere consegnata"""
+        self.ensure_one()
+        if qty>0:
+            return 0
+        else:
+            #per prima cosa controllo la data di uscita
+            if self.out_date is not False and datetime.datetime.strptime(self.out_date,"%Y-%m-%d").date() > datetime.date.today():
+                self.days_available = (datetime.datetime.strptime(self.out_date,"%Y-%m-%d").date() - today).days
+            else:
+                if self.available_date is not False and datetime.datetime.strptime(self.available_date,"%Y-%m-%d").date() > datetime.date.today():
+                    self.days_available = (datetime.datetime.strptime(self.available_date,"%Y-%m-%d").date() - today).days
+                else:
+                    #controllo i fornitori
+                    #prendo il fornitore a priorità più alta (se ce ne sono due con la stessa priorità prendo quello a prezzo più basso)
+                    supplier = 0
+                    this_priority = 0
+                    price = 0
+                    for sup in self.seller_ids:
+                        if int(sup.name.supplier_priority) > int(this_priority):
+                            supplier = sup
+                            this_priority = sup.name.supplier_priority
+                            price = sup.price
+                        else:
+                            if int(sup.name.supplier_priority) == int(this_priority) and float(sup.price) < float(price):
+                                supplier = sup
+                                this_priority = sup.name.supplier_priority
+                                price = sup.price
+
+                    if supplier == 0:
+                        return 99
+                    else:
+                        return int(supplier.delay)
+
 
     @api.model
     def _get_product_from_barcode(self,barcode):
