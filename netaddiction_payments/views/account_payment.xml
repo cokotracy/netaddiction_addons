@@ -33,10 +33,10 @@
 
 
 
-              <xpath expr="//field[@name='amount']"
+              <xpath expr="//field[@name='payment_date']"
                     position="after">    
                    
-                      <field name="order_id" />
+                      <field name="order_id" attrs="{'readonly': [('state', '!=', 'draft')]}" string="Ordine"/>
 
             
                 </xpath> 

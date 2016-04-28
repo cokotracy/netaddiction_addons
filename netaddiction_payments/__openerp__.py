@@ -13,6 +13,8 @@
     'version': '1.0',
     'depends': ['base','product','sale','purchase','mrp','account'],
     'data' : [
-        'views/account_payment.xml'
+        'views/account_payment.xml',
+        'views/paypal_configuration.xml',
+        'data/paypal_salt.xml'
     ]
 }
