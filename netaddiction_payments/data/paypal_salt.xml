@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data noupdate="0">
+        <!--Crea la funzionalità ed il gruppo associato-->
+        <record id="paypal_key" model="ir.config_parameter">
+            <field name="key">paypal.key</field>
+            <field name="value">pollepayl43vsfes</field>
+        </record>
+        <record id="paypal_iv" model="ir.config_parameter">
+            <field name="key">paypal.iv</field>
+            <field name="value">pollepayl43vsfer</field>
+        </record>
+        <record id="paypal_username" model="ir.values">
+            <field name="name">paypal_username</field>
+            <field name="model">netaddiction.paypal.settings</field>
+        </record>
+        <record id="paypal_password" model="ir.values">
+            <field name="name">paypal_password</field>
+            <field name="model">netaddiction.paypal.settings</field>
+        </record>
+        <record id="paypal_signature" model="ir.values">
+            <field name="name">paypal_signature</field>
+            <field name="model">netaddiction.paypal.settings</field>
+        </record>
+        <record id="paypal_email" model="ir.values">
+            <field name="name">paypal_email</field>
+            <field name="model">netaddiction.paypal.settings</field>
+        </record>
+    </data>
+</openerp>
