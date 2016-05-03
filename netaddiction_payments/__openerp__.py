@@ -15,6 +15,7 @@
     'data' : [
         'views/account_payment.xml',
         'views/paypal_configuration.xml',
-        'data/paypal_salt.xml'
+        'data/paypal_salt.xml',
+        'data/account_journal.xml',
     ]
 }
