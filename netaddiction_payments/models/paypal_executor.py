@@ -104,7 +104,7 @@ class PaypalExecutor(models.TransientModel):
         pay_inbound = pay_inbound[0] if isinstance(pay_inbound,list) else pay_inbound
         print "HARE"
         if pp_aj and pay_inbound:
-            name = self.env['ir.sequence'].with_context(ir_sequence_date=rec.payment_date).next_by_code('account.payment.customer.invoice')
+            name = self.env['ir.sequence'].with_context(ir_sequence_date=fields.Date.context_today).next_by_code('account.payment.customer.invoice')
             pp_id = pp_aj.id
             self.env["account.payment"].create({"partner_type" : "customer", "partner_id" : user_id, "journal_id" : pp_id, "amount" : amount, "order_id" : order_id, "state" : 'posted', "payment_type" : 'inbound', "payment_method_id" : pay_inbound.id, "name" : name })
             print "HERE"
