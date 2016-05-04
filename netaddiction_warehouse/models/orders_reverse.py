@@ -87,6 +87,21 @@ class OrdersReverse(models.Model):
         }
         return action
 
+    @api.multi
+    def get_payment(self):
+        """
+        ritorna il metodo di pagamento usato o presunto dal pagamento
+        dipende strettamente da netaddiction_payments
+        """
+        self.ensure_one()
+
+        payments = self.env['account.payment'].search([('order_id','=',self.id)])
+        pay = False
+        for p in payments:
+            pay = p.journal_id
+
+        return pay
+
 class OrderLineReverse(models.Model):
     _inherit = "sale.order.line"
 

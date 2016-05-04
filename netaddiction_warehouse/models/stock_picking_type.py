@@ -202,6 +202,7 @@ class StockPicking(models.Model):
 
     #CAMPO PER CONTARE I PEZZI DA SPEDIRE#
     number_of_pieces = fields.Integer(string="Pezzi",compute="_get_number_of_pieces")
+    total_import = fields.Float(string="Importo",compute="_get_total_import")
 
     @api.one
     def _get_number_of_pieces(self):
@@ -211,6 +212,14 @@ class StockPicking(models.Model):
 
         self.number_of_pieces = pieces
 
+    @api.one 
+    def _get_total_import(self):
+        total = 0.00
+        for line in self.group_id.procurement_ids:
+            total += line.sale_line_id.price_subtotal + line.sale_line_id.price_tax
+
+        total += self.carrier_price *1.22
+        self.total_import = total
     ########################
     #INVENTORY APP FUNCTION#
     #ritorna un dict simile#

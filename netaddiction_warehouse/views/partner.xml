@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <openerp>
     <data>
-    	<record model="ir.ui.view" id="netaddiction_view_partner">
-            <field name="name">res.partner.netaddiction.extrafields</field>
+    	<record model="ir.ui.view" id="netaddiction_view_partner_priority">
+            <field name="name">res.partner.netaddiction.supplier.priority</field>
             <field name="model">res.partner</field>
             <field name="inherit_id" ref="base.view_partner_form"/>
             <field name="arch" type="xml">

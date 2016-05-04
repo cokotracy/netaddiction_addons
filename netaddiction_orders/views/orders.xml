@@ -20,7 +20,7 @@
 
                         <button name="action_problems" string="Problema" type="object" states="sent,sale,processing,partial_done,draft" class=" btn btn-danger fa fa-exclamation-triangle"/>
 
-                        <button name="action_cancel" states="draft,sent,sale,partial_done,problem" type="object" class=" btn btn-danger fa fa-trash" string="Cancella Ordine"/>
+                        <button name="action_cancel" states="draft,sent,sale,partial_done,problem,done" type="object" class=" btn btn-danger fa fa-trash" string="Annulla Ordine"/>
 
                         <button name="sale.action_view_sale_advance_payment_inv" string="Fattura" type="action" class="btn-primary fa fa-pencil-square-o" attrs="{'invisible': [('invoice_status', '!=', 'to invoice')]}"/>
 

@@ -240,6 +240,10 @@ class Order(models.Model):
                         offer_line.qty_selled -= och.qty
                 #TODO ristorare gifts?
 
+                #qua annullo le spedizioni
+                for pick in self.picking_ids:
+                    pick.action_cancel()
+
 
         super(Order, self).action_cancel()
 

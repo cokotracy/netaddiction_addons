@@ -21,6 +21,10 @@
                 <field name="carrier_id" position="after">
                     <field name="delivery_barcode" readonly="True"/>
                 </field>
+                <field name="number_of_packages" position="after">
+                    <field name="manifest" readonly="True"/>
+                    <field name="total_import" readonly="True"/>
+                </field>
             </field>
         </record>
 

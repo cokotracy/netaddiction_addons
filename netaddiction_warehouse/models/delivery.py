@@ -19,6 +19,8 @@ class Orders(models.Model):
         res = super(Orders,self).action_confirm()
         self.create_shipping()
         self.set_delivery_price()
+        for pick in self.picking_ids:
+            pick.generate_barcode()
         return res
 
     @api.multi
@@ -76,7 +78,6 @@ class Orders(models.Model):
                 new_procs += new_proc
         new_procs.run()
 
-        pickings = self.env['stock.picking'].search([('origin','=',self.name)])
         self.env.cr.commit()
         return new_procs
 
@@ -430,7 +431,8 @@ class StockPicking(models.Model):
     _inherit = 'stock.picking'
 
     delivery_barcode = fields.Char(string="Barcode Spedizione")
-
+    delivery_read_manifest = fields.Boolean(string="Letto nel manifest",default="False")
+    manifest = fields.Many2one(string="Manifest", comodel_name="netaddiction.manifest")
     ################################
     #FUNCTION PER CONTROLLO PICK UP#
     ################################
@@ -451,6 +453,30 @@ class StockPicking(models.Model):
         if len(count) == 0:
             this.wave_id.done()
 
+        now = datetime.date.today()
+        #cerco la presenza di un manifest
+        manifest = self.env['netaddiction.manifest'].search([('date','=',now),('carrier_id','=',this.carrier_id.id)])
+        if len(manifest)==0:
+            #manifest per questo corriere non presente
+            man_id = self.env['netaddiction.manifest'].create({'date':now,'carrier_id':this.carrier_id.id}).id
+        else:
+            man_id = manifest.id
+
+        this.write({'manifest':man_id,'delivery_read_manifest':False})
+
+    @api.model
+    def confirm_reading_manifest(self,pick):
+        this = self.search([('id','=',int(pick))])
+
+        #controllo che lo stato dell'ordine sia ancora completato
+        if this.state != 'done':
+            this.manifest = False
+            return {'state' : 'problem', 'message' : 'L\'ordine è stato annullato'}
+
+        this.delivery_read_manifest = True
+        return {'state' : 'ok',}
+
+
 
     @api.multi
     def generate_barcode(self):
@@ -464,6 +490,7 @@ class StockPicking(models.Model):
         else:
             self.delivery_barcode = self._generate_barcode_sda()
 
+        self.carrier_tracking_ref = self.delivery_barcode
         self.env.cr.commit()
 
     @api.multi
@@ -500,3 +527,39 @@ class Supplierinfo(models.Model):
     @api.onchange('name')
     def search_timing(self):
         self.delay = self.name.supplier_delivery_time
+
+class StockMove(models.Model):
+
+    _inherit = 'stock.move'
+
+    def action_cancel(self, cr, uid, ids, context=None):
+        """ Cancels the moves and if all moves are cancelled it cancels the picking.
+        @return: True
+        """
+        procurement_obj = self.pool.get('procurement.order')
+        context = context or {}
+        procs_to_check = set()
+        for move in self.browse(cr, uid, ids, context=context):
+            #if move.state == 'done':
+            #    raise UserError(_('You cannot cancel a stock move that has been set to \'Done\'.'))
+            if move.reserved_quant_ids:
+                self.pool.get("stock.quant").quants_unreserve(cr, uid, move, context=context)
+            if context.get('cancel_procurement'):
+                if move.propagate:
+                    procurement_ids = procurement_obj.search(cr, uid, [('move_dest_id', '=', move.id)], context=context)
+                    procurement_obj.cancel(cr, uid, procurement_ids, context=context)
+            else:
+                if move.move_dest_id:
+                    if move.propagate:
+                        self.action_cancel(cr, uid, [move.move_dest_id.id], context=context)
+                    elif move.move_dest_id.state == 'waiting':
+                        #If waiting, the chain will be broken and we are not sure if we can still wait for it (=> could take from stock instead)
+                        self.write(cr, uid, [move.move_dest_id.id], {'state': 'confirmed'}, context=context)
+                if move.procurement_id:
+                    # Does the same as procurement check, only eliminating a refresh
+                    procs_to_check.add(move.procurement_id.id)
+
+        res = self.write(cr, uid, ids, {'state': 'cancel', 'move_dest_id': False}, context=context)
+        if procs_to_check:
+            procurement_obj.check(cr, uid, list(procs_to_check), context=context)
+        return res

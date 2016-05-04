@@ -13,8 +13,8 @@ window.PlayFailed = function(errorCode, errorDescription){
     alert("Play failed ("+errorCode+"): "+errorDescription);
 }
 window.NotifyPlay = function(){
-    //cambiare con l'url dell'app in produzione
-    WebHub.Notify.play("http://192.168.1.207:8069/netaddiction_warehouse/static/src/beep-03.mp3",WebHub.Folder.NONE,PlayFailed);
+    //TODO: cambiare con l'url dell'app in produzione
+    WebHub.Notify.play("http://"+window.location.hostname+":"+window.location.port+"/netaddiction_warehouse/static/src/beep-03.mp3",WebHub.Folder.NONE,PlayFailed);
 }
 window.NotifyMessage = function(message,response,function_dismissed){
     WebHub.Notify.message("",message,response,function_dismissed);

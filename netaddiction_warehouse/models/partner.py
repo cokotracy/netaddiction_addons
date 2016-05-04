@@ -1,8 +1,6 @@
 # -*- coding: utf-8 -*-
 
 from openerp import models, fields, api
-from openerp.exceptions import ValidationError
-from collections import defaultdict
 
 class Supplier(models.Model):
     _inherit="res.partner"

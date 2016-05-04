@@ -7,3 +7,4 @@ import operations_settings
 import orders_reverse
 import delivery
 import partner
+import manifest
