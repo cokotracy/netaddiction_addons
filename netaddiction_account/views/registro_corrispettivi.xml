@@ -28,6 +28,8 @@
 	                <separator/>
 	                <filter name="Non Pagate" domain="[('invoice_id.state','!=','paid')]"/>
 	                <filter name="Pagate" domain="[('invoice_id.state','=','paid')]"/>
+                    <separator/>
+                    <filter name="refunds" string="Note di Credito" domain="[('invoice_id.state','in',['open','paid']),('invoice_id.type','in',('out_refund','in_refund'))]"/>
 	            </search>
             </field>
         </record>

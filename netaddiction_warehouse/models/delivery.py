@@ -433,22 +433,45 @@ class StockPicking(models.Model):
     delivery_barcode = fields.Char(string="Barcode Spedizione")
     delivery_read_manifest = fields.Boolean(string="Letto nel manifest",default="False")
     manifest = fields.Many2one(string="Manifest", comodel_name="netaddiction.manifest")
+
+    @api.multi
+    def _add_delivery_cost_to_so(self):
+        pass
+
     ################################
     #FUNCTION PER CONTROLLO PICK UP#
     ################################
     @api.model
     def do_validate_orders(self,pick_id):
         this = self.search([('id','=',int(pick_id))])
+
         if this.check_backorder(this):
             wiz_id = self.env['stock.backorder.confirmation'].create({'pick_id': this.id})
             wiz_id.process()
             backorder_pick = self.env['stock.picking'].search([('backorder_id', '=', this.id)])
             backorder_pick.write({'wave_id' : None})
-        else:
-            order = self.env['sale.order'].search([('name','=',this.origin)])
-            order.action_done()
 
         this.do_new_transfer()
+
+        partial = False
+        for pick in this.sale_id.picking_ids:
+            if pick.state != 'done':
+                partial=True
+
+        if partial:
+            this.sale_id.state='partial_done'
+        else:
+            this.sale_id.state='done'
+
+        #a questo punto metto spedita e da fatturare anche la riga spedizioni 
+        shipping_lines = self.env['sale.order.line'].search([('order_id','=',this.sale_id.id),
+            ('price_unit','=',round(this.carrier_price,2)),('is_delivery','=',True),('qty_delivered','=',0)])
+        if len(shipping_lines)>0:
+            shipping_lines[0].write({
+                'qty_delivered' : 1,
+                'qty_to_invoice' : 1
+                })
+
         count = self.search([('wave_id','=',this.wave_id.id),('state','not in',['draft','cancel','done'])])
         if len(count) == 0:
             this.wave_id.done()
@@ -463,6 +486,8 @@ class StockPicking(models.Model):
             man_id = manifest.id
 
         this.write({'manifest':man_id,'delivery_read_manifest':False})
+        #fattura
+        this.sale_id.action_invoice_create()
 
     @api.model
     def confirm_reading_manifest(self,pick):

@@ -7,8 +7,11 @@
             <field name="inherit_id" ref="sale.view_order_form"/>
             <field name="arch" type="xml">
             	<field name="pricelist_id" position="before">
-                    <field name="delivery_option" />
+                    <field name="delivery_option" required="True"/>
             	</field>
+                <field name="carrier_id" position="attributes">
+                    <attribute name="required">1</attribute>
+                </field>
             </field>
         </record>
 

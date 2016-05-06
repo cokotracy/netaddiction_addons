@@ -8,7 +8,7 @@
             <field name="arch" type="xml">
             	<field name="state" position="before">
             		<field name="is_reversible" invisible="1"/>
-            		<button name="netaddiction_warehouse.action_reso_cliente" string="Reso" type="action" class="btn-primary" attrs="{'invisible': ['|',('state', '!=', 'done'),('is_reversible','=',False)]}" />
+            		<button name="netaddiction_warehouse.action_reso_cliente" string="Reso" type="action" class="btn-primary" attrs="{'invisible': ['|',('state', 'not in', ('done','partial_done')),('is_reversible','=',False)]}" />
             	</field>
             	<xpath expr="//button[@name='action_view_invoice']" position="before">
                     <button type="object" name="open_reverse" class="oe_stat_button" attrs="{'invisible': [('count_reverse', '=', 0)]}" context="{'search_default_origin': name}" icon="fa-exchange">
