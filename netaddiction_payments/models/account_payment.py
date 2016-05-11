@@ -11,3 +11,5 @@ class OrderPayment(models.Model):
 	_inherit = 'sale.order'
 
 	account_payment_ids = fields.One2many('account.payment','order_id', string='Pagamenti')
+
+	

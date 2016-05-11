@@ -15,7 +15,10 @@
     'data' : [
         'views/account_payment.xml',
         'views/paypal_configuration.xml',
+        'views/positivity_configuration.xml',
+        'views/ccdata.xml',
         'data/paypal_salt.xml',
+        'data/positivity_salt.xml',
         'data/account_journal.xml',
     ]
 }

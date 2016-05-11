@@ -1,5 +1,6 @@
 from base64 import b64decode, b64encode
 from Crypto.Cipher import AES
+from Crypto.Hash import HMAC, SHA256
 from Crypto import Random
 
 BS = 16
@@ -19,3 +20,17 @@ def decrypt(key, encripted):
     cipher = AES.new(key, AES.MODE_CBC, iv)
     plain = unpad(cipher.decrypt(encripted[BS:]))
     return plain
+
+def hmacsha256(key,msg_list):
+    msg=''
+    for el in msg_list:
+        msg += str(el)
+
+    print key
+    print msg
+
+
+
+
+    hash_obj = HMAC.new(key=key, msg=bytearray(msg), digestmod=SHA256)
+    return b64encode(hash_obj.digest())

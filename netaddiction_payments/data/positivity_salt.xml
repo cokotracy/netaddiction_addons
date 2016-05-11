@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data noupdate="1">
+        <!--Crea la funzionalità ed il gruppo associato-->
+        <record id="positivity_key" model="ir.config_parameter">
+            <field name="key">positivity.key</field>
+            <field name="value">possepayl45vsfes</field>
+        </record>
+        <record id="positivity_tid" model="ir.values">
+            <field name="name">positivity_tid</field>
+            <field name="model">netaddiction.positivity.settings</field>
+        </record>
+        <record id="positivity_kSig" model="ir.values">
+            <field name="name">positivity_kSig</field>
+            <field name="model">netaddiction.positivity.settings</field>
+        </record>
+    </data>
+</openerp>
