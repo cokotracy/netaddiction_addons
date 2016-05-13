@@ -15,7 +15,7 @@
         <menuitem id="menu_netaddiction_ccdata"
           name="Carte"
           parent="base.menu_sales"
-          sequence="12"
+          
             action="netaddiction_payement_ccdata_base"
         />
 

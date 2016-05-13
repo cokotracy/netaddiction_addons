@@ -78,7 +78,8 @@ class PaypalExecutor(models.TransientModel):
 
     @api.one
     def finalize_payment(self,amount,user_id,order_id):
-        """ Secondo metodo da chiamare per effettuare un pagamento su paypal
+        """ Secondo metodo da chiamare per effettuare un pagamento su paypal, finalizza il pagamento
+            e genera l'oggetto di tipo "account.payment" da associare all'ordine
             Parametri:
             -amount: quantità da pagare
             -user_id: id su odoo dell'utente che deve pagare
