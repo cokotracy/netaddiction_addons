@@ -35,6 +35,8 @@
                         <group string="Account Settings">
                             <field name="tid" />
                             <field name="kSig" />
+                            <field name="tid_MOTO" />
+                            <field name="kSig_MOTO" />
 
 
                         </group>

@@ -14,5 +14,13 @@
             <field name="name">positivity_kSig</field>
             <field name="model">netaddiction.positivity.settings</field>
         </record>
+        <record id="positivity_tid_MOTO" model="ir.values">
+            <field name="name">positivity_tid_MOTO</field>
+            <field name="model">netaddiction.positivity.settings</field>
+        </record>
+        <record id="positivity_kSig_MOTO" model="ir.values">
+            <field name="name">positivity_kSig_MOTO</field>
+            <field name="model">netaddiction.positivity.settings</field>
+        </record>
     </data>
 </openerp>

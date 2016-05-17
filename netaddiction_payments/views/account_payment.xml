@@ -38,6 +38,31 @@
                    
                       <field name="order_id" attrs="{'readonly': [('state', '!=', 'draft')]}" string="Ordine"/>
 
+
+
+            
+                </xpath> 
+
+              <xpath expr="//group"
+                    position="after">   
+
+                      <group string="Carte" name="gift" colspan="4">
+                            <group name="loc_left" class="oe_left" col="2">
+                      <field name="cc_token" attrs="{'readonly': [('state', '!=', 'draft')]}" string="Token cc"/>
+                      <field name="cc_last_four" attrs="{'readonly': [('state', '!=', 'draft')]}" string="Indizio cc"/>
+                      <field name="cc_month" attrs="{'readonly': [('state', '!=', 'draft')]}" string="Mese cc"/>
+                            </group>
+                <group name="loc_right" class="oe_right" col="2">
+                      <field name="cc_year" attrs="{'readonly': [('state', '!=', 'draft')]}" string="Anno cc"/>
+                      <field name="cc_name" attrs="{'readonly': [('state', '!=', 'draft')]}" string="Titolare cc"/>
+                      <field name="cc_status" attrs="{'readonly': [('state', '!=', 'draft')]}" string="Stato cc"/>
+                            </group>
+                        </group> 
+                   
+                      
+
+                      
+
             
                 </xpath> 
           </field>
