@@ -10,5 +10,13 @@
             <field name="name">Carta di credito</field>
             <field name="type">bank</field>
         </record>
+        <record id="sofort_journal" model="account.journal">
+            <field name="name">Sofort</field>
+            <field name="type">bank</field>
+        </record>
+        <record id="contrassegno_journal" model="account.journal">
+            <field name="name">Contrassegno</field>
+            <field name="type">bank</field>
+        </record>
     </data>
 </openerp>

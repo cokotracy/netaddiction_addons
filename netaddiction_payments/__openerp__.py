@@ -17,6 +17,7 @@
         'views/paypal_configuration.xml',
         'views/positivity_configuration.xml',
         'views/ccdata.xml',
+        'views/positivity_executor.xml',
         'data/paypal_salt.xml',
         'data/positivity_salt.xml',
         'data/account_journal.xml',

@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+
+
+<record id="view_netaddiction_Positivity_executor"
+                model="ir.ui.view">
+            <field name="name">netaddiction Positivity executor</field>
+            <field name="model">netaddiction.positivity.executor</field>
+      <field name="arch" type="xml">
+                <form string="Associazione nuova carta"
+                      class="oe_form_configuration">
+                    <sheet>
+                        <div>
+                            <button string="Apply"
+                                    type="object"
+                                    name="execute"
+                                    class="oe_highlight"
+                                    />
+                            or
+                            <button string="Cancel"
+                                    type="object"
+                                    name="cancel"
+                                    class="oe_link" />
+                        </div>
+
+                        <group string="Card Settings">
+                            <field name="name" />
+                            <field name="month" />
+                            <field name="year" />
+                            <field name="pan" />
+                            <field name="customer" />
+
+
+                        </group>
+
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_netaddiction_Positivity_executor_menu"
+                model="ir.actions.act_window">
+            <field name="name">Positivity Executor</field>
+            <field name="res_model">netaddiction.positivity.executor</field>
+            <field name="view_mode">form</field>
+            <field name="target">inline</field>
+        </record>
+
+
+        <menuitem id="menu_netaddiction_sales_Positivity_executor"
+          name="Associa nuova carta"
+          parent="base.menu_sales"
+          sequence="18"
+          action= "action_netaddiction_Positivity_executor_menu"
+        />
+
+
+
+    </data>
+</openerp>

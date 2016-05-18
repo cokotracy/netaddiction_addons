@@ -2,6 +2,7 @@
 
 from openerp import models, fields, api
 from suds.client import Client
+from openerp.exceptions import ValidationError
 import cypher
 
 
@@ -13,7 +14,7 @@ def compute_last_four(pan):
 
 class PositivityExecutor(models.TransientModel):
     """Classe di utilità associata a un transient model per effettuare e registrare
-    pagamenti con cc tramite bnl positivity
+    pagamenti con cc tramite bnl positivity, e per registrare carte di credito da BO in maniera sicura
     """
     _name = "netaddiction.positivity.executor"
 
@@ -21,10 +22,36 @@ class PositivityExecutor(models.TransientModel):
     month = fields.Integer(string='Mese')
     year =  fields.Integer(string='Anno')
     name = fields.Char(string='Titolare')
+    customer = fields.Many2one(comodel_name='res.partner',string="Cliente")
+
+
+
+
+    @api.multi
+    def execute(self):
+        """Override del metodo execute, usato solo per fornire nel BO la possibilità di 
+        aggiungere una carta a un cliente"""
+
+        if not self.pan or not self.month or not self.year or not self.name or not self.customer:
+            raise ValidationError('completare tutti i campi')
+        if self.month < 1 or self.month > 12:
+            raise ValidationError("il mese deve essere compreso tra 1 e 12")
+        if self.year > 2999 or self.year < 1000:
+            raise ValidationError("Anno non valido")
+
+        return self.token_enroll(self.pan,self.month,self.year,self.customer.id,self.customer.email,self.name)
+
 
 
 
     def enroll_3DS(self,partner_id,partner_email,amount,card_holder,url,token):
+        """Metodo che si interfaccia con BNL per iniziare una verifica 3dsecure
+        Returns:
+        - False se c'è un errore dalla risposta bnl
+        - La MPIEnrollResponse altrimenti
+        Throws:
+        -Le eccezioni legate alle chiamate SOAP
+        """
     	client = Client("https://s2stest.bnlpositivity.it/BNL_CG_SERVICES/services/MPIGatewayPort?wsdl")
     	request_data = client.factory.create('MPIEnrollRequest')
 
@@ -47,10 +74,10 @@ class PositivityExecutor(models.TransientModel):
         request_data.payInstrToken = token
         request_data.termURL = url
 
-    	print request_data
+    	
 
         response = client.service.enroll(request_data)
-        print response
+        
 
         if response.error:
             return False
@@ -62,6 +89,14 @@ class PositivityExecutor(models.TransientModel):
 
 
     def token_enroll(self,pan,exp_month,exp_year,partner_id,partner_email,card_holder):
+        """Metodo che si interfaccia con BNL per creare un token a partire dai dati di una carta.
+            In caso di successo viene creato anche l'oggetto odoo che rappresenta i dati di una cc per un cliente
+        Returns:
+        - False se c'è un errore dalla risposta bnl
+        - L'oggetto cc in odoo altrimenti
+        Throws:
+        -Le eccezioni legate alle chiamate SOAP
+        """
         client = Client("https://s2stest.bnlpositivity.it/BNL_CG_SERVICES/services/TokenizerGatewayPort?wsdl")
         request_data = client.factory.create('TokenizerEnrollRequest')
         
@@ -94,6 +129,13 @@ class PositivityExecutor(models.TransientModel):
             return self.env["netaddiction.partner.ccdata"].create({'token':response.payInstrToken,'month': exp_month,'year': exp_year, 'name' : card_holder,'last_four': last_four,'customer_id': partner_id})
     
     def token_delete(self,partner_id,token):
+        """Metodo che si interfaccia con BNL per cancellare un token
+        Returns:
+        - False se c'è un errore dalla risposta bnl
+        - True altrimenti
+        Throws:
+        -Le eccezioni legate alle chiamate SOAP
+        """
         client = Client("https://s2stest.bnlpositivity.it/BNL_CG_SERVICES/services/TokenizerGatewayPort?wsdl")
         request_data = client.factory.create('TokenizerDeleteRequest')
         
@@ -116,6 +158,15 @@ class PositivityExecutor(models.TransientModel):
 
 
     def check_card(self,partner_id,partner_email,amount,token,enrStatus,authStatus,cavv,xid,order_id):
+        """Metodo che si interfaccia con BNL per iniziare una verificare la autenticità e validità di una carta.
+        In caso di successo viene creato il pagamento associato all'ordine (order_id).
+        Richiede dei parametri ricevuti in dalla verifica del 3dsecure (enrStatus,authStatus,cavv,xid)
+        Returns:
+        - False se c'è un errore dalla risposta bnl
+        - La PaymentAuthResponse altrimenti
+        Throws:
+        -Le eccezioni legate alle chiamate SOAP
+        """
 
         client = Client("https://s2stest.bnlpositivity.it/BNL_CG_SERVICES/services/PaymentTranGatewayPort?wsdl")
 
@@ -159,6 +210,15 @@ class PositivityExecutor(models.TransientModel):
 
 
     def auth(self,partner_id,partner_email,amount,token):
+        #TODO cambiare lo stato del pagamento?
+        """Metodo che si interfaccia con BNL per effettuare una autorizzazione di un pagamento.
+        
+        Returns:
+        - False se c'è un errore dalla risposta bnl
+        - La PaymentAuthResponse altrimenti
+        Throws:
+        -Le eccezioni legate alle chiamate SOAP
+        """
 
         client = Client("https://s2stest.bnlpositivity.it/BNL_CG_SERVICES/services/PaymentTranGatewayPort?wsdl")
 
@@ -196,6 +256,15 @@ class PositivityExecutor(models.TransientModel):
 
  
     def confirm(self,partner_id,amount,refTranID):
+        #TODO cambiare lo stato del pagamento?
+        """Metodo che si interfaccia con BNL per effettuare una conferma di un pagamento.
+        
+        Returns:
+        - False se c'è un errore dalla risposta bnl
+        - La PaymentConfirmResponse altrimenti
+        Throws:
+        -Le eccezioni legate alle chiamate SOAP
+        """
 
         client = Client("https://s2stest.bnlpositivity.it/BNL_CG_SERVICES/services/PaymentTranGatewayPort?wsdl")
 
@@ -229,6 +298,8 @@ class PositivityExecutor(models.TransientModel):
 
 
     def get_tid_ksig(self):
+        """utility method
+        """
         encripted_tid = self.env["ir.values"].search([("name","=","positivity_tid")]).value
         key = self.env["ir.config_parameter"].search([("key","=","positivity.key")]).value
         encripted_kSig = self.env["ir.values"].search([("name","=","positivity_kSig")]).value
@@ -239,6 +310,8 @@ class PositivityExecutor(models.TransientModel):
 
 
     def get_tid_ksig_MOTO(self):
+        """utility method
+        """
         encripted_tid = self.env["ir.values"].search([("name","=","positivity_tid_MOTO")]).value
         key = self.env["ir.config_parameter"].search([("key","=","positivity.key")]).value
         encripted_kSig = self.env["ir.values"].search([("name","=","positivity_kSig_MOTO")]).value
