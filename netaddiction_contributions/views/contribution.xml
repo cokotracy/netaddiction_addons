@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+    	<record model="ir.actions.act_window" id="netaddiction_contribution">
+            <field name="name">Contributi</field>
+            <field name="res_model">netaddiction.contribution</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form,pivot</field>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">Non ci sono contributi registrati
+                </p>
+            </field>
+        </record>
+
+        <menuitem id="menu_netaddiction_contribution"
+          name="Contributi"
+          parent="account.menu_finance"
+          action="netaddiction_contribution"
+          sequence="4"
+        />
+
+
+
+        <record model="ir.ui.view" id="netaddiction_contribution_form">
+            <field name="name">view.netaddiction.contribution.form</field>
+            <field name="model">netaddiction.contribution</field>
+            <field name="arch" type="xml">
+                <form string="contribution">
+                    <header>
+                    	<button name="action_confirm" type="object" string="Conferma" attrs="{'invisible':[('state','=','confirmed')]}"/>
+                    	<field name="state" widget="statusbar" statusbar_visible="draft,confirmed"/>
+                    </header>
+                    <sheet>
+                    	<div class="oe_title">
+                    		<label for="name"/>
+	                        <h1>
+	                            <field name="name"/>
+	                        </h1>
+	                    </div>
+                        <group>
+                            <group>
+                                <field name="contribution_type"/>
+                            </group>
+                            <group>
+                                <field name="company_id" required="1" />
+                            </group>
+                        </group>
+
+	                    <group>
+	                    	<group>
+	                    		<field name="date_start" />
+	                    		<field name="value"/>
+                                <field name="partner_id" domain="[('supplier','=',True),('parent_id','=',False)]" attrs="{'invisible' : [('contribution_type', '=', False)]}"/>
+	                    		<field name="confirmed_qty" readonly="1" attrs="{'invisible':['|','|',('contribution_type','!=','valuexship'),('contribution_type', '=', False),('product_id','=',False)]}"/>
+                                <field name="confirmed_value" readonly="1" attrs="{'invisible':['|','|',('contribution_type','!=','valuexship'),('contribution_type', '=', False),('product_id','=',False)]}"/>
+	                    	</group>
+	                    	<group>
+	                    		<field name="date_finish" />
+	                    		<field name="qty" attrs="{'invisible':[('contribution_type','=','ads')]}"/>
+                                <field name="product_id" attrs="{'invisible':['|','|',('contribution_type','=','ads'),('partner_id','=',False),('contribution_type', '=', False)]}" />
+	                    	</group>
+	                    	
+	                    </group>
+                        <group>
+                            <field name="move_to_contribution" nolabel="1" readonly="1" attrs="{'invisible':['|','|',('contribution_type','!=','revaluation'),('contribution_type', '=', False),('product_id','=',False)]}">
+                                <tree>
+                                    <field name="qty"/>
+                                    <field name="unit_value"/>
+                                </tree>
+                            </field>
+
+                            <field name="order_to_contribution" nolabel="1" readonly="1" attrs="{'invisible':['|','|',('contribution_type','!=','valuexship'),('contribution_type', '=', False),('product_id','=',False)]}">
+                                <tree>
+                                    <field name="order_id"/>
+                                    <field name="qty"/>
+                                    <field name="unit_value"/>
+                                </tree>
+                            </field>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="netaddiction_move_contribution_form">
+            <field name="name">view.netaddiction.move.contribution.form</field>
+            <field name="model">netaddiction.move.contribution</field>
+            <field name="arch" type="xml">
+                <form string="move_contribution">
+                    <group>
+                        <group>
+                            <field name="contribution_id"/>
+                            <field name="unit_value"/>
+                        </group>
+                        <group>
+                            <field name="qty"/>
+                        </group>
+                        <group>
+                            <field name="move_ids"/>
+                        </group>
+                    </group>
+                </form>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="netaddiction_order_contribution_form">
+            <field name="name">view.netaddiction.order.contribution.form</field>
+            <field name="model">netaddiction.order.contribution</field>
+            <field name="arch" type="xml">
+                <form string="order_contribution">
+                    <group>
+                        <group>
+                            <field name="contribution_id"/>
+                            <field name="unit_value"/>
+                        </group>
+                        <group>
+                            <field name="order_id"/>
+                            <field name="qty"/>
+                        </group>
+                    </group>
+                </form>
+            </field>
+        </record>
+    </data>
+</openerp>

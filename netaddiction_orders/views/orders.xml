@@ -31,6 +31,11 @@
 
                 </header>
 
+                <xpath expr="//field[@name='date_order']" position="replace">
+                    <field name="date_order">
+                    </field>
+                </xpath>
+
                 <xpath expr="//field[@name='partner_id']"
                     position="replace"> 
                     <field name="partner_id" domain="[('customer','=',True),('type','=','contact')]" context="{'search_default_customer':1, 'show_address': 0}" options="{&quot;always_reload&quot;: True}"/>          
