@@ -94,7 +94,7 @@
             <field name="arch" type="xml">
             <xpath expr="//div[@name='button_box']" position="inside" >
                     <button  class="oe_inline oe_stat_button" name="new_customer_affiliate" 
-                        string="Affiliazione" type="object" icon="fa-user-plus" attrs="{'invisible': ['|',('parent_id', '!=', False),('affiliate_id', '!=',False )]}"/> 
+                        string="Affiliazione" type="object" icon="fa-user-plus" attrs="{'invisible': ['|',('parent_id', '!=', False),('affiliate_id', '!=',False ),('supplier', '=', True)]}"/> 
                 </xpath>
             </field>
         </record>

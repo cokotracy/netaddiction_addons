@@ -131,7 +131,7 @@
                 </xpath>
 
                 <xpath expr="//page[@name='sales_purchases']" position='after'>  
-                <page string="Gift" name="gift_netaddiction">
+                <page string="Gift" name="gift_netaddiction" attrs="{'invisible':['|',('parent_id', '!=', False),('customer', '=', False)]}">
                     <group name="loc_left" class="oe_left" col="2">
                                                 <field name="got_gift" />
                                                 <field name="total_gift" />

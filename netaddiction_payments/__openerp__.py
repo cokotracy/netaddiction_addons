@@ -18,8 +18,10 @@
         'views/positivity_configuration.xml',
         'views/ccdata.xml',
         'views/positivity_executor.xml',
+        'views/cod_register.xml',
         'data/paypal_salt.xml',
         'data/positivity_salt.xml',
         'data/account_journal.xml',
+        'data/cash_on_delivery.xml'
     ]
 }

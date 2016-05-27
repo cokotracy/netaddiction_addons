@@ -157,10 +157,11 @@ class PositivityExecutor(models.TransientModel):
             return True
 
 
-    def check_card(self,partner_id,partner_email,amount,token,enrStatus,authStatus,cavv,xid,order_id):
+    def check_card(self,partner_id,partner_email,token,enrStatus,authStatus,cavv,xid,order_id,amount_lst):
         """Metodo che si interfaccia con BNL per iniziare una verificare la autenticità e validità di una carta.
         In caso di successo viene creato il pagamento associato all'ordine (order_id).
         Richiede dei parametri ricevuti in dalla verifica del 3dsecure (enrStatus,authStatus,cavv,xid)
+        amount_lst: lista del valore da pagare per ogni spedizione associata all'ordine order_id
         Returns:
         - False se c'è un errore dalla risposta bnl
         - La PaymentAuthResponse altrimenti
@@ -190,7 +191,7 @@ class PositivityExecutor(models.TransientModel):
         request_data.signature =signature       
         request_data.payInstrToken = token
         request_data.trType = trType
-        request_data.amount = amount
+        request_data.amount = 100
         request_data.currencyCode = currency
         request_data.enrStatus = enrStatus
         request_data.authStatus = authStatus
@@ -198,20 +199,21 @@ class PositivityExecutor(models.TransientModel):
         request_data.xid = xid
 
         response = client.service.auth(request_data)
-        print response
         
         if response.error:
             return False
         else:
             cc_journal = self.env["account.journal"].search([("name","=","Carta di credito")]).id
             token_card = self.env["netaddiction.partner.ccdata"].search([("token","=",token)])
-            self.env["account.payment"].create({'order_id':order_id, 'payment_type':'inbound', 'partner_type':'customer', 'partner_id':partner_id,'amount':amount,'journal_id':cc_journal,'payment_date':fields.Datetime.now(),'token':token,'last_four':token_card.last_four,'month':token_card.month,'year':token_card.year,'name':token_card.name,'cc_status':'init'})
+            date = fields.Datetime.now()
+            for amount in amount_lst:
+                self.env["account.payment"].create({'order_id':order_id, 'payment_type':'inbound', 'partner_type':'customer', 'partner_id':partner_id,'amount':amount,'journal_id':cc_journal,'payment_date':date,'token':token,'last_four':token_card.last_four,'month':token_card.month,'year':token_card.year,'name':token_card.name,'cc_status':'init'})
             return response
 
 
-    def auth(self,partner_id,partner_email,amount,token):
-        #TODO cambiare lo stato del pagamento?
+    def auth(self,partner_id,partner_email,amount,token,payment):
         """Metodo che si interfaccia con BNL per effettuare una autorizzazione di un pagamento.
+        se in payment viene passato il pagamento "account.payment" e l'operazione ha successo, viene cambiato lo stato del pagamento in sent e quello dello status della cc in auth
         
         Returns:
         - False se c'è un errore dalla risposta bnl
@@ -251,13 +253,16 @@ class PositivityExecutor(models.TransientModel):
         if response.error:
             return False
         else:
+            if payment:
+                payment.cc_status = 'auth'
+                payment.state = 'sent'
             return response
 
 
  
-    def confirm(self,partner_id,amount,refTranID):
-        #TODO cambiare lo stato del pagamento?
+    def confirm(self,partner_id,amount,refTranID,payment):
         """Metodo che si interfaccia con BNL per effettuare una conferma di un pagamento.
+        se in payment viene passato il pagamento "account.payment" e l'operazione ha successo, viene cambiato lo stato del pagamento in posted(emesso) e quello dello status della cc in commit
         
         Returns:
         - False se c'è un errore dalla risposta bnl
@@ -294,6 +299,9 @@ class PositivityExecutor(models.TransientModel):
         if response.error:
             return False
         else:
+            if payment:
+                payment.cc_status = 'commit'
+                payment.state = 'posted'
             return response
 
 
