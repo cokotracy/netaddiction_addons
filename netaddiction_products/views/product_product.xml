@@ -170,7 +170,11 @@
                                 <field name="property_cost_method" groups="stock_account.group_inventory_valuation"/>
                                 <field name="property_valuation"/>
                             </group>
-                            
+                        </page>
+                        <page string="Immagini" name="images">
+                            <group class="netaddiction">
+                                <field name="image_ids" widget="many2many_binary" string="Aggiungi" nolabel="1" class="oe_inline"/>
+                            </group>
                         </page>
                         <page string="Extra Dati" name="extra_datas">
                             <field name="extra_data" readonly="1">

@@ -1,0 +1,12 @@
+.netaddiction .o_image {
+    font-size: 0;
+}
+
+.netaddiction .oe_attachment {
+    float: left;
+    margin-right: 10px;
+}
+
+.netaddiction .oe_attachments {
+    border: 0 !important;
+}
