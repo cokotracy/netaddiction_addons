@@ -15,8 +15,8 @@ class NetaddictionManifest(models.Model):
     _order = 'date desc'
 
     delivery_ids = fields.One2many(string="Spedizioni",comodel_name="stock.picking",inverse_name="manifest")
-    manifest_file1 = fields.Binary(string="File1")
-    manifest_file2 = fields.Binary(string="File2")
+    manifest_file1 = fields.Binary(string="File1", attachment=True)
+    manifest_file2 = fields.Binary(string="File2", attachment=True)
     date = fields.Date(string="Data Manifest")
     carrier_id = fields.Many2one(string="Corriere",comodel_name="delivery.carrier")
 

@@ -12,7 +12,7 @@
     'category': 'Technical Settings',
     'version': '1',
     'depends': ['base','product','sale','purchase','mrp','account','netaddiction_products',
-        'netaddiction_purchase_orders'],
+        'netaddiction_purchase_orders','netaddiction_account','netaddiction_warehouse'],
     'data': [
         'views/contribution.xml',
         'views/orders.xml'

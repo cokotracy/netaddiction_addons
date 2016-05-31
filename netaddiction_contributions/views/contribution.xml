@@ -77,6 +77,9 @@
                                 </tree>
                             </field>
                         </group>
+                            
+                        <label for="invoice_ids"/>
+                        <field name="invoice_ids" nolabel="1" readonly="1"/>
                     </sheet>
                 </form>
             </field>

@@ -21,7 +21,7 @@ class Orders(models.Model):
         self.set_delivery_price()
         for pick in self.picking_ids:
             pick.generate_barcode()
-        return res
+        return True
 
     @api.multi
     def _compute_picking_ids(self):
@@ -50,7 +50,6 @@ class Orders(models.Model):
             test_delivery = self.order_line.simulate_shipping()
             max_date = max(test_delivery.keys())
             delivery[max_date] = self.order_line
-
         for delivery_date in delivery:
             #per prima cosa creo il procurement_group
             name = "%s - %s" % (self.name,delivery_date)
@@ -67,6 +66,7 @@ class Orders(models.Model):
                 if line.state != 'sale' or not line.product_id._need_procurement():
                     continue
                 qty = 0.0
+
                 for proc in line.procurement_ids:
                     qty += proc.product_qty
                 if float_compare(qty, line.product_uom_qty, precision_digits=precision) >= 0:

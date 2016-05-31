@@ -30,7 +30,7 @@ class Invoice(models.Model):
 
     #per magazzino , resi , liste
 
-    choose_wave_id = fields.Many2one(string="Lista di carico",comodel_name="stock.picking.wave")
+    choose_wave_id = fields.Many2one(string="Lista",comodel_name="stock.picking.wave")
     create_credit_note = fields.Boolean(string="Crea una nota di credito")
 
     @api.model

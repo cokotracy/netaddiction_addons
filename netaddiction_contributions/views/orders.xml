@@ -7,9 +7,26 @@
             <field name="priority" eval="30"/>
             <field name="inherit_id" ref="sale.view_order_form"/>
             <field name="arch" type="xml">
-    			 <xpath expr="//notebook/page/field[@name='order_line']/tree/field[@name='purchase_price']" position="after">
+    			 <xpath expr="//notebook/page/field[@name='order_line']/tree/field[@name='purchase_price']" position="replace">
     			 	<field name="purchase_price_real"/>
+                    <field name="margin"/>
     			 </xpath>
+            </field>
+        </record>
+
+        <record id="netaddiction_order_tree" model="ir.ui.view">
+            <field name="name">netaddiction.order.tree</field>
+            <field name="model">sale.order</field>
+            <field name="priority" eval="30"/>
+            <field name="inherit_id" ref="sale.view_order_tree"/>
+            <field name="arch" type="xml">
+                <field name="user_id" position="replace"/>
+                <field name="amount_total" position="after">
+                    <field name="margin"/>
+                </field>
+                <field name="state" position="replace">
+                    <field name="state"/>
+                </field>
             </field>
         </record>
     </data>

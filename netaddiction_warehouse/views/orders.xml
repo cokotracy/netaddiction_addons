@@ -32,5 +32,18 @@
                 <button name="delivery_set" position="replace"/>
             </field>
         </record>
+
+        <record id="netaddiction_order_tree_reverse" model="ir.ui.view">
+            <field name="name">netaddiction.order.tree.reverse</field>
+            <field name="model">sale.order</field>
+            <field name="priority" eval="30"/>
+            <field name="inherit_id" ref="sale.view_order_tree"/>
+            <field name="arch" type="xml">
+                
+                <field name="state" position="after">
+                    <field name="count_reverse"/>
+                </field>
+            </field>
+        </record>
     </data>
 </openerp>

@@ -88,7 +88,7 @@ class InventoryApp(http.Controller):
 
         #prendo tutte le liste di prelievo in stato draft
         waves = request.env['stock.picking.wave'].search([('state','in',['draft','in_progress']),('in_exit','=',False),('reverse_supplier','=',False)]).sorted(key=lambda r: r.id)
-
+        
         return request.render(
             'netaddiction_warehouse.pick_up_index', 
             {
@@ -124,6 +124,7 @@ class InventoryApp(http.Controller):
         wave = request.env['stock.picking.wave'].search([('id','=',wave_id),
             ('picking_ids.pack_operation_product_ids.state','in',['assigned','partially_available'])]
             )
+
         if wave.state == 'draft':
             wave.write({'state': 'in_progress'})
 

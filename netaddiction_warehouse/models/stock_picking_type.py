@@ -87,7 +87,7 @@ class StockPickingWave(models.Model):
                 qtys[pick.product_id.barcode]['qty_scraped'] += (qty_scraped - pick.qty_done)
                 qtys[pick.product_id.barcode]['scraped_wh'] = 'dif'
                 products[pick.product_id] = qtys[pick.product_id.barcode]
-
+        print products
         return products
 
     @api.model

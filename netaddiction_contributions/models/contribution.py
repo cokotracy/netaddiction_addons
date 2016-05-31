@@ -22,7 +22,7 @@ class Contribution(models.Model):
     date_finish = fields.Date(string="Data Fine",default=datetime.date.today().strftime('%Y-%m-%d'))
     state = fields.Selection(string="Stato",selection=[
                                                        ('draft','Bozza'),
-                                                       ('confirmed','Confermato')
+                                                       ('confirmed','Confermato'),
                                                       ],default="draft")
 
     move_to_contribution = fields.Many2many(string="Righe Contributi/Movimentazioni", comodel_name="netaddiction.move.contribution")
@@ -31,6 +31,8 @@ class Contribution(models.Model):
     #controlli per valuexship
     confirmed_qty = fields.Integer(string="Quantità Contribuita", compute="_get_confirmed_qty")
     confirmed_value = fields.Float(string="Valore Contribuito", compute="_get_confirmed_qty")
+
+    invoice_ids = fields.Many2many(string="Note di Credito/Fatture", comodel_name="account.invoice")
 
     @api.one
     def _get_confirmed_qty(self):
@@ -78,6 +80,7 @@ class Contribution(models.Model):
         self.ensure_one()
         qta = self.qty
         ids = []
+        invoice_ids = []
         for q in quants:
             if q.qty <= qta and qta > 0:
                 move_ids = []
@@ -89,6 +92,17 @@ class Contribution(models.Model):
                             'qty' : q.qty,
                             'unit_value' : self.value
                         }
+                        #creo nota di credito
+                        for inv in history.picking_id.purchase_id.invoice_ids:
+                            refund = inv.refund(datetime.datetime.now(),datetime.datetime.now(),'Rivalutazione %s' % inv.number)
+                            refund.write({'origin':inv.number})
+                            invoice_ids.append((4,refund.id,False))
+                            for inv_line in refund.invoice_line_ids:
+                                if inv_line.product_id.id != self.product_id.id:
+                                    inv_line.unlink()
+                                else:
+                                    inv_line.write({'quantity':q.qty, 'price_unit' : self.value})
+
                         line_id=self.env['netaddiction.move.contribution'].create(attr)
                         ids.append((4,line_id.id,False))
                 qta -= q.qty
@@ -101,11 +115,23 @@ class Contribution(models.Model):
                             'qty' : qta,
                             'unit_value' : self.value
                         }
+                        #creo nota di credito
+                        for inv in history.picking_id.purchase_id.invoice_ids:
+                            refund = inv.refund(datetime.datetime.now(),datetime.datetime.now(),'Rivalutazione %s' % inv.number)
+                            refund.write({'origin':inv.number})
+                            invoice_ids.append((4,refund.id,False))
+                            for inv_line in refund.invoice_line_ids:
+                                if inv_line.product_id.id != self.product_id.id:
+                                    inv_line.unlink()
+                                else:
+                                    inv_line.write({'quantity':qta, 'price_unit' : self.value})
+
                         line_id=self.env['netaddiction.move.contribution'].create(attr)
                         ids.append((4,line_id.id,False))
                 qta = 0
 
         self.move_to_contribution = ids 
+        self.invoice_ids = invoice_ids
 
     @api.multi 
     def _assign_valuexship(self):
@@ -201,3 +227,30 @@ class OrdersToContribution(models.Model):
     qty = fields.Integer(string="Quantità")
     unit_value = fields.Float(string=
         "Valore unitario")
+
+class OrderContribution(models.Model):
+    _inherit="sale.order"
+
+    @api.one
+    def action_cancel(self,values):
+        res = super(OrderContribution,self).action_cancel()
+        contribution = self.env['netaddiction.order.contribution'].search([('order_id','=',self.id)])
+        if len(contribution) > 0:
+            contribution.unlink()
+        return res
+
+class StockPickingContribution(models.Model):
+    _inherit = 'stock.picking'
+
+    @api.model 
+    def create_reverse(self,attr,order_id):
+        pids = {}
+        #si prende i prodotti e le quantità di ogni rigo picking segnato come reso
+        for line in attr['pack_operation_product_ids']:
+            pids[int(line[2]['product_id'])] = line[2]['product_qty']
+        
+        contribution = self.env['netaddiction.order.contribution'].search([('order_id','=',int(order_id))])
+        print contribution
+        #qua loop sui righi e scalo la quantita (cancello un rigo per ogni quantità => ogni rigo ha solo una quantità)
+        
+        return False
