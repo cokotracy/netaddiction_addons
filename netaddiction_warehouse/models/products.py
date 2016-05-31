@@ -20,6 +20,7 @@ class Products(models.Model):
         """funzione di appoggio che calcola la disponibilità del prodotto in base ad una ipotetica quantità che gli
         viene passata, ad esempio se vuoi comprare 2 qty di un prodotto a disponibilità 1 ti dice eventualmente
         la seconda quantità quando potrebbe essere consegnata"""
+        today = datetime.date.today()
         self.ensure_one()
         if qty>0:
             return 0
