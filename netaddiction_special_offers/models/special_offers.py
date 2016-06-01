@@ -453,7 +453,7 @@ class BonusOffer(models.Model):
     active = fields.Boolean(string='Attivo', help="Permette di spengere l'offerta senza cancellarla",default=True)
     author_id = fields.Many2one(comodel_name='res.users',string='Autore', required=True)
     company_id = fields.Many2one(comodel_name='res.company', string='Company', required=True)
-    qty_limit = fields.Integer( string='Quantità limite', help = "Quantità limite di prodotti vendibili in questa offerta. 0 è illimitato", required=True)
+   
     qty_selled = fields.Float( string='Quantità venduta', default=0.0)
     
     

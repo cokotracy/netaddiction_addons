@@ -384,10 +384,7 @@
                              
                             
                             </group>
-                             <group name="loc_right" class="oe_right" col="2">
-                                      <field name="qty_limit" attrs="{'readonly': 1}"/>
-                                
-                            </group>
+
                         </group>
                         
 

@@ -40,6 +40,8 @@ class OffersCatalogSaleOrderLine(models.Model):
     negate_offer = fields.Boolean(string="Ignora offerta", default=False)
     offer_cart_history = fields.Many2one('netaddiction.order.specialoffer.cart.history', string='offerte carrello attive')
     offer_vaucher_history = fields.Many2one('netaddiction.order.specialoffer.vaucher.history', string='offerte vaucher attive')
+    bonus_order_line_ids = fields.One2many('sale.order.line', 'bonus_father_id', string='bonus collegati')
+    bonus_father_id = fields.Many2one(comodel_name='sale.order.line',string='prodotto a cui è legato quetso bonus',default=None)
 
 
 
@@ -213,6 +215,7 @@ class OffersCatalogSaleOrderLine(models.Model):
                 deiva = round(detax,2)
                 res.price_unit = deiva
         return res
+
 
 
 
