@@ -96,29 +96,35 @@ class ProductMargin(models.Model):
 
             quants = self.env['stock.quant'].search(['|',('reservation_id','in',move_ids),('history_ids','in',move_ids)])
             #per ogni quant controllo che ci sia l'acquisto e faccio i conteggi
+            reverse = self.qty_reverse
             for quant in quants:
                 for history in quant.history_ids:
                     if len(history.picking_id.purchase_id) == 1:
                         for oc in other_contribution:
                             if history.picking_id.partner_id.id == oc.partner_id.id:
                                 max_qta = oc.qty - oc.confirmed_qty
-                                if max_qta > quant.qty:
-                                    qty_add = quant.qty
-                                else:
-                                    qty_add = max_qta
+                                #se non ci sono quantità rese vai avanti
+                                #in teoria il reverse ha creato una quant a parte quindi dovrebbe andare bene sempre
+                                if reverse <= 0:
+                                    if max_qta > quant.qty:
+                                        qty_add = quant.qty
+                                    else:
+                                        qty_add = max_qta
 
-                                attr = {
-                                    'order_id' : self.order_id.id,
-                                    'contribution_id' : oc.id,
-                                    'qty' : qty_add,
-                                    'unit_value' : oc.value
-                                }
-                                self.env['netaddiction.order.contribution'].create(attr)
-                                self.env.cr.commit()
-                                cont_value += oc.value * qty_add
+                                    attr = {
+                                        'order_id' : self.order_id.id,
+                                        'contribution_id' : oc.id,
+                                        'qty' : qty_add,
+                                        'unit_value' : oc.value
+                                    }
+                                    self.env['netaddiction.order.contribution'].create(attr)
+                                    self.env.cr.commit()
+                                    cont_value += oc.value * qty_add
+                                #decrementi le quantità rese
+                                reverse -= quant.qty
 
         if self.purchase_price_real != 0:
-            self.margin = (self.price_unit * self.product_qty) - (self.purchase_price_real * self.product_qty) + cont_value
+            self.margin = (self.price_unit * (self.product_qty-self.qty_reverse)) - (self.purchase_price_real * (self.product_qty-self.qty_reverse)) + cont_value
         else:
             self.margin = 0
 

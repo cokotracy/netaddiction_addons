@@ -487,7 +487,33 @@ class StockPicking(models.Model):
 
         this.write({'manifest':man_id,'delivery_read_manifest':False})
         #fattura
-        this.sale_id.action_invoice_create()
+        new_invoices = this.sale_id.action_invoice_create()
+        #sequenza fattura
+        sequence = self.env['ir.sequence'].search([('company_id','=',1),('name','ilike','Clienti')])
+        prefix = sequence.prefix
+        now = datetime.datetime.now()
+        next_number = 1
+        number = prefix.replace('%(range_year)s',str(datetime.date.today().year))
+
+        for line in sequence.date_range_ids:
+            if datetime.datetime.strptime(line.date_from,'%Y-%m-%d') <= now and datetime.datetime.strptime(line.date_to,'%Y-%m-%d') >= now: 
+                next_number = line.number_next
+                number = prefix.replace('%(range_year)s',str(datetime.date.today().year))
+                line.write({
+                        'number_next':int(line.number_next) + int(sequence.number_increment),
+                        'number_next_actual':int(line.number_next_actual) + int(sequence.number_increment)
+                    })
+        
+        prefix = sequence.prefix
+        fill = str(next_number).zfill(sequence.padding)
+
+        for i in new_invoices:
+            this_inv = self.env['account.invoice'].search([('id','=',i)])
+            this_inv.invoice_validate()
+            this_inv.write({
+                'number' : number + fill,
+                'name' : number + fill
+                })
 
     @api.model
     def confirm_reading_manifest(self,pick):

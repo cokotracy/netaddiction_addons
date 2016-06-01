@@ -4,6 +4,7 @@ from openerp import models, fields, api
 from openerp import exceptions
 import datetime
 from pprint import pprint
+from openerp.exceptions import ValidationError
 
 class Contribution(models.Model):
     _name = "netaddiction.contribution"
@@ -23,6 +24,7 @@ class Contribution(models.Model):
     state = fields.Selection(string="Stato",selection=[
                                                        ('draft','Bozza'),
                                                        ('confirmed','Confermato'),
+                                                       ('closed','Chiuso')
                                                       ],default="draft")
 
     move_to_contribution = fields.Many2many(string="Righe Contributi/Movimentazioni", comodel_name="netaddiction.move.contribution")
@@ -34,6 +36,88 @@ class Contribution(models.Model):
 
     invoice_ids = fields.Many2many(string="Note di Credito/Fatture", comodel_name="account.invoice")
 
+    invoice_state = fields.Char(string="Stato Fatture", compute="_get_invoice_state")
+
+    @api.one
+    def _get_invoice_state(self):
+        states = {
+            'draft' : 'Bozza',
+            'open' : 'Aperta',
+            'paid' : 'Pagata',
+        }
+
+        state = 'draft'
+
+        for inv in self.invoice_ids:
+            if inv.state == 'open':
+                state = 'open'
+                break
+            elif inv.state == 'draft':
+                state = 'draft'
+                break
+            else:
+                state = 'paid'
+
+        self.invoice_state = states[state]
+
+
+    @api.one 
+    def action_close(self):
+        if self.contribution_type == 'valuexship':
+            account_id = self.env['account.account'].search([('code','=',410100),('company_id','=',self.env.user.company_id.id)])
+            journal = self.env['account.journal'].search([('type','=','purchase'),('company_id','=',self.env.user.company_id.id)])
+            attr = {
+                'partner_id' : self.partner_id.id,
+                'type' : 'in_refund',
+                'journal_id' : journal.id,
+                'account_id' : account_id.id,
+                'invoice_line_ids' :[(0,False,{
+                    'product_id' : self.product_id.id,
+                    'quantity' : self.confirmed_qty,
+                    'price_unit' : self.value,
+                    'name' : self.product_id.name,
+                    'account_id' : account_id.id,
+                    'invoice_line_tax_ids' : [(6,False,[self.product_id.taxes_id.id])]
+                    })],
+                'number' : 'Contributo %s' % self.name,
+                'date_invoice' : datetime.datetime.now()
+            }
+            refund = self.env['account.invoice'].create(attr)
+            self.invoice_ids = [(4,refund.id,False)]
+        elif self.contribution_type == 'ads':
+            product = self.env['product.product'].search([('name','ilike','Contributo')])
+            account_id = self.env['account.account'].search([('code','=',410100),('company_id','=',self.env.user.company_id.id)])
+            journal = self.env['account.journal'].search([('type','=','purchase'),('company_id','=',self.env.user.company_id.id)])
+            attr = {
+                'partner_id' : self.partner_id.id,
+                'type' : 'in_refund',
+                'journal_id' : journal.id,
+                'account_id' : account_id.id,
+                'invoice_line_ids' :[(0,False,{
+                    'product_id' : product.id,
+                    'quantity' : 1,
+                    'price_unit' : self.value,
+                    'name' : 'Contributo %s' % self.name,
+                    'account_id' : account_id.id,
+                    'invoice_line_tax_ids' : [(6,False,[product.taxes_id.id])]
+                    })],
+                'number' : 'Contributo %s' % self.name,
+                'date_invoice' : datetime.datetime.now()
+            }
+            refund = self.env['account.invoice'].create(attr)
+            self.invoice_ids = [(4,refund.id,False)]
+            refund.invoice_validate()
+        else:
+            self.invoice_ids.invoice_validate()
+
+        self.state = 'closed'
+
+    @api.one 
+    def action_cancel(self):
+        self.move_to_contribution.unlink()
+        self.order_to_contribution.unlink()
+        self.unlink()
+    
     @api.one
     def _get_confirmed_qty(self):
     	qty = 0
@@ -150,9 +234,9 @@ class Contribution(models.Model):
                     max_qta += quant.qty
             #controllo le quantità, se la quantità già confermata è minore di quella massima allora continuo
             if qta > 0:
-                if qta >= line.product_qty:
-                    if line.product_qty <= max_qta:
-                        qty = line.product_qty
+                if qta >= (line.product_qty - line.qty_reverse):
+                    if (line.product_qty - line.qty_reverse) <= max_qta:
+                        qty = (line.product_qty - line.qty_reverse)
                     else:
                         qty = max_qta
                 else:
@@ -168,6 +252,7 @@ class Contribution(models.Model):
                     'unit_value' : self.value
                 }
                 self.env['netaddiction.order.contribution'].create(attr)
+                self.env.cr.commit()
                 qta -= qty
 
     @api.onchange('partner_id')
@@ -244,13 +329,12 @@ class StockPickingContribution(models.Model):
 
     @api.model 
     def create_reverse(self,attr,order_id):
+        res = super(StockPickingContribution,self).create_reverse(attr,order_id)
         pids = {}
         #si prende i prodotti e le quantità di ogni rigo picking segnato come reso
         for line in attr['pack_operation_product_ids']:
             pids[int(line[2]['product_id'])] = line[2]['product_qty']
         
         contribution = self.env['netaddiction.order.contribution'].search([('order_id','=',int(order_id))])
-        print contribution
-        #qua loop sui righi e scalo la quantita (cancello un rigo per ogni quantità => ogni rigo ha solo una quantità)
-        
-        return False
+        contribution.unlink()
+        return res

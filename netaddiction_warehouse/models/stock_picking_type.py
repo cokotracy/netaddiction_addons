@@ -317,6 +317,7 @@ class StockPicking(models.Model):
                             pids[line.product_id.id] -= line.quantity
                     else:
                         line.unlink()
+            ids.origin = inv.number
         #FINE CREAZIONE NOTA DI CREDITO
 
         obj = self.create(attr)

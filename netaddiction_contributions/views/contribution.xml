@@ -19,6 +19,49 @@
           sequence="4"
         />
 
+        <record model="ir.ui.view" id="netaddiction_contribution_search">
+            <field name="name">view.netaddiction.contribution.search</field>
+            <field name="model">netaddiction.contribution</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="name" string="Contributo" filter_domain="['|', '|','|', '|',('id','=',self), ('partner_id','child_of',self),('name','ilike',self)]"/>  
+                    <field name="id" string="Ticket ID"/>
+                    <field name="partner_id" operator="child_of"/>
+
+                    <separator/>
+                    <filter string="Nuovi" name="draft" domain="[('state', '=', 'draft')]"/>
+                    <filter string="Confermati" name="working" domain="[('state', '=', 'confirmed')]"/>
+                    <filter string="Chiusi" name="reopen" domain="[('state', '=', 'closed')]"/>
+
+                    <separator/>
+                    <filter string="Rivalutazione" name="revaluation" domain="[('contribution_type', '=', 'revaluation')]"/>
+                    <filter string="Valore per Venduto" name="valuexship" domain="[('contribution_type', '=', 'valuexship')]"/>
+                    <filter string="Pubblicitario" name="ads" domain="[('contribution_type', '=', 'ads')]"/>
+
+                    <separator/>
+                    <filter string="Fatture Bozze" name="invoice_draft" domain="['|',('invoice_ids.state', 'in', ['draft']),('invoice_ids','=',False)]"/>
+                    <filter string="Fatture Aperte" name="invoice_open" domain="[('invoice_ids.state', 'in', ['open'])]"/>
+                    <filter string="Fatture Pagate" name="invoice_paid" domain="[('invoice_ids.state', 'in', ['paid'])]"/>
+
+                </search>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="netaddiction_contribution_tree">
+            <field name="name">view.netaddiction.contribution.tree</field>
+            <field name="model">netaddiction.contribution</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="name"/>
+                    <field name="partner_id"/>
+                    <field name="contribution_type"/>
+                    <field name="date_start"/>
+                    <field name="date_finish"/>
+                    <field name="state"/>
+                    <field name="invoice_state"/>
+                </tree>
+            </field>
+        </record>
 
 
         <record model="ir.ui.view" id="netaddiction_contribution_form">
@@ -27,8 +70,10 @@
             <field name="arch" type="xml">
                 <form string="contribution">
                     <header>
-                    	<button name="action_confirm" type="object" string="Conferma" attrs="{'invisible':[('state','=','confirmed')]}"/>
-                    	<field name="state" widget="statusbar" statusbar_visible="draft,confirmed"/>
+                    	<button name="action_confirm" type="object" string="Conferma" attrs="{'invisible':[('state','in',['confirmed','closed'])]}" class="btn btn-sm oe_button btn-primary"/>
+                        <button name="action_close" type="object" string="Chiudi" attrs="{'invisible':[('state','!=','confirmed')]}"/>
+                        <button name="action_cancel" type="object" string="Cancella" attrs="{'invisible':[('state','!=','confirmed')]}" class="btn btn-sm oe_button  btn btn-danger fa fa-trash"/>
+                    	<field name="state" widget="statusbar" statusbar_visible="draft,confirmed,closed"/>
                     </header>
                     <sheet>
                     	<div class="oe_title">
@@ -79,7 +124,7 @@
                         </group>
                             
                         <label for="invoice_ids"/>
-                        <field name="invoice_ids" nolabel="1" readonly="1"/>
+                        <field name="invoice_ids" nolabel="1" attrs="{'readonly':[('contribution_type','!=','ads')]}"/>
                     </sheet>
                 </form>
             </field>
