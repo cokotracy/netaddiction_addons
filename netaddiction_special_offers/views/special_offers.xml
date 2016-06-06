@@ -395,7 +395,7 @@
                                     <field name="product_id" />
                                      
 
-                                    <field name="qty_selled" attrs="{'readonly': 1}" />
+
 
                                     <field name="active" />
                                  

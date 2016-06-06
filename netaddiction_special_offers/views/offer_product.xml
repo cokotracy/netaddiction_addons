@@ -17,7 +17,7 @@
 
                         <group  name="conditions" colspan="2" >
                             <group name="loc_left" class="oe_left" col="2">
-                                <field name="fake_price"/> 
+                                <!-- <field name="fake_price"/>  -->
                                <field name="offer_price"/>
                              
                                 
@@ -64,6 +64,17 @@
                                 </tree>
                               </field>
                          </page> 
+                        <page string="Bonus">
+                       <field name="offer_bonus_lines" mode="tree,kanban" >
+
+                                  <tree string="Offer Bonus Line" editable="bottom">
+                                     <field name="product_id" attrs="{'readonly': 1}"/>
+                                     <field name="bonus_offer_id" attrs="{'readonly': 1}"/>
+                                     
+                                </tree>
+                              </field>
+
+                    </page>
                 </xpath> 
 
 

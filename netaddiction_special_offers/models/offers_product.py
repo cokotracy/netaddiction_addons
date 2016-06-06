@@ -5,7 +5,7 @@ from openerp import models, fields, api
 class OffersProducts(models.Model):
     _inherit = 'product.product'
 
-    fake_price = fields.Float(string="Prezzo Falso")
+    #fake_price = fields.Float(string="Prezzo Falso")
     offer_price = fields.Float(string="Prezzo con offerta applicata", compute='compute_offer_price')
 
     offer_catalog_lines = fields.One2many('netaddiction.specialoffer.offer_catalog_line', 'product_id', string='offerte catalogo')
@@ -215,6 +215,12 @@ class OffersCatalogSaleOrderLine(models.Model):
                 deiva = round(detax,2)
                 res.price_unit = deiva
         return res
+
+    @api.multi
+    def unlink(self):
+        for bonus_line in self.bonus_order_line_ids:
+            bonus_line.unlink()
+        return super(OffersCatalogSaleOrderLine, self).unlink()
 
 
 

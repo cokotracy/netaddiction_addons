@@ -473,8 +473,7 @@ class BonusOfferLine(models.Model):
     active = fields.Boolean(default=True,
         help="Spuntato = offerta attiva, Non Spuntato = offerta spenta")
     product_id = fields.Many2one('product.product', string='Product', change_default=True, ondelete='restrict', required=True)
-    bonus_offer_id = fields.Many2one('netaddiction.specialoffer.bonus', string='Offerta Carrello', index=True, copy=False, required=True)
-    qty_selled = fields.Float( string='Quantità venduta', default=0.0)
+    bonus_offer_id = fields.Many2one('netaddiction.specialoffer.bonus', string='Offerta Bonus', index=True, copy=False, required=True)
 
 
 class VaucherOffer(models.Model):
