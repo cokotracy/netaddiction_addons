@@ -12,7 +12,8 @@
     'depends': ['base','product','sale','purchase','mrp','stock','netaddiction_expressions','netaddiction_customer'],
     'data' :[
         'views/special_offers.xml',
-        'views/offer_product.xml'
+        'views/offer_product.xml',
+        'views/digital_bonus.xml'
     ],
     'installable': True,
     'application': True,
