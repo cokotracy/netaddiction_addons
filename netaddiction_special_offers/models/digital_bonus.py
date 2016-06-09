@@ -27,10 +27,6 @@ class DigitalBonus(models.Model):
             decoded64 = base64.b64decode(self.csv_file)
             decodedIO = io.BytesIO(decoded64)
             reader = csv.reader(decodedIO)
-            #implementing the head-tail design pattern
-
-             
-
 
             for line in reader:
                 if not self.env["netaddiction.specialoffer.digital_code"].search([("bonus_id","=",self.id),("code","=",line[0])]):
@@ -38,10 +34,16 @@ class DigitalBonus(models.Model):
 
             self.csv_file = None
 
-            
-
         else:
             raise Warning("nessun file selezionato")
+
+    @api.one
+    def send_all_valid(self):
+        codes = self.env["netaddiction.specialoffer.digital_code"].search([("bonus_id","=",self.id),("order_id","!=",False),("sent","=",False)])
+        if len(codes) >0:
+            for code in codes:
+                code.send_code()
+
 
 class DigitalCode(models.Model):
 
@@ -53,6 +55,30 @@ class DigitalCode(models.Model):
     sent = fields.Boolean(string="Spedito", default=False)
     date_sent = fields.Datetime('Data spedizione')
     sent_by = fields.Many2one(comodel_name='res.users',string='Spedito da')
+
+    def send_code(self):
+        if self.order_id:
+
+            # values = {
+            # 'subject': 'ordine cancellato',
+            # 'body_html': body_html,
+            # 'email_from': 'no-reply',
+            # 'email_to': self.order_id.partner_id.email,
+            # }
+
+            # email = self.env['mail.mail'].create(values)
+            # try:
+            #     email.send(raise_exception=True)
+            # except Exception:
+            #     return False
+
+            self.sent = True
+            self.date_sent = fields.Datetime.now()
+            self.sent_by = self.env.user.id
+            return True
+
+
+
 
 
 class DigitalProducts(models.Model):
