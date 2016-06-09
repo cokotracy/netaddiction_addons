@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <record id="product_view_list" model="ir.ui.view">
+            <field name="name">octopus.product.list</field>
+            <field name="model">netaddiction_octopus.product</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="supplier_id"/>
+                    <field name="supplier_code"/>
+                    <field name="name"/>
+                    <field name="category_id"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="product_view_form" model="ir.ui.view">
+            <field name="name">octopus.product.form</field>
+            <field name="model">netaddiction_octopus.product</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <group>
+                            <field name="barcode"/>
+                            <field name="supplier_id"/>
+                            <field name="supplier_code"/>
+                            <field name="supplier_price"/>
+                            <field name="supplier_quantity"/>
+                            <field name="name"/>
+                            <field name="description"/>
+                            <field name="price"/>
+                            <field name="image"/>
+                            <field name="date"/>
+                            <field name="category_id"/>
+                            <field name="attribute_ids"/>
+                            <field name="is_pending"/>
+                            <field name="is_processed"/>
+                            <field name="company_id"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="product_action" model="ir.actions.act_window">
+            <field name="name">Prodotti</field>
+            <field name="res_model">netaddiction_octopus.product</field>
+            <field name="view_type">form</field>
+            <field name="view_id" ref="product_view_list"/>
+        </record>
+
+        <menuitem id="product_menu" name="Prodotti" parent="octopus_menu" groups="base.group_no_one" action="product_action"/>
+    </data>
+</openerp>

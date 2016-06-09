@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <record id="category_view_list" model="ir.ui.view">
+            <field name="name">octopus.category.list</field>
+            <field name="model">netaddiction_octopus.category</field>
+            <field name="arch" type="xml">
+                <tree editable="top" colors="#900:type=='trash';#090:type=='category'">
+                    <field name="field"/>
+                    <field name="code"/>
+                    <field name="type"/>
+                    <field name="category_id" attrs="{'invisible': [('type', '!=', 'category')]}"/>
+                    <field name="attribute_id" attrs="{'invisible': [('type', '!=', 'attribute')]}"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="category_view_form" model="ir.ui.view">
+            <field name="name">octopus.category.form</field>
+            <field name="model">netaddiction_octopus.category</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <group>
+                            <field name="supplier_id"/>
+                            <field name="field"/>
+                            <field name="code"/>
+                            <field name="type"/>
+                            <field name="category_id"/>
+                            <field name="attribute_id"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="category_action" model="ir.actions.act_window">
+            <field name="name">Categorie</field>
+            <field name="res_model">netaddiction_octopus.category</field>
+            <field name="view_type">form</field>
+            <field name="view_id" ref="category_view_list"/>
+        </record>
+    </data>
+</openerp>

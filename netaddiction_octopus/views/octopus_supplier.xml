@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <record id="supplier_view_list" model="ir.ui.view">
+            <field name="name">octopus.supplier.list</field>
+            <field name="model">netaddiction_octopus.supplier</field>
+            <field name="arch" type="xml">
+                <tree editable="top">
+                    <field name="order" widget="handle"/>
+                    <field name="partner_id" string="Fornitore"/>
+                    <field name="handler"/>
+                    <button name="manage_categories" type="object" string="Gestione categorie"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="supplier_view_form" model="ir.ui.view">
+            <field name="name">octopus.supplier.form</field>
+            <field name="model">netaddiction_octopus.supplier</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <group>
+                            <field name="partner_id" string="Fornitore" domain="[('supplier', '=', True)]"/>
+                            <field name="handler"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="supplier_view_search" model="ir.ui.view">
+            <field name="model">octopus.supplier.search</field>
+            <field name="model">netaddiction_octopus.supplier</field>
+            <field name="arch" type="xml">
+                <search string="Fornitori">
+                    <filter name="handler" string="Octopus" domain="[('handler', '!=', False)]"/>
+                </search>
+            </field>
+        </record>
+
+        <record id="supplier_action" model="ir.actions.act_window">
+            <field name="name">Fornitori</field>
+            <field name="res_model">netaddiction_octopus.supplier</field>
+            <field name="view_type">form</field>
+            <field name="view_id" ref="supplier_view_list"/>
+            <field name="search_view_id" ref="supplier_view_search"/>
+            <field name="context">{"search_default_handler": 1}</field>
+        </record>
+
+        <menuitem id="supplier_menu" name="Fornitori" parent="octopus_menu" groups="base.group_no_one" action="supplier_action"/>
+    </data>
+</openerp>
