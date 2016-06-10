@@ -18,7 +18,7 @@ class DigitalBonus(models.Model):
     products_ids = fields.Many2many('product.product', 'prod_codes_rel', 'code_id', 'prod_id', 'Prodotti')
     code_ids = fields.One2many('netaddiction.specialoffer.digital_code','bonus_id', string='Codici associati')
     text = fields.Text("testo offerta")
-    csv_file = fields.Binary('File')
+
 
 
     @api.one
@@ -39,7 +39,15 @@ class DigitalBonus(models.Model):
 
     @api.one
     def send_all_valid(self):
-        codes = self.env["netaddiction.specialoffer.digital_code"].search([("bonus_id","=",self.id),("order_id","!=",False),("sent","=",False)])
+        codes = self.env["netaddiction.specialoffer.digital_code"].search([("bonus_id","=",self.id),("order_id","!=",False),("order_line_id","!=",False),("sent","=",False)])
+        if len(codes) >0:
+            for code in codes:
+                if code.order_line_id.qty_delivered == code.order_line_id.product_uom_qty:
+                    code.send_code()
+
+    @api.one
+    def send_all_possible(self):
+        codes = self.env["netaddiction.specialoffer.digital_code"].search([("bonus_id","=",self.id),("order_id","!=",False),("order_line_id","!=",False),("sent","=",False)])
         if len(codes) >0:
             for code in codes:
                 code.send_code()
@@ -55,7 +63,9 @@ class DigitalCode(models.Model):
     sent = fields.Boolean(string="Spedito", default=False)
     date_sent = fields.Datetime('Data spedizione')
     sent_by = fields.Many2one(comodel_name='res.users',string='Spedito da')
+    order_line_id = fields.Many2one('sale.order.line', string='order line collegata', default=None)
 
+    @api.one
     def send_code(self):
         if self.order_id:
 

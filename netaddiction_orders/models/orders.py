@@ -181,6 +181,7 @@ class Order(models.Model):
                             while i < line.product_uom_qty:
                                 code = codes[i]
                                 code.order_id =self.id
+                                code.order_line_id = line.id
                                 i+=1
                         else:
                             #TODO MAIL a riccardo e commento
@@ -232,12 +233,18 @@ class Order(models.Model):
                     offer_line = och.offer_cart_line
                     if offer_line:
                         offer_line.qty_selled -= och.qty
-                #TODO ristorare gifts?
+                #ristorare gifts
+                
+                if order.gift_discount > 0.0:
+                    order.partner_id.add_gift_value(order.gift_discount, "Rimborso")
+                    
+
                 
                 #ristoro codici non mandati
                 for code in self.code_ids:
                     if not code.sent:
                         code.order_id = None
+                        code.order_line_id = None
 
                 #qua annullo le spedizioni
                 for pick in self.picking_ids:

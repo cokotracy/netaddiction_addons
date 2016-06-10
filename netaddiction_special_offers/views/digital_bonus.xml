@@ -57,12 +57,13 @@
                                 <field name="active" widget="boolean_button" options="{&quot;terminology&quot;: &quot;archive&quot;}"/>
                                 </button>
                             <button name="send_all_valid" type="object" class="oe_stat_button" icon="fa-star" string="spedisci validi"/>
+                            <button name="send_all_possible" type="object" class="oe_stat_button" icon="fa-exclamation" string="forza spedizione"/>
                                
                             
                         </div>
 
                     <div class="oe_title">
-                        <h1><field name="name" placeholder="Titolo offerta catalogo..."/></h1>
+                        <h1><field name="name" placeholder="Titolo digital bonus..."/></h1>
                     </div>
 
                     <br/>
