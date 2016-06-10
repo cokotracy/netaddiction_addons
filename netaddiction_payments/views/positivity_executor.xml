@@ -50,8 +50,8 @@
 
         <menuitem id="menu_netaddiction_sales_Positivity_executor"
           name="Associa nuova carta"
-          parent="base.menu_sales"
-          sequence="18"
+          parent="base.menu_partner_form"
+          sequence="21"
           action= "action_netaddiction_Positivity_executor_menu"
         />
 

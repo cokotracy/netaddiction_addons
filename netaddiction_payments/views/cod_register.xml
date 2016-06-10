@@ -47,8 +47,8 @@
 
         <menuitem id="menu_netaddiction_sales_CoD_Register"
           name="Registra Contrassegni"
-          parent="base.menu_sales"
-          sequence="19"
+          parent="account.menu_finance_receivables"
+          sequence="50"
           action= "action_netaddiction_CoD_Register_menu"
         />
 

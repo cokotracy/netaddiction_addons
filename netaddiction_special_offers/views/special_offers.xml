@@ -127,16 +127,9 @@
             </field>
         </record>
 
-
-        <menuitem id="menu_netaddiction_special_offers"
-          name="Offerte Menu"
-          parent="base.menu_sales"
-          sequence="16"
-        />
-
         <menuitem id="submenu_netaddiction_special_offers_catalog"
-          name="Offerte Catalogo" parent="menu_netaddiction_special_offers"
-          action="netaddiction_special_offers_catalog_base"/>
+          name="Offerte Catalogo" parent="netaddiction_expressions.menu_netaddiction_offers"
+          action="netaddiction_special_offers_catalog_base" sequence="1"/>
 
         <record model="ir.ui.view" id="netaddiction_special_offers_catalog_tree">
             <field name="name">view.netaddiction_special_offers_catalog_tree</field>
@@ -241,8 +234,8 @@
         </record>
 
         <menuitem id="submenu_netaddiction_special_offers_cart"
-          name="Offerte Carrello" parent="menu_netaddiction_special_offers"
-          action="netaddiction_special_offers_cart_base"/>
+          name="Offerte Carrello" parent="netaddiction_expressions.menu_netaddiction_offers"
+          action="netaddiction_special_offers_cart_base" sequence="2"/>
 
         <record model="ir.ui.view" id="netaddiction_special_offers_cart_tree">
             <field name="name">view.netaddiction_special_offers_cart</field>
@@ -346,8 +339,8 @@
 <!-- ahahahah -->
 
         <menuitem id="submenu_netaddiction_special_offers_bonus"
-          name="Bonus" parent="menu_netaddiction_special_offers"
-          action="netaddiction_special_offers_bonus_base"/>
+          name="Bonus Fisic" parent="netaddiction_expressions.menu_netaddiction_offers"
+          action="netaddiction_special_offers_bonus_base" sequence="4"/>
 
         <record model="ir.ui.view" id="netaddiction_special_offers_bonus_tree">
             <field name="name">view.netaddiction_special_offers_bonus</field>
@@ -413,8 +406,8 @@
 <!--  -->
 
     <menuitem id="submenu_netaddiction_special_offers_vaucher"
-          name="Offerte Vaucher" parent="menu_netaddiction_special_offers"
-          action="netaddiction_special_offers_vaucher_base"/>
+          name="Offerte Vaucher" parent="netaddiction_expressions.menu_netaddiction_offers"
+          action="netaddiction_special_offers_vaucher_base" sequence="3"/>
 
         <record model="ir.ui.view" id="netaddiction_special_offers_vaucher_tree">
             <field name="name">view.netaddiction_special_offers_vaucher_tree</field>

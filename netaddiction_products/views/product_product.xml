@@ -40,7 +40,7 @@
             </field>
         </record>
 
-        <record id="product_product_form_view_bom_button" model="ir.ui.view">
+        <!--<record id="product_product_form_view_bom_button" model="ir.ui.view">
             <field name="name">netaddiction.product.product.procurement</field>
             <field name="model">product.product</field>
             <field name="inherit_id" ref="mrp.product_product_form_view_bom_button"/>
@@ -50,7 +50,7 @@
                 <button name="action_view_bom" position="replace"/>
                 <button name="%(mrp.act_product_mrp_production)d" position="replace"/>
             </field>
-        </record>
+        </record>-->
 
         <record model="ir.ui.view" id="netaddiction_product_form_view_sale_order_button">
             <field name="name">netaddiction.product.product.sale.order</field>
@@ -167,8 +167,8 @@
                                 <field name="qty_single_order" class="oe_inline" />
                             </group>
                             <group string="Valorizzazione Inventario" col="4">
-                                <field name="property_cost_method" groups="stock_account.group_inventory_valuation"/>
-                                <field name="property_valuation"/>
+                                <field name="property_cost_method" default="real" readonly="1"/>
+                                <field name="property_valuation" default="real_time" readonly="1"/>
                             </group>
                         </page>
                         <page string="Immagini" name="images">

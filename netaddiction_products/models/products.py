@@ -57,6 +57,12 @@ class Products(models.Model):
 
     bom_count = fields.Integer(compute="_get_sum_bom")
 
+    property_cost_method = fields.Selection(selection=[('standard', 'Standard Price'),
+                       ('average', 'Average Price'),
+                       ('real', 'Real Price')], string="Metodo Determinazioni costi", default="real", required="True")
+    property_valuation = fields.Selection( selection=[('manual_periodic', 'Periodic (manual)'),
+                       ('real_time', 'Perpetual (automated)')], string="Valorizzazione Inventario", default="real_time", required="True")
+
     @api.one
     def _get_sum_bom(self):
         attr = [('product_id','=',self.id)]
