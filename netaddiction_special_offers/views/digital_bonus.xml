@@ -32,8 +32,8 @@
 
 
         <menuitem id="submenu_netaddiction_special_offers_digital_bonus"
-          name="Bonus Digitali" parent="menu_netaddiction_special_offers"
-          action="netaddiction_special_offers_digital_bonus_base"/>
+          name="Bonus Digitali" parent="netaddiction_expressions.menu_netaddiction_offers"
+          action="netaddiction_special_offers_digital_bonus_base" sequence="5"/>
 
         <record model="ir.ui.view" id="netaddiction_special_offers_digital_bonus_tree">
             <field name="name">view.netaddiction_special_offers_digital_bonus_tree</field>
