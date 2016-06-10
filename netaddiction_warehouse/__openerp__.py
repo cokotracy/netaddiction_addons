@@ -14,7 +14,6 @@
         'netaddiction_payments'],
     'data' :[
         'views/locations.xml',
-        'data/acl.xml',
         'templates/top_menu.xml',
         'templates/inventory_app.xml',
         'templates/assets.xml',

@@ -23,10 +23,16 @@
             </field>
         </record>
 
+        <menuitem id="menu_netaddiction_offers"
+          name="Offerte"
+          parent="base.menu_base_partner"
+          sequence="6"
+        />
+
         <menuitem id="menu_netaddiction_expression"
           name="Expression Menu"
-          parent="base.menu_sales"
-          sequence="13"
+          parent="menu_netaddiction_offers"
+          sequence="1"
         />
 
         <menuitem id="submenu_netaddiction_expression"

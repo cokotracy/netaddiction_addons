@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data noupdate="1">
+        <delete model="ir.ui.menu" id="purchase.menu_procurement_partner_contact_form" />
+        <delete model="ir.ui.menu" id="purchase.menu_product_pricelist_action2_purchase" />
+    </data>
+    <data>
+    	<!--Crea la funzionalità ed il gruppo associato-->
+        <record model="ir.module.category" id="netaddiction_purchase_group">
+            <field name="name">Netaddiction Acquisti</field>
+            <field name="description">Quelli che comprano le cose</field>
+            <field name="sequence">80</field>
+        </record>
+
+        <record id="netaddiction_purchase_user" model="res.groups">
+            <field name="name">Utente</field>
+            <field name="category_id" ref="netaddiction_purchase_group"/>
+            <field name="implied_ids" eval="[(4, ref('base.group_user')),(4, ref('netaddiction_products_data_entry_user_base'))]"/>
+        </record>
+
+        <record id="netaddiction_purchase_user_plus" model="res.groups">
+            <field name="name">Utente Plus</field>
+            <field name="category_id" ref="netaddiction_purchase_group"/>
+            <field name="implied_ids" eval="[(4, ref('base.group_user')),(4, ref('netaddiction_products_data_entry_user')),(4, ref('netaddiction_purchase_user'))]"/>
+        </record>
+
+        <record id="netaddiction_purchase_user_manager" model="res.groups">
+            <field name="name">Utente Manager</field>
+            <field name="category_id" ref="netaddiction_purchase_group"/>
+            <field name="implied_ids" eval="[(4, ref('base.group_user')),(4, ref('netaddiction_purchase_user_plus'))]"/>
+        </record>
+
+        <!--MENU-->
+        <record id="base.menu_purchase_root" model="ir.ui.menu">
+            <field name="groups_id" eval="[(4, ref('netaddiction_purchase_user'))]"/>
+        </record>
+        <record id="purchase.menu_procurement_management" model="ir.ui.menu">
+            <field name="groups_id" eval="[(4, ref('netaddiction_purchase_user'))]"/>
+        </record>
+
+        <record id="purchase.menu_purchase_rfq" model="ir.ui.menu">
+            <field name="groups_id" eval="[(4, ref('netaddiction_purchase_user_plus'))]"/>
+        </record>
+        <record id="purchase.menu_purchase_form_action" model="ir.ui.menu">
+            <field name="groups_id" eval="[(4, ref('netaddiction_purchase_user'))]"/>
+        </record>
+        <record id="base.menu_procurement_management_supplier_name" model="ir.ui.menu">
+            <field name="groups_id" eval="[(4, ref('netaddiction_purchase_user'))]"/>
+        </record>
+
+        <record id="purchase.menu_purchase_control" model="ir.ui.menu">
+            <field name="groups_id" eval="[(4, ref('netaddiction_purchase_user_plus'))]"/>
+        </record>
+        <record id="netaddiction_purchase_orders.netaddiction_purchase_orders_product_list" model="ir.ui.menu">
+            <field name="groups_id" eval="[(4, ref('netaddiction_purchase_user_plus'))]"/>
+        </record>
+        <record id="purchase.menu_action_picking_tree_in_move" model="ir.ui.menu">
+            <field name="groups_id" eval="[(4, ref('netaddiction_purchase_user_plus'))]"/>
+        </record>
+
+        <record id="base.purchase_report" model="ir.ui.menu">
+            <field name="groups_id" eval="[(4, ref('netaddiction_purchase_user_manager'))]"/>
+        </record>
+
+        <!--Modelli-->
+        <!--UTENTE-->
+        <record id="netaddiction_purchase_user_access_order" model="ir.model.access">
+            <field name="name">Purchase Order</field>
+            <field name="model_id" search="[('model','=','purchase.order')]" model="ir.model"/>
+            <field name="group_id" ref="netaddiction_purchase_user"/>
+            <field name="perm_read" eval="1"/>
+            <field name="perm_create" eval="0"/>
+            <field name="perm_write" eval="0"/>
+            <field name="perm_unlink" eval="0"/>
+        </record>
+
+        <!--PLUS-->
+        <record id="netaddiction_purchase_user_plus_access_order" model="ir.model.access">
+            <field name="name">Purchase Order</field>
+            <field name="model_id" search="[('model','=','purchase.order')]" model="ir.model"/>
+            <field name="group_id" ref="netaddiction_purchase_user_plus"/>
+            <field name="perm_read" eval="1"/>
+            <field name="perm_create" eval="1"/>
+            <field name="perm_write" eval="1"/>
+            <field name="perm_unlink" eval="0"/>
+        </record>
+        <record id="netaddiction_purchase_user_plus_access_order_line" model="ir.model.access">
+            <field name="name">Purchase Order Line</field>
+            <field name="model_id" search="[('model','=','purchase.order.line')]" model="ir.model"/>
+            <field name="group_id" ref="netaddiction_purchase_user_plus"/>
+            <field name="perm_read" eval="1"/>
+            <field name="perm_create" eval="1"/>
+            <field name="perm_write" eval="1"/>
+            <field name="perm_unlink" eval="0"/>
+        </record>
+        <record id="netaddiction_purchase_user_plus_access_picking" model="ir.model.access">
+            <field name="name">Stock Picking</field>
+            <field name="model_id" search="[('model','=','stock.picking')]" model="ir.model"/>
+            <field name="group_id" ref="netaddiction_purchase_user_plus"/>
+            <field name="perm_read" eval="1"/>
+            <field name="perm_create" eval="1"/>
+            <field name="perm_write" eval="1"/>
+            <field name="perm_unlink" eval="0"/>
+        </record>
+        <record id="netaddiction_purchase_user_plus_access_move" model="ir.model.access">
+            <field name="name">Stock Move</field>
+            <field name="model_id" search="[('model','=','stock.move')]" model="ir.model"/>
+            <field name="group_id" ref="netaddiction_purchase_user_plus"/>
+            <field name="perm_read" eval="1"/>
+            <field name="perm_create" eval="1"/>
+            <field name="perm_write" eval="1"/>
+            <field name="perm_unlink" eval="0"/>
+        </record>
+    </data>
+</openerp>
