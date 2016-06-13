@@ -25,8 +25,8 @@
 
         <menuitem id="menu_netaddiction_sales_gift"
           name="Gift Menu"
-          parent="base.menu_sales"
-          sequence="12"
+          parent="base.menu_partner_form"
+          sequence="30"
         />
 
         <menuitem id="submenu_netaddiction_sales_gift"

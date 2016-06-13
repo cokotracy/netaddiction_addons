@@ -1,0 +1,486 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data noupdate="0">
+        <!--Crea la funzionalità ed il gruppo associato-->
+        <record model="ir.module.category" id="netaddiction_products_data_entry_group">
+            <field name="name">Netaddiction Schede Prodotto</field>
+            <field name="description">Inserisce solo le schede prodotti</field>
+            <field name="sequence">80</field>
+        </record>
+
+        <record id="netaddiction_products_data_entry_user_base" model="res.groups">
+            <field name="name">Utente</field>
+            <field name="category_id" ref="netaddiction_products_data_entry_group"/>
+            <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+        </record>
+
+        <record id="netaddiction_products_data_entry_user" model="res.groups">
+            <field name="name">Utente Plus</field>
+            <field name="category_id" ref="netaddiction_products_data_entry_group"/>
+            <field name="implied_ids" eval="[(4, ref('base.group_user')),(4, ref('netaddiction_products_data_entry_user_base'))]"/>
+        </record>
+
+        <record id="netaddiction_products_data_entry_user_manager" model="res.groups">
+            <field name="name">Utente Manager</field>
+            <field name="category_id" ref="netaddiction_products_data_entry_group"/>
+            <field name="implied_ids" eval="[(4, ref('base.group_user')),(4, ref('netaddiction_products_data_entry_user'))]"/>
+        </record>
+
+        <menuitem id="netaddiction_product_attributes" name="Attributi Prodotto" parent="stock.menu_product_in_config_stock"
+            action="product.attribute_action"/>
+            <menuitem id="netaddiction_product_attributes_value" name="Valori Attributi Prodotto" parent="stock.menu_product_in_config_stock"
+            action="product.variants_action"/>
+
+        <!--MENU-->
+        <record id="stock.menu_product_variant_config_stock" model="ir.ui.menu">
+            <field name="groups_id" eval="[(4, ref('base.group_user')),(4, ref('netaddiction_products_data_entry_user_base'))]"/>
+        </record>
+        <record id="stock.menu_stock_root" model="ir.ui.menu">
+            <field name="groups_id" eval="[(4, ref('base.group_user')),(4, ref('netaddiction_products_data_entry_user_base'))]"/>
+        </record>
+        <!--assegno la dashboard e il riordino al manager inventory così l'utente base non la vede-->
+        <record id="stock.stock_picking_type_menu" model="ir.ui.menu">
+            <field name="groups_id" eval="[(4, ref('stock.group_stock_manager'))]"/>
+        </record>
+        <record id="stock.menu_reordering_rules_config" model="ir.ui.menu">
+            <field name="groups_id" eval="[(4, ref('stock.group_stock_manager'))]"/>
+        </record>
+        <record id="netaddiction_warehouse.menu_netaddiction_wh_locations" model="ir.ui.menu">
+            <field name="groups_id" eval="[(4, ref('stock.group_stock_manager'))]"/>
+        </record>
+
+        <record id="netaddiction_warehouse.menu_netaddiction_variant_products" model="ir.ui.menu">
+            <field name="groups_id" eval="[(4, ref('base.group_user')),(4, ref('netaddiction_products_data_entry_user_base'))]"/>
+        </record>
+
+        <record id="stock.menu_product_in_config_stock" model="ir.ui.menu">
+            <field name="groups_id" eval="[(4, ref('netaddiction_products_data_entry_user_manager'))]"/>
+        </record>
+        <record id="stock.menu_product_category_config_stock" model="ir.ui.menu">
+            <field name="groups_id" eval="[(4, ref('netaddiction_products_data_entry_user_manager'))]"/>
+        </record>
+        <record id="stock.menu_stock_config_settings" model="ir.ui.menu">
+            <field name="groups_id" eval="[(4, ref('netaddiction_products_data_entry_user_manager'))]"/>
+        </record>
+        <record id="netaddiction_product_attributes" model="ir.ui.menu">
+            <field name="groups_id" eval="[(4, ref('netaddiction_products_data_entry_user_manager'))]"/>
+        </record>
+        <record id="netaddiction_product_attributes_value" model="ir.ui.menu">
+            <field name="groups_id" eval="[(4, ref('netaddiction_products_data_entry_user_manager'))]"/>
+        </record>
+        
+        <!--ACL PER DATA ENTRY USER-->
+        <record id="netaddiction_products_data_entry_user_acces_product_template" model="ir.model.access">
+            <field name="name">Modello Prodotto</field>
+            <field name="model_id" ref="product.model_product_template"/>
+            <field name="group_id" ref="netaddiction_products_data_entry_user"/>
+            <field name="perm_read" eval="1"/>
+            <field name="perm_create" eval="1"/>
+            <field name="perm_write" eval="1"/>
+            <field name="perm_unlink" eval="1"/>
+        </record>
+        <record id="netaddiction_products_data_entry_user_acces_product_product" model="ir.model.access">
+            <field name="name">Variante Prodotto</field>
+            <field name="model_id" ref="product.model_product_product"/>
+            <field name="group_id" ref="netaddiction_products_data_entry_user"/>
+            <field name="perm_read" eval="1"/>
+            <field name="perm_create" eval="1"/>
+            <field name="perm_write" eval="1"/>
+            <field name="perm_unlink" eval="1"/>
+        </record>
+        <record id="netaddiction_products_data_entry_user_acces_supplierinfo" model="ir.model.access">
+            <field name="name">Righe Fornitori</field>
+            <field name="model_id" search="[('model','=','product.supplierinfo')]" model="ir.model"/>
+            <field name="group_id" ref="netaddiction_products_data_entry_user"/>
+            <field name="perm_read" eval="1"/>
+            <field name="perm_create" eval="1"/>
+            <field name="perm_write" eval="1"/>
+            <field name="perm_unlink" eval="1"/>
+        </record>
+        <record id="netaddiction_products_data_entry_user_acces_attribute_line" model="ir.model.access">
+            <field name="name">Righe Attributi</field>
+            <field name="model_id" search="[('model','=','product.attribute.line')]" model="ir.model"/>
+            <field name="group_id" ref="netaddiction_products_data_entry_user"/>
+            <field name="perm_read" eval="1"/>
+            <field name="perm_create" eval="1"/>
+            <field name="perm_write" eval="1"/>
+            <field name="perm_unlink" eval="1"/>
+        </record>
+        <record id="netaddiction_products_data_entry_user_acces_price" model="ir.model.access">
+            <field name="name">Price History</field>
+            <field name="model_id" search="[('model','=','product.price.history')]" model="ir.model"/>
+            <field name="group_id" ref="netaddiction_products_data_entry_user"/>
+            <field name="perm_read" eval="1"/>
+            <field name="perm_create" eval="1"/>
+            <field name="perm_write" eval="1"/>
+            <field name="perm_unlink" eval="0"/>
+        </record>
+        <record id="netaddiction_products_data_entry_user_acces_pricelist" model="ir.model.access">
+            <field name="name">Pricelist</field>
+            <field name="model_id" search="[('model','=','product.pricelist')]" model="ir.model"/>
+            <field name="group_id" ref="netaddiction_products_data_entry_user"/>
+            <field name="perm_read" eval="1"/>
+            <field name="perm_create" eval="1"/>
+            <field name="perm_write" eval="1"/>
+            <field name="perm_unlink" eval="1"/>
+        </record>
+        <record id="netaddiction_products_data_entry_user_acces_pricelist_item" model="ir.model.access">
+            <field name="name">Pricelist Item</field>
+            <field name="model_id" search="[('model','=','product.pricelist.item')]" model="ir.model"/>
+            <field name="group_id" ref="netaddiction_products_data_entry_user"/>
+            <field name="perm_read" eval="1"/>
+            <field name="perm_create" eval="1"/>
+            <field name="perm_write" eval="1"/>
+            <field name="perm_unlink" eval="1"/>
+        </record>
+
+        <record id="netaddiction_products_data_entry_user_acces_stock_move" model="ir.model.access">
+            <field name="name">Stock Move</field>
+            <field name="model_id" search="[('model','=','stock.move')]" model="ir.model"/>
+            <field name="group_id" ref="netaddiction_products_data_entry_user"/>
+            <field name="perm_read" eval="1"/>
+            <field name="perm_create" eval="0"/>
+            <field name="perm_write" eval="0"/>
+            <field name="perm_unlink" eval="0"/>
+        </record>
+        <record id="netaddiction_products_data_entry_user_acces_stock_picking" model="ir.model.access">
+            <field name="name">Stock Picking</field>
+            <field name="model_id" search="[('model','=','stock.picking')]" model="ir.model"/>
+            <field name="group_id" ref="netaddiction_products_data_entry_user"/>
+            <field name="perm_read" eval="1"/>
+            <field name="perm_create" eval="0"/>
+            <field name="perm_write" eval="0"/>
+            <field name="perm_unlink" eval="0"/>
+        </record>
+        <record id="netaddiction_products_data_entry_user_acces_stock_picking" model="ir.model.access">
+            <field name="name">Stock Warehouse Orderpoint</field>
+            <field name="model_id" search="[('model','=','stock.warehouse.orderpoint')]" model="ir.model"/>
+            <field name="group_id" ref="netaddiction_products_data_entry_user"/>
+            <field name="perm_read" eval="1"/>
+            <field name="perm_create" eval="0"/>
+            <field name="perm_write" eval="0"/>
+            <field name="perm_unlink" eval="0"/>
+        </record>
+        <record id="netaddiction_products_data_entry_user_acces_purchase" model="ir.model.access">
+            <field name="name">Purchase Report</field>
+            <field name="model_id" search="[('model','=','purchase.report')]" model="ir.model"/>
+            <field name="group_id" ref="netaddiction_products_data_entry_user"/>
+            <field name="perm_read" eval="1"/>
+            <field name="perm_create" eval="0"/>
+            <field name="perm_write" eval="0"/>
+            <field name="perm_unlink" eval="0"/>
+        </record>
+        <record id="netaddiction_products_data_entry_user_acces_mail_channel" model="ir.model.access">
+            <field name="name">Mail Channel</field>
+            <field name="model_id" search="[('model','=','mail.channel')]" model="ir.model"/>
+            <field name="group_id" ref="netaddiction_products_data_entry_user"/>
+            <field name="perm_read" eval="1"/>
+            <field name="perm_create" eval="0"/>
+            <field name="perm_write" eval="0"/>
+            <field name="perm_unlink" eval="0"/>
+        </record>
+        <record id="netaddiction_products_data_entry_user_acces_purchase_line" model="ir.model.access">
+            <field name="name">Ordini Purchase</field>
+            <field name="model_id" search="[('model','=','purchase.order.line')]" model="ir.model"/>
+            <field name="group_id" ref="netaddiction_products_data_entry_user"/>
+            <field name="perm_read" eval="1"/>
+            <field name="perm_create" eval="0"/>
+            <field name="perm_write" eval="0"/>
+            <field name="perm_unlink" eval="0"/>
+        </record>
+        <record id="netaddiction_products_data_entry_user_acces_sale_order" model="ir.model.access">
+            <field name="name">Sale Report</field>
+            <field name="model_id" search="[('model','=','sale.report')]" model="ir.model"/>
+            <field name="group_id" ref="netaddiction_products_data_entry_user"/>
+            <field name="perm_read" eval="1"/>
+            <field name="perm_create" eval="0"/>
+            <field name="perm_write" eval="0"/>
+            <field name="perm_unlink" eval="0"/>
+        </record>
+        <record id="netaddiction_products_data_entry_user_acces_sale_order_line" model="ir.model.access">
+            <field name="name">Sale Line</field>
+            <field name="model_id" search="[('model','=','sale.order.line')]" model="ir.model"/>
+            <field name="group_id" ref="netaddiction_products_data_entry_user"/>
+            <field name="perm_read" eval="1"/>
+            <field name="perm_create" eval="0"/>
+            <field name="perm_write" eval="0"/>
+            <field name="perm_unlink" eval="0"/>
+        </record>
+        <record id="netaddiction_products_data_entry_user_acces_extradata_key_value" model="ir.model.access">
+            <field name="name">Extradata</field>
+            <field name="model_id" search="[('model','=','netaddiction.extradata.key.value')]" model="ir.model"/>
+            <field name="group_id" ref="netaddiction_products_data_entry_user"/>
+            <field name="perm_read" eval="1"/>
+            <field name="perm_create" eval="0"/>
+            <field name="perm_write" eval="1"/>
+            <field name="perm_unlink" eval="0"/>
+        </record>
+        <record id="netaddiction_products_data_entry_user_acces_special_offer_cart" model="ir.model.access">
+            <field name="name">Special Offer Cart</field>
+            <field name="model_id" search="[('model','=','netaddiction.specialoffer.offer_cart_line')]" model="ir.model"/>
+            <field name="group_id" ref="netaddiction_products_data_entry_user"/>
+            <field name="perm_read" eval="1"/>
+            <field name="perm_create" eval="0"/>
+            <field name="perm_write" eval="0"/>
+            <field name="perm_unlink" eval="0"/>
+        </record>
+        <record id="netaddiction_products_data_entry_user_acces_special_offer_cat" model="ir.model.access">
+            <field name="name">Special Offer Catalog</field>
+            <field name="model_id" search="[('model','=','netaddiction.specialoffer.offer_catalog_line')]" model="ir.model"/>
+            <field name="group_id" ref="netaddiction_products_data_entry_user"/>
+            <field name="perm_read" eval="1"/>
+            <field name="perm_create" eval="0"/>
+            <field name="perm_write" eval="0"/>
+            <field name="perm_unlink" eval="0"/>
+        </record>
+        <record id="netaddiction_products_data_entry_user_acces_wh_location" model="ir.model.access">
+            <field name="name">Wh Location</field>
+            <field name="model_id" search="[('model','=','netaddiction.wh.locations.line')]" model="ir.model"/>
+            <field name="group_id" ref="netaddiction_products_data_entry_user"/>
+            <field name="perm_read" eval="1"/>
+            <field name="perm_create" eval="0"/>
+            <field name="perm_write" eval="0"/>
+            <field name="perm_unlink" eval="0"/>
+        </record>
+        <record id="netaddiction_products_data_entry_user_acces_mrp_bo" model="ir.model.access">
+            <field name="name">mrp bom</field>
+            <field name="model_id" search="[('model','=','mrp.bom')]" model="ir.model"/>
+            <field name="group_id" ref="netaddiction_products_data_entry_user"/>
+            <field name="perm_read" eval="1"/>
+            <field name="perm_create" eval="0"/>
+            <field name="perm_write" eval="0"/>
+            <field name="perm_unlink" eval="0"/>
+        </record>
+        <record id="netaddiction_products_data_entry_user_bonus" model="ir.model.access">
+            <field name="name">Bonus</field>
+            <field name="model_id" search="[('model','=','netaddiction.specialoffer.bonus_offer_line')]" model="ir.model"/>
+            <field name="group_id" ref="netaddiction_products_data_entry_user"/>
+            <field name="perm_read" eval="1"/>
+            <field name="perm_create" eval="1"/>
+            <field name="perm_write" eval="1"/>
+            <field name="perm_unlink" eval="1"/>
+        </record>
+
+        <!--ACL PER DATA ENTRY USER BASE-->
+        <record id="netaddiction_products_plus_acces_product_template" model="ir.model.access">
+            <field name="name">Modello Prodotto</field>
+            <field name="model_id" ref="product.model_product_template"/>
+            <field name="group_id" ref="netaddiction_products_data_entry_user_base"/>
+            <field name="perm_read" eval="0"/>
+            <field name="perm_create" eval="0"/>
+            <field name="perm_write" eval="0"/>
+            <field name="perm_unlink" eval="0"/>
+        </record>
+        <record id="netaddiction_products_plus_acces_product_product" model="ir.model.access">
+            <field name="name">Variante Prodotto</field>
+            <field name="model_id" ref="product.model_product_product"/>
+            <field name="group_id" ref="netaddiction_products_data_entry_user_base"/>
+            <field name="perm_read" eval="1"/>
+            <field name="perm_create" eval="0"/>
+            <field name="perm_write" eval="0"/>
+            <field name="perm_unlink" eval="0"/>
+        </record>
+        <record id="netaddiction_products_plus_acces_supplierinfo" model="ir.model.access">
+            <field name="name">Righe Fornitori</field>
+            <field name="model_id" search="[('model','=','product.supplierinfo')]" model="ir.model"/>
+            <field name="group_id" ref="netaddiction_products_data_entry_user_base"/>
+            <field name="perm_read" eval="1"/>
+            <field name="perm_create" eval="0"/>
+            <field name="perm_write" eval="0"/>
+            <field name="perm_unlink" eval="0"/>
+        </record>
+        <record id="netaddiction_products_plus_acces_attribute_line" model="ir.model.access">
+            <field name="name">Righe Attributi</field>
+            <field name="model_id" search="[('model','=','product.attribute.line')]" model="ir.model"/>
+            <field name="group_id" ref="netaddiction_products_data_entry_user_base"/>
+            <field name="perm_read" eval="1"/>
+            <field name="perm_create" eval="0"/>
+            <field name="perm_write" eval="0"/>
+            <field name="perm_unlink" eval="0"/>
+        </record>
+        <record id="netaddiction_products_plus_acces_price" model="ir.model.access">
+            <field name="name">Price History</field>
+            <field name="model_id" search="[('model','=','product.price.history')]" model="ir.model"/>
+            <field name="group_id" ref="netaddiction_products_data_entry_user_base"/>
+            <field name="perm_read" eval="1"/>
+            <field name="perm_create" eval="0"/>
+            <field name="perm_write" eval="0"/>
+            <field name="perm_unlink" eval="0"/>
+        </record>
+        <record id="netaddiction_products_plus_acces_pricelist" model="ir.model.access">
+            <field name="name">Pricelist</field>
+            <field name="model_id" search="[('model','=','product.pricelist')]" model="ir.model"/>
+            <field name="group_id" ref="netaddiction_products_data_entry_user_base"/>
+            <field name="perm_read" eval="1"/>
+            <field name="perm_create" eval="0"/>
+            <field name="perm_write" eval="0"/>
+            <field name="perm_unlink" eval="0"/>
+        </record>
+        <record id="netaddiction_products_plus_acces_pricelist_item" model="ir.model.access">
+            <field name="name">Pricelist Item</field>
+            <field name="model_id" search="[('model','=','product.pricelist.item')]" model="ir.model"/>
+            <field name="group_id" ref="netaddiction_products_data_entry_user_base"/>
+            <field name="perm_read" eval="1"/>
+            <field name="perm_create" eval="0"/>
+            <field name="perm_write" eval="0"/>
+            <field name="perm_unlink" eval="0"/>
+        </record>
+
+        <record id="netaddiction_products_plus_acces_stock_move" model="ir.model.access">
+            <field name="name">Stock Move</field>
+            <field name="model_id" search="[('model','=','stock.move')]" model="ir.model"/>
+            <field name="group_id" ref="netaddiction_products_data_entry_user_base"/>
+            <field name="perm_read" eval="1"/>
+            <field name="perm_create" eval="0"/>
+            <field name="perm_write" eval="0"/>
+            <field name="perm_unlink" eval="0"/>
+        </record>
+        <record id="netaddiction_products_plus_acces_stock_picking" model="ir.model.access">
+            <field name="name">Stock Picking</field>
+            <field name="model_id" search="[('model','=','stock.picking')]" model="ir.model"/>
+            <field name="group_id" ref="netaddiction_products_data_entry_user_base"/>
+            <field name="perm_read" eval="1"/>
+            <field name="perm_create" eval="0"/>
+            <field name="perm_write" eval="0"/>
+            <field name="perm_unlink" eval="0"/>
+        </record>
+        <record id="netaddiction_products_plus_user_acces_stock_picking" model="ir.model.access">
+            <field name="name">Stock Warehouse Orderpoint</field>
+            <field name="model_id" search="[('model','=','stock.warehouse.orderpoint')]" model="ir.model"/>
+            <field name="group_id" ref="netaddiction_products_data_entry_user_base"/>
+            <field name="perm_read" eval="1"/>
+            <field name="perm_create" eval="0"/>
+            <field name="perm_write" eval="0"/>
+            <field name="perm_unlink" eval="0"/>
+        </record>
+        <record id="netaddiction_products_plus_acces_purchase" model="ir.model.access">
+            <field name="name">Purchase Report</field>
+            <field name="model_id" search="[('model','=','purchase.report')]" model="ir.model"/>
+            <field name="group_id" ref="netaddiction_products_data_entry_user_base"/>
+            <field name="perm_read" eval="1"/>
+            <field name="perm_create" eval="0"/>
+            <field name="perm_write" eval="0"/>
+            <field name="perm_unlink" eval="0"/>
+        </record>
+        <record id="netaddiction_products_plus_acces_mail_channel" model="ir.model.access">
+            <field name="name">Mail Channel</field>
+            <field name="model_id" search="[('model','=','mail.channel')]" model="ir.model"/>
+            <field name="group_id" ref="netaddiction_products_data_entry_user_base"/>
+            <field name="perm_read" eval="1"/>
+            <field name="perm_create" eval="0"/>
+            <field name="perm_write" eval="0"/>
+            <field name="perm_unlink" eval="0"/>
+        </record>
+        <record id="netaddiction_products_plus_acces_purchase_line" model="ir.model.access">
+            <field name="name">Ordini Purchase</field>
+            <field name="model_id" search="[('model','=','purchase.order.line')]" model="ir.model"/>
+            <field name="group_id" ref="netaddiction_products_data_entry_user_base"/>
+            <field name="perm_read" eval="1"/>
+            <field name="perm_create" eval="0"/>
+            <field name="perm_write" eval="0"/>
+            <field name="perm_unlink" eval="0"/>
+        </record>
+        <record id="netaddiction_products_plus_acces_sale_order" model="ir.model.access">
+            <field name="name">Sale Report</field>
+            <field name="model_id" search="[('model','=','sale.report')]" model="ir.model"/>
+            <field name="group_id" ref="netaddiction_products_data_entry_user_base"/>
+            <field name="perm_read" eval="1"/>
+            <field name="perm_create" eval="0"/>
+            <field name="perm_write" eval="0"/>
+            <field name="perm_unlink" eval="0"/>
+        </record>
+        <record id="netaddiction_products_plus_acces_sale_order_line" model="ir.model.access">
+            <field name="name">Sale Line</field>
+            <field name="model_id" search="[('model','=','sale.order.line')]" model="ir.model"/>
+            <field name="group_id" ref="netaddiction_products_data_entry_user_base"/>
+            <field name="perm_read" eval="1"/>
+            <field name="perm_create" eval="0"/>
+            <field name="perm_write" eval="0"/>
+            <field name="perm_unlink" eval="0"/>
+        </record>
+        <record id="netaddiction_products_plus_acces_extradata_key_value" model="ir.model.access">
+            <field name="name">Extradata</field>
+            <field name="model_id" search="[('model','=','netaddiction.extradata.key.value')]" model="ir.model"/>
+            <field name="group_id" ref="netaddiction_products_data_entry_user_base"/>
+            <field name="perm_read" eval="1"/>
+            <field name="perm_create" eval="0"/>
+            <field name="perm_write" eval="0"/>
+            <field name="perm_unlink" eval="0"/>
+        </record>
+        <record id="netaddiction_products_plus_acces_special_offer_cart" model="ir.model.access">
+            <field name="name">Special Offer Cart</field>
+            <field name="model_id" search="[('model','=','netaddiction.specialoffer.offer_cart_line')]" model="ir.model"/>
+            <field name="group_id" ref="netaddiction_products_data_entry_user_base"/>
+            <field name="perm_read" eval="1"/>
+            <field name="perm_create" eval="0"/>
+            <field name="perm_write" eval="0"/>
+            <field name="perm_unlink" eval="0"/>
+        </record>
+        <record id="netaddiction_products_plus_acces_special_offer_cat" model="ir.model.access">
+            <field name="name">Special Offer Catalog</field>
+            <field name="model_id" search="[('model','=','netaddiction.specialoffer.offer_catalog_line')]" model="ir.model"/>
+            <field name="group_id" ref="netaddiction_products_data_entry_user_base"/>
+            <field name="perm_read" eval="1"/>
+            <field name="perm_create" eval="0"/>
+            <field name="perm_write" eval="0"/>
+            <field name="perm_unlink" eval="0"/>
+        </record>
+        <record id="netaddiction_products_plus_acces_wh_location" model="ir.model.access">
+            <field name="name">Wh Location</field>
+            <field name="model_id" search="[('model','=','netaddiction.wh.locations.line')]" model="ir.model"/>
+            <field name="group_id" ref="netaddiction_products_data_entry_user_base"/>
+            <field name="perm_read" eval="1"/>
+            <field name="perm_create" eval="0"/>
+            <field name="perm_write" eval="0"/>
+            <field name="perm_unlink" eval="0"/>
+        </record>
+        <record id="netaddiction_products_plus_acces_mrp_bo" model="ir.model.access">
+            <field name="name">mrp bom</field>
+            <field name="model_id" search="[('model','=','mrp.bom')]" model="ir.model"/>
+            <field name="group_id" ref="netaddiction_products_data_entry_user_base"/>
+            <field name="perm_read" eval="1"/>
+            <field name="perm_create" eval="0"/>
+            <field name="perm_write" eval="0"/>
+            <field name="perm_unlink" eval="0"/>
+        </record>
+        <record id="netaddiction_products_plus_bonus" model="ir.model.access">
+            <field name="name">Bonus</field>
+            <field name="model_id" search="[('model','=','netaddiction.specialoffer.bonus_offer_line')]" model="ir.model"/>
+            <field name="group_id" ref="netaddiction_products_data_entry_user_base"/>
+            <field name="perm_read" eval="1"/>
+            <field name="perm_create" eval="0"/>
+            <field name="perm_write" eval="0"/>
+            <field name="perm_unlink" eval="0"/>
+        </record>
+
+        <!--MANAGER-->
+        <record id="netaddiction_products_category_manager" model="ir.model.access">
+            <field name="name">Categorie Prodotti</field>
+            <field name="model_id" search="[('model','=','product.category')]" model="ir.model"/>
+            <field name="group_id" ref="netaddiction_products_data_entry_user_manager"/>
+            <field name="perm_read" eval="1"/>
+            <field name="perm_create" eval="1"/>
+            <field name="perm_write" eval="1"/>
+            <field name="perm_unlink" eval="1"/>
+        </record>
+        <record id="netaddiction_products_attributes_manager" model="ir.model.access">
+            <field name="name">Attributi Prodotto</field>
+            <field name="model_id" search="[('model','=','product.attribute')]" model="ir.model"/>
+            <field name="group_id" ref="netaddiction_products_data_entry_user_manager"/>
+            <field name="perm_read" eval="1"/>
+            <field name="perm_create" eval="1"/>
+            <field name="perm_write" eval="1"/>
+            <field name="perm_unlink" eval="1"/>
+        </record>
+        <record id="netaddiction_products_attributes_values_manager" model="ir.model.access">
+            <field name="name">Attributi Valore</field>
+            <field name="model_id" search="[('model','=','product.attribute.value')]" model="ir.model"/>
+            <field name="group_id" ref="netaddiction_products_data_entry_user_manager"/>
+            <field name="perm_read" eval="1"/>
+            <field name="perm_create" eval="1"/>
+            <field name="perm_write" eval="1"/>
+            <field name="perm_unlink" eval="1"/>
+        </record>
+
+    </data>
+</openerp>

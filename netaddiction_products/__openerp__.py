@@ -13,7 +13,6 @@
     'version': '1',
     'depends': ['base','product','sale','purchase','mrp','account'],
     'data': [
-        'data/user_group_data_entry.xml',
         'views/assets.xml',
         'views/product_product.xml',
         'views/product_template.xml'

@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data noupdate="0">
+    	<!--Crea la funzionalità ed il gruppo associato-->
+        <record model="ir.module.category" id="netaddiction_inventory_group">
+            <field name="name">Netaddiction Magazzino</field>
+            <field name="description">Magazzinieri</field>
+            <field name="sequence">80</field>
+        </record>
+
+        <record id="netaddiction_inventory_user" model="res.groups">
+            <field name="name">Utente</field>
+            <field name="category_id" ref="netaddiction_inventory_group"/>
+            <field name="implied_ids" eval="[(4, ref('base.group_user')),(4, ref('netaddiction_products_data_entry_user_base'))]"/>
+        </record>
+
+        <record id="netaddiction_inventory_user_plus" model="res.groups">
+            <field name="name">Utente Plus</field>
+            <field name="category_id" ref="netaddiction_inventory_group"/>
+            <field name="implied_ids" eval="[(4, ref('base.group_user')),(4, ref('netaddiction_products_data_entry_user')),(4,ref('netaddiction_inventory_user'))]"/>
+        </record>
+
+        <record id="netaddiction_inventory_user_manager" model="res.groups">
+            <field name="name">Utente Manager</field>
+            <field name="category_id" ref="netaddiction_inventory_group"/>
+            <field name="implied_ids" eval="[(4, ref('base.group_user')),(4,ref('netaddiction_inventory_user_plus'))]"/>
+        </record>
+
+        <!--MENU-->
+        <record id="stock.menu_stock_root" model="ir.ui.menu">
+            <field name="groups_id" eval="[(4, ref('netaddiction_inventory_user'))]"/>
+        </record>
+
+        <record id="stock.menu_product_variant_config_stock" model="ir.ui.menu">
+            <field name="groups_id" eval="[(4, ref('netaddiction_inventory_user'))]"/>
+        </record>
+        <record id="netaddiction_warehouse.menu_netaddiction_variant_products" model="ir.ui.menu">
+            <field name="groups_id" eval="[(4, ref('netaddiction_inventory_user'))]"/>
+        </record>
+        <record id="netaddiction_warehouse.menu_netaddiction_warehouse" model="ir.ui.menu">
+            <field name="groups_id" eval="[(4, ref('netaddiction_inventory_user'))]"/>
+        </record>
+        <record id="netaddiction_warehouse.netaddiction_warehouse_controllo_pickup" model="ir.ui.menu">
+            <field name="groups_id" eval="[(4, ref('netaddiction_inventory_user'))]"/>
+        </record>
+        <record id="netaddiction_warehouse.netaddiction_warehouse_carico" model="ir.ui.menu">
+            <field name="groups_id" eval="[(4, ref('netaddiction_inventory_user'))]"/>
+        </record>
+        <record id="stock.menu_stock_warehouse_mgmt" model="ir.ui.menu">
+            <field name="groups_id" eval="[(4, ref('netaddiction_inventory_user'))]"/>
+        </record>
+
+        
+        <record id="netaddiction_warehouse.netaddiction_warehouse_manifest" model="ir.ui.menu">
+            <field name="groups_id" eval="[(4, ref('netaddiction_inventory_user_plus'))]"/>
+        </record>
+        <record id="stock_picking_wave.menu_action_picking_wave" model="ir.ui.menu">
+            <field name="groups_id" eval="[(4, ref('netaddiction_inventory_user_plus'))]"/>
+        </record>
+        <record id="netaddiction_warehouse.netaddiction_warehouse_spara_pacchi" model="ir.ui.menu">
+            <field name="groups_id" eval="[(4, ref('netaddiction_inventory_user_plus'))]"/>
+        </record>
+        <record id="stock.menu_warehouse_report" model="ir.ui.menu">
+            <field name="groups_id" eval="[(4, ref('netaddiction_inventory_user_plus'))]"/>
+        </record>
+        <record id="stock.menu_action_move_form2" model="ir.ui.menu">
+            <field name="groups_id" eval="[(4, ref('netaddiction_inventory_user_plus'))]"/>
+        </record>
+
+        <record id="stock.menu_quants" model="ir.ui.menu">
+            <field name="groups_id" eval="[(4, ref('netaddiction_inventory_user_manager'))]"/>
+        </record>
+        <record id="stock_account.menu_action_wizard_valuation_history" model="ir.ui.menu">
+            <field name="groups_id" eval="[(4, ref('netaddiction_inventory_user_manager'))]"/>
+        </record>
+        <record id="stock.menu_report_stock_line_date" model="ir.ui.menu">
+            <field name="groups_id" eval="[(4, ref('netaddiction_inventory_user_manager'))]"/>
+        </record>
+        <record id="stock.menu_stock_procurement_action" model="ir.ui.menu">
+            <field name="groups_id" eval="[(4, ref('netaddiction_inventory_user_manager'))]"/>
+        </record>
+        <record id="netaddiction_warehouse.menu_netaddiction_wh_locations" model="ir.ui.menu">
+            <field name="groups_id" eval="[(4, ref('netaddiction_inventory_user_manager'))]"/>
+        </record>
+        <record id="stock.menu_stock_sched" model="ir.ui.menu">
+            <field name="groups_id" eval="[(4, ref('netaddiction_inventory_user_manager'))]"/>
+        </record>
+        <record id="stock.menu_reordering_rules_config" model="ir.ui.menu">
+            <field name="groups_id" eval="[(4, ref('netaddiction_inventory_user_manager'))]"/>
+        </record>
+        <record id="stock.menu_stock_proc_schedulers" model="ir.ui.menu">
+            <field name="groups_id" eval="[(4, ref('netaddiction_inventory_user_manager'))]"/>
+        </record>
+
+
+        <!--Modelli-->
+        <!--Utente-->
+        <record id="netaddiction_inventory_user_acces_stock_picking_wave" model="ir.model.access">
+            <field name="name">Stock Picking Wave</field>
+            <field name="model_id" search="[('model','=','stock.picking.wave')]" model="ir.model"/>
+            <field name="group_id" ref="netaddiction_inventory_user"/>
+            <field name="perm_read" eval="1"/>
+            <field name="perm_create" eval="0"/>
+            <field name="perm_write" eval="0"/>
+            <field name="perm_unlink" eval="0"/>
+        </record>
+
+        <!--Utente Plus-->
+        <record id="netaddiction_inventory_user_plus_acces_stock_picking_wave" model="ir.model.access">
+            <field name="name">Stock Picking Wave</field>
+            <field name="model_id" search="[('model','=','stock.picking.wave')]" model="ir.model"/>
+            <field name="group_id" ref="netaddiction_inventory_user_plus"/>
+            <field name="perm_read" eval="1"/>
+            <field name="perm_create" eval="1"/>
+            <field name="perm_write" eval="1"/>
+            <field name="perm_unlink" eval="0"/>
+        </record>
+        <record id="netaddiction_inventory_user_plus_acces_manifest" model="ir.model.access">
+            <field name="name">Manifest</field>
+            <field name="model_id" search="[('model','=','netaddiction.manifest')]" model="ir.model"/>
+            <field name="group_id" ref="netaddiction_inventory_user_plus"/>
+            <field name="perm_read" eval="1"/>
+            <field name="perm_create" eval=""/>
+            <field name="perm_write" eval=""/>
+            <field name="perm_unlink" eval="0"/>
+        </record>
+    </data>
+</openerp>

@@ -18,7 +18,7 @@ class DigitalBonus(models.Model):
     products_ids = fields.Many2many('product.product', 'prod_codes_rel', 'code_id', 'prod_id', 'Prodotti')
     code_ids = fields.One2many('netaddiction.specialoffer.digital_code','bonus_id', string='Codici associati')
     text = fields.Text("testo offerta")
-    csv_file = fields.Binary('File')
+
 
 
     @api.one
@@ -27,10 +27,6 @@ class DigitalBonus(models.Model):
             decoded64 = base64.b64decode(self.csv_file)
             decodedIO = io.BytesIO(decoded64)
             reader = csv.reader(decodedIO)
-            #implementing the head-tail design pattern
-
-             
-
 
             for line in reader:
                 if not self.env["netaddiction.specialoffer.digital_code"].search([("bonus_id","=",self.id),("code","=",line[0])]):
@@ -38,10 +34,24 @@ class DigitalBonus(models.Model):
 
             self.csv_file = None
 
-            
-
         else:
             raise Warning("nessun file selezionato")
+
+    @api.one
+    def send_all_valid(self):
+        codes = self.env["netaddiction.specialoffer.digital_code"].search([("bonus_id","=",self.id),("order_id","!=",False),("order_line_id","!=",False),("sent","=",False)])
+        if len(codes) >0:
+            for code in codes:
+                if code.order_line_id.qty_delivered == code.order_line_id.product_uom_qty:
+                    code.send_code()
+
+    @api.one
+    def send_all_possible(self):
+        codes = self.env["netaddiction.specialoffer.digital_code"].search([("bonus_id","=",self.id),("order_id","!=",False),("order_line_id","!=",False),("sent","=",False)])
+        if len(codes) >0:
+            for code in codes:
+                code.send_code()
+
 
 class DigitalCode(models.Model):
 
@@ -53,6 +63,32 @@ class DigitalCode(models.Model):
     sent = fields.Boolean(string="Spedito", default=False)
     date_sent = fields.Datetime('Data spedizione')
     sent_by = fields.Many2one(comodel_name='res.users',string='Spedito da')
+    order_line_id = fields.Many2one('sale.order.line', string='order line collegata', default=None)
+
+    @api.one
+    def send_code(self):
+        if self.order_id:
+
+            # values = {
+            # 'subject': 'ordine cancellato',
+            # 'body_html': body_html,
+            # 'email_from': 'no-reply',
+            # 'email_to': self.order_id.partner_id.email,
+            # }
+
+            # email = self.env['mail.mail'].create(values)
+            # try:
+            #     email.send(raise_exception=True)
+            # except Exception:
+            #     return False
+
+            self.sent = True
+            self.date_sent = fields.Datetime.now()
+            self.sent_by = self.env.user.id
+            return True
+
+
+
 
 
 class DigitalProducts(models.Model):

@@ -83,22 +83,23 @@ class GiftCustomer(models.Model):
 
     @api.one
     def add_gift_value(self,to_add, gift_type):
+        """
+        gift_type = stringa reason del gift type
+        """
         found = False
-        print"A"
         if self.got_gift:
             for gift in self.gift_ids:
-                print"B"
                 if gift.type_id.reason == gift_type:
                     #print "gift value %s to add %s" %(gift.value, to_add)
                     gift.value += to_add
                     #print "gift value %s to add %s" %(gift.value, to_add)
                     found = True
-                    print"C"
+
                     break
         if not found:
-            print"D"
             gtype = self.env["netaddiction.gift.type"].search([("reason","=",gift_type)])
-            self.env["netaddiction.gift"].create({'partner_id': self.id,'value':to_add, 'type_id':gtype.id})
+            if gtype:
+                self.env["netaddiction.gift"].create({'partner_id': self.id,'value':to_add, 'type_id':gtype.id})
 
     @api.one
     def remove_gift_value(self,to_rmv):

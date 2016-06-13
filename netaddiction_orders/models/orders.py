@@ -170,12 +170,32 @@ class Order(models.Model):
 
         return problems
 
+    def _check_digital_bonus(self):
+
+            if( self.state == 'draft'):
+                for line in self.order_line:
+                    for bonus_offer in line.product_id.code_ids:
+                        codes =self.env["netaddiction.specialoffer.digital_code"].search([("bonus_id","=",bonus_offer.id),("sent","=",False),("order_id","=",None)])
+                        if len(codes) > 0:
+                            i = 0
+                            while i < line.product_uom_qty:
+                                code = codes[i]
+                                code.order_id =self.id
+                                code.order_line_id = line.id
+                                i+=1
+                        else:
+                            #TODO MAIL a riccardo e commento
+                            return
+
+               
+
 
     @api.one
     def action_problems(self):
         self._check_offers_catalog()
         self._check_offers_cart()
         self._check_offers_vaucher()
+        self._check_digital_bonus()
         self.state = 'problem'
 
 
@@ -186,6 +206,7 @@ class Order(models.Model):
             problems = order._check_offers_catalog() 
             problems = order._check_offers_cart() or problems
             problems = order._check_offers_vaucher() or problems
+            self._check_digital_bonus()
             #TODO se c'è un commento spostare in problem non in sale
             if problems or order.amount_total < 0:
             #TODO aggiungere il commento sul perchè
@@ -212,7 +233,18 @@ class Order(models.Model):
                     offer_line = och.offer_cart_line
                     if offer_line:
                         offer_line.qty_selled -= och.qty
-                #TODO ristorare gifts?
+                #ristorare gifts
+                
+                if order.gift_discount > 0.0:
+                    order.partner_id.add_gift_value(order.gift_discount, "Rimborso")
+                    
+
+                
+                #ristoro codici non mandati
+                for code in self.code_ids:
+                    if not code.sent:
+                        code.order_id = None
+                        code.order_line_id = None
 
                 #qua annullo le spedizioni
                 for pick in self.picking_ids:

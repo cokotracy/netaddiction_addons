@@ -75,6 +75,19 @@
                               </field>
 
                     </page>
+                    <page string="Codici">
+                      <br/>
+                             <h2>Codici</h2>
+                      <field name="code_ids" mode="tree,kanban" >
+
+                                  <tree string="Codici" editable="bottom">
+                                     <field name="name" attrs="{'readonly': 1}"/>
+
+                                     
+                                 
+                                </tree>
+                              </field>
+                    </page>
                 </xpath> 
 
 
@@ -165,6 +178,23 @@
                               <h2>Spedizioni gratis</h2>
                               <field name="free_ship_prod" mode="tree,kanban" />
 
+                    </page>
+                    <page string="Codici">
+
+                                                    <br/>
+                             <h2>Codici</h2>
+                      <field name="code_ids" mode="tree,kanban" >
+
+                                  <tree string="Codici" editable="bottom">
+                                     <field name="code" attrs="{'readonly': 1}"/>
+                                     <field name="bonus_id" attrs="{'readonly': 1}"/>
+                                    <field name="sent" attrs="{'readonly': 1}"/>
+                                     <field name="sent_by" attrs="{'readonly': 1}"/>
+                                     <field name="date_sent" attrs="{'readonly': 1}"/>
+                                     
+                                 
+                                </tree>
+                              </field>
                     </page>
                 </xpath> 
 

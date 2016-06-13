@@ -32,8 +32,8 @@
 
 
         <menuitem id="submenu_netaddiction_special_offers_digital_bonus"
-          name="Bonus Digitali" parent="menu_netaddiction_special_offers"
-          action="netaddiction_special_offers_digital_bonus_base"/>
+          name="Bonus Digitali" parent="netaddiction_expressions.menu_netaddiction_offers"
+          action="netaddiction_special_offers_digital_bonus_base" sequence="5"/>
 
         <record model="ir.ui.view" id="netaddiction_special_offers_digital_bonus_tree">
             <field name="name">view.netaddiction_special_offers_digital_bonus_tree</field>
@@ -55,11 +55,15 @@
                     <div class="oe_button_box" name="button_box">
                             <button name="toggle_active" type="object" class="oe_stat_button" icon="fa-archive">
                                 <field name="active" widget="boolean_button" options="{&quot;terminology&quot;: &quot;archive&quot;}"/>
-                            </button>
+                                </button>
+                            <button name="send_all_valid" type="object" class="oe_stat_button" icon="fa-star" string="spedisci validi"/>
+                            <button name="send_all_possible" type="object" class="oe_stat_button" icon="fa-exclamation" string="forza spedizione"/>
+                               
+                            
                         </div>
 
                     <div class="oe_title">
-                        <h1><field name="name" placeholder="Titolo offerta catalogo..."/></h1>
+                        <h1><field name="name" placeholder="Titolo digital bonus..."/></h1>
                     </div>
 
                     <br/>
@@ -98,6 +102,9 @@
                                     <field name="sent" />
                                      <field name="sent_by" />
                                      <field name="date_sent" />
+                                      <button  class="oe_highlight" name="send_code" 
+                                string="spedisci" type="object" attrs="{'invisible':['|',('order_id', '=', False),('sent', '=', True)]}" />
+
                                    
                                  
                                 </tree>

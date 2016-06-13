@@ -119,6 +119,6 @@
         </record>
 
         <menuitem id="netaddiction_manifest_settings_menu" name="Configura Manifest"
-            parent="netaddiction_warehouse.netaddiction_warehouse_manifest" action="netaddiction_manifest_settings_action"/>
+            parent="netaddiction_warehouse_manifest" action="netaddiction_manifest_settings_action"/>
     </data>
 </openerp>

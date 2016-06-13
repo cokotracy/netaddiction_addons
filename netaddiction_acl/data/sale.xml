@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data noupdate="1">
+        <delete model="ir.ui.menu" id="product.menu_product_template_action" />
+        <delete model="ir.ui.menu" id="product.menu_products" />
+    </data>
+
+    <data>
+    	<!--Crea la funzionalità ed il gruppo associato-->
+        <record model="ir.module.category" id="netaddiction_sale_group">
+            <field name="name">Netaddiction Vendite</field>
+            <field name="description">Quelli che vendono le cose</field>
+            <field name="sequence">80</field>
+        </record>
+
+        <record id="netaddiction_sale_user" model="res.groups">
+            <field name="name">Utente</field>
+            <field name="category_id" ref="netaddiction_sale_group"/>
+            <field name="implied_ids" eval="[(4, ref('base.group_user')),(4, ref('netaddiction_products_data_entry_user_base'))]"/>
+        </record>
+
+        <record id="netaddiction_sale_user_plus" model="res.groups">
+            <field name="name">Utente Plus</field>
+            <field name="category_id" ref="netaddiction_sale_group"/>
+            <field name="implied_ids" eval="[(4, ref('base.group_user')),(4, ref('netaddiction_products_data_entry_user')),(4 ,ref('netaddiction_sale_user'))]"/>
+        </record>
+
+        <!--VENDITE OPZIONALI: AGGIUNGI OPZIONI GESTISCI AFFILIATE, GESTISCI GIFT, GESTISCI PAGAMENTI, GESTISCI OFFERTE-->
+        <record model="ir.module.category" id="netaddiction_sale_optional_group">
+            <field name="name">Netaddiction Vendite Opzionali</field>
+            <field name="description">Roba Opzionale Daje</field>
+            <field name="sequence">20</field>
+        </record>
+
+        <record id="netaddiction_sale_payments" model="res.groups">
+            <field name="name">Gestisci Pagamenti Clienti</field>
+            <field name="category_id" ref="netaddiction_sale_optional_group"/>
+        </record>
+        <record id="netaddiction_sale_gift" model="res.groups">
+            <field name="name">Gestisci Gift Clienti</field>
+            <field name="category_id" ref="netaddiction_sale_optional_group"/>
+        </record>
+        <record id="netaddiction_sale_affiliate" model="res.groups">
+            <field name="name">Gestisci Affiliati Clienti</field>
+            <field name="category_id" ref="netaddiction_sale_optional_group"/>
+        </record>
+        <record id="netaddiction_sale_offers" model="res.groups">
+            <field name="name">Gestisci Offerte</field>
+            <field name="category_id" ref="netaddiction_sale_optional_group"/>
+        </record>
+
+
+        <record id="netaddiction_sale_user_manager" model="res.groups">
+            <field name="name">Utente Manager</field>
+            <field name="category_id" ref="netaddiction_sale_group"/>
+            <field name="implied_ids" eval="[(4, ref('base.group_user')),(4, ref('netaddiction_sale_user_plus')),(4, ref('netaddiction_sale_payments')),(4, ref('netaddiction_sale_gift')),(4, ref('netaddiction_sale_affiliate')),(4, ref('netaddiction_sale_offers'))]"/>
+        </record>
+
+        <!--MENU-->
+        <record id="netaddiction_payments.menu_netaddiction_ccdata" model="ir.ui.menu">
+            <field name="groups_id" eval="[(4, ref('netaddiction_sale_payments'))]"/>
+        </record>
+        <record id="netaddiction_payments.menu_netaddiction_sales_Positivity_executor" model="ir.ui.menu">
+            <field name="groups_id" eval="[(4, ref('netaddiction_sale_payments'))]"/>
+        </record>
+
+        <record id="netaddiction_customer.menu_netaddiction_sales_gift" model="ir.ui.menu">
+            <field name="groups_id" eval="[(4, ref('netaddiction_sale_gift'))]"/>
+        </record>
+
+        <record id="netaddiction_customer.menu_netaddiction_sales_affiliate" model="ir.ui.menu">
+            <field name="groups_id" eval="[(4, ref('netaddiction_sale_affiliate'))]"/>
+        </record>
+
+
+        <record id="base.menu_base_partner" model="ir.ui.menu">
+            <field name="groups_id" eval="[(4, ref('netaddiction_sale_user'))]"/>
+        </record>
+        <record id="base.menu_partner_form" model="ir.ui.menu">
+            <field name="groups_id" eval="[(4, ref('netaddiction_sale_user'))]"/>
+        </record>
+        <record id="base.menu_sales" model="ir.ui.menu">
+            <field name="groups_id" eval="[(4, ref('netaddiction_sale_user'))]"/>
+        </record>
+        <record id="sale.menu_sale_order" model="ir.ui.menu">
+            <field name="groups_id" eval="[(4, ref('netaddiction_sale_user'))]"/>
+        </record>
+
+
+        <record id="sales_team.menu_sales_team_act" model="ir.ui.menu">
+            <field name="groups_id" eval="[(4, ref('base.group_sale_manager'))]"/>
+        </record>
+
+        <record id="netaddiction_expressions.menu_netaddiction_offers" model="ir.ui.menu">
+            <field name="groups_id" eval="[(4, ref('netaddiction_sale_offers'))]"/>
+        </record>
+
+        <record id="base.menu_sale_report" model="ir.ui.menu">
+            <field name="groups_id" eval="[(4, ref('netaddiction_sale_user_manager'))]"/>
+        </record>
+
+        <menuitem id="sale.menu_sale_invoicing" parent="account.menu_finance"/>
+
+        <!--ACL PER SALE USER-->
+        <record id="netaddiction_sale_user_acces_orders" model="ir.model.access">
+            <field name="name">Ordine Vendite</field>
+            <field name="model_id" search="[('model','=','sale.order')]" model="ir.model"/>
+            <field name="group_id" ref="netaddiction_sale_user"/>
+            <field name="perm_read" eval="1"/>
+            <field name="perm_create" eval="0"/>
+            <field name="perm_write" eval="0"/>
+            <field name="perm_unlink" eval="0"/>
+        </record>
+    </data>
+</openerp>

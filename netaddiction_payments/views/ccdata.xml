@@ -14,9 +14,9 @@
 
         <menuitem id="menu_netaddiction_ccdata"
           name="Carte"
-          parent="base.menu_sales"
-          
-            action="netaddiction_payement_ccdata_base"
+          parent="base.menu_partner_form"
+          action="netaddiction_payement_ccdata_base"
+          sequence="20"
         />
 
         <record model="ir.ui.view" id="netaddiction_payement_ccdata_tree">

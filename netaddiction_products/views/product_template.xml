@@ -46,10 +46,10 @@
                     <!--<field name="sale_ok" attrs="{'invisible':[('is_product_variant', '=', False)]}"/>-->
                 </field>
                 <field name="purchase_ok" position="replace">
-                    <field name="purchase_ok" attrs="{'invisible':[('is_product_variant', '=', False)]}"/>
+                    <!--<field name="purchase_ok" attrs="{'invisible':[('is_product_variant', '=', False)]}"/>-->
                 </field>
                 <label for="sale_ok" position="replace">
-                    <label for="sale_ok" attrs="{'invisible':[('is_product_variant', '=', False)]}"/>
+                    <!--<label for="sale_ok" attrs="{'invisible':[('is_product_variant', '=', False)]}"/>-->
                 </label>
                 <label for="purchase_ok" position="replace">
                     <!--<label for="purchase_ok" attrs="{'invisible':[('is_product_variant', '=', False)]}"/>-->
@@ -167,20 +167,6 @@
                     </button>
                 </button>
 
-                <field name="attribute_line_ids" position="replace">
-                    <group name="label_var1" colspan="4">
-                        <b attrs="{'invisible': [('id','!=',False)]}">Attributi per le Varianti</b>
-                    </group>
-                    <field name="attribute_line_ids" widget="one2many_list" context="{'show_attribute': False}"
-                        attrs="{'invisible': [('id','!=',False)]}">
-                        <tree string="Variants" editable="bottom">
-                            <field name="attribute_id"/>
-                            <field name="value_ids" widget="many2many_tags" options="{'no_create_edit': True}"
-                                domain="[('attribute_id', '=', attribute_id)]" context="{'default_attribute_id': attribute_id}"/>
-                        </tree>
-                    </field>
-                </field>
-
                 <field name="attribute_line_ids" position="after">
                     <separator name="sep_variants" attrs="{'invisible': [('id','!=',False)]}"/>
                     <group name="label_var" colspan="4" attrs="{'invisible': [('id','!=',False)]}">
@@ -197,6 +183,20 @@
                             <field name="sale_ok" />
                         </tree>
                     </field>
+                </field>
+
+                <field name="attribute_line_ids" position="replace">
+                    <!--<group name="label_var1" colspan="4">
+                        <b attrs="{'invisible': [('id','!=',False)]}">Attributi per le Varianti</b>
+                    </group>
+                    <field name="attribute_line_ids" widget="one2many_list" context="{'show_attribute': False}"
+                        attrs="{'invisible': [('id','!=',False)]}">
+                        <tree string="Variants" editable="bottom">
+                            <field name="attribute_id"/>
+                            <field name="value_ids" widget="many2many_tags" options="{'no_create_edit': True}"
+                                domain="[('attribute_id', '=', attribute_id)]" context="{'default_attribute_id': attribute_id}"/>
+                        </tree>
+                    </field>-->
                 </field>
 
                 <xpath expr="//page[@name='variants']/p" position="replace"/>
@@ -262,7 +262,7 @@
             </field>
         </record>
         <!--bundle e manufacturing button-->
-        <record id="product_template_form_view_bom_button" model="ir.ui.view">
+        <!--<record id="product_template_form_view_bom_button" model="ir.ui.view">
             <field name="name">netaddiction.product.template.procurement</field>
             <field name="model">product.template</field>
             <field name="inherit_id" ref="mrp.product_template_form_view_bom_button"/>
@@ -279,7 +279,7 @@
                     </button>
                 </button>
             </field>
-        </record>
+        </record>-->
 
         <record id="account_product_template_form_view" model="ir.ui.view">
             <field name="name">netaddiction.account.product.template.form.inherit</field>
