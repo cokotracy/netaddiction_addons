@@ -6,7 +6,7 @@
             <field name="model">res.partner</field>
             <field name="inherit_id" ref="base.view_partner_form"/>
             <field name="arch" type="xml">
-                <xpath expr="//page[@name='sales_purchases']/group/group[field[@name='ref']]" position="before">
+                <xpath expr="//page[@name='sales_purchases']/group/group[@name='purchase']" position="inside">
                         <field name="supplier_priority" attrs="{'invisible':[('customer','=',True)]}"/>
                         <field name="supplier_delivery_time" attrs="{'invisible':[('customer','=',True)]}"/>
                 </xpath>

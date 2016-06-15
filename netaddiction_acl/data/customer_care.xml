@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data noupdate="0">
+        <record id="netaddiction_sale_customer_care" model="res.groups">
+            <field name="name">Si Occupa del Customer Care</field>
+            <field name="category_id" ref="netaddiction_sale_optional_group"/>
+        </record>
+
+        
+        <record id="netaddiction_customer_care.netaddiction_customer_care_menu" model="ir.ui.menu">
+            <field name="groups_id" eval="[(4, ref('netaddiction_sale_customer_care'))]"/>
+        </record>
+    </data>
+</openerp>

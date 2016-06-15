@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <openerp>
     <data>
+        
     	<record id="netaddiction_cc_sale_order_button" model="ir.ui.view">
             <field name="name">netaddiction.cc.sale.order.button</field>
             <field name="model">sale.order</field>

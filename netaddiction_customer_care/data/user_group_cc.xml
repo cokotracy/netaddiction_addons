@@ -45,7 +45,7 @@
         </record>
 
         <!--Crea la funzionalità ed il gruppo associato-->
-        <record model="ir.module.category" id="netaddiction_cc">
+        <!--<record model="ir.module.category" id="netaddiction_cc">
             <field name="name">Customer Care</field>
             <field name="description">Si occupa dell'helpdesk clienti</field>
             <field name="sequence">12</field>
@@ -65,25 +65,24 @@
             <field name="implied_ids" eval="[(4, ref('netaddiction_cc_user'))]"/>
             <field name="rule_groups" eval="[(4, ref('project_issue.issue_project_manager_rule'))]"/>
             <field name="view_access" eval="[(4, ref('project_issue.res_partner_issues_button_view')),(4,ref('sale.res_partner_view_buttons'))]"/>
-        </record>
+        </record>-->
 
         <menuitem
             id="netaddiction_customer_care_menu"
             name="Customer Care"
             sequence="-1"
-            groups="netaddiction_cc_user,base.group_system"
             action="project_issue_categ_act0"
         />
 
-        <menuitem
+        <!--<menuitem
             id="netaddiction_customer_care_customers"
             name="Clienti"
             sequence="2"
             groups="netaddiction_cc_user"
             action="base.action_partner_form"
-        />
+        />-->
 
-        <menuitem
+        <!--<menuitem
             id="netaddiction_customer_care_orders"
             name="Ordini"
             sequence="3"
@@ -97,19 +96,19 @@
             sequence="4"
             groups="netaddiction_cc_user"
             action="product.product_template_action"
-        />
+        />-->
 
         <menuitem id="netaddiction_customer_care_settings" parent="netaddiction_customer_care_menu" name="Settings" sequence="10"
           groups="base.group_system"/>
 
-        <menuitem id="netaddiction_customer_care_company_email" parent="netaddiction_customer_care_settings" name="Configurazioni" sequence="11" action="netaddiction_cc_company_email" groups="base.group_system"/>
+        <menuitem id="netaddiction_customer_care_company_email" parent="netaddiction_customer_care_settings" name="Configurazioni" sequence="11" action="netaddiction_cc_company_email" />
 
 
         <menuitem id="netaddiction_customer_care_report" parent="netaddiction_customer_care_menu" name="Report" sequence="15"
-          groups="base.group_system,netaddiction_cc_manager"/>
-        <menuitem id="netaddiction_customer_care_report_stat" parent="netaddiction_customer_care_report" name="Statistiche" sequence="16" action="netaddiction_project_issue_reports" groups="base.group_system,netaddiction_cc_manager"/>
+          />
+        <menuitem id="netaddiction_customer_care_report_stat" parent="netaddiction_customer_care_report" name="Statistiche" sequence="16" action="netaddiction_project_issue_reports" />
 
-        <record id="netaddiction_cc_model_project_issue" model="ir.model.access">
+        <!--<record id="netaddiction_cc_model_project_issue" model="ir.model.access">
             <field name="name">Problematica</field>
             <field name="model_id" ref="project_issue.model_project_issue"/>
             <field name="group_id" ref="netaddiction_cc_user"/>
@@ -199,7 +198,6 @@
         </record>
 
 
-        <!--per i prodotti-->
         <record id="netaddiction_cc_product_template" model="ir.model.access">
             <field name="name">Modello Prodotto</field>
             <field name="model_id" ref="product.model_product_template"/>
@@ -344,7 +342,7 @@
             <field name="perm_create" eval="0"/>
             <field name="perm_write" eval="0"/>
             <field name="perm_unlink" eval="0"/>
-        </record>
+        </record>-->
        
 
         

@@ -16,5 +16,18 @@
 
         <menuitem id="netaddiction_purchase_orders_product_list" name="Da Acquistare" parent="purchase.menu_purchase_control"
             action="netaddiction_purchase_home_page" sequence="1"/>
+
+        <record id="netaddiction_purchase_order_tree" model="ir.ui.view">
+            <field name="name">netaddiction.purchase.order.tree</field>
+            <field name="model">purchase.order</field>
+            <field name="inherit_id" ref="purchase.purchase_order_tree"/>
+            <field name="arch" type="xml">
+                <field name="origin" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </field>
+            </field>
+        </record>
+
+        
     </data>
 </openerp>

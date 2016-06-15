@@ -37,7 +37,9 @@ class Products(models.Model):
                     supplier = 0
                     this_priority = 0
                     price = 0
-                    for sup in self.seller_ids:
+                    #qua uso sudo per dare la possibilità di leggere questo campo
+                    #anche a chi non ha i permessi sui fornitori
+                    for sup in self.sudo().seller_ids:
                         if int(sup.name.supplier_priority) > int(this_priority):
                             supplier = sup
                             this_priority = sup.name.supplier_priority

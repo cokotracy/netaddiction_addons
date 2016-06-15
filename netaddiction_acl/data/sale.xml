@@ -101,6 +101,26 @@
 
         <menuitem id="sale.menu_sale_invoicing" parent="account.menu_finance"/>
 
+        <!--VISTE-->
+         <record id="purchase.res_partner_view_purchase_buttons" model="ir.ui.view">
+            <field name="groups_id" eval="[(4, ref('netaddiction_purchase_user'))]"/>
+        </record>
+
+        <record id="account.view_partner_property_form" model="ir.ui.view">
+            <field name="groups_id" eval="[(4, ref('netaddiction_purchase_user')), (4, ref('netaddiction_sale_user'))]"/>
+        </record>
+        <record id="netaddiction_customer.netaddiction_view_customer_affiliate" model="ir.ui.view">
+            <field name="groups_id" eval="[(4, ref('netaddiction_sale_affiliate'))]"/>
+        </record>
+        <record id="netaddiction_customer.netaddiction_view_customer_new_gift" model="ir.ui.view">
+            <field name="groups_id" eval="[(4, ref('netaddiction_sale_gift'))]"/>
+        </record>
+
+        <record id="netaddiction_payments.netaddiction_view_customer_ccdata" model="ir.ui.view">
+            <field name="groups_id" eval="[(4, ref('netaddiction_sale_payments'))]"/>
+        </record>
+
+
         <!--ACL PER SALE USER-->
         <record id="netaddiction_sale_user_acces_orders" model="ir.model.access">
             <field name="name">Ordine Vendite</field>
@@ -110,6 +130,123 @@
             <field name="perm_create" eval="0"/>
             <field name="perm_write" eval="0"/>
             <field name="perm_unlink" eval="0"/>
+        </record>
+        <record id="netaddiction_sale_user_acces_order_contribution" model="ir.model.access">
+            <field name="name">Ordine Contributi</field>
+            <field name="model_id" search="[('model','=','netaddiction.order.contribution')]" model="ir.model"/>
+            <field name="group_id" ref="netaddiction_sale_user"/>
+            <field name="perm_read" eval="1"/>
+            <field name="perm_create" eval="0"/>
+            <field name="perm_write" eval="0"/>
+            <field name="perm_unlink" eval="0"/>
+        </record>
+        <record id="netaddiction_sale_user_acces_contribution" model="ir.model.access">
+            <field name="name">Contributi</field>
+            <field name="model_id" search="[('model','=','netaddiction.contribution')]" model="ir.model"/>
+            <field name="group_id" ref="netaddiction_sale_user"/>
+            <field name="perm_read" eval="1"/>
+            <field name="perm_create" eval="0"/>
+            <field name="perm_write" eval="0"/>
+            <field name="perm_unlink" eval="0"/>
+        </record>
+        <record id="netaddiction_sale_user_acces_warehouse_operation_settings" model="ir.model.access">
+            <field name="name">Warehouse operations settings</field>
+            <field name="model_id" search="[('model','=','netaddiction.warehouse.operations.settings')]" model="ir.model"/>
+            <field name="group_id" ref="netaddiction_sale_user"/>
+            <field name="perm_read" eval="1"/>
+            <field name="perm_create" eval="0"/>
+            <field name="perm_write" eval="0"/>
+            <field name="perm_unlink" eval="0"/>
+        </record>
+        <record id="netaddiction_sale_user_acces_vaucher_history" model="ir.model.access">
+            <field name="name">netaddiction.order.specialoffer.vaucher.history</field>
+            <field name="model_id" search="[('model','=','netaddiction.order.specialoffer.vaucher.history')]" model="ir.model"/>
+            <field name="group_id" ref="netaddiction_sale_user"/>
+            <field name="perm_read" eval="1"/>
+            <field name="perm_create" eval="0"/>
+            <field name="perm_write" eval="0"/>
+            <field name="perm_unlink" eval="0"/>
+        </record>
+        <record id="netaddiction_sale_user_acces_account_payment" model="ir.model.access">
+            <field name="name">account payment</field>
+            <field name="model_id" search="[('model','=','account.payment')]" model="ir.model"/>
+            <field name="group_id" ref="netaddiction_sale_user"/>
+            <field name="perm_read" eval="1"/>
+            <field name="perm_create" eval="0"/>
+            <field name="perm_write" eval="0"/>
+            <field name="perm_unlink" eval="0"/>
+        </record>
+        <record id="netaddiction_sale_user_acces_cart_history" model="ir.model.access">
+            <field name="name">cart history</field>
+            <field name="model_id" search="[('model','=','netaddiction.order.specialoffer.cart.history')]" model="ir.model"/>
+            <field name="group_id" ref="netaddiction_sale_user"/>
+            <field name="perm_read" eval="1"/>
+            <field name="perm_create" eval="0"/>
+            <field name="perm_write" eval="0"/>
+            <field name="perm_unlink" eval="0"/>
+        </record>
+        <record id="netaddiction_sale_user_acces_digital_code" model="ir.model.access">
+            <field name="name">Digital Code</field>
+            <field name="model_id" search="[('model','=','netaddiction.specialoffer.digital_code')]" model="ir.model"/>
+            <field name="group_id" ref="netaddiction_sale_user"/>
+            <field name="perm_read" eval="1"/>
+            <field name="perm_create" eval="0"/>
+            <field name="perm_write" eval="0"/>
+            <field name="perm_unlink" eval="0"/>
+        </record>
+        <record id="netaddiction_sale_user_acces_project_issue" model="ir.model.access">
+            <field name="name">project.issue</field>
+            <field name="model_id" search="[('model','=','project.issue')]" model="ir.model"/>
+            <field name="group_id" ref="netaddiction_sale_user"/>
+            <field name="perm_read" eval="1"/>
+            <field name="perm_create" eval="0"/>
+            <field name="perm_write" eval="0"/>
+            <field name="perm_unlink" eval="0"/>
+        </record>
+        <record id="netaddiction_sale_user_acces_account_invoice" model="ir.model.access">
+            <field name="name">account invoice</field>
+            <field name="model_id" search="[('model','=','account.invoice')]" model="ir.model"/>
+            <field name="group_id" ref="netaddiction_sale_user"/>
+            <field name="perm_read" eval="1"/>
+            <field name="perm_create" eval="0"/>
+            <field name="perm_write" eval="0"/>
+            <field name="perm_unlink" eval="0"/>
+        </record>
+
+        <!--<record id="netaddiction_sale_user_acces_affiliate" model="ir.model.access">
+            <field name="name">Affiliate</field>
+            <field name="model_id" search="[('model','=','netaddiction.partner.affiliate')]" model="ir.model"/>
+            <field name="group_id" ref="netaddiction_sale_user"/>
+            <field name="perm_read" eval="1"/>
+            <field name="perm_create" eval="0"/>
+            <field name="perm_write" eval="0"/>
+            <field name="perm_unlink" eval="0"/>
+        </record>
+        <record id="netaddiction_sale_user_acces_affiliate_commission" model="ir.model.access">
+            <field name="name">Affiliate Commission</field>
+            <field name="model_id" search="[('model','=','netaddiction.partner.affiliate.commission')]" model="ir.model"/>
+            <field name="group_id" ref="netaddiction_sale_user"/>
+            <field name="perm_read" eval="1"/>
+            <field name="perm_create" eval="0"/>
+            <field name="perm_write" eval="0"/>
+            <field name="perm_unlink" eval="0"/>
+        </record>
+        <record id="netaddiction_sale_user_acces_affiliate_order_hist" model="ir.model.access">
+            <field name="name">Affiliate Order History</field>
+            <field name="model_id" search="[('model','=','netaddiction.partner.affiliate.order.history')]" model="ir.model"/>
+            <field name="group_id" ref="netaddiction_sale_user"/>
+            <field name="perm_read" eval="1"/>
+            <field name="perm_create" eval="0"/>
+            <field name="perm_write" eval="0"/>
+            <field name="perm_unlink" eval="0"/>
+        </record>-->
+
+        <!--RULE-->
+        <record model="ir.rule" id="netaddiction_only_customer">
+            <field name="name">Solo Clienti</field>
+            <field name="model_id" search="[('model','=','res.partner')]" model="ir.model"/>
+            <field name="groups" eval="[(4, ref('netaddiction_sale_user'))]"/>
+            <field name="domain_force">['|','|',('company_id','=',False),('company_id','child_of',[user.company_id.id]),('user_ids','in',[user.id]),('customer','=',True)]</field>
         </record>
     </data>
 </openerp>

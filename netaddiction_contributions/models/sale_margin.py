@@ -50,7 +50,7 @@ class ProductMargin(models.Model):
         #a questo punto devo trovare le quants
         #una quant con reservation_id = alla move è una quant riservata
         #se non c'è la quant riservata allora la cerco in history_ids
-        quant = self.env['stock.quant'].search(['|',('reservation_id','=',this_move.id),('history_ids','in',[this_move.id])])
+        quant = self.sudo().env['stock.quant'].search(['|',('reservation_id','=',this_move.id),('history_ids','in',[this_move.id])])
         #se ne ho più di uno significa che viene preso da più fornitori o da due righi di prezzo diversi
         #faccio la media per evitare casini
         num = 0
@@ -117,12 +117,11 @@ class ProductMargin(models.Model):
                                         'qty' : qty_add,
                                         'unit_value' : oc.value
                                     }
-                                    self.env['netaddiction.order.contribution'].create(attr)
+                                    self.sudo().env['netaddiction.order.contribution'].create(attr)
                                     self.env.cr.commit()
                                     cont_value += oc.value * qty_add
                                 #decrementi le quantità rese
                                 reverse -= quant.qty
-
         if self.purchase_price_real != 0:
             self.margin = (self.price_unit * (self.product_qty-self.qty_reverse)) - (self.purchase_price_real * (self.product_qty-self.qty_reverse)) + cont_value
         else:

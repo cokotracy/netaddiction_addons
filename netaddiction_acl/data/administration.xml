@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data noupdate="0">
+        <record model="ir.module.category" id="netaddiction_administration_group">
+            <field name="name">Netaddiction Amministrazione</field>
+            <field name="description">Quelli che controllano le cose e fanno i conti</field>
+            <field name="sequence">80</field>
+        </record>
+
+        <record id="netaddiction_administration_user_manager" model="res.groups">
+            <field name="name">Utente Manager</field>
+            <field name="category_id" ref="netaddiction_administration_group"/>
+            <field name="implied_ids" eval="[(4, ref('base.group_user')),(4, ref('netaddiction_products_data_entry_user_base'))]"/>
+        </record>
+    </data>
+</openerp>

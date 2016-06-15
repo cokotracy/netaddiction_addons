@@ -47,9 +47,10 @@
                 <button name="action_view_invoice" position="attributes">
                     <attribute name="invisible">0</attribute>
                 </button>
+
+                
             </field>
 
         </record>
-
     </data>
 </openerp>

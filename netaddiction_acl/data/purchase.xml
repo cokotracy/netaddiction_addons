@@ -1,9 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <openerp>
-    <data noupdate="1">
-        <delete model="ir.ui.menu" id="purchase.menu_procurement_partner_contact_form" />
-        <delete model="ir.ui.menu" id="purchase.menu_product_pricelist_action2_purchase" />
-    </data>
     <data>
     	<!--Crea la funzionalità ed il gruppo associato-->
         <record model="ir.module.category" id="netaddiction_purchase_group">
@@ -73,6 +69,15 @@
             <field name="perm_write" eval="0"/>
             <field name="perm_unlink" eval="0"/>
         </record>
+        <record id="netaddiction_purchase_user_plus_access_journal" model="ir.model.access">
+            <field name="name">Account Journal</field>
+            <field name="model_id" search="[('model','=','account.journal')]" model="ir.model"/>
+            <field name="group_id" ref="netaddiction_purchase_user"/>
+            <field name="perm_read" eval="1"/>
+            <field name="perm_create" eval="0"/>
+            <field name="perm_write" eval="0"/>
+            <field name="perm_unlink" eval="0"/>
+        </record>
 
         <!--PLUS-->
         <record id="netaddiction_purchase_user_plus_access_order" model="ir.model.access">
@@ -110,6 +115,59 @@
             <field name="perm_create" eval="1"/>
             <field name="perm_write" eval="1"/>
             <field name="perm_unlink" eval="0"/>
+        </record>
+        <record id="netaddiction_purchase_user_plus_access_invoice" model="ir.model.access">
+            <field name="name">Account Invoice</field>
+            <field name="model_id" search="[('model','=','account.invoice')]" model="ir.model"/>
+            <field name="group_id" ref="netaddiction_purchase_user_plus"/>
+            <field name="perm_read" eval="1"/>
+            <field name="perm_create" eval="0"/>
+            <field name="perm_write" eval="0"/>
+            <field name="perm_unlink" eval="0"/>
+        </record>
+        <record id="netaddiction_purchase_user_plus_access_invoice_tax" model="ir.model.access">
+            <field name="name">Account Invoice Tax</field>
+            <field name="model_id" search="[('model','=','account.invoice.tax')]" model="ir.model"/>
+            <field name="group_id" ref="netaddiction_purchase_user_plus"/>
+            <field name="perm_read" eval="1"/>
+            <field name="perm_create" eval="0"/>
+            <field name="perm_write" eval="0"/>
+            <field name="perm_unlink" eval="0"/>
+        </record>
+        <record id="netaddiction_purchase_user_plus_access_partner" model="ir.model.access">
+            <field name="name">Res Partner</field>
+            <field name="model_id" search="[('model','=','res.partner')]" model="ir.model"/>
+            <field name="group_id" ref="netaddiction_purchase_user_plus"/>
+            <field name="perm_read" eval="1"/>
+            <field name="perm_create" eval="1"/>
+            <field name="perm_write" eval="1"/>
+            <field name="perm_unlink" eval="0"/>
+        </record>
+        <record id="netaddiction_purchase_user_plus_access_oper_settings" model="ir.model.access">
+            <field name="name">Operations settings</field>
+            <field name="model_id" search="[('model','=','netaddiction.warehouse.operations.settings')]" model="ir.model"/>
+            <field name="group_id" ref="netaddiction_purchase_user_plus"/>
+            <field name="perm_read" eval="1"/>
+            <field name="perm_create" eval="0"/>
+            <field name="perm_write" eval="0"/>
+            <field name="perm_unlink" eval="0"/>
+        </record>
+        <record id="netaddiction_purchase_user_plus_access_wave" model="ir.model.access">
+            <field name="name">Stock Picking Wave</field>
+            <field name="model_id" search="[('model','=','stock.picking.wave')]" model="ir.model"/>
+            <field name="group_id" ref="netaddiction_purchase_user_plus"/>
+            <field name="perm_read" eval="1"/>
+            <field name="perm_create" eval="1"/>
+            <field name="perm_write" eval="1"/>
+            <field name="perm_unlink" eval="0"/>
+        </record>
+
+        <!--RULE-->
+        <record model="ir.rule" id="netaddiction_only_suppliers">
+            <field name="name">Solo Fornitori</field>
+            <field name="model_id" search="[('model','=','res.partner')]" model="ir.model"/>
+            <field name="groups" eval="[(4, ref('netaddiction_purchase_user'))]"/>
+            <field name="domain_force">['|',('company_id','=',False),('company_id','child_of',[user.company_id.id]),('supplier','=',True)]</field>
         </record>
     </data>
 </openerp>

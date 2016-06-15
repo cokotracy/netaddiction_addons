@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+    	<record id="netaddiction_acl_form_orders" model="ir.ui.view">
+            <field name="name">netaddiction.acl.form.orders</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="netaddiction_orders.netaddiction_view_order"/>
+            <field name="groups_id" eval="[(4, ref('netaddiction_sale_user'))]"/>
+            <field name="arch" type="xml">
+            	<header position="replace">
+                    <header>
+                        <field name="state" widget="statusbar" statusbar_visible="draft,sale,done" readonly="1"/>
+                    </header>
+                </header>
+            </field>
+        </record>
+
+        <record id="netaddiction_acl_form_orders_plus" model="ir.ui.view">
+            <field name="name">netaddiction.acl.form.orders.plus</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="netaddiction_acl_form_orders"/>
+            <field name="groups_id" eval="[(4, ref('netaddiction_sale_user_plus'))]"/>
+            <field name="arch" type="xml">
+                <field name="state" position="before">
+                    <button name="action_done" type="object" string="Completato" states="sale,partial_done" class="btn btn-success fa fa-star"/>
+
+                    <button name="action_partial_done" states="sale,problem" type="object" string="Parzialmente Completato"
+                        class="btn btn-warning fa fa-star-half-o"/>
+
+                    <button name="action_confirm" states="draft,problem" type="object" string="In lavorazione" class="btn btn-warning fa fa-star-o"/>
+                    <button name="action_problems" string="Problema" type="object" states="sent,sale,processing,partial_done,draft" class=" btn btn-danger fa fa-exclamation-triangle"/>
+
+                    <button name="action_cancel" states="draft,sent,sale,partial_done,problem,done" type="object" class=" btn btn-danger fa fa-trash" string="Annulla Ordine"/>
+
+                    <button name="sale.action_view_sale_advance_payment_inv" string="Fattura" type="action" class="btn-primary fa fa-pencil-square-o" attrs="{'invisible': [('invoice_status', '!=', 'to invoice')]}"/>
+                </field>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="netaddiction_acl_warehouse_view_order">
+            <field name="name">netaddiction.warehouse.sale.order</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="netaddiction_warehouse.netaddiction_warehouse_view_order"/>
+            <field name="arch" type="xml">
+                <button name="netaddiction_warehouse.action_reso_cliente" position="attributes">
+                    <attribute name="groups">netaddiction_acl.netaddiction_inventory_user</attribute>
+                </button>
+                <button name="open_reverse" position="attributes">
+                    <attribute name="groups">netaddiction_acl.netaddiction_inventory_user</attribute>
+                </button>
+                
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="netaddiction_acl_customer_care_view_order">
+            <field name="name">netaddiction.customer.care.sale.order</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="netaddiction_customer_care.netaddiction_cc_sale_order_button"/>
+            <field name="arch" type="xml">
+                <button name="%(netaddiction_customer_care.project_issue_categ_act0)d" position="attributes">
+                    <attribute name="groups">netaddiction_acl.netaddiction_sale_customer_care</attribute>
+                </button>
+                <button name="new_issue" position="attributes">
+                    <attribute name="groups">netaddiction_acl.netaddiction_sale_customer_care</attribute>
+                </button>
+                
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="netaddiction_acl_invoice_view_order">
+            <field name="name">netaddiction.acl.invoice.sale.order</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale.view_order_form"/>
+            <field name="arch" type="xml">
+                <button name="action_view_invoice" position="attributes">
+                    <attribute name="groups">netaddiction_acl.netaddiction_administration_user_manager</attribute>
+                </button>
+                
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="netaddiction_acl_stock_view_order">
+            <field name="name">netaddiction.acl.stock.sale.order</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale_stock.view_order_form_inherit_sale_stock"/>
+            <field name="arch" type="xml">
+                <button name="action_view_delivery" position="attributes">
+                    <attribute name="groups">netaddiction_acl.netaddiction_inventory_user</attribute>
+                </button>
+                
+            </field>
+        </record>
+
+    </data>
+</openerp>

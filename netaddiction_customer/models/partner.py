@@ -12,6 +12,18 @@ class Partner(models.Model):
     rating = fields.Selection([('0','Negativo'), ('1','Medio'), ('2','Positivo')], string='Rating', default="2")
     email_rating = fields.Selection([('A+','A+'), ('A','A'), ('B','B'), ('C','C'), ('D','D'), ('E','E'), ('F','F'), ('','Non valutato')], string='Email Rating', default='')
 
+    @api.multi
+    def name_get(self):
+        res = []
+
+        for s in self:
+            if len(s.parent_id)>0 and s.customer == True:
+                res.append((s.id,s.name + ',' + s.city + ' ' + s.street + ' ' + s.street2))
+            else:
+                res.append((s.id,s.name))
+
+        return res
+
     @api.one
     def write(self,values):
         """
