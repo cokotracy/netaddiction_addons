@@ -50,7 +50,7 @@
                                 <field name="homepage"/>
                                 <field name="date_account_created"/>
                                 <field name="cookie_duration"/>
-                                <field name="exclude_from_cron"/>
+                                <field name="exclude"/>
                             </group>
                         </group>
                         <notebook>

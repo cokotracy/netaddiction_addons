@@ -10,7 +10,7 @@ class Multicom_Importer(models.Model):
     odoo_id = fields.Integer(string="Odoo ID")
     entity_type = fields.Selection((('product','Prodotto'),
     ('customer','Cliente'),('order','Ordine'),
-    ('supplier','Fornitore'),('category','Categoria'),('digital_bonu',"Digital Bonus") ),'Tipo')
+    ('supplier','Fornitore'),('category','Categoria'),('digital_bonu',"Digital Bonus"),('gift','Gift'),('affiliate','Affiliate') ),'Tipo')
 
     name = fields.Char("Nome", compute='_get_odoo_name')
 
@@ -23,6 +23,8 @@ class Multicom_Importer(models.Model):
             'customer' : 'res.partner',
             'product'  : 'product.product',
             'digital_bonu'  : 'netaddiction.specialoffer.digital_bonus',
+            'gift' : 'netaddiction.gift',
+            'affiliate' : 'netaddiction.partner.affiliate'
         }
 
         mod = self.env[mapping[self.entity_type]].browse([self.odoo_id])

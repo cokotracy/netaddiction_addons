@@ -5,6 +5,8 @@ from openerp.exceptions import ValidationError
 from hashids import Hashids
 
 class Affiliate(models.Model):
+    """ATTENZIONE: se l'affiliato non ha commissioni viene usato self.commission_percent su ogni prodotto
+    """
     _name = "netaddiction.partner.affiliate"
     _rec_name = 'control_code'
 
@@ -14,7 +16,7 @@ class Affiliate(models.Model):
     commission_percent = fields.Float(string="Percentuale commissioni")
     date_account_created = fields.Datetime(string="Data creazione")
     cookie_duration = fields.Integer(string = "Durata Cookie")
-    exclude_from_cron = fields.Boolean(string="Escluso dal cron")
+    exclude = fields.Boolean(string="Escluso dalle commissioni ")
     partner_id = fields.Many2one(
         comodel_name='res.partner',
         string="Cliente", required=True)
@@ -41,8 +43,6 @@ class Affiliate(models.Model):
         for record in self:
             tot = 0.0
             for order in record.orders_history:
-                print order
-                print order.order_id.amount_total
                 tot += order.order_id.amount_total
             record.tot = tot
         #TODO: test to remove next 2 lines
@@ -82,23 +82,27 @@ class Affiliate(models.Model):
 
     def get_hashed(self):
         salt = self.env["ir.config_parameter"].search([("key","=","affiliate.salt")]).value
-        print salt
         hashids = Hashids(salt=salt)
-        print int(self.control_code)
-        print hashids.encode(int(self.control_code))
         return hashids.encode(self.control_code)
 
     def check_order(self, order):
         gift_gained = 0.0
-        for commission in self.commission_id:
-            expression = commission.expression_id
-            dom = expression.find_products_domain()
-            prod_ids = [pl.id for pl in self.env['product.product'].search(dom)]
-            for ol in order.order_line:
-                if ol.product_id.id in prod_ids:
-                    gift_gained += (ol.price_total/100) * commission.commission_percent
-        if gift_gained > 0.0:
-            self.partner_id.add_gift_value(gift_gained, "Affiliate")
+        if not self.exclude:
+            if len(self.commission) > 0:
+                for commission in self.commission_id:
+                    expression = commission.expression_id
+                    dom = expression.find_products_domain()
+                    prod_ids = [pl.id for pl in self.env['product.product'].search(dom)]
+                    for ol in order.order_line:
+                        if ol.product_id.id in prod_ids:
+                            gift_gained += (ol.price_total/100) * commission.commission_percent
+                if gift_gained > 0.0:
+                    self.partner_id.add_gift_value(gift_gained, "Affiliate")
+            else:
+                for ol in order.order_line:
+                    gift_gained += (ol.price_total/100) * self.commission_percent
+                if gift_gained > 0.0:
+                    self.partner_id.add_gift_value(gift_gained, "Affiliate")
 
         return gift_gained
 
