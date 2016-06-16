@@ -18,6 +18,7 @@
         'data/purchase.xml',
         'data/sale.xml',
         'data/customer_care.xml',
+        'data/b2b.xml',
         'data/administration.xml',
         'views/product.xml',
         'views/purchase.xml',

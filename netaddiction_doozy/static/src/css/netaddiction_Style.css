@@ -58,5 +58,10 @@ FORM VIEW
 SHEET MOD GRAFICHE
 **************/
 .oe_form_sheet{
-    max-width: 80% !important;
+    max-width: 100% !important;
+    border: 0 !important;
+}
+
+.oe_form_sheetbg{
+    padding: 0 !important;
 }

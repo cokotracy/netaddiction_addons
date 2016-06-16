@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data noupdate="0">
+        <record id="netaddiction_sale_b2b" model="res.groups">
+            <field name="name">Si Occupa delle vendite B2B</field>
+            <field name="category_id" ref="netaddiction_sale_optional_group"/>
+        </record>
+
+
+    </data>
+</openerp>

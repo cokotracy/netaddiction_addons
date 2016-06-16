@@ -163,11 +163,11 @@
         </record>
 
         <!--RULE-->
-        <record model="ir.rule" id="netaddiction_only_suppliers">
+        <!--<record model="ir.rule" id="netaddiction_only_suppliers">
             <field name="name">Solo Fornitori</field>
             <field name="model_id" search="[('model','=','res.partner')]" model="ir.model"/>
             <field name="groups" eval="[(4, ref('netaddiction_purchase_user'))]"/>
             <field name="domain_force">['|',('company_id','=',False),('company_id','child_of',[user.company_id.id]),('supplier','=',True)]</field>
-        </record>
+        </record>-->
     </data>
 </openerp>
