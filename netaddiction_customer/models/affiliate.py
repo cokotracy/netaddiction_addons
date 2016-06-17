@@ -13,7 +13,7 @@ class Affiliate(models.Model):
     active = fields.Boolean(string="Attivo", default=True)
     control_code = fields.Char(string = "Codice di controllo")
     homepage = fields.Char(string = "Sito")
-    commission_percent = fields.Float(string="Percentuale commissioni")
+    commission_percent = fields.Float(string="Percentuale commissioni", default = 5.0)
     date_account_created = fields.Datetime(string="Data creazione")
     cookie_duration = fields.Integer(string = "Durata Cookie")
     exclude = fields.Boolean(string="Escluso dalle commissioni ")

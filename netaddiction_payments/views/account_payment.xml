@@ -15,9 +15,7 @@
                     position="after">    
                     <page string="Pagamenti">
                         <br/>
-                      <field name="account_payment_ids" />
-
-                              
+                      <field name="account_payment_ids" attrs="{'readonly': [('state', 'in', ('done','cancel','sale','partial_done','sent'))]}"/>     
                     </page>
                 </xpath> 
 
@@ -58,12 +56,6 @@
                       <field name="cc_status" attrs="{'readonly': [('state', '!=', 'draft')]}" string="Stato cc"/>
                             </group>
                         </group> 
-                   
-                      
-
-                      
-
-            
                 </xpath> 
           </field>
           </record>
