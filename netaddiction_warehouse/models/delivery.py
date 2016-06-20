@@ -17,10 +17,11 @@ class Orders(models.Model):
     @api.multi
     def action_confirm(self):
         res = super(Orders,self).action_confirm()
-        self.create_shipping()
-        self.set_delivery_price()
-        for pick in self.picking_ids:
-            pick.generate_barcode()
+        if len(self.picking_ids)==0:
+            self.create_shipping()
+            self.set_delivery_price()
+            for pick in self.picking_ids:
+                pick.generate_barcode()
         return True
 
     @api.multi
@@ -151,7 +152,8 @@ class Orders(models.Model):
     def simulate_delivery_price(self,subdivision):
         """
         simula le spese di spedizione dovute
-        a partire dall suddivisione in spedizioni
+        a partire dalla suddivisione in spedizioni di simulate_shipping
+        ritorna un dict con data => [prezzo,prezzo tassato]
         """
         if not self.carrier_id:
             raise ValidationError("Deve essere scelto un metodo di spedizione")
@@ -191,6 +193,12 @@ class Orders(models.Model):
 
     @api.multi
     def simulate_shipping(self):
+        """
+        ritorna un dict con la data di presunta consegna e dentro 
+        della roba simil order.line
+        per sapere i costi di spedizione questo dict deve essere passato
+        a simulate_delivery_price
+        """
         self.ensure_one()
         if not self.carrier_id:
             raise ValidationError("Deve essere scelto un metodo di spedizione")
@@ -445,6 +453,9 @@ class StockPicking(models.Model):
     def do_validate_orders(self,pick_id):
         this = self.search([('id','=',int(pick_id))])
 
+        #for pay in this.sale_id.account_payment_ids:
+        #    if this.total_import == pay.amount and pay.state == 'posted'
+
         if this.check_backorder(this):
             wiz_id = self.env['stock.backorder.confirmation'].create({'pick_id': this.id})
             wiz_id.process()
@@ -512,7 +523,7 @@ class StockPicking(models.Model):
             this_inv.invoice_validate()
             this_inv.write({
                 'number' : number + fill,
-                'name' : number + fill
+                'name' : number + fill,
                 })
 
     @api.model

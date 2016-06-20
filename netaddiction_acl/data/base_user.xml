@@ -92,5 +92,35 @@
             <field name="perm_write" eval="0"/>
             <field name="perm_unlink" eval="0"/>
         </record>
+
+
+        <record id="netaddiction_move_contribution_access_base" model="ir.model.access">
+            <field name="name">netaddiction.move.contribution</field>
+            <field name="model_id" search="[('model','=','netaddiction.move.contribution')]" model="ir.model"/>
+            <field name="group_id" ref="base.group_user"/>
+            <field name="perm_read" eval="1"/>
+            <field name="perm_create" eval="1"/>
+            <field name="perm_write" eval="1"/>
+            <field name="perm_unlink" eval="1"/>
+        </record>
+        <record id="netaddiction_order_contribution_access_base" model="ir.model.access">
+            <field name="name">netaddiction.move.contribution</field>
+            <field name="model_id" search="[('model','=','netaddiction.order.contribution')]" model="ir.model"/>
+            <field name="group_id" ref="base.group_user"/>
+            <field name="perm_read" eval="1"/>
+            <field name="perm_create" eval="1"/>
+            <field name="perm_write" eval="1"/>
+            <field name="perm_unlink" eval="1"/>
+        </record>
+        <record id="netaddiction_order_contribution_access_base" model="ir.model.access">
+            <field name="name">netaddiction.move.contribution</field>
+            <field name="model_id" search="[('model','=','netaddiction.order.contribution')]" model="ir.model"/>
+            <field name="group_id" ref="base.group_user"/>
+            <field name="perm_read" eval="1"/>
+            <field name="perm_create" eval="1"/>
+            <field name="perm_write" eval="1"/>
+            <field name="perm_unlink" eval="1"/>
+        </record>
+
     </data>
 </openerp>

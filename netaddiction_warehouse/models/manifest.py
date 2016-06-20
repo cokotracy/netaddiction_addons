@@ -25,13 +25,9 @@ class NetaddictionManifest(models.Model):
         if 'Bartolini' in self.carrier_id.name:
             if self.manifest_file1 is None or self.manifest_file2 is None: 
                 raise ValidationError("Non hai ancora creato il manifest")
-
-            print 'Bartolini'
         else:
             if self.manifest_file1 is None:
                 raise ValidationError("Non hai ancora creato il manifest")
-
-            print 'SDA'
 
     @api.one 
     def create_manifest(self):

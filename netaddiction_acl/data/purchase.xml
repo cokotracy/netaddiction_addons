@@ -17,7 +17,7 @@
         <record id="netaddiction_purchase_user_plus" model="res.groups">
             <field name="name">Utente Plus</field>
             <field name="category_id" ref="netaddiction_purchase_group"/>
-            <field name="implied_ids" eval="[(4, ref('base.group_user')),(4, ref('netaddiction_products_data_entry_user')),(4, ref('netaddiction_purchase_user'))]"/>
+            <field name="implied_ids" eval="[(4, ref('base.group_user')),(4, ref('netaddiction_products_data_entry_user')),(4, ref('netaddiction_purchase_user')),(4,ref('purchase.group_purchase_user'))]"/>
         </record>
 
         <record id="netaddiction_purchase_user_manager" model="res.groups">
@@ -25,6 +25,8 @@
             <field name="category_id" ref="netaddiction_purchase_group"/>
             <field name="implied_ids" eval="[(4, ref('base.group_user')),(4, ref('netaddiction_purchase_user_plus'))]"/>
         </record>
+
+        
 
         <!--MENU-->
         <record id="base.menu_purchase_root" model="ir.ui.menu">

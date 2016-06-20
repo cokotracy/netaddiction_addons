@@ -8,16 +8,22 @@
             <field name="sequence">80</field>
         </record>
 
+        <record id="netaddiction_inventory_sp" model="res.groups">
+            <field name="name">Spara pacchi</field>
+            <field name="category_id" ref="netaddiction_inventory_group"/>
+            <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+        </record>
+
         <record id="netaddiction_inventory_user" model="res.groups">
             <field name="name">Utente</field>
             <field name="category_id" ref="netaddiction_inventory_group"/>
-            <field name="implied_ids" eval="[(4, ref('base.group_user')),(4, ref('netaddiction_products_data_entry_user_base')),(4, ref('netaddiction_purchase_user')),(4,ref('netaddiction_sale_user'))]"/>
+            <field name="implied_ids" eval="[(4, ref('base.group_user')),(4, ref('netaddiction_products_data_entry_user_base')),(4, ref('netaddiction_purchase_user')),(4,ref('netaddiction_sale_user')),(4, ref('netaddiction_inventory_sp'))]"/>
         </record>
 
         <record id="netaddiction_inventory_user_plus" model="res.groups">
             <field name="name">Utente Plus</field>
             <field name="category_id" ref="netaddiction_inventory_group"/>
-            <field name="implied_ids" eval="[(4, ref('base.group_user')),(4,ref('netaddiction_inventory_user')),(4,ref('netaddiction_sale_user_plus'))]"/>
+            <field name="implied_ids" eval="[(4, ref('base.group_user')),(4,ref('netaddiction_inventory_user')),(4,ref('netaddiction_sale_user_plus')),(4,ref('stock.group_stock_user'))]"/>
         </record>
 
         <record id="netaddiction_inventory_user_manager" model="res.groups">
@@ -26,9 +32,21 @@
             <field name="implied_ids" eval="[(4, ref('base.group_user')),(4,ref('netaddiction_inventory_user_plus'))]"/>
         </record>
 
+        
+
+        
+
         <!--MENU-->
+        <record id="stock.menu_stock_inventory_control" model="ir.ui.menu">
+            <field name="groups_id" eval="[(4, ref('netaddiction_inventory_user')),(4, ref('netaddiction_products_data_entry_user_base'))]"/>
+        </record>
+
+        <record id="stock.menu_action_inventory_form" model="ir.ui.menu">
+            <field name="groups_id" eval="[(4, ref('stock.group_stock_manager'))]"/>
+        </record>
+
         <record id="stock.menu_stock_root" model="ir.ui.menu">
-            <field name="groups_id" eval="[(4, ref('netaddiction_inventory_user'))]"/>
+            <field name="groups_id" eval="[(4, ref('netaddiction_inventory_user')),(4, ref('netaddiction_inventory_sp'))]"/>
         </record>
 
         <record id="stock.menu_product_variant_config_stock" model="ir.ui.menu">
@@ -47,7 +65,7 @@
             <field name="groups_id" eval="[(4, ref('netaddiction_inventory_user_plus'))]"/>
         </record>
         <record id="stock.menu_stock_warehouse_mgmt" model="ir.ui.menu">
-            <field name="groups_id" eval="[(4, ref('netaddiction_inventory_user'))]"/>
+            <field name="groups_id" eval="[(4, ref('netaddiction_inventory_user')),(4,ref('netaddiction_inventory_sp'))]"/>
         </record>
 
         
@@ -58,7 +76,7 @@
             <field name="groups_id" eval="[(4, ref('netaddiction_inventory_user_plus'))]"/>
         </record>
         <record id="netaddiction_warehouse.netaddiction_warehouse_spara_pacchi" model="ir.ui.menu">
-            <field name="groups_id" eval="[(4, ref('netaddiction_inventory_user_plus'))]"/>
+            <field name="groups_id" eval="[(4, ref('netaddiction_inventory_user_plus')),(4,ref('netaddiction_inventory_sp'))]"/>
         </record>
         <record id="stock.menu_warehouse_report" model="ir.ui.menu">
             <field name="groups_id" eval="[(4, ref('netaddiction_inventory_user'))]"/>
@@ -94,6 +112,24 @@
 
 
         <!--Modelli-->
+        <record id="netaddiction_inventory_sp_carrier" model="ir.model.access">
+            <field name="name">carrier</field>
+            <field name="model_id" search="[('model','=','delivery.carrier')]" model="ir.model"/>
+            <field name="group_id" ref="netaddiction_inventory_sp"/>
+            <field name="perm_read" eval="1"/>
+            <field name="perm_create" eval="0"/>
+            <field name="perm_write" eval="0"/>
+            <field name="perm_unlink" eval="0"/>
+        </record>
+        <record id="netaddiction_inventory_sp_manifest" model="ir.model.access">
+            <field name="name">manifest</field>
+            <field name="model_id" search="[('model','=','netaddiction.manifest')]" model="ir.model"/>
+            <field name="group_id" ref="netaddiction_inventory_sp"/>
+            <field name="perm_read" eval="1"/>
+            <field name="perm_create" eval="0"/>
+            <field name="perm_write" eval="1"/>
+            <field name="perm_unlink" eval="0"/>
+        </record>
         <!--Utente-->
         <record id="netaddiction_inventory_user_acces_stock_picking_wave" model="ir.model.access">
             <field name="name">Stock Picking Wave</field>
@@ -273,6 +309,7 @@
             <field name="perm_write" eval="1"/>
             <field name="perm_unlink" eval="1"/>
         </record>
+
 
         
         

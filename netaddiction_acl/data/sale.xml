@@ -17,17 +17,19 @@
             <field name="name">Utente</field>
             <field name="category_id" ref="netaddiction_sale_group"/>
             <field name="implied_ids" eval="[(4, ref('base.group_user')),(4, ref('netaddiction_products_data_entry_user_base'))]"/>
+            <field name="view_access" eval="[(4,ref('sale.res_partner_view_buttons'))]"/>
+
         </record>
 
         <record id="netaddiction_sale_user_plus" model="res.groups">
             <field name="name">Utente Plus</field>
             <field name="category_id" ref="netaddiction_sale_group"/>
-            <field name="implied_ids" eval="[(4, ref('base.group_user')),(4, ref('netaddiction_products_data_entry_user')),(4 ,ref('netaddiction_sale_user'))]"/>
+            <field name="implied_ids" eval="[(4, ref('base.group_user')),(4, ref('netaddiction_products_data_entry_user')),(4 ,ref('netaddiction_sale_user')),(4, ref('base.group_sale_salesman_all_leads'))]"/>
         </record>
 
         <!--VENDITE OPZIONALI: AGGIUNGI OPZIONI GESTISCI AFFILIATE, GESTISCI GIFT, GESTISCI PAGAMENTI, GESTISCI OFFERTE-->
         <record model="ir.module.category" id="netaddiction_sale_optional_group">
-            <field name="name">Netaddiction Vendite Opzionali</field>
+            <field name="name">Netaddiction Opzionali</field>
             <field name="description">Roba Opzionale Daje</field>
             <field name="sequence">20</field>
         </record>
@@ -304,6 +306,25 @@
             <field name="perm_read" eval="1"/>
             <field name="perm_create" eval="1"/>
             <field name="perm_write" eval=""/>
+            <field name="perm_unlink" eval="0"/>
+        </record>
+
+        <record id="netaddiction_sale_user_account_payment_method" model="ir.model.access">
+            <field name="name">account.payment.method</field>
+            <field name="model_id" search="[('model','=','account.payment.method')]" model="ir.model"/>
+            <field name="group_id" ref="netaddiction_sale_user"/>
+            <field name="perm_read" eval="1"/>
+            <field name="perm_create" eval="0"/>
+            <field name="perm_write" eval="0"/>
+            <field name="perm_unlink" eval="0"/>
+        </record>
+        <record id="netaddiction_sale_user_account_payment" model="ir.model.access">
+            <field name="name">account.payment</field>
+            <field name="model_id" search="[('model','=','account.payment')]" model="ir.model"/>
+            <field name="group_id" ref="netaddiction_sale_user"/>
+            <field name="perm_read" eval="1"/>
+            <field name="perm_create" eval="0"/>
+            <field name="perm_write" eval="0"/>
             <field name="perm_unlink" eval="0"/>
         </record>
         

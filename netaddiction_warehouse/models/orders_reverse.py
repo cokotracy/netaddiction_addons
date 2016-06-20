@@ -95,12 +95,10 @@ class OrdersReverse(models.Model):
         """
         self.ensure_one()
 
-        payments = self.env['account.payment'].search([('order_id','=',self.id)])
-        pay = False
-        for p in payments:
-            pay = p.journal_id
+        if len(self.account_payment_ids) > 0:
+            return self.account_payment_ids[0].id
 
-        return pay
+        return False
 
 class OrderLineReverse(models.Model):
     _inherit = "sale.order.line"
