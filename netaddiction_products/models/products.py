@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
-from openerp import models, fields, api
+from openerp import models, fields, api, tools
+from openerp.osv import fields as old_fields
 import openerp.addons.decimal_precision as dp
 
 class Products(models.Model):
@@ -62,6 +63,17 @@ class Products(models.Model):
                        ('real', 'Real Price')], string="Metodo Determinazioni costi", default="real", required="True")
     property_valuation = fields.Selection( selection=[('manual_periodic', 'Periodic (manual)'),
                        ('real_time', 'Perpetual (automated)')], string="Valorizzazione Inventario", default="real_time", required="True")
+
+    _columns = {
+        'image': old_fields.binary("Image", attachment=True,
+            help="This field holds the image used as image for the product, limited to 1024x1024px."),
+        'image_medium': old_fields.binary("Image", attachment=True,
+            help="Medium-sized image of the product. It is automatically resized as a 128x128px image, with aspect ratio preserved, "\
+                 "only when the image exceeds one of those sizes. Use this field in form views or some kanban views."),
+        'image_small': old_fields.binary("Image", attachment=True,
+            help="Small-sized image of the product. It is automatically resized as a 64x64px image, with aspect ratio preserved. "\
+                 "Use this field anywhere a small image is required."),
+    }
 
     @api.one
     def _get_sum_bom(self):
@@ -137,7 +149,14 @@ class Products(models.Model):
 
             p.list_price = round(detax,2)
 
-    
+    def create(self, cr, uid, vals, context=None):
+        tools.image_resize_images(vals)
+        return super(Products, self).create(cr, uid, vals, context)
+
+    def write(self, cr, uid, ids, vals, context=None):
+        tools.image_resize_images(vals)
+        return super(Products, self).write(cr, uid, ids, vals, context)
+
     def get_actual_price(self):
         return self.special_price if (self.special_price>0.00) else self.final_price
 
@@ -253,3 +272,8 @@ class SupplierInfo(models.Model):
             values['product_tmpl_id']=templ
 
         return super(SupplierInfo, self).create(values)
+
+class Category(models.Model):
+    _inherit = 'product.category'
+
+    company_id = fields.Many2one('res.company', required=True)

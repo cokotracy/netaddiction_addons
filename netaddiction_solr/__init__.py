@@ -1,1 +1,1 @@
-from models import product  # NOQA
+from models import cron, product  # NOQA

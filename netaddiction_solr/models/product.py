@@ -90,6 +90,9 @@ class ProductMixin(object):
 
     @api.constrains(*SOLR_TRACKED_FIELDS)
     def pickup_for_solr(self):
+        if self.env.context.get('solr_nopush', False):
+            return
+
         if self.can_push_to_solr():
             self.push_to_solr(self.solr_document)
         else:
@@ -118,6 +121,9 @@ class Template(models.Model, ProductMixin):
 
     @api.constrains(*SOLR_TRACKED_FIELDS)
     def pickup_for_solr(self):
+        if self.env.context.get('solr_nopush', False):
+            return
+
         to_add, to_remove = [], []
 
         for product in self.product_variant_ids:
