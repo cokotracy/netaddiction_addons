@@ -7,4 +7,4 @@ from openerp import models, fields, api
 class Order(models.Model):
     _inherit = 'sale.order'
 
-    payment_method_id = fields.Many2one('account.payment.method', string='Metodo di pagamento')
+    payment_method_id = fields.Many2one('account.journal', string='Metodo di pagamento')
