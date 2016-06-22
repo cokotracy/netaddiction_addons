@@ -132,6 +132,9 @@ class Products(models.Model):
             else:
                 detax = price
 
+            if p.taxes_id.price_include:
+                detax = price
+
             p.list_price = round(detax,2)
 
     
