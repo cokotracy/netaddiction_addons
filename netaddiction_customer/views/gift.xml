@@ -118,7 +118,7 @@
 
               <xpath expr="//field[@name='amount_tax']"
                     position="after">    
-                    <field name="gift_discount"/>
+                    <field name="gift_discount" attrs="{'readonly': [('state', 'in', ('done','cancel','sale','partial_done','sent'))]}"/>
                        
                 </xpath> 
 
