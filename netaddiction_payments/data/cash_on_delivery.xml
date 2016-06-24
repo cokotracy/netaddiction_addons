@@ -2,14 +2,16 @@
 <openerp>
     <data noupdate="1">
     <record model="product.product" id="product_contrassegno">
-    <field name="list_price">3.0</field>
-    <field name="standard_price">3.0</field>
+
     <field name="final_price">3.0</field>
+
     <field name="name">Contrassegno</field>
     <field name="type">service</field>
     <field name="sale_ok" eval="False"/>
     <field name="purchase_ok" eval="True"/>
     <field name="visible" eval="True"/>
+    <field name="property_cost_method" >real</field>
+    <field name="property_valuation" >real_time</field>
 </record>
     </data>
 </openerp>

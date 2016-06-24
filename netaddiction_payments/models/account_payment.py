@@ -14,6 +14,19 @@ class AccountPayment(models.Model):
     cc_name = fields.Char(string='Titolare')
     cc_status = fields.Selection([('init','Da autorizzare'),('auth','Autorizzato'),('commit','Pagato')])
 
+    cc_selection = fields.Many2one( "netaddiction.partner.ccdata", string="associare carta")
+
+    paypal_transaction_id = fields.Char(string='id transazione paypal')
+
+    @api.onchange('cc_selection')
+    def onchange_cc_selection(self):
+        self.cc_token = self.cc_selection.token
+        self.cc_last_four = self.cc_selection.last_four
+        self.cc_month = self.cc_selection.month
+        self.cc_year = self.cc_selection.year
+        self.cc_name = self.cc_selection.name
+        self.cc_selection = 'init'
+
 class OrderPayment(models.Model):
     """docstring for OrderPayment"""
     _inherit = 'sale.order'

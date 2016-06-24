@@ -269,7 +269,7 @@
                     position="before"> 
                     <group class="oe_left" col="2">
                           <group> 
-                            <field name="vaucher_string"/>
+                            <field name="vaucher_string" attrs="{'readonly': [('state', 'in', ('done','cancel','sale','partial_done','sent','problem'))]}"/>
                         </group>
                      <group> 
                             <button  class="oe_highlight" name="apply_vaucher" 

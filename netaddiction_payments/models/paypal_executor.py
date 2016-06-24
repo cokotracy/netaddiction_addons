@@ -66,7 +66,7 @@ class PaypalExecutor(models.TransientModel):
             getexp_response = pp_interface.get_express_checkout_details(token=self.token)
 
             if getexp_response and getexp_response.success:
-    
+                
                 return pp_interface.generate_express_checkout_redirect_url(self.token)
                 
             else:
@@ -89,6 +89,7 @@ class PaypalExecutor(models.TransientModel):
             -se tutto ok: 1
             -se fallisce do_express_checkout_payment: -2
             -se fallisce get_express_checkout_details: -1
+            -se fallisce la registrazione del pagamento su odoo ma il pagamento paypal va a buon fine: -3
             Raise PayPalError: propaga i raise dell'interfaccia di paypal
         """
         encripted_username = self.env["ir.values"].search([("name","=","paypal_username")]).value
@@ -107,7 +108,7 @@ class PaypalExecutor(models.TransientModel):
         pp_interface = paypal.PayPalInterface(config= config)
         getexp_response = pp_interface.get_express_checkout_details(token=self.token)
         if getexp_response and getexp_response.success:
-            print getexp_response
+            
 
             try:
                 payer_id = getexp_response.payerid
@@ -118,9 +119,10 @@ class PaypalExecutor(models.TransientModel):
             
             payment_response = pp_interface.do_express_checkout_payment(token=self.token, amt=amount, paymentaction=PAYMENTACTION,payerid=payer_id,currencycode=CUR)
             
+            
             if payment_response and payment_response.success:
                 #save on odoo
-                return self._register_payment(user_id,payment_response.amt,order_id)
+                return self._register_payment(user_id,payment_response.amt,order_id,payment_response.paymentinfo_0_transactionid)
                 
             else:
                 return -2
@@ -129,19 +131,41 @@ class PaypalExecutor(models.TransientModel):
 
 
     @api.one
-    def _register_payment(self,user_id, amount, order_id):
-        pp_aj = self.env["account.journal"].search([("name","=","Paypal")])
+    def _register_payment(self,user_id, amount, order_id,transaction_id):
+        pp_aj = self.env['ir.model.data'].get_object('netaddiction_payments', 'paypal_journal')
         pay_inbound = self.env["account.payment.method"].search([("payment_type","=","inbound")])
         pay_inbound = pay_inbound[0] if isinstance(pay_inbound,list) else pay_inbound
         if pp_aj and pay_inbound:
             name = self.env['ir.sequence'].with_context(ir_sequence_date=fields.Date.context_today(self)).next_by_code('account.payment.customer.invoice')
             pp_id = pp_aj.id
-            self.env["account.payment"].create({"partner_type" : "customer", "partner_id" : user_id, "journal_id" : pp_id, "amount" : amount, "order_id" : order_id, "state" : 'posted', "payment_type" : 'inbound', "payment_method_id" : pay_inbound.id, "name" : name })
+            order = self.env["sale.order"].search([("id","=",order_id)])
+            payment = self.env["account.payment"].create({"partner_type" : "customer", "partner_id" : user_id, "journal_id" : pp_id, "amount" : amount, "order_id" : order_id, "state" : 'draft', "payment_type" : 'inbound', "payment_method_id" : pay_inbound.id, "name" : name, 'communication' : order.name, 'paypal_transaction_id': transaction_id,  })
+
+            order.payment_method_id = pp_aj.id
+            order.action_confirm()
+
+            self._set_order_to_invoice(order)
+
+            inv_lst = order.action_invoice_create()
+
+            payment.invoice_ids = [(4, inv, None) for inv in inv_lst]
+
+            for inv_id in inv_lst:
+                inv = self.env["account.invoice"].search([("id","=",inv_id)])
+                inv.signal_workflow('invoice_open')
+                # inv.payement_id = [(6, 0, [payment.id])]
+
+            payment.post()
+
             return 1
         else:
-            return None
+            return -3
         
 
+    @api.one
+    def _set_order_to_invoice(self,order):
+        for line in order.order_line:
+            line.qty_to_invoice = line.product_uom_qty
 
 
 

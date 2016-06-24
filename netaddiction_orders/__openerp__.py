@@ -11,7 +11,7 @@
     'website': "http://www.netaddiction.it",
     'category': 'Technical Settings',
     'version': '1.0',
-    'depends': ['base','product','sale','purchase','mrp','account','netaddiction_customer_care','netaddiction_customer','netaddiction_special_offers'],
+    'depends': ['base','product','sale','purchase','mrp','account','netaddiction_customer_care','netaddiction_customer','netaddiction_special_offers','netaddiction_payments'],
     'data' : [
         'views/orders.xml'
     ]
