@@ -139,5 +139,5 @@ class OrderMargin(models.Model):
         margin = 0
         for line in self.order_line:
             margin += line.margin
-
+            
         self.margin = margin

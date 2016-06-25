@@ -10,8 +10,8 @@ class Products(models.Model):
     #separazione listini di acquisto
     seller_ids = fields.One2many('product.supplierinfo', 'product_id', 'Supplier')
     #separazione prezzo di  vendita e creazione prezzo ivato e senza iva
-    lst_price = fields.Float(string="Prezzo senza Iva", digits_compute= dp.get_precision('Product Price'))
-    list_price = fields.Float(string="Prezzo di vendita deivato", compute="_get_price", digits_compute= dp.get_precision('Product Price'))
+    lst_price = fields.Float(string="Prezzo di Vendita", digits_compute= dp.get_precision('Product Price'))
+    list_price = fields.Float(string="Prezzo di vendita Iva Esclusa", compute="_get_price", digits_compute= dp.get_precision('Product Price'))
     #campo prezzo ivato
     final_price = fields.Float(string="Prezzo Listino", digits_compute= dp.get_precision('Product Price'))
     special_price = fields.Float(string="Prezzo offerta base", digits_compute= dp.get_precision('Product Price'), default="0.00")
@@ -60,9 +60,9 @@ class Products(models.Model):
 
     property_cost_method = fields.Selection(selection=[('standard', 'Standard Price'),
                        ('average', 'Average Price'),
-                       ('real', 'Real Price')], string="Metodo Determinazioni costi", default="real", required="True")
+                       ('real', 'Real Price')], string="Metodo Determinazioni costi", default="real", required=1)
     property_valuation = fields.Selection( selection=[('manual_periodic', 'Periodic (manual)'),
-                       ('real_time', 'Perpetual (automated)')], string="Valorizzazione Inventario", default="real_time", required="True")
+                       ('real_time', 'Perpetual (automated)')], string="Valorizzazione Inventario", default="real_time", required=1)
 
     _columns = {
         'image': old_fields.binary("Image", attachment=True,

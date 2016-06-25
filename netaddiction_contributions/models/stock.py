@@ -41,6 +41,5 @@ class StockQuants(models.Model):
                         c_value += m.unit_value * to_revaluation
                     elif to_revaluation > 0 and to_revaluation > self.qty:
                         c_value += m.unit_value * self.qty
-   
         value -= c_value
         return value

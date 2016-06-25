@@ -27,10 +27,10 @@ class Products(models.Model):
         else:
             #per prima cosa controllo la data di uscita
             if self.out_date is not False and datetime.datetime.strptime(self.out_date,"%Y-%m-%d").date() > datetime.date.today():
-                self.days_available = (datetime.datetime.strptime(self.out_date,"%Y-%m-%d").date() - today).days
+                return (datetime.datetime.strptime(self.out_date,"%Y-%m-%d").date() - today).days
             else:
                 if self.available_date is not False and datetime.datetime.strptime(self.available_date,"%Y-%m-%d").date() > datetime.date.today():
-                    self.days_available = (datetime.datetime.strptime(self.available_date,"%Y-%m-%d").date() - today).days
+                    return (datetime.datetime.strptime(self.available_date,"%Y-%m-%d").date() - today).days
                 else:
                     #controllo i fornitori
                     #prendo il fornitore a priorità più alta (se ce ne sono due con la stessa priorità prendo quello a prezzo più basso)
