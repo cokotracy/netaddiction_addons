@@ -52,17 +52,18 @@ class CoDRegister(models.TransientModel):
                     }
                     sol = self.env['sale.order.line'].create(values)
                     sol.product_id_change()
-                    sol.qty_to_invoice  = 1
+                    sol.qty_to_invoice  = 0
                     
                     for stock_move in delivery.move_lines_related:
                         self._set_order_to_invoice(stock_move,order)
-                self.set_delivery_to_invoice(order)
-                for line in order.order_line:
-                     print "line.qty_to_invoice %s" % line.qty_to_invoice
-                inv_lst += order.action_invoice_create()
-                print "****************************************************"
-                for line in order.order_line:
-                     print "line.qty_to_invoice %s" % line.qty_to_invoice
+
+                    self.set_delivery_to_invoice(delivery,order,contrassegno.id)
+                    # for line in order.order_line:
+                    #     print "line.qty_to_invoice %s" % line.qty_to_invoice
+                    inv_lst += order.action_invoice_create()
+                    # print "****************************************************"
+                    # for line in order.order_line:
+                    #     print "line.qty_to_invoice %s" % line.qty_to_invoice
 
 
 
@@ -80,23 +81,38 @@ class CoDRegister(models.TransientModel):
 
         prod_id = stock_move.product_id
         qty = stock_move.product_uom_qty
-        print "SET ORDER TO INVOICE id: %s qty: %s" %(prod_id,qty)
+     #   print "SET ORDER TO INVOICE id: %s qty: %s" %(prod_id,qty)
         lines = [line for line in order.order_line if line.product_id == prod_id ]
         for line in lines:
             qty_to_invoice = qty if qty < line.product_uom_qty else line.product_uom_qty
-            print "qty_to_invoice %s line.qty_to_invoice %s" %(qty_to_invoice,line.qty_to_invoice)
+     #       print "qty_to_invoice %s line.qty_to_invoice %s" %(qty_to_invoice,line.qty_to_invoice)
             line.qty_to_invoice += qty_to_invoice
-            print "line.qty_to_invoice %s" % line.qty_to_invoice
+     #       print "line.qty_to_invoice %s" % line.qty_to_invoice
             qty = qty - qty_to_invoice
-            print "qty %s" % qty
+     #       print "qty %s" % qty
             if qty <= 0:
                 break
 
     @api.one
-    def set_delivery_to_invoice(self,pick,order):
-        lines = [line for line in order.order_line if line.is_delivery and line.price_total == pick.carrier_price and line.invoice_status == 'to invoice']
+    def set_delivery_to_invoice(self,pick,order,cod_id):
+        print "PICK carrier_price %s" %pick.carrier_price
+        lines = [line for line in order.order_line if line.is_delivery and line.price_unit == pick.carrier_price and  line.qty_invoiced < line.product_uom_qty]
+        for line in order.order_line:
+            print line.id
+            if line.is_delivery:
+                print "DELIVERY!"
+                if line.price_unit == pick.carrier_price:
+                    print "PREZZO OK"
+                    if line.qty_invoiced < line.product_uom_qty:
+                        print "QTY_TO_INVOICE OK"
 
         if lines:
+            print "well done!"
+            lines[0].qty_to_invoice = 1
+
+        lines = [line for line in order.order_line if line.product_id.id == cod_id and line.qty_to_invoice < line.qty_invoiced]
+        if lines:
+            print "yo found!"
             lines[0].qty_to_invoice = 1
 
 

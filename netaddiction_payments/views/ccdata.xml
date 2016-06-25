@@ -49,6 +49,7 @@
                     <field name="year"/>
                     <field name="month"/>
                     <field name="token"/>
+                    <field name="ctype"/>
                             </group>
                         </group>
                     </sheet>

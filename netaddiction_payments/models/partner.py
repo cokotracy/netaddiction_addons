@@ -17,6 +17,7 @@ class CCData(models.Model):
     year =  fields.Integer(string='Anno', required = True)
     name = fields.Char(string='Titolare', required=True)
     customer_id = fields.Many2one('res.partner', string='Cliente',required=True)
+    ctype = fields.Char(string='Tipo Carta')
 
     @api.one
     @api.constrains('month')

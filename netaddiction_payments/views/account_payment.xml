@@ -54,6 +54,7 @@
                 <group name="loc_right" class="oe_right" col="2">
                       <field name="cc_year" attrs="{'readonly': 1}" string="Anno cc"/>
                       <field name="cc_name" attrs="{'readonly': 1}" string="Titolare cc"/>
+                      <field name="cc_type" attrs="{'readonly': 1}" string="Brand cc"/>
                       <field name="cc_status" attrs="{'readonly': 1}" string="Stato cc"/>
                             </group>
                         </group> 
