@@ -7,7 +7,7 @@
             <field name="inherit_id" ref="sale.view_order_form"/>
             <field name="arch" type="xml">
             	<field name="pricelist_id" position="before">
-                    <field name="delivery_option" required="True"/>
+                    <field name="delivery_option" required="True" attrs="{'readonly': [('state', 'in', ('done','cancel','sale','partial_done','sent','problem'))]}"/>
             	</field>
                 <field name="carrier_id" position="attributes">
                     <attribute name="required">1</attribute>

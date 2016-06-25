@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+    	<record model="ir.ui.view" id="netaddiction_delivery_view_order">
+            <field name="name">netaddiction.delivery.sale.order</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale.view_order_form"/>
+            <field name="arch" type="xml">
+            	<field name="pricelist_id" position="before">
+                    <field name="payment_method_id"  attrs="{'readonly': [('state', 'in', ('done','cancel','sale','partial_done','sent','problem'))]}"/>
+            	</field>
+
+            </field>
+        </record>
+
+
+    </data>
+</openerp>

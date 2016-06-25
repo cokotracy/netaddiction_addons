@@ -2,6 +2,8 @@
 from openerp import tools
 from openerp import models, fields, api
 from openerp.tools import float_is_zero, float_compare, DEFAULT_SERVER_DATETIME_FORMAT
+from openerp import _
+from openerp.exceptions import Warning
 
 
 class Order(models.Model):
@@ -97,6 +99,19 @@ class Order(models.Model):
         email = self.env['mail.mail'].create(values)
         email.send()
 
+    @api.multi
+    def action_done(self):
+        for order in self:
+            if self.account_payment_ids:
+                all_paid = True
+                for p in self.account_payment_ids:
+                    all_paid = all_paid and p.state == 'posted'
+                if all_paid:
+                   super(Order, order).action_done()
+                else:
+                    raise Warning(_('I pagamenti non sono completati'))
+            else:
+                raise Warning(_('I pagamenti non sono completati'))
 
 
     @api.multi
@@ -253,7 +268,7 @@ class Order(models.Model):
 
         super(Order, self).action_cancel()
 
-    @api.depends('order_line.price_total')
+    @api.depends('order_line.price_total','gift_discount')
     def _amount_all(self):
         super(Order,self)._amount_all()
         for order in self:
