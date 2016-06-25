@@ -97,20 +97,30 @@ class CoDRegister(models.TransientModel):
     def set_delivery_to_invoice(self,pick,order,cod_id):
         print "PICK carrier_price %s" %pick.carrier_price
         lines = [line for line in order.order_line if line.is_delivery and line.price_unit == pick.carrier_price and  line.qty_invoiced < line.product_uom_qty]
-        for line in order.order_line:
-            print line.id
-            if line.is_delivery:
-                print "DELIVERY!"
-                if line.price_unit == pick.carrier_price:
-                    print "PREZZO OK"
-                    if line.qty_invoiced < line.product_uom_qty:
-                        print "QTY_TO_INVOICE OK"
+        # for line in order.order_line:
+        #     print line.id
+        #     if line.is_delivery:
+        #         print "DELIVERY!"
+        #         if line.price_unit == pick.carrier_price:
+        #             print "PREZZO OK"
+        #             if line.qty_invoiced < line.product_uom_qty:
+        #                 print "QTY_TO_INVOICE OK"
 
         if lines:
             print "well done!"
             lines[0].qty_to_invoice = 1
 
-        lines = [line for line in order.order_line if line.product_id.id == cod_id and line.qty_to_invoice < line.qty_invoiced]
+        lines = [line for line in order.order_line if line.product_id.id == cod_id and line.qty_invoiced < line.product_uom_qty]
+
+        print "YOOOO"
+        print lines
+
+        # for line in order.order_line:
+        #     print line.id
+        #     if line.product_id.id == cod_id:
+        #         print "CONTRASSEGNO!"
+        #         if line.qty_invoiced < line.product_uom_qty:
+        #             print "QTY_TO_INVOICE OK"
         if lines:
             print "yo found!"
             lines[0].qty_to_invoice = 1
