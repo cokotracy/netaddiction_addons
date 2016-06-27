@@ -2,6 +2,7 @@
 import csv
 import base64
 import io
+from float_compare import isclose
 from openerp import models, fields, api
 from openerp.exceptions import Warning
 
@@ -28,6 +29,9 @@ class CoDRegister(models.TransientModel):
 
     @api.one
     def set_order_cash_on_delivery(self,order_id):
+        """ imposta l'ordine con id 'order_id' per essere pagato con contrassegno se l'ordine è in draft (bozza) o in sale (lavorazione).
+            Crea una fattura e un pagamento per ogni spedizione. Aggiunge spese di contrassegno.
+        """
         order = self.env["sale.order"].search([("id","=",order_id)])
         if order:
             if order.state == 'draft':
@@ -37,7 +41,7 @@ class CoDRegister(models.TransientModel):
                 contrassegno = self.env['ir.model.data'].get_object('netaddiction_payments', 'product_contrassegno')
                 order.payment_method_id = self.env['ir.model.data'].get_object('netaddiction_payments', 'contrassegno_journal').id
                 inv_lst = []
-                print "LEN %s" % len(order.picking_ids)
+
                 for line in order.order_line:
                     line.qty_to_invoice = 0
                 for delivery in order.picking_ids:
@@ -58,12 +62,25 @@ class CoDRegister(models.TransientModel):
                         self._set_order_to_invoice(stock_move,order)
 
                     self.set_delivery_to_invoice(delivery,order,contrassegno.id)
-                    # for line in order.order_line:
-                    #     print "line.qty_to_invoice %s" % line.qty_to_invoice
+
                     inv_lst += order.action_invoice_create()
-                    # print "****************************************************"
-                    # for line in order.order_line:
-                    #     print "line.qty_to_invoice %s" % line.qty_to_invoice
+                #aggiungo i pagamenti in contrassegno e li associo alle fatture
+                cod_aj = self.env['ir.model.data'].get_object('netaddiction_payments', 'contrassegno_journal')
+                pay_inbound = self.env["account.payment.method"].search([("payment_type","=","inbound")])
+                pay_inbound = pay_inbound[0] if isinstance(pay_inbound,list) else pay_inbound
+                if cod_aj and pay_inbound:
+                    cod_id = cod_aj.id
+                    order.payment_method_id = cod_id
+                    for inv in inv_lst:
+                        name = self.env['ir.sequence'].with_context(ir_sequence_date=fields.Date.context_today(self)).next_by_code('account.payment.customer.invoice')
+                        invoice = self.env['account.invoice'].search([("id","=",inv)])
+            
+                        payment = self.env["account.payment"].create({"partner_type" : "customer", "partner_id" : order.partner_id.id, "journal_id" : cod_id, "amount" : invoice.amount_total, "order_id" : order.id, "state" : 'draft', "payment_type" : 'inbound', "payment_method_id" : pay_inbound.id, "name" : name, 'communication' : order.name })
+
+                        payment.invoice_ids = [(4, inv, None) ]
+
+                        invoice.signal_workflow('invoice_open')
+
 
 
 
@@ -78,51 +95,34 @@ class CoDRegister(models.TransientModel):
 
     @api.one
     def _set_order_to_invoice(self,stock_move,order):
-
+        """dato 'order' imposta qty_to_invoice alla quantità giusta solo per i prodotti che si trovano in 'stock_move'
+        """
         prod_id = stock_move.product_id
         qty = stock_move.product_uom_qty
-     #   print "SET ORDER TO INVOICE id: %s qty: %s" %(prod_id,qty)
+
         lines = [line for line in order.order_line if line.product_id == prod_id ]
         for line in lines:
             qty_to_invoice = qty if qty < line.product_uom_qty else line.product_uom_qty
-     #       print "qty_to_invoice %s line.qty_to_invoice %s" %(qty_to_invoice,line.qty_to_invoice)
+
             line.qty_to_invoice += qty_to_invoice
-     #       print "line.qty_to_invoice %s" % line.qty_to_invoice
+
             qty = qty - qty_to_invoice
-     #       print "qty %s" % qty
+
             if qty <= 0:
                 break
 
     @api.one
     def set_delivery_to_invoice(self,pick,order,cod_id):
-        print "PICK carrier_price %s" %pick.carrier_price
+        """dato 'order' imposta qty_to_invoice per una spedizione e un contrassegno
+        """
         lines = [line for line in order.order_line if line.is_delivery and line.price_unit == pick.carrier_price and  line.qty_invoiced < line.product_uom_qty]
-        # for line in order.order_line:
-        #     print line.id
-        #     if line.is_delivery:
-        #         print "DELIVERY!"
-        #         if line.price_unit == pick.carrier_price:
-        #             print "PREZZO OK"
-        #             if line.qty_invoiced < line.product_uom_qty:
-        #                 print "QTY_TO_INVOICE OK"
 
         if lines:
-            print "well done!"
             lines[0].qty_to_invoice = 1
 
         lines = [line for line in order.order_line if line.product_id.id == cod_id and line.qty_invoiced < line.product_uom_qty]
 
-        print "YOOOO"
-        print lines
-
-        # for line in order.order_line:
-        #     print line.id
-        #     if line.product_id.id == cod_id:
-        #         print "CONTRASSEGNO!"
-        #         if line.qty_invoiced < line.product_uom_qty:
-        #             print "QTY_TO_INVOICE OK"
         if lines:
-            print "yo found!"
             lines[0].qty_to_invoice = 1
 
 
@@ -157,11 +157,14 @@ class CoDRegister(models.TransientModel):
         if line[key]:
             order = self.env["sale.order"].search([("name","=",line[key])])
             if order:
+                amount_str = line[money_key].replace(",",".").replace("€","")
+                amount = float(amount_str)
                 for payment in order.account_payment_ids:
-                    amount_str = line[money_key].replace(",",".").replace("€","")
-                    if payment.amount == float(amount_str) and payment.journal_id == contrassegno:
-                        payment.state = "posted"
+
+
+                    if (isclose(payment.amount,amount)) and payment.journal_id.id == contrassegno.id and not payment.state == 'posted':
+                        payment.post()
                         found = True
                         break
                 if not found:
-                    warning_list.append(line[key])
+                    warning_list.append((line[key],amount_str))
