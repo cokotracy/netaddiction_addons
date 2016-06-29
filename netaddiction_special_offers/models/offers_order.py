@@ -73,6 +73,8 @@ class OfferOrder(models.Model):
         if len(self.offers_cart) > 0:
             for och in self.env['netaddiction.order.specialoffer.cart.history'].search([("order_id","=",self.id)]):
                 och.unlink()
+            for fsp in self.free_ship_prod:
+                fsp.unlink()
 
             order_lines = [ol for ol in self.order_line]
             #ordino le order lines per product_id
