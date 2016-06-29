@@ -51,4 +51,4 @@ class IssueReport(models.Model):
                 pj.number_email
         		FROM project_issue pj
         		WHERE pj.active='true'
-        	)""" % (self._table))
+        	)""", (self._table, ))
