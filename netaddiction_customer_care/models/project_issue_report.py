@@ -32,7 +32,7 @@ class IssueReport(models.Model):
     def init(self, cr):
         tools.drop_view_if_exists(cr, self._table)
         cr.execute("""
-        	CREATE OR REPLACE VIEW %s as (
+        	CREATE OR REPLACE VIEW netaddiction_project_issue_report as (
         		SELECT 
         		pj.id as id,
         		pj.user_id as user_id,
@@ -51,4 +51,4 @@ class IssueReport(models.Model):
                 pj.number_email
         		FROM project_issue pj
         		WHERE pj.active='true'
-        	)""", (self._table, ))
+        	)""")
