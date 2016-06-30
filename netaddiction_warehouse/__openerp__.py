@@ -1,18 +1,23 @@
 # -*- coding: utf-8 -*-
+
 {
     'name': "Netaddiction Warehouse",
     'summary': "Magazzino Netaddiction",
-    'description':"""
-     """,
-    'author': "Netaddiction",
+    'description': """
+
+    """,
+    'author': "NetAddiction",
     'website': "http://www.netaddiction.it",
-    'category': 'Technical Settings',
+    'category': 'Warehouse Management',
     'version': '1.0',
-    'depends': ['base','product','sale','sale_stock','purchase',
-        'mrp','stock','netaddiction_products','web','delivery',
-        'netaddiction_special_offers','netaddiction_orders',
-        'netaddiction_payments'],
-    'data' :[
+    'depends': [
+        'base', 'product', 'sale', 'sale_stock', 'purchase',
+        'mrp', 'stock', 'netaddiction_products', 'web', 'delivery',
+        'netaddiction_special_offers', 'netaddiction_orders',
+        'netaddiction_payments'
+    ],
+    'data': [
+        'data/cron.xml',
         'views/locations.xml',
         'templates/top_menu.xml',
         'templates/inventory_app.xml',
@@ -31,10 +36,8 @@
         'views/products.xml',
         'views/manifest.xml'
     ],
-    'qweb':[
+    'qweb': [
         "static/src/xml/*.xml",
     ],
-    'application':True,
-    
-
+    'application': True,
 }
