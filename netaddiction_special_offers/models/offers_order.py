@@ -69,12 +69,14 @@ class OfferOrder(models.Model):
     def reset_cart(self):
         """Annulla tutte le offerte carrello e riaccorpa le linee separate
         """
+        #rimuovo spedizioni gratis
+        self.free_ship_prod = [(5, 0, 0)]
+        
+
         #elimina le offert cart history unlink 
         if len(self.offers_cart) > 0:
             for och in self.env['netaddiction.order.specialoffer.cart.history'].search([("order_id","=",self.id)]):
                 och.unlink()
-            for fsp in self.free_ship_prod:
-                fsp.unlink()
 
             order_lines = [ol for ol in self.order_line]
             #ordino le order lines per product_id
@@ -96,6 +98,7 @@ class OfferOrder(models.Model):
                 #resetta i prezzi
                 curr_ol.product_id_change()
                 i = j
+
             self._amount_all()
 
 

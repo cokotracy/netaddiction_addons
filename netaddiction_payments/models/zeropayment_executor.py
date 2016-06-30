@@ -2,6 +2,7 @@
 
 import payment_exception
 from float_compare import isclose
+from openerp import models, fields, api
 
 
 class ZeroPaymentExecutor(models.TransientModel):
