@@ -29,6 +29,7 @@
                             <field name="month" />
                             <field name="year" />
                             <field name="pan" />
+                            <field name="ctype" />
                             <field name="customer" />
 
 
