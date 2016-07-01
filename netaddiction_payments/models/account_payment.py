@@ -28,7 +28,8 @@ class AccountPayment(models.Model):
         self.cc_year = self.cc_selection.year
         self.cc_name = self.cc_selection.name
         self.cc_type = self.cc_selection.ctype
-        self.cc_selection = 'init'
+        self.cc_status = 'init'
+        self.cc_selection = None
 
 class OrderPayment(models.Model):
     """docstring for OrderPayment"""

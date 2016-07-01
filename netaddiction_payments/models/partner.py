@@ -9,6 +9,9 @@ class CCData(models.Model):
 
     _name = "netaddiction.partner.ccdata"
 
+    _sql_constraints = [
+    ('token_unique', 'unique(token)', 'Esiste già una carta con questo token!')]
+
 
     default = fields.Boolean(string="Carta di default", default =False)
     token = fields.Char(string='Token', required=True)

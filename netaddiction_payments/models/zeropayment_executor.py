@@ -14,11 +14,15 @@ class ZeroPaymentExecutor(models.TransientModel):
 
     def set_order_zero_payment(self,order_id):
         order = self.env["sale.order"].search([("id","=",order_id)])
+        
         if not order:
-            raise payment_exception.PaymentException("order id non valido!")
+            raise payment_exception.PaymentException(payment_exception.ZERO,"order id non valido!")
 
         if not isclose(order.amount_total,0.0):
-            raise payment_exception.PaymentException("ordine non a 0! pagamento dovuto: % s" % order.amount_total)
+            raise payment_exception.PaymentException(payment_exception.ZERO,"ordine non a 0! pagamento dovuto: % s" % order.amount_total)
+
+        zeropayment_journal  = self.env['ir.model.data'].get_object('netaddiction_payments','zeropay_journal')
+        order.payment_method_id = zeropayment_journal.id
 
         if order.state == 'draft':
             order.action_confirm()

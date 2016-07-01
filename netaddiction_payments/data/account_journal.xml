@@ -18,5 +18,9 @@
             <field name="name">Contrassegno</field>
             <field name="type">bank</field>
         </record>
+        <record id="zeropay_journal" model="account.journal">
+            <field name="name">Costo Zero</field>
+            <field name="type">bank</field>
+        </record>
     </data>
 </openerp>
