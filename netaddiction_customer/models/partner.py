@@ -11,6 +11,7 @@ class Partner(models.Model):
     company_address = fields.Char(string="Azienda")
     rating = fields.Selection([('0','Negativo'), ('1','Medio'), ('2','Positivo')], string='Rating', default="2")
     email_rating = fields.Selection([('A+','A+'), ('A','A'), ('B','B'), ('C','C'), ('D','D'), ('E','E'), ('F','F'), ('','Non valutato')], string='Email Rating', default='')
+    birthdate = fields.Date(string="Data di nascita")
 
     @api.multi
     def name_get(self):
@@ -18,7 +19,7 @@ class Partner(models.Model):
 
         for s in self:
             if len(s.parent_id)>0 and s.customer == True:
-                res.append((s.id,s.name + ',' + s.city + ' ' + s.street + ' ' + s.street2))
+                res.append((s.id,s.name + ', ' + s.city + ' ' + s.street + ' ' + s.street2))
             else:
                 res.append((s.id,s.name))
 
