@@ -99,24 +99,51 @@ class Products(models.Model):
 
     def _search_available_now(self, operator, value):
         ids = []
-        result = self.search([('active','=',True)])
-        for res in result:
-            if operator == '<':
-                if res.qty_available_now < value:
-                    ids.append(res.id)
-            if operator == '==':
-                if res.qty_available_now == value:
-                    ids.append(res.id)
-            if operator == '>':
-                if res.qty_available_now > value:
-                    ids.append(res.id)
-            if operator == '<=':
-                if res.qty_available_now <= value:
-                    ids.append(res.id)
-            if operator == '>=':
-                if res.qty_available_now >= value:
-                    ids.append(res.id)
-                    
+        wh = self.env['stock.location'].search([('company_id','=',self.env.user.company_id.id),('active','=',True),
+            ('usage','=','internal'),('scrap_location','=',False)])
+
+        search = [('location_id','=',wh.id),('reservation_id','=',False)]
+
+        domain_for_zero = [('state', 'not in', ('done', 'cancel', 'draft')), ('company_id', '=', self.env.user.company_id.id)]
+
+        if operator == '<' or operator == '<=' or operator == '=':
+            moves_out = self.env['stock.move'].read_group(domain = domain_for_zero, fields = ['product_id','product_qty'], groupby = 'product_id')
+
+            for move in moves_out:
+                pid = self.env['product.product'].search([('id','=',int(move['product_id'][0]))])
+                if operator == '<' and pid.qty_available_now < value:
+                    ids.append(pid.id)
+                if operator == '<=' and pid.qty_available_now <= value:
+                    ids.append(pid.id)
+                if operator == '=' and pid.qty_available_now == value:
+                    ids.append(pid.id)
+
+
+        if operator == '>':
+            self.env.cr.execute("select product_id,sum(qty) from stock_quant where location_id = %s and reservation_id is Null and company_id = %s group by product_id having sum(qty) > %s", (wh.id,self.env.user.company_id.id,value))
+        if operator == '>=':
+            self.env.cr.execute("select product_id,sum(qty) from stock_quant where location_id = %s and reservation_id is Null and company_id = %s group by product_id having sum(qty) >= %s", (wh.id,self.env.user.company_id.id,value))
+        if operator == '=':
+            if value == 0:
+                products = self.env['product.product'].search([('qty_available','=',0),('company_id','=',self.env.user.company_id.id)])
+                for pid in products:
+                    if operator == '<' and pid.qty_available_now < value:
+                        ids.append(pid.id)
+                    if operator == '<=' and pid.qty_available_now <= value:
+                        ids.append(pid.id)
+                    if operator == '=' and pid.qty_available_now == value:
+                        ids.append(pid.id)
+
+            self.env.cr.execute("select product_id,sum(qty) from stock_quant where location_id = %s and reservation_id is Null and company_id = %s group by product_id having sum(qty) = %s", (wh.id,self.env.user.company_id.id,value))
+        if operator == '<':
+            self.env.cr.execute("select product_id,sum(qty) from stock_quant where location_id = %s and reservation_id is Null and company_id = %s group by product_id  having sum(qty) < %s", (wh.id,self.env.user.company_id.id,value))
+        if operator == '<=':
+            self.env.cr.execute("select product_id,sum(qty) from stock_quant where location_id = %s and reservation_id is Null and company_id = %s group by product_id having sum(qty) <= %s", (wh.id,self.env.user.company_id.id,value))
+
+        quants = self.env.cr.fetchall()
+        for quant in quants:
+            ids.append(quant[0])
+
         return [('id','in',ids)]
 
     @api.one
