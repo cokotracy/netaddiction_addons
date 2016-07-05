@@ -252,26 +252,33 @@ class Template(models.Model):
         attr = {'visible':value}
         self.write(attr)
 
+
 class SupplierInfo(models.Model):
     _inherit = 'product.supplierinfo'
 
-    #campi aggiunti
+    # Campi aggiunti
     avail_qty = fields.Float('Quantità disponibile',
         help="Il valore 0 non indica necessariamente l'assenza di disponibilità")
 
-    #uso le nuove api perchè sono più figo
+    _defaults = {
+        'delay': None,
+    }
+
     @api.model
-    def create(self,values):
-        """
-        cerco il variant attuale,
-        mi prendo il template e correggo
-        """
+    def create(self, values):
+        # Cerco il variant attuale, mi prendo il template e correggo
         if 'product_id' in values.keys():
-            obj = self.env['product.product'].search([('id','=',values['product_id'])])
+            obj = self.env['product.product'].search([('id', '=', values['product_id'])])
             templ = obj.product_tmpl_id.id
-            values['product_tmpl_id']=templ
+            values['product_tmpl_id'] = templ
+
+        # Se non è specificato un tempo di consegna lo prendo dal fornitore associato
+        if values.get('delay') is None:
+            supplier = self.env['res.partner'].search([('id', '=', values['name'])])
+            values['delay'] = supplier.supplier_delivery_time
 
         return super(SupplierInfo, self).create(values)
+
 
 class Category(models.Model):
     _inherit = 'product.category'
