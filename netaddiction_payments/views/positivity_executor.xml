@@ -30,7 +30,7 @@
                             <field name="year" />
                             <field name="pan" />
                             <field name="ctype" />
-                            <field name="customer" />
+                            <field name="customer" domain="[('type','=','contact')]" />
 
 
                         </group>

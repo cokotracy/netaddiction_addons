@@ -16,7 +16,7 @@ class ZeroPaymentExecutor(models.TransientModel):
         order = self.env["sale.order"].search([("id","=",order_id)])
         
         if not order:
-            raise payment_exception.PaymentException(payment_exception.ZERO,"order id non valido!")
+            raise payment_exception.PaymentException(payment_exception.ZERO,"order id non valido! %s" %order_id)
 
         if not isclose(order.amount_total,0.0):
             raise payment_exception.PaymentException(payment_exception.ZERO,"ordine non a 0! pagamento dovuto: % s" % order.amount_total)
@@ -28,7 +28,13 @@ class ZeroPaymentExecutor(models.TransientModel):
             order.action_confirm()
 
         if order.state == 'sale':
+            
+            if not isclose(order.amount_total,0.0):
+                #TODO spostare in problema e commentare?
+                raise payment_exception.PaymentException(payment_exception.ZERO,"ordine non a 0! pagamento dovuto di spedizione: % s" % order.amount_total)
+
             inv_lst = []
+
 
             for line in order.order_line:
                 #resetto la qty_to_invoice di tutte le linee

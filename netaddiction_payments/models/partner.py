@@ -13,6 +13,8 @@ class CCData(models.Model):
     ('token_unique', 'unique(token)', 'Esiste già una carta con questo token!')]
 
 
+
+
     default = fields.Boolean(string="Carta di default", default =False)
     token = fields.Char(string='Token', required=True)
     last_four = fields.Char(string='Indizio', required=True)
@@ -21,6 +23,16 @@ class CCData(models.Model):
     name = fields.Char(string='Titolare', required=True)
     customer_id = fields.Many2one('res.partner', string='Cliente',required=True)
     ctype = fields.Char(string='Tipo Carta')
+
+    @api.multi
+    def name_get(self):
+        res = []
+
+        for s in self:
+            res.append((s.id,s.name + " " +s.last_four+ " "+s.ctype))
+        return res
+
+
 
     @api.one
     @api.constrains('month')
