@@ -187,10 +187,8 @@ class Orders(models.Model):
 
             if subtotal >= price_delivery_gratis or ship_gratis or sped_vaucher:
                 total_delivery_price[delivery_date]['price'] = 0.00
-                total_delivery_price[delivery_date]['price_taxed'] = 0.00
             else:
                 total_delivery_price[delivery_date]['price'] = self.carrier_id.fixed_price
-                total_delivery_price[delivery_date]['price_taxed'] = round(self.carrier_id.fixed_price * 1.22, 2)
 
         return total_delivery_price
 
@@ -337,9 +335,16 @@ class SaleOrderLine(models.Model):
             attr_now = self.dict_order_line()
             attr_now['product_qty'] = control_qty
             attr_now['product_uom_qty'] = control_qty
-            attr_now['price_subtotal'] = round(attr_now['price_unit'] * control_qty,2)
-            attr_now['price_total'] = round(attr_now['price_subtotal'] * (1+attr_now['tax_id'].amount/100),2)
-            attr_now['price_tax'] = round(attr_now['price_total'] - attr_now['price_subtotal'],2)
+
+            tax_price = self.product_id.taxes_id.compute_all(self.price_unit)
+
+            attr_now['price_subtotal'] = round(tax_price['total_excluded'] * control_qty,2)
+            attr_now['price_total'] = round(tax_price['total_included'] * control_qty,2)
+            diff_tax = tax_price['total_included'] - tax_price['total_excluded']
+            attr_now['price_tax'] = round(diff_tax * control_qty,2)
+            #attr_now['price_subtotal'] = round(attr_now['price_unit'] * control_qty,2)
+            #attr_now['price_total'] = round(attr_now['price_subtotal'] * (1+attr_now['tax_id'].amount/100),2)
+            #attr_now['price_tax'] = round(attr_now['price_total'] - attr_now['price_subtotal'],2)
 
             if confirm_order:
                 self.write({
@@ -354,9 +359,15 @@ class SaleOrderLine(models.Model):
             attr = self.dict_order_line()
             attr['product_qty'] = diff
             attr['product_uom_qty'] = diff
-            attr['price_subtotal'] = round(attr['price_unit'] * diff,2)
-            attr['price_total'] = round(attr['price_subtotal'] * (1+attr['tax_id'].amount/100),2)
-            attr['price_tax'] = round(attr['price_subtotal'] - attr['price_subtotal'],2)
+            #attr['price_subtotal'] = round(attr['price_unit'] * diff,2)
+            #attr['price_total'] = round(attr['price_subtotal'] * (1+attr['tax_id'].amount/100),2)
+            #attr['price_tax'] = round(attr['price_subtotal'] - attr['price_subtotal'],2)
+
+            tax_price = self.product_id.taxes_id.compute_all(attr['price_unit'])
+            attr_now['price_subtotal'] = round(tax_price['total_excluded'] * diff,2)
+            attr_now['price_total'] = round(tax_price['total_included'] * diff,2)
+            diff_tax = tax_price['total_included'] - tax_price['total_excluded']
+            attr_now['price_tax'] = round(diff_tax * diff,2)
 
             if confirm_order:
                 vals = {

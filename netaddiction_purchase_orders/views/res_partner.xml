@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+		<record model="ir.ui.view" id="netaddiction_suppliers_add_property_email">
+            <field name="name">netaddiction.supplier.add.property.email</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="base.view_partner_form"/>
+            <field name="arch" type="xml">
+            	<notebook position="inside">
+            		<page name="comunication" string="Comunicazioni/Ruoli" attrs="{'invisible' : [('customer','=',True)]}">
+            			<group>
+            				<field name="send_report" attrs="{'invisible' : [('parent_id','!=',False)]}" />
+            			</group>
+            		</page>
+            	</notebook>
+            </field>
+        </record>
+
+
+         <record model="ir.ui.view" id="netaddiction_suppliers_add_property_email_contact">
+            <field name="name">netaddiction.supplier.add.property.email.contact</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="base.view_partner_form"/>
+            <field name="arch" type="xml">
+            	 <field name="parent_id" position="after">
+            	 	    <br/>
+            	 	    	<label for="send_contact_purchase_orders" attrs="{'invisible' : ['|',('parent_id','=',False),('customer','=', True)]}"/>
+            	 	    	<field name="send_contact_purchase_orders" attrs="{'invisible' : ['|',('parent_id','=',False),('customer','=', True)]}"/>
+            	 	    <br/>
+							<label for="send_contact_refund" attrs="{'invisible' : ['|',('parent_id','=',False),('customer','=', True)]}"/>
+            			    <field name="send_contact_refund" attrs="{'invisible' : ['|',('parent_id','=',False),('customer','=', True)]}"/>
+            			<br/>
+            				<label for="send_contact_report" attrs="{'invisible' : ['|',('parent_id','=',False),('customer','=', True)]}"/>
+            				<field name="send_contact_report"  attrs="{'invisible' : ['|',('parent_id','=',False),('customer','=', True)]}"/>
+            	</field>
+            </field>
+        </record>
+    </data>
+</openerp>

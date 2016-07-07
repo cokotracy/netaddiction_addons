@@ -10,8 +10,6 @@
                     <field name="create_date" interval="month" type="row"/>
                     <field name="quantity" type="measure"/>
                     <field name="price_subtotal" type="measure"/>
-                    <field name="price_compute_tax" type="measure"/>
-                    <field name="tax_value" type="measure"/>
                 </pivot>
             </field>
         </record>

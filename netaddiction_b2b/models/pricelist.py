@@ -7,8 +7,7 @@ class Pricelist(models.Model):
     _inherit = 'product.pricelist.item'
 
     base = fields.Selection(selection=(
-            ('final_price_deiva','Prezzo Listino'),
-            ('list_price', 'Prezzo di vendita deivato'), 
+            ('list_price', 'Prezzo di vendita'), 
             ('standard_price', 'Costo'), 
             ('pricelist', 'Altra Price List')
             ), string="Basato su", required=True)
@@ -66,7 +65,7 @@ class product_pricelist(models.Model):
                 'applied_on' : '0_product_variant',
                 'product_id' : prod.id,
                 'compute_price' : 'formula',
-                'base' : 'final_price_deiva',
+                'base' : 'list_price',
                 'price_discount' : 20,
                 'pricelist_id' : self.id
             }

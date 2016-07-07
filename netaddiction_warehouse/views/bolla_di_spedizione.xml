@@ -158,7 +158,7 @@
                                                     <td width="25" align="center" valign="middle" style="background-color:black; font-size:9px; text-align:center; line-height:12px; color:white;"><strong>Q.tà</strong></td>
                                                     <td width="45" align="center" valign="middle" style="background-color:black; font-size:9px; text-align:center; line-height:12px; color:white;"><strong>Cat.</strong></td>
                                                     <td align="center" valign="middle" style="background-color:black; font-size:9px; text-align:center; line-height:12px; color:white;"><strong>Titolo</strong></td>
-                                                    <td width="45" align="center" valign="middle" style="background-color:black; font-size:9px; text-align:center; line-height:12px; color:white;"><strong>Prz.€</strong></td>
+                                                    <td width="45" align="center" valign="middle" style="background-color:black; font-size:9px; text-align:center; line-height:12px; color:white;"><strong>Prz. Unitario €</strong></td>
                                                     <td width="45" align="center" valign="middle" style="background-color:black; font-size:9px; text-align:center; line-height:12px; color:white;"><strong>Tot.€</strong></td>
                                                 </tr>
                                                 <t t-set="subtotal" t-value="0"/>
@@ -184,7 +184,7 @@
                                                             <t t-esc="procurement.sale_line_id.price_unit"/>
                                                         </td>
                                                         <td align="left" valign="middle" style="background-color:#FFFFFF; font-size:12px; line-height:12px; padding:5px; border-bottom:3px solid black;font-weight:normal !important">
-                                                            <t t-esc="procurement.sale_line_id.price_subtotal"/>
+                                                            <t t-esc="procurement.sale_line_id.price_total"/>
                                                         </td>
                                                     </tr>
                                                 </t>
@@ -214,14 +214,14 @@
                                                                                 <strong><t t-esc="o.carrier_price"/></strong>
                                                                             </td>
                                                                         </tr>
-                                                                        <t t-set="carrier_tax" t-value="o.carrier_price * 0.22"/>
+                                                                        <t t-set="carrier_tax" t-value="o.carrier_price"/>
 
                                                                         <tr>
                                                                             <td width="110" align="right" valign="middle" style="font-size:12px; line-height:14px;">
                                                                                 <strong>Tasse:</strong>
                                                                             </td>
                                                                             <td width="60" align="right" valign="middle" style="font-size:12px; line-height:16px;">
-                                                                                <t t-set="tax" t-value="subtotal_tax + carrier_tax"/>
+                                                                                <t t-set="tax" t-value="subtotal_tax"/>
                                                                                 <strong><t t-esc="round(tax,2)"/></strong>
                                                                             </td>
                                                                         </tr>
