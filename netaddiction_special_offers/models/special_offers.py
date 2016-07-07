@@ -494,7 +494,7 @@ class VaucherOffer(models.Model):
     fixed_discount = fields.Float(string="Sconto fisso")
     percent_discount = fields.Integer(string="Sconto Percentuale")
     one_user = fields.Boolean(string='Associa a un solo utente', default=False)
-    associated_user = fields.Many2one(comodel_name='res.users',string='Beneficiario', default=None)
+    associated_user = fields.Many2one(comodel_name='res.partner',string='Beneficiario', default=None)
     end_cron_job = fields.Integer()
     start_cron_job = fields.Integer()
     products_list = fields.One2many('netaddiction.specialoffer.offer_vaucher_line', 'offer_vaucher_id', string='Lista prodotti')
@@ -584,7 +584,7 @@ class VaucherOffer(models.Model):
 
             for prod in self.env['product.product'].search(dom):
                 if( prod.id not in ids):
-                    to_add.append(self.env['netaddiction.specialoffer.offer_vaucher_line'].create({'product_id':prod.id, 'offer_vaucher_id' : self.id, 'qty_limit' : self.qty_limit, 'offer_type':self.offer_type,'percent_discount':self.percent_discount,'fixed_discount': self.fixed_discount}))
+                    to_add.append(self.env['netaddiction.specialoffer.offer_vaucher_line'].create({'product_id':prod.id, 'offer_vaucher_id' : self.id, }))
             
 
 
@@ -599,13 +599,13 @@ class VaucherOffer(models.Model):
                 pl.unlink()
         
 
-    @api.multi
-    def modify_products(self):
-        for pl in self.products_list:
-            pl.qty_max_buyable = self.qty_max_buyable
-            pl.offer_type = self.offer_type
-            pl.percent_discount = self.percent_discount
-            pl.fixed_discount = self.fixed_discount
+    # @api.multi
+    # def modify_products(self):
+    #     for pl in self.products_list:
+    #         pl.qty_max_buyable = self.qty_max_buyable
+    #         pl.offer_type = self.offer_type
+    #         pl.percent_discount = self.percent_discount
+    #         pl.fixed_discount = self.fixed_discount
     @api.one
     def turn_off(self):
         for pl in self.products_list:

@@ -82,7 +82,6 @@ class OffersCatalogSaleOrderLine(models.Model):
     @api.multi
     @api.onchange('product_id','negate_offer')
     def product_id_change(self):
-        print "POOOOOORCO"
         if not self.product_id:
             return {'domain': {'product_uom': []}}
 
@@ -116,7 +115,6 @@ class OffersCatalogSaleOrderLine(models.Model):
             if offer_line and public_pricelist and self.order_id.pricelist_id.id == public_pricelist.id:
                 offer = offer_line.offer_catalog_id
                 if not self.negate_offer and self._check_offer_validity(offer,offer_line,self.product_id,self.product_uom_qty):
-                    print "qui no"
                     self.offer_type = offer_line.offer_type
                     self.percent_discount = offer_line.percent_discount
                     self.fixed_price = offer_line.fixed_price
@@ -129,8 +127,6 @@ class OffersCatalogSaleOrderLine(models.Model):
                     
 
                 else:
-                    print "HERE"
-                    print "product.price %d" %product.price
                     self.offer_price_unit = None
                     self.offer_type = None
                     self.percent_discount = None
@@ -140,7 +136,6 @@ class OffersCatalogSaleOrderLine(models.Model):
                     vals['price_unit'] = self.env['account.tax']._fix_tax_included_price(product.list_price, product.taxes_id, self.tax_id)
                     
             else:
-                print "qui nemmeno"
                 self.offer_price_unit = None
                 self.offer_type = None
                 self.percent_discount = None
@@ -174,9 +169,7 @@ class OffersCatalogSaleOrderLine(models.Model):
             public_pricelist = self.env.ref('product.list0')
             if offer_line and public_pricelist and self.order_id.pricelist_id.id == public_pricelist.id:
                 offer = offer_line.offer_catalog_id
-                print "HARE"
                 if not self.negate_offer and self._check_offer_validity(offer,offer_line,self.product_id,self.product_uom_qty):
-                    print "HIRE"
                     self.offer_type = offer_line.offer_type
                     self.percent_discount = offer_line.percent_discount
                     self.fixed_price = offer_line.fixed_price
@@ -189,8 +182,6 @@ class OffersCatalogSaleOrderLine(models.Model):
                     
 
                 else:
-                    print "HERE"
-                    print "product.price %d" %product.price
                     self.offer_price_unit = None
                     self.offer_type = None
                     self.percent_discount = None
