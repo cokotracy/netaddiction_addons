@@ -38,14 +38,14 @@ class product_pricelist(models.Model):
             objs = self.pool('product.product').search(cr,uid,[('id','=',int(pid))])
             obj = self.pool('product.product').browse(cr, uid, objs, context=context)
             
-            tassa = obj.taxes_id.amount
-
-            if tassa:
-                detax = obj.offer_price / (float(1) + float(tassa/100))
-            else:
-                detax = obj.offer_price
-
-            offer_detax = round(detax,2)
+            #tassa = obj.taxes_id.amount
+#
+            #if tassa:
+            #    detax = obj.offer_price / (float(1) + float(tassa/100))
+            #else:
+            #    detax = obj.offer_price
+#
+            #offer_detax = round(detax,2)
             
             real_price = obj.offer_price if (obj.offer_price >0 and obj.offer_price < price) else price
 
