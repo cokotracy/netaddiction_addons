@@ -20,7 +20,7 @@ class OffersProducts(models.Model):
     		
     		curr_off = self.offer_catalog_lines[0]
     		if curr_off:
-    			self.offer_price = curr_off.fixed_price if curr_off.offer_type == 1 else (self.get_actual_price() - (self.get_actual_price()/100)*curr_off.percent_discount)
+    			self.offer_price = curr_off.fixed_price if curr_off.offer_type == 1 else (self.list_price - (self.list_price/100)*curr_off.percent_discount)
     		else:
     			self.offer_price =  0.0
 
@@ -82,6 +82,7 @@ class OffersCatalogSaleOrderLine(models.Model):
     @api.multi
     @api.onchange('product_id','negate_offer')
     def product_id_change(self):
+        print "POOOOOORCO"
         if not self.product_id:
             return {'domain': {'product_uom': []}}
 
@@ -110,30 +111,36 @@ class OffersCatalogSaleOrderLine(models.Model):
             #controlli offerta catalogo
             
             offer_line = self.product_id.offer_catalog_lines[0] if len(self.product_id.offer_catalog_lines) >0 else None
-            if offer_line and self.order_id.pricelist_id.id == 1:
+            public_pricelist = self.env.ref('product.list0')
+
+            if offer_line and public_pricelist and self.order_id.pricelist_id.id == public_pricelist.id:
                 offer = offer_line.offer_catalog_id
                 if not self.negate_offer and self._check_offer_validity(offer,offer_line,self.product_id,self.product_uom_qty):
+                    print "qui no"
                     self.offer_type = offer_line.offer_type
                     self.percent_discount = offer_line.percent_discount
                     self.fixed_price = offer_line.fixed_price
                     self.offer_author_id = offer.author_id
                     self.offer_name = offer.name
-                    tassa = self.tax_id.amount
-                    detax = self.product_id.offer_price / (float(1) + float(tassa/100))
-                    deiva = round(detax,2)
-                    vals['price_unit'] = deiva
+                    # tassa = self.tax_id.amount
+                    # detax = self.product_id.offer_price / (float(1) + float(tassa/100))
+                    # deiva = round(detax,2)
+                    vals['price_unit'] = self.env['account.tax']._fix_tax_included_price(product.offer_price, product.taxes_id, self.tax_id)
                     
 
                 else:
+                    print "HERE"
+                    print "product.price %d" %product.price
                     self.offer_price_unit = None
                     self.offer_type = None
                     self.percent_discount = None
                     self.fixed_price = None
                     self.offer_author_id = None
                     self.offer_name = None
-                    vals['price_unit'] = self.env['account.tax']._fix_tax_included_price(product.price, product.taxes_id, self.tax_id)
+                    vals['price_unit'] = self.env['account.tax']._fix_tax_included_price(product.list_price, product.taxes_id, self.tax_id)
                     
             else:
+                print "qui nemmeno"
                 self.offer_price_unit = None
                 self.offer_type = None
                 self.percent_discount = None
@@ -164,28 +171,33 @@ class OffersCatalogSaleOrderLine(models.Model):
 
 
             offer_line = self.product_id.offer_catalog_lines[0] if len(self.product_id.offer_catalog_lines) >0 else None
-            if offer_line and self.order_id.pricelist_id and self.order_id.pricelist_id.id == 1:
+            public_pricelist = self.env.ref('product.list0')
+            if offer_line and public_pricelist and self.order_id.pricelist_id.id == public_pricelist.id:
                 offer = offer_line.offer_catalog_id
+                print "HARE"
                 if not self.negate_offer and self._check_offer_validity(offer,offer_line,self.product_id,self.product_uom_qty):
+                    print "HIRE"
                     self.offer_type = offer_line.offer_type
                     self.percent_discount = offer_line.percent_discount
                     self.fixed_price = offer_line.fixed_price
                     self.offer_author_id = offer.author_id
                     self.offer_name = offer.name
-                    tassa = self.tax_id.amount
-                    detax = self.product_id.offer_price / (float(1) + float(tassa/100))
-                    deiva = round(detax,2)
-                    self.price_unit = deiva
+                    # tassa = self.tax_id.amount
+                    # detax = self.product_id.offer_price / (float(1) + float(tassa/100))
+                    # deiva = round(detax,2)
+                    self.price_unit = self.env['account.tax']._fix_tax_included_price(product.offer_price, product.taxes_id, self.tax_id)
                     
 
                 else:
+                    print "HERE"
+                    print "product.price %d" %product.price
                     self.offer_price_unit = None
                     self.offer_type = None
                     self.percent_discount = None
                     self.fixed_price = None
                     self.offer_author_id = None
                     self.offer_name = None
-                    self.price_unit = self.env['account.tax']._fix_tax_included_price(product.price, product.taxes_id, self.tax_id)
+                    self.price_unit = self.env['account.tax']._fix_tax_included_price(product.list_price, product.taxes_id, self.tax_id)
                     
             else:
                 self.offer_price_unit = None
@@ -201,7 +213,8 @@ class OffersCatalogSaleOrderLine(models.Model):
     def create(self,values):
         res = super(OffersCatalogSaleOrderLine, self).create(values)
         offer_line = res.product_id.offer_catalog_lines[0] if len(res.product_id.offer_catalog_lines) >0 else None
-        if offer_line and self.order_id.pricelist_id and self.order_id.pricelist_id.id == 1:
+        public_pricelist = self.env.ref('product.list0')
+        if offer_line and public_pricelist and self.order_id.pricelist_id.id == public_pricelist.id:
             offer = offer_line.offer_catalog_id
             if not res.negate_offer and self._check_offer_validity(offer,offer_line,res.product_id,res.product_uom_qty):
 
@@ -210,10 +223,12 @@ class OffersCatalogSaleOrderLine(models.Model):
                 res.fixed_price = offer_line.fixed_price
                 res.offer_author_id = offer.author_id
                 res.offer_name = offer.name
-                tassa = res.tax_id.amount
-                detax = res.product_id.offer_price / (float(1) + float(tassa/100))
-                deiva = round(detax,2)
-                res.price_unit = deiva
+                # tassa = res.tax_id.amount
+                # detax = res.product_id.offer_price / (float(1) + float(tassa/100))
+                # deiva = round(detax,2)
+                self.price_unit = self.env['account.tax']._fix_tax_included_price(product.offer_price, product.taxes_id, self.tax_id)
+            else:
+                self.price_unit = self.env['account.tax']._fix_tax_included_price(product.list_price, product.taxes_id, self.tax_id)
         return res
 
     @api.multi
