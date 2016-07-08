@@ -362,3 +362,15 @@ class Category(models.Model):
     auto_supplier_delay = fields.Integer('Imposta automaticamente il tempo di consegna del fornitore', required=False, default=None,
         help='Quando la quantità del fornitore di un prodotto scende a zero, questo è il valore che assumerà il '
              'tempo di consegna. Il valore 0 verrà ignorato.')
+
+
+class Attribute(models.Model):
+    _inherit = 'product.attribute'
+
+    company_id = fields.Many2one('res.company', required=True)
+
+
+class AttributeValue(models.Model):
+    _inherit = 'product.attribute.value'
+
+    company_id = fields.Many2one('res.company', related='attribute_id.company_id', store=True)
