@@ -10,7 +10,21 @@
                     <field name="supplier_code"/>
                     <field name="name"/>
                     <field name="category_id"/>
+                    <field name="group_name"/>
+                    <field name="group_key"/>
                 </tree>
+            </field>
+        </record>
+
+        <record id="product_view_search" model="ir.ui.view">
+            <field name="name">octopus.product.search</field>
+            <field name="model">netaddiction_octopus.product</field>
+            <field name="arch" type="xml">
+                <search>
+                    <filter name="group_group" string="Gruppo" context="{'group_by': 'group_key'}"/>
+                    <filter name="group_barcode" string="Barcode" context="{'group_by': 'barcode'}"/>
+                    <filter name="group_supplier_id" string="Fornitore" context="{'group_by': 'supplier_id'}"/>
+                </search>
             </field>
         </record>
 
@@ -20,22 +34,28 @@
             <field name="arch" type="xml">
                 <form>
                     <sheet>
-                        <group>
+                        <group string="Dettagli">
                             <field name="barcode"/>
+                            <field name="name"/>
+                            <field name="description"/>
+                            <field name="image" widget="url"/>
+                            <field name="date"/>
+                            <field name="price"/>
+                            <field name="sale_tax_id"/>
+                            <field name="purchase_tax_id"/>
+                        </group>
+                        <group string="Fornitore">
                             <field name="supplier_id"/>
                             <field name="supplier_code"/>
                             <field name="supplier_price"/>
                             <field name="supplier_quantity"/>
-                            <field name="name"/>
-                            <field name="description"/>
-                            <field name="price"/>
-                            <field name="image"/>
-                            <field name="date"/>
+                        </group>
+                        <group string="Categorizzazione">
                             <field name="category_id"/>
                             <field name="attribute_ids"/>
-                            <field name="is_pending"/>
-                            <field name="is_processed"/>
                             <field name="company_id"/>
+                            <field name="group_name"/>
+                            <field name="group_key"/>
                         </group>
                     </sheet>
                 </form>

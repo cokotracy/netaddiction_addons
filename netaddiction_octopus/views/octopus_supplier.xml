@@ -7,9 +7,11 @@
             <field name="arch" type="xml">
                 <tree editable="top">
                     <field name="order" widget="handle"/>
-                    <field name="partner_id" string="Fornitore"/>
+                    <field name="partner_id" string="Fornitore" domain="[('parent_id', '=', False)]"/>
                     <field name="handler"/>
+                    <field name="can_add"/>
                     <button name="manage_categories" type="object" string="Gestione categorie"/>
+                    <button name="manage_taxes" type="object" string="Gestione tasse"/>
                 </tree>
             </field>
         </record>

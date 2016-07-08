@@ -32,4 +32,5 @@ class Cidiverte(supplier.Supplier):
     mapping = Adapter(
         barcode='barcode',
         supplier_code='codice',
+        supplier_price='prezzo',
         supplier_quantity=lambda self, item: 50 if item['disponibilita'] == 'SI' else 0)

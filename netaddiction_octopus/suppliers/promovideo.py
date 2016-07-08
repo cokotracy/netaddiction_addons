@@ -49,4 +49,6 @@ class PromoVideo(supplier.Supplier):
     mapping = Adapter(
         barcode='barcode',
         supplier_code='codice',
+        supplier_quantity=lambda self, item: 50 if item['disponibile'] == 'S' else 0,
+        supplier_price=lambda self, item: item['prezzo_acquisto'].replace(',', '.'),
         name='descrizione')

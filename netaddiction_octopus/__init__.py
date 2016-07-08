@@ -1,1 +1,1 @@
-from models import category, cron, product, supplier  # NOQA
+from models import category, cron, product, supplier, tax  # NOQA

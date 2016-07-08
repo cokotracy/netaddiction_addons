@@ -13,20 +13,27 @@ class RequiredValue(object):
         return self.child_of is None or isinstance(value, self.child_of)
 
 
+class DefaultValue(object):
+    def __init__(self, default):
+        self.default = default
+
+
 class SupplierBase(type):
     attrs = {
         'files': list,
-        'categories': tuple,
+        'categories': DefaultValue(()),
         'downloader': RequiredValue(Downloader),
         'parser': RequiredValue(Parser),
         'mapping': dict,
         'validate': callable,
+        'group': callable,
     }
 
     def __new__(cls, name, bases, attrs):
         super_new = super(SupplierBase, cls).__new__
 
         parents = [b for b in bases if isinstance(b, SupplierBase)]
+
         if not parents:
             return super_new(cls, name, bases, attrs)
 
@@ -40,6 +47,10 @@ class SupplierBase(type):
                 elif not value(attrs[key]):
                     raise AttributeError("Wrong type for attribute '%s' of '%s'. Expected '%s', found '%s'" % (
                         key, name, value.child_of, type(attrs[key])))
+            elif isinstance(value, DefaultValue):
+                if key not in attrs:
+                    attrs[key] = value.default
+
             setattr(new_class, key, attrs.get(key, value))
 
         registry.register(new_class)
@@ -100,3 +111,6 @@ class Supplier(object):
 
     def validate(self, item):
         assert True
+
+    def group(self, item):
+        return None

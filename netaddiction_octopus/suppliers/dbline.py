@@ -47,9 +47,9 @@ class DbLine(supplier.Supplier):
 
     mapping = Adapter(
         barcode='barcode',
-        supplier_code='codice_fornitore',
-        supplier_price='prezzo_bis',
-        supplier_quantity='quantita',
         name='titolo',
         description='descrizione',
-        date=lambda self, item: '20' + '-'.join(reversed(item['data_uscita'].split('/'))) if re.match(r'^\d{2}/\d{2}/\d{2}$', item['data_uscita']) else None)
+        date=lambda self, item: '20' + '-'.join(reversed(item['data_uscita'].split('/'))) if re.match(r'^\d{2}/\d{2}/\d{2}$', item['data_uscita']) else None,
+        supplier_code='codice_fornitore',
+        supplier_price='prezzo_bis',
+        supplier_quantity='quantita')

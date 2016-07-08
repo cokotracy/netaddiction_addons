@@ -3,17 +3,15 @@ from openerp import api, models, fields
 from ..base.registry import registry
 
 
-class Category(models.Model):
-    _name = 'netaddiction_octopus.category'
-    _order = 'field, type desc'
+class Tax(models.Model):
+    _name = 'netaddiction_octopus.tax'
+    _order = 'field'
 
     supplier_id = fields.Many2one('netaddiction_octopus.supplier', string='Fornitore', required=True)
     field = fields.Selection('_get_field_selection', string='Campo', required=True)
     code = fields.Char('Codice', index=True, required=True)
-    type = fields.Selection([('category', 'Categoria'), ('attribute', 'Attributo'), ('trash', 'Scarta')],
-        string='Tipo', required=True)
-    category_id = fields.Many2one('product.category', string='Categoria')
-    attribute_id = fields.Many2one('product.attribute.value', string='Attributo')
+    sale_tax_id = fields.Many2one('account.tax', string='Tassa di vendita')
+    purchase_tax_id = fields.Many2one('account.tax', string='Tassa di acquisto')
     company_id = fields.Many2one('res.company', string='Azienda',
         related='supplier_id.partner_id.company_id', store=True)
 

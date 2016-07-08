@@ -56,7 +56,7 @@ class HTTPDownloader(Downloader):
         self.body = body
         self.headers = headers
 
-    def download(self, url):
+    def download(self, url, raw=False):
         request = urllib2.Request(url, self.body)
 
         for key, value in self.headers.items():
@@ -64,5 +64,8 @@ class HTTPDownloader(Downloader):
 
         response = urllib2.urlopen(request)
         source = response.read()
+
+        if raw:
+            return source
 
         return self.encode(source)

@@ -4,6 +4,9 @@ from ..base.downloaders import HTTPDownloader
 from ..base.parsers import CSVParser
 
 
+# TODO: Spegnere importazione e prodotti attivi
+
+
 class Adl(supplier.Supplier):
     files = [
         {

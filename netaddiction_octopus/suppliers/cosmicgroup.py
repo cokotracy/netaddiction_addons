@@ -6,12 +6,16 @@ from ..base.downloaders import FTPDownloader
 from ..base.parsers import RegexParser
 
 
+VAT = 22
+DISCOUNT = 35
+
+
 class CosmicGroup(supplier.Supplier):
     files = [
         {
             'name': 'Main',
             'mapping': {
-                'magazzino/A6SINTE.TXT': (
+                'magazzino/a6sinte.txt': (
                     'editore',
                     'codice',
                     'titolo',
@@ -35,9 +39,10 @@ class CosmicGroup(supplier.Supplier):
                 r'\s*(.{0,4}[^\s])\s*;')
 
     mapping = Adapter(
+        name='titolo',
         supplier_code='codice',
-        supplier_quantity='quantita',
-        name='titolo')
+        supplier_price=lambda self, item: float(item['prezzo'].strip()) / (1 + VAT / 100) * (1 - DISCOUNT / 100),
+        supplier_quantity='quantita')
 
     def validate(self, item):
         assert item['titolo'][0] != u'ø'

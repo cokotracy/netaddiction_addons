@@ -1,7 +1,29 @@
+import re
+
+from datetime import datetime
+from hashlib import md5
+
 from ..base import supplier
 from ..base.adapter import Adapter
 from ..base.downloaders import FTPDownloader
 from ..base.parsers import CSVParser
+
+
+DISCOUNTS = {
+    'PVC Ingrosso': 25,
+    'PVC Ingrosso N.S.': 20,
+    'PVC Disney': 17.5,
+    'PVC Distribuiti': 32,
+    'PVC Distribuiti Editoriali': 32,
+    'PVC Ingrosso Editoriali': 28,
+    'PVC Ingrosso Dvd Edit': 25,
+    'PVC Ingrosso N.S. Dvd Edit.': 20,
+    'PVC Disney Edit.': 17.5,
+    'PVC Distribuiti Dvd Edit': 32,
+    'Editoriali - Distribuiti': 32,
+    'Editoriali - Ingrosso': 28,
+    'Abbigliamento': 40,
+}
 
 
 class TerminalVideo(supplier.Supplier):
@@ -14,10 +36,10 @@ class TerminalVideo(supplier.Supplier):
             'Area Dvd',
             'Cast',
             'Categoria sconto',
-            'Cod. barre',  # Barcode
+            'Cod. barre',
             'Cod. interno',
             'Codice',
-            'Codice sottoformato',  # ext1
+            'Codice sottoformato',
             'Collana',
             'Colore',
             'Contenuti extra',
@@ -27,30 +49,30 @@ class TerminalVideo(supplier.Supplier):
             'Data rilascio',
             'Distribuzione',
             'Durata',
-            'Fascia eta',  # ext2
+            'Fascia eta',
             'Formato',
             'Formato audio',
             'Formato secondario',
             'Formato video',
             'Genere',
             'Genere principale',
-            'Img Lrg Web',  # Img
+            'Img Lrg Web',
             'Immagine',
-            'Iva',  # IVA
+            'Iva',
             'Lingue',
-            'Listino',  # Listino 1
-            'Pvc',  # Listino 5
+            'Listino',
+            'Pvc',
             'Marca',
             'Nazione',
             'Numero supporti',
             'Offerta',
             'Premi',
             'Regia',
-            'Sistema TV',  # Sistema tv
+            'Sistema TV',
             'Sottotitoli',
             'Stato vendite',
             'Titolo',
-            'Titolo originale',  # Titolo Originale
+            'Titolo originale',
             'Trama',
             'Vietato',
             'Taglia',
@@ -100,7 +122,7 @@ class TerminalVideo(supplier.Supplier):
         },
     ]
 
-    categories = 'Formato', 'Genere principale'
+    categories = 'Formato', 'Genere principale', 'Taglia', 'Genere T-Shirt', 'Colore T-Shirt'
 
     downloader = FTPDownloader(
         hostname='ftp.terminalvideo.com',
@@ -113,11 +135,38 @@ class TerminalVideo(supplier.Supplier):
 
     mapping = Adapter(
         barcode='Cod. barre',
-        supplier_code='Cod. interno',
         name='Titolo',
-        description='Trama')
+        description='Trama',
+        price=lambda self, item: float(item['Listino'].replace(',', '.')) if item['Listino'] else None,
+        image='Img Lrg Web',
+        date=lambda self, item: datetime.strptime(item['Data rilascio'], '%d/%m/%Y') if item['Data rilascio'] else None,
+        supplier_code='Cod. interno',
+        supplier_price=lambda self, item: float(item['Listino'].replace(',', '.')) / 100 * (100 - DISCOUNTS.get(item['Categoria sconto'], 100)) if item['Listino'] else None,
+        supplier_quantity='Q.ta in stock')
 
     def validate(self, item):
         assert item['Tipo record'] != 'E'
         assert float(item['Pvc'].replace(',', '.')) > 0
         assert item['Formato'] != 'Audio Cd'
+
+    def group(self, item):
+        group_name = item['Titolo'].rsplit('(', 1)[0].strip() if '(' in item['Titolo'] and item['Titolo'][-1] == ')' else item['Titolo']
+
+        if item['_file'] == 'Merchandising':
+            if '(' in item['Titolo'] and item['Titolo'][-1] == ')':
+                extra = item['Titolo'].rsplit('(', 1)[1].strip()
+                extra = extra.replace('Tg. %s' % item['Taglia'], '')
+                extra = extra.replace(item['Genere T-Shirt'], '')
+
+                group_key = ''.join([item['_file'], item['Formato'], item['Genere principale'], group_name, extra])
+                group_key = re.sub(r' +', ' ', group_key)
+                group_key = md5(group_key).hexdigest()
+
+                return group_key, group_name
+
+        if item['_file'] == 'HomeVideo':
+            group_key = ''.join([item['_file'], item['Genere principale'], group_name])
+            group_key = re.sub(r' +', ' ', group_key)
+            group_key = md5(group_key).hexdigest()
+
+            return group_key, group_name
