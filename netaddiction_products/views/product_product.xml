@@ -221,5 +221,21 @@
         </record>
 
 
+        <record id="view_category_automation_form" model="ir.ui.view">
+            <field name="name">netaddiction.product.category.form.view</field>
+            <field name="model">product.category</field>
+            <field name="inherit_id" ref="product.product_category_form_view"/>
+            <field name="arch" type="xml">
+                <group name="first" position="after">
+                    <group>
+                        <group name="netaddiction_category_product_automation" string="Automazione">
+                            <field name="can_auto_deactivate_products"/>
+                            <field name="auto_supplier_delay"/>
+                        </group>
+                    </group>
+                </group>
+            </field>
+        </record>
+
     </data>
 </openerp>

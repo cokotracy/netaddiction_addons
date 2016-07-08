@@ -14,7 +14,7 @@ class Products(models.Model):
     list_price = fields.Float(string="Prezzo di vendita Iva Esclusa", compute="_get_price", digits_compute= dp.get_precision('Product Price'))
     #campo prezzo ivato
     final_price = fields.Float(string="Prezzo Listino", digits_compute= dp.get_precision('Product Price'))
-    special_price = fields.Float(string="Prezzo offerta base", digits_compute= dp.get_precision('Product Price'), default="0.00")
+    special_price = fields.Float(string="Prezzo offerta base", digits_compute=dp.get_precision('Product Price'), default=0)
     
     #campi aggiuntivi
     sale_ok = fields.Boolean(string="Acquistabile",default="True")
@@ -306,8 +306,40 @@ class SupplierInfo(models.Model):
 
         return super(SupplierInfo, self).create(values)
 
+    @api.one
+    @api.constrains('avail_qty')
+    def auto_deactivate_products(self):
+        """
+        Attiva o disattiva il prodotto associato in base alla quantità di magazzino e del fornitore.
+        """
+        # IMPORTANTE: mantenere l'ordine e la sovrabbondanza di condizioni per ridurre al minimo la quantità di query
+        if self.avail_qty > 0:
+            if not self.product_id.sale_ok and \
+                    self.product_id.categ_id.can_auto_deactivate_products:
+                self.product_id.sale_ok = True
+
+            if self.product_id.categ_id.auto_supplier_delay and \
+                    self.delay != self.name.supplier_delivery_time:
+                self.delay = self.name.supplier_delivery_time
+        else:
+            if self.product_id.sale_ok and \
+                    self.product_id.categ_id.can_auto_deactivate_products and \
+                    self.product_id.qty_sum_suppliers == 0 and \
+                    self.product_id.qty_available_now == 0:
+                self.product_id.sale_ok = False
+
+            if self.product_id.categ_id.auto_supplier_delay and \
+                    self.delay != self.product_id.categ_id.auto_supplier_delay:
+                self.delay = self.product_id.categ_id.auto_supplier_delay
+
 
 class Category(models.Model):
     _inherit = 'product.category'
 
     company_id = fields.Many2one('res.company', required=True)
+    can_auto_deactivate_products = fields.Boolean('Disattiva automaticamente i prodotti', default=False,
+        help='I prodotti vengono disattivati non appena la disponibilità in magazzino e le disponibilità dei '
+             'fornitori scendono a zero.')
+    auto_supplier_delay = fields.Integer('Imposta automaticamente il tempo di consegna del fornitore', required=False, default=None,
+        help='Quando la quantità del fornitore di un prodotto scende a zero, questo è il valore che assumerà il '
+             'tempo di consegna. Il valore 0 verrà ignorato.')
