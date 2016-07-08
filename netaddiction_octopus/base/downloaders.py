@@ -18,7 +18,7 @@ class FTPDownloader(Downloader):
         self.username = username
         self.password = password
 
-    def _download(self, path):  # TODO togliere underscore
+    def download(self, path):
         tempfile = TemporaryFile()
 
         ftp = FTP(self.hostname)
@@ -32,23 +32,6 @@ class FTPDownloader(Downloader):
         tempfile.close()
 
         return self.encode(source)
-
-    def download(self, path):  # TODO togliere metodo
-        import os
-
-        basename = os.path.basename(path)
-        filename = '/tmp/%s' % basename
-
-        if not os.path.exists(filename):
-            content = self._download(path)
-
-            with open(filename, 'w') as f:
-                f.write(content)
-        else:
-            with open(filename) as f:
-                content = f.read()
-
-        return content
 
 
 class HTTPDownloader(Downloader):

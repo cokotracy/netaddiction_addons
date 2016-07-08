@@ -96,6 +96,14 @@ class Adapter(object):
                 _logger.warning('Prodotto senza tasse: %s' % item)
                 return None
 
+        # Group
+
+        if handler.categories:
+            group = handler.group(item)
+
+            if group is not None:
+                mapping['group_key'], mapping['group_name'] = group
+
         # Mapped fields
 
         valid_fields = model._fields.keys()

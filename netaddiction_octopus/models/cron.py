@@ -23,8 +23,8 @@ class Cron(models.Model):
 
         self.clear()
         self.divide(suppliers)
-        # self.impera(suppliers)
-        # self.kill(suppliers)
+        self.impera(suppliers)
+        self.kill(suppliers)
 
     def clear(self):
         self.env.cr.execute('DELETE FROM "netaddiction_octopus_product_product_attribute_value_rel"')
@@ -115,15 +115,6 @@ class Cron(models.Model):
                 _logger.info(' |  | Rifiutati (%s prodotti)' % locale.format('%d', rejected_products, grouping=True))
                 _logger.info(' |  | Scartati (%s prodotti)' % locale.format('%d', discarted_products, grouping=True))
                 _logger.info(' |  | Salvato (%s prodotti)' % locale.format('%d', saved_products, grouping=True))
-
-        # TODO migliorare organizzazione raggruppamento
-
-        # for group_key, group in groups.items():
-        #     if len(group) > 1 and len(group) != len(set([str(p['attribute_ids']) for p in group])):
-        #         for i, product in enumerate(group):
-        #             groups['%s%d' % (group_key, i)] = [product]
-
-        #         del groups[group_key]
 
     def impera(self, suppliers):
         _logger.info('Impera!')

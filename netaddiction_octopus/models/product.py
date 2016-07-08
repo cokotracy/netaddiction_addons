@@ -124,7 +124,6 @@ class Product(models.Model):
             self.env.cr.commit()
 
     def chain(self, product, commit=True):
-        # TODO assicurarsi che se il prodotto è spento, si riattivi aggiungendo un altro fornitore
         product.write({
             'seller_ids': [(0, None, {
                 'company_id': self.company_id.id,
