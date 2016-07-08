@@ -35,3 +35,5 @@ class Cron(models.Model):
             print sup.name 
             print contacts_ids
             print '*'*10
+
+            #TODO: MAIL

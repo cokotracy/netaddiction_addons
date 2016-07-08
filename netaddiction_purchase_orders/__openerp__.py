@@ -15,7 +15,8 @@
     'data' : [
         'views/purchase_product_list.xml',
         'views/purchase_order_line.xml',
-        'views/res_partner.xml'
+        'views/res_partner.xml',
+        'data/cron.xml'
     ],
     'qweb':[
         "static/src/xml/*.xml",
