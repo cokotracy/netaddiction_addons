@@ -26,12 +26,14 @@ class OfferOrder(models.Model):
 
     @api.one
     def apply_vaucher(self):
-        if not self.pricelist_id or self.pricelist_id.id != 1:
+        public_pricelist = self.env.ref('product.list0')
+        if not self.pricelist_id or not public_pricelist or self.pricelist_id.id != public_pricelist.id:
             return
 
         if self.vaucher_string and len(self.offers_vaucher)==0:
             offer = self.env['netaddiction.specialoffer.vaucher'].search([("code","=",self.vaucher_string)])
-            if offer:
+            customer_check = offer and (not offer.one_user or (offer.associated_user.id == self.partner_id.id))
+            if customer_check:
                 offer = offer[0]
                 if offer.offer_type == 3:
                     #TODO scalare spese di spedizione
@@ -46,18 +48,25 @@ class OfferOrder(models.Model):
                             tax = ol.tax_id.amount
                             if offer.offer_type == 1:
                                 #sconto fsso 
-                                detax = offer.fixed_discount/ (float(1) + float(tax/100))
-                                deiva = round(detax,2)
-                                new_price = ol.price_unit - deiva
-                                ol.price_unit = new_price if new_price > float(0) else float(0)
+                                # detax = offer.fixed_discount/ (float(1) + float(tax/100))
+                                # deiva = round(detax,2)
+                                # new_price = ol.price_unit - deiva
+                                # ol.price_unit = new_price if new_price > float(0) else float(0)
+                                new_price = ol.price_unit - offer.fixed_discount
+                                new_price = new_price if new_price > float(0) else float(0)
+                                ol.price_unit =  self.env['account.tax']._fix_tax_included_price(new_price, ol.product_id.taxes_id, ol.tax_id)
+                                
                             else:
                                 #percentuale
-                                tax = ol.tax_id.amount
+                                # tax = ol.tax_id.amount
                                 discount = (ol.price_total/100)*offer.percent_discount
-                                detax = discount / (float(1) + float(tax/100))
-                                deiva = round(detax,2)
-                                new_price = ol.price_unit - deiva
-                                ol.price_unit = new_price if new_price > float(0) else float(0)
+                                # detax = discount / (float(1) + float(tax/100))
+                                # deiva = round(detax,2)
+                                # new_price = ol.price_unit - deiva
+                                # ol.price_unit = new_price if new_price > float(0) else float(0)
+                                new_price = ol.price_unit - discount
+                                new_price = new_price if new_price > float(0) else float(0)
+                                ol.price_unit =  self.env['account.tax']._fix_tax_included_price(new_price, ol.product_id.taxes_id, ol.tax_id)
                                 #applica offerta vaucher e crea history
                             ovh = self.env['netaddiction.order.specialoffer.vaucher.history'].create({'product_id' : ol.product_id.id, 'order_id' : self.id, 'offer_type':offer.offer_type, 'qty' : ol.product_uom_qty, 'offer_author_id' : offer.author_id.id, 'offer_name' : offer.name, 'offer_id' : offer.id, 'fixed_discount':offer.fixed_discount, 'percent_discount': offer.percent_discount, 'offer_type': offer.offer_type,'order_line': ol.id})
                             ol.offer_vaucher_history = ovh.id
@@ -240,20 +249,22 @@ class OfferOrder(models.Model):
             for ol in order_lines:
             
                 if(ol and ol.product_uom_qty <= num_prod_to_reduce - i):
-                    tax = ol.tax_id.amount
-                    detax = offer.n_price / (float(1) + float(tax/100))
-                    deiva = round(detax,2)
-                    ol.price_unit = deiva
+                    # tax = ol.tax_id.amount
+                    # detax = offer.n_price / (float(1) + float(tax/100))
+                    # deiva = round(detax,2)
+                    # ol.price_unit = deiva
+                    ol.price_unit = self.env['account.tax']._fix_tax_included_price(offer.n_price, ol.product_id.taxes_id, ol.tax_id)
                     order_lines_usables.remove(ol.id)
                     i += int(ol.product_uom_qty)
                         
                 elif ol:
                     #spezza le linee
                     res = self._split_order_line(ol,num_prod_to_reduce -i,ol.product_uom_qty - (num_prod_to_reduce -i))
-                    tax = ol.tax_id.amount
-                    detax = offer.n_price / (float(1) + float(tax/100))
-                    deiva = round(detax,2)
-                    ol.price_unit = deiva
+                    # tax = ol.tax_id.amount
+                    # detax = offer.n_price / (float(1) + float(tax/100))
+                    # deiva = round(detax,2)
+                    # ol.price_unit = deiva
+                    ol.price_unit = self.env['account.tax']._fix_tax_included_price(offer.n_price, ol.product_id.taxes_id, ol.tax_id)
                     order_lines_usables.remove(ol.id)
                     new_ol = res[0] if res[0] else None
                     if new_ol:
@@ -311,7 +322,7 @@ class OfferOrder(models.Model):
                     for ol in order_lines:
                         #qui siamo sicuri che product_uom_qty = bundle_cnt[ol.product_id.id]
                         res = self._find_bundle_unit_price(ol,tot,bundle_price)
-                        ol.price_unit = res
+                        ol.price_unit = self.env['account.tax']._fix_tax_included_price(res, ol.product_id.taxes_id, ol.tax_id)
             else: 
                 bundle_verified = False
                         
@@ -405,11 +416,12 @@ class OfferOrder(models.Model):
         returns il prezzo pesato de-ivato del prodotto nella ol.
 
         """
-        full_price =((ol.price_total/ol.product_uom_qty) * bundle_price) / tot
-        tax = ol.tax_id.amount
-        detax = full_price / (float(1) + float(tax/100))
-        deiva = round(detax,2)
-        return float(deiva)
+        return ((ol.price_total/ol.product_uom_qty) * bundle_price) / tot
+        # full_price =((ol.price_total/ol.product_uom_qty) * bundle_price) / tot
+        # tax = ol.tax_id.amount
+        # detax = full_price / (float(1) + float(tax/100))
+        # deiva = round(detax,2)
+        # return float(deiva)
 
 
 

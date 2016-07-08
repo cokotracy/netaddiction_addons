@@ -43,6 +43,7 @@ class CoDRegister(models.TransientModel):
                 inv_lst = []
 
                 for line in order.order_line:
+                    #resetto la qty_to_invoice di tutte le linee
                     line.qty_to_invoice = 0
                 for delivery in order.picking_ids:
                     #aggiungo i contrassegni

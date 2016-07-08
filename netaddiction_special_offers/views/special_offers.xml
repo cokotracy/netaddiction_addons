@@ -451,7 +451,7 @@
                                 <field name="date_end"/>
                                 <field name="qty_selled"  attrs="{'readonly': 1}"/>
                                 <field name="one_user" />
-                                <field name="associated_user" attrs="{'invisible':[('one_user', '=', False)]}" />
+                                <field name="associated_user" domain="[('type','=','contact')]" attrs="{'invisible':[('one_user', '=', False)]}" />
                                 
                             </group>
                         </group>
@@ -462,8 +462,8 @@
                                 <field name="offer_type" widget="radio"/>
                                 <field name="fixed_discount" attrs="{'invisible':[('offer_type', '!=', 1)]}"/>
                                 <field name="percent_discount" attrs="{'invisible':[('offer_type', '!=', 2)]}" />
-                                <button  class="oe_highlight" name="modify_products" 
-                                string="applica ai prodotti" type="object" /> 
+<!--                                 <button  class="oe_highlight" name="modify_products" 
+                                string="applica ai prodotti" type="object" />  -->
 
                                 
                             </group>

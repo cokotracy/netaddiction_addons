@@ -23,7 +23,7 @@ class CatalogOffer(models.Model):
     qty_selled = fields.Float( string='Quantità venduta', default=0.0, compute="_compute_qty_selled")
     offer_type = fields.Selection([(1,'Prezzo Fisso'),(2,'Percentuale')], string='Tipo Offerta', default=2)
     fixed_price = fields.Float(string="Prezzo fisso")
-    percent_discount = fields.Integer(string="Sconto Percentuale")
+    percent_discount = fields.Integer(string="Sconto Percentuale", default =10)
     products_list = fields.One2many('netaddiction.specialoffer.offer_catalog_line', 'offer_catalog_id', string='Lista prodotti')
     end_cron_job = fields.Integer()
     start_cron_job = fields.Integer()
@@ -187,8 +187,8 @@ class OfferCatalogLine(models.Model):
     qty_limit = fields.Integer( string='Quantità limite', help = "Quantità limite di prodotti vendibili in questa offerta. 0 è illimitato", required=True)
     qty_min = fields.Integer( string='Quantità minima acquisto', help = "Quantità minima di prodotti da inserire nel carrello per attivare l'offerta.", required=True)
     fixed_price = fields.Float(string="Prezzo fisso")
-    percent_discount = fields.Integer(string="Sconto Percentuale")
-    offer_type = fields.Selection([(1,'Prezzo Fisso'),(2,'Percentuale')], string='Tipo Offerta')
+    percent_discount = fields.Integer(string="Sconto Percentuale", default = 10)
+    offer_type = fields.Selection([(1,'Prezzo Fisso'),(2,'Percentuale')], string='Tipo Offerta',default = 2)
     qty_selled = fields.Float( string='Quantità venduta', default=0.0)
     priority = fields.Integer(string="priorità", default = 0)
 
@@ -494,7 +494,7 @@ class VaucherOffer(models.Model):
     fixed_discount = fields.Float(string="Sconto fisso")
     percent_discount = fields.Integer(string="Sconto Percentuale")
     one_user = fields.Boolean(string='Associa a un solo utente', default=False)
-    associated_user = fields.Many2one(comodel_name='res.users',string='Beneficiario', default=None)
+    associated_user = fields.Many2one(comodel_name='res.partner',string='Beneficiario', default=None)
     end_cron_job = fields.Integer()
     start_cron_job = fields.Integer()
     products_list = fields.One2many('netaddiction.specialoffer.offer_vaucher_line', 'offer_vaucher_id', string='Lista prodotti')
@@ -584,7 +584,7 @@ class VaucherOffer(models.Model):
 
             for prod in self.env['product.product'].search(dom):
                 if( prod.id not in ids):
-                    to_add.append(self.env['netaddiction.specialoffer.offer_vaucher_line'].create({'product_id':prod.id, 'offer_vaucher_id' : self.id, 'qty_limit' : self.qty_limit, 'offer_type':self.offer_type,'percent_discount':self.percent_discount,'fixed_discount': self.fixed_discount}))
+                    to_add.append(self.env['netaddiction.specialoffer.offer_vaucher_line'].create({'product_id':prod.id, 'offer_vaucher_id' : self.id, }))
             
 
 
@@ -599,13 +599,13 @@ class VaucherOffer(models.Model):
                 pl.unlink()
         
 
-    @api.multi
-    def modify_products(self):
-        for pl in self.products_list:
-            pl.qty_max_buyable = self.qty_max_buyable
-            pl.offer_type = self.offer_type
-            pl.percent_discount = self.percent_discount
-            pl.fixed_discount = self.fixed_discount
+    # @api.multi
+    # def modify_products(self):
+    #     for pl in self.products_list:
+    #         pl.qty_max_buyable = self.qty_max_buyable
+    #         pl.offer_type = self.offer_type
+    #         pl.percent_discount = self.percent_discount
+    #         pl.fixed_discount = self.fixed_discount
     @api.one
     def turn_off(self):
         for pl in self.products_list:

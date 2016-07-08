@@ -3,6 +3,7 @@
 from openerp import models, fields, api
 import cypher
 import paypal
+import payment_exception
 
 
 PAYMENTACTION = 'Sale'
@@ -31,8 +32,8 @@ class PaypalExecutor(models.TransientModel):
             -email: email del cliente
             Returns:
             -se tutto ok: il link per l'expres_checkout
-            -se fallisce set_express_checkout: -2
-            -se fallisce get_express_checkout_details: -1
+            -se fallisce set_express_checkout: raise PaymentException
+            -se fallisce get_express_checkout_details: raise PaymentException
             Raise PayPalError: propaga i raise dell'interfaccia di paypal
         """
         encripted_username = self.env["ir.values"].search([("name","=","paypal_username")]).value
@@ -70,11 +71,9 @@ class PaypalExecutor(models.TransientModel):
                 return pp_interface.generate_express_checkout_redirect_url(self.token)
                 
             else:
-                #TODO: return error
-                return -1
+                raise payment_exception.PaymentException(payment_exception.PAYPAL,"fallito il get_express_checkout_details") 
         else:
-            #TODO: return error
-            return -2
+            raise payment_exception.PaymentException(payment_exception.PAYPAL,"fallito il set_express_checkout in get_express_checkout_link")
 
     @api.one
     def finalize_payment(self,amount,user_id,order_id):
@@ -87,8 +86,8 @@ class PaypalExecutor(models.TransientModel):
             
             Returns:
             -se tutto ok: 1
-            -se fallisce do_express_checkout_payment: -2
-            -se fallisce get_express_checkout_details: -1
+            -se fallisce do_express_checkout_payment: raise PaymentException
+            -se fallisce get_express_checkout_details: raise PaymentException
             -se fallisce la registrazione del pagamento su odoo ma il pagamento paypal va a buon fine: -3
             Raise PayPalError: propaga i raise dell'interfaccia di paypal
         """
@@ -114,7 +113,7 @@ class PaypalExecutor(models.TransientModel):
                 payer_id = getexp_response.payerid
             except AttributeError:
                 #se non c'è il payerid nella risposta vuol dire che il cliente non ha completato il pagamento
-                return -1
+                raise payment_exception.PaymentException(payment_exception.PAYPAL,"il cliente non ha completato il pagamento")
 
             
             payment_response = pp_interface.do_express_checkout_payment(token=self.token, amt=amount, paymentaction=PAYMENTACTION,payerid=payer_id,currencycode=CUR)
@@ -125,9 +124,9 @@ class PaypalExecutor(models.TransientModel):
                 return self._register_payment(user_id,payment_response.amt,order_id,payment_response.paymentinfo_0_transactionid)
                 
             else:
-                return -2
+                raise payment_exception.PaymentException(payment_exception.PAYPAL,"fallito il register_payment") 
         else:
-            return -1
+            raise payment_exception.PaymentException(payment_exception.PAYPAL,"fallito il get_express_checkout_details in finalize_payment") 
 
 
     @api.one
@@ -159,7 +158,7 @@ class PaypalExecutor(models.TransientModel):
 
             return 1
         else:
-            return -3
+            raise payment_exception.PaymentException(payment_exception.PAYPAL,"impossibile trovare il metodo di pagamento PayPal")
         
 
     @api.one

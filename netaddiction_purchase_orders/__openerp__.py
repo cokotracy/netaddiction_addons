@@ -11,10 +11,11 @@
     'website': "http://www.netaddiction.it",
     'category': 'Technical Settings',
     'version': '1.0',
-    'depends': ['base','product','sale','purchase','mrp','account'],
+    'depends': ['base','product','sale','purchase','mrp','account','netaddiction_customer'],
     'data' : [
         'views/purchase_product_list.xml',
         'views/purchase_order_line.xml',
+        'views/res_partner.xml'
     ],
     'qweb':[
         "static/src/xml/*.xml",

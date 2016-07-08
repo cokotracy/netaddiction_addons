@@ -11,13 +11,20 @@ class Products(models.Model):
     seller_ids = fields.One2many('product.supplierinfo', 'product_id', 'Supplier')
     #separazione prezzo di  vendita e creazione prezzo ivato e senza iva
     lst_price = fields.Float(string="Prezzo di Vendita", digits_compute= dp.get_precision('Product Price'))
-    list_price = fields.Float(string="Prezzo di vendita Iva Esclusa", compute="_get_price", digits_compute= dp.get_precision('Product Price'))
+    #list_price = fields.Float(string="Prezzo di vendita Iva Esclusa", compute="_get_price", digits_compute= dp.get_precision('Product Price'))
+    #MOD TASSE
+    list_price = fields.Float(string="Prezzo di vendita", compute="_get_price", digits_compute= dp.get_precision('Product Price'))
+
+    #CAMPI DI VISTA
+    detax_price = fields.Float(string="Prezzo di vendita deivato" ,compute = "_get_visual_price", digits_compute= dp.get_precision('Product Price'))
+    intax_price = fields.Float(string="Prezzo di vendita Ivato", compute = "_get_visual_price", digits_compute= dp.get_precision('Product Price'))
+
     #campo prezzo ivato
     final_price = fields.Float(string="Prezzo Listino", digits_compute= dp.get_precision('Product Price'))
     special_price = fields.Float(string="Prezzo offerta base", digits_compute=dp.get_precision('Product Price'), default=0)
     
     #campi aggiuntivi
-    sale_ok = fields.Boolean(string="Acquistabile",default="True")
+    sale_ok = fields.Boolean(string="Vendibile",default="True")
 
     visible = fields.Boolean(string="Visibile",default="True")
 
@@ -158,23 +165,33 @@ class Products(models.Model):
 
     @api.depends('final_price','special_price')
     def _get_price(self):
-        for p in self:
-            tassa = p.taxes_id.amount
 
+        for p in self:
+            tassa = p.taxes_id
+        
             if p.special_price > 0.00:
                 price = p.special_price
             else:
                 price = p.final_price
 
-            if tassa:
-                detax = price / (float(1) + float(tassa/100))
-            else:
-                detax = price
-
-            if p.taxes_id.price_include:
-                detax = price
-
-            p.list_price = round(detax,2)
+            p.list_price = price
+#MOD TASSE
+        #    if tassa:
+        #        detax = price / (float(1) + float(tassa/100))
+        #    else:
+        #        detax = price
+#
+        #    if p.taxes_id.price_include:
+        #        detax = price
+#
+        #    p.list_price = round(detax,2)
+    @api.depends('final_price','special_price')
+    def _get_visual_price(self):
+        for p in self:
+            result = p.taxes_id.compute_all(p.list_price)
+        
+            p.detax_price = result['total_excluded']
+            p.intax_price = result['total_included']
 
     def create(self, cr, uid, vals, context=None):
         tools.image_resize_images(vals)
@@ -185,7 +202,9 @@ class Products(models.Model):
         return super(Products, self).write(cr, uid, ids, vals, context)
 
     def get_actual_price(self):
-        return self.special_price if (self.special_price>0.00) else self.final_price
+        #return self.special_price if (self.special_price>0.00) else self.final_price
+        #MOD TASSE
+        return self.list_price
 
     @api.one
     def toggle_purchasable(self):
@@ -210,7 +229,7 @@ class Template(models.Model):
     _inherit = 'product.template'
 
     #campi override per rendere le varianti indipendenti dai template
-    lst_price = fields.Float(string="Prezzo senza Iva")
+    lst_price = fields.Float(string="Prezzo Listino")
     list_price = fields.Float(string="Prezzo Listino")
 
     #campi aggiunti

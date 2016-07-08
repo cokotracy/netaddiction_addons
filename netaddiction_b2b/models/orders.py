@@ -10,6 +10,6 @@ class Orders(models.Model):
     def simulate_delivery_price(self,subdivision):
     	self.ensure_one()
     	if self.pricelist_id.id != 1:
-    		print 'B2B'
+    		pass
     	else:
     		return super(Orders,self).simulate_delivery_price(subdivision)

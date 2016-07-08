@@ -57,6 +57,7 @@ class ProductMargin(models.Model):
         price = 0
         for q in quant:
             num += q.qty
+            inv_value = self.product_id.supplier_taxes_id.compute_all(q.inventory_value)['total_excluded']
             price += q.inventory_value
 
         if num == 0:
@@ -73,6 +74,7 @@ class ProductMargin(models.Model):
         ids = []
         if len(contribution) > 0:
             for cont in contribution:
+                #TASSE: diamo per scontato che i contributi sono tasse escluse
                 cont_value += cont.unit_value * cont.qty
                 ids.append(cont.contribution_id.id)
         #a questo punto verifico eventuali nuovi contributi non calcolati ancora
@@ -123,7 +125,10 @@ class ProductMargin(models.Model):
                                 #decrementi le quantità rese
                                 reverse -= quant.qty
         if self.purchase_price_real != 0:
-            self.margin = (self.price_unit * (self.product_qty-self.qty_reverse)) - (self.purchase_price_real * (self.product_qty-self.qty_reverse)) + cont_value
+            #MOD TASSE
+            #qua prendo tutti i prezzi indipendentemente dall'iva
+            price_unit = self.product_id.taxes_id.compute_all(self.price_unit)['total_excluded']
+            self.margin = (price_unit * (self.product_qty-self.qty_reverse)) - (self.purchase_price_real * (self.product_qty-self.qty_reverse)) + cont_value
         else:
             self.margin = 0
 
