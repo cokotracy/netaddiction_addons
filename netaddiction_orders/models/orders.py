@@ -111,7 +111,7 @@ class Order(models.Model):
                 if all_paid:
                    super(Order, order).action_done()
                    if self.state=='done':
-                        self.date_done = datetime.datetime.now()
+                        self.date_done = fields.Datetime.now()
                 else:
                     raise Warning(_('I pagamenti non sono completati'))
             else:
