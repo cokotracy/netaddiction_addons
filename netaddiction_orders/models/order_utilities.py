@@ -13,13 +13,6 @@ class OrderUtilities(models.TransientModel):
         Restiusce il carrello dell'utente(ordine in draft) identificato da user_id, se non esiste lo crea.
         Se l'utente non esiste ritorna False
         """
-        if order:
-            return order if != draft
-
-        if user:
-            return last order if != draft
-
-        create order for public user
         if order_id :
             order = self.env["sale.order"].search([("id","=",order_id)])
             if order.state == 'draft':
