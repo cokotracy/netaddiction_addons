@@ -8,6 +8,7 @@ from collections import defaultdict,OrderedDict
 from openerp.exceptions import ValidationError
 import datetime
 import sys
+import lib_holidays
 
 class Orders(models.Model):
     _inherit="sale.order"
@@ -37,7 +38,7 @@ class Orders(models.Model):
         Sostituisce _action_procurement_create di sale.order.line
         """
         self.ensure_one()
-
+        holiday = lib_holidays.LibHolidays()
         if not self.carrier_id:
             raise ValidationError("Deve essere scelto un metodo di spedizione")
 
@@ -73,7 +74,13 @@ class Orders(models.Model):
                 if float_compare(qty, line.product_uom_qty, precision_digits=precision) >= 0:
                     continue
                 vals = line._prepare_order_line_procurement(group_id=line.order_id.procurement_group_id.id)
-                vals['date_planned'] = delivery_date
+
+                planned = delivery_date - datetime.timedelta(days=int(self.carrier_id.time_to_shipping))
+                
+                while holiday.is_holiday(planned):
+                    planned -= datetime.timedelta(days = 1)
+
+                vals['date_planned'] = planned
                 vals['group_id'] = proc.id
                 new_proc = self.env["procurement.order"].create(vals)
                 new_procs += new_proc
@@ -265,21 +272,21 @@ class SaleOrderLine(models.Model):
 
         subdivision = OrderedDict(sorted(subdivision.items()))
 
-        this_moment = subdivision.keys()[0]
-        definitive_sub = {}
-        for date in subdivision:
-            diff = (date - this_moment).days
-            if diff <=1:
-                if this_moment in definitive_sub.keys():
-                    definitive_sub[date] = subdivision[date] + definitive_sub[this_moment]
-                    del(definitive_sub[this_moment])
-                else:
-                    definitive_sub[date] = subdivision[date]
-            else:
-                definitive_sub[date] = subdivision[date]
-                this_moment = date
-
-        subdivision = OrderedDict(sorted(definitive_sub.items()))
+        #this_moment = subdivision.keys()[0]
+        #definitive_sub = {}
+        #for date in subdivision:
+        #    diff = (date - this_moment).days
+        #    if diff <=1:
+        #        if this_moment in definitive_sub.keys():
+        #            definitive_sub[date] = subdivision[date] + definitive_sub[this_moment]
+        #            del(definitive_sub[this_moment])
+        #        else:
+        #            definitive_sub[date] = subdivision[date]
+        #    else:
+        #        definitive_sub[date] = subdivision[date]
+        #        this_moment = date
+#
+        #subdivision = OrderedDict(sorted(definitive_sub.items()))
 
 
         return subdivision
@@ -422,25 +429,31 @@ class SaleOrderLine(models.Model):
         se qty != 0 ho tutto disponibile
         """
         self.ensure_one()
-        delivery_date = self._check_line_shipping_date()
-        if qty == 0:
-            available_days = self.product_id.calculate_days_available(0)
-            return delivery_date + datetime.timedelta(days=int(available_days))
-        else:
-            return delivery_date
+        available_days = self.product_id.calculate_days_available(qty)
+        delivery_date = self._check_line_shipping_date(available_days)
+        return delivery_date
+        #delivery_date = self._check_line_shipping_date()
+        #if qty == 0:
+        #    available_days = self.product_id.calculate_days_available(0)
+        #    return delivery_date + datetime.timedelta(days=int(available_days))
+        #else:
+        #    return delivery_date
 
     @api.multi
-    def _check_line_shipping_date(self):
+    def _check_line_shipping_date(self,available_days):
         """
         calcola l'ipotetica data di consegna prevista per la linea ordine
         """
         self.ensure_one()
         carrier_time = int(self.order_id.carrier_id.time_to_shipping)
-        shipping_date = datetime.date.today() + datetime.timedelta(days=int(self.product_id.days_available)) + datetime.timedelta(days=carrier_time)            
-        if int(shipping_date.strftime("%w")) == 0:
-            shipping_date += datetime.timedelta(days=1) + datetime.timedelta(days=carrier_time)
-        if int(shipping_date.strftime("%w")) == 6:
-            shipping_date += datetime.timedelta(days=2) + datetime.timedelta(days=carrier_time)
+        shipping_days = self.product_id.calculate_days_shipping(available_days,carrier_time)
+        #shipping_date = datetime.date.today() + datetime.timedelta(days=int(self.product_id.days_available)) + datetime.timedelta(days=carrier_time)            
+        
+        #if int(shipping_date.strftime("%w")) == 0:
+        #    shipping_date += datetime.timedelta(days=1) + datetime.timedelta(days=carrier_time)
+        #if int(shipping_date.strftime("%w")) == 6:
+        #    shipping_date += datetime.timedelta(days=2) + datetime.timedelta(days=carrier_time)
+        shipping_date = datetime.date.today() + datetime.timedelta(days=shipping_days)
 
         return shipping_date 
 
@@ -455,6 +468,14 @@ class StockPicking(models.Model):
     delivery_barcode = fields.Char(string="Barcode Spedizione")
     delivery_read_manifest = fields.Boolean(string="Letto nel manifest",default="False")
     manifest = fields.Many2one(string="Manifest", comodel_name="netaddiction.manifest")
+
+    date_of_shipping_home = fields.Date(string="Data di consegna" , compute = "_compute_date_of_shipping")
+
+    @api.one 
+    def _compute_date_of_shipping(self):
+        days = int(self.carrier_id.time_to_shipping)
+        date_ship = datetime.datetime.strptime(self.min_date,'%Y-%m-%d %H:%M:%S') + datetime.timedelta(days = days)
+        self.date_of_shipping_home = date_ship
 
     @api.multi
     def _add_delivery_cost_to_so(self):

@@ -34,7 +34,8 @@
         'views/delivery.xml',
         'views/partner.xml',
         'views/products.xml',
-        'views/manifest.xml'
+        'views/manifest.xml',
+        'views/time_settings.xml'
     ],
     'qweb': [
         "static/src/xml/*.xml",

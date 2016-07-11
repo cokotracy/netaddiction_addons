@@ -31,13 +31,14 @@ class Products(models.Model):
     out_date = fields.Date(string="Data di Uscita")
     out_date_approx_type = fields.Selection(string="Approssimazione Data",
         selection=(('accurate','Preciso'),('month','Mensile'),('quarter','Trimestrale'),
-        ('four','Quadrimestrale'),('year','Annuale')),
+        ('four','Quadrimestrale'),('year','Annuale'),('nothing','Nessuna')),
         help="""Impatta sulla vista front end,
         Preciso: la data inserita è quella di uscita,
         Mensile: qualsiasi data inserita prende solo il mese e l'anno (es: in uscita nel mese di Dicembre 2019),
         Trimestrale: prende l'anno e mese e calcola il trimestre(es:in uscita nel terzo trimestre 2019),
         Quadrimestrale: prende anno e mese e calcola il quadrimestre(es:in uscita nel primo quadrimestre del 2019),
-        Annuale: prende solo l'anno (es: in uscita nel 2019)""" )
+        Annuale: prende solo l'anno (es: in uscita nel 2019)
+        Nessuna: quando non esiste la data di uscita""" )
 
     available_date = fields.Date(string="Data disponibilità")
 

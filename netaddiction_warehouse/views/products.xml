@@ -9,6 +9,7 @@
             <field name="arch" type="xml">
             	<field name="available_date" position="after">
             		<field name="days_available" readonly="True"/>
+                    <field name="days_shipping" readonly="True"/>
             	</field>
             </field>
         </record>

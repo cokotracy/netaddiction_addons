@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+        
+
+        <record id="netaddiction_shipping_time_setting" model="ir.ui.view">
+            <field name="name">Configura Orari Spedizioni</field>
+            <field name="model">netaddiction.shipping.time</field>
+            <field name="arch" type="xml">
+                <form string="Manifest" class="oe_form_configuration">
+                    <header>
+                        <button string="Save" type="object"
+                            name="execute" class="oe_highlight"/>
+                        or
+                        <button string="Cancel" type="object"
+                            name="cancel" class="oe_link"/>
+                    </header>
+                    
+                    <group>
+                        <div>
+                            <div>
+                                <label for="hour_available"/>
+                                <field name="hour_available"/>
+                            </div>
+                            <div>
+                                <label for="hour_not_available"/>
+                                <field name="hour_not_available"/>
+                            </div>
+                            <div>
+                                <label for="date_start_close"/>
+                                <field name="date_start_close"/>
+                            </div>
+                            <div>
+                                <label for="date_finish_close"/>
+                                <field name="date_finish_close"/>
+                            </div>
+                            <div>
+                                <label for="shipping_days"/>
+                                <field name="shipping_days"/>
+                            </div>
+                        </div>
+                    </group>
+                </form>
+            </field>
+        </record>
+
+        <record id="netaddiction_shipping_time_settings_action" model="ir.actions.act_window">
+            <field name="name">Configura Orari Spedizioni</field>
+            <field name="res_model">netaddiction.shipping.time</field>
+            <field name="view_id" ref="netaddiction_shipping_time_setting"/>
+            <field name="view_mode">form</field>
+            <field name="target">inline</field>
+        </record>
+
+        <menuitem id="netaddiction_shipping_time_setting_menu" name="Configura Orari Spedizioni"
+            parent="stock.menu_stock_config_settings" action="netaddiction_shipping_time_settings_action"/>
+    </data>
+</openerp>

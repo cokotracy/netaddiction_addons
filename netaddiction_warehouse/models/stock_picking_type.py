@@ -87,13 +87,13 @@ class StockPickingWave(models.Model):
                 qtys[pick.product_id.barcode]['qty_scraped'] += (qty_scraped - pick.qty_done)
                 qtys[pick.product_id.barcode]['scraped_wh'] = 'dif'
                 products[pick.product_id] = qtys[pick.product_id.barcode]
-        print products
+        #print products
         return products
 
     @api.model
     def is_in_wave(self,wave_id,product_id):
         result = self.search([('id','=',int(wave_id)),(product_id,'in','picking_ids.pack_operation_product_ids.product_id')])
-        print result
+        #print result
 
     @api.model
     def close_reverse(self,wave_id):
