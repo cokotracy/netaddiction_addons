@@ -44,10 +44,12 @@ class Products(models.Model):
 
         holiday = lib_holidays.LibHolidays()
         res = self.env["ir.values"].search([("name","=","hour_available")])
+        ha = '16:00'
         for r in res:
             ha = r.value
         hour_available = datetime.datetime.time(datetime.datetime.strptime(ha , '%H:%M'))
 
+        hna = '14:00'
         res = self.env["ir.values"].search([("name","=","hour_not_available")])
         for r in res:
             hna = r.value
@@ -72,7 +74,7 @@ class Products(models.Model):
             day += datetime.timedelta(days = 1)
 
         #se il giorno di consegna è festa allora aggiungo
-        day += datetime.timedelta(days = shipping_days)
+        day += datetime.timedelta(days = int(shipping_days))
 
         while holiday.is_holiday(day):
             day += datetime.timedelta(days = 1)
@@ -98,6 +100,8 @@ class Products(models.Model):
         holiday = lib_holidays.LibHolidays()
         today = datetime.date.today()
         res = self.env["ir.values"].search([("name","=","hour_not_available")])
+
+        hna = '14:00'
         for r in res:
             hna = r.value
         hour_not_available = datetime.datetime.time(datetime.datetime.strptime(hna , '%H:%M'))
