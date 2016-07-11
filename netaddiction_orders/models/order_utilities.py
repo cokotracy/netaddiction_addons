@@ -8,14 +8,27 @@ class OrderUtilities(models.TransientModel):
 
 
     @api.one
-    def get_cart(self,user_id):
+    def get_cart(self,user_id=False, order_id=False):
         """
         Restiusce il carrello dell'utente(ordine in draft) identificato da user_id, se non esiste lo crea.
         Se l'utente non esiste ritorna False
         """
+        if order_id :
+            order = self.env["sale.order"].search([("id","=",order_id)])
+            if order.state == 'draft':
+                return order
+            else:
+                user_id =False
+
+        if not user_id:
+            #get user
+            pub_user_id = self.env['ir.model.data'].get_object('netaddiction_orders', 'public_user').id
+            return self.env["sale.order"].create({"partner_id":pub_user_id, "state":"draft"}) 
+            
         usr = self.env["res.partner"].search([("id","=",user_id)])
         if not usr:
-            return False
+            pub_user_id = self.env['ir.model.data'].get_object('netaddiction_orders', 'public_user').id
+            return self.env["sale.order"].create({"partner_id":pub_user_id, "state":"draft"})
 
         if len(usr.sale_order_ids) > 0:
             ord_lst = self.env["sale.order"].search([("partner_id","=",user_id)],order="create_date desc")

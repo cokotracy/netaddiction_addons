@@ -408,6 +408,32 @@ class PositivityExecutor(models.TransientModel):
 
 
     def auth_and_check(self,partner_id,partner_email,amount,token,order_id):
+        """Metodo che si interfaccia con BNL per effettuare una autorizzazione e conferma di un pagamento.
+        se l'operazione ha successo, viene cambiato lo stato status della cc in confirm nel pagamento corrispondente nell'ordine di id = order_id. Se non viene trovato un pagamento corrispondente ne crea uno.
+        
+        Returns:
+        - La PaymentConfirmResponse 
+        Raise:
+        - PaymentException se non c'è un pagamento associato all'ordine con l'amount indicato, se l'order id è sbagliato o se BNL ritorna errrore
+        -Le eccezioni legate alle chiamate SOAP
+
+
+        esempio di return se corretto
+        (PaymentAuthResponse){
+            tid = "06822153"
+            rc = "IGFS_000"
+            error = False
+            errorDesc = "TRANSAZIONE OK"
+            signature = "zMMcEqHlXfm4Gamj74PrYyoJ5trSu6AFJyGzvPPKOI4="
+            shopID = "25374297"
+            tranID = 3062266680697637
+            authCode = "276671"
+            brand = "MASTERCARD"
+            maskedPan = "540117******2227"
+            payInstrToken = "26dc14f2a44709f89e7fa0ce8f629870"
+            status = "C"
+ }
+        """
         order, cc_journal, payment = self._check_payment(order_id,amount)
         
   

@@ -3,6 +3,8 @@ import openerp
 from openerp import models, fields, api
 from openerp.exceptions import ValidationError
 from hashids import Hashids
+from datetime import datetime, timedelta
+
 
 class Affiliate(models.Model):
     """ATTENZIONE: se l'affiliato non ha commissioni viene usato self.commission_percent su ogni prodotto
@@ -11,7 +13,7 @@ class Affiliate(models.Model):
     _rec_name = 'control_code'
 
     active = fields.Boolean(string="Attivo", default=True)
-    control_code = fields.Char(string = "Codice di controllo")
+    control_code = fields.Integer(string = "Codice di controllo")
     homepage = fields.Char(string = "Sito")
     commission_percent = fields.Float(string="Percentuale commissioni", default = 5.0)
     date_account_created = fields.Datetime(string="Data creazione")
@@ -88,7 +90,7 @@ class Affiliate(models.Model):
     def check_order(self, order):
         gift_gained = 0.0
         if not self.exclude:
-            if len(self.commission) > 0:
+            if self.commission_id:
                 for commission in self.commission_id:
                     expression = commission.expression_id
                     dom = expression.find_products_domain()
@@ -96,15 +98,16 @@ class Affiliate(models.Model):
                     for ol in order.order_line:
                         if ol.product_id.id in prod_ids:
                             gift_gained += (ol.price_total/100) * commission.commission_percent
-                if gift_gained > 0.0:
-                    self.partner_id.add_gift_value(gift_gained, "Affiliate")
+                # if gift_gained > 0.0:
+                #     self.partner_id.add_gift_value(gift_gained, "Affiliate")
             else:
                 for ol in order.order_line:
                     gift_gained += (ol.price_total/100) * self.commission_percent
-                if gift_gained > 0.0:
-                    self.partner_id.add_gift_value(gift_gained, "Affiliate")
+                # if gift_gained > 0.0:
+                #     self.partner_id.add_gift_value(gift_gained, "Affiliate")
 
         return gift_gained
+
 
 
             
@@ -190,7 +193,8 @@ class AffiliateOrderHistory(models.Model):
 
     order_id = fields.Many2one(comodel_name='sale.order', string='Ordine',index=True, copy=False, required=True)
     affiliate_id = fields.Many2one(comodel_name='netaddiction.partner.affiliate', string='Affiliate',index=True, copy=False, required=True)
-    commission = fields.Float(string="commissioni guadagnate")
+    commission = fields.Float(string="Commissioni guadagnate")
+    assigned = fields.Boolean(string="Commissioni assegnate")
 
 
 class AffiliateUtilities(models.TransientModel):
@@ -199,15 +203,37 @@ class AffiliateUtilities(models.TransientModel):
     @api.one
     def order_to_affiliate(self,order_id,hashed_affiliate_id):
         salt = self.env["ir.config_parameter"].search([("key","=","affiliate.salt")]).value
+        print salt
+
         hashids = Hashids(salt=salt)
+        print hashids.encode(hashed_affiliate_id)
+        print hashids.decode(hashed_affiliate_id)
         order = self.env["sale.order"].search([("id","=",order_id)])
-        affiliate = self.env["netaddiction.partner.affiliate"].search([("control_code","=",hashids.decode(hashed_affiliate_id))])
+        affiliate = self.env["netaddiction.partner.affiliate"].search([("control_code","=",hashids.decode(hashed_affiliate_id)[0])])
         if order and affiliate:
             order_ids = [oh.order_id.id for oh in affiliate.orders_history]
             if order.id not in order_ids:
                 commission_value = affiliate.check_order(order)
-                self.env["netaddiction.partner.affiliate.order.history"].create({'order_id': order.id, 'affiliate_id':affiliate.id,'commission':commission_value})
-                affiliate.tot_gift_history += commission_value
+                self.env["netaddiction.partner.affiliate.order.history"].create({'order_id': order.id, 'affiliate_id':affiliate.id,'commission':commission_value, 'assigned':False})
+                #affiliate.tot_gift_history += commission_value
+    
+    @api.model
+    def register_commissions(self):
+        orders = self.env["netaddiction.partner.affiliate.order.history"].search([("assigned","=",False)])
+        for order in orders:
+            if not order.affiliate_id.exclude and order.order_id.state == "done" and (datetime.now() - datetime.strptime(order.order_id.date_done, '%Y-%m-%d %H:%M:%S')) > timedelta(days = 15):
+                order.affiliate_id.partner_id.add_gift_value(order.commission, "Affiliate")
+                order.affiliate_id.tot_gift_history += order.commission
+                order.assigned = True
+
+
+
+class Order(models.Model):
+    _inherit = 'sale.order'
+
+    date_done = fields.Datetime(string="Data messo in completato")
+
+
             
 
 

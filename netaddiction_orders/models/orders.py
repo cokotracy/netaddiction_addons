@@ -4,6 +4,7 @@ from openerp import models, fields, api
 from openerp.tools import float_is_zero, float_compare, DEFAULT_SERVER_DATETIME_FORMAT
 from openerp import _
 from openerp.exceptions import Warning
+import datetime
 
 
 class Order(models.Model):
@@ -20,6 +21,7 @@ class Order(models.Model):
     ], string='Status', readonly=True, copy=False, index=True)
 
     ip_address = fields.Char(string="Indirizzo IP")
+    
 
     ##############
     # ACTION STATE#
@@ -108,6 +110,8 @@ class Order(models.Model):
                     all_paid = all_paid and p.state == 'posted'
                 if all_paid:
                    super(Order, order).action_done()
+                   if self.state=='done':
+                        self.date_done = fields.Datetime.now()
                 else:
                     raise Warning(_('I pagamenti non sono completati'))
             else:

@@ -77,6 +77,7 @@
                                      <field name="order_id" attrs="{'readonly': 1}"/>
                                      <field name="affiliate_id" attrs="{'readonly': 1}"/>
                                      <field name="commission" attrs="{'readonly': 1}"/>
+                                     <field name="assigned" attrs="{'readonly': 1}"/>
                                  
                                 </tree>
                               </field>

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data noupdate="1">
+    <record model="res.partner" id="public_user">
+
+
+    <field name="name">Public user</field>
+    <field name="customer"eval="True"/>
+    <field name="active" eval="False"/>
+
+</record>
+    </data>
+</openerp>
