@@ -10,7 +10,7 @@
             <field name="name">Assegnazione gift ad affiliati</field>
             <field name="user_id" ref="base.user_root"/>
             <field name="interval_number">1</field>
-            <field name="interval_type">months</field>
+            <field name="interval_type">days</field>
             <field name="numbercall">-1</field>
             <field eval="False" name="doall"/>
             <field eval="'netaddiction.partner.affiliate.utilities'" name="model"/>

@@ -5,7 +5,7 @@
 
 
     <field name="name">Public user</field>
-    <field name="customer"eval="True"/>
+    <field name="customer" eval="True"/>
     <field name="active" eval="False"/>
 
 </record>

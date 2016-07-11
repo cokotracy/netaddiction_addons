@@ -453,6 +453,8 @@ class BonusOffer(models.Model):
     active = fields.Boolean(string='Attivo', help="Permette di spengere l'offerta senza cancellarla",default=True)
     author_id = fields.Many2one(comodel_name='res.users',string='Autore', required=True)
     company_id = fields.Many2one(comodel_name='res.company', string='Company', required=True)
+    only_one = fields.Boolean(string='Un solo Bonus a scelta', default=True)
+    text = fields.Text("testo offerta")
    
     qty_selled = fields.Float( string='Quantità venduta', default=0.0)
     
