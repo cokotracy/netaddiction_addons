@@ -13,7 +13,7 @@
                 <xpath expr="//sheet/group/group" position="replace">
                         <field name="type" attrs="{'invisible': [('parent_id','=', False)]}" groups="base.group_no_one"/>
 
-                                  <field name="is_default_delivery_address"
+                                  <field name="is_default_address"
                             attrs="{'invisible':[('type', '!=', 'delivery')]}"/>
 
                                 <field name="company_address" string="Azienda" attrs="{'readonly': [('type', '=', 'contact'),('parent_id', '!=', False)],'invisible':[('parent_id','=', False),('customer','=',True)]}"/>
@@ -75,16 +75,16 @@
                     position="after">
 
                     <div>
-                        <field name="is_default_delivery_address" attrs="{'invisible':[('parent_id', '=', False)]}"/>
-                        <label for="is_default_delivery_address" attrs="{'invisible':[('parent_id', '=', False)]}"/>
+                        <field name="is_default_address" attrs="{'invisible':[('parent_id', '=', False)]}"/>
+                        <label for="is_default_address" attrs="{'invisible':[('parent_id', '=', False)]}"/>
                     </div>
                 </xpath>
                
 
                 <xpath expr="//field[@name='child_ids']/kanban/templates/t[@t-name='kanban-box']/div/div/field[@name='name']" position="before">
-                    <field name="is_default_delivery_address" invisible="1"/>
+                    <field name="is_default_address" invisible="1"/>
                     <div>
-                    <h5 attrs="{'invisible':[('is_default_delivery_address', '=', False)],}" >
+                    <h5 attrs="{'invisible':[('is_default_address', '=', False)],}" >
                         <font color="blue">INDIRIZZO DI DEFAULT </font></h5>
                   
                     </div>
@@ -101,8 +101,8 @@
                 </xpath>
                 <xpath expr="//field[@name='child_ids']/form/sheet/group" position="before">
                     <div attrs="{'invisible' : [('supplier','=',True)]}">
-                        <field name="is_default_delivery_address" />
-                        <label for="is_default_delivery_address" />
+                        <field name="is_default_address" />
+                        <label for="is_default_address" />
                     </div>
                 </xpath>
                 <xpath expr="//field[@name='child_ids']/form/sheet/group" position="replace">
