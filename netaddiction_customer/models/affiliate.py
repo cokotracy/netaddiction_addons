@@ -203,11 +203,9 @@ class AffiliateUtilities(models.TransientModel):
     @api.one
     def order_to_affiliate(self,order_id,hashed_affiliate_id):
         salt = self.env["ir.config_parameter"].search([("key","=","affiliate.salt")]).value
-        print salt
 
         hashids = Hashids(salt=salt)
-        print hashids.encode(hashed_affiliate_id)
-        print hashids.decode(hashed_affiliate_id)
+
         order = self.env["sale.order"].search([("id","=",order_id)])
         affiliate = self.env["netaddiction.partner.affiliate"].search([("control_code","=",hashids.decode(hashed_affiliate_id)[0])])
         if order and affiliate:
@@ -221,7 +219,7 @@ class AffiliateUtilities(models.TransientModel):
     def register_commissions(self):
         orders = self.env["netaddiction.partner.affiliate.order.history"].search([("assigned","=",False)])
         for order in orders:
-            if order.order_id.state == "done" and (datetime.now() - order.date_done) < timedelta(days = 15):
+            if not order.affiliate_id.exclude and order.order_id.state == "done" and (datetime.now() - datetime.strptime(order.order_id.date_done, '%Y-%m-%d %H:%M:%S')) > timedelta(days = 15):
                 order.affiliate_id.partner_id.add_gift_value(order.commission, "Affiliate")
                 order.affiliate_id.tot_gift_history += order.commission
                 order.assigned = True

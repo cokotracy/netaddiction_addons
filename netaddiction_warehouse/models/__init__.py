@@ -9,3 +9,4 @@ import orders_reverse
 import partner
 import products
 import stock_picking_type
+import lib_holidays

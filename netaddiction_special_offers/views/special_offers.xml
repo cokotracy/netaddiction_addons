@@ -349,6 +349,7 @@
                  <tree name="special_offers_bonus list">
                     <field name="name"/>
                     <field name="author_id"/>
+                    <field name="only_one"/>
 
                 </tree>
             </field>
@@ -372,6 +373,8 @@
                             <group name="loc_left" class="oe_left" col="2">
                                 <field name="author_id"/>
                                 <field name="company_id"/>
+                                <field name="only_one"/>
+
                                
                                 <field name="id"  attrs="{'invisible': True}"/>
                              
@@ -380,7 +383,7 @@
 
                         </group>
                         
-
+                        <field name="text" placeholder="Testo offerta...."/>
                    <h1 >Lista Prodotti</h1>
                     <field name="products_list" mode="tree" >
                         

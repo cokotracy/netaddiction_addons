@@ -7,6 +7,10 @@ class Customers(models.Model):
 
     is_b2b = fields.Boolean(string="B2B", compute="_compute_b2b", default="False", search = "_search_b2b")
 
+    favorite_payment_method = fields.Many2one('account.journal', string='Metodo di pagamento preferito')
+
+    payment_term_id = fields.Many2one('account.payment.term', string='Termine di pagamento')
+
     @api.depends('property_product_pricelist')
     def _compute_b2b(self):
     	# se la pricelist è diversa da quella base di odoo (id=1)
