@@ -27,7 +27,11 @@
                     <button name="action_partial_done" states="sale,problem" type="object" string="Parzialmente Completato"
                         class="btn btn-warning fa fa-star-half-o"/>
 
-                    <button name="action_confirm" states="draft,problem" type="object" string="In lavorazione" class="btn btn-warning fa fa-star-o"/>
+                    <button name="manual_confirm"  type="object" string="In lavorazione" class="btn btn-warning fa fa-star-o" attrs="{'invisible' : ['|',('state','!=', 'draft'),('pricelist_id','!=',%(product.list0)d)]}"/>
+                        <button name="action_confirm"  type="object" string="In lavorazione" class="btn btn-warning fa fa-star-o" attrs="{'invisible' : ['|',('state','!=' , 'draft'),('pricelist_id','=',%(product.list0)d)]}"/>
+                        <button name="problem_confirm"  type="object" string="In lavorazione" class="btn btn-warning fa fa-star-o" attrs="{'invisible' : [('state','!=', 'problem')]}"/>
+
+                        
                     <button name="action_problems" string="Problema" type="object" states="sent,sale,processing,partial_done,draft" class=" btn btn-danger fa fa-exclamation-triangle"/>
 
                     <button name="action_cancel" states="draft,sent,sale,partial_done,problem,done" type="object" class=" btn btn-danger fa fa-trash" string="Annulla Ordine"/>

@@ -10,3 +10,4 @@ import partner
 import products
 import stock_picking_type
 import lib_holidays
+import autopreparation
