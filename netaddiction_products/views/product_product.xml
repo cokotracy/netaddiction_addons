@@ -7,6 +7,11 @@
             <field name="priority" eval="30"/>
             <field name="inherit_id" ref="stock.product_form_view_procurement_button"/>
             <field name="arch" type="xml">
+                <field name="name" position="replace">
+                    <field name="name"/>
+                    <button name="manage_aliases" type="object" string="Gestione Alias"/>
+                </field>
+
                 <button name="%(stock.product_open_quants)d" position="replace"/>
 
                 <button name="%(stock.product_open_orderpoint)d" position="replace">
@@ -238,6 +243,37 @@
                     </group>
                 </group>
             </field>
+        </record>
+
+        <record id="netaddiction_products_alias_view_list" model="ir.ui.view">
+            <field name="name">netaddiction_products.alias.list</field>
+            <field name="model">netaddiction_products.alias</field>
+            <field name="arch" type="xml">
+                <tree editable="top">
+                    <field name="name"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="netaddiction_products_alias_view_form" model="ir.ui.view">
+            <field name="name">netaddiction_products.alias.form</field>
+            <field name="model">netaddiction_products.alias</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <group>
+                            <field name="name"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="netaddiction_products_alias_action" model="ir.actions.act_window">
+            <field name="name">Alias</field>
+            <field name="res_model">netaddiction_products.alias</field>
+            <field name="view_type">form</field>
+            <field name="view_id" ref="netaddiction_products_alias_view_list"/>
         </record>
 
     </data>

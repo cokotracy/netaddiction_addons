@@ -28,6 +28,8 @@ class Products(models.Model):
 
     visible = fields.Boolean(string="Visibile",default="True")
 
+    alias_ids = fields.One2many('netaddiction_products.alias', 'product_id')
+
     out_date = fields.Date(string="Data di Uscita")
     out_date_approx_type = fields.Selection(string="Approssimazione Data",
         selection=(('accurate','Preciso'),('month','Mensile'),('quarter','Trimestrale'),
@@ -216,6 +218,28 @@ class Products(models.Model):
         attr = {'visible':value}
         self.write(attr)
 
+    @api.multi
+    def manage_aliases(self):
+        self.ensure_one()
+
+        return {
+            'name': 'Gestione alias di %s' % self.name,
+            'view_type': 'form',
+            'view_mode': 'list',
+            'view_id': False,
+            'res_model': 'netaddiction_products.alias',
+            'type': 'ir.actions.act_window',
+            'domain': [('product_id.id', '=', self.id)],
+            'target': 'new',
+            'flags': {
+                'action_buttons': True,
+                'pager': True,
+            },
+            'context': {
+                'default_product_id': self.id,
+            },
+        }
+
     #uccido la constrains di un unico attributo per tipo
     def _check_attribute_value_ids(self, cr, uid, ids, context=None):
         
@@ -374,3 +398,10 @@ class AttributeValue(models.Model):
     _inherit = 'product.attribute.value'
 
     company_id = fields.Many2one('res.company', related='attribute_id.company_id', store=True)
+
+
+class Alias(models.Model):
+    _name = 'netaddiction_products.alias'
+
+    product_id = fields.Many2one('product.product', required=True)
+    name = fields.Char('Nome')
