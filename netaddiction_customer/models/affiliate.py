@@ -203,11 +203,9 @@ class AffiliateUtilities(models.TransientModel):
     @api.one
     def order_to_affiliate(self,order_id,hashed_affiliate_id):
         salt = self.env["ir.config_parameter"].search([("key","=","affiliate.salt")]).value
-        print salt
 
         hashids = Hashids(salt=salt)
-        print hashids.encode(hashed_affiliate_id)
-        print hashids.decode(hashed_affiliate_id)
+
         order = self.env["sale.order"].search([("id","=",order_id)])
         affiliate = self.env["netaddiction.partner.affiliate"].search([("control_code","=",hashids.decode(hashed_affiliate_id)[0])])
         if order and affiliate:
