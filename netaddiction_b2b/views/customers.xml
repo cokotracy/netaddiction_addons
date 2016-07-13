@@ -10,7 +10,14 @@
             		<field name="is_b2b" invisible="True"/>
             		<b attrs="{'invisible' : [('is_b2b', '=', False)]}" style="color:red">B2B</b><br/>
             	</field>
+
+                <xpath expr="//page[@name='sales_purchases']/group/group/field[@name='user_id']" position="after">
+                        <field name="favorite_payment_method" attrs="{'invisible':[('is_b2b', '=', False)]}"/>
+                        <field name="payment_term_id" attrs="{'invisible':[('is_b2b', '=', False)]}"/>
+            
+                </xpath>
             </field>
+
         </record>
     </data>
 </openerp>

@@ -37,6 +37,7 @@ class StockPicking(models.Model):
             'user_id': orders[0].user_id and orders[0].user_id.id,
             'team_id': orders[0].team_id.id,
             'is_customer_invoice' : True,
+            'payment_term_id' : orders[0].partner_id.payment_term_id,
         }
 
         invoice = self.env["account.invoice"].create(invoice_vals)
