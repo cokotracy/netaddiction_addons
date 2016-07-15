@@ -19,6 +19,7 @@ class AccountPayment(models.Model):
     cc_selection = fields.Many2one( "netaddiction.partner.ccdata", string="associare carta")
 
     paypal_transaction_id = fields.Char(string='ID transazione paypal')
+    sofort_transaction_id = fields.Char(string='ID transazione sofort')
 
     @api.onchange('cc_selection')
     def onchange_cc_selection(self):

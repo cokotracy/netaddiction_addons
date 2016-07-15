@@ -6,10 +6,6 @@
             <field name="key">paypal.key</field>
             <field name="value">pollepayl43vsfes</field>
         </record>
-        <record id="paypal_iv" model="ir.config_parameter">
-            <field name="key">paypal.iv</field>
-            <field name="value">pollepayl43vsfer</field>
-        </record>
         <record id="paypal_username" model="ir.values">
             <field name="name">paypal_username</field>
             <field name="model">netaddiction.paypal.settings</field>

@@ -20,9 +20,11 @@
         'views/positivity_executor.xml',
         'views/cod_register.xml',
         'views/sale.xml',
+        'views/sofort_configuration.xml',
         'data/paypal_salt.xml',
         'data/positivity_salt.xml',
         'data/account_journal.xml',
-        'data/cash_on_delivery.xml'
+        'data/cash_on_delivery.xml',
+        'data/sofort_salt.xml',
     ]
 }
