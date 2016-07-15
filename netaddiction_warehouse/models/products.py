@@ -56,7 +56,7 @@ class Products(models.Model):
         hour_not_available = datetime.datetime.time(datetime.datetime.strptime(hna , '%H:%M'))
 
         time_now = datetime.datetime.time(datetime.datetime.now())
-        
+      
         #per prima cosa controllo se sono dopo hour_available
         #aggiungo un giorno di processing
         if self.days_available == 0 and time_now > hour_available:

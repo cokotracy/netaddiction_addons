@@ -212,6 +212,7 @@ class StockPicking(models.Model):
 
         self.number_of_pieces = pieces
 
+
     @api.one 
     def _get_total_import(self):
         total = 0.00

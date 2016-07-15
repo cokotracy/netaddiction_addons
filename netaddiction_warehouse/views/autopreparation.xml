@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+    	<record model="ir.actions.act_window" id="netaddiction_autopreparation_action">
+            <field name="name">Autopreparazione</field>
+            <field name="res_model">stock.picking</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="domain" eval="[('picking_type_id','=',ref('stock.picking_type_out'))]" />
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">Non ci sono Spedizioni.
+                </p>
+            </field>
+        </record>
+        
+        <menuitem id="netaddiction_autopreparation" name="Autopreparazione" parent="stock.menu_stock_warehouse_mgmt"
+                action="netaddiction_autopreparation_action" sequence="1"/>
+
+        <record id="netaddiction_search_stock_picking" model="ir.ui.view">
+            <field name="name">netaddiction.search_stock.picking</field>
+            <field name="model">stock.picking</field>
+            <field name="priority" eval="30"/>
+            <field name="inherit_id" ref="stock.view_picking_internal_search"/>
+            <field name="arch" type="xml">
+            	<search position="replace">
+            		<search string="Picking Lists">
+                        <filter name="available" string="Disponibili" domain="[('state','in',('assigned', 'partially_available'))]"/>
+                        <filter name="waiting" string="Attesa Disponibilità" domain="[('state','in', ('confirmed', 'waiting'))]"/>
+                        <separator/>
+                        <filter name="partial_done" string="Parzialmente Completati" domain="[('move_lines.procurement_id.sale_line_id.order_id.state','=','partial_done')]" />
+                        <filter name="sale" string="In Lavorazione" domain="[('move_lines.procurement_id.sale_line_id.order_id.state','=','sale')]" />
+                        <filter name="problem" string="Problema" domain="[('move_lines.procurement_id.sale_line_id.order_id.state','=','problem')]" />
+                        <separator/>
+                        <filter name="today" string="Previsti Oggi" domain="[('min_date','&gt;=',context_today().strftime('%%Y-%%m-%%d 00:00:00')),
+                        	('min_date','&lt;=',context_today().strftime('%%Y-%%m-%%d 23:59:59'))]"/>
+                        <filter name="today" string="In Ritardo" domain="[('min_date','&lt;',context_today().strftime('%%Y-%%m-%%d'))]"/>
+                        <separator/>
+                        <filter name="is_B2B" string="B2B" domain="[('move_lines.procurement_id.sale_line_id.order_id.pricelist_id','!=',%(product.list0)d)]" />
+                        <filter name="not_B2B" string="Escludi B2B" domain="[('move_lines.procurement_id.sale_line_id.order_id.pricelist_id','=',%(product.list0)d)]" />
+                        <separator/>
+                        <filter name="contrassegno" string="Contrassegno" domain="[('move_lines.procurement_id.sale_line_id.order_id.payment_method_id','=',%(netaddiction_payments.contrassegno_journal)d)]" />
+                        <filter name="cc" string="Carta di Credito" domain="[('move_lines.procurement_id.sale_line_id.order_id.payment_method_id','=',%(netaddiction_payments.cc_journal)d)]" />
+                        <filter name="pp" string="PayPal" domain="[('move_lines.procurement_id.sale_line_id.order_id.payment_method_id','=',%(netaddiction_payments.paypal_journal)d)]" />
+                        <filter name="sofort" string="Bonifico" domain="[('move_lines.procurement_id.sale_line_id.order_id.payment_method_id','=',%(netaddiction_payments.sofort_journal)d)]" />
+                        <filter name="zero" string="Zero" domain="[('move_lines.procurement_id.sale_line_id.order_id.payment_method_id','=',%(netaddiction_payments.zeropay_journal)d)]" />
+
+                        <filter name="payment_done" string="Pagato" domain="[('move_lines.procurement_id.sale_line_id.order_id.account_payment_ids.state','=','posted')]" />
+                        <filter name="payment_draft" string="Non Pagato" domain="[('move_lines.procurement_id.sale_line_id.order_id.account_payment_ids.state','=','draft')]" />
+
+                        <separator/>
+                        <filter name="inwave" string="In Lista" domain="[('wave_id','!=',False)]"/>
+                        <filter name="not_wave" string="Non in Lista" domain="[('wave_id','=',False)]"/>
+                        <separator/>
+                        <group expand="0" string="Group By">
+	                        <filter string="Stato" domain="[]" context="{'group_by':'state'}"/>
+	                        <filter string="Data Ordine" domain="[]" context="{'group_by':'date'}"/>
+	                        <filter string="Data Prevista" domain="[]" context="{'group_by':'min_date'}"/>
+	                        <filter name="picking_type" string="Tipo" domain="[]" context="{'group_by':'picking_type_id'}"/>
+	                        <filter name="wave" string="Lista" domain="[]" context="{'group_by':'wave_id'}"/>
+	                        <filter name="partner" string="Desctinatario" domain="[]" context="{'group_by':'partner_id'}"/>
+	                    </group>
+	                    <field name="partner_id" filter_domain="[('partner_id','child_of',self)]"/>
+                        <field name="product_id" filter_domain="[('product_id.barcode','=',self)]" string="Barcode Prodotto"/>
+                        <field name="product_id" filter_domain="[('product_id.id','=',self)]" string="Id Prodotto"/>
+                        <field name="product_id" string="Nome Prodotto"/>
+                        <field name="wave_id"/>
+            		</search>
+            	</search>
+            </field>
+        </record>
+
+        <record id="netaddiction_tree_stock_picking" model="ir.ui.view">
+            <field name="name">netaddiction.tree.stock.picking</field>
+            <field name="model">stock.picking</field>
+            <field name="priority" eval="30"/>
+            <field name="inherit_id" ref="stock.vpicktree"/>
+            <field name="arch" type="xml">
+                <field name="location_dest_id" invisible="1"/>
+                <field name="origin" position="after">
+                	<field name="sale_order_status"/>
+                	<field name="sale_order_payment_method"/>
+                </field>
+            </field>
+        </record>
+    </data>
+</openerp>

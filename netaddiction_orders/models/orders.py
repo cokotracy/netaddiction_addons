@@ -234,6 +234,10 @@ class Order(models.Model):
                 super(Order, order).action_confirm()
                 if order.gift_discount > 0.0:
                     order.partner_id.remove_gift_value(order.gift_discount)
+
+    @api.multi
+    def problem_confirm(self):
+        self.state = 'sale'
     
     @api.multi
     def action_cancel(self):

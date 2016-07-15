@@ -471,6 +471,27 @@ class StockPicking(models.Model):
 
     date_of_shipping_home = fields.Date(string="Data di consegna" , compute = "_compute_date_of_shipping")
 
+    #serie di campi computati che servono solo per l'autopreparazione
+    sale_order_status = fields.Selection([
+        ('draft', 'Nuovo'),
+        ('sent', 'Preventivo Inviato'),
+        ('sale', 'In Lavorazione'),
+        ('partial_done', 'Parzialmente Completato'),
+        ('problem', 'Problema'),
+        ('done', 'Completato'),
+        ('cancel', 'Annullato'),
+    ], string='Stato Ordine', readonly=True, compute =  "_get_sale_order_status")
+
+    sale_order_payment_method = fields.Many2one('account.journal', string='Metodo di pagamento', compute = "_get_sale_order_payment")
+
+    @api.one 
+    def _get_sale_order_status(self):
+        self.sale_order_status = self.sale_id.state
+
+    @api.one 
+    def _get_sale_order_payment(self):
+        self.sale_order_payment_method = self.sale_id.payment_method_id
+
     @api.one 
     def _compute_date_of_shipping(self):
         days = int(self.carrier_id.time_to_shipping)

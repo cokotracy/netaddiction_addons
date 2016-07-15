@@ -16,7 +16,9 @@
                         <button name="action_partial_done" states="sale,problem" type="object" string="Parzialmente Completato"
                             class="btn btn-warning fa fa-star-half-o"/>
 
-                        <button name="manual_confirm" states="draft,problem" type="object" string="In lavorazione" class="btn btn-warning fa fa-star-o"/>
+                        <button name="manual_confirm"  type="object" string="In lavorazione" class="btn btn-warning fa fa-star-o" attrs="{'invisible' : ['|',('state','not in',['draft']),('pricelist_id','!=',%(product.list0)d)]}"/>
+                        <button name="action_confirm"  type="object" string="In lavorazione" class="btn btn-warning fa fa-star-o" attrs="{'invisible' : ['|',('state','not in',['draft']),('pricelist_id','=',%(product.list0)d)]}"/>
+                        <button name="problem_confirm"  type="object" string="In lavorazione" class="btn btn-warning fa fa-star-o" attrs="{'invisible' : [('state','=',['problem'])]}"/>
 
                         <button name="action_problems" string="Problema" type="object" states="sent,sale,processing,partial_done,draft" class=" btn btn-danger fa fa-exclamation-triangle"/>
 
@@ -107,26 +109,23 @@
                     <search string="Search Sales Order">
                     <field name="name" string="Sales Order" filter_domain="['|',('name','ilike',self),('client_order_ref','ilike',self)]"/>
                     <field name="partner_id" operator="child_of"/>
-                    <field name="user_id"/>
-                    <field name="team_id" string="Sales Team"/>
-                    <field name="project_id"/>
-                    <field name="product_id"/>
-
-
+                    <field name="product_id" filter_domain="[('product_id.barcode','=',self)]" string="Barcode Prodotto"/>
+                    <field name="product_id" filter_domain="[('product_id.id','=',self)]" string="Id Prodotto"/>
+                    <field name="product_id" string="Nome Prodotto"/>
                     <filter string="Nuovi" name="draft" domain="[('state','=','draft')]" />
                     <separator/>
                     <filter string="In Lavorazione" name="sales" domain="[('state','=','sale')]"/>
                     <filter string="Parzialmente Completati" domain="[('state','=','partial_done')]"/>
                     <filter string="Completati" domain="[('state','=','done')]"/>
+                    <filter string="Prenotazione" domain="[('order_line.product_id.out_date','&gt;=',context_today().strftime('%%Y-%%m-%%d'))]"/>
                     <separator/>
                     <filter string="Problema" domain="[('state','=','problem')]"/>
                     <filter string="Annullati" domain="[('state','=','cancel')]"/>
                     <separator/>                   
-                    <filter string="Unread Messages" name="message_needaction" domain="[('message_needaction','=',True)]"/>
                     <group expand="0" string="Group By">
-                        <filter string="Salesperson" domain="[]" context="{'group_by':'user_id'}"/>
-                        <filter name="customer" string="Customer" domain="[]" context="{'group_by':'partner_id'}"/>
-                        <filter string="Order Month" domain="[]" context="{'group_by':'date_order'}"/>
+                        <filter name="customer" string="Cliente" domain="[]" context="{'group_by':'partner_id'}"/>
+                        <filter string="Ordine Mese" domain="[]" context="{'group_by':'date_order'}"/>
+                        <filter string="Listino Prezzi" domain="[]" context="{'group_by':'pricelist_id'}"/>
                     </group>
 
                      

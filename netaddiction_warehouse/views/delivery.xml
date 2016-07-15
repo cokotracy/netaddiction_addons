@@ -38,6 +38,7 @@
             <field name="arch" type="xml">
                 <field name="min_date" position="after">
                     <field name="date_of_shipping_home" readonly="True"/>
+                    <field name="sale_id" attrs="{'invisible' : [('picking_type_id','!=',%(stock.picking_type_out)d)]}"/>
                 </field>
             </field>
         </record>
