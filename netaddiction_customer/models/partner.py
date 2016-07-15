@@ -18,9 +18,22 @@ class Partner(models.Model):
 
         for s in self:
             if len(s.parent_id) > 0 and s.customer:
-                res.append((s.id, s.name + ', ' + s.city + ' ' + s.street + ' ' + s.street2))
+                name = ''
+                if s.name is not False:
+                   name += s.name + ', '
+                if s.city is not False:
+                   name += s.city + ' '
+                if s.street is not False:
+                   name += s.street + ' '
+                if s.street2 is not False:
+                   name += s.street2 + ' '
+
+                res.append((s.id, name))
             else:
-                res.append((s.id, s.name))
+                name = ''
+                if s.name is not False:
+                   name += s.name 
+                res.append((s.id, name))
 
         return res
 

@@ -83,6 +83,12 @@
                 <xpath expr="//notebook/page[2]" position="attributes">
                     <attribute name="invisible">1</attribute>
                 </xpath>
+
+                <notebook position="inside">
+                    <page name="comment" string="Commento Cliente">
+                        <field name="customer_comment" readonly="1"/>
+                    </page>
+                </notebook>
             </field>
         </record>
 

@@ -21,6 +21,8 @@ class Order(models.Model):
     ], string='Status', readonly=True, copy=False, index=True)
 
     ip_address = fields.Char(string="Indirizzo IP")
+
+    customer_comment = fields.Text(string="Commento Cliente")
     
 
     ##############
