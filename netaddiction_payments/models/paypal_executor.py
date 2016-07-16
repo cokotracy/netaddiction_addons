@@ -26,7 +26,7 @@ class PaypalExecutor(models.TransientModel):
     def get_express_checkout_link(self,amount,returnurl,cancelurl,email):
         """ Primo metodo da chiamare per effettuare un pagamento su paypal
             Parametri:
-            -amount: quantità da pagare
+            -amount: quantità da pagare, IMPORTANTE: COMPRESE SPESE DI SPEDIZIONE
             -returnurl: url a cui reindirizzare l'utente in caso di successo nel pagamento expres_checkout
             -cancelurl: url a cui reindirizzare l'utente in caso di fallimento nel pagamento expres_checkout
             -email: email del cliente
