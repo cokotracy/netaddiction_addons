@@ -106,18 +106,21 @@ class Order(models.Model):
     @api.multi
     def action_done(self):
         for order in self:
-            if self.account_payment_ids:
-                all_paid = True
-                for p in self.account_payment_ids:
-                    all_paid = all_paid and p.state == 'posted'
-                if all_paid:
-                   super(Order, order).action_done()
-                   if self.state=='done':
-                        self.date_done = fields.Datetime.now()
+            if not order.is_b2b:
+                if self.account_payment_ids:
+                    all_paid = True
+                    for p in self.account_payment_ids:
+                        all_paid = all_paid and p.state == 'posted'
+                    if all_paid:
+                       super(Order, order).action_done()
+                       if self.state=='done':
+                            self.date_done = fields.Datetime.now()
+                    else:
+                        raise Warning(_('I pagamenti non sono completati'))
                 else:
                     raise Warning(_('I pagamenti non sono completati'))
             else:
-                raise Warning(_('I pagamenti non sono completati'))
+                super(Order, order).action_done()
 
 
     @api.multi

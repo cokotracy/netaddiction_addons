@@ -15,6 +15,9 @@
     'data': [
         'views/customers.xml',
         'views/pricelist.xml',
-        'views/orders.xml'
+        'views/orders.xml',
+        'data/report.xml',
+        'data/bolla_b2b.xml',
+        'views/wave.xml'
     ]
 }
