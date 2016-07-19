@@ -1,2 +1,2 @@
 # -*- coding: utf-8 -*-
-import pricelist, products, customers, orders, stock_picking, autopreparation,account
+import pricelist, customers, orders, stock_picking, autopreparation,account
