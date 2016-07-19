@@ -17,12 +17,15 @@ class Orders(models.Model):
 
     @api.multi
     def action_confirm(self):
+        self.order_line.check_limit_and_action()
         res = super(Orders,self).action_confirm()
         if len(self.picking_ids)==0:
             self.create_shipping()
             self.set_delivery_price()
             for pick in self.picking_ids:
                 pick.generate_barcode()
+        for line in self.order_line:
+            line.product_id.do_action_quantity()   
         return True
 
     @api.multi
@@ -216,6 +219,20 @@ class Orders(models.Model):
 class SaleOrderLine(models.Model):
 
     _inherit="sale.order.line"
+
+    #controlla l'azione da fare sul prodotto al raggiungimento della qty disponibile
+    @api.multi
+    def check_limit_and_action(self):
+        order_lines = {}
+        for line in self:
+            if line.product_id not in order_lines:
+                order_lines[line.product_id] = 0
+            order_lines[line.product_id] += line.product_qty
+        
+        for product in order_lines:
+            product.check_quantity_product(order_lines[product])
+
+            
 
     @api.multi
     def simulate_shipping(self, confirm_order = False):
@@ -681,3 +698,4 @@ class StockMove(models.Model):
         if procs_to_check:
             procurement_obj.check(cr, uid, list(procs_to_check), context=context)
         return res
+

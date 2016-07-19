@@ -14,6 +14,46 @@ class Products(models.Model):
 
     days_shipping = fields.Integer(string="Consegnato in (in giorni)", compute = "_get_days_shipping")
 
+    @api.multi 
+    def check_quantity_product(self,qty_ordered):
+        """
+        serve a fare i controlli sulla quantità ordinata
+        qty_ordered è la quantità totale nell'ordine/carrello
+        """
+        self.ensure_one()
+        qty_limit = self.qty_limit
+        qty_single = self.qty_single_order
+        action = self.limit_action
+        #controllo quantità massima ordinabile per singolo ordine
+        if qty_single > 0:
+            if qty_ordered > qty_single:
+                message = "Non puoi ordinare piu di %s pezzi per %s " % (qty_single,self.display_name)
+                raise ProductOrderQuantityExceededException(self.id,message)
+        #controllo che non vada sotto la quantità limite
+        qty_residual = self.qty_available_now - qty_ordered
+
+        if qty_residual < qty_limit:
+            res = abs(self.qty_available_now) - abs(qty_limit)
+            message = "Non puoi ordinare piu di %s pezzi per %s " % (res,self.display_name)
+            raise ProductOrderQuantityExceededLimitException(self.id,message)
+
+    @api.multi
+    def do_action_quantity(self):
+        """
+        funzione che spegne o mette esaurito il prodotto in base alla quantità disponibie e quantità limite
+        """
+        qty_limit = self.qty_limit
+        qty_single = self.qty_single_order
+        action = self.limit_action
+        #a questo punto faccio le operazioni sullo spegnimento
+        if self.qty_available_now <= qty_limit:
+            if action == 'no_purchasable':
+                self.sale_ok = False
+            if action == 'deactive':
+                self.visible = False
+
+
+
     @api.one 
     def _get_days_available(self):
         today = datetime.date.today()
@@ -333,8 +373,8 @@ class ConfigShippingTime(models.TransientModel):
     hour_available = fields.Char(string="Ora oltre la quale la spedizione non è più immediata ma slitta a domani",default="16:00")
     hour_not_available = fields.Char(string="Ora oltre la quale la spedizione di prodotti non presenti in magazzino slitta di un giorno",default="14:00")
 
-    date_start_close = fields.Date(string="Giorno di inizio chiusura magazzino")
-    date_finish_close = fields.Date(string="Giorno di fine chiusura magazzino")
+    #date_start_close = fields.Date(string="Giorno di inizio chiusura magazzino")
+    #date_finish_close = fields.Date(string="Giorno di fine chiusura magazzino")
 
     shipping_days = fields.Integer(string="Giorni di spedizione di default (può essere anche una media)")
 
@@ -346,13 +386,13 @@ class ConfigShippingTime(models.TransientModel):
     def set_shipping_days(self,values):
         self.env['ir.values'].create({'name':'shipping_days','value':self.shipping_days,'model':'netaddiction.shipping.time'})
 
-    @api.one
-    def set_date_start_close(self,values):
-        self.env['ir.values'].create({'name':'date_start_close','value':self.date_start_close,'model':'netaddiction.shipping.time'})
+    #@api.one
+    #def set_date_start_close(self,values):
+    #    self.env['ir.values'].create({'name':'date_start_close','value':self.date_start_close,'model':'netaddiction.shipping.time'})
 
-    @api.one
-    def set_date_finish_close(self,values):
-        self.env['ir.values'].create({'name':'date_finish_close','value':self.date_finish_close,'model':'netaddiction.shipping.time'})
+    #@api.one
+    #def set_date_finish_close(self,values):
+    #    self.env['ir.values'].create({'name':'date_finish_close','value':self.date_finish_close,'model':'netaddiction.shipping.time'})
 
     @api.one
     def set_hour_not_available(self,values):
@@ -364,10 +404,40 @@ class ConfigShippingTime(models.TransientModel):
         attr = {
             'hour_available' : '16:00',
             'hour_not_available' : '14:00',
-            'date_finish_close' : '',
-            'date_start_close' : '',
+     #       'date_finish_close' : '',
+     #       'date_start_close' : '',
             'shipping_days' : 1
         }
         for v in values:
             attr[v.name] = v.value
         return attr
+
+class ProductOrderQuantityExceededException(Exception):
+    def __init__(self, product_id,  err_str):
+        super(ProductOrderQuantityExceededException, self).__init__(product_id)
+        self.var_name = 'confirm_exception_product'
+        self.err_str = err_str
+        self.product_id = product_id
+
+        
+    def __str__(self):
+        s = u"Errore prodotto %s : %s " %(self.product_id, self.err_str)
+        return s
+    def __repr__(self):
+        s = u"Errore prodotto %s : %s " %(self.product_id, self.err_str)
+        return s
+
+class ProductOrderQuantityExceededLimitException(Exception):
+    def __init__(self, product_id,  err_str):
+        super(ProductOrderQuantityExceededLimitException, self).__init__(product_id)
+        self.var_name = 'confirm_exception_product_limit'
+        self.err_str = err_str
+        self.product_id = product_id
+
+        
+    def __str__(self):
+        s = u"Errore prodotto %s : %s " %(self.product_id, self.err_str)
+        return s
+    def __repr__(self):
+        s = u"Errore prodotto %s : %s " %(self.product_id, self.err_str)
+        return s

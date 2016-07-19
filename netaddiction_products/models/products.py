@@ -241,6 +241,8 @@ class Products(models.Model):
             },
         }
 
+    
+
     #uccido la constrains di un unico attributo per tipo
     def _check_attribute_value_ids(self, cr, uid, ids, context=None):
         

@@ -8,7 +8,7 @@ import datetime
 class ProductMargin(models.Model):
     _inherit="sale.order.line"
 
-    margin = fields.Float(string="Margine Prodotto", compute="_calculate_product_margin", store = False, digits_compute= dp.get_precision('Product Price'))
+    margin_new = fields.Float(string="Margine Prodotto", compute="_calculate_product_margin", store = False, digits_compute= dp.get_precision('Product Price'))
 
     purchase_price_real = fields.Float(string="Costo", compute = "_calculate_purchase_price_real", digits_compute= dp.get_precision('Product Price'))
 
@@ -128,21 +128,21 @@ class ProductMargin(models.Model):
             #MOD TASSE
             #qua prendo tutti i prezzi indipendentemente dall'iva
             price_unit = self.product_id.taxes_id.compute_all(self.price_unit)['total_excluded']
-            self.margin = (price_unit * (self.product_qty-self.qty_reverse)) - (self.purchase_price_real * (self.product_qty-self.qty_reverse)) + cont_value
+            self.margin_new = (price_unit * (self.product_qty-self.qty_reverse)) - (self.purchase_price_real * (self.product_qty-self.qty_reverse)) + cont_value
         else:
-            self.margin = 0
+            self.margin_new = 0
 
 
 class OrderMargin(models.Model):
     _inherit="sale.order"
 
-    margin = fields.Float(string="Margine", compute="_calculate_order_margin", store = False, digits_compute= dp.get_precision('Product Price'),
+    margin_new = fields.Float(string="Margine", compute="_calculate_order_margin", store = False, digits_compute= dp.get_precision('Product Price'),
         help="Il margine è calcolato solo sui prodotti (escluse le spese di spedizione) ed è scorporato dell'iva") 
 
     @api.one
     def _calculate_order_margin(self):
-        margin = 0
+        margin_new = 0
         for line in self.order_line:
-            margin += line.margin
+            margin_new += line.margin_new
             
-        self.margin = margin
+        self.margin_new = margin_new
