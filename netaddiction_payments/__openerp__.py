@@ -20,6 +20,7 @@
         'views/positivity_executor.xml',
         'views/cod_register.xml',
         'views/sale.xml',
+        'views/stock.xml',
         'views/sofort_configuration.xml',
         'data/paypal_salt.xml',
         'data/positivity_salt.xml',

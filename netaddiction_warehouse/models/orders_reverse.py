@@ -96,7 +96,7 @@ class OrdersReverse(models.Model):
         self.ensure_one()
 
         if len(self.account_payment_ids) > 0:
-            return self.account_payment_ids[0].id
+            return self.account_payment_ids[0]
 
         return False
 

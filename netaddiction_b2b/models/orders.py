@@ -17,8 +17,11 @@ class Orders(models.Model):
 
     @api.constrains('partner_id','pricelist_id')
     def set_b2b(self):
-        self.is_b2b = self.partner_id.is_b2b
-        self.delivery_option = 'asap'
+        if self.partner_id.is_b2b:
+            self.is_b2b = self.partner_id.is_b2b
+            self.delivery_option = 'asap'
+            self.carrier_id = self.pricelist_id.carrier_id
+            self.payment_method_id = self.partner_id.favorite_payment_method
 
 
     @api.multi

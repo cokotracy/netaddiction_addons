@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+    	<report
+            id="netaddiction_bolla_di_spedizione_b2b"
+            model="account.invoice"
+            string="Bolla di Spedizione B2B"
+            report_type="qweb-pdf"
+            name="netaddiction_b2b.bolla_di_spedizione_b2b"
+            file="netaddiction_b2b.bolla_di_spedizione_b2b"
+        />
+    </data>
+</openerp>

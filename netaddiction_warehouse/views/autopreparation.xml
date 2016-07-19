@@ -35,8 +35,8 @@
                         	('min_date','&lt;=',context_today().strftime('%%Y-%%m-%%d 23:59:59'))]"/>
                         <filter name="today" string="In Ritardo" domain="[('min_date','&lt;',context_today().strftime('%%Y-%%m-%%d'))]"/>
                         <separator/>
-                        <filter name="is_B2B" string="B2B" domain="[('move_lines.procurement_id.sale_line_id.order_id.pricelist_id','!=',%(product.list0)d)]" />
-                        <filter name="not_B2B" string="Escludi B2B" domain="[('move_lines.procurement_id.sale_line_id.order_id.pricelist_id','=',%(product.list0)d)]" />
+                        <filter name="is_B2B" string="B2B" domain="[('move_lines.procurement_id.sale_line_id.order_id.is_b2b','=',True)]" />
+                        <filter name="not_B2B" string="Escludi B2B" domain="[('move_lines.procurement_id.sale_line_id.order_id.is_b2b','=',False)]" />
                         <separator/>
                         <filter name="contrassegno" string="Contrassegno" domain="[('move_lines.procurement_id.sale_line_id.order_id.payment_method_id','=',%(netaddiction_payments.contrassegno_journal)d)]" />
                         <filter name="cc" string="Carta di Credito" domain="[('move_lines.procurement_id.sale_line_id.order_id.payment_method_id','=',%(netaddiction_payments.cc_journal)d)]" />
@@ -79,6 +79,17 @@
                 <field name="origin" position="after">
                 	<field name="sale_order_status"/>
                 	<field name="sale_order_payment_method"/>
+                </field>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="netaddiction_stock_picking_new_field">
+            <field name="name">netaddiction.stock.picking.new.field</field>
+            <field name="model">stock.picking</field>
+            <field name="inherit_id" ref="stock.view_picking_form"/>
+            <field name="arch" type="xml">
+                <field name="location_id" position="after">
+                    <field name = "sale_order_payment_method"/>
                 </field>
             </field>
         </record>
