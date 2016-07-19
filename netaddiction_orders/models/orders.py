@@ -223,19 +223,26 @@ class Order(models.Model):
     @api.multi
     def action_confirm(self):
         for order in self:
-            problems = False
-            problems = order._check_offers_catalog() 
-            problems = order._check_offers_cart() or problems
-            problems = order._check_offers_vaucher() or problems
-            self._check_digital_bonus()
-            #TODO se c'è un commento spostare in problem non in sale
-            if problems or order.amount_total < 0:
-            #TODO aggiungere il commento sul perchè
-                order.state = 'problem'
-            else:
-                super(Order, order).action_confirm()
-                if order.gift_discount > 0.0:
-                    order.partner_id.remove_gift_value(order.gift_discount)
+            if order.state == 'draft':
+
+                for order_line in order.order_line:
+                    if not order_line.product_id.active or not order_line.product_id.sale_ok:
+                        raise ProductSoldOutOrderConfirmException(order.id,"prodotto %s attivo: %s sale_ok: %s" %(order_line.product_id.name,order_line.product_id.active,order_line.product_id.sale_ok))
+
+                
+                problems = False
+                problems = order._check_offers_catalog() 
+                problems = order._check_offers_cart() or problems
+                problems = order._check_offers_vaucher() or problems
+                self._check_digital_bonus()
+                #TODO se c'è un commento spostare in problem non in sale
+                if problems or order.amount_total < 0:
+                #TODO aggiungere il commento sul perchè
+                    order.state = 'problem'
+                else:
+                    super(Order, order).action_confirm()
+                    if order.gift_discount > 0.0:
+                        order.partner_id.remove_gift_value(order.gift_discount)
 
     @api.multi
     def problem_confirm(self):
@@ -364,3 +371,19 @@ class SaleOrderLine(models.Model):
                     line.qty_to_invoice = line.qty_delivered - line.qty_invoiced
             else:
                 line.qty_to_invoice = 0
+
+
+class ProductSoldOutOrderConfirmException(Exception):
+    def __init__(self, order_id,err_str):
+        super(ProductSoldOutOrderConfirmException, self).__init__(order_id)
+        self.var_name = 'confirm_exception'
+        self.err_str = err_str
+        self.order_id = order_id
+
+        
+    def __str__(self):
+        s = u"Errore durante la conferma dell'ordine %s : %s " %(self.order_id, self.err_str)
+        return s
+    def __repr__(self):
+        s = u"Errore durante la conferma dell'ordine %s : %s " %(self.order_id, self.err_str)
+        return s
