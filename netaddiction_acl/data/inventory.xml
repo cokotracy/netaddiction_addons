@@ -10,14 +10,14 @@
 
         <record id="netaddiction_inventory_sp" model="res.groups">
             <field name="name">Spara pacchi</field>
-            <field name="category_id" ref="netaddiction_inventory_group"/>
+            <field name="category_id" ref="netaddiction_sale_optional_group"/>
             <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
         </record>
 
         <record id="netaddiction_inventory_user" model="res.groups">
             <field name="name">Utente</field>
             <field name="category_id" ref="netaddiction_inventory_group"/>
-            <field name="implied_ids" eval="[(4, ref('base.group_user')),(4, ref('netaddiction_products_data_entry_user_base')),(4, ref('netaddiction_purchase_user')),(4,ref('netaddiction_sale_user')),(4, ref('netaddiction_inventory_sp'))]"/>
+            <field name="implied_ids" eval="[(4, ref('base.group_user')),(4, ref('netaddiction_products_data_entry_user_base')),(4, ref('netaddiction_purchase_user')),(4,ref('netaddiction_sale_user'))]"/>
         </record>
 
         <record id="netaddiction_inventory_user_plus" model="res.groups">
@@ -37,6 +37,10 @@
         
 
         <!--MENU-->
+        <record id="netaddiction_warehouse.netaddiction_autopreparation" model="ir.ui.menu">
+            <field name="groups_id" eval="[(4, ref('netaddiction_inventory_user_plus'))]"/>
+        </record>
+
         <record id="stock.menu_stock_inventory_control" model="ir.ui.menu">
             <field name="groups_id" eval="[(4, ref('netaddiction_inventory_user')),(4, ref('netaddiction_products_data_entry_user_base'))]"/>
         </record>

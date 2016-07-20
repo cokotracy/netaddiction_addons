@@ -25,17 +25,18 @@ class Products(models.Model):
         qty_single = self.qty_single_order
         action = self.limit_action
         #controllo quantità massima ordinabile per singolo ordine
-        if qty_single > 0:
-            if qty_ordered > qty_single:
-                message = "Non puoi ordinare piu di %s pezzi per %s " % (qty_single,self.display_name)
-                raise ProductOrderQuantityExceededException(self.id,message)
-        #controllo che non vada sotto la quantità limite
-        qty_residual = self.qty_available_now - qty_ordered
+        if action != 'nothing':
+            if qty_single > 0:
+                if qty_ordered > qty_single:
+                    message = "Non puoi ordinare piu di %s pezzi per %s " % (qty_single,self.display_name)
+                    raise ProductOrderQuantityExceededException(self.id,message)
+            #controllo che non vada sotto la quantità limite
+            qty_residual = self.qty_available_now - qty_ordered
 
-        if qty_residual < qty_limit:
-            res = abs(self.qty_available_now) - abs(qty_limit)
-            message = "Non puoi ordinare piu di %s pezzi per %s " % (res,self.display_name)
-            raise ProductOrderQuantityExceededLimitException(self.id,message)
+            if qty_residual < qty_limit:
+                res = abs(self.qty_available_now) - abs(qty_limit)
+                message = "Non puoi ordinare piu di %s pezzi per %s " % (res,self.display_name)
+                raise ProductOrderQuantityExceededLimitException(self.id,message)
 
     @api.multi
     def do_action_quantity(self):

@@ -183,22 +183,17 @@ class Invoice(models.Model):
         self.purchase_id = False
         return {}
 
-#MOD TASSE
-#class InvoiceLine(models.Model):
-#    _inherit = "account.invoice.line"
-#
-#    price_compute_tax = fields.Float(string="Prezzo Ivato",store=True, compute="_compute_tax_price",digits_compute= dp.get_precision('Product Price'))
-#    tax_value = fields.Float(string="Imposta",store=True, compute="_compute_tax_price",digits_compute= dp.get_precision('Product Price')) 
-#
-#    @api.one
-#    @api.depends('product_id','price_unit','invoice_line_tax_ids','quantity')
-#    def _compute_tax_price(self):
-        #MOD TAX
+class InvoiceLine(models.Model):
+    _inherit = "account.invoice.line"
 
-        #tax_amount = self.invoice_line_tax_ids.amount
-        #if tax_amount:
-        #    self.price_compute_tax = self.price_subtotal * (float(1)+float(tax_amount/100))
-        #    self.tax_value = self.price_compute_tax - self.price_subtotal
-        #else:
-        #    self.price_compute_tax = self.price_subtotal
-        #    self.tax_value = self.price_compute_tax - self.price_subtotal
+    price_compute_tax = fields.Float(string="Totale",store=True, compute="_compute_tax_price",digits_compute= dp.get_precision('Product Price'))
+    tax_value = fields.Float(string="Prezzo Imposta",store=True, compute="_compute_tax_price",digits_compute= dp.get_precision('Product Price')) 
+    invoice_date = fields.Date(string="Data Fattura", related="invoice_id.date_invoice", store=True)
+
+    @api.one
+    @api.depends('product_id','price_unit','invoice_line_tax_ids','quantity')
+    def _compute_tax_price(self):
+        result = self.invoice_line_tax_ids.compute_all(self.price_unit * self.quantity)
+
+        self.tax_value = result['total_included'] - result['total_excluded']
+        self.price_compute_tax = result['total_included']

@@ -9,7 +9,9 @@
                 <pivot string="Invoice Line">
                     <field name="create_date" interval="month" type="row"/>
                     <field name="quantity" type="measure"/>
-                    <field name="price_subtotal" type="measure"/>
+                    <field name="price_subtotal_signed" type="measure"/>
+                    <field name="tax_value" type="measure"/>
+                    <field name="price_compute_tax" type="measure"/>
                 </pivot>
             </field>
         </record>
@@ -20,14 +22,15 @@
             <field name="type">search</field>
             <field name="arch" type="xml">
             	<search>
-	                <filter name="Iva 22%" domain="[('invoice_line_tax_ids','like','22')]"/>
-	                <filter name="Iva 4%" domain="[('invoice_line_tax_ids','like','4')]"/>
-	                <filter name="Iva Esente" domain="['|','|',('invoice_line_tax_ids','=',False),('invoice_line_tax_ids','like','Fuori'),('invoice_line_tax_ids','like','374')]"/>
+                    <filter name="out_invoice" string="Clienti" domain="[('invoice_id.type','=','out_invoice')]"/>
+                    <filter name="out_refund" string="Note di Credito Clienti" domain="[('invoice_id.type','=','out_refund')]"/>
+                    <filter name="in_invoice" string="Fornitori" domain="[('invoice_id.type','=','in_invoice')]"/>
+                    <filter name="in_refund" string="Note di Credito Fornitori" domain="[('invoice_id.type','=','out_refund')]"/>
 	                <separator/>
-	                <filter name="Non Pagate" domain="[('invoice_id.state','!=','paid')]"/>
-	                <filter name="Pagate" domain="[('invoice_id.state','=','paid')]"/>
-                    <separator/>
-                    <filter name="refunds" string="Note di Credito" domain="[('invoice_id.state','in',['open','paid']),('invoice_id.type','in',('out_refund','in_refund'))]"/>
+                    <filter name="draft" string="Bozze" domain="[('invoice_id.state','=','draft')]"/>
+                    <filter name="open" string="Aperte" domain="[('invoice_id.state','=','open')]"/>
+                    <filter name="paid" string="Pagate" domain="[('invoice_id.state','=','paid')]"/>
+                    <filter name="cancel" string="Annullate" domain="[('invoice_id.state','=','cancel')]"/>
 	            </search>
             </field>
         </record>
