@@ -17,9 +17,8 @@ class Cron(models.Model):
         calcola i margini dei prodotti e degli ordini
     	"""
         orders = self.env['sale.order'].search([('is_complete_margin','=',False)])
-        
+       
         for order in orders:
-            count += 1
             margin_new = 0
             marginate = 0
             for line in order.order_line:
