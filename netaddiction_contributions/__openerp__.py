@@ -15,6 +15,8 @@
         'netaddiction_purchase_orders','netaddiction_account','netaddiction_warehouse'],
     'data': [
         'views/contribution.xml',
-        'views/orders.xml'
+        'views/orders.xml',
+        'data/cron.xml',
+        'data/contribution_product.xml'
     ]
 }

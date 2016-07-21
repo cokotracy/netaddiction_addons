@@ -8,9 +8,12 @@ import datetime
 class ProductMargin(models.Model):
     _inherit="sale.order.line"
 
-    margin_new = fields.Float(string="Margine Prodotto", compute="_calculate_product_margin", store = False, digits_compute= dp.get_precision('Product Price'))
+    #margin_new = fields.Float(string="Margine Prodotto", compute="_calculate_product_margin", store = False, digits_compute= dp.get_precision('Product Price'))
 
-    purchase_price_real = fields.Float(string="Costo", compute = "_calculate_purchase_price_real", digits_compute= dp.get_precision('Product Price'))
+    #purchase_price_real = fields.Float(string="Costo", compute = "_calculate_purchase_price_real", digits_compute= dp.get_precision('Product Price'))
+    
+    margin_new = fields.Float(string="Margine Prodotto",digits_compute= dp.get_precision('Product Price'))
+    purchase_price_real = fields.Float(string="Costo",digits_compute= dp.get_precision('Product Price'))
 
     @api.one 
     def _calculate_purchase_price_real(self):
@@ -136,13 +139,16 @@ class ProductMargin(models.Model):
 class OrderMargin(models.Model):
     _inherit="sale.order"
 
-    margin_new = fields.Float(string="Margine", compute="_calculate_order_margin", store = False, digits_compute= dp.get_precision('Product Price'),
-        help="Il margine è calcolato solo sui prodotti (escluse le spese di spedizione) ed è scorporato dell'iva") 
+    #margin_new = fields.Float(string="Margine", compute="_calculate_order_margin", store = True, digits_compute= dp.get_precision('Product Price'),
+    #    help="Il margine è calcolato solo sui prodotti (escluse le spese di spedizione) ed è scorporato dell'iva") 
 
-    @api.one
-    def _calculate_order_margin(self):
-        margin_new = 0
-        for line in self.order_line:
-            margin_new += line.margin_new
+    margin_new = fields.Float(string="Margine Ordine", digits_compute= dp.get_precision('Product Price'))
+    
+    is_complete_margin = fields.Boolean(string="Margina calcolato", default = False)
+    #@api.one
+    #def _calculate_order_margin(self):
+    #    margin_new = 0
+    #    for line in self.order_line:
+    #        margin_new += line.margin_new
             
-        self.margin_new = margin_new
+    #    self.margin_new = margin_new
