@@ -43,7 +43,9 @@ class Products(models.Model):
                 attr['seller_ids'].append({
                     'id' : sup.name.id,
                     'name' : sup.name.name,
-                    'price' : sup.price
+                    'price' : sup.price,
+                    'delay' : sup.delay,
+                    'avail_qty' : sup.avail_qty 
                     })
             result.append(attr)
         return result

@@ -129,8 +129,13 @@
                                 <td data-field="seller">
                                     <select name="supplier" class="supplier">
                                         <option name=""></option>
-                                        <t t-foreach="product.seller_ids" t-as="supinfo">
-                                            <option t-attf-value="{{supinfo.id}}"><t t-esc="supinfo.name"/> - <t t-esc="supinfo.price"/>€</option>
+                                        <t t-foreach="product.seller_ids" t-as="sup">
+                                            <t t-if="sup.avail_qty == 0">
+                                                <option t-attf-value="{{sup.id}}" style="background-color:red !important;color:black"><t t-esc="sup.name"/> - <t t-esc="sup.price"/>€- Consegna: <t t-esc="sup.delay"/> gg </option>
+                                            </t>
+                                            <t t-if="sup.avail_qty != 0">
+                                                <option t-attf-value="{{sup.id}}" style="background-color:green !important;color:black"><t t-esc="sup.name"/> - <t t-esc="sup.price"/>€- Consegna: <t t-esc="sup.delay"/> gg </option>
+                                            </t>
                                         </t>
                                     </select>
                                 </td>
