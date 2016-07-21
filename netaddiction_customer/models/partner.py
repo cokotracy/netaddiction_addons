@@ -7,7 +7,8 @@ class Partner(models.Model):
     _inherit = 'res.partner'
 
     is_default_address = fields.Boolean(string="Indirizzo di Default")
-    company_address = fields.Char(string="Azienda")
+    #in realtà è il cazzo di nome dell'azienda del partner (in linguaggio normale RAGIONE SOCIALE - thanks to Bozzi)
+    company_address = fields.Char(string="Ragione Sociale")
     rating = fields.Selection([('0', 'Negativo'), ('1', 'Medio'), ('2', 'Positivo')], string='Rating', default="2")
     email_rating = fields.Selection([('A+', 'A+'), ('A', 'A'), ('B', 'B'), ('C', 'C'), ('D', 'D'), ('E', 'E'), ('F', 'F'), ('', 'Non valutato')], string='Email Rating', default='')
     birthdate = fields.Date(string="Data di nascita")
@@ -19,19 +20,19 @@ class Partner(models.Model):
         for s in self:
             if len(s.parent_id) > 0 and s.customer:
                 name = ''
-                if s.name is not False:
+                if s.name:
                    name += s.name + ', '
-                if s.city is not False:
+                if s.city:
                    name += s.city + ' '
-                if s.street is not False:
+                if s.street:
                    name += s.street + ' '
-                if s.street2 is not False:
+                if s.street2:
                    name += s.street2 + ' '
 
                 res.append((s.id, name))
             else:
                 name = ''
-                if s.name is not False:
+                if s.name:
                    name += s.name 
                 res.append((s.id, name))
 

@@ -22,6 +22,11 @@
         <record id="stock.menu_stock_general_settings" model="ir.ui.menu">
             <field name="groups_id" eval="[(4, ref('netaddiction_god'))]"/>
         </record>
+        <record id="base.menu_sale_config" model="ir.ui.menu">
+            <field name="groups_id" eval="[(6,0, [ref('netaddiction_god')])]"/>
+        </record>
+
+        
 
         <record id="netaddiction_god_manifest_settings" model="ir.model.access">
             <field name="name">netaddiction manifest settings</field>

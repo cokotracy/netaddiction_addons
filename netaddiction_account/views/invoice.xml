@@ -49,5 +49,48 @@
                  <filter name="invoices" position="replace"/>
             </field>
         </record>
+
+        <record model="ir.ui.view" id="netaddiction_invoice_search">
+            <field name="name">netaddiction.invoice.search</field>
+            <field name="model">account.invoice</field>
+            <field name="inherit_id" ref="account.view_account_invoice_filter"/>
+            <field name="arch" type="xml">
+                <search position="replace">
+                    <search>
+                        <filter name="out_invoice" string="Clienti" domain="[('type','=','out_invoice')]"/>
+                        <filter name="out_refund" string="Note di Credito Clienti" domain="[('type','=','out_refund')]"/>
+                        <filter name="in_invoice" string="Fornitori" domain="[('type','=','in_invoice')]"/>
+                        <filter name="in_refund" string="Note di Credito Fornitori" domain="[('type','=','out_refund')]"/>
+                        <separator/>
+                        <filter name="draft" string="Bozze" domain="[('state','=','draft')]"/>
+                        <filter name="open" string="Aperte" domain="[('state','=','open')]"/>
+                        <filter name="paid" string="Pagate" domain="[('state','=','paid')]"/>
+                        <filter name="cancel" string="Annullate" domain="[('state','=','cancel')]"/>
+                        <group expand="0" string="Group By">
+                            <filter name="group_by_partner_id" string="Partner" context="{'group_by':'partner_id'}"/>
+                            <filter name="status" string="Stato" context="{'group_by':'state'}"/>
+                            <separator/>
+                        </group>
+                        <field name="partner_id" operator="child_of"/>
+                        <field name="date" string="Period"/>
+                    </search>
+                </search>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="netaddiction_invoice_pivot">
+            <field name="name">netaddiction.invoice.pivot</field>
+            <field name="model">account.invoice</field>
+            <field name="inherit_id" ref="account.view_invoice_pivot"/>
+            <field name="arch" type="xml">
+                <pivot position="replace">
+                    <pivot string="Invoices" display_quantity="true">
+                        <field name="date_invoice" interval="month" type="row"/>
+                        <field name="amount_total_signed" type="measure"/>
+                        <field name="amount_tax" type="measure"/>
+                    </pivot>
+                </pivot>
+            </field>
+        </record>
     </data>
 </openerp>

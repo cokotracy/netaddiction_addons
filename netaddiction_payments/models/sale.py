@@ -76,7 +76,7 @@ class Order(models.Model):
 class StockPicking(models.Model):
     _inherit = 'stock.picking'
 
-    payment_id = fields.Many2one('account.payment', string='Metodo di pagamento', default=None)
+    payment_id = fields.Many2one('account.payment', string='Pagamento', default=None)
 
 
 

@@ -3,6 +3,7 @@
 from openerp import models, fields, api, tools
 from openerp.osv import fields as old_fields
 import openerp.addons.decimal_precision as dp
+import datetime
 
 class Products(models.Model):
     _inherit = 'product.product'
@@ -201,8 +202,67 @@ class Products(models.Model):
         return super(Products, self).create(cr, uid, vals, context)
 
     def write(self, cr, uid, ids, vals, context=None):
+        
         tools.image_resize_images(vals)
+        
+        product = self.browse(cr,uid,ids)
+        for pid in product:
+            pid.check_price_and_date(vals)
+
         return super(Products, self).write(cr, uid, ids, vals, context)
+
+    @api.one
+    def check_price_and_date(self,vals):
+        """
+        quando cambia il prezzo del prodotto ed è minore di quello precedente ed il prodotto è in prenotazione
+        deve andare a controllare negli ordini e cambiare il prezzo in questi ordini se il prezzo di questi ordini  maggiore
+        del nuovo prezzo altrimenti lascia quello già presente
+        """
+        actual_price = self.list_price
+        
+        today = datetime.date.today()
+        if self.out_date:
+            out_date = datetime.datetime.strptime(self.out_date,'%Y-%m-%d').date()
+            if out_date > today:
+                special = False
+                final = False
+                if 'special_price' in vals.keys():
+                    special = vals['special_price']
+                if 'final_price' in vals.keys():
+                    final = vals['final_price']
+                price = 0
+                if special:
+                    price = special
+                else:
+                    price = final
+
+                result_price = self.taxes_id.compute_all(price)
+                price_new = result_price['total_included']
+
+                result_list_price = self.taxes_id.compute_all(self.list_price)
+                list_price = result_list_price['total_included']
+
+                
+                if price_new < list_price:
+                    lines = self.env['sale.order.line'].search([('product_id','=',self.id),('order_id.state','!=','done')])
+                    for line in lines:
+                        res_price_unit = line.tax_id.compute_all(line.price_unit)
+                        price_unit = res_price_unit['total_included']
+                        if price < price_unit:
+                            line.write({'price_unit' : price})
+
+        if 'out_date' in vals:
+            #qua significa che ho modificato la data di uscita
+            old_out_date = datetime.datetime.strptime(self.out_date,'%Y-%m-%d').date()
+            new_out_date = datetime.datetime.strptime(vals['out_date'],'%Y-%m-%d').date()
+
+            if new_out_date != old_out_date and new_out_date > datetime.date.today():
+                pick = self.env['stock.picking'].search([('move_lines.product_id','=',self.id)])
+                pick.write({'min_date':new_out_date - datetime.timedelta(days = 1)})
+
+
+
+            
 
     def get_actual_price(self):
         #return self.special_price if (self.special_price>0.00) else self.final_price
@@ -241,6 +301,8 @@ class Products(models.Model):
             },
         }
 
+    
+
     #uccido la constrains di un unico attributo per tipo
     def _check_attribute_value_ids(self, cr, uid, ids, context=None):
         
@@ -249,6 +311,9 @@ class Products(models.Model):
     _constraints = [
         (_check_attribute_value_ids, 'Override', ['attribute_value_ids'])
     ]
+
+    
+
 
 class Template(models.Model):
     _inherit = 'product.template'

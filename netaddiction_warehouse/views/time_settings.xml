@@ -26,14 +26,14 @@
                                 <label for="hour_not_available"/>
                                 <field name="hour_not_available"/>
                             </div>
-                            <div>
+                           <!-- <div>
                                 <label for="date_start_close"/>
                                 <field name="date_start_close"/>
                             </div>
                             <div>
                                 <label for="date_finish_close"/>
                                 <field name="date_finish_close"/>
-                            </div>
+                            </div>-->
                             <div>
                                 <label for="shipping_days"/>
                                 <field name="shipping_days"/>
