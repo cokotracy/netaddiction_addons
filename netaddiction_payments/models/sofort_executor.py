@@ -17,7 +17,7 @@ class SofortExecutor(models.TransientModel):
 
 
 
-    def initiate_payment(self,success_url, abort_url, default_url, loss_url, refund_url, order_name, amount):
+    def initiate_payment(self,success_url, abort_url, default_url, order_name, amount):
         """
 
         Primo metodo da chiamare per effettuare un pagamento su Sofort
@@ -26,8 +26,6 @@ class SofortExecutor(models.TransientModel):
             -success_url: url a cui reindirizzare l'utente in caso di successo nel pagamento sofort
             -abort_url: url a cui reindirizzare l'utente in caso di fallimento nel pagamento sofort
             -default_url: url su cui ricevere la risposta da sofort. deve essere tipo 'http://9f372dbc.ngrok.io/bnl.php?trn={0}' con parametro 'trn' che  inserisce il metodo e che sarà restituito da sofort all'url indicato
-            -loss_url: url su cui ricevere la risposta da sofort. deve essere tipo 'http://9f372dbc.ngrok.io/bnl.php?trn={0}' con parametro 'trn' che  inserisce il metodo e che sarà restituito da sofort all'url indicato
-            -refund_url: url su cui ricevere la risposta da sofort. deve essere tipo 'http://9f372dbc.ngrok.io/bnl.php?trn={0}' con parametro 'trn' che  inserisce il metodo e che sarà restituito da sofort all'url indicato
             -order_name: nome dell'ordine
             Returns:
             -se tutto ok: un dizionario con chiavi 
@@ -49,15 +47,12 @@ class SofortExecutor(models.TransientModel):
         apikey = cypher.decrypt(key,encripted_apikey)
         project = cypher.decrypt(key,encripted_project)
 
-        print "%s %s %s " %(username, apikey, project)
         client = sofort.Client(username, apikey, project,
             success_url = success_url,
             abort_url = abort_url,
             country_code='IT',
             notification_urls = {
                 'default': default_url.format(sofort.TRANSACTION_ID),
-                'loss': loss_url.format(sofort.TRANSACTION_ID),
-                'refund': refund_url.format(sofort.TRANSACTION_ID),
             },
             reasons = ["acquisto su multiplayer.com: ordine %s" % order_name]
             )
@@ -91,7 +86,6 @@ class SofortExecutor(models.TransientModel):
             -altrimenti Raise PaymentException
 
         """
-        print "HERE"
         pp_aj = self.env['ir.model.data'].get_object('netaddiction_payments', 'sofort_journal')
         pay_inbound = self.env["account.payment.method"].search([("payment_type","=","inbound")])
         pay_inbound = pay_inbound[0] if isinstance(pay_inbound,list) else pay_inbound

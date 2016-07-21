@@ -59,7 +59,7 @@ class PositivityExecutor(models.TransientModel):
 
 
 
-    def enroll_3DS(self,partner_id,partner_email,url,token):
+    def enroll_3DS(self,partner_id,partner_email,url,token,order_id):
         """Metodo che si interfaccia con BNL per iniziare una verifica 3dsecure
         Returns:
         - La MPIEnrollResponse altrimenti
@@ -113,7 +113,6 @@ class PositivityExecutor(models.TransientModel):
     	
 
         response = client.service.enroll(request_data)
-        
 
         if response.error:
             raise payment_exception.PaymentException(payment_exception.CREDITCARD,"errore ritornato da BNL in risposta alla richiesta enroll 3DSecure %s"%response.errorDesc) 
@@ -168,9 +167,8 @@ class PositivityExecutor(models.TransientModel):
         request_data.expireYear = exp_year
         request_data.payInstrToken = token
         request_data.regenPayInstrToken = True
-        
+
         response = client.service.enroll(request_data)
-        
         
         if response.error:
             raise payment_exception.PaymentException(payment_exception.CREDITCARD,"errore ritornato da BNL in risposta alla richiesta di tokenizzazione %s"%response.errorDesc) 
@@ -261,7 +259,6 @@ class PositivityExecutor(models.TransientModel):
 
         response = client.service.auth(request_data)
         
-        
         if response.error:
             raise payment_exception.PaymentException(payment_exception.CREDITCARD,"errore ritornato da BNL in risposta alla richiesta di check card %s"%response.errorDesc) 
         else:
@@ -314,7 +311,6 @@ class PositivityExecutor(models.TransientModel):
         tid, kSig = self.get_tid_ksig_MOTO()
 
         shop_id = str(partner_id)+str(payment.id)+str(order_id) 
-        
         shop_user_ref = partner_email
         #token = cypher.hmacmd5(kSig,[pan,exp_month,exp_year])
         currency = "EUR"
@@ -335,8 +331,7 @@ class PositivityExecutor(models.TransientModel):
         request_data.currencyCode = currency
 
         response = client.service.auth(request_data)
-        
-        
+
         if response.error:
             raise payment_exception.PaymentException(payment_exception.CREDITCARD,"errore ritornato da BNL in risposta alla richiesta di auth %s"%response.errorDesc) 
         else:
@@ -395,11 +390,9 @@ class PositivityExecutor(models.TransientModel):
         request_data.refTranID = refTranID
         request_data.splitTran = False
         #request_data.payInstrToken = token
-        
 
         response = client.service.confirm(request_data)
-        
-        
+
         if response.error:
             raise payment_exception.PaymentException(payment_exception.CREDITCARD,"errore ritornato da BNL in risposta alla richiesta di confirm %s"%response.errorDesc) 
         else:
@@ -446,7 +439,6 @@ class PositivityExecutor(models.TransientModel):
         tid, kSig = self.get_tid_ksig_MOTO()
 
         shop_id = str(partner_id)+str(payment.id)+str(order_id) 
-        
         shop_user_ref = partner_email
         #token = cypher.hmacmd5(kSig,[pan,exp_month,exp_year])
         currency = "EUR"
@@ -467,8 +459,7 @@ class PositivityExecutor(models.TransientModel):
         request_data.currencyCode = currency
 
         response = client.service.auth(request_data)
-        
-        
+
         if response.error:
             raise payment_exception.PaymentException(payment_exception.CREDITCARD,"errore ritornato da BNL in risposta alla richiesta di auth %s"%response.errorDesc) 
         else:
@@ -509,13 +500,11 @@ class PositivityExecutor(models.TransientModel):
                 cc_journal  = self.env['ir.model.data'].get_object('netaddiction_payments','cc_journal')
                 token_card = self.env["netaddiction.partner.ccdata"].search([("token","=",token)])
                 inv_lst = []
-                pick_lst =[]
 
                 for line in order.order_line:
                     #resetto la qty_to_invoice di tutte le linee
                     line.qty_to_invoice = 0
-                for delivery in order.picking_ids:  
-                    pick_lst.append(delivery)                  
+                for delivery in order.picking_ids:                    
                     for stock_move in delivery.move_lines_related:
                         self._set_order_to_invoice(stock_move,order)
 
@@ -536,16 +525,7 @@ class PositivityExecutor(models.TransientModel):
                             #una spedizione potrebbe essere anche a costo zero, in quel caso non ci sono pagamenti
                             payment = self.env["account.payment"].create({"partner_type" : "customer", "partner_id" : order.partner_id.id, "journal_id" : cc_journal_id, "amount" : invoice.amount_total, "order_id" : order.id, "state" : 'draft', "payment_type" : 'inbound', "payment_method_id" : pay_inbound.id, "name" : name, 'communication' : order.name, 'cc_token':token,'cc_last_four':token_card.last_four,'cc_month':token_card.month,'cc_year':token_card.year,'cc_name':token_card.name,'cc_status':'init','cc_type':token_card.ctype })
 
-
-
                             payment.invoice_ids = [(4, inv, None) ]
-
-
-
-                            pick = [p for p in pick_lst if (isclose(p.total_import,payment.amount,abs_tol=0.009) and not p.payment_id)]
-                            
-                            if pick:
-                                pick[0].payment_id = payment.id
 
                         invoice.signal_workflow('invoice_open')
         else:

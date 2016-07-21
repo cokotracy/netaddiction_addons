@@ -6,7 +6,7 @@ from openerp import models
 class OrderUtilities(models.TransientModel):
     _name = "netaddiction.order.utilities"
 
-    def get_cart(self, partner_id=None, order_id=None, create=True):
+    def get_cart(self, partner_id=None, order_id=None, create=False):
         """
         Restiusce il carrello dell'utente (ordine in draft) identificato da partner_id, se non esiste lo crea.
         Se l'utente non esiste ritorna False
@@ -87,6 +87,8 @@ class OrderUtilities(models.TransientModel):
                         })
 
                         ol_bonus.product_id_change()
+
+            order.extract_cart_offers()
 
             return True
 

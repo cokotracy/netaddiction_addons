@@ -41,7 +41,12 @@ class Partner(models.Model):
     @api.one
     def update_default_address(self):
         if self.is_default_address and self.parent_id:
-            siblings = self.parent_id.child_ids.search([('id', '!=', self.id), ('type', '=', self.type)])
+            siblings = self.env['res.partner'].search([
+                ('parent_id', '=', self.parent_id.id),
+                ('id', '!=', self.id),
+                ('type', '=', self.type),
+                ('is_default_address', '=', True),
+            ])
             siblings.write({'is_default_address': False})
 
     @api.one

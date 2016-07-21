@@ -73,9 +73,11 @@ class ProductMixin(object):
         return {
             'id': self.solr_document_id,
             'model': self._name,
+            'pk': self.id,
             'company_id': self.company_id.id,
             'name': self.name,
             'description': self.description,
+            'alias': [alias.name for alias in self.alias_ids],
             'barcode': self.barcode,
             'category': self.categ_id.name,
             'date': out_date if out_date else available_date,

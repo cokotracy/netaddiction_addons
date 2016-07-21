@@ -2,7 +2,6 @@
 
 import csv
 
-from datetime import date
 from ftplib import FTP
 from io import BytesIO
 
@@ -20,20 +19,41 @@ class Cron(models.Model):
     def run(self):
         category_model = self.env['product.category']
         product_model = self.env['product.product']
+        pricelist_model = self.env['product.pricelist']
+
+        pricelist = pricelist_model.browse(15)  # TODO estrarre
 
         categories = category_model.search([])
         csv_files = {}
 
         for category in categories:
-            products = product_model.search([('categ_id', '=', category.id), ('qty_available_now', '>', 0)])  # TODO far fixare il compute_search a Matteo
+            products = product_model.search([('categ_id', '=', category.id), ('qty_available_now', '>', 0)])
+
             csv_buffer = BytesIO()
             csv_writer = csv.writer(csv_buffer)
             csv_name = '%s.csv' % category.name.replace(' ', '-').lower()
 
-            csv_writer.writerow((u'Prodotto', u'Quantità'))
+            csv_writer.writerow((
+                'ID',
+                'Barcode',
+                'Prodotto',
+                'Quantità',
+                'Prezzo',
+            ))
 
             for product in products:
-                csv_writer.writerow((unicode(product.name).encode('utf-8'), product.qty_available_now))
+                price = pricelist.price_get(product.id, 1)[pricelist.id]
+                price = round(product.taxes_id.compute_all(price)['total_excluded'], 2)
+
+                row = (
+                    product.id,
+                    product.barcode,
+                    unicode(product.name).encode('utf-8'),
+                    product.qty_available_now,
+                    price,
+                )
+
+                csv_writer.writerow(row)
 
             csv_buffer.seek(0)
 

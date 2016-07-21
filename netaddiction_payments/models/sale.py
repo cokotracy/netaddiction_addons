@@ -13,6 +13,7 @@ class Order(models.Model):
     payment_method_name = fields.Char(related='payment_method_id.name', string='Nome Pagamento')
     pay_pal_tran_id = fields.Char(string='ID transazione paypal')
     cc_selection = fields.Many2one('netaddiction.partner.ccdata', string='Carta di credito')
+    sofort_transaction_id = fields.Char()
 
 
     @api.one

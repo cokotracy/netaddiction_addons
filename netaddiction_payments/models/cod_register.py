@@ -21,52 +21,49 @@ def strip_keys(d):
 
 
 class CoDRegister(models.TransientModel):
-    
     _name = "netaddiction.cod.register"
 
     csv_file = fields.Binary('File')
 
-
-    @api.one
     def set_order_cash_on_delivery(self,order_id):
         """ imposta l'ordine con id 'order_id' per essere pagato con contrassegno se l'ordine è in draft (bozza) o in sale (lavorazione).
             Crea una fattura e un pagamento per ogni spedizione. Aggiunge spese di contrassegno.
         """
-        order = self.env["sale.order"].search([("id","=",order_id)])
+        order = self.env["sale.order"].search([("id", "=", order_id)])
         if order:
             if order.state == 'draft':
                 order.action_confirm()
 
             if order.state == 'sale':
-                contrassegno = self.env['ir.model.data'].get_object('netaddiction_payments', 'product_contrassegno')
+                contrassegno = self.env.ref('netaddiction_payments.product_contrassegno')
                 order.payment_method_id = self.env['ir.model.data'].get_object('netaddiction_payments', 'contrassegno_journal').id
                 inv_lst = []
 
                 for line in order.order_line:
-                    #resetto la qty_to_invoice di tutte le linee
+                    # resetto la qty_to_invoice di tutte le linee
                     line.qty_to_invoice = 0
                 for delivery in order.picking_ids:
-                    #aggiungo i contrassegni
+                    # aggiungo i contrassegni
                     values = {
-                    'order_id': order.id,
-                    'name': contrassegno.name,
-                    'product_uom_qty': 1,
-                    'product_uom': contrassegno.uom_id.id,
-                    'product_id': contrassegno.id,
-                    'is_delivery': True,
+                        'order_id': order.id,
+                        'name': contrassegno.name,
+                        'product_uom_qty': 1,
+                        'product_uom': contrassegno.uom_id.id,
+                        'product_id': contrassegno.id,
+                        'is_delivery': True,
                     }
                     sol = self.env['sale.order.line'].create(values)
                     sol.product_id_change()
-                    sol.qty_to_invoice  = 0
-                    
+                    sol.qty_to_invoice = 0
+
                     for stock_move in delivery.move_lines_related:
                         self._set_order_to_invoice(stock_move,order)
 
                     self.set_delivery_to_invoice(delivery,order,contrassegno.id)
 
                     inv_lst += order.action_invoice_create()
-                #aggiungo i pagamenti in contrassegno e li associo alle fatture
-                cod_aj = self.env['ir.model.data'].get_object('netaddiction_payments', 'contrassegno_journal')
+                # aggiungo i pagamenti in contrassegno e li associo alle fatture
+                cod_aj = self.env.ref('netaddiction_payments.contrassegno_journal')
                 pay_inbound = self.env["account.payment.method"].search([("payment_type","=","inbound")])
                 pay_inbound = pay_inbound[0] if isinstance(pay_inbound,list) else pay_inbound
                 if cod_aj and pay_inbound:
@@ -82,6 +79,9 @@ class CoDRegister(models.TransientModel):
 
                         invoice.signal_workflow('invoice_open')
 
+            return True
+
+        return False
 
 
 
@@ -94,7 +94,6 @@ class CoDRegister(models.TransientModel):
 
 
 
-    @api.one
     def _set_order_to_invoice(self,stock_move,order):
         """dato 'order' imposta qty_to_invoice alla quantità giusta solo per i prodotti che si trovano in 'stock_move'
         """
@@ -112,7 +111,7 @@ class CoDRegister(models.TransientModel):
             if qty <= 0:
                 break
 
-    @api.one
+
     def set_delivery_to_invoice(self,pick,order,cod_id):
         """dato 'order' imposta qty_to_invoice per una spedizione e un contrassegno
         """

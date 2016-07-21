@@ -10,15 +10,13 @@
                     <group>
                         <group>
                             <field name="expression"/>
+                            <field name="percent_price"/>
                         </group>
                         <group>
-                            <button type="object" name="populate_item_ids_from_expression" string="Aggiungi Prodotti" class="btn btn-primary"/>
+                            <button type="object" name="populate_item_ids_from_expression" string="Aggiungi Prodotti" class="btn btn-primary oe_edit_only"/>
                         </group>
                     </group>
                     <group>
-                        <group>                            
-                            <field name="carrier_id"/>
-                        </group>
                         <group>
                             <field name="carrier_price"/>
                         </group>

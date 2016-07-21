@@ -26,7 +26,7 @@ class OfferOrder(models.Model):
 
     @api.one
     def apply_vaucher(self):
-        public_pricelist = self.env.ref('product.list0')
+        public_pricelist = self.env.ref('product.list0')  # TODO query diretta a model.data
         if not self.pricelist_id or not public_pricelist or self.pricelist_id.id != public_pricelist.id:
             return
 
@@ -71,6 +71,10 @@ class OfferOrder(models.Model):
                             ovh = self.env['netaddiction.order.specialoffer.vaucher.history'].create({'product_id' : ol.product_id.id, 'order_id' : self.id, 'offer_type':offer.offer_type, 'qty' : ol.product_uom_qty, 'offer_author_id' : offer.author_id.id, 'offer_name' : offer.name, 'offer_id' : offer.id, 'fixed_discount':offer.fixed_discount, 'percent_discount': offer.percent_discount, 'offer_type': offer.offer_type,'order_line': ol.id})
                             ol.offer_vaucher_history = ovh.id
                 self._amount_all()
+
+                return True
+
+        return False
                             
 
 
@@ -123,8 +127,8 @@ class OfferOrder(models.Model):
             Ritorna la lista delle offerte ordinata per priorità
             Raise QtyMaxBuyableException nel caso in cui sia stata superata una qty_max_buyable
         """
-
-        if not self.pricelist_id or self.pricelist_id.id != 1:
+        public_pricelist = self.env.ref('product.list0')  # TODO query diretta a model.data
+        if not self.pricelist_id or self.pricelist_id.id != public_pricelist.id:
             return
 
 

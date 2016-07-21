@@ -159,6 +159,36 @@ class Orders(models.Model):
 
 
     @api.multi
+    def simulate_total_delivery_price(self, subdivision=None):
+        """
+        Restituisce il costo totale delle spedizioni.
+        """
+        self.ensure_one()
+
+        if subdivision is None:
+            subdivision = self.simulate_shipping()
+
+        prices = self.simulate_delivery_price(subdivision)
+
+        return sum(prices.values())
+
+
+    @api.multi
+    def simulate_total_amount(self, delivery_price=None):
+        """
+        Restituisce il costo totale dell'ordine simulando il costo delle spedizioni.
+        """
+        self.ensure_one()
+
+        if delivery_price is None:
+            delivery_price = self.simulate_total_delivery_price()
+
+        amount = self.amount_total + delivery_price
+
+        return amount
+
+
+    @api.multi
     def simulate_delivery_price(self,subdivision):
         """
         simula le spese di spedizione dovute
@@ -183,7 +213,7 @@ class Orders(models.Model):
 
 
         price_delivery_gratis = self.carrier_id.amount
-        total_delivery_price = defaultdict(dict)
+        total_delivery_price = {}
         for delivery_date in subdivision:
             subtotal = 0
             ship_gratis = False
@@ -193,9 +223,9 @@ class Orders(models.Model):
                     ship_gratis = True
 
             if subtotal >= price_delivery_gratis or ship_gratis or sped_vaucher:
-                total_delivery_price[delivery_date]['price'] = 0.00
+                total_delivery_price[delivery_date] = 0.00
             else:
-                total_delivery_price[delivery_date]['price'] = self.carrier_id.fixed_price
+                total_delivery_price[delivery_date] = self.carrier_id.fixed_price
 
         return total_delivery_price
 

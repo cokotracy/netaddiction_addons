@@ -7,9 +7,9 @@
 
     <field name="name">Gift</field>
     <field name="type">service</field>
-    <field name="sale_ok" eval="False"/>
+    <field name="sale_ok" eval="True"/>
     <field name="purchase_ok" eval="True"/>
-    <field name="visible" eval="True"/>
+    <field name="visible" eval="False"/>
     <field name="property_cost_method" >real</field>
     <field name="property_valuation" >real_time</field>
 </record>
