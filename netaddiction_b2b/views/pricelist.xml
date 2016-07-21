@@ -23,9 +23,6 @@
                         <group>
                             <field name="carrier_gratis"/>
                         </group>
-                        <group>
-                            <field name="def_percentage"/>
-                        </group>
                     </group>
                 </field>
             </field>
