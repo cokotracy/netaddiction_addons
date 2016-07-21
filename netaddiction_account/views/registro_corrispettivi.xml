@@ -31,6 +31,10 @@
                     <filter name="open" string="Aperte" domain="[('invoice_id.state','=','open')]"/>
                     <filter name="paid" string="Pagate" domain="[('invoice_id.state','=','paid')]"/>
                     <filter name="cancel" string="Annullate" domain="[('invoice_id.state','=','cancel')]"/>
+                    <separator/>
+                    <filter name="iva_22" string="Iva al 22%" domain="[('invoice_line_tax_ids.description','=','22v INC')]"/>
+                    <filter name="iva_ed" string="Iva assolta editore" domain="[('invoice_line_tax_ids.description','=','4ed')]"/>
+                    <filter name="iva_4" string="Iva zero" domain="[('invoice_line_tax_ids.description','=','00v')]"/>
 	            </search>
             </field>
         </record>

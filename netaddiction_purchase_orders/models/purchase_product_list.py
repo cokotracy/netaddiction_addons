@@ -3,6 +3,7 @@
 from openerp import models, fields, api
 from collections import defaultdict
 from datetime import datetime,date,timedelta
+from openerp.exceptions import Warning
 
 class Products(models.Model):
     _inherit = "product.product"
@@ -52,6 +53,13 @@ class Products(models.Model):
 
 class PurchaseOrders(models.Model):
     _inherit="purchase.order"
+
+    READONLY_STATES_NEW = {
+        #'purchase': [('readonly', True)],
+        #'done': [('readonly', True)],
+        'cancel': [('readonly', True)],
+    }
+    order_line = fields.One2many('purchase.order.line', 'order_id', string='Order Lines', states=READONLY_STATES_NEW, copy=True)
 
     @api.model
     def put_in_order(self,products):
@@ -104,3 +112,16 @@ class PurchaseOrders(models.Model):
                     ids.append((0,0,attr))   
         return ids     
 
+class PurchaseOrdersLine(models.Model):
+    _inherit="purchase.order.line"
+
+    @api.one
+    def write(self,values):
+        if 'product_qty' in values.keys():
+            if self.product_qty < values['product_qty']:
+                raise Warning('Per Aggiungere quantità devi fare un nuovo Ordini a questo fornitore di questo prodotto.')
+            else:
+                #qua dovrebbe mandare la mail
+                pass
+
+        return super(PurchaseOrdersLine,self).write(values)
