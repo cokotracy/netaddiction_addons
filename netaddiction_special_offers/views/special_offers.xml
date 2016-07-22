@@ -194,20 +194,21 @@
                         <group  name="conditions" colspan="2" string= "espressione" >
                             <group name="loc_left" class="oe_left" col="2">
                                                                <field name="expression_id"/> 
+                            </group>
+                            <group name="loc_left" class="oe_right" col="3">
                                <button  class="oe_highlight" name="populate_products_from_expression" 
                                 string="inserisci espressione" type="object" /> 
                                <button  class="oe_highlight" name="remove_products" 
                                 string="rimuovi prodotti" type="object" /> 
+                                <button name="%(netaddiction_offer_line_catalog_inactive)d" type="action"
+                        string="prodotti spenti" class="oe_highlight"/>
                         </group>
                             
                          </group>
                      </div>
                   
-                    <button name="%(netaddiction_offer_line_catalog_inactive)d" type="action"
-                        string="prodotti spenti" class="oe_highlight"
-                        >
-                        
-                    </button>
+
+
    
                      <h1 >Lista Prodotti</h1>
                      <field name="products_list" mode="tree" >

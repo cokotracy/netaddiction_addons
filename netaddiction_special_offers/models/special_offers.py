@@ -10,7 +10,7 @@ class CatalogOffer(models.Model):
 
 
     name = fields.Char(string='Titolo', required=True)
-    active = fields.Boolean(string='Attivo', help="Permette di spengere l'offerta senza cancellarla", default=True)
+    active = fields.Boolean(string='Attivo', help="Permette di spengere l'offerta senza cancellarla", default=False)
     expression_id = fields.Many2one(comodel_name='netaddiction.expressions.expression', string='Espressione')
     company_id = fields.Many2one(comodel_name='res.company', string='Company', required=True)
     author_id = fields.Many2one(comodel_name='res.users',string='Autore', required=True)
@@ -24,7 +24,7 @@ class CatalogOffer(models.Model):
     offer_type = fields.Selection([(1,'Prezzo Fisso'),(2,'Percentuale')], string='Tipo Offerta', default=2)
     fixed_price = fields.Float(string="Prezzo fisso")
     percent_discount = fields.Integer(string="Sconto Percentuale", default =10)
-    products_list = fields.One2many('netaddiction.specialoffer.offer_catalog_line', 'offer_catalog_id', string='Lista prodotti')
+    products_list = fields.One2many('netaddiction.specialoffer.offer_catalog_line', 'offer_catalog_id', string='Lista prodotti', domain=['|',('active','=',False),('active','=',True)])
     end_cron_job = fields.Integer()
     start_cron_job = fields.Integer()
 
@@ -167,8 +167,7 @@ class CatalogOffer(models.Model):
             temp = 0.0
             for pl in offer.products_list:
                  temp += pl.qty_selled
-            for pl in self.env['netaddiction.specialoffer.offer_catalog_line'].search([('offer_catalog_id','=',offer.id),('active','=',False)]):
-                temp += pl.qty_selled
+
             #search for inactive offers
             offer.qty_selled = temp
 
@@ -179,7 +178,7 @@ class OfferCatalogLine(models.Model):
     _order = "priority"
     
 
-    active = fields.Boolean(default=True,
+    active = fields.Boolean(default=False,
         help="Spuntato = offerta attiva, Non Spuntato = offerta spenta")
     product_id = fields.Many2one('product.product', string='Product', domain=[('sale_ok', '=', True)], change_default=True, ondelete='restrict', required=True)
     offer_catalog_id = fields.Many2one('netaddiction.specialoffer.catalog', string='Offerta catalogo', index=True, copy=False, required=True)
@@ -222,7 +221,7 @@ class ShoppingCartOffer(models.Model):
 
 
     name = fields.Char(string='Titolo', required=True)
-    active = fields.Boolean(string='Attivo', help="Permette di spengere l'offerta senza cancellarla",default=True)
+    active = fields.Boolean(string='Attivo', help="Permette di spengere l'offerta senza cancellarla",default=False)
     expression_id = fields.Many2one(comodel_name='netaddiction.expressions.expression', string='Espressione')
     author_id = fields.Many2one(comodel_name='res.users',string='Autore', required=True)
     company_id = fields.Many2one(comodel_name='res.company', string='Company', required=True)
@@ -238,7 +237,7 @@ class ShoppingCartOffer(models.Model):
     m = fields.Integer(string="M")
     bundle_price = fields.Float(string="Prezzo bundle")
     n_price = fields.Float(string= "Prezzo Prodotti")
-    products_list = fields.One2many('netaddiction.specialoffer.offer_cart_line', 'offer_cart_id', string='Lista prodotti')
+    products_list = fields.One2many('netaddiction.specialoffer.offer_cart_line', 'offer_cart_id', string='Lista prodotti', domain=['|',('active','=',False),('active','=',True)])
     end_cron_job = fields.Integer()
     start_cron_job = fields.Integer()
 
@@ -401,8 +400,7 @@ class ShoppingCartOffer(models.Model):
             temp = 0.0
             for pl in offer.products_list:
                  temp += pl.qty_selled
-            for pl in self.env['netaddiction.specialoffer.offer_cart_line'].search([('offer_cart_id','=',offer.id),('active','=',False)]):
-                temp += pl.qty_selled
+
             #search for inactive offers
             offer.qty_selled = temp
 
@@ -414,7 +412,7 @@ class OfferCartLine(models.Model):
     _order = "priority"
     
 
-    active = fields.Boolean(default=True,
+    active = fields.Boolean(default=False,
         help="Spuntato = offerta attiva, Non Spuntato = offerta spenta")
     product_id = fields.Many2one('product.product', string='Product', domain=[('sale_ok', '=', True)], change_default=True, ondelete='restrict', required=True)
     offer_cart_id = fields.Many2one('netaddiction.specialoffer.cart', string='Offerta Carrello', index=True, copy=False, required=True)
@@ -459,7 +457,7 @@ class BonusOffer(models.Model):
     qty_selled = fields.Float( string='Quantità venduta', default=0.0)
     
     
-    products_list = fields.One2many('netaddiction.specialoffer.bonus_offer_line', 'bonus_offer_id', string='Lista prodotti')
+    products_list = fields.One2many('netaddiction.specialoffer.bonus_offer_line', 'bonus_offer_id', string='Lista prodotti', domain=['|',('active','=',False),('active','=',True)])
 
     _sql_constraints = [
             ('name', 'unique(name)', 'Nome offerta deve essere unico!'),
@@ -499,7 +497,7 @@ class VaucherOffer(models.Model):
     associated_user = fields.Many2one(comodel_name='res.partner',string='Beneficiario', default=None)
     end_cron_job = fields.Integer()
     start_cron_job = fields.Integer()
-    products_list = fields.One2many('netaddiction.specialoffer.offer_vaucher_line', 'offer_vaucher_id', string='Lista prodotti')
+    products_list = fields.One2many('netaddiction.specialoffer.offer_vaucher_line', 'offer_vaucher_id', string='Lista prodotti', domain=['|',('active','=',False),('active','=',True)])
 
     _sql_constraints = [
             ('name', 'unique(name)', 'Nome offerta deve essere unico!'),

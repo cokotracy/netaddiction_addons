@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+        <record model="ir.actions.act_window" id="netaddiction_logger_base">
+            <field name="name">Logger</field>
+            <field name="res_model">netaddiction.log.line</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">Non ci sono Log.
+                </p>
+            </field>
+        </record>
+
+<record id="view_netaddiction_log"
+                model="ir.ui.view">
+            <field name="name">netaddiction Log</field>
+            <field name="model">netaddiction.log.line</field>
+      <field name="arch" type="xml">
+
+            <form string="Log Form" create="false" edit="false">
+                    <sheet>
+                 
+
+                    <div class="oe_title">
+                        <h1> <field name="field" /></h1>
+                    </div>
+
+                        <group string="Log">
+                            <field name="create_date" readonly="1" />
+                           
+
+                            <field name="author_id" />
+
+                            <field name="field_type" />
+                            <field name="model_name" />
+
+                            <field name="object_name" />
+                            <field name="object_id" />
+
+                            <field name="old_value_integer" />
+                            <field name="old_value_float" />
+                            <field name="old_value_monetary" />
+
+                            <field name="old_value_char" />
+                            <field name="old_value_text" />
+                            <field name="old_value_datetime" />
+
+                            <field name="new_value_integer" />
+                            <field name="new_value_float" />
+                            <field name="new_value_monetary" />
+
+                            <field name="new_value_char" />
+                            <field name="new_value_text" />
+                            <field name="new_value_datetime" />
+
+
+
+                        </group>
+
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_netaddiction_log_menu"
+                model="ir.actions.act_window">
+            <field name="name">Log</field>
+            <field name="res_model">netaddiction.log.line</field>
+            <field name="view_mode">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="target">inline</field>
+        </record>
+
+        <record model="ir.ui.view" id="netaddiction_log_tree">
+            <field name="name">view.netaddiction_log_tree</field>
+            <field name="model">netaddiction.log.line</field>
+            <field name="arch" type="xml">
+                <tree name="log list" create="false" edit="false">
+                            <field name="field" />
+                            <field name="field_type" />
+                            <field name="model_name" />
+
+                            <field name="object_name" />
+                            <field name="object_id" />
+                </tree>
+            </field>
+        </record>
+
+
+        <menuitem id="menu_netaddiction_log"
+          name="Log"
+          parent="account.menu_finance_configuration"
+          sequence="18"
+          action= "netaddiction_logger_base"
+        />
+
+
+
+    </data>
+</openerp>
