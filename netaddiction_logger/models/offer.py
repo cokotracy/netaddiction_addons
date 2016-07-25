@@ -14,15 +14,11 @@ class OfferCatalogLine(models.Model):
     @api.multi
     def write(self,values):
 
-        print "YOLOOOOOOOOOOOO"
-        print "YOLOOOOOOOOOOOO"
-        print "YOLOOOOOOOOOOOO"
-        print "YOLOOOOOOOOOOOO"
         old_offer_price = {}
         log_line = self.env["netaddiction.log.line"]
-        print "A"
+
         for offer in self:
-            print offer.active
+
 
                 
             if 'active' in values and values['active'] != offer.active:
@@ -39,7 +35,7 @@ class OfferCatalogLine(models.Model):
 
         if old_offer_price:
             for offer in self:
-                print offer.active
+
                 if offer.id in old_offer_price and offer.active and not offer.product_id.offer_catalog_lines or offer.product_id.offer_catalog_lines[0].priority < offer.priority:
                     new_price = offer._get_offer_price()
                     new_price = new_price[0] if isinstance(new_price,list) else new_price 
@@ -54,15 +50,8 @@ class OfferCatalogLine(models.Model):
                         new_price = 0.0 
                     log_line.sudo().create(log_line.create_tracking_values(old_offer_price[offer.id], new_price, 'offer_price', 'float', 'product.product', offer.product_id.id, self.env.uid,object_name=offer.product_id.name))
 
-        print "B"
 
-        # if old_offer_price:
-        #     for offer in self:
-        #         print offer.product_id.offer_price
-        #         print offer.product_id.offer_catalog_lines
 
-        #         if offer.id in old_offer_price and float_compare(old_offer_price[offer.id], offer.product_id.offer_price, precision_rounding=offer.product_id.uom_id.rounding) != 0:
-        #             log_line.sudo().create(log_line.create_tracking_values(old_offer_price[offer.id], offer.product_id.offer_price, 'offer_price', 'float', 'product.product', offer.product_id.id, self.env.uid,object_name=offer.product_id.name))
 
         return ret
 
@@ -72,27 +61,6 @@ class OfferCatalogLine(models.Model):
         return self.fixed_price if self.offer_type == 1 else (self.product_id.list_price - (self.product_id.list_price/100)*self.percent_discount)
            
 
-
-    # @api.multi
-    # def create(self,values):
-    #     if 'active' in values and not values['active']:
-    #         return
-    #     else
-    #     old_offer_price = {}
-    #     log_line = self.env["netaddiction.log.line"]
-
-    #     for offer in self:
-            
-    #         old_offer_price[offer.id] = offer.product_id.offer_price
-
-    #     ret = super(OfferCatalogLine, offer).create(values)
-
-
-    #     for offer in self:
-    #         if offer.id in old_offer_price and float_compare(old_offer_price[offer.id], offer.product_id.offer_price, precision_rounding=offer.product_id.uom_id.rounding) != 0:
-    #             log_line.sudo().create(log_line.create_tracking_values(old_offer_price[offer.id], offer.product_id.offer_price, 'offer_price', 'float', 'product.product', offer.product_id.id, self.env.uid,object_name=offer.product_id.name))
-
-    #     return ret
 
 
 

@@ -64,11 +64,13 @@ class CatalogOffer(models.Model):
         quando  creo una offerta verifico anche che le date siano dopo la data corrente
         e creo i cron
         """
-        now = fields.Date.today()
-        if (values['date_start'] and values['date_start'] < now): 
-            raise ValidationError("Data inizio offerta non può essere prima della data odierna")
-        elif (values['date_end'] and values['date_end'] < now): 
-            raise ValidationError("Data fine offerta non può essere prima della data odierna")
+        now = fields.Datetime.now()
+        print values['date_start']
+        print now
+        if (values['date_start'] and values['date_start'] <= now): 
+            raise ValidationError("Data inizio offerta non può essere prima della data e ora attuale")
+        elif (values['date_end'] and values['date_end'] <= now): 
+            raise ValidationError("Data fine offerta non può essere prima della data e ora attuale")
 
         res = super(CatalogOffer, self).create(values)
 
@@ -86,7 +88,7 @@ class CatalogOffer(models.Model):
                 'numbercall' : "1",
 
             })
-        if res.date_start > fields.Datetime.now():
+        if res.date_start > now:
             res.active = False
             for pl in res.products_list:
                 pl.active = False
@@ -170,6 +172,10 @@ class CatalogOffer(models.Model):
 
             #search for inactive offers
             offer.qty_selled = temp
+
+    @api.one
+    def unlink(self):
+        self.turn_off()
 
 
 class OfferCatalogLine(models.Model):
@@ -404,6 +410,9 @@ class ShoppingCartOffer(models.Model):
             #search for inactive offers
             offer.qty_selled = temp
 
+    @api.one
+    def unlink(self):
+        self.turn_off()
 
        
 class OfferCartLine(models.Model):
@@ -462,6 +471,19 @@ class BonusOffer(models.Model):
     _sql_constraints = [
             ('name', 'unique(name)', 'Nome offerta deve essere unico!'),
     ]
+
+
+    @api.one
+    def unlink(self):
+        self.turn_off()
+
+
+    @api.one
+    @api.constrains('active')
+    def _check_active(self):
+        if not self.active:
+            for pl in self.products_list:
+                pl.active = False
 
 
 class BonusOfferLine(models.Model):
@@ -619,6 +641,10 @@ class VaucherOffer(models.Model):
             pl.active = True
            
         self.write({'active' : True})
+
+    @api.one
+    def unlink(self):
+        self.turn_off()
 
         
 

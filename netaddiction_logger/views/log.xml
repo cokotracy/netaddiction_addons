@@ -38,21 +38,21 @@
                             <field name="object_name" />
                             <field name="object_id" />
 
-                            <field name="old_value_integer" />
-                            <field name="old_value_float" />
-                            <field name="old_value_monetary" />
+                            <field name="old_value_integer"  attrs="{'invisible': [('field_type', 'not in', ['integer','boolean','many2one'])]}"/>
+                            <field name="old_value_float" attrs="{'invisible': [('field_type', '!=', 'float')]}"/>
+                            <field name="old_value_monetary" attrs="{'invisible': [('field_type', '!=', 'monetary')]}"/>
 
-                            <field name="old_value_char" />
-                            <field name="old_value_text" />
-                            <field name="old_value_datetime" />
+                            <field name="old_value_char" attrs="{'invisible': [('field_type', 'not in', ['char','many2one', 'selection'])]}"/>
+                            <field name="old_value_text" attrs="{'invisible': [('field_type', '!=', 'text')]}"/>
+                            <field name="old_value_datetime" attrs="{'invisible': [('field_type', 'not in', ['date','datetime'])]}"/>
 
-                            <field name="new_value_integer" />
-                            <field name="new_value_float" />
-                            <field name="new_value_monetary" />
+                            <field name="new_value_integer" attrs="{'invisible': [('field_type', 'not in', ['integer','boolean','many2one'])]}"/>
+                            <field name="new_value_float" attrs="{'invisible': [('field_type', '!=', 'float')]}"/>
+                            <field name="new_value_monetary" attrs="{'invisible': [('field_type', '!=', 'monetary')]}"/>
 
-                            <field name="new_value_char" />
-                            <field name="new_value_text" />
-                            <field name="new_value_datetime" />
+                            <field name="new_value_char" attrs="{'invisible': [('field_type', 'not in', ['char','many2one', 'selection'])]}"/>
+                            <field name="new_value_text" attrs="{'invisible': [('field_type', '!=', 'text')]}"/>
+                            <field name="new_value_datetime" attrs="{'invisible': [('field_type', 'not in', ['date','datetime'])]}"/>
 
 
 

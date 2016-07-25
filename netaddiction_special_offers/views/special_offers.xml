@@ -151,7 +151,7 @@
                 <form string="special_offers_catalog Form">
                     <sheet>
                     <div class="oe_button_box" name="button_box">
-                            <button name="toggle_active" type="object" class="oe_stat_button" icon="fa-archive">
+                            <button name="toggle_active" type="object" class="oe_stat_button" icon="fa-archive" attrs="{'invisible':[('active', '=', False)]}">
                                 <field name="active" widget="boolean_button" options="{&quot;terminology&quot;: &quot;archive&quot;}"/>
                             </button>
                         </div>
@@ -200,8 +200,7 @@
                                 string="inserisci espressione" type="object" /> 
                                <button  class="oe_highlight" name="remove_products" 
                                 string="rimuovi prodotti" type="object" /> 
-                                <button name="%(netaddiction_offer_line_catalog_inactive)d" type="action"
-                        string="prodotti spenti" class="oe_highlight"/>
+
                         </group>
                             
                          </group>
@@ -307,8 +306,8 @@
                                 string="rimuovi prodotti" type="object" /> 
                         </group>
                     </group>
-                    <button name="%(netaddiction_offer_line_cart_inactive)d" type="action"
-                        string="prodotti spenti" class="oe_highlight"/>
+<!--                     <button name="%(netaddiction_offer_line_cart_inactive)d" type="action"
+                        string="prodotti spenti" class="oe_highlight"/> -->
                             
 
                    <h1 >Lista Prodotti</h1>
@@ -485,11 +484,11 @@
                          </group>
                      </div>
                   
-                    <button name="%(netaddiction_offer_line_vaucher_inactive)d" type="action"
+<!--                     <button name="%(netaddiction_offer_line_vaucher_inactive)d" type="action"
                         string="prodotti spenti" class="oe_highlight"
-                        >
+                        > 
                         
-                    </button>
+                    </button>-->
    
                      <h1 >Lista Prodotti</h1>
                      <field name="products_list" mode="tree" >
