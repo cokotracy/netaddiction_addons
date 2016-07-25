@@ -90,7 +90,7 @@
 
         <menuitem id="menu_netaddiction_log"
           name="Log"
-          parent="account.menu_finance_configuration"
+          parent="base.menu_base_partner"
           sequence="18"
           action= "netaddiction_logger_base"
         />
