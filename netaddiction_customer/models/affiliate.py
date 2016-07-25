@@ -6,6 +6,9 @@ from hashids import Hashids
 from datetime import datetime, timedelta
 
 
+HASH_MIN_LENGTH = 8
+
+
 class Affiliate(models.Model):
     """ATTENZIONE: se l'affiliato non ha commissioni viene usato self.commission_percent su ogni prodotto
     """
@@ -76,7 +79,7 @@ class Affiliate(models.Model):
 
     def get_hashed(self):
         salt = self.env["ir.config_parameter"].search([("key", "=", "affiliate.salt")]).value
-        hashids = Hashids(salt=salt)
+        hashids = Hashids(salt=salt, min_length=HASH_MIN_LENGTH)
         return hashids.encode(self.control_code)
 
     def check_order(self, order):
@@ -150,13 +153,23 @@ class AffiliateOrderHistory(models.Model):
 class AffiliateUtilities(models.TransientModel):
     _name = "netaddiction.partner.affiliate.utilities"
 
+    def get_affiliate_from_token(self, token):
+        affiliate_model = self.env["netaddiction.partner.affiliate"]
+        parameter_model = self.env["ir.config_parameter"]
+
+        salt = parameter_model.search([("key", "=", "affiliate.salt")]).value
+        hashids = Hashids(salt=salt, min_length=HASH_MIN_LENGTH)
+
+        try:
+            control_code = hashids.decode(token)[0]
+        except IndexError:
+            return None
+
+        return affiliate_model.search([("control_code", "=", control_code)])
+
     def order_to_affiliate(self, order_id, hashed_affiliate_id):
-        salt = self.env["ir.config_parameter"].search([("key", "=", "affiliate.salt")]).value
-
-        hashids = Hashids(salt=salt)
-
         order = self.env["sale.order"].search([("id", "=", order_id)])
-        affiliate = self.env["netaddiction.partner.affiliate"].search([("control_code", "=", hashids.decode(hashed_affiliate_id)[0])])
+        affiliate = self.get_affiliate_from_token(hashed_affiliate_id)
         if order and affiliate:
             order_ids = [oh.order_id.id for oh in affiliate.orders_history]
             if order.id not in order_ids:
