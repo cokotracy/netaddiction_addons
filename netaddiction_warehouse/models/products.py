@@ -29,14 +29,17 @@ class Products(models.Model):
             if qty_single > 0:
                 if qty_ordered > qty_single:
                     message = "Non puoi ordinare piu di %s pezzi per %s " % (qty_single,self.display_name)
-                    raise ProductOrderQuantityExceededException(self.id,message)
-            #controllo che non vada sotto la quantità limite
-            qty_residual = self.qty_available_now - qty_ordered
+                    raise ProductOrderQuantityExceededException(self.id,qty_single,message)
 
-            if qty_residual < qty_limit:
-                res = abs(self.qty_available_now) - abs(qty_limit)
-                message = "Non puoi ordinare piu di %s pezzi per %s " % (res,self.display_name)
-                raise ProductOrderQuantityExceededLimitException(self.id,message)
+            #controllo che non vada sotto la quantità limite
+            qty_residual = self.qty_available_now - qty_limit
+
+            if qty_ordered > qty_residual:
+                if qty_residual > 0:
+                    message = "Non puoi ordinare piu di %s pezzi per %s " % (qty_residual, self.display_name)
+                else:
+                    message = u"%s è esaurito" % self.display_name
+                raise ProductOrderQuantityExceededLimitException(self.id,qty_residual,message)
 
     @api.multi
     def do_action_quantity(self):
@@ -414,11 +417,12 @@ class ConfigShippingTime(models.TransientModel):
         return attr
 
 class ProductOrderQuantityExceededException(Exception):
-    def __init__(self, product_id,  err_str):
+    def __init__(self, product_id, remains_quantity, err_str):
         super(ProductOrderQuantityExceededException, self).__init__(product_id)
         self.var_name = 'confirm_exception_product'
         self.err_str = err_str
         self.product_id = product_id
+        self.remains_quantity = remains_quantity
 
         
     def __str__(self):
@@ -429,11 +433,12 @@ class ProductOrderQuantityExceededException(Exception):
         return s
 
 class ProductOrderQuantityExceededLimitException(Exception):
-    def __init__(self, product_id,  err_str):
-        super(ProductOrderQuantityExceededLimitException, self).__init__(product_id)
+    def __init__(self, product_id, remains_quantity, err_str):
+        super(ProductOrderQuantityExceededLimitException, self).__init__(err_str)
         self.var_name = 'confirm_exception_product_limit'
         self.err_str = err_str
         self.product_id = product_id
+        self.remains_quantity = remains_quantity
 
         
     def __str__(self):
