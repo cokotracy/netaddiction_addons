@@ -44,7 +44,7 @@
                                                                     <strong>
                                                                             <em style="font-size:12px">CAP:</em> <span t-field="o.partner_id.zip"/><br/>
                                                                             <em style="font-size:12px">Pezzi:</em> <span t-field="o.number_of_pieces"/> <br/>
-                                                                            <em t-if="'Bartolini' in o.carrier_id.name" style="font-size:18px"><b>BARTOLINI</b></em>
+                                                                            <em t-if="'BRT' in o.carrier_id.name" style="font-size:18px"><b>BRT</b></em>
                                                                             <em t-if="'SDA' in o.carrier_id.name" style="font-size:18px"><b>SDA</b></em>    
                                                                     </strong>
                                                                 </td>

@@ -56,7 +56,7 @@ class Products(models.Model):
 
     qty_limit = fields.Integer(string="Quantità limite", help="Imposta la quantità limite prodotto (qty disponibile == qty_limit accade Azione)")
     limit_action = fields.Selection(string="Azione limite", help="Se qty_limit impostata decide cosa fare al raggiungimento di tale qty",
-            selection= (('nothing','Nessuna Azione'),('no_purchasable','Metto Esaurito'),('deactive','Spengo')))
+            selection= (('nothing','Nessuna Azione'),('no_purchasable','Non vendibile'),('deactive','Invisibile e non vendibile')))
 
     #override per calcolare meglio gli acquisti
     purchase_count = fields.Integer(string="Acquisti", compute="_get_sum_purchases",
@@ -179,16 +179,7 @@ class Products(models.Model):
                 price = p.final_price
 
             p.list_price = price
-#MOD TASSE
-        #    if tassa:
-        #        detax = price / (float(1) + float(tassa/100))
-        #    else:
-        #        detax = price
-#
-        #    if p.taxes_id.price_include:
-        #        detax = price
-#
-        #    p.list_price = round(detax,2)
+
     @api.depends('final_price','special_price')
     def _get_visual_price(self):
         for p in self:

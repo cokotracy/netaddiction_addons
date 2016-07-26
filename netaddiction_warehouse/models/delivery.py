@@ -650,7 +650,9 @@ class StockPicking(models.Model):
         """
         self.ensure_one()
 
-        if 'Bartolini' in self.carrier_id.name:
+        brt = self.env.ref('netaddiction_warehouse.carrier_brt').id
+
+        if brt == self.carrier_id.id:
             self.delivery_barcode = self._generate_barcode_bartolini()
         else:
             self.delivery_barcode = self._generate_barcode_sda()

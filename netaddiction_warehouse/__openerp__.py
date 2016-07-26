@@ -19,6 +19,7 @@
     'data': [
         'data/cron.xml',
         'data/subtype_mail.xml',
+        'data/carriers.xml',
         'views/locations.xml',
         'templates/top_menu.xml',
         'templates/inventory_app.xml',

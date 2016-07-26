@@ -54,6 +54,7 @@ class Products(models.Model):
             if action == 'no_purchasable':
                 self.sale_ok = False
             if action == 'deactive':
+                self.sale_ok = False
                 self.visible = False
 
 

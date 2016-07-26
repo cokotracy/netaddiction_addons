@@ -42,7 +42,7 @@
                                                                 <td width="100" align="left" valign="top" style="font-family:Arial, Helvetica, sans-serif; font-size:16px; font-weight:bold; line-height:18px;"><br/>
                                                                     <strong>
                                                                             <em style="font-size:12px">CAP:</em> <span t-field="o.partner_id.zip"/><br/>
-                                                                            <em t-if="'Bartolini' in o.pick_id.carrier_id.name" style="font-size:18px"><b>BARTOLINI</b></em>
+                                                                            <em t-if="'BRT' in o.pick_id.carrier_id.name" style="font-size:18px"><b>BRT</b></em>
                                                                             <em t-if="'SDA' in o.pick_id.carrier_id.name" style="font-size:18px"><b>SDA</b></em>    
                                                                     </strong>
                                                                 </td>
