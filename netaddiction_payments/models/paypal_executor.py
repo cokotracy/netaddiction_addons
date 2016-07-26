@@ -144,6 +144,10 @@ class PaypalExecutor(models.TransientModel):
 
             payment.post()
 
+            #assegno il pagamento alle spedizioni
+            for delivery in order.picking_ids: 
+                delivery.payment_id = payment.id    
+
             return 1
         else:
             raise payment_exception.PaymentException(payment_exception.PAYPAL,"impossibile trovare il metodo di pagamento PayPal")

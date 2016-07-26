@@ -218,8 +218,17 @@ class StockPicking(models.Model):
         total = 0.00
         for line in self.group_id.procurement_ids:
             total += line.sale_line_id.price_subtotal + line.sale_line_id.price_tax
+        
+        res = self.carrier_id.product_id.taxes_id.compute_all(self.carrier_price)        
 
-        total += self.carrier_price *1.22
+        total += res['total_included']
+        
+        method_contrassegno_id = self.env['ir.model.data'].get_object('netaddiction_payments', 'contrassegno_journal').id
+        if self.sale_order_payment_method.id == method_contrassegno_id:
+            contrassegno = self.env.ref('netaddiction_payments.product_contrassegno')
+            res_c = self.carrier_id.product_id.taxes_id.compute_all(contrassegno.list_price)
+            total += res_c['total_included']
+
         self.total_import = total
     ########################
     #INVENTORY APP FUNCTION#

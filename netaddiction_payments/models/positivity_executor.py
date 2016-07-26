@@ -500,11 +500,13 @@ class PositivityExecutor(models.TransientModel):
                 cc_journal  = self.env['ir.model.data'].get_object('netaddiction_payments','cc_journal')
                 token_card = self.env["netaddiction.partner.ccdata"].search([("token","=",token)])
                 inv_lst = []
+                pick_lst =[]
 
                 for line in order.order_line:
                     #resetto la qty_to_invoice di tutte le linee
                     line.qty_to_invoice = 0
-                for delivery in order.picking_ids:                    
+                for delivery in order.picking_ids: 
+                    pick_lst.append(delivery)                     
                     for stock_move in delivery.move_lines_related:
                         self._set_order_to_invoice(stock_move,order)
 
@@ -521,11 +523,15 @@ class PositivityExecutor(models.TransientModel):
                         name = self.env['ir.sequence'].with_context(ir_sequence_date=fields.Date.context_today(self)).next_by_code('account.payment.customer.invoice')
                         invoice = self.env['account.invoice'].search([("id","=",inv)])
 
-                        if not isclose(order.amount_total,0.0):
+                        if not isclose(order.amount_total,0.0000,abs_tol=0.009):
                             #una spedizione potrebbe essere anche a costo zero, in quel caso non ci sono pagamenti
                             payment = self.env["account.payment"].create({"partner_type" : "customer", "partner_id" : order.partner_id.id, "journal_id" : cc_journal_id, "amount" : invoice.amount_total, "order_id" : order.id, "state" : 'draft', "payment_type" : 'inbound', "payment_method_id" : pay_inbound.id, "name" : name, 'communication' : order.name, 'cc_token':token,'cc_last_four':token_card.last_four,'cc_month':token_card.month,'cc_year':token_card.year,'cc_name':token_card.name,'cc_status':'init','cc_type':token_card.ctype })
 
                             payment.invoice_ids = [(4, inv, None) ]
+                            #associo la spedizione al pagamento
+                            pick = [p for p in pick_lst if (isclose(p.total_import,payment.amount,abs_tol=0.009) and not p.payment_id)]                          
+                            if pick:
+                                pick[0].payment_id = payment.id
 
                         invoice.signal_workflow('invoice_open')
         else:
@@ -566,7 +572,7 @@ class PositivityExecutor(models.TransientModel):
 
         found = False
         for payment in order.account_payment_ids:
-            if (isclose(payment.amount,amount)) and payment.journal_id.id == cc_journal.id and not payment.state == 'posted':
+            if (isclose(payment.amount,amount,abs_tol=0.009)) and payment.journal_id.id == cc_journal.id and not payment.state == 'posted':
                 found = True
                 payment.cc_tran_id = tranID
                 if state == 'auth':
@@ -593,7 +599,7 @@ class PositivityExecutor(models.TransientModel):
             raise payment_exception.PaymentException(payment_exception.CREDITCARD,"impossibile trovare l'ordine %s"%order_id)
 
         for payment in order.account_payment_ids:
-            if (isclose(payment.amount,amount)) and payment.journal_id.id == cc_journal.id and not payment.state == 'posted':
+            if (isclose(payment.amount,amount,abs_tol=0.009)) and payment.journal_id.id == cc_journal.id and not payment.state == 'posted':
                 found = True
                 break
         if found:

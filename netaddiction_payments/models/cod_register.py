@@ -38,11 +38,13 @@ class CoDRegister(models.TransientModel):
                 contrassegno = self.env.ref('netaddiction_payments.product_contrassegno')
                 order.payment_method_id = self.env['ir.model.data'].get_object('netaddiction_payments', 'contrassegno_journal').id
                 inv_lst = []
+                pick_lst = []
 
                 for line in order.order_line:
                     # resetto la qty_to_invoice di tutte le linee
                     line.qty_to_invoice = 0
                 for delivery in order.picking_ids:
+                    pick_lst.append(delivery) 
                     # aggiungo i contrassegni
                     values = {
                         'order_id': order.id,
@@ -78,6 +80,10 @@ class CoDRegister(models.TransientModel):
                         payment.invoice_ids = [(4, inv, None) ]
 
                         invoice.signal_workflow('invoice_open')
+                        #assegno pagamento a spedizione
+                        pick = [p for p in pick_lst if (isclose(p.total_import,payment.amount,abs_tol=0.009) and not p.payment_id)]                          
+                        if pick:
+                            pick[0].payment_id = payment.id
 
             return True
 
