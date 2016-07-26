@@ -24,7 +24,9 @@ class NetaddictionManifest(models.Model):
 
     @api.one 
     def send_manifest(self):
-        if 'Bartolini' in self.carrier_id.name:
+        brt = self.env.ref('netaddiction_warehouse.carrier_brt').id
+
+        if brt == self.carrier_id.id:
             if self.manifest_file1 is None or self.manifest_file2 is None: 
                 raise ValidationError("Non hai ancora creato il manifest")
         else:
@@ -33,7 +35,8 @@ class NetaddictionManifest(models.Model):
 
     @api.one 
     def create_manifest(self):
-        if 'Bartolini' in self.carrier_id.name:
+        brt = self.env.ref('netaddiction_warehouse.carrier_brt').id
+        if brt == self.carrier_id.id:
             self.create_manifest_bartolini()
         else:
             self.create_manifest_sda()
