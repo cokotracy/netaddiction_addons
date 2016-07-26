@@ -89,23 +89,10 @@
                                 <label for="bartolini_prefix_file2"/>
                                 <field name="bartolini_prefix_file2"/>
                             </div>
-                            <div>
-                                <label for="bartolini_path"/>
-                                <field name="bartolini_path"/>
-                            </div>
                             
                         </div>
                     </group>
-                    <group string="SDA">
-                        <label for="id" string="SDA"/>
-                        <div>
-                            <div>
-                                <label for="sda_path"/>
-                                <field name="sda_path"/>
-                            </div>
-                            
-                        </div>
-                    </group>
+                    
                 </form>
             </field>
         </record>
