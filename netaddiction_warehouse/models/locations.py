@@ -2,7 +2,7 @@
 
 from openerp import models, fields, api
 from openerp.exceptions import ValidationError
-
+import datetime
 from error import Error
 
 ERROR_BARCODE = "Barcode già esistente"
@@ -247,3 +247,96 @@ class Products_template(models.Model):
     _inherit = 'product.template'
 
     product_wh_location_line_ids = fields.Boolean("Inverse")
+
+class ProductsMovement(models.TransientModel):
+
+    _name = "netaddiction.products.movement"
+
+    barcode = fields.Char(string="Barcode")
+    product_id = fields.Many2one(string="Prodotto", comodel_name="product.product")
+    qty_available = fields.Integer(string="Qtà in magazzino")
+    allocation = fields.Text(string="Allocazioni")
+    qty_to_move = fields.Integer(string="Quantità da muovere o riallocare")
+    new_allocation = fields.Many2one(string="Dove Allocare/Scaricare", comodel_name="netaddiction.wh.locations")
+
+    action = fields.Selection(selection=(
+        ('scraped', 'Difettato'),
+        ('rialloca', 'Rialloca')), string="Azione", required=True)
+
+    @api.onchange('barcode')
+    def _get_product_from_barcode(self):
+        result = self.env['product.product'].search([('barcode','=',self.barcode)])
+        if len(result) > 0:
+            self.product_id = result[0].id
+            self.qty_available = self.product_id.qty_available
+            text = ''
+            for line in self.product_id.product_wh_location_line_ids:
+                text += str(line.qty) + ' in ' + str(line.wh_location_id.name) +'\n'
+            self.allocation = text
+
+    @api.onchange('product_id')
+    def _get_products_data(self):
+        self.barcode = self.product_id.barcode
+        self.qty_available = self.product_id.qty_available
+        text = ''
+        for line in self.product_id.product_wh_location_line_ids:
+            text += str(line.qty) + ' in ' + str(line.wh_location_id.name) +'\n'
+        self.allocation = text
+
+    @api.one 
+    def execute(self):
+        if not self.product_id:
+            raise ValidationError("Devi scegliere un prodotto")
+
+        if self.action == 'rialloca':
+            if self.qty_to_move > 0 and self.new_allocation:
+                self.env['netaddiction.wh.locations.line'].allocate(self.product_id.id,self.qty_to_move,self.new_allocation.id)
+                self.qty_available = self.product_id.qty_available
+                text = ''
+                for line in self.product_id.product_wh_location_line_ids:
+                    text += str(line.qty) + ' in ' + str(line.wh_location_id.name) +'\n'
+                self.allocation = text
+            else:
+                raise ValidationError("Per riallocare devi mettere una quantità > 0 e un ripiano")
+
+        if self.action == 'scraped':
+            if not self.new_allocation:
+                raise ValidationError("Devi scegliere una locazione da cui scaricare")
+            
+            decrease = False
+            for line in self.product_id.product_wh_location_line_ids:
+                if line.wh_location_id.id == self.new_allocation.id:
+                    if line.qty < self.qty_to_move:
+                        raise ValidationError("Non puoi spostare più prodotti di quanti ne contenga il ripiano")
+                    decrease = True
+                    line.decrease(self.qty_to_move)
+            
+            if not decrease:
+                raise ValidationError("Hai scelto una allocazione in cui non è presente il prodotto")
+
+            wh_stock = self.env.ref('stock.stock_location_stock')
+            scraped_stock = self.env['netaddiction.warehouse.operations.settings'].search([('netaddiction_op_type','=','reverse_scrape'),('company_id','=',self.env.user.company_id.id)])
+            internal_move = self.env.ref('stock.picking_type_internal')
+            if self.qty_to_move > 0:
+                attr = {
+                    'picking_type_id' : internal_move.id,
+                    'move_type' : 'one',
+                    'priority' : '1',
+                    'location_id' : wh_stock.id,
+                    'location_dest_id' : scraped_stock.operation.default_location_dest_id.id,
+                    'move_lines' : [(0,0,{'product_id' : self.product_id.id, 'product_uom_qty' : self.qty_to_move ,
+                        'state' : 'draft','product_uom' : self.product_id.uom_id.id, 'name' : 'WH/Strock > Magazzino Difettati'})],
+
+                }
+                pick = self.env['stock.picking'].create(attr)
+                pick.action_confirm()
+                pick.force_assign()
+                pick.do_transfer()
+                self.qty_available = self.product_id.qty_available
+                text = ''
+                for line in self.product_id.product_wh_location_line_ids:
+                    text += str(line.qty) + ' in ' + str(line.wh_location_id.name) +'\n'
+                self.allocation = text
+            else:
+                raise ValidationError("Per mettere in difettato il prodotto devi mettere una quantità > 0")
+

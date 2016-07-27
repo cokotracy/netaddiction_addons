@@ -9,6 +9,7 @@ class Pricelist(models.Model):
 
     base = fields.Selection(selection=(
         ('list_price', 'Prezzo di vendita'),
+        ('final_price', 'Prezzo di listino')
     ), string="Basato su", required=True)
 
 
@@ -64,7 +65,7 @@ class product_pricelist(models.Model):
                 'applied_on': '0_product_variant',
                 'product_id': prod.id,
                 'compute_price': 'formula',
-                'base': 'list_price',
+                'base': 'final_price',
                 'price_discount': self.percent_price,
                 'pricelist_id': self.id,
                 'percent_price': self.percent_price,

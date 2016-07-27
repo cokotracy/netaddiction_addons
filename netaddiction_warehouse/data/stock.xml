@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data noupdate="1">
+        <record model="stock.location" id="netaddiction_stock_defeactive">
+            <field name="name">Magazzino Difettati</field>
+            <field name="location_id" eval="ref('stock.stock_location_locations')">
+            <field name="usage">internal</field>
+            <field name="partner_id" eval="ref('base.main_partner')"/>
+            <field name="scrap_location">1</field>
+            <field name="active">1</field>
+    	</record>
+    	<record model="stock.location" id="netaddiction_stock_suppliers_refund">
+            <field name="name">Reso a Fornitori</field>
+            <field name="location_id" eval="ref('stock.stock_location_locations_virtual')">
+            <field name="usage">"inventory"</field>
+            <field name="partner_id" eval="ref('base.main_partner')"/>
+            <field name="active">1</field>
+    	</record>
+
+
+    </data>
+</openerp>
