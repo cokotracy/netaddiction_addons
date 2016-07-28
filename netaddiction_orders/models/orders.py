@@ -226,7 +226,7 @@ class Order(models.Model):
 
 
     @api.multi
-    def action_confirm(self):
+    def pre_action_confirm(self):
         for order in self:
             if order.state == 'draft':
 
@@ -245,7 +245,7 @@ class Order(models.Model):
                 #TODO aggiungere il commento sul perchè
                     order.state = 'problem'
                 else:
-                    super(Order, order).action_confirm()
+                    # order.action_confirm()
                     if order.gift_discount > 0.0:
                         order.partner_id.remove_gift_value(order.gift_discount)
 

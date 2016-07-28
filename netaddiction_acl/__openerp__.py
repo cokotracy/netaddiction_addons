@@ -14,9 +14,10 @@
         'data/delete.xml',
         'data/products_data_entry.xml',
         'data/base_user.xml',
+        'data/purchase.xml',
         'data/sale.xml',
         'data/inventory.xml',
-        'data/purchase.xml',
+        
         'data/customer_care.xml',
         'data/b2b.xml',
         'data/administration.xml',

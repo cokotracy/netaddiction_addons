@@ -49,7 +49,7 @@ class Order(models.Model):
         	raise ValidationError("Non è un ordine a costo zero!")
 
 
-       	self.action_confirm()
+       	#self.action_confirm()
        	transient = None
 
        	if isclose(self.amount_total,0.0) or self.payment_method_id.id == zero_journal.id :

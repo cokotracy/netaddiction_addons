@@ -39,8 +39,6 @@ class OfferCatalogLine(models.Model):
                 if offer.id in old_offer_price and offer.active and not offer.product_id.offer_catalog_lines or offer.product_id.offer_catalog_lines[0].priority < offer.priority:
                     new_price = offer._get_offer_price()
                     new_price = new_price[0] if isinstance(new_price,list) else new_price 
-                    print old_offer_price[offer.id]
-                    print new_price
                     log_line.sudo().create(log_line.create_tracking_values(old_offer_price[offer.id], new_price, 'offer_price', 'float', 'product.product', offer.product_id.id, self.env.uid,object_name=offer.product_id.name))
                 elif offer.id in old_offer_price and not offer.active and  offer.product_id.offer_catalog_lines[0].id == offer.id:
                     if len(offer.product_id.offer_catalog_lines) >1:

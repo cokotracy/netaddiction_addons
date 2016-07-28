@@ -18,7 +18,7 @@ class ZeroPaymentExecutor(models.TransientModel):
         if not order:
             raise payment_exception.PaymentException(payment_exception.ZERO,"order id non valido! %s" %order_id)
 
-        if not isclose(order.amount_total,0.0):
+        if not isclose(order.amount_total,0.0000,abs_tol=0.009):
             raise payment_exception.PaymentException(payment_exception.ZERO,"ordine non a 0! pagamento dovuto: % s" % order.amount_total)
 
         zeropayment_journal  = self.env['ir.model.data'].get_object('netaddiction_payments','zeropay_journal')
@@ -29,7 +29,7 @@ class ZeroPaymentExecutor(models.TransientModel):
 
         if order.state == 'sale':
             
-            if not isclose(order.amount_total,0.0):
+            if not isclose(order.amount_total,0.0000,abs_tol=0.009):
                 #TODO spostare in problema e commentare?
                 raise payment_exception.PaymentException(payment_exception.ZERO,"ordine non a 0! pagamento dovuto di spedizione: % s" % order.amount_total)
 

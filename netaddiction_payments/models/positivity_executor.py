@@ -492,11 +492,13 @@ class PositivityExecutor(models.TransientModel):
     
     def _generate_invoice_payment(self,order_id,token):
         order = self.env["sale.order"].search([("id","=",order_id)])
+
         if order:
             if order.state == 'draft':
                 order.action_confirm()
 
             if order.state == 'sale':
+
                 cc_journal  = self.env['ir.model.data'].get_object('netaddiction_payments','cc_journal')
                 token_card = self.env["netaddiction.partner.ccdata"].search([("token","=",token)])
                 inv_lst = []
@@ -517,13 +519,16 @@ class PositivityExecutor(models.TransientModel):
                 pay_inbound = self.env["account.payment.method"].search([("payment_type","=","inbound")])
                 pay_inbound = pay_inbound[0] if isinstance(pay_inbound,list) else pay_inbound
                 if cc_journal and pay_inbound:
+
                     cc_journal_id = cc_journal.id
                     order.payment_method_id = cc_journal_id
                     for inv in inv_lst:
                         name = self.env['ir.sequence'].with_context(ir_sequence_date=fields.Date.context_today(self)).next_by_code('account.payment.customer.invoice')
                         invoice = self.env['account.invoice'].search([("id","=",inv)])
 
+
                         if not isclose(order.amount_total,0.0000,abs_tol=0.009):
+
                             #una spedizione potrebbe essere anche a costo zero, in quel caso non ci sono pagamenti
                             payment = self.env["account.payment"].create({"partner_type" : "customer", "partner_id" : order.partner_id.id, "journal_id" : cc_journal_id, "amount" : invoice.amount_total, "order_id" : order.id, "state" : 'draft', "payment_type" : 'inbound', "payment_method_id" : pay_inbound.id, "name" : name, 'communication' : order.name, 'cc_token':token,'cc_last_four':token_card.last_four,'cc_month':token_card.month,'cc_year':token_card.year,'cc_name':token_card.name,'cc_status':'init','cc_type':token_card.ctype })
 

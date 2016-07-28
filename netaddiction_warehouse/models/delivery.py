@@ -18,7 +18,8 @@ class Orders(models.Model):
     @api.multi
     def action_confirm(self):
         self.order_line.check_limit_and_action()
-        res = super(Orders,self).action_confirm()
+        self.pre_action_confirm()
+        super(Orders,self).action_confirm()
         if len(self.picking_ids)==0:
             self.create_shipping()
             self.set_delivery_price()
@@ -43,6 +44,7 @@ class Orders(models.Model):
         self.ensure_one()
         holiday = lib_holidays.LibHolidays()
         if not self.carrier_id:
+            #TODO: disattivare per importer
             raise ValidationError("Deve essere scelto un metodo di spedizione")
 
         precision = self.env['decimal.precision'].precision_get('Product Unit of Measure')
@@ -87,6 +89,7 @@ class Orders(models.Model):
                 vals['group_id'] = proc.id
                 new_proc = self.env["procurement.order"].create(vals)
                 new_procs += new_proc
+
         new_procs.run()
 
         self.env.cr.commit()
@@ -101,6 +104,7 @@ class Orders(models.Model):
         self.ensure_one()
 
         if not self.carrier_id:
+            #TODO: disattivare per importer
             raise ValidationError("Deve essere scelto un metodo di spedizione")
 
         free_prod_ship = []
@@ -199,6 +203,7 @@ class Orders(models.Model):
         ritorna un dict con data => [prezzo,prezzo tassato]
         """
         if not self.carrier_id:
+            #TODO: disattivare per importer
             raise ValidationError("Deve essere scelto un metodo di spedizione")
 
         free_prod_ship = []
@@ -242,6 +247,7 @@ class Orders(models.Model):
         """
         self.ensure_one()
         if not self.carrier_id:
+            #TODO: disattivare per importer
             raise ValidationError("Deve essere scelto un metodo di spedizione")
         return self.order_line.simulate_shipping()
 
