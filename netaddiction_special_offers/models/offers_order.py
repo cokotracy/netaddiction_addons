@@ -25,10 +25,23 @@ class OfferOrder(models.Model):
 
 
     @api.one
-    def apply_vaucher(self):
+    def apply_vaucher(self, **kwargs):
+        """applica i vaucher
+        vaucher uno per ordine
+        IMPORTANTE: applicare dopo offerte carrello
+        """
         public_pricelist = self.env.ref('product.list0')  # TODO query diretta a model.data
         if not self.pricelist_id or not public_pricelist or self.pricelist_id.id != public_pricelist.id:
             return
+
+        print "HERE %s" % kwargs
+
+        vaucher_string = kwargs.get("vaucher_string")
+        if vaucher_string is not None:
+            self.vaucher_string = vaucher_string
+
+
+        self.reset_vaucher()
 
         if self.vaucher_string and len(self.offers_vaucher)==0:
             offer = self.env['netaddiction.specialoffer.vaucher'].search([("code","=",self.vaucher_string)])
@@ -42,10 +55,12 @@ class OfferOrder(models.Model):
                 else:
 
                     offer_ids = [ol.product_id.id for ol in offer.products_list]
-                    offer_cart_history_id =[och.product_id.id for och in self.offers_cart]
+                    offer_cart_history_ids =[och.product_id.id for och in self.offers_cart]
                     for ol in self.order_line:
-                        if (ol.product_id.id in offer_ids) and (not  ol.product_id.id in offer_cart_history_id) and (not ol.offer_type) :
+                        #applico il vaucher se non ci sono altre offerte sul prodotto
+                        if (ol.product_id.id in offer_ids) and (not  ol.product_id.id in offer_cart_history_ids) and (not ol.offer_type) :
                             tax = ol.tax_id.amount
+                            discount = 0.0
                             if offer.offer_type == 1:
                                 #sconto fsso 
                                 # detax = offer.fixed_discount/ (float(1) + float(tax/100))
@@ -68,13 +83,20 @@ class OfferOrder(models.Model):
                                 new_price = new_price if new_price > float(0) else float(0)
                                 ol.price_unit =  self.env['account.tax']._fix_tax_included_price(new_price, ol.product_id.taxes_id, ol.tax_id)
                                 #applica offerta vaucher e crea history
-                            ovh = self.env['netaddiction.order.specialoffer.vaucher.history'].create({'product_id' : ol.product_id.id, 'order_id' : self.id, 'offer_type':offer.offer_type, 'qty' : ol.product_uom_qty, 'offer_author_id' : offer.author_id.id, 'offer_name' : offer.name, 'offer_id' : offer.id, 'fixed_discount':offer.fixed_discount, 'percent_discount': offer.percent_discount, 'offer_type': offer.offer_type,'order_line': ol.id})
+                            ovh = self.env['netaddiction.order.specialoffer.vaucher.history'].create({'product_id' : ol.product_id.id, 'order_id' : self.id, 'offer_type':offer.offer_type, 'qty' : ol.product_uom_qty, 'offer_author_id' : offer.author_id.id, 'offer_name' : offer.name, 'offer_id' : offer.id, 'fixed_discount':offer.fixed_discount, 'percent_discount': offer.percent_discount, 'offer_type': offer.offer_type,'order_line': ol.id, 'percent_effective_discount': discount})
                             ol.offer_vaucher_history = ovh.id
                 self._amount_all()
 
                 return True
 
         return False
+
+    
+    def compute_vaucher_discount(self):
+        tot = 0.0
+        for ovh in self.offers_vaucher:
+            tot = tot+ovh.fixed_discount if ovh.offer_type == 1 else tot+ovh.percent_effective_discount
+        return tot
                             
 
 
@@ -466,6 +488,7 @@ class OrderOfferVaucherHistory(models.Model):
     percent_discount = fields.Integer(string="Sconto Percentuale")
     offer_type = fields.Selection([(1,'Sconto Fisso'),(2,'Percentuale'),(3,'Spedizioni Gratis')], string='Tipo Offerta', default=1)
     order_line = fields.Many2one(comodel_name='sale.order.line')
+    percent_effective_discount  = fields.Float(string="Sconto percentuale applicato")
 
 
 
