@@ -25,12 +25,13 @@ class Products(models.Model):
         qty_single = self.qty_single_order
         action = self.limit_action
         #controllo quantità massima ordinabile per singolo ordine
-        if action != 'nothing' and self.type != 'service':
+        if self.type != 'service':
             if qty_single > 0:
                 if qty_ordered > qty_single:
                     message = "Non puoi ordinare piu di %s pezzi per %s " % (qty_single,self.display_name)
                     raise ProductOrderQuantityExceededException(self.id,qty_single,message)
-
+        
+        if action != 'nothing' and self.type != 'service':
             #controllo che non vada sotto la quantità limite
             qty_residual = self.qty_available_now - qty_limit
 
