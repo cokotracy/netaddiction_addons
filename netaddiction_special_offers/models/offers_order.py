@@ -16,10 +16,16 @@ class OfferOrder(models.Model):
     
     @api.one
     def reset_vaucher(self):
+        print "HARE %s" %len(self.offers_vaucher) 
+        print self.id
         if len(self.offers_vaucher) > 0:
+            print "HIII"
             for ovh in self.env['netaddiction.order.specialoffer.vaucher.history'].search([("order_id","=",self.id)]):
+                print "a"
                 ovh.order_line.product_id_change()
+                print "b"
                 ovh.unlink()
+                print "C"
             self._amount_all()
 
 
@@ -34,7 +40,6 @@ class OfferOrder(models.Model):
         if not self.pricelist_id or not public_pricelist or self.pricelist_id.id != public_pricelist.id:
             return
 
-        print "HERE %s" % kwargs
 
         vaucher_string = kwargs.get("vaucher_string")
         if vaucher_string is not None:
@@ -42,6 +47,8 @@ class OfferOrder(models.Model):
 
 
         self.reset_vaucher()
+
+
 
         if self.vaucher_string and len(self.offers_vaucher)==0:
             offer = self.env['netaddiction.specialoffer.vaucher'].search([("code","=",self.vaucher_string)])

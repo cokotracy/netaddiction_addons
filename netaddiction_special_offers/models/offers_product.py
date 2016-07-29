@@ -162,7 +162,12 @@ class OffersCatalogSaleOrderLine(models.Model):
                 uom=self.product_uom.id,
                 fiscal_position=self.env.context.get('fiscal_position')
             )
+            print self.id
 
+            print self.offer_vaucher_history
+            if self.offer_vaucher_history:
+                print "lol"
+                return
 
 
             offer_line = self.product_id.offer_catalog_lines[0] if len(self.product_id.offer_catalog_lines) >0 else None
@@ -198,6 +203,8 @@ class OffersCatalogSaleOrderLine(models.Model):
                 self.offer_author_id = None
                 self.offer_name = None
                 self.price_unit = self.env['account.tax']._fix_tax_included_price(product.price, product.taxes_id, self.tax_id)
+
+
 
 
     @api.model

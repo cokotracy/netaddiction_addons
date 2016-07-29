@@ -113,6 +113,7 @@
                     <field name="percent_discount" string="% sconto"/> 
                     <field name="offer_name" />    
                     <field name="offer_author_id" /> 
+                    <field name="offer_vaucher_history" attrs="{'invisible': True}"/>
    
                 </xpath> 
 

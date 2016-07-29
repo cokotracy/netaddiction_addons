@@ -65,8 +65,6 @@ class CatalogOffer(models.Model):
         e creo i cron
         """
         now = fields.Datetime.now()
-        print values['date_start']
-        print now
         if (values['date_start'] and values['date_start'] <= now): 
             raise ValidationError("Data inizio offerta non può essere prima della data e ora attuale")
         elif (values['date_end'] and values['date_end'] <= now): 
@@ -542,6 +540,16 @@ class VaucherOffer(models.Model):
             raise ValidationError("Data fine offerta non può essere prima della data di inizio offerta")
         for cron in self.env['ir.cron'].search([('id','=',self.end_cron_job)]):
             cron.nextcall = self.date_end
+
+
+    @api.multi
+    def write(self,values):
+        if 'offer_type' in values:
+            if values['offer_type'] == 1:
+                values['percent_discount'] = 0.0
+            elif values['offer_type'] == 2:
+                values['fixed_discount'] = 0.0
+        return super(VaucherOffer, self).write(values)
 
 
 
