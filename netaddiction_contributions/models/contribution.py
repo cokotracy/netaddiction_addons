@@ -317,7 +317,7 @@ class OrderContribution(models.Model):
     _inherit="sale.order"
 
     @api.one
-    def action_cancel(self,values):
+    def action_cancel(self):
         res = super(OrderContribution,self).action_cancel()
         contribution = self.env['netaddiction.order.contribution'].search([('order_id','=',self.id)])
         if len(contribution) > 0:
