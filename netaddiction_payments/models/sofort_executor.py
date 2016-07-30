@@ -54,18 +54,20 @@ class SofortExecutor(models.TransientModel):
             notification_urls = {
                 'default': default_url.format(sofort.TRANSACTION_ID),
             },
-            reasons = ["acquisto su multiplayer.com: ordine %s" % order_name]
-            )
+        )
 
-
-
-        t= client.payment(amount)
-
+        t = client.payment(
+            amount,
+            reasons=[
+                "Ordine %s" % order_name,
+                sofort.TRANSACTION_ID
+            ]
+        )
 
         if t:
             return {
-            'url':t.payment_url,
-            'transaction_id' : t.transaction
+                'url':t.payment_url,
+                'transaction_id' : t.transaction
             }
         else:
             return False
