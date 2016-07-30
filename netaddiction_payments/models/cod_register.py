@@ -25,7 +25,7 @@ class CoDRegister(models.TransientModel):
 
     csv_file = fields.Binary('File')
 
-    def set_order_cash_on_delivery(self,order_id):
+    def set_order_cash_on_delivery(self,order_id,real_invoice =False):
         """ imposta l'ordine con id 'order_id' per essere pagato con contrassegno se l'ordine è in draft (bozza) o in sale (lavorazione).
             Crea una fattura e un pagamento per ogni spedizione. Aggiunge spese di contrassegno.
         """
@@ -74,8 +74,9 @@ class CoDRegister(models.TransientModel):
                     for inv in inv_lst:
                         name = self.env['ir.sequence'].with_context(ir_sequence_date=fields.Date.context_today(self)).next_by_code('account.payment.customer.invoice')
                         invoice = self.env['account.invoice'].search([("id","=",inv)])
+                        invoice.is_customer_invoice = real_invoice
             
-                        payment = self.env["account.payment"].create({"partner_type" : "customer", "partner_id" : order.partner_id.id, "journal_id" : cod_id, "amount" : invoice.amount_total, "order_id" : order.id, "state" : 'draft', "payment_type" : 'inbound', "payment_method_id" : pay_inbound.id, "name" : name, 'communication' : order.name })
+                        payment = self.env["account.payment"].create({"partner_type" : "customer", "partner_id" : order.partner_id.id, "journal_id" : cod_id, "amount" : invoice.amount_total, "order_id" : order.id, "state" : 'draft', "payment_type" : 'inbound', "payment_method_id" : pay_inbound.id, "name" : name, 'communication' : order.name  })
 
                         payment.invoice_ids = [(4, inv, None) ]
 

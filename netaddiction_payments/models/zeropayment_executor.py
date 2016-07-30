@@ -7,12 +7,12 @@ from openerp import models, fields, api
 
 class ZeroPaymentExecutor(models.TransientModel):
     """Classe di utilità associata a un transient model per effettuare e registrare
-    pagamenti con cc tramite bnl positivity, e per registrare carte di credito da BO in maniera sicura
+    pagamento a costo zero
     """
     _name = "netaddiction.zeropayment.executor"
 
 
-    def set_order_zero_payment(self,order_id):
+    def set_order_zero_payment(self,order_id, real_invoice=False):
         order = self.env["sale.order"].search([("id","=",order_id)])
         
         if not order:
@@ -50,6 +50,7 @@ class ZeroPaymentExecutor(models.TransientModel):
             for inv in inv_lst:
                 invoice = self.env['account.invoice'].search([("id","=",inv)])
                 invoice.signal_workflow('invoice_open')
+                invoice.is_customer_invoice = real_invoice
 
     @api.one
     def _set_order_to_invoice(self,stock_move,order):

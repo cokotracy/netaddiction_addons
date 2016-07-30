@@ -209,6 +209,8 @@ class Products(models.Model):
         deve andare a controllare negli ordini e cambiare il prezzo in questi ordini se il prezzo di questi ordini  maggiore
         del nuovo prezzo altrimenti lascia quello già presente
         """
+        #DECOMMENTA PER IMPORTER
+        #return True
         actual_price = self.list_price
         
         today = datetime.date.today()

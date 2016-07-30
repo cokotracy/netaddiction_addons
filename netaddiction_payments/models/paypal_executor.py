@@ -67,7 +67,7 @@ class PaypalExecutor(models.TransientModel):
         else:
             raise payment_exception.PaymentException(payment_exception.PAYPAL,"fallito il set_express_checkout in get_express_checkout_link")
 
-    def finalize_payment(self,amount,user_id,order_id,token):
+    def finalize_payment(self, amount, user_id, order_id, token, real_invoice =False):
         """ Secondo metodo da chiamare per effettuare un pagamento su paypal, finalizza il pagamento
             e genera l'oggetto di tipo "account.payment" da associare all'ordine
             Parametri:
@@ -111,14 +111,14 @@ class PaypalExecutor(models.TransientModel):
             
             if payment_response and payment_response.success:
                 #save on odoo
-                return self._register_payment(user_id,payment_response.amt,order_id,payment_response.paymentinfo_0_transactionid)
+                return self._register_payment(user_id,payment_response.amt,order_id,payment_response.paymentinfo_0_transactionid, real_invoice)
                 
             else:
                 raise payment_exception.PaymentException(payment_exception.PAYPAL,"fallito il register_payment") 
         else:
             raise payment_exception.PaymentException(payment_exception.PAYPAL,"fallito il get_express_checkout_details in finalize_payment") 
 
-    def _register_payment(self,user_id, amount, order_id,transaction_id):
+    def _register_payment(self,user_id, amount, order_id,transaction_id, real_invoice=False):
         pp_aj = self.env['ir.model.data'].get_object('netaddiction_payments', 'paypal_journal')
         pay_inbound = self.env["account.payment.method"].search([("payment_type","=","inbound")])
         pay_inbound = pay_inbound[0] if isinstance(pay_inbound,list) else pay_inbound
@@ -139,6 +139,7 @@ class PaypalExecutor(models.TransientModel):
 
             for inv_id in inv_lst:
                 inv = self.env["account.invoice"].search([("id","=",inv_id)])
+                inv.is_customer_invoice = real_invoice
                 inv.signal_workflow('invoice_open')
                 # inv.payement_id = [(6, 0, [payment.id])]
 

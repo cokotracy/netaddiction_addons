@@ -11,18 +11,28 @@ class Invoice(models.Model):
     is_customer_invoice = fields.Boolean(strong="E' una Fattura?")
 
     @api.multi
+    def invoice_validate(self):
+        res = super(Invoice,self).invoice_validate()
+        if self.is_customer_invoice:
+            self.number = self.number.strip() + '.1'
+        return res
+
+
+    @api.multi
     def write(self,values):
     	#se viene flaggato o deflaggato is_customer_invoice e il journal_id è = 1 (identifica fattura cliente)
-        if 'is_customer_invoice' in values and self.journal_id.id == 1:
+        if 'is_customer_invoice' in values:
         	#se non c'è il fiscalcode allora rimando un errore e rimetto il vecchio nome fattura e is_customer_invoci è False
         	#altrimenti procedo al cambio di nome
             if self.partner_id.parent_id.fiscalcode != False:
-                if values['is_customer_invoice']:
-                    values['number'] = self.number.strip() + '.1'
-                else:
-                    values['number'] = self.number.replace('.1','')
+                if values['number']:
+                    if values['is_customer_invoice']:
+                        values['number'] = self.number.strip() + '.1'
+                    else:
+                        values['number'] = self.number.replace('.1','')
             else:
-                values['number'] = self.number.replace('.1','')
+                if values['number']:
+                    values['number'] = self.number.replace('.1','')
                 values['is_customer_invoice'] = False
                 raise ValidationError('Il Cliente non ha un codice Fiscale')
 
