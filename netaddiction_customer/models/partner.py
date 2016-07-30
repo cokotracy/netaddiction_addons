@@ -21,19 +21,19 @@ class Partner(models.Model):
             if len(s.parent_id) > 0 and s.customer:
                 name = ''
                 if s.name:
-                   name += s.name + ', '
+                    name += s.name + ', '
                 if s.city:
-                   name += s.city + ' '
+                    name += s.city + ' '
                 if s.street:
-                   name += s.street + ' '
+                    name += s.street + ' '
                 if s.street2:
-                   name += s.street2 + ' '
+                    name += s.street2 + ' '
 
                 res.append((s.id, name))
             else:
                 name = ''
                 if s.name:
-                   name += s.name 
+                    name += s.name
                 res.append((s.id, name))
 
         return res
@@ -49,6 +49,19 @@ class Partner(models.Model):
                 ('is_default_address', '=', True),
             ])
             siblings.write({'is_default_address': False})
+
+    @api.one
+    def equals(self, partner):
+        """
+        Stabilisce se due partner si equivalgono confrontando tutti i campi in *fields*.
+        """
+        fields = 'name', 'vat', 'business_name', 'phone', 'mobile', 'street_number', 'city', 'zip_code', 'state_id', 'country_id'
+
+        for field in fields:
+            if getattr(self, field) != getattr(partner, field):
+                return False
+
+        return True
 
     @api.one
     def unlink(self):
