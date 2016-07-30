@@ -17,7 +17,7 @@ class SofortExecutor(models.TransientModel):
 
 
 
-    def initiate_payment(self,success_url, abort_url, default_url, order_name, amount):
+    def initiate_payment(self,success_url, abort_url, default_url, order_name, order_id, amount, real_invoice =False):
         """
 
         Primo metodo da chiamare per effettuare un pagamento su Sofort
@@ -27,11 +27,14 @@ class SofortExecutor(models.TransientModel):
             -abort_url: url a cui reindirizzare l'utente in caso di fallimento nel pagamento sofort
             -default_url: url su cui ricevere la risposta da sofort. deve essere tipo 'http://9f372dbc.ngrok.io/bnl.php?trn={0}' con parametro 'trn' che  inserisce il metodo e che sarà restituito da sofort all'url indicato
             -order_name: nome dell'ordine
+            -order_id: id dell'ordine
+            -[real_invoice]: true se il cliente vuole la fattura
             Returns:
             -se tutto ok: un dizionario con chiavi 
                 'url' : url da tornare al cliente per pagare
                 'transaction_id' : id della transazione sofort --> da controllare col valore tornato da sofort tramite POST
             -False altrimenti
+            -Raise PaymentException se ci sono problemi a registrare il pagamento
             
 
         """
@@ -54,7 +57,7 @@ class SofortExecutor(models.TransientModel):
             notification_urls = {
                 'default': default_url.format(sofort.TRANSACTION_ID),
             },
-            reasons = ["acquisto su multiplayer.com: ordine %s" % order_name]
+            reasons = ["ordine %s" % order_name]
             )
 
 
@@ -67,18 +70,50 @@ class SofortExecutor(models.TransientModel):
             'url':t.payment_url,
             'transaction_id' : t.transaction
             }
+
+
+            pp_aj = self.env['ir.model.data'].get_object('netaddiction_payments', 'sofort_journal')
+            pay_inbound = self.env["account.payment.method"].search([("payment_type","=","inbound")])
+            pay_inbound = pay_inbound[0] if isinstance(pay_inbound,list) else pay_inbound
+            if pp_aj and pay_inbound:
+                name = self.env['ir.sequence'].with_context(ir_sequence_date=fields.Date.context_today(self)).next_by_code('account.payment.customer.invoice')
+                pp_id = pp_aj.id
+                order = self.env["sale.order"].search([("id","=",order_id)])
+                payment = self.env["account.payment"].create({"partner_type" : "customer", "partner_id" : user_id, "journal_id" : pp_id, "amount" : amount, "order_id" : order_id, "state" : 'draft', "payment_type" : 'inbound', "payment_method_id" : pay_inbound.id, "name" : name, 'communication' : order.name, 'sofort_transaction_id': t.transaction, 'is_customer_invoice': real_invoice })
+
+                order.payment_method_id = pp_aj.id
+                order.action_confirm()
+
+                self._set_order_to_invoice(order)
+
+                inv_lst = order.action_invoice_create()
+
+                payment.invoice_ids = [(4, inv, None) for inv in inv_lst]
+
+                for inv_id in inv_lst:
+                    inv = self.env["account.invoice"].search([("id","=",inv_id)])
+                    inv.signal_workflow('invoice_open')
+                # inv.payement_id = [(6, 0, [payment.id])]
+
+            #payment.post()
+
+                #assegno il pagamento alle spedizioni
+                for delivery in order.picking_ids: 
+                    delivery.payment_id = payment.id  
+
+                return True
+            else:
+                raise payment_exception.PaymentException(payment_exception.SOFORT,"impossibile trovare il metodo di pagamento Sofort")
         else:
             return False
 
 
 
 
-    def register_payment(self,user_id, amount, order_id,transaction_id):
+    def register_payment(self, order_id,transaction_id):
         """
         metodo per registrare il pagamento sofort
         Parametri:
-        -user_id: id dell'utente
-        -amount: totale pagato nella transazione sofort
         -order_id: id dell'ordine
         -transaction_id: id transazione sofort
         Returns:
@@ -87,35 +122,16 @@ class SofortExecutor(models.TransientModel):
 
         """
         pp_aj = self.env['ir.model.data'].get_object('netaddiction_payments', 'sofort_journal')
-        pay_inbound = self.env["account.payment.method"].search([("payment_type","=","inbound")])
-        pay_inbound = pay_inbound[0] if isinstance(pay_inbound,list) else pay_inbound
-        if pp_aj and pay_inbound:
-            name = self.env['ir.sequence'].with_context(ir_sequence_date=fields.Date.context_today(self)).next_by_code('account.payment.customer.invoice')
+        if pp_aj:
             pp_id = pp_aj.id
             order = self.env["sale.order"].search([("id","=",order_id)])
-            payment = self.env["account.payment"].create({"partner_type" : "customer", "partner_id" : user_id, "journal_id" : pp_id, "amount" : amount, "order_id" : order_id, "state" : 'draft', "payment_type" : 'inbound', "payment_method_id" : pay_inbound.id, "name" : name, 'communication' : order.name, 'sofort_transaction_id': transaction_id,  })
+            found = False
+            for payment in order.account_payment_ids:
+                if payment.journal_id == pp_id and payment.sofort_transaction_id == transaction_id:
+                    found = True
+                    payment.post()
 
-            order.payment_method_id = pp_aj.id
-            order.action_confirm()
-
-            self._set_order_to_invoice(order)
-
-            inv_lst = order.action_invoice_create()
-
-            payment.invoice_ids = [(4, inv, None) for inv in inv_lst]
-
-            for inv_id in inv_lst:
-                inv = self.env["account.invoice"].search([("id","=",inv_id)])
-                inv.signal_workflow('invoice_open')
-                # inv.payement_id = [(6, 0, [payment.id])]
-
-            payment.post()
-
-            #assegno il pagamento alle spedizioni
-            for delivery in order.picking_ids: 
-                delivery.payment_id = payment.id  
-
-            return True
+            return found
         else:
             raise payment_exception.PaymentException(payment_exception.SOFORT,"impossibile trovare il metodo di pagamento Sofort")
 

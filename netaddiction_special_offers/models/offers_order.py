@@ -16,16 +16,10 @@ class OfferOrder(models.Model):
     
     @api.one
     def reset_voucher(self):
-        print "HARE %s" %len(self.offers_voucher) 
-        print self.id
         if len(self.offers_voucher) > 0:
-            print "HIII"
             for ovh in self.env['netaddiction.order.specialoffer.voucher.history'].search([("order_id","=",self.id)]):
-                print "a"
                 ovh.order_line.product_id_change()
-                print "b"
                 ovh.unlink()
-                print "C"
             self._amount_all()
 
 
