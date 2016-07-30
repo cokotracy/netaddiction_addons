@@ -11,6 +11,14 @@ class Invoice(models.Model):
     is_customer_invoice = fields.Boolean(strong="E' una Fattura?")
 
     @api.multi
+    def invoice_validate(self):
+        res = super(Invoice,self).invoice_validate()
+        if self.is_customer_invoice:
+            self.number = self.number.strip() + '.1'
+        return res
+
+
+    @api.multi
     def write(self,values):
     	#se viene flaggato o deflaggato is_customer_invoice e il journal_id è = 1 (identifica fattura cliente)
         if 'is_customer_invoice' in values and self.journal_id.id == 1:
