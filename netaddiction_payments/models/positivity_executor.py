@@ -207,7 +207,7 @@ class PositivityExecutor(models.TransientModel):
 
 
     
-    def check_card(self,partner_id,token,paRes,md,order_id):
+    def check_card(self,partner_id,token,paRes,md,order_id, real_invoice=False):
         """Metodo che si interfaccia con BNL per iniziare una verificare la autenticità e validità di una carta.
         In caso di successo viene creato il pagamento associato all'ordine (order_id).
         Richiede dei parametri ricevuti in dalla verifica del 3dsecure (paRes,md)
@@ -263,7 +263,7 @@ class PositivityExecutor(models.TransientModel):
             raise payment_exception.PaymentException(payment_exception.CREDITCARD,"errore ritornato da BNL in risposta alla richiesta di check card %s"%response.errorDesc) 
         else:
             #FATTURE PAGAMENTI
-            self._generate_invoice_payment(order_id,token)
+            self._generate_invoice_payment(order_id,token, real_invoice)
             return response
 
 
@@ -490,7 +490,7 @@ class PositivityExecutor(models.TransientModel):
         return (tid, kSig)
 
     
-    def _generate_invoice_payment(self,order_id,token):
+    def _generate_invoice_payment(self,order_id, token, real_invoice=False):
         order = self.env["sale.order"].search([("id","=",order_id)])
 
         if order:
@@ -525,12 +525,13 @@ class PositivityExecutor(models.TransientModel):
                     for inv in inv_lst:
                         name = self.env['ir.sequence'].with_context(ir_sequence_date=fields.Date.context_today(self)).next_by_code('account.payment.customer.invoice')
                         invoice = self.env['account.invoice'].search([("id","=",inv)])
+                        invoice.is_customer_invoice = real_invoice
 
 
                         if not isclose(order.amount_total,0.0000,abs_tol=0.009):
 
                             #una spedizione potrebbe essere anche a costo zero, in quel caso non ci sono pagamenti
-                            payment = self.env["account.payment"].create({"partner_type" : "customer", "partner_id" : order.partner_id.id, "journal_id" : cc_journal_id, "amount" : invoice.amount_total, "order_id" : order.id, "state" : 'draft', "payment_type" : 'inbound', "payment_method_id" : pay_inbound.id, "name" : name, 'communication' : order.name, 'cc_token':token,'cc_last_four':token_card.last_four,'cc_month':token_card.month,'cc_year':token_card.year,'cc_name':token_card.name,'cc_status':'init','cc_type':token_card.ctype })
+                            payment = self.env["account.payment"].create({"partner_type" : "customer", "partner_id" : order.partner_id.id, "journal_id" : cc_journal_id, "amount" : invoice.amount_total, "order_id" : order.id, "state" : 'draft', "payment_type" : 'inbound', "payment_method_id" : pay_inbound.id, "name" : name, 'communication' : order.name, 'cc_token':token,'cc_last_four':token_card.last_four,'cc_month':token_card.month,'cc_year':token_card.year,'cc_name':token_card.name,'cc_status':'init','cc_type':token_card.ctype})
 
                             payment.invoice_ids = [(4, inv, None) ]
                             #associo la spedizione al pagamento
