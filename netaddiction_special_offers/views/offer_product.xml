@@ -113,7 +113,7 @@
                     <field name="percent_discount" string="% sconto"/> 
                     <field name="offer_name" />    
                     <field name="offer_author_id" /> 
-                    <field name="offer_vaucher_history" attrs="{'invisible': True}"/>
+                    <field name="offer_voucher_history" attrs="{'invisible': True}"/>
    
                 </xpath> 
 
@@ -160,7 +160,7 @@
                               <br/>
                              <h2>Offerte Vaucher</h2>
 
-                               <field name="offers_vaucher" mode="tree,kanban" >
+                               <field name="offers_voucher" mode="tree,kanban" >
 
                                   <tree string="Offer Vaucher Line" editable="bottom">
                                      <field name="product_id" attrs="{'readonly': 1}"/>
@@ -224,11 +224,11 @@
         </record>
 
 
-        <record model="ir.ui.view" id="netaddiction_order_specialoffer_vaucher_history_tree" >
-            <field name="name">netaddiction.order.specialoffer.vaucher.history_tree</field>
-            <field name="model">netaddiction.order.specialoffer.vaucher.history</field>
+        <record model="ir.ui.view" id="netaddiction_order_specialoffer_voucher_history_tree" >
+            <field name="name">netaddiction.order.specialoffer.voucher.history_tree</field>
+            <field name="model">netaddiction.order.specialoffer.voucher.history</field>
             <field name="arch" type="xml">
-                <tree name="special_offers_vaucher list" editable="bottom">
+                <tree name="special_offers_voucher list" editable="bottom">
 
 
 
@@ -270,12 +270,12 @@
                     position="before"> 
                     <group class="oe_left" col="2">
                           <group> 
-                            <field name="vaucher_string" attrs="{'readonly': [('state', 'in', ('done','cancel','sale','partial_done','sent','problem'))]}"/>
+                            <field name="voucher_string" attrs="{'readonly': [('state', 'in', ('done','cancel','sale','partial_done','sent','problem'))]}"/>
                         </group>
                      <group> 
-                            <button  class="oe_highlight" name="apply_vaucher" 
+                            <button  class="oe_highlight" name="apply_voucher" 
                                 string="Applica Vaucher" type="object" states="draft" />
-                            <button  class="oe_highlight" name="reset_vaucher" 
+                            <button  class="oe_highlight" name="reset_voucher" 
                                 string="Reset Vaucher" type="object" states="draft" />
                       </group>
                     </group>

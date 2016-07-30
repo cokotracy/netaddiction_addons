@@ -39,7 +39,7 @@ class OffersCatalogSaleOrderLine(models.Model):
     offer_name = fields.Char(string='Offerta')
     negate_offer = fields.Boolean(string="Ignora offerta", default=False)
     offer_cart_history = fields.Many2one('netaddiction.order.specialoffer.cart.history', string='offerte carrello attive')
-    offer_vaucher_history = fields.Many2one('netaddiction.order.specialoffer.vaucher.history', string='offerte vaucher attive')
+    offer_voucher_history = fields.Many2one('netaddiction.order.specialoffer.voucher.history', string='offerte voucher attive')
     bonus_order_line_ids = fields.One2many('sale.order.line', 'bonus_father_id', string='bonus collegati')
     bonus_father_id = fields.Many2one(comodel_name='sale.order.line',string='prodotto a cui è legato quetso bonus',default=None)
 
@@ -164,8 +164,8 @@ class OffersCatalogSaleOrderLine(models.Model):
             )
             print self.id
 
-            print self.offer_vaucher_history
-            if self.offer_vaucher_history:
+            print self.offer_voucher_history
+            if self.offer_voucher_history:
                 print "lol"
                 return
 

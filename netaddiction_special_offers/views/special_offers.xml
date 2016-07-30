@@ -41,12 +41,12 @@
         </record>
 
 
-        <record id="netaddiction_offer_line_vaucher_inactive" model="ir.actions.act_window">
-            <field name="name">offerte vaucher spente</field>
+        <record id="netaddiction_offer_line_voucher_inactive" model="ir.actions.act_window">
+            <field name="name">offerte voucher spente</field>
             <field name="type">ir.actions.act_window</field>
-            <field name="res_model">netaddiction.specialoffer.offer_vaucher_line</field>
-            <field name="context">{'search_default_offer_vaucher_id': [active_id], 'default_offer_vaucher_id': active_id}</field>
-            <field name="domain">[('active','=',False),('offer_vaucher_id', '=', active_id)]</field>
+            <field name="res_model">netaddiction.specialoffer.offer_voucher_line</field>
+            <field name="context">{'search_default_offer_voucher_id': [active_id], 'default_offer_voucher_id': active_id}</field>
+            <field name="domain">[('active','=',False),('offer_voucher_id', '=', active_id)]</field>
 
               <field name="help" type="html">
               <p class="oe_view_nocontent_create">
@@ -105,18 +105,18 @@
         </record>
 
 
-        <record model="ir.actions.act_window" id="netaddiction_special_offers_vaucher_base">
-            <field name="name">Offerte Vaucher</field>
-            <field name="res_model">netaddiction.specialoffer.vaucher</field>
+        <record model="ir.actions.act_window" id="netaddiction_special_offers_voucher_base">
+            <field name="name">Offerte Voucher</field>
+            <field name="res_model">netaddiction.specialoffer.voucher</field>
             <field name="view_type">form</field>
             <field name="view_mode">tree,form</field>
             <field name="help" type="html">
-                <p class="oe_view_nocontent_create">Non ci sono offerte vaucher.
+                <p class="oe_view_nocontent_create">Non ci sono offerte voucher.
                 </p>
             </field>
         </record>
 
-        <record model="ir.actions.act_window" id="netaddiction_special_offers_vaucher_line">
+        <record model="ir.actions.act_window" id="netaddiction_special_offers_voucher_line">
             <field name="name">Offer catalog Line</field>
             <field name="res_model">netaddiction.specialoffer.offer_catalog_line</field>
             <field name="view_type">form</field>
@@ -408,15 +408,15 @@
         </record>
 <!--  -->
 
-    <menuitem id="submenu_netaddiction_special_offers_vaucher"
-          name="Offerte Vaucher" parent="netaddiction_expressions.menu_netaddiction_offers"
-          action="netaddiction_special_offers_vaucher_base" sequence="3"/>
+    <menuitem id="submenu_netaddiction_special_offers_voucher"
+          name="Offerte Voucher" parent="netaddiction_expressions.menu_netaddiction_offers"
+          action="netaddiction_special_offers_voucher_base" sequence="3"/>
 
-        <record model="ir.ui.view" id="netaddiction_special_offers_vaucher_tree">
-            <field name="name">view.netaddiction_special_offers_vaucher_tree</field>
-            <field name="model">netaddiction.specialoffer.vaucher</field>
+        <record model="ir.ui.view" id="netaddiction_special_offers_voucher_tree">
+            <field name="name">view.netaddiction_special_offers_voucher_tree</field>
+            <field name="model">netaddiction.specialoffer.voucher</field>
             <field name="arch" type="xml">
-                <tree name="special_offers_vaucher list">
+                <tree name="special_offers_voucher list">
                     <field name="name"/>
                     <field name="author_id"/>
                     <field name="date_start"/>
@@ -425,11 +425,11 @@
             </field>
         </record>
 
-        <record model="ir.ui.view" id="netaddiction_special_offers_vaucher_form">
-            <field name="name">view.netaddiction_special_offers_vaucher_form</field>
-            <field name="model">netaddiction.specialoffer.vaucher</field>
+        <record model="ir.ui.view" id="netaddiction_special_offers_voucher_form">
+            <field name="name">view.netaddiction_special_offers_voucher_form</field>
+            <field name="model">netaddiction.specialoffer.voucher</field>
             <field name="arch" type="xml">
-                <form string="special_offers_vaucher Form">
+                <form string="special_offers_voucher Form">
                     <sheet>
                     <div class="oe_button_box" name="button_box">
                             <button name="toggle_active" type="object" class="oe_stat_button" icon="fa-archive">
@@ -438,7 +438,7 @@
                         </div>
 
                     <div class="oe_title">
-                        <h1><field name="name" placeholder="Titolo offerta Vaucher..."/></h1>
+                        <h1><field name="name" placeholder="Titolo offerta Voucher..."/></h1>
                     </div>
                         <group string="Offerta" name="so_cat" colspan="4">
                             <group name="loc_left" class="oe_left" col="2">
@@ -484,7 +484,7 @@
                          </group>
                      </div>
                   
-<!--                     <button name="%(netaddiction_offer_line_vaucher_inactive)d" type="action"
+<!--                     <button name="%(netaddiction_offer_line_voucher_inactive)d" type="action"
                         string="prodotti spenti" class="oe_highlight"
                         > 
                         

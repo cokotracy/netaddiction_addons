@@ -80,9 +80,9 @@
             <field name="perm_write" eval="1"/>
             <field name="perm_unlink" eval="0"/>
         </record>
-        <record id="netaddiction_customer_care_access_offer_vaucher_line" model="ir.model.access">
+        <record id="netaddiction_customer_care_access_offer_voucher_line" model="ir.model.access">
             <field name="name">Offerte Vaucher</field>
-            <field name="model_id" search="[('model','=','netaddiction.order.specialoffer.vaucher.history')]" model="ir.model"/>
+            <field name="model_id" search="[('model','=','netaddiction.order.specialoffer.voucher.history')]" model="ir.model"/>
             <field name="group_id" ref="netaddiction_sale_customer_care"/>
             <field name="perm_read" eval="1"/>
             <field name="perm_create" eval="1"/>

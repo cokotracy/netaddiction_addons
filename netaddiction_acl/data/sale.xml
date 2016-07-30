@@ -161,9 +161,9 @@
             <field name="perm_write" eval="0"/>
             <field name="perm_unlink" eval="0"/>
         </record>
-        <record id="netaddiction_sale_user_acces_vaucher_history" model="ir.model.access">
-            <field name="name">netaddiction.order.specialoffer.vaucher.history</field>
-            <field name="model_id" search="[('model','=','netaddiction.order.specialoffer.vaucher.history')]" model="ir.model"/>
+        <record id="netaddiction_sale_user_acces_voucher_history" model="ir.model.access">
+            <field name="name">netaddiction.order.specialoffer.voucher.history</field>
+            <field name="model_id" search="[('model','=','netaddiction.order.specialoffer.voucher.history')]" model="ir.model"/>
             <field name="group_id" ref="netaddiction_sale_user"/>
             <field name="perm_read" eval="1"/>
             <field name="perm_create" eval="0"/>
@@ -290,9 +290,9 @@
             <field name="perm_write" eval="1"/>
             <field name="perm_unlink" eval="0"/>
         </record>
-        <record id="netaddiction_sale_user_plus_access_offer_vaucher_line" model="ir.model.access">
+        <record id="netaddiction_sale_user_plus_access_offer_voucher_line" model="ir.model.access">
             <field name="name">Offerte Vaucher</field>
-            <field name="model_id" search="[('model','=','netaddiction.order.specialoffer.vaucher.history')]" model="ir.model"/>
+            <field name="model_id" search="[('model','=','netaddiction.order.specialoffer.voucher.history')]" model="ir.model"/>
             <field name="group_id" ref="netaddiction_sale_user_plus"/>
             <field name="perm_read" eval="1"/>
             <field name="perm_create" eval="1"/>
@@ -535,18 +535,18 @@
             <field name="perm_unlink" eval="1"/>
         </record>
 
-        <record id="netaddiction_sale_offers_vaucher" model="ir.model.access">
-            <field name="name">netaddiction.specialoffer.vaucher</field>
-            <field name="model_id" search="[('model','=','netaddiction.specialoffer.vaucher')]" model="ir.model"/>
+        <record id="netaddiction_sale_offers_voucher" model="ir.model.access">
+            <field name="name">netaddiction.specialoffer.voucher</field>
+            <field name="model_id" search="[('model','=','netaddiction.specialoffer.voucher')]" model="ir.model"/>
             <field name="group_id" ref="netaddiction_sale_offers"/>
             <field name="perm_read" eval="1"/>
             <field name="perm_create" eval="1"/>
             <field name="perm_write" eval="1"/>
             <field name="perm_unlink" eval="1"/>
         </record>
-        <record id="netaddiction_sale_offers_vaucher_line" model="ir.model.access">
-            <field name="name">netaddiction.specialoffer.offer_vaucher_line</field>
-            <field name="model_id" search="[('model','=','netaddiction.specialoffer.offer_vaucher_line')]" model="ir.model"/>
+        <record id="netaddiction_sale_offers_voucher_line" model="ir.model.access">
+            <field name="name">netaddiction.specialoffer.offer_voucher_line</field>
+            <field name="model_id" search="[('model','=','netaddiction.specialoffer.offer_voucher_line')]" model="ir.model"/>
             <field name="group_id" ref="netaddiction_sale_offers"/>
             <field name="perm_read" eval="1"/>
             <field name="perm_create" eval="1"/>

@@ -7,20 +7,20 @@ class OfferOrder(models.Model):
     _inherit = 'sale.order'
 
     offers_cart = fields.One2many('netaddiction.order.specialoffer.cart.history','order_id', string='offerte carrello attive')
-    offers_vaucher = fields.One2many('netaddiction.order.specialoffer.vaucher.history','order_id', string='offerte vaucher attive')
-    vaucher_string = fields.Char(string='Codice Vaucher')
+    offers_voucher = fields.One2many('netaddiction.order.specialoffer.voucher.history','order_id', string='offerte voucher attive')
+    voucher_string = fields.Char(string='Codice Vaucher')
     free_ship_prod = fields.Many2many('product.product', string='Prodotti con spedizione gratuita')
 
 
   
     
     @api.one
-    def reset_vaucher(self):
-        print "HARE %s" %len(self.offers_vaucher) 
+    def reset_voucher(self):
+        print "HARE %s" %len(self.offers_voucher) 
         print self.id
-        if len(self.offers_vaucher) > 0:
+        if len(self.offers_voucher) > 0:
             print "HIII"
-            for ovh in self.env['netaddiction.order.specialoffer.vaucher.history'].search([("order_id","=",self.id)]):
+            for ovh in self.env['netaddiction.order.specialoffer.voucher.history'].search([("order_id","=",self.id)]):
                 print "a"
                 ovh.order_line.product_id_change()
                 print "b"
@@ -31,9 +31,9 @@ class OfferOrder(models.Model):
 
 
     @api.one
-    def apply_vaucher(self, **kwargs):
-        """applica i vaucher
-        vaucher uno per ordine
+    def apply_voucher(self, **kwargs):
+        """applica i voucher
+        voucher uno per ordine
         IMPORTANTE: applicare dopo offerte carrello
         """
         public_pricelist = self.env.ref('product.list0')  # TODO query diretta a model.data
@@ -41,30 +41,30 @@ class OfferOrder(models.Model):
             return
 
 
-        vaucher_string = kwargs.get("vaucher_string")
-        if vaucher_string is not None:
-            self.vaucher_string = vaucher_string
+        voucher_string = kwargs.get("voucher_string")
+        if voucher_string is not None:
+            self.voucher_string = voucher_string
 
 
-        self.reset_vaucher()
+        self.reset_voucher()
 
 
 
-        if self.vaucher_string and len(self.offers_vaucher)==0:
-            offer = self.env['netaddiction.specialoffer.vaucher'].search([("code","=",self.vaucher_string)])
+        if self.voucher_string and len(self.offers_voucher)==0:
+            offer = self.env['netaddiction.specialoffer.voucher'].search([("code","=",self.voucher_string)])
             customer_check = offer and (not offer.one_user or (offer.associated_user.id == self.partner_id.id))
             if customer_check:
                 offer = offer[0]
                 if offer.offer_type == 3:
                     #TODO scalare spese di spedizione
-                    ovh = self.env['netaddiction.order.specialoffer.vaucher.history'].create({ 'order_id' : self.id, 'offer_type':offer.offer_type,  'offer_author_id' : offer.author_id.id, 'offer_name' : offer.name, 'offer_id' : offer.id, 'fixed_discount':offer.fixed_discount, 'percent_discount': offer.percent_discount, 'offer_type': offer.offer_type})
+                    ovh = self.env['netaddiction.order.specialoffer.voucher.history'].create({ 'order_id' : self.id, 'offer_type':offer.offer_type,  'offer_author_id' : offer.author_id.id, 'offer_name' : offer.name, 'offer_id' : offer.id, 'fixed_discount':offer.fixed_discount, 'percent_discount': offer.percent_discount, 'offer_type': offer.offer_type})
                     
                 else:
 
                     offer_ids = [ol.product_id.id for ol in offer.products_list]
                     offer_cart_history_ids =[och.product_id.id for och in self.offers_cart]
                     for ol in self.order_line:
-                        #applico il vaucher se non ci sono altre offerte sul prodotto
+                        #applico il voucher se non ci sono altre offerte sul prodotto
                         if (ol.product_id.id in offer_ids) and (not  ol.product_id.id in offer_cart_history_ids) and (not ol.offer_type) :
                             tax = ol.tax_id.amount
                             discount = 0.0
@@ -89,9 +89,9 @@ class OfferOrder(models.Model):
                                 new_price = ol.price_unit - discount
                                 new_price = new_price if new_price > float(0) else float(0)
                                 ol.price_unit =  self.env['account.tax']._fix_tax_included_price(new_price, ol.product_id.taxes_id, ol.tax_id)
-                                #applica offerta vaucher e crea history
-                            ovh = self.env['netaddiction.order.specialoffer.vaucher.history'].create({'product_id' : ol.product_id.id, 'order_id' : self.id, 'offer_type':offer.offer_type, 'qty' : ol.product_uom_qty, 'offer_author_id' : offer.author_id.id, 'offer_name' : offer.name, 'offer_id' : offer.id, 'fixed_discount':offer.fixed_discount, 'percent_discount': offer.percent_discount, 'offer_type': offer.offer_type,'order_line': ol.id, 'percent_effective_discount': discount})
-                            ol.offer_vaucher_history = ovh.id
+                                #applica offerta voucher e crea history
+                            ovh = self.env['netaddiction.order.specialoffer.voucher.history'].create({'product_id' : ol.product_id.id, 'order_id' : self.id, 'offer_type':offer.offer_type, 'qty' : ol.product_uom_qty, 'offer_author_id' : offer.author_id.id, 'offer_name' : offer.name, 'offer_id' : offer.id, 'fixed_discount':offer.fixed_discount, 'percent_discount': offer.percent_discount, 'offer_type': offer.offer_type,'order_line': ol.id, 'percent_effective_discount': discount})
+                            ol.offer_voucher_history = ovh.id
                 self._amount_all()
 
                 return True
@@ -99,9 +99,9 @@ class OfferOrder(models.Model):
         return False
 
     
-    def compute_vaucher_discount(self):
+    def compute_voucher_discount(self):
         tot = 0.0
-        for ovh in self.offers_vaucher:
+        for ovh in self.offers_voucher:
             tot = tot+ovh.fixed_discount if ovh.offer_type == 1 else tot+ovh.percent_effective_discount
         return tot
                             
@@ -480,7 +480,7 @@ class OrderOfferCartHistory(models.Model):
 
 class OrderOfferVaucherHistory(models.Model):
 
-    _name = "netaddiction.order.specialoffer.vaucher.history"
+    _name = "netaddiction.order.specialoffer.voucher.history"
     
     
 
@@ -489,7 +489,7 @@ class OrderOfferVaucherHistory(models.Model):
     qty = fields.Integer(string = "quantità")
     offer_author_id = fields.Many2one(comodel_name='res.users',string='Autore offerta')
     offer_name = fields.Char(string='Offerta')
-    offer_id = fields.Many2one(comodel_name='netaddiction.specialoffer.vaucher')
+    offer_id = fields.Many2one(comodel_name='netaddiction.specialoffer.voucher')
     order_id = fields.Many2one(comodel_name='sale.order', string='Ordine',index=True, copy=False, required=True)
     fixed_discount = fields.Float(string="Sconto fisso")
     percent_discount = fields.Integer(string="Sconto Percentuale")

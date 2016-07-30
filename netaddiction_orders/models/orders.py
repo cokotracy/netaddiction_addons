@@ -177,15 +177,15 @@ class Order(models.Model):
         return problems
 
 
-    def _check_offers_vaucher(self):
-        """controlla le offerte vaucher e aggiorna le quantità vendute.
+    def _check_offers_voucher(self):
+        """controlla le offerte voucher e aggiorna le quantità vendute.
         returns True se qualche prodotto ha superato la qty_limit per la sua offerta carrello corrispondente
         False altrimenti
         """
 
         problems = False
         if( self.state == 'draft'):
-            for ovh in self.offers_vaucher:
+            for ovh in self.offers_voucher:
 
                     offer = ovh.offer_id
                     if offer:
@@ -220,7 +220,7 @@ class Order(models.Model):
     def action_problems(self):
         self._check_offers_catalog()
         self._check_offers_cart()
-        self._check_offers_vaucher()
+        self._check_offers_voucher()
         self._check_digital_bonus()
         self.state = 'problem'
 
@@ -238,7 +238,7 @@ class Order(models.Model):
                 problems = False
                 problems = order._check_offers_catalog() 
                 problems = order._check_offers_cart() or problems
-                problems = order._check_offers_vaucher() or problems
+                problems = order._check_offers_voucher() or problems
                 self._check_digital_bonus()
                 #TODO se c'è un commento spostare in problem non in sale
                 if problems or order.amount_total < 0:

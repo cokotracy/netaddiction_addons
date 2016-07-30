@@ -498,7 +498,7 @@ class BonusOfferLine(models.Model):
 
 class VaucherOffer(models.Model):
 
-    _name = "netaddiction.specialoffer.vaucher"
+    _name = "netaddiction.specialoffer.voucher"
 
     name = fields.Char(string='Titolo', required=True)
     active = fields.Boolean(string='Attivo', help="Permette di spengere l'offerta senza cancellarla",default=True)
@@ -517,7 +517,7 @@ class VaucherOffer(models.Model):
     associated_user = fields.Many2one(comodel_name='res.partner',string='Beneficiario', default=None)
     end_cron_job = fields.Integer()
     start_cron_job = fields.Integer()
-    products_list = fields.One2many('netaddiction.specialoffer.offer_vaucher_line', 'offer_vaucher_id', string='Lista prodotti', domain=['|',('active','=',False),('active','=',True)])
+    products_list = fields.One2many('netaddiction.specialoffer.offer_voucher_line', 'offer_voucher_id', string='Lista prodotti', domain=['|',('active','=',False),('active','=',True)])
 
     _sql_constraints = [
             ('name', 'unique(name)', 'Nome offerta deve essere unico!'),
@@ -575,7 +575,7 @@ class VaucherOffer(models.Model):
         res.end_cron_job = res.pool.get('ir.cron').create(self.env.cr,self.env.uid,{
                 'name': name,
                 'user_id': SUPERUSER_ID,
-                'model': 'netaddiction.specialoffer.vaucher',
+                'model': 'netaddiction.specialoffer.voucher',
                 'function': 'turn_off',
                 'nextcall': nextcall,
                 'args': repr([res.id]),
@@ -592,7 +592,7 @@ class VaucherOffer(models.Model):
             res.end_cron_job = res.pool.get('ir.cron').create(self.env.cr,self.env.uid,{
                 'name': name,
                 'user_id': SUPERUSER_ID,
-                'model': 'netaddiction.specialoffer.vaucher',
+                'model': 'netaddiction.specialoffer.voucher',
                 'function': 'turn_on',
                 'nextcall': nextcall,
                 'args': repr([res.id]),
@@ -614,7 +614,7 @@ class VaucherOffer(models.Model):
 
             for prod in self.env['product.product'].search(dom):
                 if( prod.id not in ids):
-                    to_add.append(self.env['netaddiction.specialoffer.offer_vaucher_line'].create({'product_id':prod.id, 'offer_vaucher_id' : self.id, }))
+                    to_add.append(self.env['netaddiction.specialoffer.offer_voucher_line'].create({'product_id':prod.id, 'offer_voucher_id' : self.id, }))
             
 
 
@@ -645,7 +645,7 @@ class VaucherOffer(models.Model):
 
     @api.one
     def turn_on(self):
-        for pl in self.env['netaddiction.specialoffer.offer_vaucher_line'].search([('offer_vaucher_id','=',self.id),('active','=',False)]):
+        for pl in self.env['netaddiction.specialoffer.offer_voucher_line'].search([('offer_voucher_id','=',self.id),('active','=',False)]):
             pl.active = True
            
         self.write({'active' : True})
@@ -663,14 +663,14 @@ class VaucherOffer(models.Model):
 
 class VaucherOfferLine(models.Model):
 
-    _name = "netaddiction.specialoffer.offer_vaucher_line"
+    _name = "netaddiction.specialoffer.offer_voucher_line"
 
     
 
     active = fields.Boolean(default=True,
         help="Spuntato = offerta attiva, Non Spuntato = offerta spenta")
     product_id = fields.Many2one('product.product', string='Product', domain=[('sale_ok', '=', True)], change_default=True, ondelete='restrict', required=True)
-    offer_vaucher_id = fields.Many2one('netaddiction.specialoffer.vaucher', string='Offerta Vaucher', index=True, copy=False, required=True)
+    offer_voucher_id = fields.Many2one('netaddiction.specialoffer.voucher', string='Offerta Vaucher', index=True, copy=False, required=True)
 
 
     @api.one

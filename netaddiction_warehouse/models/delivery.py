@@ -114,11 +114,11 @@ class Orders(models.Model):
             for i in self.free_ship_prod:
                 free_prod_ship.append(i.id)
 
-        sped_vaucher = False
-        if len(self.offers_vaucher)>0:
-            for i in self.offers_vaucher:
+        sped_voucher = False
+        if len(self.offers_voucher)>0:
+            for i in self.offers_voucher:
                 if i.offer_type == 3:
-                    sped_vaucher = True
+                    sped_voucher = True
 
         price_delivery_gratis = self.carrier_id.amount
         total_delivery_price = {}
@@ -132,7 +132,7 @@ class Orders(models.Model):
                 if line.product_id.id in free_prod_ship:
                     ship_gratis = True
 
-            if subtotal >= price_delivery_gratis or sped_vaucher or ship_gratis:
+            if subtotal >= price_delivery_gratis or sped_voucher or ship_gratis:
                 total_delivery_price[pick] = 0.00
             else:
                 total_delivery_price[pick] = self.carrier_id.fixed_price
@@ -213,11 +213,11 @@ class Orders(models.Model):
             for i in self.free_ship_prod:
                 free_prod_ship.append(i.id)
 
-        sped_vaucher = False
-        if len(self.offers_vaucher)>0:
-            for i in self.offers_vaucher:
+        sped_voucher = False
+        if len(self.offers_voucher)>0:
+            for i in self.offers_voucher:
                 if i.offer_type == 3:
-                    sped_vaucher = True
+                    sped_voucher = True
 
 
         price_delivery_gratis = self.carrier_id.amount
@@ -230,7 +230,7 @@ class Orders(models.Model):
                 if line['product_id'].id in free_prod_ship:
                     ship_gratis = True
 
-            if subtotal >= price_delivery_gratis or ship_gratis or sped_vaucher:
+            if subtotal >= price_delivery_gratis or ship_gratis or sped_voucher:
                 total_delivery_price[delivery_date] = 0.00
             else:
                 total_delivery_price[delivery_date] = self.carrier_id.fixed_price
@@ -280,14 +280,14 @@ class SaleOrderLine(models.Model):
         
         for line in self:
             if not line.is_delivery:
-                if len(line.offer_cart_history) == 0 and len(line.offer_vaucher_history) == 0:
+                if len(line.offer_cart_history) == 0 and len(line.offer_voucher_history) == 0:
                     support['without_offer'] += [line] 
                 else:
                     #ci sono delle offerte associate a questa linea
                     if len(line.offer_cart_history)>0:
                         support[line.offer_cart_history.offer_name].append(line)
-                    elif len(line.offer_vaucher_history)>0:
-                        support[line.offer_vaucher_history.offer_name].append(line) 
+                    elif len(line.offer_voucher_history)>0:
+                        support[line.offer_voucher_history.offer_name].append(line) 
 
         return self._divide_lines(support, confirm_order)
 
