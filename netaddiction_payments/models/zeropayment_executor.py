@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
 
-import payment_exception
+
 from float_compare import isclose
-from openerp import models, fields, api
+from openerp import api, models, fields
+
+import payment_exception
 
 
 class ZeroPaymentExecutor(models.TransientModel):

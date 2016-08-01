@@ -240,7 +240,7 @@ class Order(models.Model):
                 problems = order._check_offers_cart() or problems
                 problems = order._check_offers_voucher() or problems
                 self._check_digital_bonus()
-                #TODO se c'è un commento spostare in problem non in sale
+                #TODO se c'è un commento spostare in problem non in sale ma senza eccezione
                 if problems or order.amount_total < 0:
                 #TODO aggiungere il commento sul perchè
                     order.state = 'problem'
