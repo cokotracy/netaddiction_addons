@@ -47,7 +47,7 @@ class OrderUtilities(models.TransientModel):
         - partner_id id dell'utente
         - order_id id del carrello dell'utente
         - product_id id del prodotto da aggiungere
-        - quantity quantità del prodotto da aggiungere
+        - quantity quantità del prodotto da aggiungere DEVE ESSERE POSITIVO
         - bonus_list = [(bonus_id, bonus_qty)]  bonus_id id del prodotto bonus, bonus_qty quantità del prodotto bonus
         Return:
         - true se è andato tutto bene
@@ -55,6 +55,9 @@ class OrderUtilities(models.TransientModel):
 
         NB: non viene fatto alcun controllo sul fatto che i bonus siano effettivamente bonus del prodotto partner_id
         """
+        if quantity < 0:
+            return
+
         if partner_id is None:
             partner_id = self.env.ref('base.public_user_res_partner').id
 
@@ -64,7 +67,7 @@ class OrderUtilities(models.TransientModel):
         if order and order.partner_id.id == partner_id and order.state == "draft" and prod:
 
             order.reset_cart()
-            order.reset_vaucher()
+            order.reset_voucher()
 
             found = False
             for line in order.order_line:
@@ -92,7 +95,7 @@ class OrderUtilities(models.TransientModel):
                     if bonus_prod:
                         found = False
                         for line in order.order_line:
-                            if line.product_id.id == bonus_id:
+                            if line.product_id.id == bonus_id and bonus_qty > 0:
                                 line.product_uom_qty += bonus_qty
                                 line.product_uom_change()
                                 found = True
@@ -141,14 +144,17 @@ class OrderUtilities(models.TransientModel):
         if order and order.partner_id.id == partner_id and order.state == "draft" and prod:
 
             order.reset_cart()
-            order.reset_vaucher()
+            order.reset_voucher()
 
             found = False
             found_bonus = False
             for line in order.order_line:
                 if line.product_id.id == product_id:
-                    line.product_uom_qty = quantity
-                    line.product_uom_change()
+                    if quantity > 0:
+                        line.product_uom_qty = quantity
+                        line.product_uom_change()
+                    else:
+                        line.unlink()
                     found = True
                     break
 
@@ -159,8 +165,11 @@ class OrderUtilities(models.TransientModel):
                     if bonus_prod:
                         for line in order.order_line:
                             if line.product_id.id == bonus_id:
-                                line.product_uom_qty += bonus_qty
-                                line.product_uom_change()
+                                if bonus_qty > 0:
+                                    line.product_uom_qty = bonus_qty
+                                    line.product_uom_change()
+                                else:
+                                    line.unlink()
                                 found_bonus = True
                                 break
 
