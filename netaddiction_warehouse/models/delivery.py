@@ -17,7 +17,8 @@ class Orders(models.Model):
 
     @api.multi
     def action_confirm(self):
-        self.order_line.check_limit_and_action()
+        if not self.env.context.get('no_check_limit_and_action', False):
+            self.order_line.check_limit_and_action()
         self.pre_action_confirm()
         super(Orders,self).action_confirm()
         if len(self.picking_ids)==0:
@@ -25,8 +26,9 @@ class Orders(models.Model):
             self.set_delivery_price()
             for pick in self.picking_ids:
                 pick.generate_barcode()
-        for line in self.order_line:
-            line.product_id.do_action_quantity()   
+        if not self.env.context.get('no_do_action_quantity', False):
+            for line in self.order_line:
+                line.product_id.do_action_quantity()   
         return True
 
     @api.multi
@@ -233,7 +235,10 @@ class Orders(models.Model):
             if subtotal >= price_delivery_gratis or ship_gratis or sped_voucher:
                 total_delivery_price[delivery_date] = 0.00
             else:
-                total_delivery_price[delivery_date] = self.carrier_id.fixed_price
+                value_tax = self.carrier_id.product_id.taxes_id.compute_all(self.carrier_id.fixed_price)
+                total_delivery_price[delivery_date] = value_tax['total_included']
+                # TODO: YURI NON CANCELLARE NELLE TUE CRISI MISTICHE DA PULIZIA
+                # total_delivery_price[delivery_date] = self.carrier_id.fixed_price 
 
         return total_delivery_price
 

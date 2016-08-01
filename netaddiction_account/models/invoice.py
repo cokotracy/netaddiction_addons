@@ -8,7 +8,7 @@ import openerp.addons.decimal_precision as dp
 class Invoice(models.Model):
     _inherit = "account.invoice"
 
-    is_customer_invoice = fields.Boolean(strong="E' una Fattura?")
+    is_customer_invoice = fields.Boolean(strong="È una Fattura?")
 
     @api.multi
     def invoice_validate(self):
@@ -24,17 +24,17 @@ class Invoice(models.Model):
         if 'is_customer_invoice' in values:
         	#se non c'è il fiscalcode allora rimando un errore e rimetto il vecchio nome fattura e is_customer_invoci è False
         	#altrimenti procedo al cambio di nome
-            if self.partner_id.parent_id.fiscalcode != False:
-                if values['number']:
+            if self.partner_id.fiscalcode or self.partner_id.vat:
+                if values.get('number', ''):
                     if values['is_customer_invoice']:
                         values['number'] = self.number.strip() + '.1'
                     else:
                         values['number'] = self.number.replace('.1','')
             else:
-                if values['number']:
+                if values.get('number', ''):
                     values['number'] = self.number.replace('.1','')
                 values['is_customer_invoice'] = False
-                raise ValidationError('Il Cliente non ha un codice Fiscale')
+                raise ValidationError('Il Cliente non ha un codice Fiscale/Partita Iva')
 
         return super(Invoice,self).write(values)
 

@@ -198,7 +198,8 @@ class Products(models.Model):
         
         product = self.browse(cr,uid,ids)
         for pid in product:
-            pid.check_price_and_date(vals)
+            if not context.get('no_check_price_and_date', False):
+                pid.check_price_and_date(vals)
 
         return super(Products, self).write(cr, uid, ids, vals, context)
 
