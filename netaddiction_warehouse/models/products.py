@@ -24,6 +24,8 @@ class Products(models.Model):
         qty_limit = self.qty_limit
         qty_single = self.qty_single_order
         action = self.limit_action
+        if not action:
+            action = 'nothing'
         #controllo quantità massima ordinabile per singolo ordine
         if self.type != 'service':
             if qty_single > 0:

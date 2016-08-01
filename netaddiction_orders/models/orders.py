@@ -232,7 +232,8 @@ class Order(models.Model):
 
                 for order_line in order.order_line:
                     if not order_line.product_id.active or not order_line.product_id.sale_ok:
-                        raise ProductSoldOutOrderConfirmException(order.id,"prodotto %s attivo: %s sale_ok: %s" %(order_line.product_id.name,order_line.product_id.active,order_line.product_id.sale_ok))
+                        if not self.env.context.get('no_check_product_sold_out', False):
+                            raise ProductSoldOutOrderConfirmException(order.id,"prodotto %s attivo: %s sale_ok: %s" %(order_line.product_id.name,order_line.product_id.active,order_line.product_id.sale_ok))
 
                 
                 problems = False

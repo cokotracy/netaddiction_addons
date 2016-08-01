@@ -14,11 +14,9 @@ class ZeroPaymentExecutor(models.TransientModel):
     _name = "netaddiction.zeropayment.executor"
 
 
-    def set_order_zero_payment(self,order_id, real_invoice=False):
-        order = self.env["sale.order"].search([("id","=",order_id)])
-        
+    def set_order_zero_payment(self,order, real_invoice=False):
         if not order:
-            raise payment_exception.PaymentException(payment_exception.ZERO,"order id non valido! %s" %order_id)
+            raise payment_exception.PaymentException(payment_exception.ZERO,"order id non valido! %s" %order.id)
 
         if not isclose(order.amount_total,0.0000,abs_tol=0.009):
             raise payment_exception.PaymentException(payment_exception.ZERO,"ordine non a 0! pagamento dovuto: % s" % order.amount_total)
@@ -54,7 +52,6 @@ class ZeroPaymentExecutor(models.TransientModel):
                 invoice.signal_workflow('invoice_open')
                 invoice.is_customer_invoice = real_invoice
 
-    @api.one
     def _set_order_to_invoice(self,stock_move,order):
         """dato 'order' imposta qty_to_invoice alla quantità giusta solo per i prodotti che si trovano in 'stock_move'
         """
@@ -72,7 +69,6 @@ class ZeroPaymentExecutor(models.TransientModel):
             if qty <= 0:
                 break
 
-    @api.one
     def _set_delivery_to_invoice(self,pick,order):
         """dato 'order' imposta qty_to_invoice per una spedizione 
         """
