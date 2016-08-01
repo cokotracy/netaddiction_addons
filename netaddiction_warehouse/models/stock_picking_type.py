@@ -181,6 +181,7 @@ class StockPickingWave(models.Model):
                 if op.qty_done > 0:
                     validate = True
                     self.env['netaddiction.wh.locations.line'].allocate(op.product_id.id,op.qty_done,loc_id.id)
+                    op.product_id.qty_limit = 0
 
             if validate:
                 if out.check_backorder(out):

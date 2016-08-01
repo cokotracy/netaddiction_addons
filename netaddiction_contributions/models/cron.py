@@ -22,9 +22,9 @@ class Cron(models.Model):
             margin_new = 0
             marginate = 0
             for line in order.order_line:
-                if line.margin_new == 0 and line.purchase_price_real == 0:
-                    line._calculate_purchase_price_real()
-                    line._calculate_product_margin()
+                #if line.margin_new == 0 and line.purchase_price_real == 0:
+                line._calculate_purchase_price_real()
+                line._calculate_product_margin()
 
                 margin_new += line.margin_new
 

@@ -136,6 +136,7 @@ class ProductMargin(models.Model):
             self.margin_new = 0
 
 
+
 class OrderMargin(models.Model):
     _inherit="sale.order"
 
@@ -145,4 +146,17 @@ class OrderMargin(models.Model):
     margin_new = fields.Float(string="Margine Ordine Nuovo", digits_compute= dp.get_precision('Product Price'))
     
     is_complete_margin = fields.Boolean(string="Margina calcolato", default = False)
+
+class Stock(models.Model):
+    _inherit = "stock.picking"
+
+    @api.model 
+    def create_reverse(self,attr,order_id):
+        """
+        override del metodo di stock picking per fare il reso dal cliente
+        metto is_complete_margin a false cosi può ricalcolare il margine al successivo passaggio del cron
+        """
+        order = self.env['sale.order'].search([('id','=',int(order_id))])
+        order.is_complete_margin = False
+        return super(Stock,self).create_reverse(attr,order_id)
     

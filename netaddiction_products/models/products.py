@@ -241,9 +241,10 @@ class Products(models.Model):
                         res_price_unit = line.tax_id.compute_all(line.price_unit)
                         price_unit = res_price_unit['total_included']
                         if price_new < price_unit:
-                            print line.order_id.amount_total
+                            pre = line.order_id.amount_total
                             line.write({'price_unit' : price})
-                            print line.order_id.amount_total
+                            gift = pre - line.order_id.amount_total
+                            line.order_id.partner_id.add_gift_value(gift,'Rimborso')
 
         if 'out_date' in vals:
             #qua significa che ho modificato la data di uscita
