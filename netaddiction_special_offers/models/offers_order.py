@@ -12,9 +12,7 @@ class OfferOrder(models.Model):
     free_ship_prod = fields.Many2many('product.product', string='Prodotti con spedizione gratuita')
 
 
-  
-    
-    @api.one
+
     def reset_voucher(self):
         if len(self.offers_voucher) > 0:
             for ovh in self.env['netaddiction.order.specialoffer.voucher.history'].search([("order_id","=",self.id)]):
@@ -24,7 +22,6 @@ class OfferOrder(models.Model):
 
 
 
-    @api.one
     def apply_voucher(self, **kwargs):
         """applica i voucher
         voucher uno per ordine
