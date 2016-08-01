@@ -158,11 +158,11 @@
                               </field>
                               <br/>
                               <br/>
-                             <h2>Offerte Vaucher</h2>
+                             <h2>Offerte Voucher</h2>
 
                                <field name="offers_voucher" mode="tree,kanban" >
 
-                                  <tree string="Offer Vaucher Line" editable="bottom">
+                                  <tree string="Offer Voucher Line" editable="bottom">
                                      <field name="product_id" attrs="{'readonly': 1}"/>
                                      <field name="offer_type" attrs="{'readonly': 1}"/>
                                      <field name="qty" attrs="{'readonly': 1}"/>
@@ -274,9 +274,9 @@
                         </group>
                      <group> 
                             <button  class="oe_highlight" name="apply_voucher" 
-                                string="Applica Vaucher" type="object" states="draft" />
+                                string="Applica Voucher" type="object" states="draft" />
                             <button  class="oe_highlight" name="reset_voucher" 
-                                string="Reset Vaucher" type="object" states="draft" />
+                                string="Reset Voucher" type="object" states="draft" />
                       </group>
                     </group>
 

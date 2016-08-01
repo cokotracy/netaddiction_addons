@@ -291,7 +291,7 @@
             <field name="perm_unlink" eval="0"/>
         </record>
         <record id="netaddiction_sale_user_plus_access_offer_voucher_line" model="ir.model.access">
-            <field name="name">Offerte Vaucher</field>
+            <field name="name">Offerte Voucher</field>
             <field name="model_id" search="[('model','=','netaddiction.order.specialoffer.voucher.history')]" model="ir.model"/>
             <field name="group_id" ref="netaddiction_sale_user_plus"/>
             <field name="perm_read" eval="1"/>

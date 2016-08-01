@@ -496,7 +496,7 @@ class BonusOfferLine(models.Model):
     bonus_offer_id = fields.Many2one('netaddiction.specialoffer.bonus', string='Offerta Bonus', index=True, copy=False, required=True)
 
 
-class VaucherOffer(models.Model):
+class VoucherOffer(models.Model):
 
     _name = "netaddiction.specialoffer.voucher"
 
@@ -509,7 +509,7 @@ class VaucherOffer(models.Model):
     date_end = fields.Datetime('End Date', help="Data di fine dell'offerta", required=True)
     qty_limit = fields.Integer( string='Quantità limite', help = "Quantità limite di prodotti vendibili in questa offerta. 0 è illimitato", required=True)
     qty_selled = fields.Float( string='Quantità venduta', default=0.0)
-    code = fields.Char(string='Codice Vaucher', required=True)
+    code = fields.Char(string='Codice Voucher', required=True)
     offer_type = fields.Selection([(1,'Sconto Fisso'),(2,'Percentuale'),(3,'Spedizioni Gratis')], string='Tipo Offerta', default=1)
     fixed_discount = fields.Float(string="Sconto fisso")
     percent_discount = fields.Integer(string="Sconto Percentuale")
@@ -549,7 +549,7 @@ class VaucherOffer(models.Model):
                 values['percent_discount'] = 0.0
             elif values['offer_type'] == 2:
                 values['fixed_discount'] = 0.0
-        return super(VaucherOffer, self).write(values)
+        return super(VoucherOffer, self).write(values)
 
 
 
@@ -566,7 +566,7 @@ class VaucherOffer(models.Model):
         elif (values['date_end'] and values['date_end'] < now): 
             raise ValidationError("Data fine offerta non può essere prima della data odierna")
 
-        res = super(VaucherOffer, self).create(values)
+        res = super(VoucherOffer, self).create(values)
 
 
         timesheet_id = 1
@@ -661,7 +661,7 @@ class VaucherOffer(models.Model):
 
 
 
-class VaucherOfferLine(models.Model):
+class VoucherOfferLine(models.Model):
 
     _name = "netaddiction.specialoffer.offer_voucher_line"
 
@@ -670,7 +670,7 @@ class VaucherOfferLine(models.Model):
     active = fields.Boolean(default=True,
         help="Spuntato = offerta attiva, Non Spuntato = offerta spenta")
     product_id = fields.Many2one('product.product', string='Product', domain=[('sale_ok', '=', True)], change_default=True, ondelete='restrict', required=True)
-    offer_voucher_id = fields.Many2one('netaddiction.specialoffer.voucher', string='Offerta Vaucher', index=True, copy=False, required=True)
+    offer_voucher_id = fields.Many2one('netaddiction.specialoffer.voucher', string='Offerta Voucher', index=True, copy=False, required=True)
 
 
     @api.one

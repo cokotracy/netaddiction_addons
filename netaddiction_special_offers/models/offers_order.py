@@ -8,7 +8,7 @@ class OfferOrder(models.Model):
 
     offers_cart = fields.One2many('netaddiction.order.specialoffer.cart.history','order_id', string='offerte carrello attive')
     offers_voucher = fields.One2many('netaddiction.order.specialoffer.voucher.history','order_id', string='offerte voucher attive')
-    voucher_string = fields.Char(string='Codice Vaucher')
+    voucher_string = fields.Char(string='Codice Voucher')
     free_ship_prod = fields.Many2many('product.product', string='Prodotti con spedizione gratuita')
 
 
@@ -472,7 +472,7 @@ class OrderOfferCartHistory(models.Model):
     order_line = fields.Many2one(comodel_name='sale.order.line')
 
 
-class OrderOfferVaucherHistory(models.Model):
+class OrderOfferVoucherHistory(models.Model):
 
     _name = "netaddiction.order.specialoffer.voucher.history"
     
