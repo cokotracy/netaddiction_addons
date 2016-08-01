@@ -17,9 +17,14 @@ class Orders(models.Model):
 
     @api.multi
     def action_confirm(self):
+        if len(self.order_line) == 0:
+            raise ValidationError("Devi inserire almeno un prodotto nell'ordine")
+
         self.order_line.check_limit_and_action()
         self.pre_action_confirm()
+
         super(Orders,self).action_confirm()
+
         if len(self.picking_ids)==0:
             self.create_shipping()
             self.set_delivery_price()

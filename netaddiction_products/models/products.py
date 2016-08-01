@@ -209,8 +209,6 @@ class Products(models.Model):
         deve andare a controllare negli ordini e cambiare il prezzo in questi ordini se il prezzo di questi ordini  maggiore
         del nuovo prezzo altrimenti lascia quello già presente
         """
-        #DECOMMENTA PER IMPORTER
-        #return True
         actual_price = self.list_price
         
         today = datetime.date.today()
@@ -241,8 +239,10 @@ class Products(models.Model):
                     for line in lines:
                         res_price_unit = line.tax_id.compute_all(line.price_unit)
                         price_unit = res_price_unit['total_included']
-                        if price < price_unit:
+                        if price_new < price_unit:
+                            print line.order_id.amount_total
                             line.write({'price_unit' : price})
+                            print line.order_id.amount_total
 
         if 'out_date' in vals:
             #qua significa che ho modificato la data di uscita
