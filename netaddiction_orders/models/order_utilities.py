@@ -40,7 +40,7 @@ class OrderUtilities(models.TransientModel):
 
         return None
 
-    def add_to_cart(self, order_id, product_id, quantity, partner_id=None, bonus_list=None):
+    def add_to_cart(self, order, product_id, quantity, partner_id=None, bonus_list=None):
         """
         Aggiunge un prodotto al carrello di un utente, se il prodotto è già presente nel carrello ne aggiorna la quantità sommando
         Parametri:
@@ -61,7 +61,6 @@ class OrderUtilities(models.TransientModel):
         if partner_id is None:
             partner_id = self.env.ref('base.public_user_res_partner').id
 
-        order = self.env["sale.order"].search([("id", "=", order_id)])
         prod = self.env["product.product"].search([("id", "=", product_id)])
 
         if order and order.partner_id.id == partner_id and order.state == "draft" and prod:
@@ -79,7 +78,7 @@ class OrderUtilities(models.TransientModel):
 
             if not found:
                 ol = self.env["sale.order.line"].create({
-                    "order_id": order_id,
+                    "order_id": order.id,
                     "product_id": product_id,
                     "product_uom_qty": quantity,
                     "product_uom": prod.uom_id.id,
@@ -103,7 +102,7 @@ class OrderUtilities(models.TransientModel):
 
                         if not found:
                             ol_bonus = self.env["sale.order.line"].create({
-                                "order_id": order_id,
+                                "order_id": order.id,
                                 "product_id": bonus_id,
                                 "product_uom_qty": bonus_qty,
                                 "bonus_father_id": ol.id,
@@ -120,7 +119,7 @@ class OrderUtilities(models.TransientModel):
 
         return False
 
-    def set_quantity(self, order_id, product_id, quantity, partner_id=None, bonus_list=None):
+    def set_quantity(self, order, product_id, quantity, partner_id=None, bonus_list=None):
         """
         Aggiorna la quantità del prodotto product_id a quantity nell'ordine order_id
         Parametri:
@@ -138,7 +137,6 @@ class OrderUtilities(models.TransientModel):
         if partner_id is None:
             partner_id = self.env.ref('base.public_user_res_partner').id
 
-        order = self.env["sale.order"].search([("id", "=", order_id)])
         prod = self.env["product.product"].search([("id", "=", product_id)])
 
         if order and order.partner_id.id == partner_id and order.state == "draft" and prod:
