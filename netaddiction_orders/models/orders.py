@@ -23,7 +23,6 @@ class Order(models.Model):
     ip_address = fields.Char(string="Indirizzo IP")
 
     customer_comment = fields.Text(string="Commento Cliente")
-    
 
     ##############
     # ACTION STATE#
@@ -71,7 +70,7 @@ class Order(models.Model):
 
             line_invoice_status = [line.invoice_status for line in order.order_line]
 
-            if order.state not in ('sale', 'done','partial_done'):
+            if order.state not in ('sale', 'done', 'partial_done'):
                 invoice_status = 'no'
             elif any(invoice_status == 'to invoice' for invoice_status in line_invoice_status):
                 invoice_status = 'to invoice'
@@ -82,28 +81,11 @@ class Order(models.Model):
             else:
                 invoice_status = 'no'
 
-
             order.update({
                 'invoice_count': len(set(invoice_ids.ids + refund_ids.ids)),
                 'invoice_ids': invoice_ids.ids + refund_ids.ids,
                 'invoice_status': invoice_status
             })
-
-
-
-    @api.one
-    def _send_cancel_mail(self):
-        # TODO: modificare mittente e testo mail
-        body_html = '''cancellato ordine'''
-        values = {
-            'subject': 'ordine cancellato',
-            'body_html': body_html,
-            'email_from': 'no-reply',
-            'email_to': self.partner_id.email,
-        }
-
-        email = self.env['mail.mail'].create(values)
-        email.send()
 
     @api.multi
     def action_done(self):
@@ -114,8 +96,8 @@ class Order(models.Model):
                     for p in self.account_payment_ids:
                         all_paid = all_paid and p.state == 'posted'
                     if all_paid:
-                       super(Order, order).action_done()
-                       if self.state=='done':
+                        super(Order, order).action_done()
+                        if self.state == 'done':
                             self.date_done = fields.Datetime.now()
                     else:
                         raise Warning(_('I pagamenti non sono completati'))
@@ -124,13 +106,22 @@ class Order(models.Model):
             else:
                 super(Order, order).action_done()
 
-
     @api.multi
     def _check_action_done(self):
         self.ensure_one()
         if all(line.qty_invoiced == line.qty_delivered == line.product_uom_qty for line in self.order_line):
             if (self.state == 'sale' or self.state == 'partial_done'):
                 self.action_done()
+
+    @api.one
+    def copy(self, default=None):
+        rec = super(Order, self).copy(default)
+
+        rec.reset_cart()
+        rec.reset_voucher()
+        for line in rec.order_line:
+            line.product_id_change()
+        return rec
 
     @api.multi
     def _check_partially_done(self):
@@ -144,7 +135,7 @@ class Order(models.Model):
         False altrimenti
         """
         problems = False
-        if( self.state == 'draft'):
+        if(self.state == 'draft'):
             for line in self.order_line:
                 if( line.offer_type and  not line.negate_offer ):
                     offer_line = line.product_id.offer_catalog_lines[0] if len(line.product_id.offer_catalog_lines) >0 else None
@@ -257,7 +248,7 @@ class Order(models.Model):
     @api.multi
     def action_cancel(self):
         #N.B. offerte mai riattivate manualmente
-        self._send_cancel_mail()
+
         for order in self:
             if (order.state != 'draft'):
                 #offerte catalogo
@@ -362,7 +353,6 @@ class SaleOrderLine(models.Model):
             else:
                 line.invoice_status = 'no'
 
-
     @api.depends('qty_invoiced', 'qty_delivered', 'product_uom_qty', 'order_id.state')
     def _get_to_invoice_qty(self):
         """
@@ -380,16 +370,16 @@ class SaleOrderLine(models.Model):
 
 
 class ProductSoldOutOrderConfirmException(Exception):
-    def __init__(self, order_id,err_str):
+    def __init__(self, order_id, err_str):
         super(ProductSoldOutOrderConfirmException, self).__init__(order_id)
         self.var_name = 'confirm_exception'
         self.err_str = err_str
         self.order_id = order_id
 
-        
     def __str__(self):
-        s = u"Errore durante la conferma dell'ordine %s : %s " %(self.order_id, self.err_str)
+        s = u"Errore durante la conferma dell'ordine %s : %s " % (self.order_id, self.err_str)
         return s
+
     def __repr__(self):
-        s = u"Errore durante la conferma dell'ordine %s : %s " %(self.order_id, self.err_str)
+        s = u"Errore durante la conferma dell'ordine %s : %s " % (self.order_id, self.err_str)
         return s
