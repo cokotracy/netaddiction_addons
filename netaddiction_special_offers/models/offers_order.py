@@ -1,26 +1,30 @@
 # -*- coding: utf-8 -*-
-from openerp import models, fields, api
-from offers_product import QtyMaxBuyableException
 from collections import Counter
+
+from offers_product import QtyMaxBuyableException
+
+from openerp import api, fields, models
+
 
 class OfferOrder(models.Model):
     _inherit = 'sale.order'
 
-    offers_cart = fields.One2many('netaddiction.order.specialoffer.cart.history','order_id', string='offerte carrello attive')
-    offers_voucher = fields.One2many('netaddiction.order.specialoffer.voucher.history','order_id', string='offerte voucher attive')
+    offers_cart = fields.One2many('netaddiction.order.specialoffer.cart.history', 'order_id', string='offerte carrello attive')
+    offers_voucher = fields.One2many('netaddiction.order.specialoffer.voucher.history', 'order_id', string='offerte voucher attive')
     voucher_string = fields.Char(string='Codice Voucher')
     free_ship_prod = fields.Many2many('product.product', string='Prodotti con spedizione gratuita')
 
-
-
+    @api.one
     def reset_voucher(self):
         if len(self.offers_voucher) > 0:
-            for ovh in self.env['netaddiction.order.specialoffer.voucher.history'].search([("order_id","=",self.id)]):
+            for ovh in self.env['netaddiction.order.specialoffer.voucher.history'].search([("order_id", "=", self.id)]):
                 ovh.order_line.product_id_change()
                 ovh.unlink()
-            self._amount_all()
+            # self._amount_all()
 
-
+    @api.one
+    def apply_voucher_backend(self):
+        self.apply_voucher()
 
     def apply_voucher(self, **kwargs):
         """applica i voucher
@@ -31,59 +35,75 @@ class OfferOrder(models.Model):
         if not self.pricelist_id or not public_pricelist or self.pricelist_id.id != public_pricelist.id:
             return
 
-
         voucher_string = kwargs.get("voucher_string")
         if voucher_string is not None:
             self.voucher_string = voucher_string
 
-
         self.reset_voucher()
 
-
-
-        if self.voucher_string and len(self.offers_voucher)==0:
-            offer = self.env['netaddiction.specialoffer.voucher'].search([("code","=",self.voucher_string)])
+        if self.voucher_string and len(self.offers_voucher) == 0:
+            offer = self.env['netaddiction.specialoffer.voucher'].search([("code", "=", self.voucher_string)])
             customer_check = offer and (not offer.one_user or (offer.associated_user.id == self.partner_id.id))
             if customer_check:
                 offer = offer[0]
                 if offer.offer_type == 3:
-                    #TODO scalare spese di spedizione
-                    ovh = self.env['netaddiction.order.specialoffer.voucher.history'].create({ 'order_id' : self.id, 'offer_type':offer.offer_type,  'offer_author_id' : offer.author_id.id, 'offer_name' : offer.name, 'offer_id' : offer.id, 'fixed_discount':offer.fixed_discount, 'percent_discount': offer.percent_discount, 'offer_type': offer.offer_type})
-                    
+
+                    ovh = self.env['netaddiction.order.specialoffer.voucher.history'].create({
+                        'order_id': self.id,
+                        'offer_type': offer.offer_type,
+                        'offer_author_id': offer.author_id.id,
+                        'offer_name': offer.name,
+                        'offer_id': offer.id,
+                        'fixed_discount': offer.fixed_discount,
+                        'percent_discount': offer.percent_discount,
+                        'offer_type': offer.offer_type})
+
                 else:
 
                     offer_ids = [ol.product_id.id for ol in offer.products_list]
-                    offer_cart_history_ids =[och.product_id.id for och in self.offers_cart]
+                    offer_cart_history_ids = [och.product_id.id for och in self.offers_cart]
                     for ol in self.order_line:
-                        #applico il voucher se non ci sono altre offerte sul prodotto
-                        if (ol.product_id.id in offer_ids) and (not  ol.product_id.id in offer_cart_history_ids) and (not ol.offer_type) :
-                            tax = ol.tax_id.amount
+                        # applico il voucher se non ci sono altre offerte sul prodotto
+                        if (ol.product_id.id in offer_ids) and (ol.product_id.id not in offer_cart_history_ids) and (not ol.offer_type):
+                            # tax = ol.tax_id.amount
                             discount = 0.0
                             if offer.offer_type == 1:
-                                #sconto fsso 
+                                # sconto fisso
                                 # detax = offer.fixed_discount/ (float(1) + float(tax/100))
                                 # deiva = round(detax,2)
                                 # new_price = ol.price_unit - deiva
                                 # ol.price_unit = new_price if new_price > float(0) else float(0)
                                 new_price = ol.price_unit - offer.fixed_discount
                                 new_price = new_price if new_price > float(0) else float(0)
-                                ol.price_unit =  self.env['account.tax']._fix_tax_included_price(new_price, ol.product_id.taxes_id, ol.tax_id)
-                                
+                                ol.price_unit = self.env['account.tax']._fix_tax_included_price(new_price, ol.product_id.taxes_id, ol.tax_id)
+
                             else:
-                                #percentuale
+                                # percentuale
                                 # tax = ol.tax_id.amount
-                                discount = (ol.price_unit/100)*offer.percent_discount
+                                discount = (ol.price_unit / 100) * offer.percent_discount
                                 # detax = discount / (float(1) + float(tax/100))
                                 # deiva = round(detax,2)
                                 # new_price = ol.price_unit - deiva
                                 # ol.price_unit = new_price if new_price > float(0) else float(0)
                                 new_price = ol.price_unit - discount
                                 new_price = new_price if new_price > float(0) else float(0)
-                                ol.price_unit =  self.env['account.tax']._fix_tax_included_price(new_price, ol.product_id.taxes_id, ol.tax_id)
-                                #applica offerta voucher e crea history
-                            ovh = self.env['netaddiction.order.specialoffer.voucher.history'].create({'product_id' : ol.product_id.id, 'order_id' : self.id, 'offer_type':offer.offer_type, 'qty' : ol.product_uom_qty, 'offer_author_id' : offer.author_id.id, 'offer_name' : offer.name, 'offer_id' : offer.id, 'fixed_discount':offer.fixed_discount, 'percent_discount': offer.percent_discount, 'offer_type': offer.offer_type,'order_line': ol.id, 'percent_effective_discount': discount})
+                                ol.price_unit = self.env['account.tax']._fix_tax_included_price(new_price, ol.product_id.taxes_id, ol.tax_id)
+                                # applica offerta voucher e crea history
+                            ovh = self.env['netaddiction.order.specialoffer.voucher.history'].create({
+                                'product_id': ol.product_id.id,
+                                'order_id': self.id,
+                                'offer_type': offer.offer_type,
+                                'qty': ol.product_uom_qty,
+                                'offer_author_id': offer.author_id.id,
+                                'offer_name': offer.name,
+                                'offer_id': offer.id,
+                                'fixed_discount': offer.fixed_discount,
+                                'percent_discount': offer.percent_discount,
+                                'offer_type': offer.offer_type,
+                                'order_line': ol.id,
+                                'percent_effective_discount': discount})
                             ol.offer_voucher_history = ovh.id
-                self._amount_all()
+                # self._amount_all()
 
                 return True
 
@@ -96,52 +116,41 @@ class OfferOrder(models.Model):
             tot_par *= ovh.qty
             tot += tot_par
         return tot
-                            
-
 
     @api.one
     def reset_cart(self):
         """Annulla tutte le offerte carrello e riaccorpa le linee separate
         """
-        #rimuovo spedizioni gratis
+        # rimuovo spedizioni gratis
         self.free_ship_prod = [(5, 0, 0)]
-        
 
-        #elimina le offert cart history unlink 
+        # elimina le offert cart history unlink
         if len(self.offers_cart) > 0:
-            for och in self.env['netaddiction.order.specialoffer.cart.history'].search([("order_id","=",self.id)]):
+            for och in self.env['netaddiction.order.specialoffer.cart.history'].search([("order_id", "=", self.id)]):
                 och.unlink()
 
             order_lines = [ol for ol in self.order_line]
-            #ordino le order lines per product_id
+            # ordino le order lines per product_id
             order_lines.sort(key=lambda ol: ol.product_id.id)
-
-            
 
             i = 0
             while i < len(order_lines):
                 curr_ol = order_lines[i]
-                j = i +1
+                j = i + 1
                 next_ol = order_lines[j] if j < len(order_lines) else None
                 while next_ol and next_ol.product_id.id == curr_ol.product_id.id:
-                #riaccorpa le linee for ol in self.order_lines
+                    # riaccorpa le linee for ol in self.order_lines
                     curr_ol.product_uom_qty += next_ol.product_uom_qty
                     next_ol.unlink()
                     j += 1
                     next_ol = order_lines[j] if j < len(order_lines) else None
-                #resetta i prezzi
+                # resetta i prezzi
                 curr_ol.product_id_change()
                 i = j
 
-            self._amount_all()
+            # self._amount_all()
 
-
-
-        
-            
-
-
-    #comportamento su offerte spente: vanno riattivate sempre manualmente
+    # comportamento su offerte spente: vanno riattivate sempre manualmente
     @api.one
     def extract_cart_offers(self):
         """Metodo per controllare se ci sono offerte carrello attive sui prodotti nell'ordine.
@@ -152,16 +161,15 @@ class OfferOrder(models.Model):
         if not self.pricelist_id or self.pricelist_id.id != public_pricelist.id:
             return
 
-
-        #cancello tutte le history line di questo ordine
+        # cancello tutte le history line di questo ordine
         self.reset_cart()
 
         # new version
 
         offer_list = []
-        #offer ->[lista product id]
+        # offer ->[lista product id]
         offer_dict = {}
-        #order lines utilizzabili
+        # order lines utilizzabili
         order_lines_usables = []
         for ol in self.order_line:
             if len(ol.product_id.offer_cart_lines) > 0:
@@ -170,10 +178,10 @@ class OfferOrder(models.Model):
                 for offer in ol.product_id.offer_cart_lines:
                     if offer.offer_type == 4:
                         #spedizioni gratis
-                        self.free_ship_prod = [(4,ol.product_id.id)]
+                        self.free_ship_prod = [(4, ol.product_id.id)]
                     else:
                         if offer.offer_cart_id not in offer_dict:
-                            prod_list =[]
+                            prod_list = []
                             prod_list.append(ol.product_id.id)
                             offer_dict[offer.offer_cart_id] = prod_list
                         else:
@@ -185,8 +193,8 @@ class OfferOrder(models.Model):
         for offer in offer_list:
             if not order_lines_usables:
                 break
-            self._verify_cart_offers(offer,offer_dict[offer],order_lines_usables)
-        self._amount_all()
+            self._verify_cart_offers(offer, offer_dict[offer], order_lines_usables)
+        # self._amount_all()
 
 
 

@@ -273,7 +273,7 @@
                             <field name="voucher_string" attrs="{'readonly': [('state', 'in', ('done','cancel','sale','partial_done','sent','problem'))]}"/>
                         </group>
                      <group> 
-                            <button  class="oe_highlight" name="apply_voucher" 
+                            <button  class="oe_highlight" name="apply_voucher_backend" 
                                 string="Applica Voucher" type="object" states="draft" />
                             <button  class="oe_highlight" name="reset_voucher" 
                                 string="Reset Voucher" type="object" states="draft" />

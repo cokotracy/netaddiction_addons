@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from openerp import models, fields
+from openerp.tools import float_compare
 
 
 class GiftOrder(models.Model):
@@ -8,6 +9,7 @@ class GiftOrder(models.Model):
     gift_discount = fields.Float(string='sconto gift', default=0.0)
 
     def _compute_gift_amount(self):
+        print "iocan"
         if self.partner_id.got_gift:
             old_gift = self.gift_discount
 
@@ -19,8 +21,7 @@ class GiftOrder(models.Model):
             if self.state == 'draft':
                 self.gift_discount = tot if self.partner_id.total_gift > tot else self.partner_id.total_gift
 
-            if self.gift_discount != old_gift:
-                self.amount_total -= self.gift_discount
+            self.amount_total -= self.gift_discount
 
     # @api.depends('order_line.price_total')
     # def _amount_all(self):
