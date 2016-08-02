@@ -34,8 +34,7 @@ window.response_message = function(index){
     $('#result_shelfs').remove();
     var href = window.location.href;
     var wave_id = href.substr(href.lastIndexOf('/') + 1);
-    
-    odoo_function['set_pick_up'](wave_id,window.shelfs[index]['id'],$('#barcode').val())
+    odoo_function['set_pick_up'](wave_id,window.shelfs[index]['id'],$('#barcode').val(),window.shelfs[index]['qty'])
 }
 
 
@@ -163,7 +162,7 @@ $(document).ready(function(){
                                     window.shelfs = new Array();
                                     var passing_shelfs = new Array();
                                     $(products).each(function(index,value){
-                                        window.shelfs.push({'name' : $(value).attr('data-shelf'), 'id' :$(value).attr('data-shelf-id') })
+                                        window.shelfs.push({'name' : $(value).attr('data-shelf'), 'id' :$(value).attr('data-shelf-id'),'qty':$(value).find('.qty_for_shelf').text() })
                                         passing_shelfs.push($(value).attr('data-shelf'));
                                     })
                                     NotifyMessage('Da quale ripiano vuoi scaricare il prodotto?',passing_shelfs,response_message)
@@ -179,12 +178,12 @@ $(document).ready(function(){
                                 if(products.length==1){
                                     $('.error_msg').remove();
                                     window.shelfs = new Array();
-                                    window.shelfs.push({'name' : $(products[0]).attr('data-shelf'), 'id' :$(products[0]).attr('data-shelf-id') })
+                                    window.shelfs.push({'name' : $(products[0]).attr('data-shelf'), 'id' :$(products[0]).attr('data-shelf-id'),'qty':$(products[0]).find('.qty_for_shelf').text() })
                                     response_message(0);
                                 }
                             },
-            'set_pick_up' : function set_pick_up(wave_id,shelf_id,barcode){
-                                wave.call('wave_pick_ip',[barcode,shelf_id,wave_id])
+            'set_pick_up' : function set_pick_up(wave_id,shelf_id,barcode,qty_to_down){
+                                wave.call('wave_pick_ip',[barcode,shelf_id,wave_id,qty_to_down])
                                 $('.product_row').each(function(index,value){
                                     if($(value).attr('data-barcode') == barcode && $(value).attr('data-shelf-id')==shelf_id){
                                         window.setTimeout(function() {window.scrollTo(value,{duration:0});}, 0);
