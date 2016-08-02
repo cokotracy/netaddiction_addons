@@ -200,6 +200,7 @@ class Orders(models.Model):
             delivery_price = self.simulate_total_delivery_price()
 
         amount = self.amount_total + delivery_price
+        amount -= self.compute_voucher_discount()
 
         return amount
 

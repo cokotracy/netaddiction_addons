@@ -72,7 +72,7 @@ class OfferOrder(models.Model):
                             else:
                                 #percentuale
                                 # tax = ol.tax_id.amount
-                                discount = (ol.price_total/100)*offer.percent_discount
+                                discount = (ol.price_unit/100)*offer.percent_discount
                                 # detax = discount / (float(1) + float(tax/100))
                                 # deiva = round(detax,2)
                                 # new_price = ol.price_unit - deiva
@@ -89,11 +89,12 @@ class OfferOrder(models.Model):
 
         return False
 
-    
     def compute_voucher_discount(self):
         tot = 0.0
         for ovh in self.offers_voucher:
-            tot = tot+ovh.fixed_discount if ovh.offer_type == 1 else tot+ovh.percent_effective_discount
+            tot_par = ovh.fixed_discount if ovh.offer_type == 1 else ovh.percent_effective_discount
+            tot_par *= ovh.qty
+            tot += tot_par
         return tot
                             
 
