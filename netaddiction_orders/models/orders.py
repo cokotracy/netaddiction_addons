@@ -294,7 +294,9 @@ class Order(models.Model):
     @api.depends('order_line.price_total','gift_discount')
     def _amount_all(self):
         super(Order,self)._amount_all()
+        print self  # TODO remove
         for order in self:
+            print 'iar'  # TODO remove
             order._compute_gift_amount()
 
 

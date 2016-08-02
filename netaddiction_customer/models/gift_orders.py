@@ -1,15 +1,16 @@
 # -*- coding: utf-8 -*-
-from openerp import models, fields, api
+from openerp import models, fields
+
 
 class GiftOrder(models.Model):
     _inherit = 'sale.order'
 
     gift_discount = fields.Float(string='sconto gift', default=0.0)
 
-
-    @api.one
     def _compute_gift_amount(self):
         if self.partner_id.got_gift:
+            old_gift = self.gift_discount
+
             tot = 0.0
             for ol in self.order_line:
                 if ol.product_id.sale_ok:
@@ -18,10 +19,8 @@ class GiftOrder(models.Model):
             if self.state == 'draft':
                 self.gift_discount = tot if self.partner_id.total_gift > tot else self.partner_id.total_gift
 
-        self.amount_total -= self.gift_discount
-       
-           
-
+            if self.gift_discount != old_gift:
+                self.amount_total -= self.gift_discount
 
     # @api.depends('order_line.price_total')
     # def _amount_all(self):
