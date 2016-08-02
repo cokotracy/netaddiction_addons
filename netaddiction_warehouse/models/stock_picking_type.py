@@ -128,14 +128,15 @@ class StockPickingWave(models.Model):
     #ad un json per il web #
     ########################
     @api.model
-    def wave_pick_ip(self,product_barcode,shelf_id,wave_id):
+    def wave_pick_ip(self,product_barcode,shelf_id,wave_id,qty_to_down):
         result = self.search([('id','=',int(wave_id))])
+
         if len(result) == 0:
             err = Error()
             err.set_error_msg("Problema nel recuperare la lista prodotti o barcode mancante")
             return err
 
-        result.picking_ids.set_pick_up(product_barcode,shelf_id)
+        result.picking_ids.set_pick_up(product_barcode,shelf_id,qty_to_down)
 
     ############################
     #END INVENTORY APP FUNCTION#
@@ -181,6 +182,7 @@ class StockPickingWave(models.Model):
                 if op.qty_done > 0:
                     validate = True
                     self.env['netaddiction.wh.locations.line'].allocate(op.product_id.id,op.qty_done,loc_id.id)
+                    op.product_id.qty_limit = 0
 
             if validate:
                 if out.check_backorder(out):
@@ -236,7 +238,7 @@ class StockPicking(models.Model):
     #ad un json per il web #
     ########################
     @api.multi
-    def set_pick_up(self,product_barcode,shelf_id):
+    def set_pick_up(self,product_barcode,shelf_id,qty_to_down):
         """
         per ogni stock picking eseguo
         """
@@ -260,18 +262,22 @@ class StockPicking(models.Model):
                 for shelf in line.product_id.product_wh_location_line_ids:
                     #se i ripiani sono uguali significa che devo scalare la quantità
                     if shelf.wh_location_id.id == int(shelf_id):
-                        if qty_line < int(shelf.qty):
-                            shelf.write({'qty' : shelf.qty - qty_line})
-                            line.write({'qty_done': line.qty_done + float(qty_line)})
-                            qty_line = 0
-                        elif qty_line == int(shelf.qty):
+                        shelf.write({'qty' : shelf.qty - float(qty_to_down)})
+                        line.write({'qty_done': line.qty_done + float(qty_to_down)})
+                        if shelf.qty == 0:
                             shelf.unlink()
-                            line.write({'qty_done': line.qty_done + float(qty_line)})
-                            qty_line = 0
-                        else:
-                            qty_line = qty_line - int(shelf.qty)
-                            line.write({'qty_done': float(shelf.qty)})
-                            shelf.unlink()
+                        #if qty_line < int(shelf.qty):
+                        #    shelf.write({'qty' : shelf.qty - qty_line})
+                        #    line.write({'qty_done': line.qty_done + float(qty_line)})
+                        #    qty_line = 0
+                        #elif qty_line == int(shelf.qty):
+                        #    shelf.unlink()
+                        #    line.write({'qty_done': line.qty_done + float(qty_line)})
+                        #    qty_line = 0
+                        #else:
+                        #    qty_line = qty_line - int(shelf.qty)
+                        #    line.write({'qty_done': float(shelf.qty)})
+                        #    shelf.unlink()
 
 
 
