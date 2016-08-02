@@ -17,7 +17,7 @@ class OrderUtilities(models.TransientModel):
             order = order_model.search([('id', '=', order_id)])
 
             if order and order.state == 'draft':
-                return order
+                return order, False
 
         if partner_id is not None:
             partner = self.env['res.partner'].search([('id', '=', partner_id)])
@@ -28,7 +28,7 @@ class OrderUtilities(models.TransientModel):
             orders = order_model.search([('partner_id', '=', partner_id)], order='create_date desc')
 
             if orders and orders[0].state == 'draft':
-                return orders[0]
+                return orders[0], False
 
         if create:
             cart = order_model.create({
@@ -36,9 +36,9 @@ class OrderUtilities(models.TransientModel):
                 'state': 'draft',
             })
 
-            return cart
+            return cart, True
 
-        return None
+        return None, False
 
     def add_to_cart(self, order, product_id, quantity, partner_id=None, bonus_list=None):
         """
