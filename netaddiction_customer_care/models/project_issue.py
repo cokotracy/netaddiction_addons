@@ -131,10 +131,10 @@ class Issue(models.Model):
     @api.one
     def action_draft(self):
         self.state = 'draft'
-        message = {
-            'body' : self._get_message_new()
-        } 
-        self._post_mail(message,comment_else=False)
+        #message = {
+        #    'body' : self._get_message_new()
+        #} 
+        #self._post_mail(message,comment_else=False)
 
         message = u"""
         Supporto Clienti Aperto:<br>
@@ -245,11 +245,16 @@ class Issue(models.Model):
 
         template = self._get_template_email()
         if len(template)>0 and self.user_id.id != self.env.user.id and 'fetchmail_cron_running' not in self.env.context:
-            mail = template.with_context(message=message).generate_email(self.id)
-            mail['email_from'] = self._get_email_from()
-            mail['reply_to'] = self._get_email_from()
-            mail['email_to'] = self.user_id.email
-        
+            body = template.replace('[TAG_BODY]',message)
+            mail = {
+                'subject': '[TK#%s] Un ticket richiede la tua attenzione' % self.id,
+                'email_from': self._get_email_from(),
+                'reply_to': self._get_email_from(),
+                'email_to': self.user_id.email,
+                'body_html': body,
+                'model':'project.issue',
+                'res_id':self.id
+            }
             email = self.env['mail.mail'].create(mail)
             email.send()
         
@@ -292,7 +297,7 @@ class Issue(models.Model):
 
     def _get_template_email(self):
         res = self._get_settings()
-        return res.template_id
+        return res.template_email
 
     def _get_message_new(self):
         res = self._get_settings()
@@ -317,20 +322,25 @@ class Issue(models.Model):
 
     def _post_mail(self,args,comment_else = True):
         template = self._get_template_email()
-        email = 0
-        if len(template)>0:
-            if self.number_email == 0:
-                args['body'] = args['body'] 
-            mail = template.with_context(message=args['body']).generate_email(self.id)
-            mail['email_from'] = self._get_email_from()
-            mail['reply_to'] = self._get_email_from()
-            mail['email_to'] = self.email_from
-
-            if 'attachment_ids' in args.keys():
-                mail['attachment_ids'] = [(6,0,args['attachment_ids']),]
         
-            email = self.env['mail.mail'].create(mail)
-            email.send()
+        body = template.replace('[TAG_BODY]',args['body'])
+        
+
+        mail = {
+            'subject': '[TK#%s] Multiplayer.com - Assistenza Clienti: %s' % (self.id,self.name),
+            'email_from': self._get_email_from(),
+            'reply_to': self._get_email_from(),
+            'email_to': self.email_from,
+            'body_html': body,
+            'model':'project.issue',
+            'res_id':self.id
+        }
+        
+        if 'attachment_ids' in args.keys():
+            mail['attachment_ids'] = [(6,0,args['attachment_ids']),]
+        
+        email = self.env['mail.mail'].create(mail)
+        email.send()
         
         if comment_else:
             return self._post_mail_comment(args)

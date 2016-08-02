@@ -26,6 +26,8 @@ class NetaddictionManifest(models.Model):
     def send_manifest(self):
         brt = self.env.ref('netaddiction_warehouse.carrier_brt').id
 
+        sda_file_name = '[YYYYMMGGHHmm].clidati.dat' #esempio del 29/07/2016  201607291707.clidati.dat
+
         if brt == self.carrier_id.id:
             if self.manifest_file1 is None or self.manifest_file2 is None: 
                 raise ValidationError("Non hai ancora creato il manifest")
