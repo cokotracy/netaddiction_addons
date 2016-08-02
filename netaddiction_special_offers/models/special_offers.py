@@ -321,7 +321,7 @@ class ShoppingCartOffer(models.Model):
         quando  creo una offerta verifico anche che le date siano dopo la data corrente
         e creo i cron
         """
-        now = fields.Date.today()
+        now = fields.Datetime.now()
         if (values['date_start'] and values['date_start'] < now): 
             raise ValidationError("Data inizio offerta non può essere prima della data odierna")
         elif (values['date_end'] and values['date_end'] < now): 

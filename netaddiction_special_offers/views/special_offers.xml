@@ -339,7 +339,7 @@
 <!-- ahahahah -->
 
         <menuitem id="submenu_netaddiction_special_offers_bonus"
-          name="Bonus Fisic" parent="netaddiction_expressions.menu_netaddiction_offers"
+          name="Bonus Fisici" parent="netaddiction_expressions.menu_netaddiction_offers"
           action="netaddiction_special_offers_bonus_base" sequence="4"/>
 
         <record model="ir.ui.view" id="netaddiction_special_offers_bonus_tree">

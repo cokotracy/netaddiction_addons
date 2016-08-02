@@ -189,13 +189,19 @@ class Products(models.Model):
             p.intax_price = result['total_included']
 
     def create(self, cr, uid, vals, context=None):
-        tools.image_resize_images(vals)
+        try:
+            tools.image_resize_images(vals)
+        except IOError:
+            if not context.get('skip_broken_images', False):
+                raise
         return super(Products, self).create(cr, uid, vals, context)
 
     def write(self, cr, uid, ids, vals, context=None):
-        
-        tools.image_resize_images(vals)
-        
+        try:
+            tools.image_resize_images(vals)
+        except IOError:
+            if not context.get('skip_broken_images', False):
+                raise
         product = self.browse(cr,uid,ids)
         for pid in product:
             if not context.get('no_check_price_and_date', False):
