@@ -282,13 +282,12 @@ class Order(models.Model):
 
         super(Order, self).action_cancel()
 
-    @api.depends('order_line.price_total','gift_discount')
+    @api.depends('order_line.price_total', 'gift_discount')
     def _amount_all(self):
         super(Order,self)._amount_all()
-        print self  # TODO remove
         for order in self:
-            print 'iar'  # TODO remove
-            order._compute_gift_amount()
+            gift,amnt =order._compute_gift_amount()
+            order.update({'gift_discount':gift, 'amount_total':amnt })
 
 
 class SaleOrderLine(models.Model):

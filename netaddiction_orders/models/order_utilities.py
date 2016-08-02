@@ -115,6 +115,8 @@ class OrderUtilities(models.TransientModel):
             order.extract_cart_offers()
             order.apply_voucher()
 
+            order._amount_all()
+
             return True
 
         return False
@@ -140,18 +142,17 @@ class OrderUtilities(models.TransientModel):
         prod = self.env["product.product"].search([("id", "=", product_id)])
 
         if order and order.partner_id.id == partner_id and order.state == "draft" and prod:
-            print "1"
+
             order.reset_cart()
-            print "2"
+
             order.reset_voucher()
-            print "3"
+
 
             found = False
             found_bonus = False
             for line in order.order_line:
-                print "4"
+                
                 if line.product_id.id == product_id:
-                    print "5"
                     if quantity > 0:
                         line.product_uom_qty = quantity
                         line.product_uom_change()
@@ -159,7 +160,7 @@ class OrderUtilities(models.TransientModel):
                         line.unlink()
                     found = True
                     break
-            print "6"
+
             if bonus_list:
                 for bonus_id, bonus_qty in bonus_list:
                     bonus_prod = self.env["product.product"].search([("id", "=", bonus_id)])
@@ -174,11 +175,16 @@ class OrderUtilities(models.TransientModel):
                                     line.unlink()
                                 found_bonus = True
                                 break
-            print "7"
+
+
+            
             order.extract_cart_offers()
-            print "8"
+            
             order.apply_voucher()
-            print "9"
+            
+
+            order._amount_all()
+
 
             return found or (bonus_list and found_bonus)
 
