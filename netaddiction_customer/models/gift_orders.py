@@ -16,11 +16,13 @@ class GiftOrder(models.Model):
                     tot += ol.price_total
 
             if self.state == 'draft':
-                #self.gift_discount = tot if self.partner_id.total_gift > tot else self.partner_id.total_gift
+                # self.gift_discount = tot if self.partner_id.total_gift > tot else self.partner_id.total_gift
                 tot = tot if self.partner_id.total_gift > tot else self.partner_id.total_gift
 
-            #self.amount_total -= self.gift_discount
+            # self.amount_total -= self.gift_discount
             return (tot, self.amount_total - tot)
+        else:
+            return False
 
     # @api.depends('order_line.price_total')
     # def _amount_all(self):

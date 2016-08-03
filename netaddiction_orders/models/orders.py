@@ -137,12 +137,12 @@ class Order(models.Model):
         problems = False
         if(self.state == 'draft'):
             for line in self.order_line:
-                if( line.offer_type and  not line.negate_offer ):
-                    offer_line = line.product_id.offer_catalog_lines[0] if len(line.product_id.offer_catalog_lines) >0 else None
+                if(line.offer_type and not line.negate_offer):
+                    offer_line = line.product_id.offer_catalog_lines[0] if len(line.product_id.offer_catalog_lines) > 0 else None
                     if offer_line:
                         offer_line.qty_selled += line.product_uom_qty
                         offer_line.active = offer_line.qty_limit == 0 or offer_line.qty_selled < offer_line.qty_limit
-                    if(offer_line.qty_limit >0 and offer_line.qty_selled > offer_line.qty_limit):
+                    if(offer_line and offer_line.qty_limit > 0 and offer_line.qty_selled > offer_line.qty_limit):
                         problems = True
 
         return problems
@@ -279,15 +279,15 @@ class Order(models.Model):
                 for pick in self.picking_ids:
                     pick.action_cancel()
 
-
         super(Order, self).action_cancel()
 
     @api.depends('order_line.price_total', 'gift_discount')
     def _amount_all(self):
-        super(Order,self)._amount_all()
+        super(Order, self)._amount_all()
         for order in self:
-            gift,amnt =order._compute_gift_amount()
-            order.update({'gift_discount':gift, 'amount_total':amnt })
+            ret = order._compute_gift_amount()
+            if ret:
+                order.update({'gift_discount': ret[0], 'amount_total': ret[1]})
 
 
 class SaleOrderLine(models.Model):
