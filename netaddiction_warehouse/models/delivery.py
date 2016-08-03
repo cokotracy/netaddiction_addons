@@ -441,7 +441,7 @@ class SaleOrderLine(models.Model):
             attr['price_total'] = round(tax_price['total_included'] * diff,2)
             diff_tax = tax_price['total_included'] - tax_price['total_excluded']
             attr['price_tax'] = round(diff_tax * diff,2)
-
+            
             if confirm_order:
                 vals = {
                     'order_id' : attr['order_id'].id,
@@ -454,14 +454,16 @@ class SaleOrderLine(models.Model):
                     'tax_id' : [(4,attr['tax_id'].id,False)]
                 }
                 line_post = self.create(vals)
-                
+            
+            if delivery_date == delivery_date_now:
+                delivery_date = delivery_date + datetime.timedelta(days=7)  
 
             if confirm_order:
                 return {
                     delivery_date_now : [line_now],
                     delivery_date : [line_post]
                 }
-
+            
             return {
                 delivery_date_now : [attr_now],
                 delivery_date : [attr]
