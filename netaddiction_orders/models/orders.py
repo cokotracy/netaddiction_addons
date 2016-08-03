@@ -147,7 +147,6 @@ class Order(models.Model):
 
         return problems
 
-    
     def _check_offers_cart(self):
         """controlla le offerte carrello e aggiorna le quantità vendute.
         returns True se qualche prodotto ha superato la qty_limit per la sua offerta carrello corrispondente
@@ -155,18 +154,17 @@ class Order(models.Model):
         """
 
         problems = False
-        if( self.state == 'draft'):
+        if(self.state == 'draft'):
             for och in self.offers_cart:
 
                     offer_line = och.offer_cart_line
                     if offer_line:
                         offer_line.qty_selled += och.qty
                         offer_line.active = offer_line.qty_limit == 0 or offer_line.qty_selled < offer_line.qty_limit
-                    if(offer_line.qty_limit >0 and offer_line.qty_selled > offer_line.qty_limit):
+                    if(offer_line.qty_limit > 0 and offer_line.qty_selled > offer_line.qty_limit):
                         problems = True
 
         return problems
-
 
     def _check_offers_voucher(self):
         """controlla le offerte voucher e aggiorna le quantità vendute.
@@ -175,37 +173,34 @@ class Order(models.Model):
         """
 
         problems = False
-        if( self.state == 'draft'):
+        if(self.state == 'draft'):
             for ovh in self.offers_voucher:
 
                     offer = ovh.offer_id
                     if offer:
                         offer.qty_selled += ovh.qty
                         offer.active = offer.qty_limit == 0 or offer.qty_selled < offer.qty_limit
-                    if(offer.qty_limit >0 and offer.qty_selled > offer.qty_limit):
+                    if(offer.qty_limit > 0 and offer.qty_selled > offer.qty_limit):
                         problems = True
 
         return problems
 
     def _check_digital_bonus(self):
 
-            if( self.state == 'draft'):
+            if(self.state == 'draft'):
                 for line in self.order_line:
                     for bonus_offer in line.product_id.code_ids:
-                        codes =self.env["netaddiction.specialoffer.digital_code"].search([("bonus_id","=",bonus_offer.id),("sent","=",False),("order_id","=",None)])
+                        codes = self.env["netaddiction.specialoffer.digital_code"].search([("bonus_id", "=", bonus_offer.id), ("sent", "=", False), ("order_id", "=", None)])
                         if len(codes) > 0:
                             i = 0
                             while i < line.product_uom_qty:
                                 code = codes[i]
-                                code.order_id =self.id
+                                code.order_id = self.id
                                 code.order_line_id = line.id
-                                i+=1
+                                i += 1
                         else:
-                            #TODO MAIL a riccardo e commento
+                            # TODO MAIL a riccardo e commento
                             return
-
-               
-
 
     @api.one
     def action_problems(self):
@@ -215,7 +210,6 @@ class Order(models.Model):
         self._check_digital_bonus()
         self.state = 'problem'
 
-
     @api.multi
     def pre_action_confirm(self):
         for order in self:
@@ -224,17 +218,16 @@ class Order(models.Model):
                 for order_line in order.order_line:
                     if not order_line.product_id.active or not order_line.product_id.sale_ok:
                         if not self.env.context.get('no_check_product_sold_out', False):
-                            raise ProductSoldOutOrderConfirmException(order.id,"prodotto %s attivo: %s sale_ok: %s" %(order_line.product_id.name,order_line.product_id.active,order_line.product_id.sale_ok))
+                            raise ProductSoldOutOrderConfirmException(order.id, "prodotto %s attivo: %s sale_ok: %s" % (order_line.product_id.name, order_line.product_id.active, order_line.product_id.sale_ok))
 
-                
                 problems = False
-                problems = order._check_offers_catalog() 
+                problems = order._check_offers_catalog()
                 problems = order._check_offers_cart() or problems
                 problems = order._check_offers_voucher() or problems
                 self._check_digital_bonus()
-                #TODO se c'è un commento spostare in problem non in sale ma senza eccezione
+                # TODO se c'è un commento spostare in problem non in sale ma senza eccezione
                 if problems or order.amount_total < 0:
-                #TODO aggiungere il commento sul perchè
+                    # TODO aggiungere il commento sul perchè
                     order.state = 'problem'
                 else:
                     # order.action_confirm()
@@ -244,38 +237,36 @@ class Order(models.Model):
     @api.multi
     def problem_confirm(self):
         self.state = 'sale'
-    
+
     @api.multi
     def action_cancel(self):
-        #N.B. offerte mai riattivate manualmente
+        # N.B. offerte mai riattivate manualmente
 
         for order in self:
             if (order.state != 'draft'):
-                #offerte catalogo
+                # offerte catalogo
                 for line in order.order_line:
-                    if( line.offer_type  and not line.negate_offer):
-                        offer_line = order.product_id.offer_catalog_lines[0] if len(order.product_id.offer_catalog_lines) >0 else None
+                    if(line.offer_type and not line.negate_offer):
+                        offer_line = order.product_id.offer_catalog_lines[0] if len(order.product_id.offer_catalog_lines) > 0 else None
                         if offer_line:
                             offer_line.qty_selled -= line.product_uom_qty
-                #offerte carrello
+                # offerte carrello
                 for och in order.offers_cart:
                     offer_line = och.offer_cart_line
                     if offer_line:
                         offer_line.qty_selled -= och.qty
-                #ristorare gifts
-                
+                # ristorare gifts
+
                 if order.gift_discount > 0.0:
                     order.partner_id.add_gift_value(order.gift_discount, "Rimborso")
-                    
 
-                
-                #ristoro codici non mandati
+                # ristoro codici non mandati
                 for code in self.code_ids:
                     if not code.sent:
                         code.order_id = None
                         code.order_line_id = None
 
-                #qua annullo le spedizioni
+                # qua annullo le spedizioni
                 for pick in self.picking_ids:
                     pick.action_cancel()
 
@@ -310,15 +301,14 @@ class SaleOrderLine(models.Model):
         ('no', 'Nothing to Invoice')
         ], string='Invoice Status', compute='_compute_invoice_status', store=True, readonly=True, default='no')
 
-
-    @api.constrains('qty_delivered','qty_invoiced')
+    @api.constrains('qty_delivered', 'qty_invoiced')
     def _check_complete(self):
         for line in self:
             if (line.qty_invoiced == line.qty_delivered == line.product_uom_qty):
                 line.order_id._check_action_done()
             elif (line.qty_delivered > 0):
                 line.order_id._check_partially_done()
- 
+
     ##########
     # OVERRIDE#
     ##########
@@ -342,7 +332,7 @@ class SaleOrderLine(models.Model):
         """
         precision = self.env['decimal.precision'].precision_get('Product Unit of Measure')
         for line in self:
-            if line.state not in ('sale', 'done','partial_done'):
+            if line.state not in ('sale', 'done', 'partial_done'):
                 line.invoice_status = 'no'
             elif not float_is_zero(line.qty_to_invoice, precision_digits=precision):
                 line.invoice_status = 'to invoice'
