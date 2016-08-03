@@ -254,7 +254,11 @@ class Products(models.Model):
 
         if 'out_date' in vals:
             #qua significa che ho modificato la data di uscita
-            old_out_date = datetime.datetime.strptime(self.out_date,'%Y-%m-%d').date()
+            if self.out_date:
+                old_out_date = datetime.datetime.strptime(self.out_date,'%Y-%m-%d').date()
+            else:
+                old_out_date = datetime.date.today()
+
             new_out_date = datetime.datetime.strptime(vals['out_date'],'%Y-%m-%d').date()
 
             if new_out_date != old_out_date and new_out_date > datetime.date.today():
