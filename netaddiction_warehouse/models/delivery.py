@@ -437,10 +437,10 @@ class SaleOrderLine(models.Model):
             #attr['price_tax'] = round(attr['price_subtotal'] - attr['price_subtotal'],2)
 
             tax_price = self.product_id.taxes_id.compute_all(attr['price_unit'])
-            attr_now['price_subtotal'] = round(tax_price['total_excluded'] * diff,2)
-            attr_now['price_total'] = round(tax_price['total_included'] * diff,2)
+            attr['price_subtotal'] = round(tax_price['total_excluded'] * diff,2)
+            attr['price_total'] = round(tax_price['total_included'] * diff,2)
             diff_tax = tax_price['total_included'] - tax_price['total_excluded']
-            attr_now['price_tax'] = round(diff_tax * diff,2)
+            attr['price_tax'] = round(diff_tax * diff,2)
 
             if confirm_order:
                 vals = {
