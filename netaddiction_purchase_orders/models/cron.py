@@ -19,21 +19,46 @@ class Cron(models.Model):
         e manda la mail ad ogni fornitore.
         """
 
-        suppliers = self.env['res.partner'].search([('parent_id','=',False),('supplier','=',True),('send_report','=',True)])
+        suppliers = self.env['res.partner'].search([('parent_id','=',False),('supplier','=',True),('active','=',True),('send_report','=',True)])
         
         for sup in suppliers:
             monday_report = sup.generate_monday_report()
-            slow_moving = sup.generate_slow_moving()
+            #slow_moving = sup.generate_slow_moving()
 
             #trova i contatti a cui inviare la roba
-            contacts_ids = []
+            recipients = []
 
             for contact in sup.child_ids:
                 if contact.send_contact_report:
-                    contacts_ids.append(contact.id)
+                    recipients.append(contact)
 
             print sup.name 
-            print contacts_ids
+            print recipients
             print '*'*10
+            
+            if len(recipients) > 0:
+                print 'send'
+                subject = 'Report Multiplayer.com - %s' % sup.name
+                email_from = 'acquisti@multiplayer.com'
+                reply_to = 'riccardo.ioni@netaddiction.it'
 
-            #TODO: MAIL
+                email_to = ",".join([r.email for r in recipients])
+                body = """
+
+                """
+                values = {
+                    'subject': subject,
+                    'body_html': '',
+                    'email_from': email_from,
+                    'email_to': email_to,
+                    'reply_to': reply_to,
+                }
+                email = self.env['mail.mail'].create(values)
+                attachment_ids = []
+                #for s in slow_moving:
+                #    attachment_ids.append(s.id)
+                for i in monday_report:
+                    attachment_ids.append(i.id)
+                email['attachment_ids'] = [(6, 0, attachment_ids), ]
+                
+                email.send()
