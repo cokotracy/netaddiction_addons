@@ -25,10 +25,14 @@ class Orders(models.Model):
             self.order_line.check_limit_and_action()
 
         self.pre_action_confirm()
+        old_state = self.state
 
-        super(Orders,self).action_confirm()
+        super(Orders, self).action_confirm()
 
-        if len(self.picking_ids)==0:
+        if old_state == 'problem':
+            self.state = 'problem'
+
+        if len(self.picking_ids) == 0:
             self.create_shipping()
             self.set_delivery_price()
             for pick in self.picking_ids:
@@ -41,7 +45,7 @@ class Orders(models.Model):
     @api.multi
     def _compute_picking_ids(self):
         for order in self:
-            picks = self.env['stock.picking'].search([('origin','=',order.name)])
+            picks = self.env['stock.picking'].search([('origin', '=', order.name)])
             order.picking_ids = picks
             order.delivery_count = len(order.picking_ids)
 
