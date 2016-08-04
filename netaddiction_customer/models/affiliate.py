@@ -16,11 +16,11 @@ class Affiliate(models.Model):
     _rec_name = 'control_code'
 
     active = fields.Boolean(string="Attivo", default=True)
-    control_code = fields.Integer(string="Codice di controllo")
+    control_code = fields.Char(string="Codice di controllo", compute="_compute_control_code", store=True)
     homepage = fields.Char(string="Sito")
     commission_percent = fields.Float(string="Percentuale commissioni", default=5.0)
-    date_account_created = fields.Datetime(string="Data creazione")
-    cookie_duration = fields.Integer(string="Durata Cookie")
+    date_account_created = fields.Datetime(string="Data creazione", default=lambda self: fields.Datetime.now())
+    cookie_duration = fields.Integer(string="Durata Cookie", default=48)
     exclude = fields.Boolean(string="Escluso dalle commissioni")
     partner_id = fields.Many2one(
         comodel_name='res.partner',
@@ -76,6 +76,11 @@ class Affiliate(models.Model):
                 if order.order_id.state == 'cancel':
                     tot += order.order_id.amount_total
             record.tot_cancelled = tot
+
+    @api.depends('partner_id')
+    def _compute_control_code(self):
+        for rec in self:
+            rec.control_code = '%s-%s' % (self.partner_id.company_id.id, self.id)
 
     def get_hashed(self):
         salt = self.env["ir.config_parameter"].search([("key", "=", "affiliate.salt")]).value
@@ -148,6 +153,7 @@ class AffiliateOrderHistory(models.Model):
     affiliate_id = fields.Many2one(comodel_name='netaddiction.partner.affiliate', string='Affiliate', index=True, copy=False, required=True)
     commission = fields.Float(string="Commissioni guadagnate")
     assigned = fields.Boolean(string="Commissioni assegnate")
+    company_id = fields.Many2one('res.company', string='Azienda', related='order_id.company_id', store=True)
 
 
 class AffiliateUtilities(models.TransientModel):

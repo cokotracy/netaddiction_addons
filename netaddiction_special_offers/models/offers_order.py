@@ -107,6 +107,7 @@ class OfferOrder(models.Model):
 
                 return True
 
+        self.voucher_string = ""
         return False
 
     def compute_voucher_discount(self):
