@@ -31,6 +31,7 @@
                            
 
                             <field name="author_id" />
+                            <field name="company_id" />
 
                             <field name="field_type" />
                             <field name="model_name" />

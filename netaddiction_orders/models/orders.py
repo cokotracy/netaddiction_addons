@@ -30,9 +30,9 @@ class Order(models.Model):
     #
     #
 
-    @api.one
-    def action_problems(self):
-        self.state = 'problem'
+    #  @api.one
+    #  def action_problems(self):
+    #      self.state = 'problem'
 
     @api.one
     def action_partial_done(self):
@@ -143,6 +143,16 @@ class Order(models.Model):
                         offer_line.qty_selled += line.product_uom_qty
                         offer_line.active = offer_line.qty_limit == 0 or offer_line.qty_selled < offer_line.qty_limit
                     if(offer_line and offer_line.qty_limit > 0 and offer_line.qty_selled > offer_line.qty_limit):
+                        attr = {
+                            'subtype': "mt_comment",
+                            'res_id': self.id,
+                            'body': u"in problema perché superato il qty limit per offerta: %s, prodotto: %s, quantità ordinata: %s, quantità che era disponibile in offerta: %s" % (offer_line.offer_catalog_id.name, line.product_id.name, line.product_uom_qty, (offer_line.qty_limit - (offer_line.qty_selled - line.product_uom_qty))),
+                            'model': 'sale.order',
+                            'author_id': self.env.user.partner_id.id,
+                            'message_type': 'comment',
+                        }
+
+                        self.env['mail.message'].create(attr)
                         problems = True
 
         return problems
@@ -161,7 +171,17 @@ class Order(models.Model):
                     if offer_line:
                         offer_line.qty_selled += och.qty
                         offer_line.active = offer_line.qty_limit == 0 or offer_line.qty_selled < offer_line.qty_limit
-                    if(offer_line.qty_limit > 0 and offer_line.qty_selled > offer_line.qty_limit):
+                    if(offer_line and offer_line.qty_limit > 0 and offer_line.qty_selled > offer_line.qty_limit):
+                        attr = {
+                            'subtype': "mt_comment",
+                            'res_id': self.id,
+                            'body': u"in problema perché superato il qty limit per offerta: %s, prodotto: %s, quantità ordinata: %s, quantità che era disponibile in offerta: %s" % (offer_line.offer_catalog_id.name, offer_line.order_line.product_id.name, offer_line.order_line.product_uom_qty, (offer_line.qty_limit - (offer_line.qty_selled - offer_line.order_line.product_uom_qty))),
+                            'model': 'sale.order',
+                            'author_id': self.env.user.partner_id.id,
+                            'message_type': 'comment',
+                        }
+
+                        self.env['mail.message'].create(attr)
                         problems = True
 
         return problems
@@ -180,7 +200,17 @@ class Order(models.Model):
                     if offer:
                         offer.qty_selled += ovh.qty
                         offer.active = offer.qty_limit == 0 or offer.qty_selled < offer.qty_limit
-                    if(offer.qty_limit > 0 and offer.qty_selled > offer.qty_limit):
+                    if(offer and offer.qty_limit > 0 and offer.qty_selled > offer.qty_limit):
+                        attr = {
+                            'subtype': "mt_comment",
+                            'res_id': self.id,
+                            'body': u"in problema perché superato il qty limit per offerta: %s, prodotto: %s, quantità ordinata: %s, quantità che era disponibile in offerta: %s" % (offer.name, ovh.order_line.product_id.name, ovh.order_line.product_uom_qty, (offer.qty_limit - (offer.qty_selled - ovh.order_line.product_uom_qty))),
+                            'model': 'sale.order',
+                            'author_id': self.env.user.partner_id.id,
+                            'message_type': 'comment',
+                        }
+
+                        self.env['mail.message'].create(attr)
                         problems = True
 
         return problems
@@ -199,7 +229,16 @@ class Order(models.Model):
                                 code.order_line_id = line.id
                                 i += 1
                         else:
-                            # TODO MAIL a riccardo e commento
+                            attr = {
+                                'subtype': "mt_comment",
+                                'res_id': self.id,
+                                'body': u"non è stato assegnato nessun bonus digitale per il prodotto %s" % line.product_id.name,
+                                'model': 'sale.order',
+                                'author_id': self.env.user.partner_id.id,
+                                'message_type': 'comment',
+                            }
+
+                            self.env['mail.message'].create(attr)
                             return
 
     @api.one
@@ -225,9 +264,7 @@ class Order(models.Model):
                 problems = order._check_offers_cart() or problems
                 problems = order._check_offers_voucher() or problems
                 self._check_digital_bonus()
-                # TODO se c'è un commento spostare in problem non in sale ma senza eccezione
-                if problems or order.amount_total < 0:
-                    # TODO aggiungere il commento sul perchè
+                if problems or order.amount_total < 0 or order.customer_comment:
                     order.state = 'problem'
                 else:
                     # order.action_confirm()

@@ -8,7 +8,8 @@ class LogLine(models.Model):
     _name = 'netaddiction.log.line'
     _description = 'Log per il cambiamento di un valore'
 
-    author_id = fields.Many2one(comodel_name='res.users',string='Autore modifica', required=True)
+    author_id = fields.Many2one(comodel_name='res.users', string='Autore modifica', required=True)
+    company_id = fields.Many2one(comodel_name='res.company', string='Company', required=True)
 
     field = fields.Char('Field Modificato', required=True, readonly=1)
     field_type = fields.Char('Tipo Field', required=True, readonly=1)
@@ -31,10 +32,8 @@ class LogLine(models.Model):
     new_value_text = fields.Text('Nuovo valore Text', readonly=1)
     new_value_datetime = fields.Datetime('Nuovo valore Datetime', readonly=1)
 
-
-
     @api.model
-    def create_tracking_values(self, initial_value, new_value, col_name, col_type, model_name, object_id, author_id, object_name='', col_selection={}):
+    def create_tracking_values(self, initial_value, new_value, col_name, col_type, model_name, object_id, author_id, company_id, object_name='', col_selection={}):
         """
         ritorna un dizionario da usare per creare  una netadddiction.log.line
         Parametri:
@@ -46,7 +45,7 @@ class LogLine(models.Model):
 
         """
         tracked = True
-        values = {'field': col_name,  'field_type': col_type,'model_name': model_name,'object_id':object_id,'object_name':object_name, 'author_id':author_id}
+        values = {'field': col_name, 'field_type': col_type, 'model_name': model_name, 'object_id': object_id, 'object_name': object_name, 'author_id': author_id, 'company_id': company_id}
 
         if col_type in ['integer', 'float', 'char', 'text', 'datetime', 'monetary']:
             values.update({
@@ -81,7 +80,6 @@ class LogLine(models.Model):
         if tracked:
             return values
         return {}
-
 
     @api.one
     def unlink(self):
