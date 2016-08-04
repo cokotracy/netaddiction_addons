@@ -148,6 +148,7 @@ class AffiliateOrderHistory(models.Model):
     affiliate_id = fields.Many2one(comodel_name='netaddiction.partner.affiliate', string='Affiliate', index=True, copy=False, required=True)
     commission = fields.Float(string="Commissioni guadagnate")
     assigned = fields.Boolean(string="Commissioni assegnate")
+    company_id = fields.Many2one('res.company', string='Azienda', related='order_id.company_id', store=True)
 
 
 class AffiliateUtilities(models.TransientModel):

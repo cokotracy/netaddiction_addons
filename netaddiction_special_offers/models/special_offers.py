@@ -194,6 +194,7 @@ class OfferCatalogLine(models.Model):
     offer_type = fields.Selection([(1,'Prezzo Fisso'),(2,'Percentuale')], string='Tipo Offerta',default = 2)
     qty_selled = fields.Float( string='Quantità venduta', default=0.0)
     priority = fields.Integer(string="priorità", default = 0)
+    company_id = fields.Many2one('res.company', string='Azienda', related='offer_catalog_id.company_id', store=True)
 
 
 
@@ -428,6 +429,7 @@ class OfferCartLine(models.Model):
     offer_type = fields.Selection([(1,'Bundle'),(2,'n x m'),(3,'n x prezzo'),(4,'Spedizioni Gratis')], string='Tipo Offerta', default=2,required=True)
     priority = fields.Integer(string="priorità", default = 0)
     qty_selled = fields.Float( string='Quantità venduta', default=0.0)
+    company_id = fields.Many2one('res.company', string='Azienda', related='offer_cart_id.company_id', store=True)
 
 
 
@@ -494,6 +496,7 @@ class BonusOfferLine(models.Model):
         help="Spuntato = offerta attiva, Non Spuntato = offerta spenta")
     product_id = fields.Many2one('product.product', string='Product', change_default=True, ondelete='restrict', required=True)
     bonus_offer_id = fields.Many2one('netaddiction.specialoffer.bonus', string='Offerta Bonus', index=True, copy=False, required=True)
+    company_id = fields.Many2one('res.company', string='Azienda', related='bonus_offer_id.company_id', store=True)
 
 
 class VoucherOffer(models.Model):
