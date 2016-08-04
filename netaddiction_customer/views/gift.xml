@@ -117,7 +117,8 @@
             <field name="arch" type="xml">
 
               <xpath expr="//field[@name='amount_tax']"
-                    position="after">    
+                    position="after">
+                    <field name="gift_set_by_bo"  attrs="{'invisible':True}"/>  
                     <field name="gift_discount" attrs="{'readonly': [('state', 'in', ('done','cancel','sale','partial_done','sent'))]}"/>
                        
                 </xpath> 

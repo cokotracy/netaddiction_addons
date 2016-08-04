@@ -272,13 +272,15 @@ class Order(models.Model):
 
         super(Order, self).action_cancel()
 
-    @api.depends('order_line.price_total', 'gift_discount')
+    @api.depends('order_line.price_total')
     def _amount_all(self):
         super(Order, self)._amount_all()
         for order in self:
             ret = order._compute_gift_amount()
             if ret:
                 order.update({'gift_discount': ret[0], 'amount_total': ret[1]})
+            else:
+                order.update({'gift_discount': 0.0})
 
 
 class SaleOrderLine(models.Model):
