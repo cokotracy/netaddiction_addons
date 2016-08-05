@@ -56,8 +56,7 @@ class Orders(models.Model):
         """
         self.ensure_one()
         holiday = lib_holidays.LibHolidays()
-        if not self.carrier_id:
-            #TODO: disattivare per importer
+        if not self.carrier_id and not self.env.context.get('skin_carrier_check', False):
             raise ValidationError("Deve essere scelto un metodo di spedizione")
 
         precision = self.env['decimal.precision'].precision_get('Product Unit of Measure')
@@ -116,8 +115,7 @@ class Orders(models.Model):
         """
         self.ensure_one()
 
-        if not self.carrier_id:
-            #TODO: disattivare per importer
+        if not self.carrier_id and not self.env.context.get('skin_carrier_check', False):
             raise ValidationError("Deve essere scelto un metodo di spedizione")
 
         free_prod_ship = []
@@ -216,8 +214,7 @@ class Orders(models.Model):
         a partire dalla suddivisione in spedizioni di simulate_shipping
         ritorna un dict con data => [prezzo,prezzo tassato]
         """
-        if not self.carrier_id:
-            #TODO: disattivare per importer
+        if not self.carrier_id and not self.env.context.get('skin_carrier_check', False):
             raise ValidationError("Deve essere scelto un metodo di spedizione")
 
         free_prod_ship = []
@@ -263,8 +260,7 @@ class Orders(models.Model):
         a simulate_delivery_price
         """
         self.ensure_one()
-        if not self.carrier_id:
-            #TODO: disattivare per importer
+        if not self.carrier_id and not self.env.context.get('skin_carrier_check', False):
             raise ValidationError("Deve essere scelto un metodo di spedizione")
         return self.order_line.simulate_shipping()
 
