@@ -239,33 +239,34 @@ class Products(models.Model):
                     #qua uso sudo per dare la possibilità di leggere questo campo
                     #anche a chi non ha i permessi sui fornitori
                     for sup in self.sudo().seller_ids:
-                        if int(sup.name.supplier_priority) > int(this_priority) and int(sup.avail_qty) > 0:
-                            supplier = sup
-                            this_priority = sup.name.supplier_priority
-                            price = sup.price
-                            qty = sup.avail_qty
-                            delay = sup.delay
-                        else:
-                            if int(sup.name.supplier_priority) == int(this_priority) and int(sup.avail_qty) > 0:
-                                if sup.delay < delay:
-                                    qty = sup.avail_qty
-                                    delay = sup.delay
-                                    supplier = sup
-                                    this_priority = sup.name.supplier_priority
-                                    price = sup.price
-                                elif sup.delay == delay and sup.price < price:
-                                    qty = sup.avail_qty
-                                    delay = sup.delay
-                                    supplier = sup
-                                    this_priority = sup.name.supplier_priority
-                                    price = sup.price
+                        if sup.name.active:
+                            if int(sup.name.supplier_priority) > int(this_priority) and int(sup.avail_qty) > 0:
+                                supplier = sup
+                                this_priority = sup.name.supplier_priority
+                                price = sup.price
+                                qty = sup.avail_qty
+                                delay = sup.delay
+                            else:
+                                if int(sup.name.supplier_priority) == int(this_priority) and int(sup.avail_qty) > 0:
+                                    if sup.delay < delay:
+                                        qty = sup.avail_qty
+                                        delay = sup.delay
+                                        supplier = sup
+                                        this_priority = sup.name.supplier_priority
+                                        price = sup.price
+                                    elif sup.delay == delay and sup.price < price:
+                                        qty = sup.avail_qty
+                                        delay = sup.delay
+                                        supplier = sup
+                                        this_priority = sup.name.supplier_priority
+                                        price = sup.price
 
-                        #eventualmente ci fosse casino con il delay mi salvo sempre un 
-                        #fornitore di backup a priorità più alta
-                        if int(sup.name.supplier_priority) >= int(backup_priority) and sup.price <= backup_price :
-                            supplier_best_backup = sup
-                            backup_priority = sup.name.supplier_priority
-                            backup_price = sup.price
+                            #eventualmente ci fosse casino con il delay mi salvo sempre un 
+                            #fornitore di backup a priorità più alta
+                            if int(sup.name.supplier_priority) >= int(backup_priority) and sup.price <= backup_price :
+                                supplier_best_backup = sup
+                                backup_priority = sup.name.supplier_priority
+                                backup_price = sup.price
 
                     if supplier == 0:
                         if supplier_best_backup == 0:

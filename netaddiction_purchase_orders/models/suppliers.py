@@ -59,7 +59,7 @@ class Suppliers(models.Model):
 
         output = io.BytesIO()
         writer = csv.writer(output)
-        csvdata = ['SKU','BARCODE','SUPPLIER CODE','TITOLO','PREZZO','TOT12','TOTALE STORICO','DA INIZIO ANNO','QTA MAGAZZINO']
+        csvdata = [u'SKU',u'BARCODE',u'SUPPLIER CODE',u'TITOLO',u'PREZZO',u'TOT12',u'TOTALE STORICO',u'DA INIZIO ANNO',u'QTA MAGAZZINO']
         writer.writerow(csvdata)
 
         for product in products_slow:
@@ -90,7 +90,7 @@ class Suppliers(models.Model):
 
             csvdata.append(int(product.qty_available))
 
-            writer.writerow(csvdata)
+            writer.writerow(unicode(csvdata))
 
         name = 'slow_moving_multiplayer_com_' + self.name + '_' + str(date.today()) + '.csv'
         
@@ -124,7 +124,7 @@ class Suppliers(models.Model):
             today = datetime.now()
             output = io.BytesIO()
             writer = csv.writer(output)
-            csvdata = ['SKU','BARCODE','SUPPLIER CODE','PREN','TITOLO','PREZZO','W1','W2','W3','W4','W5','W6','W7','W8','W9','W10','W11','W12','TOT12','TOTALE STORICO','DA INIZIO ANNO','QTA MAGAZZINO','QTA ORDINATA']
+            csvdata = [u'SKU',u'BARCODE',u'SUPPLIER CODE',u'PREN',u'TITOLO',u'PREZZO',u'W1',u'W2',u'W3',u'W4',u'W5',u'W6',u'W7',u'W8',u'W9',u'W10',u'W11',u'W12',u'TOT12',u'TOTALE STORICO',u'DA INIZIO ANNO',u'QTA MAGAZZINO',u'QTA ORDINATA']
             writer.writerow(csvdata)
 
             for pid in products:
@@ -135,9 +135,12 @@ class Suppliers(models.Model):
                         sup_code = sell.product_code
                 #scopro se prenotazione
                 pren = ''
-                product_date = datetime.strptime(pid.out_date, "%Y-%m-%d")
-                if datetime.now() < product_date:
-                    pren = 'P'
+                product_date = ''
+                if pid.out_date:
+                    product_date = datetime.strptime(pid.out_date, "%Y-%m-%d")
+                if product_date:
+                    if datetime.now() < product_date:
+                        pren = 'P'
                 #prendo il prezzo TODO : controllare dopo
                 price = pid.final_price
                 if pid.offer_price > 0:
@@ -177,7 +180,10 @@ class Suppliers(models.Model):
                 else:
                     csvdata.append(0)
 
-                writer.writerow(csvdata)
+                line = []
+                for c in csvdata:
+                    line.append(unicode(c))
+                writer.writerow(line)
 
         name = 'export_multiplayer_com_' + self.name + '_' + str(date.today()) + '.csv'
         

@@ -111,17 +111,3 @@ class PurchaseOrders(models.Model):
                     }
                     ids.append((0,0,attr))   
         return ids     
-
-class PurchaseOrdersLine(models.Model):
-    _inherit="purchase.order.line"
-
-    @api.one
-    def write(self,values):
-        if 'product_qty' in values.keys():
-            if self.product_qty < values['product_qty']:
-                raise Warning('Per Aggiungere quantità devi fare un nuovo Ordini a questo fornitore di questo prodotto.')
-            else:
-                #qua dovrebbe mandare la mail
-                pass
-
-        return super(PurchaseOrdersLine,self).write(values)
