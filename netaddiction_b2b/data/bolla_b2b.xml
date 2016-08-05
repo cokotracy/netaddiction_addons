@@ -52,7 +52,7 @@
                                                                             <tr>
                                                                                 <td>
                                                                                     
-                                                                                    <img t-att-src="'/report/barcode/?type=%s&amp;value=%s&amp;width=%s&amp;height=%s' % ('Code128', o.pick_id.delivery_barcode, 448, 100)" />
+                                                                                    <img t-att-src="'/report/barcode/?type=%s&amp;value=%s&amp;width=%s&amp;height=%s' % ('Code128', o.pick_id.delivery_barcode, 448, 70)" />
                                                                                     <center><span t-field="o.pick_id.delivery_barcode"/></center>
                                                                                 </td>
                                                                             </tr>
