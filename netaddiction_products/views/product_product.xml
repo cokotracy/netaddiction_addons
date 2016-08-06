@@ -45,6 +45,81 @@
             </field>
         </record>
 
+        
+       <record model="ir.ui.view" id="netaddiction_product_tre_view_figa">
+            <field name="name">netaddiction.product.product.tree.view.figa</field>
+            <field name="model">product.product</field>
+            <field name="inherit_id" ref="stock.view_stock_product_tree"/>
+            <field name="arch" type="xml">
+                <field name="virtual_available" position="replace">
+                    <field name="qty_available_now"/>
+                </field>
+                <tree position="attributes">
+                    <attribute name="decoration-danger">qty_available_now&lt;0</attribute>
+                    <attribute name="decoration-info">qty_available_now&gt;=0 and state in ('draft', 'end', 'obsolete')</attribute>
+                </tree>
+                
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="netaddiction_product_tre_view_pnly_product">
+            <field name="name">netaddiction.product.product.tree.view.only.product</field>
+            <field name="model">product.product</field>
+            <field name="inherit_id" ref="product.product_product_tree_view"/>
+            <field name="arch" type="xml">
+                <field name="default_code" position="replace"/>
+                <field name="uom_id" position="replace"/>
+                <field name="name" position="before">
+                    <field name="id"/>
+                </field>
+                <field name="barcode" position="after">
+                    <field name="sale_ok" string="Vendibile"/>
+                    <field name="visible"/>
+                </field>
+            </field>
+        </record>
+        
+        <record model="ir.ui.view" id="netaddiction_product_search">
+            <field name="name">netaddiction.product.product.search</field>
+            <field name="model">product.template</field>
+            <field name="inherit_id" ref="product.product_template_search_view"/>
+            <field name="arch" type="xml">
+                <filter name="filter_to_sell" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </filter>
+                <filter name="inactive" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </filter>
+                <filter name="inactive" position="after">
+                    <separator/>
+                    <filter string="Vendibile" domain="[('sale_ok','=',1)]"/>
+                    <filter string="Non Vendibile" domain="[('sale_ok','=',0)]"/>
+                    <filter string="Visibile" domain="[('visible','=',1)]"/>
+                    <filter string="Non Visibile" domain="[('visible','=',0)]"/>
+                    <separator/>
+                    <filter string="Attivo" domain="[('active','=',1)]"/>
+                    <filter string="Non Attivo" domain="[('active','=',0)]"/>
+                    <separator/>
+                    <filter string="In Magazzino" domain="[('qty_available','&gt;',0)]"/>
+                    <filter string="Non in Magazzino" domain="[('qty_available','&lt;=',0)]"/>
+                    <filter string="Disponibili" domain="[('qty_available_now','&gt;',0)]"/>
+                    <filter string="Esauriti" domain="[('qty_available_now','&lt;',0)]"/>
+                    <separator/>
+                    <filter string="Abbigliamento" domain="[('categ_id.name','=','Abbigliamento')]"/>
+                    <filter string="Figures" domain="[('categ_id.name','=','Figures')]"/>
+                    <filter string="Film e Serie TV" domain="[('categ_id.name','=','Film e Serie TV')]"/>
+                    <filter string="Gadget" domain="[('categ_id.name','=','Gadget')]"/>
+                    <filter string="Giochi" domain="[('categ_id.name','=','Giochi')]"/>
+                    <filter string="Libri e Fumetti" domain="[('categ_id.name','=','Libri e Fumetti')]"/>
+                    <filter string="Pro Gaming" domain="[('categ_id.name','=','Pro Gaming')]"/>
+                    <filter string="Tecnologia" domain="[('categ_id.name','=','Tecnologia')]"/>
+                    <filter string="Videogiochi" domain="[('categ_id.name','=','Videogiochi')]"/>
+                </filter>
+            </field>
+        </record>
+
+            
+
         <!--<record id="product_product_form_view_bom_button" model="ir.ui.view">
             <field name="name">netaddiction.product.product.procurement</field>
             <field name="model">product.product</field>

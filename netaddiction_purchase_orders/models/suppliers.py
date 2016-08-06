@@ -16,6 +16,15 @@ class Suppliers(models.Model):
     send_contact_purchase_orders = fields.Boolean(string="Il contatto riceve gli ordini di acquisto", default = False)
     send_contact_refund = fields.Boolean(string="Il contatto riceve i resi", default = False)
 
+    @api.model 
+    def get_all_suppliers(self):
+        result = self.search([('supplier','=',True),('active','=',True),('parent_id','=',False)])
+        supplier = []
+        for res in result:
+            supplier.append({'id':res.id,'name':res.name})
+        return supplier
+
+
     @api.one
     def generate_slow_moving(self):
         """

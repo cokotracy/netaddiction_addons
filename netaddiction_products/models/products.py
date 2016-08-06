@@ -110,8 +110,9 @@ class Products(models.Model):
 
     def _search_available_now(self, operator, value):
         ids = []
-        wh = self.env['stock.location'].search([('company_id','=',self.env.user.company_id.id),('active','=',True),
-            ('usage','=','internal'),('scrap_location','=',False)])
+        #wh = self.env['stock.location'].search([('company_id','=',self.env.user.company_id.id),('active','=',True),
+        #    ('usage','=','internal'),('scrap_location','=',False)])
+        wh = self.env.ref('stock.stock_location_stock')
 
         search = [('location_id','=',wh.id),('reservation_id','=',False)]
 

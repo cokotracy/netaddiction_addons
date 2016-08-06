@@ -7,9 +7,12 @@ openerp.netaddiction_purchase_orders = function(instance, local) {
             start: function() {
             	self = this
                 return new instance.web.Model('product.product').call('get_qty_available_negative',[false,false]).then(function(products){
-                    new instance.web.Model('res.partner').query(['id','name']).filter([['supplier','=',true],['active','=',true],['parent_id','=',false]]).all().then(function(suppliers){
-                        var list = new local.List(self,products,suppliers);
-                        return list.appendTo(self.$el);
+                    new instance.web.Model('res.partner').call('get_all_suppliers').then(function(suppliers){
+                        new instance.web.Model('product.category').call('get_all_categories').then(function(categories){
+                            var list = new local.List(self,products,suppliers,categories);
+                            return list.appendTo(self.$el);
+                        })
+                        
                     })
                 });        
             },
@@ -26,7 +29,7 @@ openerp.netaddiction_purchase_orders = function(instance, local) {
         local.List = instance.Widget.extend({
         	template: "purchase_product_list",
         	events: {
-                "change #search": "doActionSearch",
+                "change #search": "doFilterALL",
                 "click .purchase_input_remove" : "doActionRemove",
                 "click .purchase_link_product" : "doOpenProduct",
                 "click .purchase_link_incoming": "doOpenIncoming",
@@ -34,32 +37,120 @@ openerp.netaddiction_purchase_orders = function(instance, local) {
                 "click .purchase_select_all" : "doSelectAll",
                 "change #search_supplier" : "doFilterSupplier",
                 "change .supplier" : "doSelectTr",
-                "click #send_to_purchase" : "doSendToOrder"
+                "click #send_to_purchase" : "doSendToOrder",
+                "change #search_categories": "doSearchCategories",
+                'change #search_available':'doFilterALL',
+                'change #search_pren': 'doFilterALL'
             },
-        	init: function(parent,products,suppliers) {
+        	init: function(parent,products,suppliers,categories) {
             	this._super(parent);
             	this.products = products;
                 this.suppliers = suppliers;
+                this.categories = categories;
+            },
+            doSearchCategories: function(e){
+                var cat_id = $(e.currentTarget).val(); 
+                domain = {'categories':cat_id}
+                this.doFilterALL(domain)
+            },
+            doFilterALL: function(domain) {
+                //tutte in and
+                cat_id = $('#search_categories').val()
+                sup_id = $('#search_supplier').val()
+                qta_id = $('#search_available').val()
+                pren = $('#search_pren').val()
+                search = $('#search').val()
+
+                $(this.products).each(function(index,value){
+                    var cat_visible = 1
+                    if(cat_id != null){
+                        if(parseInt(value.category) == parseInt(cat_id)){
+                            cat_visible = 1
+                        }else{
+                            cat_visible = 0
+                        } 
+                    }
+                    if(cat_id == 1){
+                        cat_visible = 1
+                    }
+ 
+                    var sup_visible = 0
+                    if(sup_id != null){
+                        $(value.seller_ids).each(function(id,seller){
+                            if(parseInt(sup_id) == parseInt(seller.id)){
+                                sup_visible = 1
+                            }
+                        })
+                        if(sup_id == 'all'){
+                            sup_visible = 1
+                        }
+                        
+                    }else{
+                        sup_visible = 1
+                    }
+
+                    qta_visible = 1
+                    qta_prev = value.qty_available - value.outgoing_qty + value.incoming_qty
+                    
+                    if(parseInt(qta_id) == 0 && parseInt(qta_prev) != 0){
+                        qta_visible = 0
+                    }
+                    if(parseInt(qta_id) == 1 && parseInt(qta_prev) < 0){
+                        qta_visible = 0
+                    }
+                    if(parseInt(qta_id) == 2 && parseInt(qta_prev) >= 0){
+                        qta_visible = 0
+                    }
+
+                    qta_pren = 1
+                    if(pren == 0 && new Date(value.out_date).getTime() > new Date().getTime()){
+                        qta_pren = 0
+                    }
+                    
+                    barcode_visible = 1
+                    if(search!=''){
+                        if (value.barcode != search){
+                            barcode_visible = 0
+                        }
+                    }
+
+                    if(sup_visible == 1 && cat_visible == 1 && qta_visible == 1 && qta_pren == 1 && barcode_visible == 1){
+                        $('#pid_'+value.id).show()
+                        if(sup_id != null && sup_id != 'all'){
+                            $('#pid_'+value.id).find('.product_selector').prop('checked',true);
+                            $('#pid_'+value.id).find('.supplier').val(sup_id);
+                        } 
+                        if(sup_id == 'all' || sup_id == null){
+                            $('#pid_'+value.id).find('.product_selector').prop('checked',false);
+                            $('#pid_'+value.id).find('.supplier').val('');
+                        }
+                    }else{
+                        $('#pid_'+value.id).hide()
+                    }
+
+                    
+                    
+                })
+                
+
+                
+
+                
             },
             doActionSearch : function(e){
             	var search = this.$(e.currentTarget).val();
                 var sup_id = $('#search_supplier').val();
                 var domain = [search,false]
-                if (sup_id!=null){
-                    domain = [search,sup_id]
-                }
-            	new instance.web.Model('product.product').call('get_qty_available_negative',domain).then(function(products){
-                    new instance.web.Model('res.partner').query(['id','name']).filter([['supplier','=',true],['active','=',true],['parent_id','=',false]]).all().then(function(suppliers){
-                        $('.oe_client_action').html('');
-                        var list = new local.List(self,products,suppliers);
-                        list.appendTo('.oe_client_action');
-                        var input = new local.SearchInput(self,search)
-                        input.insertBefore('#search')
-                        if (sup_id!=''){
-                            $('#search_supplier').val(sup_id);
-                            $('.product_selector').prop('checked',true);
-                            $('.supplier').val(sup_id);
-                        }
+                var self = this
+                
+                new instance.web.Model('product.product').call('get_qty_available_negative',domain).then(function(products){
+                    new instance.web.Model('res.partner').call('get_all_suppliers').then(function(suppliers){
+                        new instance.web.Model('product.category').call('get_all_categories').then(function(categories){
+                            $('.oe_client_action').html('');
+                            var list = new local.List(self,products,suppliers,categories);
+                            return list.appendTo('.oe_client_action');
+                        })
+                        
                     })
                 }); 
             },
@@ -72,7 +163,7 @@ openerp.netaddiction_purchase_orders = function(instance, local) {
                 }
                 $('.oe_client_action').html('');
             	return new instance.web.Model('product.product').call('get_qty_available_negative',domain).then(function(products){
-                    new instance.web.Model('res.partner').query(['id','name']).filter([['supplier','=',true],['active','=',true],['parent_id','=',false]]).all().then(function(suppliers){
+                    new instance.web.Model('res.partner').call('get_all_suppliers').then(function(suppliers){
                         var list = new local.List(self,products,suppliers);
                         list.appendTo('.oe_client_action');
                         if (sup_id!=''){
@@ -137,12 +228,15 @@ openerp.netaddiction_purchase_orders = function(instance, local) {
             doFilterSupplier : function(e){
                 var sup_id = $(e.currentTarget).val();
                 var search = $('.oe_facet_value').text().trim();
-                var domain = [false,sup_id]
+                /*var domain = [false,sup_id]
                 if (search!=''){
                     domain = [search,sup_id]
-                }
-                return new instance.web.Model('product.product').call('get_qty_available_negative',domain).then(function(products){
-                    new instance.web.Model('res.partner').query(['id','name']).filter([['supplier','=',true],['active','=',true],['parent_id','=',false]]).all().then(function(suppliers){
+                }*/
+                
+                domain = {'supplier':sup_id}
+                this.doFilterALL(domain)
+                /*return new instance.web.Model('product.product').call('get_qty_available_negative',domain).then(function(products){
+                    new instance.web.Model('res.partner').call('get_all_suppliers').then(function(suppliers){
                         $('.oe_client_action').html('');
                         var list = new local.List(self,products,suppliers);
                         list.appendTo('.oe_client_action');
@@ -157,7 +251,7 @@ openerp.netaddiction_purchase_orders = function(instance, local) {
                             input.insertBefore('#search')
                         }
                     })
-                });
+                });**/
             },
             doSelectTr : function(e){
                 if($(e.currentTarget).val()!=''){
