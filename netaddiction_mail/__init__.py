@@ -1,2 +1,3 @@
 # -*- coding: utf-8 -*-
-from models import email, sale, purchase
+from models import email, sale, offer, purchase, product
+
