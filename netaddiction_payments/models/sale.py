@@ -53,7 +53,7 @@ class Order(models.Model):
 
        	if isclose(self.amount_total,0.0) or self.payment_method_id.id == zero_journal.id :
        		transient = self.env["netaddiction.zeropayment.executor"].create({})
-       		transient.set_order_zero_payment(self.id)
+       		transient.set_order_zero_payment(self)
        		
        	else:
        		if self.payment_method_id.id == cc_journal.id:
