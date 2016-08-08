@@ -87,13 +87,13 @@ class StockPickingWave(models.Model):
                 qtys[pick.product_id.barcode]['qty_scraped'] += (qty_scraped - pick.qty_done)
                 qtys[pick.product_id.barcode]['scraped_wh'] = 'dif'
                 products[pick.product_id] = qtys[pick.product_id.barcode]
-        #print products
+       
         return products
 
     @api.model
     def is_in_wave(self,wave_id,product_id):
         result = self.search([('id','=',int(wave_id)),(product_id,'in','picking_ids.pack_operation_product_ids.product_id')])
-        #print result
+        
 
     @api.model
     def close_reverse(self,wave_id):
@@ -458,3 +458,46 @@ class StockOperation(models.Model):
             if residual < to_remove:
                 op.write({'qty_done' : op.qty_done + residual})
                 to_remove = to_remove - residual
+
+
+class StockQuant(models.Model):
+    _inherit='stock.quant'
+
+    @api.model
+    def get_quant_from_supplier(self,supplier_id):
+        wh = self.env.ref('stock.stock_location_stock')
+        result = self.search([('company_id','=',self.env.user.company_id.id),('location_id','=',wh.id),
+            ('history_ids.picking_id.partner_id.id','=',int(supplier_id)),('reservation_id','=',False)])
+        quants = {}
+        for res in result:
+            if res.product_id.id in quants:
+                quants[res.product_id.id]['qty']+=res.qty
+                #quants[res.product_id]['inventory_value']+=res.inventory_value
+            else:
+                quants[res.product_id.id] = {
+                    'id':res.product_id.id,
+                    'name':res.product_id.display_name,
+                    'qty':res.qty,
+                    #'inventory_value':res.inventory_value
+                }
+        return quants
+
+    @api.model
+    def get_scraped_from_supplier(self,supplier_id):
+        scraped_stock = self.env['netaddiction.warehouse.operations.settings'].search([('netaddiction_op_type','=','reverse_scrape'),('company_id','=',self.env.user.company_id.id)])
+        wh = scraped_stock.operation.default_location_dest_id.id
+        result = self.search([('company_id','=',self.env.user.company_id.id),('location_id','=',wh),
+            ('history_ids.picking_id.partner_id.id','=',int(supplier_id)),('reservation_id','=',False)])
+        quants = {}
+        for res in result:
+            if res.product_id.id in quants:
+                quants[res.product_id.id]['qty']+=res.qty
+                #quants[res.product_id]['inventory_value']+=res.inventory_value
+            else:
+                quants[res.product_id.id] = {
+                    'id':res.product_id.id,
+                    'name':res.product_id.display_name,
+                    'qty':res.qty,
+                    #'inventory_value':res.inventory_value
+                }
+        return quants

@@ -51,6 +51,7 @@ odoo.define('netaddiction_warehouse.spara_pacchi', function (require) {
         template : 'carrier_spara_pacchi',
         events : {
             'change #search' : 'verifyBarcode',
+            'click #sblocca': 'go_next'
         },
         init : function(parent,carrier){
             this._super()
@@ -87,7 +88,31 @@ odoo.define('netaddiction_warehouse.spara_pacchi', function (require) {
 
             
         },
+        go_next:function(){
+            var psw = $('#psw_block').val()
+            if(psw=='pippo123'){
+                $('#psw_block').val('')
+                $('.oe_client_action').css('background','white')
+                $('.oe_client_action').children().show()
+                $('#message_box').hide()
+                $('#search').val('').focus();
+            }else{
+                var not = new Notification.Warning(this);
+                not.title = 'ERRORE PSW';
+                not.text = 'PASSWORD ERRATA';
+                return not.appendTo('.o_notification_manager');
+            }
+            
+        },
+        stopProcess: function(message){
+            $('.oe_client_action').children().hide()
+            $('.oe_client_action').css('background','#6C7A89')
+            $('#message_text').text(message)
+            $('#message_box').show()
+            
+        },
         verifyBarcode : function(e){
+            self = this
             var manifest = this.manifest;
             var buzz = this.buzz;
             var more_buzz = this.more_buzz;
@@ -105,6 +130,7 @@ odoo.define('netaddiction_warehouse.spara_pacchi', function (require) {
                     
                     more_buzz.play();
                     $('#search').val('').focus();
+                    self.stopProcess(not.text)
                     return not.appendTo('.o_notification_manager');
                 }
 
@@ -112,8 +138,9 @@ odoo.define('netaddiction_warehouse.spara_pacchi', function (require) {
                     var not = new Notification.Warning(this);
                     not.title = 'PACCO GIA\' SPARATO';
                     not.text = 'HAI GIA\' SPARATO IL PACCO';
-                    buzz.play();
+                    more_buzz.play();
                     $('#search').val('').focus();
+                    self.stopProcess(not.text)
                     return not.appendTo('.o_notification_manager');
                 }
 
@@ -124,6 +151,7 @@ odoo.define('netaddiction_warehouse.spara_pacchi', function (require) {
                         not.text = e.message;
                         
                         more_buzz.play();
+                        self.stopProcess(not.text)
                         return not.appendTo('.o_notification_manager');
                     }else{
                         father.table.destroy();

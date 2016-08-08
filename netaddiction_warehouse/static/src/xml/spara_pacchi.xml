@@ -11,6 +11,12 @@
    	</t>
 
    	<t t-name="top_block">
+      <div style="margin-top:200px;text-align:center;color:black;font-weight:bold;font-size:30px;display:none" id="message_box">
+          <span id="message_text"></span><br/>
+          <input type="password" id="psw_block"/>
+          <input type="button" id="sblocca" value="SBLOCCA" />
+      </div>
+
    		<div class="oe-control-panel">
             <div class="container-fluid">
                 <div class="row">

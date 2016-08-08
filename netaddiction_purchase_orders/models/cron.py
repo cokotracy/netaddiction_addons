@@ -32,12 +32,8 @@ class Cron(models.Model):
                 if contact.send_contact_report:
                     recipients.append(contact)
 
-            print sup.name 
-            print recipients
-            print '*'*10
             
             if len(recipients) > 0:
-                print 'send'
                 subject = 'Report Multiplayer.com - %s' % sup.name
                 email_from = 'acquisti@multiplayer.com'
                 reply_to = 'riccardo.ioni@netaddiction.it'
