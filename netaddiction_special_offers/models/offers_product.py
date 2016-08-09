@@ -41,7 +41,8 @@ class OffersCatalogSaleOrderLine(models.Model):
     bonus_father_id = fields.Many2one(comodel_name='sale.order.line', string='prodotto a cui è legato quetso bonus', default=None)
 
     def _check_offer_validity(self, offer, offer_line, product, uom_quantity):
-        """ metodo per controllare la validità dell'offerta
+        """ metodo per controllare la validità dell'offerta.
+
         ritorna True se l'offerta 'offer' è valida per il prodotto 'product' con quantità 'uom_quantity'
         nella offer line 'offer_line'. False altrimenti.
         Se l'offerta  ha superato il limite di oggetti vendibili questa viene spenta, viene avvertito un
@@ -51,7 +52,7 @@ class OffersCatalogSaleOrderLine(models.Model):
         """
         if(offer.date_end > fields.Date.today()):
             if(offer_line.qty_max_buyable > 0 and uom_quantity > offer_line.qty_max_buyable):
-                raise QtyMaxBuyableException(product.name, product.id)
+                raise QtyMaxBuyableException(product.name, product.id, offer.id, offer_line.qty_max_buyable, uom_quantity)
 
             if(uom_quantity < offer_line.qty_min):
                 ###
@@ -219,15 +220,36 @@ class OffersCatalogSaleOrderLine(models.Model):
 
 
 class QtyMaxBuyableException(ValueError):
-    def __init__(self, prod_str, prod_id):
+    def __init__(self, prod_str, prod_id, offer_id, offer_max_qty, qty_requested):
         self.var_name = 'qty_max_buyable'
         self.prod = prod_str
         self.prod_id = prod_id
+        self.offer_id = offer_id
+        self.offer_max_qty = offer_max_qty
+        self.qty_requested = qty_requested
 
     def __str__(self):
-        s = u"Quantity massima acquistabile in offerta ecceduta %s id: %s " % (self.prod, self.prod_id)
+        s = u"Quantity massima acquistabile in offerta %s ecceduta per prodotto %s id: %s offer_max_qty: %s quantita richiesta: %s" % (self.offer_id, self.prod, self.prod_id, self.offer_max_qty, self.qty_requested)
         return s
 
     def __repr__(self):
-        s = u"Quantity massima acquistabile in offerta ecceduta %s id: %s" % (self.prod, self.prod_id)
+        s = u"Quantity massima acquistabile in offerta %s ecceduta per prodotto %s id: %s offer_max_qty: %s quantita richiesta: %s" % (self.offer_id, self.prod, self.prod_id, self.offer_max_qty, self.qty_requested)
+        return s
+
+class QtyLimitException(ValueError):
+    def __init__(self, prod_str, prod_id, offer_id, offer_limit_qty, qty_requested, qty_selled):
+        self.var_name = 'qty_max_buyable'
+        self.prod = prod_str
+        self.prod_id = prod_id
+        self.offer_id = offer_id
+        self.offer_limit_qty = offer_limit_qty
+        self.qty_requested = qty_requested
+        self.qty_selled = qty_selled
+
+    def __str__(self):
+        s = u"Quantity massima acquistabile in offerta %s ecceduta per prodotto %s id: %s offer_limit_qty: %s quantita richiesta: %s  quantita venduta: %s" % (self.offer_id, self.prod, self.prod_id, self.offer_limit_qty, self.qty_requested, self.qty_selled)
+        return s
+
+    def __repr__(self):
+        s = u"Quantity massima acquistabile in offerta %s ecceduta per prodotto %s id: %s offer_limit_qty: %s quantita richiesta: %s  quantita venduta: %s" % (self.offer_id, self.prod, self.prod_id, self.offer_limit_qty, self.qty_requested, self.qty_selled)
         return s

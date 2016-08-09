@@ -13,9 +13,9 @@ class Products(models.Model):
         users = self.env["netaddiction.email.dispatcher"].get_users_from_group("netaddiction_acl.netaddiction_products_data_entry_user_manager")
         users += self.env["netaddiction.email.dispatcher"].get_users_from_group("netaddiction_acl.netaddiction_sale_user_manager")
         if self.sale_ok:
-            obj = "PRODOTTO ESAURITO %s id: %s" % (self.name, self.id)
-        else:
             obj = "PRODOTTO NON PIU ESAURITO %s id: %s" % (self.name, self.id)
+        else:
+            obj = "PRODOTTO ESAURITO %s id: %s" % (self.name, self.id)
         self.env["netaddiction.email.dispatcher"].send_mail(obj, obj, "prodotti", set(users))
 
     @api.one
