@@ -25,7 +25,7 @@
             <field name="name">netaddiction.acl.manager.stock.picking.form</field>
             <field name="model">stock.picking</field>
             <field name="inherit_id" ref="netaddiction_acl_base_stock_picking_form"/>
-            <field name="groups_id" eval="[(4, ref('netaddiction_inventory_user_manager'))]"/>
+            <field name="groups_id" eval="[(4, ref('netaddiction_inventory_user_manager')),(4, ref('netaddiction_sale_customer_care'))]"/>
             <field name="arch" type="xml">
             	<xpath expr="//form" position="attributes">
             		<attribute name="create">true</attribute>

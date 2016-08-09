@@ -216,6 +216,13 @@ class StockPicking(models.Model):
     #CAMPO PER CONTARE I PEZZI DA SPEDIRE#
     number_of_pieces = fields.Integer(string="Pezzi",compute="_get_number_of_pieces")
     total_import = fields.Float(string="Importo",compute="_get_total_import")
+    
+    #@api.multi
+    #def action_cancel(self):
+    #    for pick in self:
+    #        if pick.state != 'done':
+
+
 
     @api.one
     def _get_number_of_pieces(self):
@@ -284,11 +291,15 @@ class StockPicking(models.Model):
                     test = test - qty_line
                     qty = qty + qty_line
                     qty_line = 0
+                    if shelf.qty == 0:
+                        shelf.unlink()
                 else:
                     shelf.write({'qty' : shelf.qty - int(test)})
                     line.write({'qty_done': line.qty_done + float(test)})
                     qty = qty + test
                     test = 0
+                    if shelf.qty == 0:
+                        shelf.unlink()
         
         return qty              
 
