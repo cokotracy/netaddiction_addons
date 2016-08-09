@@ -261,7 +261,8 @@ class ProductsMovement(models.TransientModel):
 
     action = fields.Selection(selection=(
         ('scraped', 'Difettato'),
-        ('rialloca', 'Rialloca')), string="Azione", required=True)
+        ('rialloca', 'Rialloca'),
+        ('down','Scarica')), string="Azione", required=True)
 
     @api.onchange('barcode')
     def _get_product_from_barcode(self):
@@ -298,6 +299,21 @@ class ProductsMovement(models.TransientModel):
                 self.allocation = text
             else:
                 raise ValidationError("Per riallocare devi mettere una quantità > 0 e un ripiano")
+
+        if self.action == 'down':
+            if self.qty_to_move > 0 and self.new_allocation:
+                results = self.env['netaddiction.wh.locations.line'].search([('product_id','=',self.product_id.id),('wh_location_id','=',self.new_allocation.id)])
+                if len(results) == 0:
+                    raise ValidationError('Ripiano da cui scaricare errato, non è presente nessuna quantità di questo prodotto')
+
+                results[0].decrease(self.qty_to_move)               
+                self.qty_available = self.product_id.qty_available
+                text = ''
+                for line in self.product_id.product_wh_location_line_ids:
+                    text += str(line.qty) + ' in ' + str(line.wh_location_id.name) +'\n'
+                self.allocation = text
+            else:
+                raise ValidationError("Per Scaricare devi mettere una quantità > 0 e un ripiano")
 
         if self.action == 'scraped':
             if not self.new_allocation:

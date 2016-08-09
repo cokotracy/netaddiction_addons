@@ -6,7 +6,7 @@
             <field name="res_model">stock.picking</field>
             <field name="view_type">form</field>
             <field name="view_mode">tree,form</field>
-            <field name="domain" eval="[('picking_type_id','=',ref('stock.picking_type_out'))]" />
+            <field name="domain" eval="[('picking_type_id','=',ref('stock.picking_type_out')),('wave_id','=',False)]" />
             <field name="help" type="html">
                 <p class="oe_view_nocontent_create">Non ci sono Spedizioni.
                 </p>

@@ -563,7 +563,10 @@ class StockPicking(models.Model):
     @api.one 
     def _compute_date_of_shipping(self):
         days = int(self.carrier_id.time_to_shipping)
-        date_ship = datetime.datetime.strptime(self.min_date,'%Y-%m-%d %H:%M:%S') + datetime.timedelta(days = days)
+        if self.min_date:
+            date_ship = datetime.datetime.strptime(self.min_date,'%Y-%m-%d %H:%M:%S') + datetime.timedelta(days = days)
+        else:
+            date_ship = datetime.datetime.now() + datetime.timedelta(days = days)
         self.date_of_shipping_home = date_ship
 
     @api.multi

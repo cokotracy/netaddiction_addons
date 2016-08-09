@@ -6,6 +6,7 @@ from dateutil import relativedelta
 import time, json
 from openerp.tools import DEFAULT_SERVER_DATETIME_FORMAT, DEFAULT_SERVER_DATE_FORMAT
 from error import Error
+from openerp.exceptions import ValidationError
 
 from collections import defaultdict
 
@@ -87,13 +88,13 @@ class StockPickingWave(models.Model):
                 qtys[pick.product_id.barcode]['qty_scraped'] += (qty_scraped - pick.qty_done)
                 qtys[pick.product_id.barcode]['scraped_wh'] = 'dif'
                 products[pick.product_id] = qtys[pick.product_id.barcode]
-        #print products
+       
         return products
 
     @api.model
     def is_in_wave(self,wave_id,product_id):
         result = self.search([('id','=',int(wave_id)),(product_id,'in','picking_ids.pack_operation_product_ids.product_id')])
-        #print result
+        
 
     @api.model
     def close_reverse(self,wave_id):
@@ -135,8 +136,18 @@ class StockPickingWave(models.Model):
             err = Error()
             err.set_error_msg("Problema nel recuperare la lista prodotti o barcode mancante")
             return err
+        
+        test = int(qty_to_down)
 
-        result.picking_ids.set_pick_up(product_barcode,shelf_id,qty_to_down)
+        if shelf_id == 'dif':
+            for res in result.picking_ids:
+                res.pick_up_scraped(product_barcode,qty_to_down)
+        else:
+            for res in result.picking_ids:
+                if test > 0:
+                    picked_qty = res.set_pick_up(product_barcode,shelf_id,test)
+                    test -= int(picked_qty[0])
+                
 
     ############################
     #END INVENTORY APP FUNCTION#
@@ -237,47 +248,49 @@ class StockPicking(models.Model):
     #ritorna un dict simile#
     #ad un json per il web #
     ########################
-    @api.multi
-    def set_pick_up(self,product_barcode,shelf_id,qty_to_down):
-        """
-        per ogni stock picking eseguo
-        """
+    @api.one 
+    def pick_up_scraped(self,product_barcode,qty_to_down):
         scraped_type = self.env['netaddiction.warehouse.operations.settings'].search([('company_id','=',self.env.user.company_id.id),('netaddiction_op_type','=','reverse_supplier_scraped')])
         wh = scraped_type.operation.default_location_src_id.id
         scrape_id = scraped_type.operation.id
 
-        if shelf_id == 'dif':
-            product_lines = []
-            for pick in self:
-                if pick.picking_type_id.id == scrape_id:
-                    product_lines += ([x for x in pick.pack_operation_product_ids if x.product_id.barcode == product_barcode])
-            for line in product_lines:       
-                line.write({'qty_done': line.product_qty})
-        else:
-            product_lines = []
-            for pick in self:
-                product_lines += ([x for x in pick.pack_operation_product_ids if x.product_id.barcode == product_barcode])
-            for line in product_lines:
-                qty_line = int(line.product_qty) - int(line.qty_done)
-                for shelf in line.product_id.product_wh_location_line_ids:
-                    #se i ripiani sono uguali significa che devo scalare la quantità
-                    if shelf.wh_location_id.id == int(shelf_id):
-                        shelf.write({'qty' : shelf.qty - float(qty_to_down)})
-                        line.write({'qty_done': line.qty_done + float(qty_to_down)})
-                        if shelf.qty == 0:
-                            shelf.unlink()
-                        #if qty_line < int(shelf.qty):
-                        #    shelf.write({'qty' : shelf.qty - qty_line})
-                        #    line.write({'qty_done': line.qty_done + float(qty_line)})
-                        #    qty_line = 0
-                        #elif qty_line == int(shelf.qty):
-                        #    shelf.unlink()
-                        #    line.write({'qty_done': line.qty_done + float(qty_line)})
-                        #    qty_line = 0
-                        #else:
-                        #    qty_line = qty_line - int(shelf.qty)
-                        #    line.write({'qty_done': float(shelf.qty)})
-                        #    shelf.unlink()
+        product_lines = [] 
+        if self.picking_type_id.id == scrape_id:
+            product_lines += ([x for x in self.pack_operation_product_ids if x.product_id.barcode == product_barcode])
+        for line in product_lines:       
+            line.write({'qty_done': line.product_qty})
+
+    @api.one
+    def set_pick_up(self,product_barcode,shelf_id,qty_to_down):
+        """
+        per ogni stock picking eseguo
+        """
+               
+        product_lines = ([x for x in self.pack_operation_product_ids if x.product_id.barcode == product_barcode])
+        qty = 0
+        test = int(qty_to_down)
+
+        for line in product_lines:
+            shelf = self.env['netaddiction.wh.locations.line'].search([('product_id','=',line.product_id.id),('wh_location_id','=',int(shelf_id))])
+            if len(shelf) == 0:
+                raise ValidationError("Ripiano inesistente")
+
+            qty_line = int(line.product_qty) - int(line.qty_done)
+            
+            if test > 0:
+                if int(qty_line) <= test:
+                    shelf.write({'qty' : shelf.qty - int(qty_line)})
+                    line.write({'qty_done': line.qty_done + float(qty_line)})
+                    test = test - qty_line
+                    qty = qty + qty_line
+                    qty_line = 0
+                else:
+                    shelf.write({'qty' : shelf.qty - int(test)})
+                    line.write({'qty_done': line.qty_done + float(test)})
+                    qty = qty + test
+                    test = 0
+        
+        return qty              
 
 
 
@@ -458,3 +471,92 @@ class StockOperation(models.Model):
             if residual < to_remove:
                 op.write({'qty_done' : op.qty_done + residual})
                 to_remove = to_remove - residual
+
+
+class StockQuant(models.Model):
+    _inherit='stock.quant'
+
+    @api.model
+    def get_quant_from_supplier(self,supplier_id):
+        wh = self.env.ref('stock.stock_location_stock')
+        result = self.search([('company_id','=',self.env.user.company_id.id),('location_id','=',wh.id),
+            ('history_ids.picking_id.partner_id.id','=',int(supplier_id)),('reservation_id','=',False)])
+        quants = {}
+        for res in result:
+            if res.product_id.id in quants:
+                quants[res.product_id.id]['qty']+=res.qty
+                #quants[res.product_id]['inventory_value']+=res.inventory_value
+            else:
+                quants[res.product_id.id] = {
+                    'id':res.product_id.id,
+                    'name':res.product_id.display_name,
+                    'qty':res.qty,
+                    #'inventory_value':res.inventory_value
+                }
+        return quants
+
+    @api.model
+    def get_scraped_from_supplier(self,supplier_id):
+        scraped_stock = self.env['netaddiction.warehouse.operations.settings'].search([('netaddiction_op_type','=','reverse_scrape'),('company_id','=',self.env.user.company_id.id)])
+        wh = scraped_stock.operation.default_location_dest_id.id
+        result = self.search([('company_id','=',self.env.user.company_id.id),('location_id','=',wh),
+            ('history_ids.picking_id.partner_id.id','=',int(supplier_id)),('reservation_id','=',False)])
+        quants = {}
+        for res in result:
+            if res.product_id.id in quants:
+                quants[res.product_id.id]['qty']+=res.qty
+                #quants[res.product_id]['inventory_value']+=res.inventory_value
+            else:
+                quants[res.product_id.id] = {
+                    'id':res.product_id.id,
+                    'name':res.product_id.display_name,
+                    'qty':res.qty,
+                    #'inventory_value':res.inventory_value
+                }
+        return quants
+
+    def _prepare_account_move_line(self, cr, uid, move, qty, cost, credit_account_id, debit_account_id, context=None):
+        """
+        Generate the account.move.line values to post to track the stock valuation difference due to the
+        processing of the given quant.
+        """
+        if context is None:
+            context = {}
+        currency_obj = self.pool.get('res.currency')
+        if context.get('force_valuation_amount'):
+            valuation_amount = context.get('force_valuation_amount')
+        else:
+            if move.product_id.cost_method == 'average':
+                valuation_amount = cost if move.location_id.usage != 'internal' and move.location_dest_id.usage == 'internal' else move.product_id.standard_price
+            else:
+                valuation_amount = cost if move.product_id.cost_method == 'real' else move.product_id.standard_price
+        #the standard_price of the product may be in another decimal precision, or not compatible with the coinage of
+        #the company currency... so we need to use round() before creating the accounting entries.
+        valuation_amount = currency_obj.round(cr, uid, move.company_id.currency_id, valuation_amount * qty)
+        #check that all data is correct
+        #if move.company_id.currency_id.is_zero(valuation_amount):
+        #    raise UserError(_("The found valuation amount for product %s is zero. Which means there is probably a configuration error. Check the costing method and the standard price") % (move.product_id.name,))
+        partner_id = (move.picking_id.partner_id and self.pool.get('res.partner')._find_accounting_partner(move.picking_id.partner_id).id) or False
+        debit_line_vals = {
+                    'name': move.name,
+                    'product_id': move.product_id.id,
+                    'quantity': qty,
+                    'product_uom_id': move.product_id.uom_id.id,
+                    'ref': move.picking_id and move.picking_id.name or False,
+                    'partner_id': partner_id,
+                    'debit': valuation_amount > 0 and valuation_amount or 0,
+                    'credit': valuation_amount < 0 and -valuation_amount or 0,
+                    'account_id': debit_account_id,
+        }
+        credit_line_vals = {
+                    'name': move.name,
+                    'product_id': move.product_id.id,
+                    'quantity': qty,
+                    'product_uom_id': move.product_id.uom_id.id,
+                    'ref': move.picking_id and move.picking_id.name or False,
+                    'partner_id': partner_id,
+                    'credit': valuation_amount > 0 and valuation_amount or 0,
+                    'debit': valuation_amount < 0 and -valuation_amount or 0,
+                    'account_id': credit_account_id,
+        }
+        return [(0, 0, debit_line_vals), (0, 0, credit_line_vals)]

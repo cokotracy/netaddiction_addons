@@ -151,12 +151,12 @@ odoo.define('netaddiction_warehouse.supplier_reverse', function (require) {
                 name=searched
             }
             if(wharehouse == 'scrapped_wh_link'){
-                this.get_scraped_products(this.supplier.id,this.pager.state.current_min,name);
+                this.get_scraped_products(this.supplier.id,name);
             }else{
-                this.get_wh_products(this.supplier.id,this.pager.state.current_min,name);
+                this.get_wh_products(this.supplier.id,name);
             }
         },
-        get_wh_products : function(supplier_id,current,product_name){
+        get_wh_products : function(supplier_id,product_name){
             $('#purchase_in_product_list').remove();
             $('#pager').html('');
             this.products = {};
@@ -165,50 +165,25 @@ odoo.define('netaddiction_warehouse.supplier_reverse', function (require) {
             if (product_name != null){
                  var filter = [['company_id','=',session.company_id],['location_id','=',parseInt(location_id)],['product_id.name','ilike',product_name]]
             }
-            new Model('stock.quant').query([]).filter(filter).group_by(['product_id','qty','inventory_value']).then(function(products){
-                var ids = []
-                var pids = {}
-                for (var p in products){
-                   ids.push(products[p].attributes.value[0]);
-                   pids[products[p].attributes.value[0]] = {}
-                   pids[products[p].attributes.value[0]]['name'] = products[p].attributes.value[1]
-                   pids[products[p].attributes.value[0]]['qty'] = products[p].attributes.aggregates.qty
-                   pids[products[p].attributes.value[0]]['inventory_value'] = products[p].attributes.aggregates.inventory_value
+             new Model('stock.quant').call('get_quant_from_supplier',[supplier_id]).then(function(result){
+                var count = 0
+                for(var p in result){
+                    self.products[result[p].id] = {}
+                    self.products[result[p].id]['id'] = result[p].id
+                    self.products[result[p].id]['name'] = result[p].name
+                    self.products[result[p].id]['qty'] = result[p].qty
+                    count = count + 1
                 }
-                new Model('purchase.order.line').query([]).filter([['partner_id','=',parseInt(self.supplier.id)],['product_id','in',ids]]).group_by(['product_id','qty_received']).then(function(purchase){
-                    var count = 0
-                    var init = 0
-                    var last = self.limit
-                    if(parseInt(current) >1){
-                        var init = current - 1
-                        var last = init + self.limit
-                    }
-                    for ( var p in purchase){
-                        if (count>=init && count<last){
-                            self.products[purchase[p].attributes.value[0]] = {}
-                            self.products[purchase[p].attributes.value[0]]['id'] = purchase[p].attributes.value[0]
-                            self.products[purchase[p].attributes.value[0]]['qty'] = pids[purchase[p].attributes.value[0]]['qty']
-                            self.products[purchase[p].attributes.value[0]]['name'] = pids[purchase[p].attributes.value[0]]['name']
-                            self.products[purchase[p].attributes.value[0]]['inventory_value'] = parseFloat(pids[purchase[p].attributes.value[0]]['inventory_value']).toFixed(2)
-                            self.products[purchase[p].attributes.value[0]]['qty_received'] = purchase[p].attributes.aggregates.qty_received
-                        }
-                        count = count + 1;
-                    }
-                    var pager = new Pager(self,count,current,self.limit)
-                    pager.appendTo('#pager')
-                    self.pager = pager
-                    $('#content_reverse').html(qweb.render('table_scraped',{products : self.products}));
+                
+                $('#content_reverse').html(qweb.render('table_scraped',{products : self.products}));
 
-                    for(var i in self.selectedProducts.commercial){
-                        var pid = self.selectedProducts.commercial[i].pid
-                        var qta = self.selectedProducts.commercial[i].qta
-                        $('#product_'+pid).closest('.product_line').find('.product_selector').prop('checked',true)
-                        $('#product_'+pid).closest('.product_line').find('.qty_reverse').val(parseInt(qta))
-                    }
+                $(self.selectedProducts.commercial).each(function(index,product){
+                    $('#qta_'+product.pid).val(product.qta)
+                    $('#sel_'+product.pid).prop('checked',true)
                 });
-            });
+            })
         },
-        get_scraped_products : function(supplier_id,current,product_name){
+        get_scraped_products : function(supplier_id,product_name){
             $('.product_line').remove();
             $('#pager').html('');
             this.products = {};
@@ -217,47 +192,24 @@ odoo.define('netaddiction_warehouse.supplier_reverse', function (require) {
             if (product_name != null){
                  var filter = [['company_id','=',session.company_id],['location_id','=',parseInt(location_id)],['product_id.name','ilike',product_name]]
             }
-            new Model('stock.quant').query([]).filter(filter).group_by(['product_id','qty','inventory_value']).then(function(products){
-                var ids = []
-                var pids = {}
-                for (var p in products){
-                   ids.push(products[p].attributes.value[0]);
-                   pids[products[p].attributes.value[0]] = {}
-                   pids[products[p].attributes.value[0]]['name'] = products[p].attributes.value[1]
-                   pids[products[p].attributes.value[0]]['qty'] = products[p].attributes.aggregates.qty
-                   pids[products[p].attributes.value[0]]['inventory_value'] = products[p].attributes.aggregates.inventory_value
+            new Model('stock.quant').call('get_scraped_from_supplier',[supplier_id]).then(function(result){
+                var count = 0
+                for(var p in result){
+                    self.products[result[p].id] = {}
+                    self.products[result[p].id]['id'] = result[p].id
+                    self.products[result[p].id]['name'] = result[p].name
+                    self.products[result[p].id]['qty'] = result[p].qty
+                    count = count + 1
                 }
-                new Model('purchase.order.line').query([]).filter([['partner_id','=',parseInt(self.supplier.id)],['product_id','in',ids]]).group_by(['product_id','qty_received']).then(function(purchase){
-                    var count = 0
-                    var init = 0
-                    var last = self.limit
-                    if(parseInt(current) >1){
-                        var init = current - 1
-                        var last = init + self.limit
-                    }
-                    for ( var p in purchase){
-                        if (count>=init && count<last){
-                            self.products[purchase[p].attributes.value[0]] = {}
-                            self.products[purchase[p].attributes.value[0]]['id'] = purchase[p].attributes.value[0]
-                            self.products[purchase[p].attributes.value[0]]['qty'] = pids[purchase[p].attributes.value[0]]['qty']
-                            self.products[purchase[p].attributes.value[0]]['name'] = pids[purchase[p].attributes.value[0]]['name']
-                            self.products[purchase[p].attributes.value[0]]['inventory_value'] = parseFloat(pids[purchase[p].attributes.value[0]]['inventory_value']).toFixed(2)
-                            self.products[purchase[p].attributes.value[0]]['qty_received'] = purchase[p].attributes.aggregates.qty_received
-                        }
-                        count = count + 1;
-                    }
-                    var pager = new Pager(self,count,current,self.limit)
-                    pager.appendTo('#pager')
-                    self.pager = pager
-                    $('#content_reverse').html(qweb.render('table_scraped',{products : self.products}));
-                    for(var i in self.selectedProducts.scraped){
-                        var pid = self.selectedProducts.scraped[i].pid
-                        var qta = self.selectedProducts.scraped[i].qta
-                        $('#product_'+pid).closest('.product_line').find('.product_selector').prop('checked',true)
-                        $('#product_'+pid).closest('.product_line').find('.qty_reverse').val(parseInt(qta))
-                    }
+                
+                $('#content_reverse').html(qweb.render('table_scraped',{products : self.products}));
+
+                $(self.selectedProducts.scraped).each(function(index,product){
+                    $('#qta_'+product.pid).val(product.qta)
+                    $('#sel_'+product.pid).prop('checked',true)
                 });
-            });
+            }) 
+            
         },
         doPager : function(e){
             var id = $('.active_reverse').attr('id');
