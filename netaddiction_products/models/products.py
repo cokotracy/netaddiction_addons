@@ -436,6 +436,16 @@ class SupplierInfo(models.Model):
         'delay': None,
     }
 
+    detax_margin = fields.Float(string="Margine iva esclusa",compute="_calculate_margin_info")
+
+    @api.one 
+    def _calculate_margin_info(self):
+        sup_price = self.product_id.supplier_taxes_id.compute_all(self.price)
+        sale_price = self.product_id.offer_price if self.product_id.offer_price else self.product_id.list_price
+        product_price = self.product_id.taxes_id.compute_all(sale_price)
+
+        self.detax_margin = product_price['total_excluded'] - sup_price['total_excluded']
+
     @api.model
     def create(self, values):
         # Cerco il variant attuale, mi prendo il template e correggo

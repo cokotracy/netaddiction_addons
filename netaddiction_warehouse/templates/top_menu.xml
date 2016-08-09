@@ -15,6 +15,7 @@
 	    <template id="slide_menu">
 	    	<div id="slide_menu">
 	    		<div class="link_menu"><a href="#"><t t-esc="user.name"/></a></div>
+	    		<div class="link_menu"><a href="/">LOG OUT</a></div>
 	    		<div class="link_menu"><a href="/inventory/app">HOME</a></div>
 	    		<div class="link_menu"><a href="/inventory/app/allocation">ALLOCAZIONE</a></div>
 	    		<div class="link_menu"><a href="/inventory/app/search/from_product">CERCA</a></div>
