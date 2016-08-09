@@ -19,7 +19,7 @@
             <field name="name">netaddiction.acl.form.orders.plus</field>
             <field name="model">sale.order</field>
             <field name="inherit_id" ref="netaddiction_acl_form_orders"/>
-            <field name="groups_id" eval="[(4, ref('netaddiction_sale_user_plus'))]"/>
+            <field name="groups_id" eval="[(4, ref('netaddiction_sale_user_plus')),(4, ref('netaddiction_sale_customer_care'))]"/>
             <field name="arch" type="xml">
                 <field name="state" position="before">
                     <button name="action_done" type="object" string="Completato" states="sale,partial_done" class="btn btn-success fa fa-star"/>
