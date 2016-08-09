@@ -76,12 +76,13 @@ class ProductMixin(object):
             'pk': self.id,
             'company_id': self.company_id.id,
             'name': self.name,
+            'alias': self.alias_ids.mapped('name'),
             'description': self.description,
             'alias': [alias.name for alias in self.alias_ids],
             'barcode': self.barcode,
             'category': self.categ_id.name,
             'date': out_date if out_date else available_date,
-            'price': self.offer_price if self.offer_price else self.final_price,
+            'price': self.offer_price if self.offer_price else self.intax_price,
             'is_available': self.qty_available_now > 0,
             'is_offer': len(self.offer_catalog_lines) + len(self.offer_cart_lines) > 0,
             'is_preorder': out_date is not None and out_date > today or available_date is not None and available_date > today,
@@ -90,7 +91,7 @@ class ProductMixin(object):
     def can_push_to_solr(self):
         return self.active and self.sale_ok and self.visible
 
-    @api.constrains(*SOLR_TRACKED_FIELDS)
+    @api.onchange(*SOLR_TRACKED_FIELDS)
     def pickup_for_solr(self):
         if self.env.context.get('solr_nopush', False):
             return
@@ -121,7 +122,7 @@ class Template(models.Model, ProductMixin):
 
     _inherit = 'product.template'
 
-    @api.constrains(*SOLR_TRACKED_FIELDS)
+    @api.onchange(*SOLR_TRACKED_FIELDS)
     def pickup_for_solr(self):
         if self.env.context.get('solr_nopush', False):
             return

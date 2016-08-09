@@ -2,8 +2,8 @@ import pysolr
 
 
 class Solr(object):
-    URL = 'http://localhost:8983/solr/odoo'
-    TIMEOUT = 5
+    URL = 'http://localhost:8983/solr/odoo'  # TODO personalizzabile
+    TIMEOUT = 10
 
     @classmethod
     def get(cls):
