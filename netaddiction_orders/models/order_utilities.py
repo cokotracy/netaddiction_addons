@@ -41,8 +41,8 @@ class OrderUtilities(models.TransientModel):
         return None, False
 
     def add_to_cart(self, order, product_id, quantity, partner_id=None, bonus_list=None):
-        """
-        Aggiunge un prodotto al carrello di un utente, se il prodotto è già presente nel carrello ne aggiorna la quantità sommando
+        u"""Aggiunge un prodotto al carrello di un utente, se il prodotto è già presente nel carrello ne aggiorna la quantità sommando.
+
         Parametri:
         - partner_id id dell'utente
         - order_id id del carrello dell'utente
@@ -52,6 +52,15 @@ class OrderUtilities(models.TransientModel):
         Return:
         - true se è andato tutto bene
         - false altrimenti
+
+        Raises:
+        -QtyLimitException: per qualche offerta carrello o vaucher viene superato il limite delle quantità
+        -QtyMaxBuyableException nel caso in cui sia stata superata una qty_max_buyable per una offerta (catalogo,carrello o vaucher)
+        -ProductOfferSoldOutAddToCart: per qualche offerta catalogo viene superato il limite delle quantità
+        -ProductNotActiveAddToCartException se il prodotto non è attivo
+        -ProductSoldOutAddToCartException se il prodotto è esaurito
+        -ProductOrderQuantityExceededException se è stata superata la quantità max per il prodotto epr singolo ordine
+        -ProductOrderQuantityExceededLimitException se con questo ordine si supera la quantità (disponibile) limite per il prodotto
 
         NB: non viene fatto alcun controllo sul fatto che i bonus siano effettivamente bonus del prodotto partner_id
         """
@@ -63,7 +72,15 @@ class OrderUtilities(models.TransientModel):
 
         prod = self.env["product.product"].search([("id", "=", product_id)])
 
-        if order and order.partner_id.id == partner_id and order.state == "draft" and prod:
+        if not prod or not prod.active:
+            raise ProductNotActiveAddToCartException(product_id, "add_to_cart")
+
+        if order and order.partner_id.id == partner_id and order.state == "draft":
+
+            # se il prodotto è spento o esaurito eccezione
+            if not prod.sale_ok:
+                if not self.env.context.get('no_check_product_sold_out', False):
+                    raise ProductSoldOutAddToCartException(product_id, "prodotto %s  sale_ok: %s" % (prod.name, prod.sale_ok))
 
             order.reset_cart()
             order.reset_voucher()
@@ -71,12 +88,16 @@ class OrderUtilities(models.TransientModel):
             found = False
             for line in order.order_line:
                 if line.product_id.id == product_id:
+                    prod.check_quantity_product(line.product_uom_qty + quantity)
+                    self._check_offers_catalog(prod, line.product_uom_qty + quantity)
                     line.product_uom_qty += quantity
                     line.product_uom_change()
                     found = True
                     break
 
             if not found:
+                prod.check_quantity_product(quantity)
+                self._check_offers_catalog(prod, quantity)
                 ol = self.env["sale.order.line"].create({
                     "order_id": order.id,
                     "product_id": product_id,
@@ -141,19 +162,27 @@ class OrderUtilities(models.TransientModel):
 
         prod = self.env["product.product"].search([("id", "=", product_id)])
 
-        if order and order.partner_id.id == partner_id and order.state == "draft" and prod:
+        if not prod or not prod.active:
+            raise ProductNotActiveAddToCartException(product_id, "add_to_cart")
+
+        if order and order.partner_id.id == partner_id and order.state == "draft":
+
+            # se il prodotto è spento o esaurito eccezione
+            if not prod.sale_ok:
+                if not self.env.context.get('no_check_product_sold_out', False):
+                    raise ProductSoldOutAddToCartException(product_id, "prodotto %s  sale_ok: %s" % (prod.name, prod.sale_ok))
 
             order.reset_cart()
 
             order.reset_voucher()
 
-
             found = False
             found_bonus = False
             for line in order.order_line:
-                
                 if line.product_id.id == product_id:
                     if quantity > 0:
+                        prod.check_quantity_product(quantity)
+                        self._check_offers_catalog(prod, quantity)
                         line.product_uom_qty = quantity
                         line.product_uom_change()
                     else:
@@ -176,16 +205,103 @@ class OrderUtilities(models.TransientModel):
                                 found_bonus = True
                                 break
 
-
-            
             order.extract_cart_offers()
-            
             order.apply_voucher()
-            
-
+            # ricalcola gift e totale
             order._amount_all()
-
 
             return found or (bonus_list and found_bonus)
 
         return False
+
+    def check_cart(self, order):
+        """
+        """
+        for line in order.order_line:
+            if not line.product_id or not line.product_id.active:
+                raise ProductNotActiveAddToCartException(line.product_id, "add_to_cart")
+            if not line.product_id.sale_ok:
+                if not self.env.context.get('no_check_product_sold_out', False):
+                    raise ProductSoldOutAddToCartException(line.product_id, "prodotto %s  sale_ok: %s" % (line.product_id.name, line.product_id.sale_ok))
+            line.product_id.check_quantity_product(line.product_uom_qty)
+            self._check_offers_catalog(line.product_id, line.product_uom_qty)
+
+        problem = False
+        for och in order.offers_cart:
+            if not och.offer_cart_line or not och.offer_cart_line.active or (och.offer_cart_line.qty_limit > 0 and och.offer_cart_line.qty_selled + och.qty > och.offer_cart_line.qty_limit) or (och.offer_cart_line.qty_max_buyable > 0 and och.qty > och.offer_cart_line.qty_max_buyable):
+                # se: l'offerta non è più attiva o è stata superata la quantità limite o è stata superata la quantità massima per singolo ordine
+                problem = True
+                break
+        if problem:
+            order.reset_cart()
+            problem.extract_cart_offers()
+
+        problem = False
+        for ovh in order.offers_voucher:
+            if not ovh.offer_id or not ovh.offer_id.active or (ovh.offer_id.qty_limit > 0 and ovh.offer_id.qty_selled + ovh.qty > ovh.offer_id.qty_limit) or (ovh.offer_id.qty_max_buyable > 0 and ovh.qty > ovh.offer_id.qty_max_buyable):
+                # se: l'offerta non è più attiva o è stata superata la quantità limite o è stata superata la quantità massima per singolo ordine
+                problem = True
+                break
+        if problem:
+            order.reset_voucher()
+            problem.apply_voucher()
+
+    def _check_offers_catalog(self, product, qty_ordered):
+        """controlla le offerte catalogo e aggiorna le quantità vendute.
+        raise Exception se qualche prodotto ha superato la qty_limit per la sua offerta catalogo corrispondente
+        """
+        offer_line = product.offer_catalog_lines[0] if len(product.offer_catalog_lines) > 0 else None
+        if(offer_line and offer_line.qty_limit > 0 and offer_line.qty_selled + qty_ordered > offer_line.qty_limit):
+            raise ProductOfferSoldOutAddToCart(product.id, offer_line.offer_catalog_id.id, offer_line.qty_limit, offer_line.qty_selled, qty_ordered, offer_line.offer_catalog_id.name)
+
+
+class ProductNotActiveAddToCartException(Exception):
+    def __init__(self, product_id, err_str):
+        super(ProductNotActiveAddToCartException, self).__init__(product_id)
+        self.var_name = 'confirm_exception'
+        self.err_str = err_str
+        self.product_id = product_id
+
+    def __str__(self):
+        s = u"Errore aggiungendo all'ordine il prodotto: %s : %s" % (self.product_id, self.err_str)
+        return s
+
+    def __repr__(self):
+        s = u"Errore aggiungendo all'ordine il prodotto: %s : %s" % (self.product_id, self.err_str)
+        return s
+
+
+class ProductSoldOutAddToCartException(Exception):
+    def __init__(self, product_id, err_str):
+        super(ProductSoldOutAddToCartException, self).__init__(product_id)
+        self.var_name = 'confirm_exception'
+        self.err_str = err_str
+        self.product_id = product_id
+
+    def __str__(self):
+        s = u"Errore aggiungendo all'ordine il prodotto: %s : %s" % (self.product_id, self.err_str)
+        return s
+
+    def __repr__(self):
+        s = u"Errore aggiungendo all'ordine il prodotto: %s : %s" % (self.product_id, self.err_str)
+        return s
+
+
+class ProductOfferSoldOutAddToCart(Exception):
+    def __init__(self, product_id, offer_id, offer_limit, qty_selled, qty_to_add, err_str):
+        super(ProductOfferSoldOutAddToCart, self).__init__(product_id)
+        self.var_name = 'confirm_exception'
+        self.err_str = err_str
+        self.product_id = product_id
+        self.offer_id = offer_id
+        self.offer_limit = offer_limit
+        self.qty_selled = qty_selled
+        self.qty_to_add = qty_to_add
+
+    def __str__(self):
+        s = u"Errore aggiungendo all'ordine il prodotto: %s per l'offerta: %s  quantita limite: %s quantita venduta: %s quantita richiesta: %s   : %s" % (self.product_id, self.offer_id, self.offer_limit, self.qty_selled, self.qty_to_add, self.err_str)
+        return s
+
+    def __repr__(self):
+        s = u"Errore aggiungendo all'ordine il prodotto: %s per l'offerta: %s  quantita limite: %s quantita venduta: %s quantita richiesta: %s   : %s" % (self.product_id, self.offer_id, self.offer_limit, self.qty_selled, self.qty_to_add, self.err_str)
+        return s

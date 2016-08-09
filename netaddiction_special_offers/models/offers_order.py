@@ -68,7 +68,7 @@ class OfferOrder(models.Model):
                     # TODO CONTO DELLA SOMMA E CONTROLLO LIMITE NON SUPERATO
                     offer_ids = [ol.product_id.id for ol in offer.products_list]
                     offer_cart_history_ids = [och.product_id.id for och in self.offers_cart]
-
+                    tot_qty = 0
                     for ol in self.order_line:
                         # applico il voucher se non ci sono altre offerte sul prodotto
                         if (ol.product_id.id in offer_ids) and (ol.product_id.id not in offer_cart_history_ids) and (not ol.offer_type):
@@ -96,6 +96,7 @@ class OfferOrder(models.Model):
                                 new_price = new_price if new_price > float(0) else float(0)
                                 ol.price_unit = self.env['account.tax']._fix_tax_included_price(new_price, ol.product_id.taxes_id, ol.tax_id)
                                 # applica offerta voucher e crea history
+                            tot_qty += ol.product_uom_qty
                             ovh = self.env['netaddiction.order.specialoffer.voucher.history'].create({
                                 'product_id': ol.product_id.id,
                                 'order_id': self.id,
@@ -111,7 +112,9 @@ class OfferOrder(models.Model):
                                 'percent_effective_discount': discount})
                             ol.offer_voucher_history = ovh.id
                 # self._amount_all()
-
+                if tot_qty > 0 and offer.qty_limit > 0 and offer.qty_selled + tot_qty > offer.qty_limit:
+                    self.reset_voucher()
+                    raise QtyLimitException(None, None, offer.id, offer.qty_limit, tot_qty, offer.qty_selled)
                 return True
 
         self.voucher_string = ""
