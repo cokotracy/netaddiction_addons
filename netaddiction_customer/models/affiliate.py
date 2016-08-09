@@ -85,7 +85,7 @@ class Affiliate(models.Model):
     def get_hashed(self):
         salt = self.env["ir.config_parameter"].search([("key", "=", "affiliate.salt")]).value
         hashids = Hashids(salt=salt, min_length=HASH_MIN_LENGTH)
-        return hashids.encode(self.control_code)
+        return hashids.encode(*[int(d) for d in self.control_code.split('-')])
 
     def check_order(self, order):
         gift_gained = 0.0
@@ -167,9 +167,14 @@ class AffiliateUtilities(models.TransientModel):
         hashids = Hashids(salt=salt, min_length=HASH_MIN_LENGTH)
 
         try:
-            control_code = hashids.decode(token)[0]
+            control_code = '-'.join([str(d) for d in hashids.decode(token)])
         except IndexError:
             return None
+
+        # TODO togliere una volta comunicato il cambio agli affiliati
+        if not control_code:
+            return affiliate_model.search([("control_code", "=", token)])
+        # END-TODO
 
         return affiliate_model.search([("control_code", "=", control_code)])
 
