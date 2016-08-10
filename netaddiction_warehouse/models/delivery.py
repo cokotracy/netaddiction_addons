@@ -546,7 +546,7 @@ class StockPicking(models.Model):
     _inherit = 'stock.picking'
 
     delivery_barcode = fields.Char(string="Barcode Spedizione")
-    delivery_read_manifest = fields.Boolean(string="Letto nel manifest",default="False")
+    delivery_read_manifest = fields.Boolean(string="Letto nel manifest",default=False)
     manifest = fields.Many2one(string="Manifest", comodel_name="netaddiction.manifest")
 
     date_of_shipping_home = fields.Date(string="Data di consegna" , compute = "_compute_date_of_shipping")
