@@ -72,6 +72,13 @@ class Order(models.Model):
        	if transient:
        		transient.unlink()
 
+
+class OrderLine(models.Model):
+    _inherit = 'sale.order.line'
+
+    is_payment = fields.Boolean(string="Is a Payment", default=False)
+
+
 class StockPicking(models.Model):
     _inherit = 'stock.picking'
 

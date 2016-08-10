@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from itertools import chain
 from openerp import tools
 from openerp import models, fields, api
 import openerp.addons.decimal_precision as dp
@@ -177,14 +178,22 @@ class Orders(models.Model):
 
 
     @api.multi
-    def simulate_total_delivery_price(self, subdivision=None):
+    def simulate_total_delivery_price(self, asap_subdivision=None, option='asap'):
         """
         Restituisce il costo totale delle spedizioni.
         """
         self.ensure_one()
 
-        if subdivision is None:
-            subdivision = self.simulate_shipping()
+        if asap_subdivision is None:
+            asap_subdivision = self.simulate_shipping()
+
+        if option == 'asap':
+            subdivision = asap_subdivision
+        elif option == 'all':
+            max_date = max(asap_subdivision.keys())
+            subdivision = {
+                max_date: list(chain.from_iterable(asap_subdivision.values())),
+            }
 
         prices = self.simulate_delivery_price(subdivision)
 
@@ -238,17 +247,17 @@ class Orders(models.Model):
             ship_gratis = False
             for line in subdivision[delivery_date]:
                 subtotal += line['price_total']
+
                 if line['product_id'].id in free_prod_ship:
                     ship_gratis = True
-
+       
             if subtotal >= price_delivery_gratis or ship_gratis or sped_voucher:
                 total_delivery_price[delivery_date] = 0.00
             else:
                 value_tax = self.carrier_id.product_id.taxes_id.compute_all(self.carrier_id.fixed_price)
                 total_delivery_price[delivery_date] = value_tax['total_included']
                 # TODO: YURI NON CANCELLARE NELLE TUE CRISI MISTICHE DA PULIZIA
-                # total_delivery_price[delivery_date] = self.carrier_id.fixed_price 
-
+                # total_delivery_price[delivery_date] = self.carrier_id.fixed_price
         return total_delivery_price
 
     @api.multi
@@ -292,7 +301,7 @@ class SaleOrderLine(models.Model):
         support = defaultdict(list)
         
         for line in self:
-            if not line.is_delivery:
+            if not line.is_delivery and not line.is_payment:
                 if len(line.offer_cart_history) == 0 and len(line.offer_voucher_history) == 0:
                     support['without_offer'] += [line] 
                 else:
@@ -603,7 +612,7 @@ class StockPicking(models.Model):
 
         #a questo punto metto spedita e da fatturare anche la riga spedizioni 
         shipping_lines = self.env['sale.order.line'].search([('order_id','=',this.sale_id.id),
-            ('price_unit','=',round(this.carrier_price,2)),('is_delivery','=',True),('qty_delivered','=',0)])
+            ('price_unit','=',round(this.carrier_price,2)),('qty_delivered','=',0),'|',('is_delivery','=',True),('is_payment','=',True)])
         if len(shipping_lines)>0:
             shipping_lines[0].write({
                 'qty_delivered' : 1,
