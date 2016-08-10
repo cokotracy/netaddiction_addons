@@ -20,7 +20,7 @@ class Orders(models.Model):
     def action_confirm(self):
         if not self.state == 'draft':
             # se lo stato non  è draft è già stata chiamata action confirm
-            return
+            return False
 
         if len(self.order_line) == 0:
             raise ValidationError("Devi inserire almeno un prodotto nell'ordine")
@@ -33,9 +33,6 @@ class Orders(models.Model):
 
         super(Orders, self).action_confirm()
 
-        if old_state == 'problem':
-            self.state = 'problem'
-
         if len(self.picking_ids) == 0:
             self.create_shipping()
             self.set_delivery_price()
@@ -44,6 +41,9 @@ class Orders(models.Model):
         if not self.env.context.get('no_do_action_quantity', False):
             for line in self.order_line:
                 line.product_id.do_action_quantity()
+
+        if old_state == 'problem':
+            self.state = 'problem'
         return True
 
     @api.multi
