@@ -52,7 +52,7 @@ class CoDRegister(models.TransientModel):
                         'product_uom_qty': 1,
                         'product_uom': contrassegno.uom_id.id,
                         'product_id': contrassegno.id,
-                        'is_delivery': True,
+                        'is_payment': True,
                     }
                     sol = self.env['sale.order.line'].create(values)
                     sol.product_id_change()

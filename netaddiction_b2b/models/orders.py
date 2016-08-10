@@ -9,14 +9,14 @@ class Orders(models.Model):
     is_b2b = fields.Boolean(string="B2B")
 
     @api.multi
-    def simulate_total_delivery_price(self, subdivision=None):
+    def simulate_total_delivery_price(self, subdivision=None, option='all'):
         """
         Restituisce il costo totale delle spedizioni.
         """
         self.ensure_one()
 
         if not self.is_b2b:
-            return super(Orders, self).simulate_total_delivery_price(subdivision)
+            return super(Orders, self).simulate_total_delivery_price(subdivision, option)
 
         return 0
 
