@@ -24,12 +24,10 @@ class Products(models.Model):
                 log_line.sudo().create(log_line.create_tracking_values(product.special_price, values['special_price'], 'special_price', 'float', 'product.product', product.id, self.env.uid, product.company_id.id, object_name=product.name))
                 old_intax[product.id] = product.intax_price
 
-        print old_intax
         res = super(Products, self).write(values)
 
         if old_intax:
             for product in self:
-                print product.id
                 if product.id in old_intax:
                     log_line.sudo().create(log_line.create_tracking_values(old_intax[product.id], product.intax_price, 'intax_price', 'float', 'product.product', product.id, self.env.uid, product.company_id.id, object_name=product.name))
         return res

@@ -211,9 +211,9 @@
             <field name="model_id" search="[('model','=','account.invoice')]" model="ir.model"/>
             <field name="group_id" ref="netaddiction_sale_user"/>
             <field name="perm_read" eval="1"/>
-            <field name="perm_create" eval="0"/>
-            <field name="perm_write" eval="0"/>
-            <field name="perm_unlink" eval="0"/>
+            <field name="perm_create" eval="1"/>
+            <field name="perm_write" eval="1"/>
+            <field name="perm_unlink" eval="1"/>
         </record>
         <record id="netaddiction_sale_user_acces_delivery carrier" model="ir.model.access">
             <field name="name">Delivery carrier</field>
@@ -222,6 +222,33 @@
             <field name="perm_read" eval="1"/>
             <field name="perm_create" eval="0"/>
             <field name="perm_write" eval="0"/>
+            <field name="perm_unlink" eval="0"/>
+        </record>
+        <record id="netaddiction_sale_user__invoice_tax" model="ir.model.access">
+            <field name="name">account.invoice.tax</field>
+            <field name="model_id" search="[('model','=','account.invoice.tax')]" model="ir.model"/>
+            <field name="group_id" ref="netaddiction_sale_user"/>
+            <field name="perm_read" eval="1"/>
+            <field name="perm_create" eval="1"/>
+            <field name="perm_write" eval="1"/>
+            <field name="perm_unlink" eval="0"/>
+        </record>
+        <record id="netaddiction_sale_user__invoice_line" model="ir.model.access">
+            <field name="name">account.invoice.line</field>
+            <field name="model_id" search="[('model','=','account.invoice.line')]" model="ir.model"/>
+            <field name="group_id" ref="netaddiction_sale_user"/>
+            <field name="perm_read" eval="1"/>
+            <field name="perm_create" eval="1"/>
+            <field name="perm_write" eval="1"/>
+            <field name="perm_unlink" eval="0"/>
+        </record> 
+        <record id="netaddiction_sale_user__invoice_reconcile" model="ir.model.access">
+            <field name="name">account.partial.reconcile</field>
+            <field name="model_id" search="[('model','=','account.partial.reconcile')]" model="ir.model"/>
+            <field name="group_id" ref="netaddiction_sale_user"/>
+            <field name="perm_read" eval="1"/>
+            <field name="perm_create" eval="1"/>
+            <field name="perm_write" eval="1"/>
             <field name="perm_unlink" eval="0"/>
         </record>
 
@@ -343,8 +370,8 @@
             <field name="model_id" search="[('model','=','account.journal')]" model="ir.model"/>
             <field name="group_id" ref="netaddiction_sale_payments"/>
             <field name="perm_read" eval="1"/>
-            <field name="perm_create" eval="0"/>
-            <field name="perm_write" eval="0"/>
+            <field name="perm_create" eval="1"/>
+            <field name="perm_write" eval="1"/>
             <field name="perm_unlink" eval="0"/>
         </record>
         <record id="netaddiction_sale_payments_acces_account_payment_metho" model="ir.model.access">
