@@ -314,8 +314,8 @@ class Order(models.Model):
             for pick in order.picking_ids:
                 if pick.delivery_read_manifest:
                     raise ValidationError("Non puoi annullare l'ordine in quanto è già in carico al Corriere")
-                if pick.state == 'done':
-                    raise ValidationError("Non puoi annullare l'ordine in quanto almeno una spedizione è stata completata.")
+                #if pick.state == 'done':
+                #    raise ValidationError("Non puoi annullare l'ordine in quanto almeno una spedizione è stata completata.")
 
             if (order.state != 'draft'):
                 # offerte catalogo

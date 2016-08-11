@@ -37,7 +37,7 @@
                     <button name="action_assign" states="confirmed,waiting" string="Riserva" type="object" class="oe_highlight"/>
                     <button name="force_assign" states="confirmed,waiting,partially_available" string="Forza Disponibilità" type="object" />
                     <button name="do_new_transfer" states="draft,partially_available,assigned" string="Valida"  type="object" class="oe_highlight"/>
-                    <button name="action_cancel" states="assigned,confirmed,partially_available,draft,waiting" string="Annulla"  type="object"/>
+                    <button name="action_cancel" states="assigned,confirmed,partially_available,draft,waiting,done" string="Annulla"  type="object"/>
                     <button name="do_unreserve" string="Unreserve" type="object" attrs="{'invisible': [('quant_reserved_exist', '=', False)]}"/>
             	</field>
 

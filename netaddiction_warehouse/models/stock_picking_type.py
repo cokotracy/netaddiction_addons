@@ -217,10 +217,58 @@ class StockPicking(models.Model):
     number_of_pieces = fields.Integer(string="Pezzi",compute="_get_number_of_pieces")
     total_import = fields.Float(string="Importo",compute="_get_total_import")
     
-    #@api.multi
-    #def action_cancel(self):
-    #    for pick in self:
-    #        if pick.state != 'done':
+    @api.multi
+    def action_cancel(self):
+        contrassegno = self.env.ref('netaddiction_payments.contrassegno_journal')
+        cancel = []
+        posted = []
+        for pick in self:
+            if pick.delivery_read_manifest:
+                raise ValidationError("Non puoi annullare la spedizione in quanto è già in carico al corriere")
+            else:
+                if pick.payment_id.state != 'posted':
+                    #cancello tutto
+                    cancel.append(pick.payment_id)
+                    
+                else:
+                    products = []
+                    for pl in pick.move_lines:
+                        products.append(pl.product_id.id)
+                    for plo in pick.pack_operation_product_ids:
+                        products.append(plo.product_id.id)
+
+                    for inv in pick.payment_id.invoice_ids:
+                        ref = inv.refund(datetime.now(),datetime.now(),'Annullata spedizione %s ' % pick.name)
+                        for line in ref.invoice_line_ids:
+                            if line.product_id.id not in products:
+                                line.unlink()
+                        ref.compute_taxes()
+                        ref._compute_amount()
+
+                        account_id = self.env['account.account'].search([('code','=',410100),('company_id','=',self.env.user.company_id.id)])
+                        carrier_line = {
+                            'product_id' : pick.carrier_id.product_id.id,
+                            'quantity' : 1,
+                            'price_unit' : pick.total_import - ref.amount_total,
+                            'name' : pick.carrier_id.product_id.name,
+                            'account_id' : account_id.id,
+                            'invoice_line_tax_ids' : [(6,False,[pick.carrier_id.product_id.taxes_id.id])],
+                            'invoice_id':ref.id
+                        }
+                        
+                        self.env['account.invoice.line'].create(carrier_line)
+
+                        ref.compute_taxes()
+                        ref._compute_amount()
+
+       
+
+        for can in cancel:
+            can.invoice_ids.write({'state':'cancel'})
+            can.unlink()
+
+        return super(StockPicking,self).action_cancel()
+                
 
 
 
