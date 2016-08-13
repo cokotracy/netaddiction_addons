@@ -119,6 +119,8 @@
                         <field name="state_id" string="Provincia" />
                         <field name="zip" string="CAP" />
                         <field name="country_id" string="Nazione"/>
+                        <field name="vat" string="P.IVA"/>
+                        <field name="fiscalcode" string="Codice Fiscale"/>
 
                     </group> 
                 </xpath>
