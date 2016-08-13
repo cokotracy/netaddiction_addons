@@ -30,7 +30,7 @@ class Orders(models.Model):
     @api.constrains('partner_id','pricelist_id')
     def set_b2b(self):
         if self.partner_id.is_b2b:
-            self.is_b2b = self.partner_id.is_b2b
+            #self.is_b2b = self.partner_id.is_b2b
             # self.delivery_option = 'asap'
             if self.partner_id.property_delivery_carrier_id:
                 self.carrier_id = self.partner_id.property_delivery_carrier_id
