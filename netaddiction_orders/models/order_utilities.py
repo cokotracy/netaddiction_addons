@@ -62,8 +62,8 @@ class OrderUtilities(models.TransientModel):
         -ProductOrderQuantityExceededException se è stata superata la quantità max per il prodotto epr singolo ordine
         -ProductOrderQuantityExceededLimitException se con questo ordine si supera la quantità (disponibile) limite per il prodotto
         -QuantityLessThanZeroException se quantity <= 0
-
-        NB: non viene fatto alcun controllo sul fatto che i bonus siano effettivamente bonus del prodotto partner_id
+        -BonusOfferException: se ci sono dei problemi con i bonus
+        
         """
         if quantity <= 0:
             raise QuantityLessThanZeroException()
@@ -87,12 +87,14 @@ class OrderUtilities(models.TransientModel):
             order.reset_voucher()
 
             found = False
+            ol = None
             for line in order.order_line:
                 if line.product_id.id == product_id:
                     prod.check_quantity_product(line.product_uom_qty + quantity)
                     self._check_offers_catalog(prod, line.product_uom_qty + quantity)
                     line.product_uom_qty += quantity
                     line.product_uom_change()
+                    ol = line
                     found = True
                     break
 
@@ -110,19 +112,32 @@ class OrderUtilities(models.TransientModel):
                 ol.product_id_change()
 
             if bonus_list:
+                # controllo che il prodotto abbia bonus o che che lo se lo ha only one mi hanno passato un solo bonus
+                if not prod.offer_with_bonus_lines or (prod.offer_with_bonus_lines[0].only_one and len(bonus_list) > 1):
+                    raise BonusOfferException(None)
+
+                # lista degli id dei prodotti accettati come bonus
+                correct_bonus_list = [bonus.id for bonus in prod.offer_with_bonus_lines[0].bonus_products_list]
                 for bonus_id, bonus_qty in bonus_list:
+                    if bonus_id not in correct_bonus_list or bonus_qty > quantity:
+                        raise BonusOfferException(bonus_id)
                     bonus_prod = self.env["product.product"].search([("id", "=", bonus_id)])
 
                     if bonus_prod:
                         found = False
                         for line in order.order_line:
                             if line.product_id.id == bonus_id and bonus_qty > 0:
+                                # controllo che sia assegnata alla linea giusta
+                                if line.bonus_father_id.id != ol.id:
+                                    raise BonusOfferException(bonus_id)
+                                bonus_prod.check_quantity_product(line.product_uom_qty + bonus_qty)
                                 line.product_uom_qty += bonus_qty
                                 line.product_uom_change()
                                 found = True
                                 break
 
                         if not found:
+                            bonus_prod.check_quantity_product(bonus_qty)
                             ol_bonus = self.env["sale.order.line"].create({
                                 "order_id": order.id,
                                 "product_id": bonus_id,
@@ -143,7 +158,7 @@ class OrderUtilities(models.TransientModel):
 
         return False
 
-    def set_quantity(self, order, product_id, quantity, partner_id=None, bonus_list=None):
+    def set_quantity(self, order, product_id, quantity, partner_id=None):
         """
         Aggiorna la quantità del prodotto product_id a quantity nell'ordine order_id
         Parametri:
@@ -191,7 +206,7 @@ class OrderUtilities(models.TransientModel):
             order.reset_voucher()
 
             found = False
-            found_bonus = False
+            ol = None
             for line in order.order_line:
                 if line.product_id.id == product_id:
                     if quantity > 0:
@@ -199,32 +214,23 @@ class OrderUtilities(models.TransientModel):
                         self._check_offers_catalog(prod, quantity)
                         line.product_uom_qty = quantity
                         line.product_uom_change()
+                        ol = line
                     else:
                         line.unlink()
                     found = True
                     break
 
-            if bonus_list:
-                for bonus_id, bonus_qty in bonus_list:
-                    bonus_prod = self.env["product.product"].search([("id", "=", bonus_id)])
-
-                    if bonus_prod:
-                        for line in order.order_line:
-                            if line.product_id.id == bonus_id:
-                                if bonus_qty > 0:
-                                    line.product_uom_qty = bonus_qty
-                                    line.product_uom_change()
-                                else:
-                                    line.unlink()
-                                found_bonus = True
-                                break
+            if found and ol:
+                for bonus_ol in ol.bonus_order_line_ids:
+                    bonus_ol.product_id.check_quantity_product(quantity)
+                    bonus_ol.product_uom_qty = quantity
 
             order.extract_cart_offers()
             order.apply_voucher()
             # ricalcola gift e totale
             order._amount_all()
 
-            return found or (bonus_list and found_bonus)
+            return found
 
         return False
 
@@ -239,9 +245,10 @@ class OrderUtilities(models.TransientModel):
         -ProductSoldOutAddToCartException se il prodotto è esaurito
         -ProductOrderQuantityExceededException se è stata superata la quantità max per il prodotto epr singolo ordine
         -ProductOrderQuantityExceededLimitException se con questo ordine si supera la quantità (disponibile) limite per il prodotto
-        -CatalogOfferCancelledException
-        -CartOfferCancelledException
-        -VaucherOfferCancelledException
+        -CatalogOfferCancelledException se nel carrello c'è una offerta catalogo cancellata
+        -CartOfferCancelledException se nel carrello c'è una offerta carrello cancellata
+        -VaucherOfferCancelledException se nel carrello c'è una offerta vaucher cancellata
+        -BonusOfferException se nel carrello c'è una offerta bonus cancellata
 
         """
         for line in order.order_line:
@@ -256,6 +263,14 @@ class OrderUtilities(models.TransientModel):
                     self._check_offers_catalog(line.product_id, line.product_uom_qty)
                 else:
                     raise CartOfferCancelledException(line.product_id.id, line.offer_type, line.product_id.name)
+
+            # lista degli id dei prodotti accettati come bonus
+            correct_bonus_list = []
+            if line.product_id.offer_with_bonus_lines:
+                correct_bonus_list = [bonus.id for bonus in line.product_id.offer_with_bonus_lines[0].bonus_products_list]
+            for ol_bonus in line.bonus_order_line_ids:
+                if ol_bonus.product_id.id not in correct_bonus_list or ol_bonus.product_uom_qty > line.product_uom_qty:
+                    raise BonusOfferException(line.product_id.id)
 
         problem = False
         for och in order.offers_cart:
@@ -278,6 +293,7 @@ class OrderUtilities(models.TransientModel):
             order.reset_voucher()
             raise VaucherOfferCancelledException(ovh.product_id.id, ovh.offer_id, ovh.product_id.name)
             # order.apply_voucher()
+        
 
     def _check_offers_catalog(self, product, qty_ordered):
         """controlla le offerte catalogo e aggiorna le quantità vendute.
@@ -391,6 +407,21 @@ class VaucherOfferCancelledException(Exception):
 
     def __repr__(self):
         s = u"Errore aggiungendo all'ordine il prodotto: %s per l'offerta vaucher di tipo: %s che non è piu attiva" % (self.product_id, self.offer_type)
+        return s
+
+
+class BonusOfferException(Exception):
+    def __init__(self, product_id):
+        super(BonusOfferException, self).__init__(product_id)
+        self.var_name = 'vaucher_offer_cancelled'
+        self.product_id = product_id
+        
+    def __str__(self):
+        s = u"Errore sui bonus del prodotto: %s " % (self.product_id)
+        return s
+
+    def __repr__(self):
+        s = u"Errore sui bonus del prodotto: %s " % (self.product_id)
         return s
 
 
