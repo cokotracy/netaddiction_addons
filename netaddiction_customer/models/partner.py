@@ -31,9 +31,9 @@ class Partner(models.Model):
 
                 res.append((s.id, name))
             else:
-                name = ''
+                name = str(s.id)
                 if s.name:
-                    name += s.name
+                    name += ' - ' + s.name
                 res.append((s.id, name))
 
         return res
