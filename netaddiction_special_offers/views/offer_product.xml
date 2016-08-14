@@ -65,10 +65,26 @@
                               </field>
                          </page> 
                         <page string="Bonus">
+                          <br/>
+                          <br/>
+                          <h2>Offerte in cui il prodotto è Bonus</h2>
+                          <br/>
                        <field name="offer_bonus_lines" mode="tree,kanban" >
 
                                   <tree string="Offer Bonus Line" editable="bottom">
-                                     <field name="product_id" attrs="{'readonly': 1}"/>
+                                     
+                                     <field name="bonus_offer_id" attrs="{'readonly': 1}"/>
+                                     
+                                </tree>
+                              </field>
+                              <br/>
+                              <br/>
+                          <h2>Offerte in cui il prodotto ha dei Bonus</h2>
+                          <br/>
+                         <field name="offer_with_bonus_lines" mode="tree,kanban" >
+
+                                  <tree string="Offer with Bonus Line" editable="bottom">
+                                     
                                      <field name="bonus_offer_id" attrs="{'readonly': 1}"/>
                                      
                                 </tree>

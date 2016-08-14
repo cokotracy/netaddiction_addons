@@ -411,7 +411,8 @@ class BonusOffer(models.Model):
     only_one = fields.Boolean(string='Un solo Bonus a scelta', default=True)
     text = fields.Text("testo offerta")
     qty_selled = fields.Float(string='Quantità venduta', default=0.0)
-    products_list = fields.One2many('netaddiction.specialoffer.bonus_offer_line', 'bonus_offer_id', string='Lista prodotti', domain=['|', ('active', '=', False), ('active', '=', True)])
+    bonus_products_list = fields.One2many('netaddiction.specialoffer.bonus_offer_line', 'bonus_offer_id', string='Lista prodotti', domain=['|', ('active', '=', False), ('active', '=', True)])
+    products_with_bonus_list = fields.One2many('netaddiction.specialoffer.product_with_bonus_offer_line', 'bonus_offer_id', string='Lista prodotti', domain=['|', ('active', '=', False), ('active', '=', True)])
 
     _sql_constraints = [
         ('name', 'unique(name)', 'Nome offerta deve essere unico!'),
@@ -425,13 +426,23 @@ class BonusOffer(models.Model):
     @api.constrains('active')
     def _check_active(self):
         if not self.active:
-            for pl in self.products_list:
+            for pl in self.bonus_products_list:
                 pl.active = False
 
 
 class BonusOfferLine(models.Model):
 
     _name = "netaddiction.specialoffer.bonus_offer_line"
+
+    active = fields.Boolean(default=True,
+        help="Spuntato = offerta attiva, Non Spuntato = offerta spenta")
+    product_id = fields.Many2one('product.product', string='Product', change_default=True, ondelete='restrict', required=True)
+    bonus_offer_id = fields.Many2one('netaddiction.specialoffer.bonus', string='Offerta Bonus', index=True, copy=False, required=True)
+    company_id = fields.Many2one('res.company', string='Azienda', related='bonus_offer_id.company_id', store=True)
+
+class ProductWithBonusOfferLine(models.Model):
+
+    _name = "netaddiction.specialoffer.product_with_bonus_offer_line"
 
     active = fields.Boolean(default=True,
         help="Spuntato = offerta attiva, Non Spuntato = offerta spenta")
