@@ -23,13 +23,18 @@
             <field name="priority" eval="30"/>
             <field name="inherit_id" ref="sale.view_order_tree"/>
             <field name="arch" type="xml">
-                <!--<field name="user_id" position="replace"/>-->
+                <field name="user_id" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </field>
                 <field name="amount_total" position="after">
                     <field name="margin_new"/>
+                    <field name="payment_method_id"/>
                 </field>
                 <field name="state" position="replace">
                     <field name="state"/>
+                    <field name="is_b2b"/>
                 </field>
+
                 
             </field>
         </record>
