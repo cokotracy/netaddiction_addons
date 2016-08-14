@@ -384,15 +384,23 @@
                         </group>
                         
                         <field name="text" placeholder="Testo offerta...."/>
-                   <h1 >Lista Prodotti</h1>
-                    <field name="products_list" mode="tree" >
+
+                    <h1 >Lista Prodotti principali</h1>
+                    <field name="products_with_bonus_list" mode="tree" >
                         
-                                  <tree string="Sales Order Lines" editable="bottom">
+                                  <tree string="prodotti principali" editable="bottom">
                                     <field name="product_id" />
                                      
-
-
-
+                                    <field name="active" />
+                                 
+                                </tree>
+                    </field>
+                   <h1 >Lista Prodotti Bonus</h1>
+                    <field name="bonus_products_list" mode="tree" >
+                        
+                                  <tree string="prodotti con bonus" editable="bottom">
+                                    <field name="product_id" />
+                                     
                                     <field name="active" />
                                  
                                 </tree>
