@@ -113,7 +113,7 @@ class OrderUtilities(models.TransientModel):
 
             if bonus_list:
                 # controllo che il prodotto abbia bonus o che che lo se lo ha only one mi hanno passato un solo bonus
-                if not prod.offer_with_bonus_lines or (prod.offer_with_bonus_lines[0].only_one and len(bonus_list) > 1):
+                if not prod.offer_with_bonus_lines or (prod.offer_with_bonus_lines[0].bonus_offer_id.only_one and len(bonus_list) > 1):
                     raise BonusOfferException(None)
 
                 # lista degli id dei prodotti accettati come bonus
