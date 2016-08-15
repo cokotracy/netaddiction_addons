@@ -150,7 +150,7 @@ class OrderUtilities(models.TransientModel):
                             try:
                                 bonus_prod.check_quantity_product(bonus_qty)
                             except (ProductOrderQuantityExceededLimitException, ProductOrderQuantityExceededException), e:
-                                ret[line.product_id.id] = (bonus_qty, e.remains_quantity)
+                                ret[bonus_id] = (bonus_qty, e.remains_quantity)
                                 bonus_qty = e.remains_quantity
                             if bonus_qty > 0:
                                 ol_bonus = self.env["sale.order.line"].create({
@@ -241,7 +241,7 @@ class OrderUtilities(models.TransientModel):
                             bonus_ol.product_uom_qty = quantity
                         except (ProductOrderQuantityExceededLimitException, ProductOrderQuantityExceededException), e:
                             bonus_ol.product_uom_qty = quantity = e.remains_quantity
-                            ret[line.product_id.id] = (quantity, e.remains_quantity)
+                            ret[bonus_ol.product_id.id] = (quantity, e.remains_quantity)
                     else:
                         bonus_ol.unlink()
             order.extract_cart_offers()
