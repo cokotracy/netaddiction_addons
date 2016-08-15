@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from openerp import models
-from openerp.addons.netaddiction_products.models.products import ProductOrderQuantityExceededLimitException
+from openerp.addons.netaddiction_products.models.products import ProductOrderQuantityExceededLimitException, ProductOrderQuantityExceededException
 
 
 class OrderUtilities(models.TransientModel):
@@ -52,7 +52,7 @@ class OrderUtilities(models.TransientModel):
         - bonus_list = [(bonus_id, bonus_qty)]  bonus_id id del prodotto bonus, bonus_qty quantità del prodotto bonus
         Return:
         - {} se è andato tutto bene
-        - {'nome prodotto bonus' : (qty richiesta, qty disponibile settata sulla line)}
+        - {'id prodotto bonus' : (qty richiesta, qty disponibile settata sulla line)} se c'è stato qualche problema con le quantità dei bonus
         - false se non si trova l'ordine o non è associato al partner_id ricevuto o non è in draft
 
         Raises:
@@ -136,8 +136,8 @@ class OrderUtilities(models.TransientModel):
                                 try:
                                     bonus_prod.check_quantity_product(line.product_uom_qty + bonus_qty)
                                     line.product_uom_qty += bonus_qty
-                                except ProductOrderQuantityExceededLimitException, e:
-                                    ret[line.product_id.name] = (bonus_qty, e.remains_quantity)
+                                except (ProductOrderQuantityExceededLimitException, ProductOrderQuantityExceededException), e:
+                                    ret[line.product_id.id] = (bonus_qty, e.remains_quantity)
                                     if e.remains_quantity > 0:
                                         line.product_uom_qty = e.remains_quantity
                                     else:
@@ -149,8 +149,8 @@ class OrderUtilities(models.TransientModel):
                         if not found:
                             try:
                                 bonus_prod.check_quantity_product(bonus_qty)
-                            except ProductOrderQuantityExceededLimitException, e:
-                                ret[line.product_id.name] = (bonus_qty, e.remains_quantity)
+                            except (ProductOrderQuantityExceededLimitException, ProductOrderQuantityExceededException), e:
+                                ret[line.product_id.id] = (bonus_qty, e.remains_quantity)
                                 bonus_qty = e.remains_quantity
                             if bonus_qty > 0:
                                 ol_bonus = self.env["sale.order.line"].create({
@@ -183,8 +183,9 @@ class OrderUtilities(models.TransientModel):
         - quantity quantità del prodotto da aggiornare DEVE ESSERE POSITIVO
         - bonus_list = [(bonus_id, bonus_qty)]  bonus_id id del prodotto bonus, bonus_qty quantità del prodotto bonus
         Return:
-        - true se è stata aggiornata una quantità
-        - false altrimenti
+        - {} se è andato tutto bene
+        - {'id prodotto bonus' : (qty richiesta, qty disponibile settata sulla line)} se c'è stato qualche problema con le quantità dei bonus
+        - false se non si trova l'ordine o non è associato al partner_id ricevuto o non è in draft
 
         Raises:
         -QtyLimitException: per qualche offerta carrello o vaucher viene superato il limite delle quantità
@@ -216,7 +217,7 @@ class OrderUtilities(models.TransientModel):
             order.reset_cart()
 
             order.reset_voucher()
-
+            ret = {}
             found = False
             ol = None
             for line in order.order_line:
@@ -238,8 +239,9 @@ class OrderUtilities(models.TransientModel):
                         try:
                             bonus_ol.product_id.check_quantity_product(quantity)
                             bonus_ol.product_uom_qty = quantity
-                        except ProductOrderQuantityExceededLimitException, e:
+                        except (ProductOrderQuantityExceededLimitException, ProductOrderQuantityExceededException), e:
                             bonus_ol.product_uom_qty = quantity = e.remains_quantity
+                            ret[line.product_id.id] = (quantity, e.remains_quantity)
                     else:
                         bonus_ol.unlink()
             order.extract_cart_offers()
@@ -247,7 +249,7 @@ class OrderUtilities(models.TransientModel):
             # ricalcola gift e totale
             order._amount_all()
 
-            return found
+            return ret
 
         return False
 
