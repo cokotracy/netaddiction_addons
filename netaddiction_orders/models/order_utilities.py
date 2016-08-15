@@ -162,7 +162,7 @@ class OrderUtilities(models.TransientModel):
                                     "name": bonus_prod.display_name,
                                 })
 
-                            ol_bonus.product_id_change()
+                                ol_bonus.product_id_change()
 
             order.extract_cart_offers()
             order.apply_voucher()
