@@ -14,7 +14,7 @@
     'depends': ['base','product','sale','purchase','mrp','account','netaddiction_customer'],
     'data' : [
         'views/purchase_product_list.xml',
-        #'views/purchase_order_line.xml',
+        'views/purchase_order_line.xml',
         'views/res_partner.xml',
         'data/cron.xml',
         'views/wave.xml',

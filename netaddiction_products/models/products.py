@@ -405,7 +405,13 @@ class Template(models.Model):
         result = self.env['product.product'].search(searched)
         result.write(attr)
 
-        return super(Template, self).write(values)
+        res = super(Template, self).write(values)
+
+        for p in result:
+            for sup in p.seller_ids:
+                sup.product_tmpl_id = self.id
+
+        return res
 
     def create_variant_ids(self, cr, uid, ids, context=None):
         #bypass la creazione delle varianti e il misterioso bottone attiva

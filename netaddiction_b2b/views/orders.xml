@@ -7,7 +7,7 @@
             <field name="inherit_id" ref="sale.view_order_form"/>
             <field name="arch" type="xml">
                 <field name="pricelist_id" position="after">
-                	<field name="is_b2b" readonly="1"/>
+                	<field name="is_b2b" />
                 </field>
             </field>
         </record>
