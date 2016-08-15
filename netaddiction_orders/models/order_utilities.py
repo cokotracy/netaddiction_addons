@@ -240,7 +240,7 @@ class OrderUtilities(models.TransientModel):
                             bonus_ol.product_id.check_quantity_product(quantity)
                             bonus_ol.product_uom_qty = quantity
                         except (ProductOrderQuantityExceededLimitException, ProductOrderQuantityExceededException), e:
-                            bonus_ol.product_uom_qty = quantity = e.remains_quantity
+                            bonus_ol.product_uom_qty = e.remains_quantity
                             ret[bonus_ol.product_id.id] = (quantity, e.remains_quantity)
                     else:
                         bonus_ol.unlink()
