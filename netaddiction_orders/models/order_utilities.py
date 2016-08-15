@@ -120,7 +120,7 @@ class OrderUtilities(models.TransientModel):
                     raise BonusOfferException(None)
 
                 # lista degli id dei prodotti accettati come bonus
-                correct_bonus_list = [bonus.id for bonus in prod.offer_with_bonus_lines[0].bonus_products_list]
+                correct_bonus_list = [bonus.product_id.id for bonus in prod.offer_with_bonus_lines[0].bonus_offer_id.bonus_products_list if bonus.active]
                 for bonus_id, bonus_qty in bonus_list:
                     if bonus_id not in correct_bonus_list or bonus_qty > quantity:
                         raise BonusOfferException(bonus_id)
@@ -286,7 +286,7 @@ class OrderUtilities(models.TransientModel):
             # lista degli id dei prodotti accettati come bonus
             correct_bonus_list = []
             if line.product_id.offer_with_bonus_lines:
-                correct_bonus_list = [bonus.id for bonus in line.product_id.offer_with_bonus_lines[0].bonus_products_list]
+                correct_bonus_list = [bonus.product_id.id for bonus in line.product_id.offer_with_bonus_lines[0].bonus_offer_id.bonus_products_list if bonus.active]
             for ol_bonus in line.bonus_order_line_ids:
                 if ol_bonus.product_id.id not in correct_bonus_list or ol_bonus.product_uom_qty > line.product_uom_qty:
                     raise BonusOfferException(line.product_id.id)
