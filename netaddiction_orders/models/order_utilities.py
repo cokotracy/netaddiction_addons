@@ -143,6 +143,8 @@ class OrderUtilities(models.TransientModel):
                                         line.product_uom_qty = e.remains_quantity
                                     else:
                                         line.unlink()
+                                        found = True
+                                        break
                                 line.product_uom_change()
                                 found = True
                                 break
@@ -273,12 +275,16 @@ class OrderUtilities(models.TransientModel):
         """
         for line in order.order_line:
             if not line.product_id or not line.product_id.active:
+                prod_name = line.product_id.name
                 line.unlink()
-                raise ProductNotActiveAddToCartException(line.product_id.name, "add_to_cart")
+                raise ProductNotActiveAddToCartException(prod_name, "add_to_cart")
             if not line.product_id.sale_ok:
                 if not self.env.context.get('no_check_product_sold_out', False):
+                    prod_id = line.product_id.id
+                    prod_name = line.product_id.name
+                    prod_sale_ok = line.product_id.sale_ok
                     line.unlink()
-                    raise ProductSoldOutAddToCartException(line.product_id.id, line.product_id.name, "prodotto %s  sale_ok: %s" % (line.product_id.name, line.product_id.sale_ok))
+                    raise ProductSoldOutAddToCartException(prod_id, prod_name, "prodotto %s  sale_ok: %s" % (prod_name, prod_sale_ok))
             try:
                 line.product_id.check_quantity_product(line.product_uom_qty)
             except (ProductOrderQuantityExceededLimitException, ProductOrderQuantityExceededException), e:
@@ -293,8 +299,11 @@ class OrderUtilities(models.TransientModel):
                 if len(line.product_id.offer_catalog_lines) > 0:
                     self._check_offers_catalog(line.product_id, line.product_uom_qty)
                 else:
+                    prod_id = line.product_id.id
+                    offer_type = line.offer_type
+                    prod_name = line.product_id.name
                     line.unlink()
-                    raise CartOfferCancelledException(line.product_id.id, line.offer_type, line.product_id.name)
+                    raise CartOfferCancelledException(prod_id, offer_type, prod_name)
 
             # lista degli id dei prodotti accettati come bonus
             correct_bonus_list = []
@@ -302,8 +311,9 @@ class OrderUtilities(models.TransientModel):
                 correct_bonus_list = [bonus.product_id.id for bonus in line.product_id.offer_with_bonus_lines[0].bonus_offer_id.bonus_products_list if bonus.active]
             for ol_bonus in line.bonus_order_line_ids:
                 if ol_bonus.product_id.id not in correct_bonus_list or ol_bonus.product_uom_qty > line.product_uom_qty:
+                    prod_name = ol_bonus.product_id.name
                     ol_bonus.unlink()
-                    raise BonusOfferException(line.product_id.name)
+                    raise BonusOfferException(prod_name)
 
         problem = False
         for och in order.offers_cart:
