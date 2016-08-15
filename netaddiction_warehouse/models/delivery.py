@@ -210,10 +210,14 @@ class Orders(models.Model):
         """
         self.ensure_one()
 
-        if delivery_price is None:
-            delivery_price = self.simulate_total_delivery_price()
+        amount = self.amount_total
 
-        amount = self.amount_total + delivery_price
+        if not self.partner_id.is_b2b:
+            if delivery_price is None:
+                delivery_price = self.simulate_total_delivery_price()
+
+            amount += delivery_price
+
         amount -= self.compute_voucher_discount()
 
         return amount
