@@ -400,10 +400,17 @@ class Template(models.Model):
     def write(self,values):
 
         attr={k: v for k, v in values.items() if k in ['available_date','out_date','out_date_approx_type','active','sale_ok','description','visible']}
-
-        self.product_variant_ids.write(attr)
+        
+        searched = [('product_tmpl_id','=',self.id),'|',('active','=',False),('active','=',True)]
+        result = self.env['product.product'].search(searched)
+        result.write(attr)
 
         return super(Template, self).write(values)
+
+    def create_variant_ids(self, cr, uid, ids, context=None):
+        #bypass la creazione delle varianti e il misterioso bottone attiva
+        #ora no nfa nulla ed è meglio così
+        pass
 
     @api.one
     def _get_count_variants(self):

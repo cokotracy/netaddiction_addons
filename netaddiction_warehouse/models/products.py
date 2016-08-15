@@ -164,7 +164,7 @@ class Products(models.Model):
                     month = 12
                     year = datetime.datetime.strptime(self.out_date,"%Y-%m-%d").year
 
-                if self.out_date_approx_type == 'accurate' or self.out_date_approx_type == 'nothing':
+                if self.out_date_approx_type == 'accurate' or self.out_date_approx_type == 'nothing' or self.out_date_approx_type == False:
                     #se mancano meno di 2 giorni all'uscita do per scontato che ce l'abbiamo in magazzino
                     #(molto probabile che lo abbiamo già caricato quindi questo pezzo potrebbe essere superfluo)
                     if delay <= 2:
