@@ -16,7 +16,7 @@ class DigitalBonus(models.Model):
     active = fields.Boolean(string='Attivo', help="Permette di spengere l'offerta senza cancellarla", default=True)
     name = fields.Char(string='Titolo', required=True)
     products_ids = fields.Many2many('product.product', 'prod_codes_rel', 'code_id', 'prod_id', 'Prodotti')
-    code_ids = fields.One2many('netaddiction.specialoffer.digital_code','bonus_id', string='Codici associati')
+    code_ids = fields.One2many('netaddiction.specialoffer.digital_code', 'bonus_id', string='Codici associati')
     text = fields.Text("testo offerta")
 
 
@@ -62,25 +62,25 @@ class DigitalCode(models.Model):
     bonus_id = fields.Many2one('netaddiction.specialoffer.digital_bonus', string='offerta collegato', default=None)
     sent = fields.Boolean(string="Spedito", default=False)
     date_sent = fields.Datetime('Data spedizione')
-    sent_by = fields.Many2one(comodel_name='res.users',string='Spedito da')
+    sent_by = fields.Many2one(comodel_name='res.users', string='Spedito da')
     order_line_id = fields.Many2one('sale.order.line', string='order line collegata', default=None)
 
     @api.one
     def send_code(self):
         if self.order_id:
+            body_html = u"Il codice bonus è: %s \n Grazie per aver acquistato su multiplayer.com" % self.code
+            values = {
+                'subject': 'BONUS DIGITALE PER PRODOTTO %s' % self.order_line_id.product_id.name,
+                'body_html': body_html,
+                'email_from': 'no-reply',
+                'email_to': self.order_id.partner_id.email,
+            }
 
-            # values = {
-            # 'subject': 'ordine cancellato',
-            # 'body_html': body_html,
-            # 'email_from': 'no-reply',
-            # 'email_to': self.order_id.partner_id.email,
-            # }
-
-            # email = self.env['mail.mail'].create(values)
-            # try:
-            #     email.send(raise_exception=True)
-            # except Exception:
-            #     return False
+            email = self.env['mail.mail'].create(values)
+            try:
+                email.send(raise_exception=True)
+            except Exception:
+                return False
 
             self.sent = True
             self.date_sent = fields.Datetime.now()
@@ -95,10 +95,10 @@ class DigitalProducts(models.Model):
 
     _inherit = 'product.product'
 
-    code_ids = fields.Many2many('netaddiction.specialoffer.digital_bonus', 'prod_codes_rel',  'prod_id', 'code_id','Codici Digitali')
+    code_ids = fields.Many2many('netaddiction.specialoffer.digital_bonus', 'prod_codes_rel', 'prod_id', 'code_id', 'Codici Digitali')
 
 class DigitalOrders(models.Model):
 
     _inherit = 'sale.order'
 
-    code_ids = fields.One2many('netaddiction.specialoffer.digital_code','order_id', string='Codici associati')
+    code_ids = fields.One2many('netaddiction.specialoffer.digital_code', 'order_id', string='Codici associati')
