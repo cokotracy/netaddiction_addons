@@ -35,6 +35,8 @@ class product_pricelist(models.Model):
             price = results[pid][0]
             other_val = results[pid][1]
 
+            # TODO: le due query sottostanti possono essere evitate perché
+            # in products_by_qty_by_partner ci sono già i prodotti
             objs = self.pool('product.product').search(cr, uid, [('id', '=', int(pid))])
             obj = self.pool('product.product').browse(cr, uid, objs, context=context)
 
