@@ -272,15 +272,27 @@ class OrderUtilities(models.TransientModel):
         """
         for line in order.order_line:
             if not line.product_id or not line.product_id.active:
-                raise ProductNotActiveAddToCartException(line.product_id, "add_to_cart")
+                line.unlink()
+                raise ProductNotActiveAddToCartException(line.product_id.name, "add_to_cart")
             if not line.product_id.sale_ok:
                 if not self.env.context.get('no_check_product_sold_out', False):
-                    raise ProductSoldOutAddToCartException(line.product_id, line.product_id.name, "prodotto %s  sale_ok: %s" % (line.product_id.name, line.product_id.sale_ok))
-            line.product_id.check_quantity_product(line.product_uom_qty)
+                    line.unlink()
+                    raise ProductSoldOutAddToCartException(line.product_id.id, line.product_id.name, "prodotto %s  sale_ok: %s" % (line.product_id.name, line.product_id.sale_ok))
+            try:
+                line.product_id.check_quantity_product(line.product_uom_qty)
+            except (ProductOrderQuantityExceededLimitException, ProductOrderQuantityExceededException), e:
+                if line.bonus_father_id:
+                    # è un bonus cambio la quantità e bon
+                    line.product_uom_qty = e.remains_quantity
+                else:
+                    # è un prodotto vero, devo lanciare l'eccezione    
+                    e.product_id = line.product_id.name
+                    raise e
             if line.offer_type and not line.negate_offer:
                 if len(line.product_id.offer_catalog_lines) > 0:
                     self._check_offers_catalog(line.product_id, line.product_uom_qty)
                 else:
+                    line.unlink()
                     raise CartOfferCancelledException(line.product_id.id, line.offer_type, line.product_id.name)
 
             # lista degli id dei prodotti accettati come bonus
@@ -289,7 +301,8 @@ class OrderUtilities(models.TransientModel):
                 correct_bonus_list = [bonus.product_id.id for bonus in line.product_id.offer_with_bonus_lines[0].bonus_offer_id.bonus_products_list if bonus.active]
             for ol_bonus in line.bonus_order_line_ids:
                 if ol_bonus.product_id.id not in correct_bonus_list or ol_bonus.product_uom_qty > line.product_uom_qty:
-                    raise BonusOfferException(line.product_id.id)
+                    ol_bonus.unlink()
+                    raise BonusOfferException(line.product_id.name)
 
         problem = False
         for och in order.offers_cart:
@@ -413,19 +426,19 @@ class CartOfferCancelledException(Exception):
 
 
 class VaucherOfferCancelledException(Exception):
-    def __init__(self, product_id, offer_type, prod_name):
+    def __init__(self, product_id, offer_id, prod_name):
         super(VaucherOfferCancelledException, self).__init__(product_id)
         self.var_name = 'vaucher_offer_cancelled'
         self.product_id = product_id
-        self.offer_type = offer_type
+        self.offer_id = offer_id
         self.prod_name = prod_name
 
     def __str__(self):
-        s = u"Errore aggiungendo all'ordine il prodotto: %s per l'offerta vaucher di tipo: %s che non è piu attiva" % (self.product_id, self.offer_type)
+        s = u"Errore aggiungendo all'ordine il prodotto: %s per l'offerta vaucher di tipo: %s che non è piu attiva" % (self.product_id, self.offer_id)
         return s
 
     def __repr__(self):
-        s = u"Errore aggiungendo all'ordine il prodotto: %s per l'offerta vaucher di tipo: %s che non è piu attiva" % (self.product_id, self.offer_type)
+        s = u"Errore aggiungendo all'ordine il prodotto: %s per l'offerta vaucher di tipo: %s che non è piu attiva" % (self.product_id, self.offer_id)
         return s
 
 
