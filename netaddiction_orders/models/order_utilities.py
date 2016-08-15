@@ -2,6 +2,7 @@
 
 from openerp import models
 from openerp.addons.netaddiction_products.models.products import ProductOrderQuantityExceededLimitException, ProductOrderQuantityExceededException
+from openerp.addons.netaddiction_special_offers.models.offers_product import QtyLimitException, QtyMaxBuyableException
 
 
 class OrderUtilities(models.TransientModel):
@@ -334,7 +335,9 @@ class OrderUtilities(models.TransientModel):
         offer_line = product.offer_catalog_lines[0] if len(product.offer_catalog_lines) > 0 else None
         if offer_line:
             if offer_line.qty_limit > 0 and offer_line.qty_selled + qty_ordered > offer_line.qty_limit:
-                raise ProductOfferSoldOutAddToCartException(product.id, offer_line.offer_catalog_id.id, offer_line.qty_limit, offer_line.qty_selled, qty_ordered, product.name, offer_line.offer_catalog_id.name)
+                raise QtyLimitException(product.name, product.id, offer_line.offer_catalog_id.id, offer_line.qty_limit, qty_ordered, offer_line.qty_selled)
+            elif offer_line.qty_max_buyable > 0 and qty_ordered > offer_line.qty_max_buyable:
+                raise QtyMaxBuyableException(product.name, product.id, offer_line.offer_catalog_id.id, offer_line.qty_max_buyable, qty_ordered)
 
 
 class ProductNotActiveAddToCartException(Exception):
