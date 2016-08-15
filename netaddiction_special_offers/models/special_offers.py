@@ -420,13 +420,15 @@ class BonusOffer(models.Model):
 
     @api.one
     def unlink(self):
-        self.turn_off()
+        self.active = False
 
     @api.one
     @api.constrains('active')
     def _check_active(self):
         if not self.active:
             for pl in self.bonus_products_list:
+                pl.active = False
+            for pl in self.products_with_bonus_list:
                 pl.active = False
 
 
@@ -435,10 +437,21 @@ class BonusOfferLine(models.Model):
     _name = "netaddiction.specialoffer.bonus_offer_line"
 
     active = fields.Boolean(default=True,
-        help="Spuntato = offerta attiva, Non Spuntato = offerta spenta")
+        help="Spuntato = offerta attiva, Non Spuntato = offerta spenta", related='product_id.sale_ok', store=True)
     product_id = fields.Many2one('product.product', string='Product', change_default=True, ondelete='restrict', required=True)
     bonus_offer_id = fields.Many2one('netaddiction.specialoffer.bonus', string='Offerta Bonus', index=True, copy=False, required=True)
     company_id = fields.Many2one('res.company', string='Azienda', related='bonus_offer_id.company_id', store=True)
+
+    @api.one
+    @api.constrains('active')
+    def _check_active(self):
+        print "Here"
+        if not self.active:
+            print "not active"
+            active_list = [bl for bl in self.bonus_offer_id.bonus_products_list if bl.active]
+            print active_list
+            if not active_list and self.bonus_offer_id.active:
+                self.bonus_offer_id.active = False
 
 class ProductWithBonusOfferLine(models.Model):
 
