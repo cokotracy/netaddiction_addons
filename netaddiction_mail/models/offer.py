@@ -13,7 +13,7 @@ class OfferCatalogLine(models.Model):
             users = self.env["netaddiction.email.dispatcher"].get_users_from_group("netaddiction_acl.netaddiction_products_data_entry_user_manager")
             users += self.env["netaddiction.email.dispatcher"].get_users_from_group("netaddiction_acl.netaddiction_sale_user_manager")
             users += self.env["netaddiction.email.dispatcher"].get_users_from_group("netaddiction_acl.netaddiction_sale_offers")
-            obj = "OFFERTA CATALOGO %s spenta  per il prodotto %s" % (self.offer_catalog_id.name, self.product_id.name)
+            obj = "[SHOPPING] OFFERTA CATALOGO %s spenta  per il prodotto %s" % (self.offer_catalog_id.name, self.product_id.name)
             self.env["netaddiction.email.dispatcher"].send_mail(obj, obj, "spegnimento-offerte", set(users))
 
 
@@ -27,5 +27,5 @@ class OfferCartLine(models.Model):
             users = self.env["netaddiction.email.dispatcher"].get_users_from_group("netaddiction_acl.netaddiction_products_data_entry_user_manager")
             users += self.env["netaddiction.email.dispatcher"].get_users_from_group("netaddiction_acl.netaddiction_sale_user_manager")
             users += self.env["netaddiction.email.dispatcher"].get_users_from_group("netaddiction_acl.netaddiction_sale_offers")
-            obj = "OFFERTA CARRELLO %s spenta  per il prodotto %s" % (self.offer_cart_id.name, self.product_id.name)
+            obj = "[SHOPPING] OFFERTA CARRELLO %s spenta  per il prodotto %s" % (self.offer_cart_id.name, self.product_id.name)
             self.env["netaddiction.email.dispatcher"].send_mail(obj, obj, "spegnimento-offerte", set(users))
