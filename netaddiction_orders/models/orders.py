@@ -147,7 +147,7 @@ class Order(models.Model):
                             attr = {
                                 'subtype': "mt_comment",
                                 'res_id': self.id,
-                                'body': u"in problema perché superato il qty limit per offerta: %s, prodotto: %s, quantità ordinata: %s, quantità che era disponibile in offerta: %s" % (offer_line.offer_catalog_id.name, line.product_id.name, line.product_uom_qty, (offer_line.qty_limit - (offer_line.qty_selled - line.product_uom_qty))),
+                                'body': u"in problema perché superato il qty limit per offerta: %s, prodotto: %s, quantità ordinata: %s, quantità che era disponibile in offerta: %s" % (offer_line.offer_catalog_id.name, line.product_id.name, line.product_uom_qty, (offer_line.qty_limit - (offer_line.qty_selled))),
                                 'model': 'sale.order',
                                 'author_id': self.env.user.partner_id.id,
                                 'message_type': 'comment',
@@ -155,6 +155,18 @@ class Order(models.Model):
 
                             self.env['mail.message'].create(attr)
                             problems = True
+                        if offer_line.qty_max_buyable > 0 and line.product_uom_qty > offer_line.qty_max_buyable:
+                            attr = {
+                                'subtype': "mt_comment",
+                                'res_id': self.id,
+                                'body': u"in problema perché superato il qty max acquistabile per offerta: %s, prodotto: %s, quantità ordinata: %s, quantità max acquistabile in offerta: %s" % (offer_line.offer_catalog_id.name, line.product_id.name, line.product_uom_qty, offer_line.qty_max_buyable),
+                                'model': 'sale.order',
+                                'author_id': self.env.user.partner_id.id,
+                                'message_type': 'comment',
+                            }
+
+                            self.env['mail.message'].create(attr)
+                            problems = True 
                     else:
                         attr = {
                             'subtype': "mt_comment",
