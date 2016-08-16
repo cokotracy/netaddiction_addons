@@ -68,11 +68,20 @@ class DigitalCode(models.Model):
     @api.one
     def send_code(self):
         if self.order_id:
-            body_html = u"Il codice bonus è: %s \n Grazie per aver acquistato su multiplayer.com" % self.code
+            message = u"Il codice bonus è: <b>%s</b> <br> Grazie per aver acquistato su multiplayer.com" % self.code
+            body = None
+            company_mail = self.env['netaddiction.project.issue.settings.companymail'].search([("company_id", "=", self.env.user.company_id.id)])
+            if company_mail:
+                template = company_mail.template_email
+                if template:
+                    body = template.replace('[TAG_BODY]', message)
+            if not body:
+                body = message
+
             values = {
                 'subject': 'BONUS DIGITALE PER PRODOTTO %s' % self.order_line_id.product_id.name,
-                'body_html': body_html,
-                'email_from': 'no-reply',
+                'body_html': body,
+                'email_from': 'no-reply@multiplayer.com',
                 'email_to': self.order_id.partner_id.email,
             }
 
