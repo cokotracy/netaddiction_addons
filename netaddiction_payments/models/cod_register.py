@@ -34,7 +34,7 @@ class CoDRegister(models.TransientModel):
             if order.state == 'draft':
                 order.action_confirm()
 
-            if order.state == 'sale':
+            if order.state in ('sale', 'problem'):
                 contrassegno = self.env.ref('netaddiction_payments.product_contrassegno')
                 order.payment_method_id = self.env['ir.model.data'].get_object('netaddiction_payments', 'contrassegno_journal').id
                 inv_lst = []

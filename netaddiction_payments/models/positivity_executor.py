@@ -498,9 +498,8 @@ class PositivityExecutor(models.TransientModel):
             if order.state == 'draft':
                 order.action_confirm()
 
-            if order.state == 'sale':
-
-                cc_journal  = self.env['ir.model.data'].get_object('netaddiction_payments','cc_journal')
+            if order.state in ('sale', 'problem'):
+                cc_journal = self.env['ir.model.data'].get_object('netaddiction_payments','cc_journal')
                 token_card = self.env["netaddiction.partner.ccdata"].search([("token","=",token)])
                 inv_lst = []
                 pick_lst =[]

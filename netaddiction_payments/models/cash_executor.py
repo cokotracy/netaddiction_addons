@@ -24,7 +24,7 @@ class CashExecutor(models.TransientModel):
             if order.state == 'draft':
                 order.action_confirm()
 
-            if order.state == 'sale':
+            if order.state in ('sale', 'problem'):
                 name = self.env['ir.sequence'].with_context(ir_sequence_date=fields.Date.context_today(self)).next_by_code('account.payment.customer.invoice')
           
                
