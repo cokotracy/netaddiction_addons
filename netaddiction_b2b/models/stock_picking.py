@@ -71,7 +71,7 @@ class StockPicking(models.Model):
         gratis = orders[0].pricelist_id.carrier_gratis
         total = 0
         for line in invoice.invoice_line_ids:
-            total += (line.price_unit*quantity)
+            total += (line.price_unit*line.quantity)
 
         if total >= gratis:
             carrier_price = 0
