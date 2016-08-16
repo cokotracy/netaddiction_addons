@@ -4,6 +4,8 @@ from openerp import models
 from openerp.addons.netaddiction_products.models.products import ProductOrderQuantityExceededLimitException, ProductOrderQuantityExceededException
 from openerp.addons.netaddiction_special_offers.models.offers_product import QtyLimitException, QtyMaxBuyableException
 
+LIMIT_QTY_PER_PRODUCT = 20
+
 
 class OrderUtilities(models.TransientModel):
     _name = "netaddiction.order.utilities"
@@ -66,6 +68,7 @@ class OrderUtilities(models.TransientModel):
         -ProductOrderQuantityExceededLimitException se con questo ordine si supera la quantità (disponibile) limite per il prodotto
         -QuantityLessThanZeroException se quantity <= 0
         -BonusOfferException: se ci sono dei problemi con i bonus
+        -QuantityOverLimitException se quantity > LIMIT_QTY_PER_PRODUCT e cliente non b2b
         
         """
         if quantity <= 0:
@@ -86,6 +89,9 @@ class OrderUtilities(models.TransientModel):
                 if not self.env.context.get('no_check_product_sold_out', False):
                     raise ProductSoldOutAddToCartException(product_id, prod.name, "prodotto %s  sale_ok: %s" % (prod.name, prod.sale_ok))
 
+            if not order.partner_id.is_b2b and quantity > LIMIT_QTY_PER_PRODUCT:
+                raise QuantityOverLimitException(prod.name) 
+
             order.reset_cart()
             order.reset_voucher()
 
@@ -93,6 +99,8 @@ class OrderUtilities(models.TransientModel):
             ol = None
             for line in order.order_line:
                 if line.product_id.id == product_id:
+                    if not order.partner_id.is_b2b and line.product_uom_qty + quantity > LIMIT_QTY_PER_PRODUCT:
+                        raise QuantityOverLimitException(line.product_id.name)
                     prod.check_quantity_product(line.product_uom_qty + quantity)
                     self._check_offers_catalog(prod, line.product_uom_qty + quantity)
                     line.product_uom_qty += quantity
@@ -198,6 +206,7 @@ class OrderUtilities(models.TransientModel):
         -ProductSoldOutAddToCartException se il prodotto è esaurito
         -ProductOrderQuantityExceededException se è stata superata la quantità max per il prodotto epr singolo ordine
         -ProductOrderQuantityExceededLimitException se con questo ordine si supera la quantità (disponibile) limite per il prodotto
+        -QuantityOverLimitException se quantity > LIMIT_QTY_PER_PRODUCT e cliente non b2b
 
 
         """
@@ -216,6 +225,9 @@ class OrderUtilities(models.TransientModel):
             if not prod.sale_ok:
                 if not self.env.context.get('no_check_product_sold_out', False):
                     raise ProductSoldOutAddToCartException(product_id, prod.name, "prodotto %s  sale_ok: %s" % (prod.name, prod.sale_ok))
+
+            if not order.partner_id.is_b2b and quantity > LIMIT_QTY_PER_PRODUCT:
+                raise QuantityOverLimitException(prod.name)
 
             order.reset_cart()
 
@@ -477,6 +489,21 @@ class QuantityLessThanZeroException(Exception):
 
     def __str__(self):
         s = u"quantity < 0"
+        return s
+
+    def __repr__(self):
+        s = u"quantity < 0"
+        return s
+
+
+class QuantityOverLimitException(Exception):
+    def __init__(self, prod_name):
+        super(QuantityOverLimitException, self).__init__()
+        self.var_name = 'quantity_over_limit'
+        self.prod_name = prod_name
+
+    def __str__(self):
+        s = u"Quantità sopra il limite per il prodotto %s. Il limite è %s" % (self.prod_name, LIMIT_QTY_PER_PRODUCT)
         return s
 
     def __repr__(self):
