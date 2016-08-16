@@ -204,9 +204,9 @@ class Products(models.Model):
             if not context.get('skip_broken_images', False):
                 raise
         product = self.browse(cr,uid,ids)
-        for pid in product:
-            if not context.get('no_check_price_and_date', False):
-                pid.check_price_and_date(vals)
+        #for pid in product:
+        #    if not context.get('no_check_price_and_date', False):
+        #        pid.check_price_and_date(vals)
 
         return super(Products, self).write(cr, uid, ids, vals, context)
 
