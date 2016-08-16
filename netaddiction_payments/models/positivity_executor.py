@@ -264,7 +264,8 @@ class PositivityExecutor(models.TransientModel):
             raise payment_exception.PaymentException(payment_exception.CREDITCARD,"errore ritornato da BNL in risposta alla richiesta di check card %s"%response.errorDesc) 
         else:
             #FATTURE PAGAMENTI
-            self._generate_invoice_payment(order_id,token, real_invoice)
+            if response.authStatus == "Y":
+                self._generate_invoice_payment(order_id,token, real_invoice)
             return response
 
 
