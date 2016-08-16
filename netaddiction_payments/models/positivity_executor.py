@@ -87,7 +87,7 @@ class PositivityExecutor(models.TransientModel):
 
 
         """
-    	client = Client("https://s2stest.bnlpositivity.it/BNL_CG_SERVICES/services/MPIGatewayPort?wsdl")
+    	client = Client("https://s2s.bnlpositivity.it/BNL_CG_SERVICES/services/MPIGatewayPort?wsdl")
     	request_data = client.factory.create('MPIEnrollRequest')
 
 
@@ -146,7 +146,7 @@ class PositivityExecutor(models.TransientModel):
             }
 
         """
-        client = Client("https://s2stest.bnlpositivity.it/BNL_CG_SERVICES/services/TokenizerGatewayPort?wsdl")
+        client = Client("https://s2s.bnlpositivity.it/BNL_CG_SERVICES/services/TokenizerGatewayPort?wsdl")
         request_data = client.factory.create('TokenizerEnrollRequest')
         
         tid, kSig = self.get_tid_ksig()
@@ -157,7 +157,7 @@ class PositivityExecutor(models.TransientModel):
         
         lst=[tid, shop_id,shop_user_ref,pan,exp_month,exp_year, token]
         signature = cypher.hmacsha256(kSig ,lst)
-
+        print signature
         request_data.tid = tid
         request_data.shopID = shop_id
         request_data.shopUserRef = shop_user_ref
@@ -169,6 +169,7 @@ class PositivityExecutor(models.TransientModel):
         request_data.regenPayInstrToken = True
 
         response = client.service.enroll(request_data)
+        print response
         
         if response.error:
             raise payment_exception.PaymentException(payment_exception.CREDITCARD,"errore ritornato da BNL in risposta alla richiesta di tokenizzazione %s"%response.errorDesc) 
@@ -185,7 +186,7 @@ class PositivityExecutor(models.TransientModel):
         - PaymentException se BNL ritorna errrore
         -Le eccezioni legate alle chiamate SOAP
         """
-        client = Client("https://s2stest.bnlpositivity.it/BNL_CG_SERVICES/services/TokenizerGatewayPort?wsdl")
+        client = Client("https://s2s.bnlpositivity.it/BNL_CG_SERVICES/services/TokenizerGatewayPort?wsdl")
         request_data = client.factory.create('TokenizerDeleteRequest')
         
         tid, kSig = self.get_tid_ksig()
@@ -235,7 +236,7 @@ class PositivityExecutor(models.TransientModel):
 
         """
 
-        client = Client("https://s2stest.bnlpositivity.it/BNL_CG_SERVICES/services/MPIGatewayPort?wsdl")
+        client = Client("https://s2s.bnlpositivity.it/BNL_CG_SERVICES/services/MPIGatewayPort?wsdl")
 
 
         request_data = client.factory.create('MPIAuthRequest')
@@ -302,7 +303,7 @@ class PositivityExecutor(models.TransientModel):
         order, cc_journal, payment = self._check_payment(order_id,amount)
         
   
-        client = Client("https://s2stest.bnlpositivity.it/BNL_CG_SERVICES/services/PaymentTranGatewayPort?wsdl")
+        client = Client("https://s2s.bnlpositivity.it/BNL_CG_SERVICES/services/PaymentTranGatewayPort?wsdl")
 
 
         request_data = client.factory.create('PaymentAuthRequest')
@@ -366,7 +367,7 @@ class PositivityExecutor(models.TransientModel):
 
         order, cc_journal,payment = self._check_payment(order_id,amount)
 
-        client = Client("https://s2stest.bnlpositivity.it/BNL_CG_SERVICES/services/PaymentTranGatewayPort?wsdl")
+        client = Client("https://s2s.bnlpositivity.it/BNL_CG_SERVICES/services/PaymentTranGatewayPort?wsdl")
 
 
         request_data = client.factory.create('PaymentConfirmRequest')
@@ -430,7 +431,7 @@ class PositivityExecutor(models.TransientModel):
         order, cc_journal, payment = self._check_payment(order_id,amount)
         
   
-        client = Client("https://s2stest.bnlpositivity.it/BNL_CG_SERVICES/services/PaymentTranGatewayPort?wsdl")
+        client = Client("https://s2s.bnlpositivity.it/BNL_CG_SERVICES/services/PaymentTranGatewayPort?wsdl")
 
 
         request_data = client.factory.create('PaymentAuthRequest')
@@ -497,9 +498,8 @@ class PositivityExecutor(models.TransientModel):
             if order.state == 'draft':
                 order.action_confirm()
 
-            if order.state == 'sale':
-
-                cc_journal  = self.env['ir.model.data'].get_object('netaddiction_payments','cc_journal')
+            if order.state in ('sale', 'problem'):
+                cc_journal = self.env['ir.model.data'].get_object('netaddiction_payments','cc_journal')
                 token_card = self.env["netaddiction.partner.ccdata"].search([("token","=",token)])
                 inv_lst = []
                 pick_lst =[]
