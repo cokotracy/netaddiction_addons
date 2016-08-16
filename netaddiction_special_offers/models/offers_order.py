@@ -66,7 +66,7 @@ class OfferOrder(models.Model):
 
                 else:
                     # TODO CONTO DELLA SOMMA E CONTROLLO LIMITE NON SUPERATO
-                    offer_ids = [ol.product_id.id for ol in offer.products_list]
+                    offer_ids = [ol.product_id.id for ol in offer.products_list if ol.active]
                     offer_cart_history_ids = [och.product_id.id for och in self.offers_cart]
                     tot_qty = 0
                     for ol in self.order_line:
