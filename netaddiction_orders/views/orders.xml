@@ -70,13 +70,13 @@
                 </xpath>  -->
                 <xpath expr="//field[@name='carrier_id']" position="attributes">  
                       <attribute name="attrs">
-                        {'readonly': [('state', 'in', ('done','cancel','sale','partial_done'))]}
+                        {'readonly': [('state', 'in', ('done','cancel','sale','partial_done','problem'))]}
                       </attribute>   
                 </xpath> 
 
                 <xpath expr="//field[@name='order_line']" position="attributes">  
                       <attribute name="attrs">
-                        {'readonly': [('state', 'in', ('done','cancel','sale','partial_done'))]}
+                        {'readonly': [('state', 'in', ('done','cancel','sale','partial_done','problem'))]}
                       </attribute>   
                 </xpath> 
 
