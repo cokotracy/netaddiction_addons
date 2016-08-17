@@ -177,7 +177,7 @@ class PositivityExecutor(models.TransientModel):
             last_four = compute_last_four(pan)
             return self.env["netaddiction.partner.ccdata"].create({'token':response.payInstrToken,'month': exp_month,'year': exp_year, 'name' : card_holder,'last_four': last_four,'customer_id': partner_id,'ctype':brand})
     
-    def token_delete(self,partner_id,token):
+    def token_delete(self, partner_id, token):
         """Metodo che si interfaccia con BNL per cancellare un token
         Returns:
         - False se c'è un errore dalla risposta bnl
@@ -188,21 +188,19 @@ class PositivityExecutor(models.TransientModel):
         """
         client = Client("https://s2s.bnlpositivity.it/BNL_CG_SERVICES/services/TokenizerGatewayPort?wsdl")
         request_data = client.factory.create('TokenizerDeleteRequest')
-        
         tid, kSig = self.get_tid_ksig()
         shop_id = partner_id
-        
-        lst=[tid, shop_id, token]
-        signature = cypher.hmacsha256(kSig ,lst)
+        lst = [tid, shop_id, token]
+        signature = cypher.hmacsha256(kSig, lst)
 
         request_data.tid = tid
         request_data.shopID = shop_id
-        request_data.signature =signature       
+        request_data.signature = signature
         request_data.payInstrToken = token
 
         response = client.service.delete(request_data)
         if response.error:
-            raise payment_exception.PaymentException(payment_exception.CREDITCARD,"errore ritornato da BNL in risposta alla richiesta di delete token %s"%response.errorDesc) 
+            raise payment_exception.PaymentException(payment_exception.CREDITCARD, "errore ritornato da BNL in risposta alla richiesta di delete token %s" % response.errorDesc)
         else:
             return response
 
@@ -228,7 +226,7 @@ class PositivityExecutor(models.TransientModel):
             signature = "SSBxBxzu0PmJVYuFVED5RSOOlH0xqIsbWbdOHXHRJEk="
             shopID = "253"
             xid = "MDAxODIxODAwNTMxMDUzMTQxNTA="
-            authStatus = "Y"
+            authStatus = "Y"  --> Y=Authenticated ,N = Cardholder not authenticated, U= unable to authenticate, E = any error
             eci = "00"
             }
 
@@ -238,34 +236,30 @@ class PositivityExecutor(models.TransientModel):
 
         client = Client("https://s2s.bnlpositivity.it/BNL_CG_SERVICES/services/MPIGatewayPort?wsdl")
 
-
         request_data = client.factory.create('MPIAuthRequest')
 
-
-        
         tid, kSig = self.get_tid_ksig()
 
-        shop_id = str(partner_id)+str(order_id) 
+        shop_id = str(partner_id) + str(order_id) 
 
-        lst=[tid, shop_id,paRes,md]
-        signature = cypher.hmacsha256(kSig ,lst)
+        lst = [tid, shop_id, paRes, md]
+        signature = cypher.hmacsha256(kSig, lst)
 
         request_data.tid = tid
         request_data.shopID = shop_id
 
-        request_data.signature =signature   
+        request_data.signature = signature
         request_data.paRes = paRes
-        request_data.md = md    
-
+        request_data.md = md
 
         response = client.service.auth(request_data)
         
         if response.error:
-            raise payment_exception.PaymentException(payment_exception.CREDITCARD,"errore ritornato da BNL in risposta alla richiesta di check card %s"%response.errorDesc) 
+            raise payment_exception.PaymentException(payment_exception.CREDITCARD, "errore ritornato da BNL in risposta alla richiesta di check card %s" % response.errorDesc)
         else:
-            #FATTURE PAGAMENTI
-            if response.authStatus == "Y":
-                self._generate_invoice_payment(order_id,token, real_invoice)
+            # FATTURE PAGAMENTI
+            if response.authStatus in ("Y", "A"):
+                self._generate_invoice_payment(order_id, token, real_invoice)
             return response
 
 
