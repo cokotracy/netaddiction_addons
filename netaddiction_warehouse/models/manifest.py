@@ -411,7 +411,10 @@ class NetaddictionManifest(models.Model):
                 file2.write(" ")
                 file2.write(delivery.delivery_barcode[6:]) #id spedizione univoco
                 file2.write("B") #tipo record test
-                tel = delivery.partner_id.mobile[0:35]
+                if delivery.partner_id.mobile:
+                    tel = delivery.partner_id.mobile[0:35]
+                else:
+                    tel = " "*35
                 count = 35 - len(tel)
                 file2.write(tel)
                 file2.write(" "*count)
