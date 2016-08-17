@@ -14,7 +14,7 @@ window.PlayFailed = function(errorCode, errorDescription){
 }
 window.NotifyPlay = function(){
     //TODO: cambiare con l'url dell'app in produzione
-    WebHub.Notify.play("http://"+window.location.hostname+":"+window.location.port+"/netaddiction_warehouse/static/src/beep-03.mp3",WebHub.Folder.NONE,PlayFailed);
+    WebHub.Notify.play("https://"+window.location.hostname+"/netaddiction_warehouse/static/src/beep-03.mp3",WebHub.Folder.NONE,PlayFailed);
 }
 window.NotifyMessage = function(message,response,function_dismissed){
     WebHub.Notify.message("",message,response,function_dismissed);

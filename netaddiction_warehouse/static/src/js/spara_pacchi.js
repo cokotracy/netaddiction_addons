@@ -57,9 +57,9 @@ odoo.define('netaddiction_warehouse.spara_pacchi', function (require) {
             this._super()
             this.carrier = carrier;
             this.manifest = 0;
-            this.buzz = new Audio("http://"+window.location.hostname+":"+window.location.port+"/netaddiction_warehouse/static/src/beep-03.mp3");
-            this.more_buzz = new Audio("http://"+window.location.hostname+":"+window.location.port+"/netaddiction_warehouse/static/src/beep-05.mp3");
-            this.ok_buzz = new Audio("http://"+window.location.hostname+":"+window.location.port+"/netaddiction_warehouse/static/src/beep-02.mp3");
+            this.buzz = new Audio("https://"+window.location.hostname+"/netaddiction_warehouse/static/src/beep-03.mp3");
+            this.more_buzz = new Audio("https://"+window.location.hostname+"/netaddiction_warehouse/static/src/beep-05.mp3");
+            this.ok_buzz = new Audio("https://"+window.location.hostname+"/netaddiction_warehouse/static/src/beep-02.mp3");
             this.table = null; 
             var today = new Date();
             var dd = today.getDate();
