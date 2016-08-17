@@ -4,6 +4,10 @@ from openerp import models, fields, api
 from openerp.exceptions import ValidationError
 
 
+class CardAlreadyExistsError(ValidationError):
+    pass
+
+
 class CCData(models.Model):
     """docstring for ClassName"""
 
@@ -58,12 +62,8 @@ class CCData(models.Model):
     @api.one
     @api.constrains('token')
     def _check_token(self):
-        print self.token
-        print self.id
-        a = self.env['netaddiction.partner.ccdata'].search([('token', '=', self.token), ('active', '=', True), ("id", "!=", self.id)])
-        print a
         if self.env['netaddiction.partner.ccdata'].search([('token', '=', self.token), ('active', '=', True), ("id", "!=", self.id)]):
-            raise ValidationError("il mese deve essere compreso tra 1 e 12")
+            raise CardAlreadyExistsError(u"Questa carta esiste già")
 
     @api.multi
     def unlink(self):
