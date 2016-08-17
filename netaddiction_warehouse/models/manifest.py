@@ -158,9 +158,12 @@ class NetaddictionManifest(models.Model):
                 riga += address
                 count = 40 - len(address)
                 riga += ' '*count
-                mobile = delivery.sale_id.partner_id.mobile.replace(' ','')
-                mobile = mobile.replace('+39','')
-                mobile = mobile[0:15]
+                if delivery.sale_id.partner_id.mobile:
+                    mobile = delivery.sale_id.partner_id.mobile.replace(' ','')
+                    mobile = mobile.replace('+39','')
+                    mobile = mobile[0:15]
+                else:
+                    mobile = ' '*15
                 riga += mobile
                 count = 15 - len(mobile)
                 riga += ' '*count
