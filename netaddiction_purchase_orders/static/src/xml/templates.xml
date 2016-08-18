@@ -73,6 +73,9 @@
                             <th data-id="name" class="oe_list_header_char oe_sortable">
                                 <div>Prodotto </div>
                             </th>
+                            <th data-id="supplier_code" class="oe_list_header_char oe_sortable">
+                                <div>Codice</div>
+                            </th>
                             <th data-id="date" class="oe_list_header_char oe_sortable">
                                 <div>Data Uscita</div>
                             </th>
@@ -118,6 +121,9 @@
                                             <t t-esc="product.display_name"/>
                                         </a>
                                     </td>
+                                    <td data-field="supplier_code" t-attf-class="supplier_code_{{product.id}}">
+
+                                    </td>
                                     <td  data-field="out_date">
                                         <t t-if="product.out_date != false" t-esc="product.out_date"/>
                                     </td>
@@ -141,8 +147,13 @@
                                         <t t-esc="product.qty_available"/>
                                     </td>
                                     <td data-field="qty_order">
-                                        <t t-set="abs" t-value="product.outgoing_qty - product.incoming_qty"/>
-                                        <input type="number" class="qty_order" t-attf-value="{{abs}}" min="1"/>
+                                        <t t-if="product.virtual_available &gt;= 0">
+                                            <input type="number" class="qty_order" t-attf-value="0" min="1"/>
+                                        </t>
+                                        <t t-if="product.virtual_available &lt; 0">
+                                            <input type="number" class="qty_order" t-attf-value="{{-product.virtual_available}}" min="1"/>
+                                        </t>
+                                        
                                     </td>
                                     <td data-field="seller">
                                         <select name="supplier" class="supplier">

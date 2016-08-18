@@ -79,10 +79,12 @@ openerp.netaddiction_purchase_orders = function(instance, local) {
                         $(value.seller_ids).each(function(id,seller){
                             if(parseInt(sup_id) == parseInt(seller.id)){
                                 sup_visible = 1
+                                $('.supplier_code_'+value.id).text(seller.product_code)
                             }
                         })
                         if(sup_id == 'all'){
                             sup_visible = 1
+                            $('.supplier_code_'+value.id).text('')
                         }
                         
                     }else{
