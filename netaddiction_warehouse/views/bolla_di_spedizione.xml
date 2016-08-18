@@ -1,5 +1,7 @@
-<?xml version="1.0"?>
-<t t-name="netaddiction_warehouse.bolla_di_spedizione">
+<?xml version="1.0" encoding="UTF-8" ?>
+<openerp>
+    <data>
+        <template id="bolla_di_spedizione">
             <t t-call="report.html_container">
                 <style>
                     .container{
@@ -11,12 +13,12 @@
                 <t t-foreach="docs" t-as="o">
                         
                         <div class="page">
-                            <table border="0" cellspacing="0" cellpadding="0" style="font-family:Arial, Helvetica, sans-serif; font-size:12px; font-weight:bold; line-height:14px; margin:0px; padding:0px; ">
+                            <table  border="0" cellspacing="0" cellpadding="0" style="font-family:Arial, Helvetica, sans-serif; font-size:12px; font-weight:bold; line-height:14px; margin:0px; padding:0px; ">
                                 <tr>
                                     <td align="left" valign="top" style="font-family:Arial, Helvetica, sans-serif; font-size:12px; font-weight:bold; line-height:14px;">
-                                        <table border="0" cellspacing="0" cellpadding="0" style="font-family:Arial, Helvetica, sans-serif; font-size:12px; font-weight:bold; line-height:14px; margin:0px; padding:0px; ">
+                                        <table  border="0" cellspacing="0" cellpadding="0" style="font-family:Arial, Helvetica, sans-serif; font-size:12px; font-weight:bold; line-height:14px; margin:0px; padding:0px; ">
                                             <tr>
-                                                <td width="215" align="left" valign="middle"><span t-field="o.company_id.logo" t-field-options="{&quot;widget&quot;: &quot;image&quot;, &quot;class&quot;: &quot;img-rounded&quot;}"/></td>
+                                                <td width="215" align="left" valign="middle"><span t-field="o.company_id.logo" t-field-options="{&quot;widget&quot;: &quot;image&quot;, &quot;class&quot;: &quot;img-rounded&quot;}" /></td>
                                                 <td width="333" rowspan="2" align="right" valign="top">
                                                     <table width="333" border="0" cellspacing="0" cellpadding="0">
                                                         <tr>
@@ -31,11 +33,11 @@
                                                 <td align="center" valign="middle" style="font-size:9px; font-family:Arial, Helvetica, sans-serif;font-weight:normal !important">Tel.<span t-field="o.company_id.phone"/> - Mail:<span t-field="o.company_id.email"/></td>
                                             </tr>
                                             <tr>
-                                                <td height="10" colspan="2" align="left" valign="middle"/>
+                                                <td height="10" colspan="2" align="left" valign="middle"></td>
                                             </tr>
                                             <tr>
                                                 <td height="11" colspan="2" align="left" valign="middle" style="font-family:Arial, Helvetica, sans-serif; font-size:12px; font-weight:bold; line-height:14px;">
-                                                    <table border="0" cellspacing="0" cellpadding="0">
+                                                    <table  border="0" cellspacing="0" cellpadding="0">
                                                         <tbody>
                                                             <tr>
                                                                 <td width="100" align="left" valign="top" style="font-family:Arial, Helvetica, sans-serif; font-size:16px; font-weight:bold; line-height:18px;"><br/>
@@ -50,7 +52,7 @@
                                                                             <tr>
                                                                                 <td>
                                                                                     
-                                                                                    <img t-att-src="'/report/barcode/?type=%s&amp;value=%s&amp;width=%s&amp;height=%s' % ('Code128', o.delivery_barcode, 448, 50)"/>
+                                                                                    <img t-att-src="'/report/barcode/?type=%s&amp;value=%s&amp;width=%s&amp;height=%s' % ('Code128', o.delivery_barcode, 448, 50)" />
                                                                                     <center><span t-field="o.delivery_barcode"/></center>
                                                                                 </td>
                                                                             </tr>
@@ -59,19 +61,19 @@
                                                                 </td>
                                                             </tr>
                                                             <tr>
-                                                                <td height="30" colspan="2" align="left" valign="top"/>
+                                                                <td height="30" colspan="2" align="left" valign="top"></td>
                                                             </tr>
                                                         </tbody>
                                                     </table>
                                                 </td>
                                             </tr>
                                             <tr>
-                                                <td height="10" colspan="2" align="left" valign="top"/>
+                                                <td height="10" colspan="2" align="left" valign="top"></td>
                                             </tr>
 
                                             <tr>
                                                 <td width="215" height="21" align="left" valign="middle">
-                                                    <span t-field="o.company_id.logo" t-field-options="{&quot;widget&quot;: &quot;image&quot;, &quot;class&quot;: &quot;img-rounded&quot;}"/>
+                                                    <span t-field="o.company_id.logo" t-field-options="{&quot;widget&quot;: &quot;image&quot;, &quot;class&quot;: &quot;img-rounded&quot;}" />
                                                 </td>
                                                 <td width="110" height="21" align="right" valign="top">
                                                     <table width="158" border="0" cellspacing="0" cellpadding="0" style="">
@@ -98,13 +100,13 @@
                                     </td>
                                 </tr>
                                 <tr>
-                                    <td height="14" align="center" valign="middle" style="background-color:black; font-size:11px; text-align:center; line-height:14px; color:white;">
+                                    <td height="14"  align="center" valign="middle" style="background-color:black; font-size:11px; text-align:center; line-height:14px; color:white;">
                                         <strong>DDT</strong> - Ordine: <strong><span t-field="o.origin"/></strong> - Data: <strong><span t-field="o.sale_id.create_date"/></strong> - Pagamento: <strong><span t-field="o.sale_id.payment_term_id"/></strong>
                                     </td>
                                 </tr>
                                 <tr>
                                     <td>
-                                        <table border="0" cellspacing="0" cellpadding="0" style="padding-top:5px;">
+                                        <table  border="0" cellspacing="0" cellpadding="0" style="padding-top:5px;">
                                         <tbody><tr>
                                             <td width="274" height="16" align="left" valign="middle" style="font-size:12px;"><em><strong>Cliente:</strong></em></td>
                                             <td width="274" height="16" align="left" valign="middle" style="font-size:12px;"><em><strong>Indirizzo di Consegna:</strong></em></td>
@@ -144,11 +146,11 @@
                                     </tbody></table></td>
                                 </tr>
                                 <tr>
-                                    <td height="5"/>
+                                    <td height="5"></td>
                                 </tr>
                                 <tr>
                                     <td align="center" valign="middle">
-                                        <table border="0" cellspacing="1" cellpadding="0">
+                                        <table  border="0" cellspacing="1" cellpadding="0">
                                             <tbody>
                                                 <tr>
                                                     <td width="25" align="center" valign="middle" style="background-color:black; font-size:9px; text-align:center; line-height:12px; color:white;"><strong>Q.tà</strong></td>
@@ -165,11 +167,11 @@
 
                                                     <tr>
                                                         <td align="center" valign="middle" style="background-color:#FFFFFF; font-size:14px; line-height:14px; padding:3px 0px; border-bottom:3px solid black;">
-                                                            <strong><span t-esc="int(float(procurement.sale_line_id.product_qty))"/></strong>
+                                                            <strong><span t-esc="int(float(procurement.sale_line_id.product_qty))" /></strong>
                                                         </td>
                                                     
                                                         <td align="center" valign="middle" style="background-color:#000000; font-size:14px; line-height:14px; padding:5px 2px; border-bottom:3px solid black; color:#FFF">
-                                                            <strong style="color:#FFFFFF"><span t-esc="procurement.sale_line_id.product_id.categ_id.name"/></strong>
+                                                            <strong style="color:#FFFFFF"><span t-esc="procurement.sale_line_id.product_id.categ_id.name" /></strong>
                                                         </td>
                                                         <td align="left" valign="middle" style="background-color:#FFFFFF; font-size:12px; line-height:12px; padding:5px; border-bottom:3px solid black;font-weight:normal !important">
                                                             <t t-esc="procurement.sale_line_id.product_id.display_name"/><br/>
@@ -186,7 +188,7 @@
                                                 </t>
                                                 <tr>
                                                     <td colspan="6" align="left" valign="top" style="padding-bottom:3px; border-bottom:1px solid black;">
-                                                        <table border="0" cellspacing="0" cellpadding="0">
+                                                        <table  border="0" cellspacing="0" cellpadding="0">
                                                             <tr>
                                                                 <td width="367" align="left" valign="top" style="padding:5px 2px 2px 2px;">
                                                                     <!-- TODO: Commenti-->
@@ -254,5 +256,6 @@
                     
                 </t>
             </t>
-        </t>
-    
+        </template>
+    </data>
+</openerp>
