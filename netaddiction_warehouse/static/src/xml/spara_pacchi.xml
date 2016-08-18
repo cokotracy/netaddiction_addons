@@ -37,6 +37,7 @@
                         <div class="oe-cp-buttons">
                             <div class="oe_list_buttons">
                                 <span>Data: </span> - <span><t t-esc="widget.date"/></span>
+                                <span>Numero Pacchi: </span> <span id="number_pick">0</span>
                             </div>
                         </div>
                     </div>

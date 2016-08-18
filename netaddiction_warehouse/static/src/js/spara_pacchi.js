@@ -176,6 +176,7 @@ odoo.define('netaddiction_warehouse.spara_pacchi', function (require) {
             var filter = [['delivery_read_manifest','=','True'],['manifest.id','=',parseInt(manifest)]];
             new Model('stock.picking').query(query).filter(filter).all().then(function(result){
                 obj.picks = result;
+                $('#number_pick').text(result.length);
                 obj.appendTo('#content_spara_pacchi');
             });
         }
