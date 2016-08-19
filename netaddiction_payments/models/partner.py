@@ -4,18 +4,15 @@ from openerp import models, fields, api
 from openerp.exceptions import ValidationError
 
 
-class CardAlreadyExistsError(ValidationError):
-    pass
-
-
 class CCData(models.Model):
     """docstring for ClassName"""
 
     _name = "netaddiction.partner.ccdata"
 
-    # _sql_constraints = [
-    #     ('token_unique', 'unique(token)', 'Esiste già una carta con questo token!'),
-    # ]
+    _sql_constraints = [
+        ('token_unique', 'unique(token, active)', 'Esiste già una carta con questo token!'),
+    ]
+
     active = fields.Boolean(string='Attivo', help="Permette di spengere la carta senza cancellarla", default=True)
     default = fields.Boolean(string="Carta di default", default=False)
     token = fields.Char(string='Token', required=True)
@@ -58,12 +55,6 @@ class CCData(models.Model):
     def _check_year(self):
         if self.year > 2999 or self.year < 1000:
             raise ValidationError("Anno non valido")
-
-    @api.one
-    @api.constrains('token')
-    def _check_token(self):
-        if self.env['netaddiction.partner.ccdata'].search([('token', '=', self.token), ('active', '=', True), ("id", "!=", self.id)]):
-            raise CardAlreadyExistsError(u"Questa carta esiste già")
 
     @api.multi
     def unlink(self):

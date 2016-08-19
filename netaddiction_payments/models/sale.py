@@ -67,6 +67,22 @@ class Order(models.Model):
         if transient:
             transient.unlink()
 
+    @api.multi
+    @api.onchange("partner_id")
+    def onchange_partner_id(self):
+        """Dominio sulle carte di credito del cliente."""
+        res = super(Order, self).onchange_partner_id()
+        if self.partner_id:
+            cards = self.env["netaddiction.partner.ccdata"].search([('customer_id', '=', self.partner_id.id)])
+            cards = [card.id for card in cards]
+            if res:
+                res['domain']['cc_selection'] = [('id', 'in', cards), ]
+            else:
+                domain = {'cc_selection': [('id', 'in', cards), ]}
+                res = {}
+                res['domain'] = domain
+        return res
+
 
 class OrderLine(models.Model):
     _inherit = 'sale.order.line'
