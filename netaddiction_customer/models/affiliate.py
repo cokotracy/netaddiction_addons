@@ -205,3 +205,8 @@ class Order(models.Model):
     _inherit = 'sale.order'
 
     date_done = fields.Datetime(string="Data messo in completato")
+
+    @api.constrains('state')
+    def date_done_set(self):
+        if self.state == 'done':
+            self.date_done = fields.Datetime.now()
