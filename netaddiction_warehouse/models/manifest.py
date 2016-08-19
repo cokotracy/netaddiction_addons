@@ -472,15 +472,15 @@ class NetaddictionManifest(models.Model):
                 file2.write("  ") #flag annullamento
                 file2.write("0270443 ") #nostro codice
                 file2.write("026 ") #punto operativo di partenza
-                file1.write(datetime.datetime.strptime(self.date,"%Y-%m-%d").strftime("%Y")) #anno
-                file1.write(" ") #spazi
+                file2.write(datetime.datetime.strptime(self.date,"%Y-%m-%d").strftime("%Y")) #anno
+                file2.write(" ") #spazi
                 # correzione brt
-                file1.write(datetime.datetime.strptime(self.date,"%Y-%m-%d").strftime("%m%d")) #mesegiorno
+                file2.write(datetime.datetime.strptime(self.date,"%Y-%m-%d").strftime("%m%d")) #mesegiorno
                 
-                file1.write(" ") #spazi
-                file1.write("00") #numero serie
-                file1.write(" ") #spazi
-                file1.write(delivery.delivery_barcode[-7:]) #id spedizione univoco
+                file2.write(" ") #spazi
+                file2.write("00") #numero serie
+                file2.write(" ") #spazi
+                file2.write(delivery.delivery_barcode[-7:]) #id spedizione univoco
 
                 file2.write("E") #tipo record testa
                 file2.write(delivery.delivery_barcode) 
@@ -489,15 +489,15 @@ class NetaddictionManifest(models.Model):
                 file2.write("  ")
                 file2.write("0270443 ") #nostro codice
                 file2.write("026 ") #punto partenza
-                file1.write(datetime.datetime.strptime(self.date,"%Y-%m-%d").strftime("%Y")) #anno
-                file1.write(" ") #spazi
+                file2.write(datetime.datetime.strptime(self.date,"%Y-%m-%d").strftime("%Y")) #anno
+                file2.write(" ") #spazi
                 # correzione brt
-                file1.write(datetime.datetime.strptime(self.date,"%Y-%m-%d").strftime("%m%d")) #mesegiorno
+                file2.write(datetime.datetime.strptime(self.date,"%Y-%m-%d").strftime("%m%d")) #mesegiorno
                 
-                file1.write(" ") #spazi
-                file1.write("00") #numero serie
-                file1.write(" ") #spazi
-                file1.write(delivery.delivery_barcode[-7:]) #id spedizione univoco
+                file2.write(" ") #spazi
+                file2.write("00") #numero serie
+                file2.write(" ") #spazi
+                file2.write(delivery.delivery_barcode[-7:]) #id spedizione univoco
 
                 file2.write("B") #tipo record test
                 if delivery.partner_id.mobile:
@@ -512,15 +512,15 @@ class NetaddictionManifest(models.Model):
                 file2.write("  ")
                 file2.write("0270443 ") #nostro codice
                 file2.write("026 ") #punto partenza
-                file1.write(datetime.datetime.strptime(self.date,"%Y-%m-%d").strftime("%Y")) #anno
-                file1.write(" ") #spazi
+                file2.write(datetime.datetime.strptime(self.date,"%Y-%m-%d").strftime("%Y")) #anno
+                file2.write(" ") #spazi
                 # correzione brt
-                file1.write(datetime.datetime.strptime(self.date,"%Y-%m-%d").strftime("%m%d")) #mesegiorno
+                file2.write(datetime.datetime.strptime(self.date,"%Y-%m-%d").strftime("%m%d")) #mesegiorno
                 
-                file1.write(" ") #spazi
-                file1.write("00") #numero serie
-                file1.write(" ") #spazi
-                file1.write(delivery.delivery_barcode[-7:]) #id spedizione univoco
+                file2.write(" ") #spazi
+                file2.write("00") #numero serie
+                file2.write(" ") #spazi
+                file2.write(delivery.delivery_barcode[-7:]) #id spedizione univoco
 
                 file2.write("I") #tipo record test
                 email = delivery.partner_id.email[0:35]
