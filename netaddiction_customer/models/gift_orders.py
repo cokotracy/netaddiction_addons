@@ -30,6 +30,21 @@ class GiftOrder(models.Model):
     @api.onchange('gift_discount')
     def gift_changed(self):
         self.gift_set_by_bo = True
+        
+    @api.constrains('gift_discount')
+    def _check_active(self):
+        if self.gift_set_by_bo:
+            attr = {
+                'subject': 'Assegnazione gift',
+                'message_type': 'notification',
+                'model': 'sale.order',
+                'res_id': self.id,
+                'body': "gift assegnati %s da %s" % (self.gift_discount, self.env.user.name),
+                'subtype_id': self.env.ref("mail.mt_note").id
+            }
+            print attr
+            self.env['mail.message'].create(attr)
+
 
     # @api.depends('order_line.price_total')
     # def _amount_all(self):
