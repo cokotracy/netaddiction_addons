@@ -11,6 +11,53 @@ from ftplib import FTP
 import StringIO
 import io
 
+def replace_vowels(text):
+    """
+    Sostituisce le vocali accentate con le corrispondenti non accentate
+    """         
+    return text.replace(u"à", u'a'
+        ).replace(u"á", u'a'
+        ).replace(u"ä", u'a'
+        ).replace(u"ã", u"a"
+        ).replace(u"â", u"a"
+        ).replace(u"è", u"e"
+        ).replace(u"é", u"e"
+        ).replace(u"ë", u"e"
+        ).replace(u"ê", u"e"
+        ).replace(u"ì", u"i"
+        ).replace(u"î", u"i"
+        ).replace(u"í", u"i"
+        ).replace(u"ï", u"i"
+        ).replace(u"ò", u"o"
+        ).replace(u"ô", u"o"
+        ).replace(u"ó", u"o"
+        ).replace(u"õ", u"o"
+        ).replace(u"ö", u"o"
+        ).replace(u"ù", u'u' 
+        ).replace(u"û", u'u' 
+        ).replace(u"ü", u"u"
+        )
+
+
+def cleanWinChars(text):
+    """
+    Ritorna il testo con i caratteri winlatin convertiti in cose normali.
+    Windows sucks.
+    """
+    return text.replace(u"\u201d", u'"'
+        ).replace(u"\u201e", u'""'
+        ).replace(u"\u201c", u'"'
+        ).replace(u"\u2018", u"'"
+        ).replace(u"\u2019", u"'"
+        ).replace(u"\u00b4", u"'"
+        ).replace(u"\u0060", u"'"
+        ).replace(u"\u2013", u"-"
+        ).replace(u"\u2014", u"-"
+        ).replace(u"\u00ab", u'"' # in realtà sarebbe >>
+        ).replace(u"\u00bb", u'"' # in realtà sarebbe <<
+        ).replace(u"\u2026", u"..."
+        )
+
 class NetaddictionManifest(models.Model):
     _name = 'netaddiction.manifest'
 
@@ -145,15 +192,30 @@ class NetaddictionManifest(models.Model):
                 riga += ' '*count
                 riga += 'TR'
                 riga += ' '*18
-                company = delivery.sale_id.partner_shipping_id.company_address[0:40]
+
+                company = delivery.sale_id.partner_shipping_id.name[0:40]
+                company = cleanWinChars(company)
+                company = replace_vowels(company)
+
+                riga += ' '*2
                 riga += company
                 count = 40-len(company)
                 riga += ' '*count
+
+
                 name = delivery.sale_id.partner_shipping_id.name[0:20]
+                name = cleanWinChars(name)
+                name = replace_vowels(name)
+
                 riga += name
                 count = 20 - len(name)
                 riga += ' '*count
+
+
                 address = delivery.sale_id.partner_shipping_id.street + ' ' + delivery.sale_id.partner_shipping_id.street2
+                address = cleanWinChars(address)
+                address = replace_vowels(address)
+
                 address = address[0:40]
                 riga += address
                 count = 40 - len(address)
@@ -171,7 +233,11 @@ class NetaddictionManifest(models.Model):
                 riga += cap
                 count = 9 - len(cap)
                 riga += ' '*count
+
                 citta = delivery.sale_id.partner_shipping_id.city[0:30]
+                citta = cleanWinChars(citta)
+                citta = replace_vowels(citta)
+
                 riga += citta
                 count = 30 - len(citta)
                 riga += ' '*count
@@ -265,9 +331,13 @@ class NetaddictionManifest(models.Model):
                 file1.write("026 ") # Punto operativo di partenza
                 file1.write(datetime.datetime.strptime(self.date,"%Y-%m-%d").strftime("%Y")) #anno
                 file1.write(" ") #spazi
+                # correzione brt
+                file1.write(datetime.datetime.strptime(self.date,"%Y-%m-%d").strftime("%m%d")) #mesegiorno
+                
+                file1.write(" ") #spazi
                 file1.write("00") #numero serie
                 file1.write(" ") #spazi
-                file1.write(delivery.delivery_barcode[6:]) #id spedizione univoco
+                file1.write(delivery.delivery_barcode[-7:]) #id spedizione univoco
                 
                 if payment:
                     if payment.id == payment_contrassegno:
@@ -279,6 +349,8 @@ class NetaddictionManifest(models.Model):
 
                 file1.write(" 000")
                 name = delivery.sale_id.partner_shipping_id.name + ' ' + delivery.sale_id.partner_shipping_id.company_address
+                name = cleanWinChars(name)
+                name = replace_vowels(name)
                 if len(name)>69:
                     file1.write(name[0:69]) #prima parte destinatario
                 else:
@@ -289,6 +361,8 @@ class NetaddictionManifest(models.Model):
                 file1.write(spaces) #seconda parte destinatario
 
                 address = delivery.sale_id.partner_shipping_id.street + ' ' + delivery.sale_id.partner_shipping_id.street2
+                address = cleanWinChars(address)
+                address = replace_vowels(address)
                 address = address[0:35]
                 file1.write(address) #indirizzo
                 count = 35 - len(address)
@@ -302,6 +376,8 @@ class NetaddictionManifest(models.Model):
                 file1.write(spaces) #CAP
 
                 citta = delivery.sale_id.partner_shipping_id.city[0:35]
+                citta = cleanWinChars(citta)
+                citta = replace_vowels(citta)
                 file1.write(citta) #citta
                 count = 35 - len(citta)
                 spaces = ' '*count
@@ -385,7 +461,7 @@ class NetaddictionManifest(models.Model):
                 file1.write("\r\n") 
             
             
-        self.manifest_file1 = base64.b64encode(file1.getvalue())
+        self.manifest_file1 = base64.b64encode(file1.getvalue().encode("utf8"))
         file1.close()
 
         file2 = StringIO.StringIO()
@@ -396,11 +472,16 @@ class NetaddictionManifest(models.Model):
                 file2.write("  ") #flag annullamento
                 file2.write("0270443 ") #nostro codice
                 file2.write("026 ") #punto operativo di partenza
-                file2.write(datetime.datetime.strptime(self.date,"%Y-%m-%d").strftime("%Y")) #anno di spedizione
-                file2.write(" ") #spazio
-                file2.write("00") 
-                file2.write(" ")
-                file2.write(delivery.delivery_barcode[6:]) #id spedizione univoco
+                file1.write(datetime.datetime.strptime(self.date,"%Y-%m-%d").strftime("%Y")) #anno
+                file1.write(" ") #spazi
+                # correzione brt
+                file1.write(datetime.datetime.strptime(self.date,"%Y-%m-%d").strftime("%m%d")) #mesegiorno
+                
+                file1.write(" ") #spazi
+                file1.write("00") #numero serie
+                file1.write(" ") #spazi
+                file1.write(delivery.delivery_barcode[-7:]) #id spedizione univoco
+
                 file2.write("E") #tipo record testa
                 file2.write(delivery.delivery_barcode) 
                 file2.write("\r\n")
@@ -408,11 +489,16 @@ class NetaddictionManifest(models.Model):
                 file2.write("  ")
                 file2.write("0270443 ") #nostro codice
                 file2.write("026 ") #punto partenza
-                file2.write(datetime.datetime.strptime(self.date,"%Y-%m-%d").strftime("%Y")) #anno di spedizione
-                file2.write(" ") #spazio
-                file2.write("00") 
-                file2.write(" ")
-                file2.write(delivery.delivery_barcode[6:]) #id spedizione univoco
+                file1.write(datetime.datetime.strptime(self.date,"%Y-%m-%d").strftime("%Y")) #anno
+                file1.write(" ") #spazi
+                # correzione brt
+                file1.write(datetime.datetime.strptime(self.date,"%Y-%m-%d").strftime("%m%d")) #mesegiorno
+                
+                file1.write(" ") #spazi
+                file1.write("00") #numero serie
+                file1.write(" ") #spazi
+                file1.write(delivery.delivery_barcode[-7:]) #id spedizione univoco
+
                 file2.write("B") #tipo record test
                 if delivery.partner_id.mobile:
                     tel = delivery.partner_id.mobile[0:35]
@@ -426,18 +512,23 @@ class NetaddictionManifest(models.Model):
                 file2.write("  ")
                 file2.write("0270443 ") #nostro codice
                 file2.write("026 ") #punto partenza
-                file2.write(datetime.datetime.strptime(self.date,"%Y-%m-%d").strftime("%Y")) #anno di spedizione
-                file2.write(" ") #spazio
-                file2.write("00") 
-                file2.write(" ")
-                file2.write(delivery.delivery_barcode[6:]) #id spedizione univoco
+                file1.write(datetime.datetime.strptime(self.date,"%Y-%m-%d").strftime("%Y")) #anno
+                file1.write(" ") #spazi
+                # correzione brt
+                file1.write(datetime.datetime.strptime(self.date,"%Y-%m-%d").strftime("%m%d")) #mesegiorno
+                
+                file1.write(" ") #spazi
+                file1.write("00") #numero serie
+                file1.write(" ") #spazi
+                file1.write(delivery.delivery_barcode[-7:]) #id spedizione univoco
+
                 file2.write("I") #tipo record test
                 email = delivery.partner_id.email[0:35]
                 file2.write(email)
                 file2.write(" ")
                 file2.write("\r\n")
 
-        self.manifest_file2 = base64.b64encode(file2.getvalue())
+        self.manifest_file2 = base64.b64encode(file2.getvalue().encode("utf8"))
         file2.close()
 
 
