@@ -348,7 +348,7 @@ class NetaddictionManifest(models.Model):
                     file1.write("1 ")
 
                 file1.write(" 000")
-                name = delivery.sale_id.partner_shipping_id.name + ' ' + delivery.sale_id.partner_shipping_id.company_address
+                name = str(delivery.sale_id.partner_shipping_id.name) + ' ' + str(delivery.sale_id.partner_shipping_id.company_address)
                 name = cleanWinChars(name)
                 name = replace_vowels(name)
                 if len(name)>69:
