@@ -73,7 +73,7 @@ class Purhcase(models.Model):
             file = ""
 
             for line in self.order_line:
-                text = '"%s","%s","%s"' % (line.product_id.barcode,int(line.product_qty),line.price_unit)
+                text = '%s;%s;%s\n' % (line.product_id.barcode,int(line.product_qty),line.price_unit)
                 file += text
 
             file1 = StringIO.StringIO()
