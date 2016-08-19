@@ -10,7 +10,7 @@ LIMIT_QTY_PER_PRODUCT = 20
 class OrderUtilities(models.TransientModel):
     _name = "netaddiction.order.utilities"
 
-    def get_cart(self, partner_id=None, order_id=None, create=False):
+    def get_cart(self, partner_id=None, order_id=None, create=False, from_customer=True):
         """
         Restiusce il carrello dell'utente (ordine in draft) identificato da partner_id, se non esiste lo crea.
         Se l'utente non esiste ritorna False
@@ -18,7 +18,12 @@ class OrderUtilities(models.TransientModel):
         order_model = self.env['sale.order']
 
         if order_id is not None:
-            order = order_model.search([('id', '=', order_id)])
+            query = [('id', '=', order_id)]
+
+            if from_customer:
+                query.append(('created_by_the_customer', '=', True))
+
+            order = order_model.search(query)
 
             if order and order.state == 'draft':
                 return order, False
@@ -29,13 +34,19 @@ class OrderUtilities(models.TransientModel):
             if not partner:
                 raise Exception('Partner not found')
 
-            orders = order_model.search([('partner_id', '=', partner_id)], order='create_date desc')
+            query = [('partner_id', '=', partner_id)]
+
+            if from_customer:
+                query.append(('created_by_the_customer', '=', True))
+
+            orders = order_model.search(query, order='create_date desc')
 
             if orders and orders[0].state == 'draft':
                 return orders[0], False
 
         if create:
             cart = order_model.create({
+                'created_by_the_customer': from_customer,
                 'partner_id': partner_id or self.env.ref('base.public_user_res_partner').id,
                 'state': 'draft',
             })
