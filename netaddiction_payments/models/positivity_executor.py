@@ -157,7 +157,7 @@ class PositivityExecutor(models.TransientModel):
         
         lst=[tid, shop_id,shop_user_ref,pan,exp_month,exp_year, token]
         signature = cypher.hmacsha256(kSig ,lst)
-        print signature
+
         request_data.tid = tid
         request_data.shopID = shop_id
         request_data.shopUserRef = shop_user_ref
@@ -169,8 +169,7 @@ class PositivityExecutor(models.TransientModel):
         request_data.regenPayInstrToken = True
 
         response = client.service.enroll(request_data)
-        print response
-        
+
         if response.error:
             raise payment_exception.PaymentException(payment_exception.CREDITCARD,"errore ritornato da BNL in risposta alla richiesta di tokenizzazione %s"%response.errorDesc) 
         else:
