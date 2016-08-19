@@ -599,6 +599,16 @@
             <field name="perm_unlink" eval="1"/>
         </record>
 
+        <record id="netaddiction_sale_user_plus_access_digital_code" model="ir.model.access">
+            <field name="name">digital Code</field>
+            <field name="model_id" search="[('model','=','netaddiction.specialoffer.digital_code')]" model="ir.model"/>
+            <field name="group_id" ref="netaddiction_sale_user_plus"/>
+            <field name="perm_read" eval="1"/>
+            <field name="perm_create" eval="1"/>
+            <field name="perm_write" eval="1"/>
+            <field name="perm_unlink" eval="1"/>
+        </record>
+
         
 
         

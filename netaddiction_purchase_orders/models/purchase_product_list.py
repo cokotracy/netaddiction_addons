@@ -59,7 +59,8 @@ class Products(models.Model):
                         'name' : sup.name.name,
                         'price' : sup.price,
                         'delay' : sup.delay,
-                        'avail_qty' : sup.avail_qty 
+                        'avail_qty' : sup.avail_qty,
+                        'product_code' : sup.product_code
                         })
             result.append(attr)
         return result
@@ -120,7 +121,8 @@ class PurchaseOrders(models.Model):
                         'product_uom' : prod.uom_po_id.id or prod.uom_id.id,
                         'price_unit' : float(price_unit),
                         'name' : name,
-                        'date_planned' : datetime.now()+timedelta(days=int(delay))
+                        'date_planned' : datetime.now()+timedelta(days=int(delay)),
+                        'taxes_id': [(6,False,[prod.supplier_taxes_id.id])]
                     }
                     ids.append((0,0,attr))   
         return ids     

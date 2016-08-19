@@ -25,6 +25,8 @@ class Order(models.Model):
 
     customer_comment = fields.Text(string="Commento Cliente")
 
+    created_by_the_customer = fields.Boolean(string="Creato dal cliente", default=False)
+
     ##############
     # ACTION STATE#
     ##############
@@ -113,6 +115,21 @@ class Order(models.Model):
         if all(line.qty_invoiced == line.qty_delivered == line.product_uom_qty for line in self.order_line):
             if (self.state == 'sale' or self.state == 'partial_done'):
                 self.action_done()
+
+    def copy_data(self, *args, **kwargs):
+        data = super(Order, self).copy_data(*args, **kwargs)
+        order_lines = []
+
+        for line in data['order_line']:
+            if not line[2]['is_delivery'] and not line[2]['is_payment']:
+                order_lines.append(line)
+
+        data.update({
+            'created_by_the_customer': False,
+            'order_line': order_lines,
+        })
+
+        return data
 
     @api.one
     def copy(self, default=None):

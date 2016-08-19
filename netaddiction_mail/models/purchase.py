@@ -5,6 +5,7 @@ from openerp.exceptions import ValidationError
 import datetime
 import StringIO
 import base64
+import sys
 
 class Purhcase(models.Model):
     _inherit = 'purchase.order'
@@ -19,10 +20,13 @@ class Purhcase(models.Model):
 
     @api.one
     def action_rfq_send(self):
+        users = self.env["netaddiction.email.dispatcher"].get_users_from_group("netaddiction_acl.netaddiction_purchase_user_plus")
         to_partner = self.env['res.partner'].search([('parent_id','=',self.partner_id.id),('send_contact_purchase_orders','=',True)])
         recipients = []
         for res in to_partner:
             recipients.append(res)
+        for u in users:
+            recipients.append(u)
 
         if len(recipients) == 0:
             raise ValidationError("Nessun contatto di questo fornitore può ricevere gli ordini.")
@@ -106,6 +110,9 @@ class PurchaseOrdersLine(models.Model):
         to_partner = self.env['res.partner'].search([('parent_id','=',self.order_id.partner_id.id),('send_contact_purchase_orders','=',True)])
         for res in to_partner:
             recipients.append(res)
+        users = self.env["netaddiction.email.dispatcher"].get_users_from_group("netaddiction_acl.netaddiction_purchase_user_plus")
+        for u in users:
+            recipients.append(u)
         if len(recipients) == 0:
             raise ValidationError("Nessun contatto di questo fornitore può ricevere gli ordini.")
         code = False

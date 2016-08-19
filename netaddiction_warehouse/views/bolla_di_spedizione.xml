@@ -42,9 +42,7 @@
                                                             <tr>
                                                                 <td width="100" align="left" valign="top" style="font-family:Arial, Helvetica, sans-serif; font-size:16px; font-weight:bold; line-height:18px;"><br/>
                                                                     <strong>
-                                                                            <em style="font-size:12px">CAP:</em> <span t-field="o.partner_id.zip"/><br/>
                                                                             <em style="font-size:12px">Pezzi:</em> <span t-field="o.number_of_pieces"/> <br/>
-                                                                            <em t-if="'BRT' in o.carrier_id.name" style="font-size:18px"><b>BRT</b></em>
                                                                             <em t-if="'SDA' in o.carrier_id.name" style="font-size:18px"><b>SDA</b></em>    
                                                                     </strong>
                                                                 </td>
@@ -54,7 +52,7 @@
                                                                             <tr>
                                                                                 <td>
                                                                                     
-                                                                                    <img t-att-src="'/report/barcode/?type=%s&amp;value=%s&amp;width=%s&amp;height=%s' % ('Code128', o.delivery_barcode, 448, 70)" />
+                                                                                    <img t-att-src="'/report/barcode/?type=%s&amp;value=%s&amp;width=%s&amp;height=%s' % ('Code128', o.delivery_barcode, 448, 50)" />
                                                                                     <center><span t-field="o.delivery_barcode"/></center>
                                                                                 </td>
                                                                             </tr>

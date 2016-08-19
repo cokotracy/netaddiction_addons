@@ -116,7 +116,17 @@
         <record id="stock.menu_stock_proc_schedulers" model="ir.ui.menu">
             <field name="groups_id" eval="[(4, ref('netaddiction_inventory_user_manager'))]"/>
         </record>
+        
 
+        <record id="netaddiction_spara_stock_picking" model="ir.model.access">
+            <field name="name">stock picking</field>
+            <field name="model_id" search="[('model','=','stock.picking')]" model="ir.model"/>
+            <field name="group_id" ref="netaddiction_inventory_sp"/>
+            <field name="perm_read" eval="1"/>
+            <field name="perm_create" eval="1"/>
+            <field name="perm_write" eval="1"/>
+            <field name="perm_unlink" eval="1"/>
+        </record>
 
         <!--Modelli-->
         <record id="netaddiction_inventory_sp_carrier" model="ir.model.access">
