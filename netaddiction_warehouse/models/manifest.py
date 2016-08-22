@@ -430,7 +430,7 @@ class NetaddictionManifest(models.Model):
                     file1.write("   ") #divisa contrassegno
 
                 file1.write("   ")
-                file1.write(str(delivery.sale_id.name).zfill(15)) #idordine
+                file1.write(str(delivery.sale_id.id).zfill(15)) #idordine
                 file1.write("               ") #rferimento alfanumerico
                 file1.write(" 0000000") #dal numero
                 file1.write(" 0000000") #al numero
