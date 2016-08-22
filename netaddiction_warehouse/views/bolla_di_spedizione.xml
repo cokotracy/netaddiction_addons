@@ -44,6 +44,7 @@
                                                                     <strong>
                                                                             <em style="font-size:12px">Pezzi:</em> <span t-field="o.number_of_pieces"/> <br/>
                                                                             <em t-if="'SDA' in o.carrier_id.name" style="font-size:18px"><b>SDA</b></em>    
+                                                                            <em t-if="'Magazzino' in o.carrier_id.name" style="font-size:18px"><b>MAGAZZINO</b></em>  
                                                                     </strong>
                                                                 </td>
                                                                 <td width="448" align="right" valign="top">
