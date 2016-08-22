@@ -165,7 +165,8 @@ class PurchaseOrdersLine(models.Model):
             if self.product_qty < values['product_qty']:
                 raise Warning('Per Aggiungere quantità devi fare un nuovo Ordini a questo fornitore di questo prodotto.')
             else:
-                self.send_mail_cancel(values['product_qty'])
+                if self.order_id.state == 'purchase':
+                    self.send_mail_cancel(values['product_qty'])
 
 
         return super(PurchaseOrdersLine,self).write(values)
