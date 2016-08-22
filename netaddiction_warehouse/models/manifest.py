@@ -242,7 +242,7 @@ class NetaddictionManifest(models.Model):
                 count = 30 - len(citta)
                 riga += ' '*count
                 riga += str(delivery.sale_id.partner_shipping_id.state_id.code)
-                count = 2 - len(delivery.sale_id.partner_shipping_id.state_id.code)
+                count = 2 - len(str(delivery.sale_id.partner_shipping_id.state_id.code))
                 riga += ' '*count
                 riga += "001"
                 riga += "0001000"
