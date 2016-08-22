@@ -131,7 +131,6 @@ class StockPickingWave(models.Model):
     @api.model
     def wave_pick_ip(self,product_barcode,shelf_id,wave_id,qty_to_down):
         result = self.search([('id','=',int(wave_id))])
-
         if len(result) == 0:
             err = Error()
             err.set_error_msg("Problema nel recuperare la lista prodotti o barcode mancante")

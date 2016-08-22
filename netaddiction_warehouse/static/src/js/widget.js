@@ -48,7 +48,7 @@ openerp.netaddiction_warehouse = function(instance, local) {
     	start: function() {
     		self = this
          	return new instance.web.Model('stock.picking.wave').query(['display_name','id']).filter([['state','=','in_progress'],['in_exit','=',false],['reverse_supplier','=',false]]).all().then(function(filtered){
-                console.log(filtered)
+                
                 var list = new local.homepage(self,filtered);
 				list.appendTo(self.$el);
             });   
@@ -82,13 +82,30 @@ openerp.netaddiction_warehouse = function(instance, local) {
         },
         doSearchBarcode : function(e){
             e.preventDefault();
+            var barcode_list = []
             var barcode = $(e.currentTarget).val();
+            barcode_list.push(barcode)
+
+            barcode = '0'+barcode
+            barcode_list.push(barcode)
+
+            barcode = barcode.replace(/^0+/, '');
+            barcode_list.push(barcode)
+
+            barcode = barcode.toLowerCase();
+            barcode_list.push(barcode)
+            barcode = barcode.charAt(0).toUpperCase() + barcode.slice(1);
+            barcode_list.push(barcode)
+
+            barcode = barcode.toUpperCase();
+            barcode_list.push(barcode)
+            $('.open_wave_list').children().remove()
             new instance.web.Model('stock.picking').query(['id','wave_id','pack_operation_product_ids','display_name','sale_id','partner_id']).filter([
-                ['pack_operation_product_ids.product_id.barcode','=',barcode],['wave_id','=',parseInt(this_list.wave_id)],
+                ['pack_operation_product_ids.product_id.barcode','in',barcode_list],['wave_id','=',parseInt(this_list.wave_id)],
                 ['state','not in',['draft','cancel','done']]]).all().then(function(filtered){
                     if (filtered.length == 0){
                         $('.picking_list').remove();
-                        this_list.do_warn('BARCONE INESISTENTE','Il barcode '+barcode.bold()+' non è presente nella lista');
+                        this_list.do_warn('BARCONE INESISTENTE','Il barcode  non è presente nella lista');
                         wash_and_focus_input(e.currentTarget);
                     }else{
                         var ids = [];
@@ -104,6 +121,7 @@ openerp.netaddiction_warehouse = function(instance, local) {
                                 var inte = parseInt(result[k].picking_id[0]);
                                 count_products[inte] = count_products[inte] + parseInt(result[k].qty_done);
                             }
+
                             $('.open_wave_list').append(QWeb.render('open_wave_order_list',{'orders' : filtered, 'count_products' : count_products}))
                             $('#validateAll').show();
                         });
@@ -178,17 +196,20 @@ openerp.netaddiction_warehouse = function(instance, local) {
                     disable_tr($(value).closest('tr'));
                 }
             })
-            new instance.web.Model('stock.picking').call('do_multi_validate_orders',[trs])
-
-            data = {
-                'ids': trs,
-                'model': 'stock.picking',
-            }
-            this_list.do_action({
-                'type': 'ir.actions.report.xml',
-                'report_name': 'netaddiction_warehouse.bolla_di_spedizione',
-                'datas': data,
+            new instance.web.Model('stock.picking').call('do_multi_validate_orders',[trs]).then(function(result){
+                data = {
+                    'ids': trs,
+                    'model': 'stock.picking',
+                }
+                this_list.do_action({
+                    type: 'ir.actions.report.xml',
+                    report_name: 'netaddiction_warehouse.bolla_di_spedizione',
+                    datas: data,
+                    
+                })
             })
+
+            
         }
     });
 
@@ -247,8 +268,24 @@ openerp.netaddiction_warehouse = function(instance, local) {
             });
         },
         SearchProduct : function(e){
+            var barcode_list = []
             var barcode = $(e.currentTarget).val();
-            new instance.web.Model('product.product').query(['id']).filter([['barcode','=',barcode]]).first().then(function(pid){
+            barcode_list.push(barcode)
+
+            barcode = '0'+barcode
+            barcode_list.push(barcode)
+
+            barcode = barcode.replace(/^0+/, '');
+            barcode_list.push(barcode)
+
+            barcode = barcode.toLowerCase();
+            barcode_list.push(barcode)
+            barcode = barcode.charAt(0).toUpperCase() + barcode.slice(1);
+            barcode_list.push(barcode)
+
+            barcode = barcode.toUpperCase();
+            barcode_list.push(barcode)
+            new instance.web.Model('product.product').query(['id']).filter([['barcode','in',barcode_list]]).first().then(function(pid){
                 if(pid != null){
                     for(var p in this_order.products){
                         if(this_order.products[p].product_id[0] == pid.id){

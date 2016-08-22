@@ -34,6 +34,8 @@ window.response_message = function(index){
     $('#result_shelfs').remove();
     var href = window.location.href;
     var wave_id = href.substr(href.lastIndexOf('/') + 1);
+    wave_id = wave_id.replace(/\D/g,'');
+    console.log(wave_id)
     odoo_function['set_pick_up'](wave_id,window.shelfs[index]['id'],$('#barcode').val(),window.shelfs[index]['qty'])
 }
 
@@ -144,6 +146,61 @@ $(document).ready(function(){
                                 });
 
                                 if(products.length==0){
+                                    //aggiunge zero
+                                    barcode = '0'+barcode
+                                    $('.product_row').each(function(index,value){
+                                        if($(value).attr('data-barcode') == barcode){
+                                            products.push(value)
+                                            $('#barcode').val(barcode)
+                                        }
+                                    }); 
+                                }
+                                if(products.length==0){
+                                    //toglie zero
+                                    barcode = barcode.replace(/^0+/, '');
+                                    $('.product_row').each(function(index,value){
+                                        if($(value).attr('data-barcode') == barcode){
+                                            products.push(value)
+                                            $('#barcode').val(barcode)
+                                        }
+                                    }); 
+                                }
+
+                                if(products.length==0){
+                                    //capitalize
+                                    barcode = barcode.toLowerCase();
+                                    barcode = barcode.charAt(0).toUpperCase() + barcode.slice(1);
+                                    $('.product_row').each(function(index,value){
+                                        if($(value).attr('data-barcode') == barcode){
+                                            products.push(value)
+                                            $('#barcode').val(barcode)
+                                        }
+                                    }); 
+                                }
+
+                                if(products.length==0){
+                                    //upper
+                                    barcode = barcode.toUpperCase();
+                                    $('.product_row').each(function(index,value){
+                                        if($(value).attr('data-barcode') == barcode){
+                                            products.push(value)
+                                            $('#barcode').val(barcode)
+                                        }
+                                    }); 
+                                }
+
+                                if(products.length==0){
+                                    //lower
+                                    barcode = barcode.toLowerCase();
+                                    $('.product_row').each(function(index,value){
+                                        if($(value).attr('data-barcode') == barcode){
+                                            products.push(value)
+                                            $('#barcode').val(barcode)
+                                        }
+                                    }); 
+                                }
+
+                                if(products.length==0){
                                     NotifyVibrate()
                                     NotifyPlay()
                                     if($('.error_msg').length){
@@ -200,6 +257,22 @@ $(document).ready(function(){
                                 
                             },
         }
+
+        $('.open_image').on('click', function(e) {
+            pid = $(e.currentTarget).attr('data-pid');
+            new Model('product.product').query(['image']).filter([['id','=',pid]]).first().then(function(result){
+                image_url = result.image
+                html = '<image src="data:image/png;base64,'+image_url+'" width="300px" />'
+                res = '<div id="image_product_popup" style="border:1px solid #6C7A89;margin-top:5px; padding:5px">'+html+'<a href="#" id="close_image" style="float:right;font-size:15px">X</a></div>';
+                $(e.currentTarget).after(res)
+                $('#close_image').on('click',function(e){
+                    $('#image_product_popup').remove();
+                    return false;
+                })
+                return false;
+            });
+            
+        });
         
 
         $('#barcode-form').on('submit', function(e) {
