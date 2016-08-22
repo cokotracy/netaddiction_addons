@@ -268,9 +268,23 @@ class StockPicking(models.Model):
             can.unlink()
 
         return super(StockPicking,self).action_cancel()
-                
 
+    @api.multi
+    def open_website_url(self):
+        self.ensure_one()
+        brt = self.env.ref('netaddiction_warehouse.carrier_brt').id
 
+        if self.carrier_id.id == brt:
+            url = 'http://as777.bartolini.it/vas/sped_det_show.hsm?referer=sped_numspe_par.htm&ChiSono=%s' % self.delivery_barcode
+        else:
+            url = 'https://www.mysda.it/SDAServiziEsterniWeb2/faces/SDAElencoSpedizioni.jsp?user=NETA20&idritiro=%s' % self.delivery_barcode
+
+        client_action = {'type': 'ir.actions.act_url',
+                         'name': "Shipment Tracking Page",
+                         'target': 'new',
+                         'url': url,
+                         }
+        return client_action
 
     @api.one
     def _get_number_of_pieces(self):
