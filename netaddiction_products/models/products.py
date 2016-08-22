@@ -440,6 +440,7 @@ class Template(models.Model):
 
 class SupplierInfo(models.Model):
     _inherit = 'product.supplierinfo'
+    _order = 'sequence'
 
     # Campi aggiunti
     avail_qty = fields.Float('Quantità disponibile',
