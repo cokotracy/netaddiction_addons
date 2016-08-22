@@ -8,9 +8,9 @@ class Products(models.Model):
 
     @api.multi
     def write(self, values):
+        old_intax = {}
         for product in self:
             log_line = self.env["netaddiction.log.line"]
-            old_intax = {}
             if 'sale_ok' in values and values['sale_ok'] != product.sale_ok:
                 log_line.sudo().create(log_line.create_tracking_values(product.sale_ok, values['sale_ok'], 'sale_ok', 'boolean', 'product.product', product.id, self.env.uid, product.company_id.id, object_name=product.name))
             if 'available_date' in values and values['available_date'] != product.available_date:
