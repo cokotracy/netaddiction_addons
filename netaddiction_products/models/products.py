@@ -348,7 +348,19 @@ class Products(models.Model):
                 else:
                     message = u"%s è esaurito" % self.display_name
                 raise ProductOrderQuantityExceededLimitException(self.id,qty_residual,message)
-    
+
+    def name_search(self, cr, user, name='', args=None, operator='ilike', context=None, limit=100):
+        """
+        Ridefinisce la ricerca per nome in modo più efficiente, cercando prima nel nome e poi filtrando con le
+        condizioni in *args*.
+
+        Scarta anche altre query poco utili.
+        """
+        ids = self.search(cr, user, [('name', operator, name)], context=context)
+        if args is not None:
+            ids = self.search(cr, user, args + [('id', 'in', ids)], limit=limit, context=context)
+        result = self.name_get(cr, user, ids, context=context)
+        return result
 
 
 class Template(models.Model):
