@@ -1,10 +1,8 @@
 # -*- coding: utf-8 -*-
-from openerp import tools
 from openerp import models, fields, api
-from openerp.tools import float_is_zero, float_compare, DEFAULT_SERVER_DATETIME_FORMAT
+from openerp.tools import float_is_zero, float_compare
 from openerp import _
 from openerp.exceptions import Warning
-import datetime
 from openerp.exceptions import ValidationError
 
 
@@ -19,6 +17,7 @@ class Order(models.Model):
         ('problem', 'Problema'),
         ('done', 'Completato'),
         ('cancel', 'Annullato'),
+        ('pending', 'Pendente'),
     ], string='Status', readonly=True, copy=False, index=True)
 
     ip_address = fields.Char(string="Indirizzo IP")
@@ -38,7 +37,14 @@ class Order(models.Model):
     #      self.state = 'problem'
 
     @api.one
-    def action_partial_done(self):
+    def action_pending(self):
+        if self.state == 'draft':
+            self.state = 'pending'
+        else:
+            raise Warning(_('pending'))
+
+    @api.one
+    def action_pending(self):
         self.state = 'partial_done'
 
     ##########
@@ -306,7 +312,7 @@ class Order(models.Model):
     @api.multi
     def pre_action_confirm(self):
         for order in self:
-            if order.state == 'draft':
+            if order.state in ('draft', 'pending'):
 
                 for order_line in order.order_line:
                     if not order_line.product_id.active or not order_line.product_id.sale_ok:

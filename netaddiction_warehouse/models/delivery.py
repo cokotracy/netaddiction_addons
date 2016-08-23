@@ -18,7 +18,7 @@ class Orders(models.Model):
 
     @api.multi
     def action_confirm(self):
-        if not self.state == 'draft':
+        if self.state not in ('draft', 'pending'):
             # se lo stato non  è draft è già stata chiamata action confirm
             return False
 
