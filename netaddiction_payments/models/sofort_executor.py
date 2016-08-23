@@ -13,7 +13,9 @@ class SofortExecutor(models.TransientModel):
     """
     _name = "netaddiction.sofort.executor"
 
-    def initiate_payment(self, success_url, abort_url, default_url, order, amount):
+    real_invoice = fields.Boolean(default=False)
+
+    def initiate_payment(self, success_url, abort_url, default_url, order, amount, real_invoice=False):
         """
 
         Primo metodo da chiamare per effettuare un pagamento su Sofort
@@ -58,6 +60,7 @@ class SofortExecutor(models.TransientModel):
             ]
         )
         if t:
+            self.real_invoice = real_invoice
             pp_aj = self.env['ir.model.data'].get_object('netaddiction_payments', 'sofort_journal')
             pay_inbound = self.env["account.payment.method"].search([("payment_type", "=", "inbound")])
             pay_inbound = pay_inbound[0] if isinstance(pay_inbound, list) else pay_inbound
@@ -92,7 +95,7 @@ class SofortExecutor(models.TransientModel):
         else:
             return False
 
-    def register_payment(self, transaction_id, real_invoice=False):
+    def register_payment(self, transaction_id):
         """
         metodo per registrare il pagamento sofort
         Parametri:
@@ -123,7 +126,7 @@ class SofortExecutor(models.TransientModel):
 
             for inv_id in inv_lst:
                 inv = self.env["account.invoice"].search([("id", "=", inv_id)])
-                inv.is_customer_invoice = real_invoice
+                inv.is_customer_invoice = self.real_invoice
                 inv.signal_workflow('invoice_open')
                 # inv.payement_id = [(6, 0, [payment.id])]
 
