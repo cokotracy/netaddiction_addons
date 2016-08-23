@@ -14,6 +14,7 @@ class SofortExecutor(models.TransientModel):
     _name = "netaddiction.sofort.executor"
 
     real_invoice = fields.Boolean(default=False)
+    sofort_transaction_id = fields.Char(string='ID transazione sofort')
 
     def initiate_payment(self, success_url, abort_url, default_url, order, amount, real_invoice=False):
         """
@@ -84,7 +85,7 @@ class SofortExecutor(models.TransientModel):
 
                 order.payment_method_id = pp_aj.id
                 order.state = 'pending'
-
+                self.sofort_transaction_id = t.transaction
                 return {
                     'url': t.payment_url,
                     'transaction_id': t.transaction
