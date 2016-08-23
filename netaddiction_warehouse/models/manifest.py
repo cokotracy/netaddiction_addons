@@ -241,8 +241,8 @@ class NetaddictionManifest(models.Model):
                 riga += citta
                 count = 30 - len(citta)
                 riga += ' '*count
-                riga += delivery.sale_id.partner_shipping_id.state_id.code 
-                count = 2 - len(delivery.sale_id.partner_shipping_id.state_id.code)
+                riga += str(delivery.sale_id.partner_shipping_id.state_id.code)
+                count = 2 - len(str(delivery.sale_id.partner_shipping_id.state_id.code))
                 riga += ' '*count
                 riga += "001"
                 riga += "0001000"
@@ -348,7 +348,7 @@ class NetaddictionManifest(models.Model):
                     file1.write("1 ")
 
                 file1.write(" 000")
-                name = str(delivery.sale_id.partner_shipping_id.name) + ' ' + str(delivery.sale_id.partner_shipping_id.company_address)
+                name = delivery.sale_id.partner_shipping_id.name + ' ' + delivery.sale_id.partner_shipping_id.company_address
                 name = cleanWinChars(name)
                 name = replace_vowels(name)
                 if len(name)>69:

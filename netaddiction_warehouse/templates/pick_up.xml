@@ -58,7 +58,7 @@
                             <div class="block_content">
                                 <t t-foreach="l[1]" t-as="prod">
                                     <div class="product_row" t-attf-data-barcode="{{prod['barcode']}}" t-attf-data-pid="{{prod['pid']}}" t-attf-data-shelf="{{l[0]}}" t-attf-data-shelf-id="{{prod['shelf_id']}}">
-                                        <b class="qty_for_shelf"><t t-esc="prod['qta']"/></b> x <t t-esc="prod['name']"/>
+                                        <a href="#" class="open_image" t-attf-data-pid="{{prod['pid']}}"><b class="qty_for_shelf"><t t-esc="prod['qta']"/></b> x <t t-esc="prod['name']"/></a>
                                     </div>
                                 </t>
                             </div>
