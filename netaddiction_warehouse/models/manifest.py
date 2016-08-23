@@ -506,7 +506,7 @@ class NetaddictionManifest(models.Model):
                 file1.write("                         ") #mittente
                 file1.write("         ") #cap
                 file1.write("   ") #nazione
-                file1.write("\r\n") 
+                file1.write("\n") 
             
             
         self.manifest_file1 = base64.b64encode(file1.getvalue().encode("utf8"))
@@ -532,7 +532,7 @@ class NetaddictionManifest(models.Model):
 
                 file2.write("E") #tipo record testa
                 file2.write(delivery.delivery_barcode) 
-                file2.write("\r\n")
+                file2.write("\n")
 
                 file2.write("  ")
                 file2.write("0270443 ") #nostro codice
@@ -555,7 +555,7 @@ class NetaddictionManifest(models.Model):
                 count = 35 - len(tel)
                 file2.write(tel)
                 file2.write(" "*count)
-                file2.write("\r\n")
+                file2.write("\n")
 
                 file2.write("  ")
                 file2.write("0270443 ") #nostro codice
@@ -574,7 +574,7 @@ class NetaddictionManifest(models.Model):
                 email = delivery.partner_id.email[0:35]
                 file2.write(email)
                 file2.write(" ")
-                file2.write("\r\n")
+                file2.write("\n")
 
         self.manifest_file2 = base64.b64encode(file2.getvalue().encode("utf8"))
         file2.close()
