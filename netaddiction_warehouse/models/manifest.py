@@ -94,7 +94,6 @@ class NetaddictionManifest(models.Model):
                 name = datetime.datetime.now().strftime("%Y%m%d")
                 name1 = '%s%s.txt' % (prefix1,name)
                 name2 = '%s%s.txt' % (prefix2,name)
-
                 bio1 = io.BytesIO(base64.b64decode(self.manifest_file1))
                 ftp.storbinary('STOR %s' % name1, bio1)
                 sem1 = io.BytesIO('')
@@ -108,6 +107,7 @@ class NetaddictionManifest(models.Model):
                 ftp.storbinary('STOR %s' % sem_name2, sem2)
             except Exception, e:  
                 raise ValidationError(str(e))
+                
 
         else:
             if self.manifest_file1 is False:
@@ -219,7 +219,7 @@ class NetaddictionManifest(models.Model):
                 riga += ' '*count
 
                 if delivery.sale_id.partner_shipping_id.street:
-                    address = delivery.sale_id.partner_shipping_id.street + ' ' + delivery.sale_id.partner_shipping_id.street2
+                    address = delivery.sale_id.partner_shipping_id.street[0:30] + ' ' + delivery.sale_id.partner_shipping_id.street2
                     address = cleanWinChars(address)
                     address = replace_vowels(address)
                 else:
@@ -358,9 +358,9 @@ class NetaddictionManifest(models.Model):
                 file1.write(datetime.datetime.strptime(self.date,"%Y-%m-%d").strftime("%Y")) #anno
                 file1.write(" ") #spazi
                 # correzione brt
-                file1.write(datetime.datetime.strptime(self.date,"%Y-%m-%d").strftime("%m%d")) #mesegiorno
+                #file1.write(datetime.datetime.strptime(self.date,"%Y-%m-%d").strftime("%m%d")) #mesegiorno
                 
-                file1.write(" ") #spazi
+               # file1.write(" ") #spazi
                 file1.write("00") #numero serie
                 file1.write(" ") #spazi
                 file1.write(delivery.delivery_barcode[-7:]) #id spedizione univoco
@@ -393,7 +393,7 @@ class NetaddictionManifest(models.Model):
                 file1.write(spaces) #seconda parte destinatario
                 
                 if delivery.sale_id.partner_shipping_id.street:
-                    address = delivery.sale_id.partner_shipping_id.street + ' ' + delivery.sale_id.partner_shipping_id.street2
+                    address = delivery.sale_id.partner_shipping_id.street[0:30] + ' ' + delivery.sale_id.partner_shipping_id.street2
                     address = cleanWinChars(address)
                     address = replace_vowels(address)
                     address = address[0:35]

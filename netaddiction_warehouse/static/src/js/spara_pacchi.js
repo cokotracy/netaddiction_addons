@@ -89,6 +89,8 @@ odoo.define('netaddiction_warehouse.spara_pacchi', function (require) {
             
         },
         go_next:function(){
+            var manifest = this.manifest;
+            var father = this;
             var psw = $('#psw_block').val()
             if(psw=='pippo123'){
                 $('#psw_block').val('')
@@ -96,6 +98,8 @@ odoo.define('netaddiction_warehouse.spara_pacchi', function (require) {
                 $('.oe_client_action').children().show()
                 $('#message_box').hide()
                 $('#search').val('').focus();
+                father.table.destroy();
+                father.table = new Table_Shipping(father,manifest);
             }else{
                 var not = new Notification.Warning(this);
                 not.title = 'ERRORE PSW';
@@ -152,6 +156,8 @@ odoo.define('netaddiction_warehouse.spara_pacchi', function (require) {
                         
                         more_buzz.play();
                         self.stopProcess(not.text)
+                        var error_html = picking.partner_id + ' ' + picking.delivery_barcode + ' ' + picking.origin + ' - ' + not.text + '<br/>'
+                        $('#content_error').append(error_html)
                         return not.appendTo('.o_notification_manager');
                     }else{
                         father.table.destroy();
@@ -171,12 +177,26 @@ odoo.define('netaddiction_warehouse.spara_pacchi', function (require) {
         init : function(parent,manifest){
             this._super();
             this.picks = [];
+            this.read = [];
             var obj = this;
             var query = ['id','name','partner_id','delivery_read_manifest','delivery_barcode','manifest','origin'];
-            var filter = [['delivery_read_manifest','=','True'],['manifest.id','=',parseInt(manifest)]];
+            var filter = [['manifest.id','=',parseInt(manifest)]];
             new Model('stock.picking').query(query).filter(filter).all().then(function(result){
-                obj.picks = result;
-                $('#number_pick').text(result.length);
+                var read = []
+                var not_read = []
+
+                $(result).each(function(index,value){
+                    if(value.delivery_read_manifest == 1){
+                        read.push(value)
+                    }else{
+                        not_read.push(value)
+                    }
+                })
+
+                obj.picks = not_read;
+                obj.read = read
+                $('#residual_pick').text(not_read.length);
+                $('#number_pick').text(read.length);
                 obj.appendTo('#content_spara_pacchi');
             });
         }
