@@ -58,7 +58,23 @@ $(document).ready(function(){
 
         odoo_function ={
         	'get_allocation': function get_allocation(barcode){
-					            product.call('get_json_allocation',[barcode]).then(function(result){
+                                var barcode_list = []
+                                barcode_list.push(barcode)
+
+                                barcode = '0'+barcode
+                                barcode_list.push(barcode)
+
+                                barcode = barcode.replace(/^0+/, '');
+                                barcode_list.push(barcode)
+
+                                barcode = barcode.toLowerCase();
+                                barcode_list.push(barcode)
+                                barcode = barcode.charAt(0).toUpperCase() + barcode.slice(1);
+                                barcode_list.push(barcode)
+
+                                barcode = barcode.toUpperCase();
+                                barcode_list.push(barcode)
+					            product.call('get_json_allocation',[barcode_list]).then(function(result){
 					                if(result.result == 0){
                                         $('#result').html('');
                                         NotifyVibrate()
@@ -92,7 +108,23 @@ $(document).ready(function(){
                                 });
                             },
             'get_new_allocation' : function get_new_allocation(barcode){
-                                product.call('get_json_allocation',[barcode]).then(function(result){
+                                var barcode_list = []
+                                barcode_list.push(barcode)
+
+                                barcode = '0'+barcode
+                                barcode_list.push(barcode)
+
+                                barcode = barcode.replace(/^0+/, '');
+                                barcode_list.push(barcode)
+
+                                barcode = barcode.toLowerCase();
+                                barcode_list.push(barcode)
+                                barcode = barcode.charAt(0).toUpperCase() + barcode.slice(1);
+                                barcode_list.push(barcode)
+
+                                barcode = barcode.toUpperCase();
+                                barcode_list.push(barcode)
+                                product.call('get_json_allocation',[barcode_list]).then(function(result){
                                     if(result.result == 0){
                                         $('#result').html('');
                                         NotifyVibrate()

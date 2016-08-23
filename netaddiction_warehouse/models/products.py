@@ -258,7 +258,11 @@ class Products(models.Model):
 
     @api.model
     def _get_product_from_barcode(self,barcode):
-        attr=[('barcode','=',barcode)]
+        if isinstance(barcode, list):
+            attr=[('barcode','in',barcode)]
+        else:
+            attr = [('barcode','=',barcode)]
+            
         product = self.search(attr)
 
         if len(product)==0:
