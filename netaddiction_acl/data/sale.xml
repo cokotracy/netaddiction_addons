@@ -122,6 +122,19 @@
             <field name="groups_id" eval="[(4, ref('netaddiction_sale_payments'))]"/>
         </record>
 
+        <record id="netaddiction_special_offers.submenu_netaddiction_special_offers_digital_bonus" model="ir.ui.menu">
+            <field name="groups_id" eval="[(4, ref('netaddiction_sale_offers'))]"/>
+        </record>
+
+        <record id="netaddiction_sale_offer_digital_bonus" model="ir.model.access">
+            <field name="name">Digital Bonus</field>
+            <field name="model_id" search="[('model','=','netaddiction.specialoffer.digital_bonus')]" model="ir.model"/>
+            <field name="group_id" ref="netaddiction_sale_offers"/>
+            <field name="perm_read" eval="1"/>
+            <field name="perm_create" eval="1"/>
+            <field name="perm_write" eval="1"/>
+            <field name="perm_unlink" eval="1"/>
+        </record>
 
 
         <!--ACL PER SALE USER-->

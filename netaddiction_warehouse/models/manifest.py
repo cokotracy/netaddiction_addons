@@ -156,8 +156,10 @@ class NetaddictionManifest(models.Model):
                 riga += ' '*30 
                 riga += 'NN'
                 riga += 'S' #stampa ldv
+
                 riga += delivery.delivery_barcode #numero spedizione
                 count = 25 - len(delivery.delivery_barcode)
+
                 riga += ' '*count
                 riga += datetime.date.today().strftime('%Y%m%d')
                 riga += 'P'
@@ -192,57 +194,81 @@ class NetaddictionManifest(models.Model):
                 riga += ' '*count
                 riga += 'TR'
                 riga += ' '*18
-
-                company = delivery.sale_id.partner_shipping_id.name[0:40]
-                company = cleanWinChars(company)
-                company = replace_vowels(company)
+                
+                if delivery.sale_id.partner_shipping_id.name:
+                    company = delivery.sale_id.partner_shipping_id.name[0:40]
+                    company = cleanWinChars(company)
+                    company = replace_vowels(company)
+                else:
+                    company = ' '
 
                 riga += ' '*2
                 riga += company
                 count = 40-len(company)
                 riga += ' '*count
 
-
-                name = delivery.sale_id.partner_shipping_id.name[0:20]
-                name = cleanWinChars(name)
-                name = replace_vowels(name)
+                if delivery.sale_id.partner_shipping_id.name:
+                    name = delivery.sale_id.partner_shipping_id.name[0:20]
+                    name = cleanWinChars(name)
+                    name = replace_vowels(name)
+                else:
+                    name = ' '
 
                 riga += name
                 count = 20 - len(name)
                 riga += ' '*count
 
-
-                address = delivery.sale_id.partner_shipping_id.street + ' ' + delivery.sale_id.partner_shipping_id.street2
-                address = cleanWinChars(address)
-                address = replace_vowels(address)
+                if delivery.sale_id.partner_shipping_id.street:
+                    address = delivery.sale_id.partner_shipping_id.street + ' ' + delivery.sale_id.partner_shipping_id.street2
+                    address = cleanWinChars(address)
+                    address = replace_vowels(address)
+                else:
+                    address = ' '
 
                 address = address[0:40]
                 riga += address
                 count = 40 - len(address)
                 riga += ' '*count
+
                 if delivery.sale_id.partner_id.mobile:
                     mobile = delivery.sale_id.partner_id.mobile.replace(' ','')
                     mobile = mobile.replace('+39','')
                     mobile = mobile[0:15]
                 else:
                     mobile = ' '*15
+
                 riga += mobile
                 count = 15 - len(mobile)
                 riga += ' '*count
-                cap = delivery.sale_id.partner_shipping_id.zip[0:9]
-                riga += cap
+
+                if delivery.sale_id.partner_shipping_id.zip:
+                    cap = delivery.sale_id.partner_shipping_id.zip[0:9]
+                    riga += cap
+                else:
+                    cap = ' '
+
                 count = 9 - len(cap)
                 riga += ' '*count
-
-                citta = delivery.sale_id.partner_shipping_id.city[0:30]
-                citta = cleanWinChars(citta)
-                citta = replace_vowels(citta)
+                
+                if delivery.sale_id.partner_shipping_id.city: 
+                    citta = delivery.sale_id.partner_shipping_id.city[0:30]
+                    citta = cleanWinChars(citta)
+                    citta = replace_vowels(citta)
+                else:
+                    citta = ' '
 
                 riga += citta
                 count = 30 - len(citta)
                 riga += ' '*count
-                riga += str(delivery.sale_id.partner_shipping_id.state_id.code)
-                count = 2 - len(str(delivery.sale_id.partner_shipping_id.state_id.code))
+                
+                if delivery.sale_id.partner_shipping_id.state_id.code:
+                    riga += str(delivery.sale_id.partner_shipping_id.state_id.code)
+                    count = 2 - len(str(delivery.sale_id.partner_shipping_id.state_id.code))
+                else:
+                    riga += ' '
+                    count = 2 - len(' ')
+
+                
                 riga += ' '*count
                 riga += "001"
                 riga += "0001000"
@@ -287,7 +313,7 @@ class NetaddictionManifest(models.Model):
                 file1.write(riga)
 
         
-        self.manifest_file1 = base64.b64encode(file1.getvalue())
+        self.manifest_file1 = base64.b64encode(file1.getvalue().encode("utf8"))
         self.manifest_file2 = None
         
         file1.close()
@@ -348,9 +374,15 @@ class NetaddictionManifest(models.Model):
                     file1.write("1 ")
 
                 file1.write(" 000")
-                name = delivery.sale_id.partner_shipping_id.name + ' ' + delivery.sale_id.partner_shipping_id.company_address
+
+                name = ''
+                if delivery.sale_id.partner_shipping_id.name:
+                    name = delivery.sale_id.partner_shipping_id.name 
+                if delivery.sale_id.partner_shipping_id.company_address:
+                    name += delivery.sale_id.partner_shipping_id.company_address
                 name = cleanWinChars(name)
                 name = replace_vowels(name)
+
                 if len(name)>69:
                     file1.write(name[0:69]) #prima parte destinatario
                 else:
@@ -359,31 +391,47 @@ class NetaddictionManifest(models.Model):
                 count = 70-len(name)
                 spaces = ' '*count
                 file1.write(spaces) #seconda parte destinatario
+                
+                if delivery.sale_id.partner_shipping_id.street:
+                    address = delivery.sale_id.partner_shipping_id.street + ' ' + delivery.sale_id.partner_shipping_id.street2
+                    address = cleanWinChars(address)
+                    address = replace_vowels(address)
+                    address = address[0:35]
+                else:
+                    address = ' '
 
-                address = delivery.sale_id.partner_shipping_id.street + ' ' + delivery.sale_id.partner_shipping_id.street2
-                address = cleanWinChars(address)
-                address = replace_vowels(address)
-                address = address[0:35]
                 file1.write(address) #indirizzo
                 count = 35 - len(address)
                 spaces = ' '*count
                 file1.write(spaces) #indirizzo
+                
+                if delivery.sale_id.partner_shipping_id.zip:
+                    cap = delivery.sale_id.partner_shipping_id.zip[0:9]
+                else:
+                    cap = ' '
 
-                cap = delivery.sale_id.partner_shipping_id.zip[0:9]
                 file1.write(cap) #CAP
                 count = 9 - len(cap)
                 spaces = ' '*count
                 file1.write(spaces) #CAP
 
-                citta = delivery.sale_id.partner_shipping_id.city[0:35]
-                citta = cleanWinChars(citta)
-                citta = replace_vowels(citta)
+                if delivery.sale_id.partner_shipping_id.city:
+                    citta = delivery.sale_id.partner_shipping_id.city[0:35]
+                    citta = cleanWinChars(citta)
+                    citta = replace_vowels(citta)
+                else:
+                    citta = ' '
+
                 file1.write(citta) #citta
                 count = 35 - len(citta)
                 spaces = ' '*count
                 file1.write(spaces) #citta
 
-                provincia = delivery.sale_id.partner_shipping_id.state_id.code 
+                if delivery.sale_id.partner_shipping_id.state_id.code:
+                    provincia = delivery.sale_id.partner_shipping_id.state_id.code 
+                else:
+                    provincia = ' '
+                    
                 file1.write(provincia) #provincia
                 
                 file1.write("   ") #italia
