@@ -96,18 +96,16 @@ class SofortExecutor(models.TransientModel):
         else:
             return False
 
-    def register_payment(self, transaction_id):
+    def register_payment(self):
         """
         metodo per registrare il pagamento sofort
-        Parametri:
-        -transaction_id: id transazione sofort
         Returns:
             - se tutto ok: True
             - altrimenti: False
         """
         payments = self.env['account.payment'].search([
             ('state', '=', 'draft'),
-            ('sofort_transaction_id', '=', transaction_id),
+            ('sofort_transaction_id', '=', self.sofort_transaction_id),
         ])
 
         if not payments:
