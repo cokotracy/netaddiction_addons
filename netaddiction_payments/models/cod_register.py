@@ -150,28 +150,31 @@ class CoDRegister(models.TransientModel):
             self._check_line(head,warning_list,key,money_key,contrassegno)
 
             for line in reader:
-                #attenzione alle ultime due righe coi totali
+                # attenzione alle ultime due righe coi totali
                 line = strip_keys(line)
                 self._check_line(line,warning_list,key,money_key,contrassegno)
-
 
             if warning_list:
                 raise Warning("non sono stati trovati pagamenti in contrassegno per i seguenti ordini nel file: %s" %warning_list)
 
-
     def _check_line(self,line, warning_list,key,money_key,contrassegno):
         found = False
         if line[key]:
-            order = self.env["sale.order"].search([("name","=",line[key])])
+            order = self.env["sale.order"].search([("name", "=", line[key])])
             if order:
-                amount_str = line[money_key].replace(",",".").replace("€","")
+                amount_str = line[money_key].replace(",", ".").replace("€", "")
                 amount = float(amount_str)
                 for payment in order.account_payment_ids:
 
-
-                    if (isclose(payment.amount,amount)) and payment.journal_id.id == contrassegno.id and not payment.state == 'posted':
+                    if (isclose(payment.amount, amount)) and payment.journal_id.id == contrassegno.id and not payment.state == 'posted':
                         payment.post()
                         found = True
                         break
                 if not found:
-                    warning_list.append((line[key],amount_str))
+                    warning_list.append((line[key], amount_str))
+                else:
+                    all_paid = True
+                    for p in order.account_payment_ids:
+                        all_paid = all_paid and p.state == 'posted'
+                    if all_paid:
+                        order.date_done = fields.Datetime.now()
