@@ -361,16 +361,11 @@ class Products(models.Model):
             return []
 
         def _name_get(d):
-            name = d.get('name','')
-            code = context.get('display_default_code', True) and d.get('default_code',False) or False
+            name = d.get('name', '')
+            code = context.get('display_default_code', True) and d.get('default_code', False) or False
             if code:
-                name = '[%s] %s' % (code,name)
+                name = '[%s] %s' % (code, name)
             return (d['id'], name)
-
-        # all user don't have access to seller and partner
-        # check access and use superuser
-        self.check_access_rights(cr, user, "read")
-        self.check_access_rule(cr, user, ids, "read", context=context)
 
         result = []
         for product in self.browse(cr, SUPERUSER_ID, ids, context=context):
