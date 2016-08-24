@@ -358,8 +358,8 @@ class Products(models.Model):
         """
         ids = self.search(cr, user, [('name', operator, name)], context=context)
         if args is not None:
-            ids = self.search(cr, user, args + [('id', 'in', ids)], limit=limit, context=context)
-        result = self.name_get(cr, user, ids, context=context)
+            ids += self.search(cr, user, args, limit=limit, context=context)
+        result = self.name_get(cr, user, set(ids), context=context)
         return result
 
 
