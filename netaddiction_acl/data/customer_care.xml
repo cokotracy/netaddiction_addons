@@ -124,7 +124,7 @@
         <record id="netaddiction_cc_user_plus_bonus_line" model="ir.model.access">
             <field name="name">bonus.line</field>
             <field name="model_id" search="[('model','=','netaddiction.specialoffer.product_with_bonus_offer_line')]" model="ir.model"/>
-            <field name="group_id" ref="netaddiction_inventory_user_plus"/>
+            <field name="group_id" ref="netaddiction_sale_customer_care"/>
             <field name="perm_read" eval="1"/>
             <field name="perm_create" eval="0"/>
             <field name="perm_write" eval="0"/>
