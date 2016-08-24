@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from openerp import models, fields, api, tools
+from openerp import models, fields, api, tools, SUPERUSER_ID
 from openerp.osv import fields as old_fields
 import openerp.addons.decimal_precision as dp
 import datetime
@@ -348,6 +348,37 @@ class Products(models.Model):
                 else:
                     message = u"%s è esaurito" % self.display_name
                 raise ProductOrderQuantityExceededLimitException(self.id,qty_residual,message)
+
+
+    def name_get(self, cr, user, ids, context=None):
+        """
+        Ridefinisce il metodo per scartare alcune query inutili.
+        """
+        if context is None:
+            context = {}
+        if isinstance(ids, (int, long)):
+            ids = [ids]
+        if not len(ids):
+            return []
+
+        def _name_get(d):
+            name = d.get('name', '')
+            code = context.get('display_default_code', True) and d.get('default_code', False) or False
+            if code:
+                name = '[%s] %s' % (code, name)
+            return (d['id'], name)
+
+        result = []
+        for product in self.browse(cr, SUPERUSER_ID, ids, context=context):
+            variant = ", ".join([v.name for v in product.attribute_value_ids])
+            name = variant and "%s (%s)" % (product.name, variant) or product.name
+            mydict = {
+                'id': product.id,
+                'name': name,
+                'default_code': product.default_code,
+            }
+            result.append(_name_get(mydict))
+        return result
 
     @api.model
     def name_search(self, name, args=None, operator='ilike', limit=6):
