@@ -356,10 +356,11 @@ class Products(models.Model):
 
         Scarta anche altre query poco utili.
         """
-        ids = self.search(cr, user, [('name', operator, name)], context=context)
+        ids = set(self.search(cr, user, [('name', operator, name)], context=context))
         if args is not None:
-            ids += self.search(cr, user, args, limit=limit, context=context)
-        result = self.name_get(cr, user, set(ids), context=context)
+            filter_ids = set(self.search(cr, user, args, context=context))
+            ids = ids.intersection(filter_ids)
+        result = self.name_get(cr, user, list(ids)[:limit], context=context)
         return result
 
 
