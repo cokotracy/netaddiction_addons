@@ -265,10 +265,23 @@ class Products(models.Model):
             if new_out_date != old_out_date and new_out_date > datetime.date.today():
                 pick = self.env['stock.picking'].search([('move_lines.product_id','=',self.id)])
                 pick.write({'min_date':new_out_date - datetime.timedelta(days = 1)})
+    
 
+    @api.constrains('available_date')
+    def available_date_change(self):
+        # cerco tutte le spedizioni che sono 'confirmed' [attesa disponibilita]
+        # con questo prodotto 
+        picks = self.env['stock.picking'].search([('move_lines.product_id','=',self.id),('state','=','confirmed'),('min_date','<',self.available_date)])
+        for pick in picks:
+            pick.min_date = self.available_date
 
-
-            
+    @api.constrains('out_date')
+    def out_date_change(self):
+        # cerco tutte le spedizioni che sono 'confirmed' [attesa disponibilita]
+        # con questo prodotto 
+        picks = self.env['stock.picking'].search([('move_lines.product_id','=',self.id),('state','=','confirmed'),('min_date','<',self.out_date_change)])
+        for pick in picks:
+            pick.min_date = self.out_date_change
 
     def get_actual_price(self):
         #return self.special_price if (self.special_price>0.00) else self.final_price
