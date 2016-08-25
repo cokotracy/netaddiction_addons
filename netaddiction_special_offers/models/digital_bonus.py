@@ -20,6 +20,7 @@ class DigitalBonus(models.Model):
     text = fields.Text("testo offerta")
     image = fields.Binary("Immagine", attachment=True,
         help="Limitata a 1024x1024px.")
+    company_id = fields.Many2one(comodel_name='res.company', string='Company', required=True)
 
     @api.one
     def process_file(self):
