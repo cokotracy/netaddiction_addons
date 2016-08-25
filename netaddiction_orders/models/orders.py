@@ -339,17 +339,16 @@ class Order(models.Model):
     def action_cancel(self):
         # N.B. offerte mai riattivate manualmente
 
-        #CONTROLLO che possa essere annullato:
-        #se trovo una spedizone in 'done' oppure una spedizione sparata nel manifest
-        #allora non posso annullare l'ordine
-
+        # CONTROLLO che possa essere annullato:
+        # se trovo una spedizone in 'done' oppure una spedizione sparata nel manifest
+        # allora non posso annullare l'ordine
 
         for order in self:
 
             for pick in order.picking_ids:
                 if pick.delivery_read_manifest:
                     raise ValidationError("Non puoi annullare l'ordine in quanto è già in carico al Corriere")
-                #if pick.state == 'done':
+                # if pick.state == 'done':
                 #    raise ValidationError("Non puoi annullare l'ordine in quanto almeno una spedizione è stata completata.")
 
             if (order.state != 'draft'):
@@ -366,7 +365,7 @@ class Order(models.Model):
                         offer_line.qty_selled -= och.qty
                 # ristorare gifts
 
-                if order.gift_discount > 0.0:
+                if order.gift_discount > 0.0 and not order.gift_set_by_bo:
                     order.partner_id.add_gift_value(order.gift_discount, "Rimborso")
 
                 # ristoro codici non mandati
@@ -410,7 +409,7 @@ class SaleOrderLine(models.Model):
         ('invoiced', 'Fully Invoiced'),
         ('to invoice', 'To Invoice'),
         ('no', 'Nothing to Invoice')
-        ], string='Invoice Status', compute='_compute_invoice_status', store=True, readonly=True, default='no')
+    ], string='Invoice Status', compute='_compute_invoice_status', store=True, readonly=True, default='no')
 
     @api.constrains('qty_delivered', 'qty_invoiced')
     def _check_complete(self):
