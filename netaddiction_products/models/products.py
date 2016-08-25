@@ -465,9 +465,9 @@ class Template(models.Model):
 
         res = super(Template, self).write(values)
 
-        for p in result:
-            for sup in p.seller_ids:
-                sup.product_tmpl_id = self.id
+        #for p in result:
+        #    for sup in p.seller_ids:
+        #        sup.product_tmpl_id = self.id
 
         return res
 

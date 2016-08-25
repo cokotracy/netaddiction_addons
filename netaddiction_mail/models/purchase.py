@@ -14,7 +14,7 @@ class Purhcase(models.Model):
     def button_cancel(self):
         for order in self:
             for line in order.order_line:
-                if self.order_id.state == 'purchase':
+                if self.state == 'purchase':
                     line.send_mail_cancel(0,True)
 
         return super(Purhcase,self).button_cancel()
