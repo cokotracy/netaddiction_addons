@@ -279,9 +279,9 @@ class Products(models.Model):
     def out_date_change(self):
         # cerco tutte le spedizioni che sono 'confirmed' [attesa disponibilita]
         # con questo prodotto 
-        picks = self.env['stock.picking'].search([('move_lines.product_id','=',self.id),('state','=','confirmed'),('min_date','<',self.out_date_change)])
+        picks = self.env['stock.picking'].search([('move_lines.product_id','=',self.id),('state','=','confirmed'),('min_date','<',self.out_date)])
         for pick in picks:
-            pick.min_date = self.out_date_change
+            pick.min_date = self.out_date
 
     def get_actual_price(self):
         #return self.special_price if (self.special_price>0.00) else self.final_price
