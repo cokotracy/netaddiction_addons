@@ -571,7 +571,7 @@ class NetaddictionManifest(models.Model):
                 file2.write(delivery.delivery_barcode[-7:]) #id spedizione univoco
 
                 file2.write("I") #tipo record test
-                email = delivery.partner_id.email[0:35]
+                email = delivery.partner_id.email[0:35] if delivery.partner_id.email else ''
                 file2.write(email)
                 file2.write(" ")
                 file2.write("\n")
