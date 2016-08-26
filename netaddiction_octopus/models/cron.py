@@ -27,6 +27,8 @@ class Cron(models.Model):
         self.kill(suppliers)
 
     def clear(self):
+        _logger.info('Clear!')
+
         self.env.cr.execute('DELETE FROM "netaddiction_octopus_product_product_attribute_value_rel"')
         self.env.cr.execute('DELETE FROM "netaddiction_octopus_product"')
         self.env.cr.execute('ALTER SEQUENCE "netaddiction_octopus_product_id_seq" RESTART WITH 1')
@@ -37,6 +39,11 @@ class Cron(models.Model):
         product_model = self.env['netaddiction_octopus.product']
 
         for supplier in suppliers.values():
+            # TODO
+            if supplier.partner_id.id != 137:
+                continue
+            # END-TODO
+
             _logger.info(' | %s (#%d)' % (supplier.name, supplier.id))
 
             datas = {}
@@ -153,6 +160,8 @@ class Cron(models.Model):
                 _logger.error('Salvaggio del prodotto non riuscito (%s)' % e)
 
     def kill(self, suppliers):
+        _logger.info('Kill!')
+
         product_model = self.env['netaddiction_octopus.product']
         supplierinfo_model = self.env['product.supplierinfo']
 

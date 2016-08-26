@@ -28,7 +28,16 @@ class FTPDownloader(Downloader):
         ftp.quit()
 
         tempfile.seek(0)
-        source = tempfile.read()
+
+        # TODO spostare e rendere genirico
+        if path.endswith('.zip'):
+            from zipfile import ZipFile
+            with ZipFile(tempfile, 'r') as zf:
+                with zf.open(path[:-4]) as f:
+                    source = f.read()
+        else:  # END-TODO
+            source = tempfile.read()
+
         tempfile.close()
 
         return self.encode(source)

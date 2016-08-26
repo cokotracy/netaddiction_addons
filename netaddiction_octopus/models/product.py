@@ -48,7 +48,7 @@ class Product(models.Model):
                 ('product_code', '=', self.supplier_code),
             ])
 
-            if supplierinfo.exists():
+            if supplierinfo:
                 return self.update(supplierinfo, commit=commit)
         else:
             product = self.env['product.product'].search([
@@ -56,13 +56,13 @@ class Product(models.Model):
                 '|', ('active', '=', False), ('active', '=', True)
             ])
 
-            if product.exists():
+            if product:
                 supplierinfo = product.seller_ids.search([
                     ('name', '=', self.supplier_id.id),
                     ('product_code', '=', self.supplier_code),
                 ])
 
-                if supplierinfo.exists():
+                if supplierinfo:
                     return self.update(supplierinfo, commit=commit)
 
                 return self.chain(product, commit=commit)
@@ -71,6 +71,7 @@ class Product(models.Model):
                 return self.add(commit=commit)
 
     def add(self, commit=True):
+        return  # TODO remove
         image = None
         template_id = None
 
@@ -148,10 +149,19 @@ class Product(models.Model):
                 ('product_code', '=', self.supplier_code),
             ])
 
-        supplierinfo.write({
-            'avail_qty': self.supplier_quantity,
-            'price': self.supplier_price,
-        })
+        update_mapping = {
+            'avail_qty': 'supplier_quantity',
+            'price': 'supplier_price',
+        }
 
-        if commit:
-            self.env.cr.commit()
+        # Aggiorna *supplierinfo* solo se i campi in *update_mapping* sono cambiati
+        for supplierinfo_field, self_field in update_mapping.items():
+            if getattr(supplierinfo, supplierinfo_field) != getattr(self, self_field):
+                data = {si_field: getattr(self, self_field) for si_field, self_field in update_mapping.items()}
+
+                supplierinfo.write(data)
+
+                if commit:
+                    self.env.cr.commit()
+
+                break
