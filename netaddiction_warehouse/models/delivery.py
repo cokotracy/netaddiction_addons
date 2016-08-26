@@ -26,7 +26,8 @@ class Orders(models.Model):
             raise ValidationError("Devi inserire almeno un prodotto nell'ordine")
 
         if not self.env.context.get('no_check_limit_and_action', False):
-            self.order_line.check_limit_and_action()
+            if not self.parent_order:
+                self.order_line.check_limit_and_action()
 
         self.pre_action_confirm()
         old_state = self.state

@@ -27,6 +27,9 @@ class Order(models.Model):
 
     created_by_the_customer = fields.Boolean(string="Creato dal cliente", default=False)
 
+    parent_order = fields.Many2one(comodel_name="sale.order", string="Ordine Padre", ondelete="set null")
+    child_orders = fields.One2many(comodel_name="sale.order", string="Ordini Figli", inverse_name='parent_order')
+
     ##############
     # ACTION STATE#
     ##############
@@ -146,6 +149,12 @@ class Order(models.Model):
         rec.reset_voucher()
         for line in rec.order_line:
             line.product_id_change()
+
+        # recupero la vecchia data
+        rec.date_order = self.date_order
+
+        rec.parent_order = self.id
+
         return rec
 
     @api.multi
@@ -321,7 +330,8 @@ class Order(models.Model):
                 for order_line in order.order_line:
                     if not order_line.product_id.active or not order_line.product_id.sale_ok:
                         if not self.env.context.get('no_check_product_sold_out', False):
-                            raise ProductSoldOutOrderConfirmException(order.id, "prodotto %s attivo: %s sale_ok: %s" % (order_line.product_id.name, order_line.product_id.active, order_line.product_id.sale_ok))
+                            if not order.parent_order:
+                                raise ProductSoldOutOrderConfirmException(order.id, "prodotto %s attivo: %s sale_ok: %s" % (order_line.product_id.name, order_line.product_id.active, order_line.product_id.sale_ok))
 
                 problems = False
                 problems = order._check_offers_catalog()

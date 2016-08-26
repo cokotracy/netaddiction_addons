@@ -50,7 +50,7 @@
 
                 <xpath expr="//field[@name='partner_shipping_id']"
                     position="replace">    
-                     <field name="partner_shipping_id" domain="[('type','=','delivery'),('parent_id','=',partner_id)]" groups="sale.group_delivery_invoice_address" context="{'default_type':'delivery', 'show_address': 1}}"/>      
+                     <field name="partner_shipping_id" domain="[('type','=','delivery'),('parent_id','=',partner_id)]" groups="sale.group_delivery_invoice_address" context="{'default_type':'delivery', 'show_address': 1}}"/>     
                 </xpath> 
 
                 
@@ -87,6 +87,15 @@
                 <notebook position="inside">
                     <page name="comment" string="Commento Cliente">
                         <field name="customer_comment" readonly="1"/>
+                    </page>
+                    <page name="duplicate" string="Duplicati">
+                        <group name="Duplicate">
+                            <field name="parent_order" readonly="1" />
+                        </group>
+                        
+                        <b>Ordini Figli</b>
+                        <field name="child_orders" readonly="1"/>
+
                     </page>
                 </notebook>
             </field>
