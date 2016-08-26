@@ -196,6 +196,15 @@
             <field name="perm_write" eval="1"/>
             <field name="perm_unlink" eval="1"/>
         </record>
+        <record id="netaddiction_cc_offer_catalog_line" model="ir.model.access">
+            <field name="name">special offer catalog line</field>
+            <field name="model_id" search="[('model','=','netaddiction.specialoffer.offer_catalog_line')]" model="ir.model"/>
+            <field name="group_id" ref="netaddiction_sale_customer_care"/>
+            <field name="perm_read" eval="1"/>
+            <field name="perm_create" eval="1"/>
+            <field name="perm_write" eval="1"/>
+            <field name="perm_unlink" eval="1"/>
+        </record>
        
     </data>
 </openerp>
