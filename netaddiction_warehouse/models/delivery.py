@@ -41,7 +41,8 @@ class Orders(models.Model):
                 pick.generate_barcode()
         if not self.env.context.get('no_do_action_quantity', False):
             for line in self.order_line:
-                line.product_id.do_action_quantity()
+                if not self.parent_order:
+                    line.product_id.do_action_quantity()
 
         if old_state == 'problem':
             self.state = 'problem'
