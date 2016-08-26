@@ -81,7 +81,7 @@
                     <br/>
                     <br/>
 
-                    <field name="text" placeholder="Testo offerta..."/>
+                    <field name="text" placeholder="Testo offerta..." widget="html"/>
 
                     <br/>
                     <br/>
