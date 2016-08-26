@@ -580,11 +580,16 @@ class StockPicking(models.Model):
 
     @api.one 
     def _compute_date_of_shipping(self):
+        holiday = lib_holidays.LibHolidays()
         days = int(self.carrier_id.time_to_shipping)
         if self.min_date:
             date_ship = datetime.datetime.strptime(self.min_date,'%Y-%m-%d %H:%M:%S') + datetime.timedelta(days = days)
+            while holiday.is_holiday(date_ship):
+                date_ship += datetime.timedelta(days = 1)
         else:
             date_ship = datetime.datetime.now() + datetime.timedelta(days = days)
+            while holiday.is_holiday(date_ship):
+                date_ship += datetime.timedelta(days = 1)
         self.date_of_shipping_home = date_ship
 
     @api.multi

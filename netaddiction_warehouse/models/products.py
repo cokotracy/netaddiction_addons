@@ -5,6 +5,7 @@ import datetime
 from error import Error
 import lib_holidays
 from calendar import monthrange
+import pytz
 
 class Products(models.Model):
     _inherit = 'product.product'
@@ -75,11 +76,11 @@ class Products(models.Model):
             hna = r.value
         hour_not_available = datetime.datetime.time(datetime.datetime.strptime(hna , '%H:%M'))
 
-        time_now = datetime.datetime.time(datetime.datetime.now())
+        time_now = datetime.datetime.time(datetime.datetime.now(tz = pytz.timezone(self.env.user.tz)))
       
         #per prima cosa controllo se sono dopo hour_available
         #aggiungo un giorno di processing
-        if self.days_available == 0 and time_now > hour_available:
+        if shipping == 0 and time_now > hour_available:
             shipping += 1
         #se invece non ce l'ho disponibile in magazzino controllo se sono dopo hour_not_available
         #nel caso dovessi ordinarlo dal fornitore aggiungo un giorno di processing
@@ -126,7 +127,7 @@ class Products(models.Model):
             hna = r.value
         hour_not_available = datetime.datetime.time(datetime.datetime.strptime(hna , '%H:%M'))
 
-        time_now = datetime.datetime.time(datetime.datetime.now())
+        time_now = datetime.datetime.time(datetime.datetime.now(tz = pytz.timezone(self.env.user.tz)))
         self.ensure_one()
         if qty>0:
             #diamo per scontato che qua ho quantità in magazzino
@@ -358,9 +359,6 @@ class ConfigShippingTime(models.TransientModel):
     hour_available = fields.Char(string="Ora oltre la quale la spedizione non è più immediata ma slitta a domani",default="16:00")
     hour_not_available = fields.Char(string="Ora oltre la quale la spedizione di prodotti non presenti in magazzino slitta di un giorno",default="14:00")
 
-    #date_start_close = fields.Date(string="Giorno di inizio chiusura magazzino")
-    #date_finish_close = fields.Date(string="Giorno di fine chiusura magazzino")
-
     shipping_days = fields.Integer(string="Giorni di spedizione di default (può essere anche una media)")
 
     @api.one
@@ -371,30 +369,20 @@ class ConfigShippingTime(models.TransientModel):
     def set_shipping_days(self,values):
         self.env['ir.values'].create({'name':'shipping_days','value':self.shipping_days,'model':'netaddiction.shipping.time'})
 
-    #@api.one
-    #def set_date_start_close(self,values):
-    #    self.env['ir.values'].create({'name':'date_start_close','value':self.date_start_close,'model':'netaddiction.shipping.time'})
-
-    #@api.one
-    #def set_date_finish_close(self,values):
-    #    self.env['ir.values'].create({'name':'date_finish_close','value':self.date_finish_close,'model':'netaddiction.shipping.time'})
-
     @api.one
     def set_hour_not_available(self,values):
         self.env['ir.values'].create({'name':'hour_not_available','value':self.hour_not_available,'model':'netaddiction.shipping.time'})
 
-    @api.model
-    def get_default_values(self,fields):
-        values = self.env['ir.values'].search([('model','=','netaddiction.shipping.time')])
-        attr = {
-            'hour_available' : '16:00',
-            'hour_not_available' : '14:00',
-     #       'date_finish_close' : '',
-     #       'date_start_close' : '',
-            'shipping_days' : 1
-        }
-        for v in values:
-            attr[v.name] = v.value
-        return attr
+    #@api.model
+    #def get_default_values(self,fields):
+    #    values = self.env['ir.values'].search([('model','=','netaddiction.shipping.time')])
+    #    attr = {
+    #        'hour_available' : '16:00',
+    #        'hour_not_available' : '14:00',
+    #        'shipping_days' : 1
+    #    }
+    #    for v in values:
+    #        attr[v.name] = v.value
+    #    return attr
 
 
