@@ -26,7 +26,8 @@ class Orders(models.Model):
             raise ValidationError("Devi inserire almeno un prodotto nell'ordine")
 
         if not self.env.context.get('no_check_limit_and_action', False):
-            self.order_line.check_limit_and_action()
+            if not self.parent_order:
+                self.order_line.check_limit_and_action()
 
         self.pre_action_confirm()
         old_state = self.state
@@ -40,7 +41,8 @@ class Orders(models.Model):
                 pick.generate_barcode()
         if not self.env.context.get('no_do_action_quantity', False):
             for line in self.order_line:
-                line.product_id.do_action_quantity()
+                if not self.parent_order:
+                    line.product_id.do_action_quantity()
 
         if old_state == 'problem':
             self.state = 'problem'
@@ -578,11 +580,16 @@ class StockPicking(models.Model):
 
     @api.one 
     def _compute_date_of_shipping(self):
+        holiday = lib_holidays.LibHolidays()
         days = int(self.carrier_id.time_to_shipping)
         if self.min_date:
             date_ship = datetime.datetime.strptime(self.min_date,'%Y-%m-%d %H:%M:%S') + datetime.timedelta(days = days)
+            while holiday.is_holiday(date_ship):
+                date_ship += datetime.timedelta(days = 1)
         else:
             date_ship = datetime.datetime.now() + datetime.timedelta(days = days)
+            while holiday.is_holiday(date_ship):
+                date_ship += datetime.timedelta(days = 1)
         self.date_of_shipping_home = date_ship
 
     @api.multi

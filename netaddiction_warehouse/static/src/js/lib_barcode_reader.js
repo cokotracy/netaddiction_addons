@@ -170,6 +170,7 @@ $(document).ready(function(){
                                 });
                             },
             'pick_up_barcode' : function pick_up_barcode(barcode){
+                                $('.done_msg').remove();
                                 var products = new Array();
                                 $('.product_row').each(function(index,value){
                                     if($(value).attr('data-barcode') == barcode){
@@ -277,6 +278,7 @@ $(document).ready(function(){
                                 }
                             },
             'set_pick_up' : function set_pick_up(wave_id,shelf_id,barcode,qty_to_down){
+
                                 wave.call('wave_pick_ip',[barcode,shelf_id,wave_id,qty_to_down])
                                 $('.product_row').each(function(index,value){
                                     if($(value).attr('data-barcode') == barcode && $(value).attr('data-shelf-id')==shelf_id){

@@ -4,6 +4,7 @@ from openerp.tools import float_is_zero, float_compare
 from openerp import _
 from openerp.exceptions import Warning
 from openerp.exceptions import ValidationError
+import datetime
 
 
 class Order(models.Model):
@@ -25,6 +26,9 @@ class Order(models.Model):
     customer_comment = fields.Text(string="Commento Cliente")
 
     created_by_the_customer = fields.Boolean(string="Creato dal cliente", default=False)
+
+    parent_order = fields.Many2one(comodel_name="sale.order", string="Ordine Padre", ondelete="set null")
+    child_orders = fields.One2many(comodel_name="sale.order", string="Ordini Figli", inverse_name='parent_order')
 
     ##############
     # ACTION STATE#
@@ -145,6 +149,12 @@ class Order(models.Model):
         rec.reset_voucher()
         for line in rec.order_line:
             line.product_id_change()
+
+        # recupero la vecchia data
+        rec.date_order = self.date_order
+
+        rec.parent_order = self.id
+
         return rec
 
     @api.multi
@@ -313,11 +323,15 @@ class Order(models.Model):
     def pre_action_confirm(self):
         for order in self:
             if order.state in ('draft', 'pending'):
+                
+                # aggiorna data ordine
+                order.date_order = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
 
                 for order_line in order.order_line:
                     if not order_line.product_id.active or not order_line.product_id.sale_ok:
                         if not self.env.context.get('no_check_product_sold_out', False):
-                            raise ProductSoldOutOrderConfirmException(order.id, "prodotto %s attivo: %s sale_ok: %s" % (order_line.product_id.name, order_line.product_id.active, order_line.product_id.sale_ok))
+                            if not order.parent_order:
+                                raise ProductSoldOutOrderConfirmException(order.id, "prodotto %s attivo: %s sale_ok: %s" % (order_line.product_id.name, order_line.product_id.active, order_line.product_id.sale_ok))
 
                 problems = False
                 problems = order._check_offers_catalog()
@@ -339,24 +353,23 @@ class Order(models.Model):
     def action_cancel(self):
         # N.B. offerte mai riattivate manualmente
 
-        #CONTROLLO che possa essere annullato:
-        #se trovo una spedizone in 'done' oppure una spedizione sparata nel manifest
-        #allora non posso annullare l'ordine
-
+        # CONTROLLO che possa essere annullato:
+        # se trovo una spedizone in 'done' oppure una spedizione sparata nel manifest
+        # allora non posso annullare l'ordine
 
         for order in self:
 
             for pick in order.picking_ids:
                 if pick.delivery_read_manifest:
                     raise ValidationError("Non puoi annullare l'ordine in quanto è già in carico al Corriere")
-                #if pick.state == 'done':
+                # if pick.state == 'done':
                 #    raise ValidationError("Non puoi annullare l'ordine in quanto almeno una spedizione è stata completata.")
 
             if (order.state != 'draft'):
                 # offerte catalogo
                 for line in order.order_line:
                     if(line.offer_type and not line.negate_offer):
-                        offer_line = order.product_id.offer_catalog_lines[0] if len(order.product_id.offer_catalog_lines) > 0 else None
+                        offer_line = line.product_id.offer_catalog_lines[0] if len(line.product_id.offer_catalog_lines) > 0 else None
                         if offer_line:
                             offer_line.qty_selled -= line.product_uom_qty
                 # offerte carrello
@@ -366,7 +379,7 @@ class Order(models.Model):
                         offer_line.qty_selled -= och.qty
                 # ristorare gifts
 
-                if order.gift_discount > 0.0:
+                if order.gift_discount > 0.0 and not order.gift_set_by_bo:
                     order.partner_id.add_gift_value(order.gift_discount, "Rimborso")
 
                 # ristoro codici non mandati
@@ -410,7 +423,7 @@ class SaleOrderLine(models.Model):
         ('invoiced', 'Fully Invoiced'),
         ('to invoice', 'To Invoice'),
         ('no', 'Nothing to Invoice')
-        ], string='Invoice Status', compute='_compute_invoice_status', store=True, readonly=True, default='no')
+    ], string='Invoice Status', compute='_compute_invoice_status', store=True, readonly=True, default='no')
 
     @api.constrains('qty_delivered', 'qty_invoiced')
     def _check_complete(self):

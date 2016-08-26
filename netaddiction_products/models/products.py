@@ -265,10 +265,23 @@ class Products(models.Model):
             if new_out_date != old_out_date and new_out_date > datetime.date.today():
                 pick = self.env['stock.picking'].search([('move_lines.product_id','=',self.id)])
                 pick.write({'min_date':new_out_date - datetime.timedelta(days = 1)})
+    
 
+    @api.constrains('available_date')
+    def available_date_change(self):
+        # cerco tutte le spedizioni che sono 'confirmed' [attesa disponibilita]
+        # con questo prodotto 
+        picks = self.env['stock.picking'].search([('move_lines.product_id','=',self.id),('state','=','confirmed'),('min_date','<',self.available_date)])
+        for pick in picks:
+            pick.min_date = self.available_date
 
-
-            
+    @api.constrains('out_date')
+    def out_date_change(self):
+        # cerco tutte le spedizioni che sono 'confirmed' [attesa disponibilita]
+        # con questo prodotto 
+        picks = self.env['stock.picking'].search([('move_lines.product_id','=',self.id),('state','=','confirmed'),('min_date','<',self.out_date)])
+        for pick in picks:
+            pick.min_date = self.out_date
 
     def get_actual_price(self):
         #return self.special_price if (self.special_price>0.00) else self.final_price
@@ -349,6 +362,7 @@ class Products(models.Model):
                     message = u"%s è esaurito" % self.display_name
                 raise ProductOrderQuantityExceededLimitException(self.id,qty_residual,message)
 
+
     def name_get(self, cr, user, ids, context=None):
         """
         Ridefinisce il metodo per scartare alcune query inutili.
@@ -384,18 +398,6 @@ class Products(models.Model):
             result.append(_name_get(mydict))
         return result
 
-    #def name_search(self, cr, user, name='', args=None, operator='ilike', context=None, limit=100):
-    #    """
-    #    Ridefinisce la ricerca per nome in modo più efficiente, cercando prima nel nome e poi filtrando con le
-    #    condizioni in *args*.
-#
-    #    Scarta anche altre query poco utili.
-    #    """
-    #    ids = self.search(cr, user, [('name', operator, name)], context=context)
-    #    if args is not None:
-    #        ids += self.search(cr, user, args, limit=limit, context=context)
-    #    result = self.name_get(cr, user, set(ids), context=context)
-    #    return result
     @api.model
     def name_search(self, name, args=None, operator='ilike', limit=6):
         result = []
@@ -410,6 +412,14 @@ class Products(models.Model):
                 if result:
                     return result.name_get()
 
+            result = self.search([('barcode','=',name)] + args)
+            if result:
+                return result.name_get()
+
+            result = self.search([('seller_ids.product_code','=',name)] + args)
+            if result:
+                return result.name_get()
+ 
             result = self.search([('name', 'ilike', name)] + args, limit=limit)
             if result:
                 return result.name_get()
@@ -473,9 +483,9 @@ class Template(models.Model):
 
         res = super(Template, self).write(values)
 
-        for p in result:
-            for sup in p.seller_ids:
-                sup.product_tmpl_id = self.id
+        #for p in result:
+        #    for sup in p.seller_ids:
+        #        sup.product_tmpl_id = self.id
 
         return res
 

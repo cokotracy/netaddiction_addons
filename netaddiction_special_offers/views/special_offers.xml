@@ -383,7 +383,7 @@
 
                         </group>
                         
-                        <field name="text" placeholder="Testo offerta...."/>
+                        <field name="text" placeholder="Testo offerta...." widget="html"/>
 
                     <h1 >Lista Prodotti principali</h1>
                     <field name="products_with_bonus_list" mode="tree" >

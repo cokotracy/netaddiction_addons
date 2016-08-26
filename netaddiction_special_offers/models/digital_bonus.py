@@ -18,8 +18,9 @@ class DigitalBonus(models.Model):
     products_ids = fields.Many2many('product.product', 'prod_codes_rel', 'code_id', 'prod_id', 'Prodotti')
     code_ids = fields.One2many('netaddiction.specialoffer.digital_code', 'bonus_id', string='Codici associati')
     text = fields.Text("testo offerta")
-
-
+    image = fields.Binary("Immagine", attachment=True,
+        help="Limitata a 1024x1024px.")
+    company_id = fields.Many2one(comodel_name='res.company', string='Company', required=True)
 
     @api.one
     def process_file(self):
@@ -29,8 +30,15 @@ class DigitalBonus(models.Model):
             reader = csv.reader(decodedIO)
 
             for line in reader:
-                if not self.env["netaddiction.specialoffer.digital_code"].search([("bonus_id","=",self.id),("code","=",line[0])]):
-                    self.env["netaddiction.specialoffer.digital_code"].create({'code':line[0],'order_id':None,'bonus_id':self.id,'sent':False,'date_sent':None,'sent_by':None})
+                if not self.env["netaddiction.specialoffer.digital_code"].search([("bonus_id", "=", self.id), ("code", "=", line[0])]):
+                    self.env["netaddiction.specialoffer.digital_code"].create({
+                        'code': line[0],
+                        'order_id': None,
+                        'bonus_id': self.id,
+                        'sent': False,
+                        'date_sent': None,
+                        'sent_by': None
+                    })
 
             self.csv_file = None
 
@@ -39,16 +47,16 @@ class DigitalBonus(models.Model):
 
     @api.one
     def send_all_valid(self):
-        codes = self.env["netaddiction.specialoffer.digital_code"].search([("bonus_id","=",self.id),("order_id","!=",False),("order_line_id","!=",False),("sent","=",False)])
-        if len(codes) >0:
+        codes = self.env["netaddiction.specialoffer.digital_code"].search([("bonus_id", "=", self.id), ("order_id", "!=", False), ("order_line_id", "!=", False), ("sent", "=", False)])
+        if len(codes) > 0:
             for code in codes:
                 if code.order_line_id.qty_delivered == code.order_line_id.product_uom_qty:
                     code.send_code()
 
     @api.one
     def send_all_possible(self):
-        codes = self.env["netaddiction.specialoffer.digital_code"].search([("bonus_id","=",self.id),("order_id","!=",False),("order_line_id","!=",False),("sent","=",False)])
-        if len(codes) >0:
+        codes = self.env["netaddiction.specialoffer.digital_code"].search([("bonus_id", "=", self.id), ("order_id", "!=", False), ("order_line_id", "!=", False), ("sent", "=", False)])
+        if len(codes) > 0:
             for code in codes:
                 code.send_code()
 

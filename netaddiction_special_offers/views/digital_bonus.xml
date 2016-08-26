@@ -61,7 +61,7 @@
                                
                             
                         </div>
-
+                    <field name="image" widget="image" class="oe_avatar"/>
                     <div class="oe_title">
                         <h1><field name="name" placeholder="Titolo digital bonus..."/></h1>
                     </div>
@@ -73,11 +73,15 @@
                     <button  class="oe_highlight" name="process_file" 
                                 string="carica file" type="object" />
 
+
+                    </group>
+                    <group name="loc_left" class="oe_left" col="2">
+                    <field name="company_id"/>
                     </group>
                     <br/>
                     <br/>
 
-                    <field name="text" placeholder="Testo offerta..."/>
+                    <field name="text" placeholder="Testo offerta..." widget="html"/>
 
                     <br/>
                     <br/>

@@ -21,5 +21,9 @@
           action="product.product_normal_action_sell"
           groups="stock.group_stock_manager"
         />
+
+        <record model="ir.ui.menu"  id="stock.stock_picking_type_menu">
+            <field name="sequence">9999</field>
+        </record>
     </data>
 </openerp>
