@@ -39,11 +39,6 @@ class Cron(models.Model):
         product_model = self.env['netaddiction_octopus.product']
 
         for supplier in suppliers.values():
-            # TODO
-            if supplier.partner_id.id != 137:
-                continue
-            # END-TODO
-
             _logger.info(' | %s (#%d)' % (supplier.name, supplier.id))
 
             datas = {}
