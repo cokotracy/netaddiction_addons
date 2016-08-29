@@ -351,12 +351,13 @@ class Products(models.Model):
             #controllo che non vada sotto la quantità limite
             qty_residual = self.qty_available_now - qty_limit
 
-            if qty_ordered > qty_residual:
-                if qty_residual > 0:
-                    message = "Non puoi ordinare piu di %s pezzi per %s " % (qty_residual, self.display_name)
-                else:
-                    message = u"%s è esaurito" % self.display_name
-                raise ProductOrderQuantityExceededLimitException(self.id,qty_residual,message)
+            if not self.categ_id.can_auto_deactivate_products:
+                if qty_ordered > qty_residual:
+                    if qty_residual > 0:
+                        message = "Non puoi ordinare piu di %s pezzi per %s " % (qty_residual, self.display_name)
+                    else:
+                        message = u"%s è esaurito" % self.display_name
+                    raise ProductOrderQuantityExceededLimitException(self.id,qty_residual,message)
 
 
     def name_get(self, cr, user, ids, context=None):
