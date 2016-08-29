@@ -567,10 +567,14 @@ class SupplierInfo(models.Model):
                     self.delay != self.name.supplier_delivery_time:
                 self.delay = self.name.supplier_delivery_time
         else:
+            today = fields.Date.today()
+
             if self.product_id.sale_ok and \
                     self.product_id.categ_id.can_auto_deactivate_products and \
                     self.product_id.qty_sum_suppliers == 0 and \
-                    self.product_id.qty_available_now == 0:
+                    self.product_id.qty_available_now == 0 and \
+                    self.product_id.available_date <= today and \
+                    self.product_id.out_date <= today:
                 self.product_id.sale_ok = False
 
             if self.product_id.categ_id.auto_supplier_delay and \
