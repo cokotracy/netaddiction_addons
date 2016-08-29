@@ -51,5 +51,5 @@ class DbLine(supplier.Supplier):
         description='descrizione',
         date=lambda self, item: '20' + '-'.join(reversed(item['data_uscita'].split('/'))) if re.match(r'^\d{2}/\d{2}/\d{2}$', item['data_uscita']) else None,
         supplier_code='codice_fornitore',
-        supplier_price='prezzo_bis',
+        supplier_price='costo',
         supplier_quantity='quantita')

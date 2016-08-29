@@ -369,7 +369,7 @@ class Order(models.Model):
                 # offerte catalogo
                 for line in order.order_line:
                     if(line.offer_type and not line.negate_offer):
-                        offer_line = order.product_id.offer_catalog_lines[0] if len(order.product_id.offer_catalog_lines) > 0 else None
+                        offer_line = line.product_id.offer_catalog_lines[0] if len(line.product_id.offer_catalog_lines) > 0 else None
                         if offer_line:
                             offer_line.qty_selled -= line.product_uom_qty
                 # offerte carrello

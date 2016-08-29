@@ -10,6 +10,9 @@ class Products(models.Model):
     @api.one
     @api.constrains('sale_ok')
     def _check_sale_ok(self):
+        if self.env.context.get('skip_notification_mail', False):
+            return
+
         users = self.env["netaddiction.email.dispatcher"].get_users_from_group("netaddiction_acl.netaddiction_products_data_entry_user_manager")
         users += self.env["netaddiction.email.dispatcher"].get_users_from_group("netaddiction_acl.netaddiction_sale_user_manager")
         if self.sale_ok:
@@ -21,6 +24,9 @@ class Products(models.Model):
     @api.one
     @api.constrains('visible')
     def _check_visible(self):
+        if self.env.context.get('skip_notification_mail', False):
+            return
+
         users = self.env["netaddiction.email.dispatcher"].get_users_from_group("netaddiction_acl.netaddiction_products_data_entry_user_manager")
         users += self.env["netaddiction.email.dispatcher"].get_users_from_group("netaddiction_acl.netaddiction_sale_user_manager")
         if self.visible:
@@ -31,6 +37,9 @@ class Products(models.Model):
 
     @api.model
     def _verify_release_date(self):
+        if self.env.context.get('skip_notification_mail', False):
+            return
+
         users = self.env["netaddiction.email.dispatcher"].get_users_from_group("netaddiction_acl.netaddiction_products_data_entry_user_manager")
         users += self.env["netaddiction.email.dispatcher"].get_users_from_group("netaddiction_acl.netaddiction_sale_user_manager")
         products_out = self.env["product.product"].search([("out_date", "=", date.today() + timedelta(days=7))])

@@ -377,6 +377,11 @@ class Products(models.Model):
                 name = '[%s] %s' % (code, name)
             return (d['id'], name)
 
+        # all user don't have access to seller and partner
+        # check access and use superuser
+        self.check_access_rights(cr, user, "read")
+        self.check_access_rule(cr, user, ids, "read", context=context)
+
         result = []
         for product in self.browse(cr, SUPERUSER_ID, ids, context=context):
             variant = ", ".join([v.name for v in product.attribute_value_ids])
@@ -543,10 +548,14 @@ class SupplierInfo(models.Model):
                     self.delay != self.name.supplier_delivery_time:
                 self.delay = self.name.supplier_delivery_time
         else:
+            today = fields.Date.today()
+
             if self.product_id.sale_ok and \
                     self.product_id.categ_id.can_auto_deactivate_products and \
                     self.product_id.qty_sum_suppliers == 0 and \
-                    self.product_id.qty_available_now == 0:
+                    self.product_id.qty_available_now == 0 and \
+                    self.product_id.available_date <= today and \
+                    self.product_id.out_date <= today:
                 self.product_id.sale_ok = False
 
             if self.product_id.categ_id.auto_supplier_delay and \

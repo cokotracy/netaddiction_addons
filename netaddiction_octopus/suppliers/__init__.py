@@ -4,6 +4,7 @@ from . import (  # NOQA
     cosmicgroup,
     dbline,
     drako,
+    esprinet,
     promovideo,
     terminalvideo,
 )

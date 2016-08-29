@@ -27,6 +27,8 @@ class Cron(models.Model):
         self.kill(suppliers)
 
     def clear(self):
+        _logger.info('Clear!')
+
         self.env.cr.execute('DELETE FROM "netaddiction_octopus_product_product_attribute_value_rel"')
         self.env.cr.execute('DELETE FROM "netaddiction_octopus_product"')
         self.env.cr.execute('ALTER SEQUENCE "netaddiction_octopus_product_id_seq" RESTART WITH 1')
@@ -153,19 +155,18 @@ class Cron(models.Model):
                 _logger.error('Salvaggio del prodotto non riuscito (%s)' % e)
 
     def kill(self, suppliers):
+        _logger.info('Kill!')
+
         product_model = self.env['netaddiction_octopus.product']
         supplierinfo_model = self.env['product.supplierinfo']
-
-        batch_size = 100
 
         for supplier_id in suppliers:
             products = product_model.search([('supplier_id', '=', supplier_id)]).mapped('supplier_code')
 
-            for i in range(0, len(products), batch_size):
-                supplierinfos = supplierinfo_model.search([
-                    ('avail_qty', '>', 0),
-                    ('name', '=', supplier_id),
-                    ('product_code', 'not in', products[i:i + batch_size]),
-                ])
+            supplierinfos = supplierinfo_model.search([
+                ('avail_qty', '>', 0),
+                ('name', '=', supplier_id),
+                ('product_code', 'not in', products),
+            ])
 
-                supplierinfos.write({'avail_qty': 0})
+            supplierinfos.write({'avail_qty': 0})
