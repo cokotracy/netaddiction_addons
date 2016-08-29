@@ -203,10 +203,6 @@ class Products(models.Model):
         except IOError:
             if not context.get('skip_broken_images', False):
                 raise
-        product = self.browse(cr,uid,ids)
-        #for pid in product:
-        #    if not context.get('no_check_price_and_date', False):
-        #        pid.check_price_and_date(vals)
 
         return super(Products, self).write(cr, uid, ids, vals, context)
 
@@ -460,27 +456,12 @@ class Template(models.Model):
         template e varianti (sono comunque modificabili singolarmente)
         """
         new_id = super(Template, self).create(values)
-
-        attr={k: v for k, v in values.items() if k in ['available_date','out_date','out_date_approx_type','active','sale_ok','description','visible']}
-
-        new_id.product_variant_ids.write(attr)
-
         return new_id
 
     @api.multi
     def write(self,values):
 
-        attr={k: v for k, v in values.items() if k in ['available_date','out_date','out_date_approx_type','active','sale_ok','description','visible']}
-        
-        searched = [('product_tmpl_id','=',self.id),'|',('active','=',False),('active','=',True)]
-        result = self.env['product.product'].search(searched)
-        result.write(attr)
-
         res = super(Template, self).write(values)
-
-        #for p in result:
-        #    for sup in p.seller_ids:
-        #        sup.product_tmpl_id = self.id
 
         return res
 
