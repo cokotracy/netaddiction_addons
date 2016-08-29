@@ -75,10 +75,11 @@ class Product(models.Model):
         image = None
         template_id = None
 
-        create_context = {
+        context = {
             'mail_create_nolog': True,
             'mail_create_nosubscribe': True,
             'mail_notrack': True,
+            'skip_notification_mail': True,
         }
 
         if self.image:
@@ -92,7 +93,7 @@ class Product(models.Model):
         if self.group_key:
             template_id = self.env['product.template'].search([('octopus_group', '=', self.group_key)]).id
 
-        product = self.env['product.product'].with_context(create_context).create({
+        product = self.env['product.product'].with_context(context).create({
             'product_tmpl_id': template_id,
             'name': self.group_name or self.name,
             'barcode': self.barcode,
@@ -125,7 +126,11 @@ class Product(models.Model):
             self.env.cr.commit()
 
     def chain(self, product, commit=True):
-        product.write({
+        context = {
+            'skip_notification_mail': True,
+        }
+
+        product.with_context(context).write({
             'seller_ids': [(0, None, {
                 'company_id': self.company_id.id,
                 'name': self.supplier_id.id,
@@ -154,12 +159,16 @@ class Product(models.Model):
             'price': 'supplier_price',
         }
 
+        context = {
+            'skip_notification_mail': True,
+        }
+
         # Aggiorna *supplierinfo* solo se i campi in *update_mapping* sono cambiati
         for supplierinfo_field, self_field in update_mapping.items():
             if getattr(supplierinfo, supplierinfo_field) != getattr(self, self_field):
                 data = {si_field: getattr(self, self_field) for si_field, self_field in update_mapping.items()}
 
-                supplierinfo.write(data)
+                supplierinfo.with_context(context).write(data)
 
                 if commit:
                     self.env.cr.commit()
