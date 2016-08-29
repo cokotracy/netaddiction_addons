@@ -49,5 +49,5 @@ class Drako(supplier.Supplier):
         image='Indirizzo Immagine',
         date=lambda self, item: item['Data_Dispo'] or None,
         supplier_code='Codice_Vendor',
-        supplier_price=lambda self, item: float(item['Prezzo_listino'].replace(',', '.')) if item['Prezzo_listino'] else None,
+        supplier_price=lambda self, item: float(item['Prezzo'].replace(',', '.')) if item['Prezzo'] else None,
         supplier_quantity='Dispo')

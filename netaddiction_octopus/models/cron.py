@@ -160,16 +160,13 @@ class Cron(models.Model):
         product_model = self.env['netaddiction_octopus.product']
         supplierinfo_model = self.env['product.supplierinfo']
 
-        batch_size = 100
-
         for supplier_id in suppliers:
             products = product_model.search([('supplier_id', '=', supplier_id)]).mapped('supplier_code')
 
-            for i in range(0, len(products), batch_size):
-                supplierinfos = supplierinfo_model.search([
-                    ('avail_qty', '>', 0),
-                    ('name', '=', supplier_id),
-                    ('product_code', 'not in', products[i:i + batch_size]),
-                ])
+            supplierinfos = supplierinfo_model.search([
+                ('avail_qty', '>', 0),
+                ('name', '=', supplier_id),
+                ('product_code', 'not in', products),
+            ])
 
-                supplierinfos.write({'avail_qty': 0})
+            supplierinfos.write({'avail_qty': 0})
