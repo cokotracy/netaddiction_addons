@@ -186,8 +186,14 @@ class OrderUtilities(models.TransientModel):
 
                                 ol_bonus.product_id_change()
 
-            order.extract_cart_offers()
-            order.apply_voucher()
+            try:
+                order.extract_cart_offers()
+                order.apply_voucher()
+            except ValueError as e:
+                ol.product_uom_qty -= quantity
+                if ol.product_uom_qty <= 0:
+                    ol.unlink()
+                raise e
 
             order._amount_all()
 
@@ -246,11 +252,13 @@ class OrderUtilities(models.TransientModel):
             ret = {}
             found = False
             ol = None
+            prev_qty = 0
             for line in order.order_line:
                 if line.product_id.id == product_id:
                     if quantity > 0:
                         prod.check_quantity_product(quantity)
                         self._check_offers_catalog(prod, quantity)
+                        prev_qty = line.product_uom_qty
                         line.product_uom_qty = quantity
                         line.product_uom_change()
                         ol = line
@@ -270,8 +278,15 @@ class OrderUtilities(models.TransientModel):
                             ret[bonus_ol.product_id.id] = (quantity, e.remains_quantity)
                     else:
                         bonus_ol.unlink()
-            order.extract_cart_offers()
-            order.apply_voucher()
+
+            try:
+                order.extract_cart_offers()
+                order.apply_voucher()
+            except ValueError as e:
+                ol.product_uom_qty = prev_qty
+                if ol.product_uom_qty <= 0:
+                    ol.unlink()
+                raise e
             # ricalcola gift e totale
             order._amount_all()
 
