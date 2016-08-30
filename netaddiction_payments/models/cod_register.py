@@ -13,11 +13,11 @@ MONEY_SDA = "Importo contrassegno"
 
 
 def strip_keys(d):
-#funzione di utilità che per effettuare lo stip delle chiavi di un dizionario 
-    return   {k.strip():strip_keys(v)
-             if isinstance(v, dict)
-             else v
-             for k, v in d.iteritems()}
+# funzione di utilità che per effettuare lo stip delle chiavi di un dizionario
+    return {k.strip(): strip_keys(v)
+            if isinstance(v, dict)
+            else v
+            for k, v in d.iteritems()}
 
 
 class CoDRegister(models.TransientModel):
@@ -59,45 +59,39 @@ class CoDRegister(models.TransientModel):
                     sol.qty_to_invoice = 0
 
                     for stock_move in delivery.move_lines_related:
-                        self._set_order_to_invoice(stock_move,order)
+                        self._set_order_to_invoice(stock_move, order)
 
-                    self.set_delivery_to_invoice(delivery,order,contrassegno.id)
+                    self.set_delivery_to_invoice(delivery, order, contrassegno.id)
 
                     inv_lst += order.action_invoice_create()
                 # aggiungo i pagamenti in contrassegno e li associo alle fatture
                 cod_aj = self.env.ref('netaddiction_payments.contrassegno_journal')
-                pay_inbound = self.env["account.payment.method"].search([("payment_type","=","inbound")])
-                pay_inbound = pay_inbound[0] if isinstance(pay_inbound,list) else pay_inbound
+                pay_inbound = self.env["account.payment.method"].search([("payment_type", "=", "inbound")])
+                pay_inbound = pay_inbound[0] if isinstance(pay_inbound, list) else pay_inbound
                 if cod_aj and pay_inbound:
                     cod_id = cod_aj.id
                     order.payment_method_id = cod_id
                     for inv in inv_lst:
                         name = self.env['ir.sequence'].with_context(ir_sequence_date=fields.Date.context_today(self)).next_by_code('account.payment.customer.invoice')
-                        invoice = self.env['account.invoice'].search([("id","=",inv)])
+                        invoice = self.env['account.invoice'].search([("id", "=", inv)])
                         invoice.is_customer_invoice = real_invoice
-            
-                        payment = self.env["account.payment"].create({"partner_type" : "customer", "partner_id" : order.partner_id.id, "journal_id" : cod_id, "amount" : invoice.amount_total, "order_id" : order.id, "state" : 'draft', "payment_type" : 'inbound', "payment_method_id" : pay_inbound.id, "name" : name, 'communication' : order.name  })
+                        if order.gift_discount > 0.0:
+                            gift_value = self.env["netaddiction.gift_invoice_helper"].compute_gift_value(order.gift_discount, order.amount_total, invoice.amount_total)
+                            self.env["netaddiction.gift_invoice_helper"].gift_to_invoice(gift_value, invoice)
 
-                        payment.invoice_ids = [(4, inv, None) ]
+                        payment = self.env["account.payment"].create({"partner_type": "customer", "partner_id": order.partner_id.id, "journal_id": cod_id, "amount": invoice.amount_total, "order_id": order.id, "state": 'draft', "payment_type": 'inbound', "payment_method_id": pay_inbound.id, "name": name, 'communication': order.name})
+
+                        payment.invoice_ids = [(4, inv, None)]
 
                         invoice.signal_workflow('invoice_open')
-                        #assegno pagamento a spedizione
-                        pick = [p for p in pick_lst if (isclose(p.total_import,payment.amount,abs_tol=0.009) and not p.payment_id)]                          
+                        # assegno pagamento a spedizione
+                        pick = [p for p in pick_lst if (isclose(p.total_import, payment.amount, abs_tol=0.009) and not p.payment_id)]
                         if pick:
                             pick[0].payment_id = payment.id
 
             return True
 
         return False
-
-
-
-
-
-
-            
-
-
 
 
 
