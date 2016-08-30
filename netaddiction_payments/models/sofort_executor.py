@@ -126,10 +126,11 @@ class SofortExecutor(models.TransientModel):
             for inv_id in inv_lst:
                 inv = self.env["account.invoice"].search([("id", "=", inv_id)])
                 inv.is_customer_invoice = self.real_invoice
+                if order.gift_discount > 0.0:
+                    gift_value = self.env["netaddiction.gift_invoice_helper"].compute_gift_value(order.gift_discount, order.amount_total, inv.amount_total)
+                    self.env["netaddiction.gift_invoice_helper"].gift_to_invoice(gift_value, inv)
                 inv.signal_workflow('invoice_open')
                 # inv.payement_id = [(6, 0, [payment.id])]
-
-            # payment.post()
 
             # assegno il pagamento alle spedizioni
             for delivery in order.picking_ids:

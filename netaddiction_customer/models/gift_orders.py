@@ -42,7 +42,6 @@ class GiftOrder(models.Model):
                 'body': "gift assegnati %s da %s" % (self.gift_discount, self.env.user.name),
                 'subtype_id': self.env.ref("mail.mt_note").id
             }
-            print attr
             self.env['mail.message'].create(attr)
 
 

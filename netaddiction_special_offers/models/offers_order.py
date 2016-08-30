@@ -437,7 +437,7 @@ class OfferOrder(models.Model):
                     offer_line = ofcl
                     break
             if offer_line:
-                if (offer_line.qty_max_buyable > 0 and bundle_cnt[ol.product_id.id] > offer_line.qty_max_buyable):
+                if (offer_line.qty_max_buyable > 0 and ol.product_uom_qty > offer_line.qty_max_buyable):
                     # pulizia dei record history già creati
                     offers_cart_history = self.env['netaddiction.order.specialoffer.cart.history'].search([("order_id", "=", self.id), ("offer_name", "=", offer_line.offer_cart_id.name)])
                     for och in offers_cart_history:

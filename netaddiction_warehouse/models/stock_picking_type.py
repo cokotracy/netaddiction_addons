@@ -297,20 +297,30 @@ class StockPicking(models.Model):
     @api.one 
     def _get_total_import(self):
         total = 0.00
-        for line in self.group_id.procurement_ids:
-            total += line.sale_line_id.price_subtotal + line.sale_line_id.price_tax
-        
-        res = self.carrier_id.product_id.taxes_id.compute_all(self.carrier_price)        
+        pp_aj = self.env['ir.model.data'].get_object('netaddiction_payments', 'paypal_journal').id
+        sofort_aj = self.env['ir.model.data'].get_object('netaddiction_payments', 'sofort_journal').id
+        if self.payment_id and self.payment_id.journal_id.id not in (pp_aj, sofort_aj):
+            self.total_import = self.payment_id.amount
 
-        total += res['total_included']
+        else:
+            for line in self.group_id.procurement_ids:
+                total += line.sale_line_id.price_subtotal + line.sale_line_id.price_tax
         
-        method_contrassegno_id = self.env['ir.model.data'].get_object('netaddiction_payments', 'contrassegno_journal').id
-        if self.sale_order_payment_method.id == method_contrassegno_id:
-            contrassegno = self.env.ref('netaddiction_payments.product_contrassegno')
-            res_c = self.carrier_id.product_id.taxes_id.compute_all(contrassegno.list_price)
-            total += res_c['total_included']
+            res = self.carrier_id.product_id.taxes_id.compute_all(self.carrier_price)        
 
-        self.total_import = total
+            total += res['total_included']
+        
+            method_contrassegno_id = self.env['ir.model.data'].get_object('netaddiction_payments', 'contrassegno_journal').id
+            if self.sale_order_payment_method.id == method_contrassegno_id:
+                contrassegno = self.env.ref('netaddiction_payments.product_contrassegno')
+                res_c = self.carrier_id.product_id.taxes_id.compute_all(contrassegno.list_price)
+                total += res_c['total_included']
+
+            if self.sale_id.gift_discount > 0.0:
+                gift = self.env["netaddiction.gift_invoice_helper"].compute_gift_value(self.sale_id.gift_discount, self.sale_id.amount_total, total)
+                total -= gift
+
+            self.total_import = total
     ########################
     #INVENTORY APP FUNCTION#
     #ritorna un dict simile#
