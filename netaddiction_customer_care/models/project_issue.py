@@ -110,7 +110,8 @@ class Issue(models.Model):
                 if len(result)>0:
                     new_user = result.name.encode('utf8')
             logger=True
-            message = message + u"<li>Contatto : " + self.partner_id.name.encode('utf8') + u" -> " +str(new_user) + u"</li>"
+            #message = message + u"<li>Contatto : " + self.partner_id.name.encode('utf8') + u" -> " +str(new_user) + u"</li>"
+            message = u"<li>Contatto : Modificato</li>"
         if 'email_from' in values.keys():
             logger=True
             message = message + u"<li>E-mail : " + str(self.email_from) + u" -> " +str(values['email_from']) + u"</li>"
