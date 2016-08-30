@@ -390,6 +390,8 @@ class OfferCartLine(models.Model):
     def _check_priority(self):
         self.priority = self.offer_cart_id[0].priority
         self.offer_type = self.offer_cart_id[0].offer_type
+        self.qty_max_buyable = self.offer_cart_id[0].qty_max_buyable
+        self.qty_limit = self.offer_cart_id[0].qty_limit
 
     @api.one
     @api.constrains('active')
