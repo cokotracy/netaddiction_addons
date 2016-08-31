@@ -71,7 +71,6 @@ class Product(models.Model):
                 return self.add(commit=commit)
 
     def add(self, commit=True):
-        return  # TODO remove
         image = None
         template_id = None
 
