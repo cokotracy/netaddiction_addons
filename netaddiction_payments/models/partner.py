@@ -59,8 +59,9 @@ class CCData(models.Model):
     @api.multi
     def unlink(self):
         for cc in self:
-            self.env["netaddiction.positivity.executor"].token_delete(self.customer_id.id, self.token)
-            self.active = False
+            if cc.active:
+                self.env["netaddiction.positivity.executor"].token_delete(self.customer_id.id, self.token)
+        super(CCData, self).unlink()
 
 
 class CCDataPartner(models.Model):
