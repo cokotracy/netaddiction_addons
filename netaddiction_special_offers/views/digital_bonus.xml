@@ -80,8 +80,14 @@
                     </group>
                     <br/>
                     <br/>
-
+                    <h1 >Testo Offerta</h1>
                     <field name="text" placeholder="Testo offerta..." widget="html"/>
+
+                    <br/>
+                    <br/>
+
+                    <h1 >Testo Mail</h1>
+                    <field name="mail_text" placeholder="Testo mail..." widget="html"/>
 
                     <br/>
                     <br/>

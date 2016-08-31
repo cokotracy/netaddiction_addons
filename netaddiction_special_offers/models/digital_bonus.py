@@ -18,6 +18,7 @@ class DigitalBonus(models.Model):
     products_ids = fields.Many2many('product.product', 'prod_codes_rel', 'code_id', 'prod_id', 'Prodotti')
     code_ids = fields.One2many('netaddiction.specialoffer.digital_code', 'bonus_id', string='Codici associati')
     text = fields.Text("testo offerta")
+    mail_text = fields.Text("testo mail")
     image = fields.Binary("Immagine", attachment=True,
         help="Limitata a 1024x1024px.")
     company_id = fields.Many2one(comodel_name='res.company', string='Company', required=True)
@@ -76,7 +77,9 @@ class DigitalCode(models.Model):
     @api.one
     def send_code(self):
         if self.order_id:
-            message = u"Il codice bonus è: <b>%s</b> <br> Grazie per aver acquistato su multiplayer.com" % self.code
+            message = u"Il codice bonus è: <b>%s</b>" % self.code 
+            message += self.bonus_id.mail_text
+            message += " <br> Grazie per aver acquistato su multiplayer.com" 
             body = None
             company_mail = self.env['netaddiction.project.issue.settings.companymail'].search([("company_id", "=", self.env.user.company_id.id)])
             if company_mail:
