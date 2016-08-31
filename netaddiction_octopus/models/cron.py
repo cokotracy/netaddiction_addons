@@ -26,6 +26,8 @@ class Cron(models.Model):
         self.impera(suppliers)
         self.kill(suppliers)
 
+        _logger.info('See you!')
+
     def clear(self):
         _logger.info('Clear!')
 
