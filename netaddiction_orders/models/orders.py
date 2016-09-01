@@ -293,7 +293,7 @@ class Order(models.Model):
                         codes = self.env["netaddiction.specialoffer.digital_code"].search([("bonus_id", "=", bonus_offer.id), ("sent", "=", False), ("order_id", "=", None)])
                         if len(codes) > 0:
                             i = 0
-                            while i < line.product_uom_qty:
+                            while i < line.product_uom_qty and i < len(codes):
                                 code = codes[i]
                                 code.order_id = self.id
                                 code.order_line_id = line.id

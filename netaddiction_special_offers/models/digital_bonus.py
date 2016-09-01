@@ -47,6 +47,31 @@ class DigitalBonus(models.Model):
             raise Warning("nessun file selezionato")
 
     @api.one
+    def assign_old(self):
+        if not self.active:
+            return
+        id_list = [prod.id for prod in self.products_ids]
+        orders = self.env["sale.order"].search([("order_line.product_id", "in", id_list), ("state", "in", ("sale", "problem"))])
+        if not orders:
+            return
+        codes = [code for code in self.code_ids if not code.sent and not code.order_id]
+        print orders, codes
+        if not codes:
+            return
+        for order in orders:
+            codes_in_order = [code for code in order.code_ids if code.bonus_id.id == self.id]
+            if codes_in_order:
+                continue
+            order_lines = [ol for ol in order.order_line if ol.product_id.id in id_list]
+            for ol in order_lines:
+                counter = 0
+                while counter < ol.product_uom_qty and codes:
+                    code = codes.pop(0)
+                    code.order_id = order.id
+                    code.order_line_id = ol.id
+                    counter += 1
+
+    @api.one
     def send_all_valid(self):
         codes = self.env["netaddiction.specialoffer.digital_code"].search([("bonus_id", "=", self.id), ("order_id", "!=", False), ("order_line_id", "!=", False), ("sent", "=", False)])
         if len(codes) > 0:
