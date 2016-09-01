@@ -37,16 +37,17 @@
                               <option value="12">Dicembre</option>
                             </select>
                           </div>
-                          <div style="float:left;margin-right:20px;">
-                            <label for="single_product">Per Prodotto</label><br/>
-                            <input type="checkbox" name="single_products" value="1" id="single_products"/>
-                          </div>
-                          <div style="float:left;margin-right:20px;">
-                            <label for="single_day">Per Giorno</label><br/>
-                            <input type="checkbox" name="single_day" value="1" id="single_day"/>
-                          </div>
+                          
                           <button class="btn btn-primary" id="search" style="float:left;width:50px;margin-top:14px">VAI</button>
-
+                          <div style="float:left;margin-left:50px;">
+                            <button class="btn " id="total" style="float:left;margin-top:14px">Totale</button>
+                          </div>
+                          <div style="float:left;margin-left:20px;">
+                            <button class="btn " id="products" style="float:left;margin-top:14px">Per Prodotto</button>
+                          </div>
+                          <div style="float:left;margin-left:20px;">
+                            <button class="btn " id="multiplayer" style="float:left;margin-top:14px">Multiplayer.it Edizioni</button>
+                          </div>
                     </div>
                 </div>
             </div>
