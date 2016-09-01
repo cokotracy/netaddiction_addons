@@ -51,7 +51,7 @@ class DigitalBonus(models.Model):
         if not self.active:
             return
         id_list = [prod.id for prod in self.products_ids]
-        orders = self.env["sale.order"].search([("order_line.product_id", "in", id_list), ("state", "in", ("sale", "problem"))])
+        orders = self.env["sale.order"].search([("order_line.product_id", "in", id_list), ("state", "in", ("sale", "problem", "partial_done", "done"))])
         if not orders:
             return
         codes = [code for code in self.code_ids if not code.sent and not code.order_id]
