@@ -61,7 +61,7 @@ class Adapter(object):
                         _logger.warning('Categorie multiple per %s' % item)
 
             if not mapping['category_id']:
-                _logger.warning('Prodotto non categorizzato: %s' % item)
+                _logger.debug('Prodotto non categorizzato: %s' % item)
                 return None
 
         # Taxes

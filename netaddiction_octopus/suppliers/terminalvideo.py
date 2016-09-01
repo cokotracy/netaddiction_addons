@@ -122,7 +122,7 @@ class TerminalVideo(supplier.Supplier):
         },
     ]
 
-    categories = 'Formato', 'Genere principale', 'Taglia', 'Genere T-Shirt', 'Colore T-Shirt'
+    categories = 'Formato', 'Genere principale', 'Taglia', 'Genere T-Shirt', 'Colore T-Shirt', 'Iva'
 
     downloader = FTPDownloader(
         hostname='ftp.terminalvideo.com',
