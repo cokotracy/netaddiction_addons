@@ -157,7 +157,7 @@ class Suppliers(models.Model):
                 elif pid.special_price > 0:
                     price = pid.special_price
 
-                csvdata = [pid.id,pid.barcode,sup_code,pren,pid.display_name,price,]
+                csvdata = [pid.id,pid.barcode.encode('utf8'),sup_code.encode('utf8'),pren,pid.display_name.encode('utf8'),price,]
                 tot12 = 0
                 for week in range(0,12):
                     w = today - timedelta(weeks=week)
@@ -191,7 +191,7 @@ class Suppliers(models.Model):
 
                 line = []
                 for c in csvdata:
-                    line.append(unicode(c))
+                    line.append(c)
                 writer.writerow(line)
 
         name = 'export_multiplayer_com_' + self.name + '_' + str(date.today()) + '.csv'
