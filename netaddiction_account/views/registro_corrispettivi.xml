@@ -1,55 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <openerp>
     <data>
-    	<record id="netaddiction_registr_corrispettivi" model="ir.ui.view">
+
+        <template id="netaddiction_account_assets_backend" name="netaddiction_account_assets_backend" inherit_id="web.assets_backend">
+            <xpath expr="." position="inside">
+                <script type="text/javascript" src="/netaddiction_account/static/src/js/vatregister.js"/>
+            </xpath>
+        </template>
+
+        <record id="open_vat_register" model="ir.actions.client">
             <field name="name">Registro Corrispettivi</field>
-            <field name="model">account.invoice.line</field>
-            <field name="type">pivot</field>
-            <field name="arch" type="xml">
-                <pivot string="Invoice Line">
-                    <field name="create_date" interval="month" type="row"/>
-                    <field name="quantity" type="measure"/>
-                    <field name="price_subtotal_signed" type="measure"/>
-                    <field name="tax_value" type="measure"/>
-                    <field name="price_compute_tax" type="measure"/>
-                </pivot>
-            </field>
+            <field name="tag">netaddiction_warehouse.vatregister</field>
         </record>
 
-        <record model="ir.ui.view" id="netaddiction_registro_corrispettivi_search">
-            <field name="name">netaddiction.registro.corrispettivi.search</field>
-            <field name="model">account.invoice.line</field>
-            <field name="type">search</field>
-            <field name="arch" type="xml">
-            	<search>
-                    <filter name="out_invoice" string="Clienti" domain="[('invoice_id.type','=','out_invoice')]"/>
-                    <filter name="out_refund" string="Note di Credito Clienti" domain="[('invoice_id.type','=','out_refund')]"/>
-                    <filter name="in_invoice" string="Fornitori" domain="[('invoice_id.type','=','in_invoice')]"/>
-                    <filter name="in_refund" string="Note di Credito Fornitori" domain="[('invoice_id.type','=','out_refund')]"/>
-	                <separator/>
-                    <filter name="draft" string="Bozze" domain="[('invoice_id.state','=','draft')]"/>
-                    <filter name="open" string="Aperte" domain="[('invoice_id.state','=','open')]"/>
-                    <filter name="paid" string="Pagate" domain="[('invoice_id.state','=','paid')]"/>
-                    <filter name="cancel" string="Annullate" domain="[('invoice_id.state','=','cancel')]"/>
-                    <separator/>
-                    <filter name="iva_22" string="Iva al 22%" domain="[('invoice_line_tax_ids.description','=','22v INC')]"/>
-                    <filter name="iva_ed" string="Iva assolta editore" domain="[('invoice_line_tax_ids.description','=','4ed')]"/>
-                    <filter name="iva_4" string="Iva zero" domain="[('invoice_line_tax_ids.description','=','00v')]"/>
-	            </search>
-            </field>
-        </record>
-
-        <record id="netaddiction_action_registro_corrispettivi" model="ir.actions.act_window">
-            <field name="name">Registro Corrispettivi</field>
-            <field name="res_model">account.invoice.line</field>
-            <field name="view_type">form</field>
-            <field name="view_mode">pivot</field>
-            <field name="search_view_id" ref="netaddiction_registro_corrispettivi_search"/>
-        </record>
-
-        <menuitem action="netaddiction_action_registro_corrispettivi" id="netaddiction_menu_registro_corrispettivi" parent="account.menu_finance_receivables" sequence="10" name="Registro Corrispettivi"/>
-
-
+        <menuitem action="open_vat_register" id="netaddiction_menu_registro_corrispettivi" parent="account.menu_finance_receivables" sequence="10" name="Registro Corrispettivi"/>
 
     </data>
 </openerp>
