@@ -19,7 +19,7 @@ class Products(models.Model):
             obj = "[SHOPPING] PRODOTTO NON PIU ESAURITO %s id: %s" % (self.name, self.id)
         else:
             obj = "[SHOPPING] PRODOTTO ESAURITO %s id: %s" % (self.name, self.id)
-        self.env["netaddiction.email.dispatcher"].send_mail(obj, obj, "prodotti", set(users))
+        self.env["netaddiction.email.dispatcher"].send_mail(obj, obj, "shopping@multiplayer.com", set(users))
 
     @api.one
     @api.constrains('visible')
@@ -33,7 +33,7 @@ class Products(models.Model):
             obj = "[SHOPPING] PRODOTTO ACCESO %s id: %s" % (self.name, self.id)
         else:
             obj = "[SHOPPING] PRODOTTO SPENTO %s id: %s" % (self.name, self.id)
-        self.env["netaddiction.email.dispatcher"].send_mail(obj, obj, "prodotti", set(users))
+        self.env["netaddiction.email.dispatcher"].send_mail(obj, obj, "shopping@multiplayer.com", set(users))
 
     @api.model
     def _verify_release_date(self):
@@ -46,7 +46,7 @@ class Products(models.Model):
         products_available = self.env["product.product"].search([("available_date", "=", date.today() + timedelta(days=7))])
         for product in products_out:
             obj = "[SHOPPING] PRODOTTO IN USCITA %s id: %s data uscita %s" % (product.name, product.id, product.out_date)
-            self.env["netaddiction.email.dispatcher"].send_mail(obj, obj, "prodotti", set(users))
+            self.env["netaddiction.email.dispatcher"].send_mail(obj, obj, "shopping@multiplayer.com", set(users))
         for product in products_available:
             obj = "[SHOPPING] PRODOTTO DISPONIBILE IN 7 GIORNI %s id: %s data uscita %s" % (product.name, product.id, product.available_date)
-            self.env["netaddiction.email.dispatcher"].send_mail(obj, obj, "prodotti", set(users))
+            self.env["netaddiction.email.dispatcher"].send_mail(obj, obj, "shopping@multiplayer.com", set(users))
