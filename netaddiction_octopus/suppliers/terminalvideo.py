@@ -137,7 +137,7 @@ class TerminalVideo(supplier.Supplier):
         barcode='Cod. barre',
         name='Titolo',
         description='Trama',
-        price=lambda self, item: float(item['Listino'].replace(',', '.')) + (float(item['Listino'].replace(',', '.')) / 100 * float(item['Iva'])) if item['Listino'] and item['Iva'].lower() not in ('e74', '') else None,
+        price=lambda self, item: float(item['Pvc'].replace(',', '.')) if item['Pvc'] else None,
         image='Img Lrg Web',
         date=lambda self, item: datetime.strptime(item['Data rilascio'], '%d/%m/%Y') if item['Data rilascio'] else None,
         supplier_code='Cod. interno',
