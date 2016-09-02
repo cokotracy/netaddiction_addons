@@ -102,6 +102,7 @@ class Product(models.Model):
             'out_date': self.date,
             'description': self.description,
             'categ_id': self.category_id.id,
+            'attribute_value_ids': [(4, attribute.id, None) for attribute in self.attribute_ids],
             'property_cost_method': 'real',
             'property_valuation': 'real_time',
             'image': image,
