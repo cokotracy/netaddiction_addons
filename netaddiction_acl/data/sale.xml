@@ -59,6 +59,10 @@
         </record>
 
         <!--MENU-->
+        <record id="netaddiction_logger.menu_netaddiction_log" model="ir.ui.menu">
+            <field name="groups_id" eval="[(4, ref('netaddiction_sale_user_manager'))]"/>
+        </record>
+
         <record id="netaddiction_payments.menu_netaddiction_ccdata" model="ir.ui.menu">
             <field name="groups_id" eval="[(4, ref('netaddiction_sale_payments'))]"/>
         </record>
@@ -134,6 +138,17 @@
             <field name="perm_create" eval="1"/>
             <field name="perm_write" eval="1"/>
             <field name="perm_unlink" eval="1"/>
+        </record>
+
+
+        <record id="netaddiction_sale_manager_log" model="ir.model.access">
+            <field name="name">Logger</field>
+            <field name="model_id" search="[('model','=','netaddiction.log.line')]" model="ir.model"/>
+            <field name="group_id" ref="netaddiction_sale_user_manager"/>
+            <field name="perm_read" eval="1"/>
+            <field name="perm_create" eval="0"/>
+            <field name="perm_write" eval="0"/>
+            <field name="perm_unlink" eval="0"/>
         </record>
 
 
