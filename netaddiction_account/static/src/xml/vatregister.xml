@@ -46,6 +46,9 @@
                             <button class="btn " id="products" style="float:left;margin-top:14px">Per Prodotto</button>
                           </div>
                           <div style="float:left;margin-left:20px;">
+                            <button class="btn " id="days" style="float:left;margin-top:14px">Per Giorno</button>
+                          </div>
+                          <div style="float:left;margin-left:20px;">
                             <button class="btn " id="multiplayer" style="float:left;margin-top:14px">Multiplayer.it Edizioni</button>
                           </div>
                     </div>
@@ -112,6 +115,7 @@
         <thead>
           <tr class="oe_list_header_columns">
             <th>Prodotto</th>
+            <th>Barcode</th>
             <th># Ordini</th>
             <th>Qtà</th>
             <th>Fatturato</th>
@@ -124,6 +128,7 @@
             <t t-foreach="widget.pickings.done" t-as="product">
               <tr>
                 <td><t t-esc="widget.pickings.done[product]['product_name']"/></td>
+                <td><t t-esc="widget.pickings.done[product]['barcode']"/></td>
                 <td><t t-esc="widget.pickings.done[product]['qty_order']"/></td>
                 <td><t t-esc="widget.pickings.done[product]['qty']"/></td>
                 <td><t t-esc="widget.pickings.done[product]['total_price']"/></td>
@@ -134,6 +139,7 @@
             </t>
             <tr>
               <td><b>Totali:</b></td>
+              <td></td>
               <td></td>
               <td></td>
               <td><b><t t-esc="widget.total_price"/></b></td>
@@ -148,6 +154,7 @@
         <thead>
           <tr class="oe_list_header_columns">
             <th>Prodotto</th>
+            <th>Barcode</th>
             <th># Ordini</th>
             <th>Qtà</th>
             <th>Fatturato</th>
@@ -160,6 +167,7 @@
             <t t-foreach="widget.pickings.refund" t-as="product">
               <tr>
                 <td><t t-esc="widget.pickings.refund[product]['product_name']"/></td>
+                <td><t t-esc="widget.pickings.refund[product]['barcode']"/></td>
                 <td><t t-esc="widget.pickings.refund[product]['qty_order']"/></td>
                 <td><t t-esc="widget.pickings.refund[product]['qty']"/></td>
                 <td><t t-esc="widget.pickings.refund[product]['total_price']"/></td>
@@ -172,9 +180,79 @@
               <td><b>Totali:</b></td>
               <td></td>
               <td></td>
+              <td></td>
               <td><b><t t-esc="widget.refund_total_price"/></b></td>
               <td><b><t t-esc="widget.refund_price_tax"/></b></td>
               <td></td>
+              <td><b><t t-esc="widget.refund_edizioni"/></b></td>
+            </tr>
+        </tbody>
+      </table>
+    </t>
+
+    <t t-name="table_vatregister_days">
+      <div style="padding:5px"><b>SPEDITI</b></div>
+      <table class="oe_list_content" id="vatregister">
+        <thead>
+          <tr class="oe_list_header_columns">
+            <th>Giorno</th>
+            <th># Ordini</th>
+            <th>Qtà</th>
+            <th>Fatturato</th>
+            <th>Tasse</th>
+            <th>Multiplayer.it Edizioni</th>
+          </tr>
+        </thead>
+        <tbody>
+            <t t-foreach="widget.pickings.done" t-as="days">
+              <tr>
+                <td><t t-esc="days"/></td>
+                <td><t t-esc="widget.pickings.done[days]['qty_order']"/></td>
+                <td><t t-esc="widget.pickings.done[days]['qty']"/></td>
+                <td><t t-esc="widget.pickings.done[days]['total_price']"/></td>
+                <td><t t-esc="widget.pickings.done[days]['price_tax']"/></td>
+                <td><t t-esc="widget.pickings.done[days]['edizioni']"/></td>
+              </tr>
+            </t>
+            <tr>
+              <td><b>Totali:</b></td>
+              <td></td>
+              <td></td>
+              <td><b><t t-esc="widget.total_price"/></b></td>
+              <td><b><t t-esc="widget.price_tax"/></b></td>
+              <td><b><t t-esc="widget.edizioni"/></b></td>
+            </tr>
+        </tbody>
+      </table>
+      <div style="padding:5px"><b>RESI</b></div>
+      <table class="oe_list_content" id="vatregister_refund">
+        <thead>
+          <tr class="oe_list_header_columns">
+            <th>Giorno</th>
+            <th># Ordini</th>
+            <th>Qtà</th>
+            <th>Fatturato</th>
+            <th>Tasse</th>
+            <th>Multiplayer.it Edizioni</th>
+          </tr>
+        </thead>
+        <tbody>
+            <t t-foreach="widget.pickings.refund" t-as="days">
+              <tr>
+                <td><t t-esc="days"/></td>
+                <td><t t-esc="widget.pickings.refund[days]['qty_order']"/></td>
+                <td><t t-esc="widget.pickings.refund[days]['qty']"/></td>
+                <td><t t-esc="widget.pickings.refund[days]['total_price']"/></td>
+                <td><t t-esc="widget.pickings.refund[days]['price_tax']"/></td>
+                <td><t t-esc="widget.pickings.refund[days]['edizioni']"/></td>
+              </tr>
+            </t>
+            <tr>
+              <td><b>Totali:</b></td>
+              <td></td>
+              <td></td>
+              <td><b><t t-esc="widget.refund_total_price"/></b></td>
+              <td><b><t t-esc="widget.refund_price_tax"/></b></td>
               <td><b><t t-esc="widget.refund_edizioni"/></b></td>
             </tr>
         </tbody>

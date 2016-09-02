@@ -17,6 +17,12 @@ odoo.define('netaddiction_warehouse.vatregister', function (require) {
     var qweb = core.qweb;
 
     core.qweb.add_template("/netaddiction_account/static/src/xml/vatregister.xml");
+
+    function parseDate(input) {
+      var parts = input.split('-');
+
+      return parts[2].substring(0, 2); 
+    }
     
     var vatregister = Widget.extend({
         template : 'vatregister_top',
@@ -24,7 +30,8 @@ odoo.define('netaddiction_warehouse.vatregister', function (require) {
                 "click #search" : "get_vatregister",
                 "click #products" : "filterProducts",
                 'click #total': "filterTotal",
-                'click #multiplayer': "filterMultiplayer"
+                'click #multiplayer': "filterMultiplayer",
+                'click #days':"filterDays"
             },
         init : function(parent){
             this._super(parent);
@@ -64,7 +71,89 @@ odoo.define('netaddiction_warehouse.vatregister', function (require) {
             $('#content_vatregister').html('');
             var t = new multiplayer(null,this.pickings);
             return t.appendTo('#content_vatregister');
+        },
+        filterDays : function(e){
+            $('#content_vatregister').html('');
+            var t = new days(null,this.pickings);
+            return t.appendTo('#content_vatregister');
         }
+    });
+
+    var days = Widget.extend({
+        template:'table_vatregister_days',
+        init : function(parent,pickings){
+            this.pickings = {'done':{},'refund':{}}
+            var total_price = 0;
+            var price_tax = 0;
+            var edizioni = 0;
+            var picks = this.pickings;
+            $(pickings.done).each(function(index,value){
+                total_price = total_price + parseFloat(value.total_price);
+                price_tax = price_tax + parseFloat(value.price_tax);
+                edizioni = edizioni + parseFloat(value.edizioni);
+                var day = parseDate(value.date_done)
+                if (day in picks['done']){
+                    picks['done'][day]['qty'] = picks['done'][day]['qty'] + parseInt(value.qty)
+                    picks['done'][day]['total_price'] = parseFloat(picks['done'][day]['total_price']) + parseFloat(value.total_price)
+                    picks['done'][day]['price_tax'] = parseFloat(picks['done'][day]['price_tax']) + parseFloat(value.price_tax)
+                    picks['done'][day]['edizioni'] = parseFloat(picks['done'][day]['edizioni']) + parseFloat(value.edizioni)
+                    picks['done'][day]['order'].push(value.sale_id)
+                }else{
+                    picks['done'][day] = {
+                        'qty':parseInt(value.qty),
+                        'total_price':parseFloat(value.total_price),
+                        'price_tax':parseFloat(value.price_tax),
+                        'edizioni':parseFloat(value.edizioni),
+                        'order': [value.sale_id]
+                    }
+                }
+                picks['done'][day]['order'] = $.unique(picks['done'][day]['order']);
+                picks['done'][day]['qty_order'] = picks['done'][day]['order'].length
+                picks['done'][day]['total_price'] = parseFloat(picks['done'][day]['total_price']).toFixed(2)
+                picks['done'][day]['price_tax'] = parseFloat(picks['done'][day]['price_tax']).toFixed(2)
+                picks['done'][day]['edizioni'] = parseFloat(picks['done'][day]['edizioni']).toFixed(2)
+            });
+            this.total_price = total_price;
+            this.price_tax = price_tax;
+            this.edizioni = edizioni;
+            
+            total_price = 0
+            price_tax = 0
+            edizioni = 0
+
+            $(pickings.refund).each(function(index,value){
+                total_price = total_price + parseFloat(value.total_price);
+                price_tax = price_tax + parseFloat(value.price_tax);
+                edizioni = edizioni + parseFloat(value.edizioni);
+                var day = parseDate(value.date_done)
+                if (day in picks['refund']){
+                    picks['refund'][day]['qty'] = picks['refund'][day]['qty'] + parseInt(value.qty)
+                    picks['refund'][day]['total_price'] = parseFloat(picks['refund'][day]['total_price']) + parseFloat(value.total_price)
+                    picks['refund'][day]['price_tax'] = parseFloat(picks['refund'][day]['price_tax']) + parseFloat(value.price_tax)
+                    picks['refund'][day]['edizioni'] = parseFloat(picks['refund'][day]['edizioni']) + parseFloat(value.edizioni)
+                    picks['refund'][day]['order'].push(value.sale_id)
+                }else{
+                    picks['refund'][day] = {
+                        'qty':parseInt(value.qty),
+                        'total_price':parseFloat(value.total_price),
+                        'price_tax':parseFloat(value.price_tax),
+                        'edizioni':parseFloat(value.edizioni),
+                        'order': [value.sale_id]
+                    }
+                }
+                picks['refund'][day]['order'] = $.unique(picks['refund'][day]['order']);
+                picks['refund'][day]['qty_order'] = picks['refund'][day]['order'].length
+                picks['refund'][day]['total_price'] = parseFloat(picks['refund'][day]['total_price']).toFixed(2)
+                picks['refund'][day]['price_tax'] = parseFloat(picks['refund'][day]['price_tax']).toFixed(2)
+                picks['refund'][day]['edizioni'] = parseFloat(picks['refund'][day]['edizioni']).toFixed(2)
+
+                
+            });
+            this.refund_total_price = total_price;
+            this.refund_price_tax = price_tax;
+            this.refund_edizioni = edizioni;
+        }
+        
     });
 
     var multiplayer = Widget.extend({
@@ -87,9 +176,9 @@ odoo.define('netaddiction_warehouse.vatregister', function (require) {
                     edizioni = edizioni + parseFloat(value.edizioni);
                     if(value.pid in picks['done']){
                         picks['done'][value.pid]['qty'] = picks['done'][value.pid]['qty'] + parseInt(value.qty)
-                        picks['done'][value.pid]['total_price'] = picks['done'][value.pid]['total_price'] + parseFloat(value.total_price)
-                        picks['done'][value.pid]['price_tax'] = picks['done'][value.pid]['price_tax'] + parseFloat(value.price_tax)
-                        picks['done'][value.pid]['edizioni'] = picks['done'][value.pid]['edizioni'] + parseFloat(value.edizioni)
+                        picks['done'][value.pid]['total_price'] = parseFloat(picks['done'][value.pid]['total_price']) + parseFloat(value.total_price)
+                        picks['done'][value.pid]['price_tax'] = parseFloat(picks['done'][value.pid]['price_tax']) + parseFloat(value.price_tax)
+                        picks['done'][value.pid]['edizioni'] = parseFloat(picks['done'][value.pid]['edizioni']) + parseFloat(value.edizioni)
                         picks['done'][value.pid]['order'].push(value.sale_id)
                     }else{
                         picks['done'][value.pid] = {
@@ -99,11 +188,16 @@ odoo.define('netaddiction_warehouse.vatregister', function (require) {
                             'price_tax':parseFloat(value.price_tax),
                             'tax_id':value.tax_id,
                             'edizioni':parseFloat(value.edizioni),
-                            'order':[value.sale_id]
+                            'order':[value.sale_id],
+                            'barcode':value.barcode
                         }
                     }
                     picks['done'][value.pid]['order'] = $.unique(picks['done'][value.pid]['order']);
                     picks['done'][value.pid]['qty_order'] = picks['done'][value.pid]['order'].length
+
+                    picks['done'][value.pid]['total_price'] = parseFloat(picks['done'][value.pid]['total_price']).toFixed(2)
+                    picks['done'][value.pid]['price_tax'] = parseFloat(picks['done'][value.pid]['price_tax']).toFixed(2)
+                    picks['done'][value.pid]['edizioni'] = parseFloat(picks['done'][value.pid]['edizioni']).toFixed(2)
                 }
                 
             })
@@ -124,9 +218,9 @@ odoo.define('netaddiction_warehouse.vatregister', function (require) {
                     refund_edizioni = refund_edizioni + parseFloat(value.edizioni);
                     if(value.pid in picks['refund']){
                         picks['refund'][value.pid]['qty'] = picks['refund'][value.pid]['qty'] + parseInt(value.qty)
-                        picks['refund'][value.pid]['total_price'] = picks['refund'][value.pid]['total_price'] + value.total_price
-                        picks['refund'][value.pid]['price_tax'] = picks['refund'][value.pid]['price_tax'] + value.price_tax
-                        picks['refund'][value.pid]['edizioni'] = picks['refund'][value.pid]['edizioni'] + value.edizioni
+                        picks['refund'][value.pid]['total_price'] = parseFloat(picks['refund'][value.pid]['total_price']) + value.total_price
+                        picks['refund'][value.pid]['price_tax'] = parseFloat(picks['refund'][value.pid]['price_tax']) + value.price_tax
+                        picks['refund'][value.pid]['edizioni'] = parseFloat(picks['refund'][value.pid]['edizioni']) + value.edizioni
                         picks['refund'][value.pid]['order'].push(value.sale_id)
                     }else{
                         picks['refund'][value.pid] = {
@@ -136,11 +230,15 @@ odoo.define('netaddiction_warehouse.vatregister', function (require) {
                             'price_tax':parseFloat(value.price_tax),
                             'tax_id':value.tax_id,
                             'edizioni':parseFloat(value.edizioni),
-                            'order':[value.sale_id]
+                            'order':[value.sale_id],
+                            'barcode':value.barcode
                         }
                     }
                     picks['refund'][value.pid]['order'] = $.unique(picks['refund'][value.pid]['order']);
                     picks['refund'][value.pid]['qty_order'] = picks['refund'][value.pid]['order'].length
+                    picks['refund'][value.pid]['total_price'] = parseFloat(picks['refund'][value.pid]['total_price']).toFixed(2)
+                    picks['refund'][value.pid]['price_tax'] = parseFloat(picks['refund'][value.pid]['price_tax']).toFixed(2)
+                    picks['refund'][value.pid]['edizioni'] = parseFloat(picks['refund'][value.pid]['edizioni']).toFixed(2)
                 }
                 
             })
@@ -173,9 +271,9 @@ odoo.define('netaddiction_warehouse.vatregister', function (require) {
             edizioni = edizioni + parseFloat(value.edizioni);
             if(value.pid in picks['done']){
                 picks['done'][value.pid]['qty'] = picks['done'][value.pid]['qty'] + parseInt(value.qty)
-                picks['done'][value.pid]['total_price'] = picks['done'][value.pid]['total_price'] + parseFloat(value.total_price)
-                picks['done'][value.pid]['price_tax'] = picks['done'][value.pid]['price_tax'] + parseFloat(value.price_tax)
-                picks['done'][value.pid]['edizioni'] = picks['done'][value.pid]['edizioni'] + parseFloat(value.edizioni)
+                picks['done'][value.pid]['total_price'] = parseFloat(picks['done'][value.pid]['total_price']) + parseFloat(value.total_price)
+                picks['done'][value.pid]['price_tax'] = parseFloat(picks['done'][value.pid]['price_tax']) + parseFloat(value.price_tax)
+                picks['done'][value.pid]['edizioni'] = parseFloat(picks['done'][value.pid]['edizioni']) + parseFloat(value.edizioni)
                 picks['done'][value.pid]['order'].push(value.sale_id)
             }else{
                 picks['done'][value.pid] = {
@@ -185,11 +283,15 @@ odoo.define('netaddiction_warehouse.vatregister', function (require) {
                     'price_tax':parseFloat(value.price_tax),
                     'tax_id':value.tax_id,
                     'edizioni':parseFloat(value.edizioni),
-                    'order':[value.sale_id]
+                    'order':[value.sale_id],
+                    'barcode':value.barcode
                 }
             }
             picks['done'][value.pid]['order'] = $.unique(picks['done'][value.pid]['order']);
             picks['done'][value.pid]['qty_order'] = picks['done'][value.pid]['order'].length
+            picks['done'][value.pid]['total_price'] = parseFloat(picks['done'][value.pid]['total_price']).toFixed(2)
+            picks['done'][value.pid]['price_tax'] = parseFloat(picks['done'][value.pid]['price_tax']).toFixed(2)
+            picks['done'][value.pid]['edizioni'] = parseFloat(picks['done'][value.pid]['edizioni']).toFixed(2)
         })
         this.total_price = total_price.toFixed(2);
         this.price_tax = price_tax.toFixed(2);
@@ -207,9 +309,9 @@ odoo.define('netaddiction_warehouse.vatregister', function (require) {
             refund_edizioni = refund_edizioni + parseFloat(value.edizioni);
             if(value.pid in picks['refund']){
                 picks['refund'][value.pid]['qty'] = picks['refund'][value.pid]['qty'] + parseInt(value.qty)
-                picks['refund'][value.pid]['total_price'] = picks['refund'][value.pid]['total_price'] + value.total_price
-                picks['refund'][value.pid]['price_tax'] = picks['refund'][value.pid]['price_tax'] + value.price_tax
-                picks['refund'][value.pid]['edizioni'] = picks['refund'][value.pid]['edizioni'] + value.edizioni
+                picks['refund'][value.pid]['total_price'] = parseFloat(picks['refund'][value.pid]['total_price']) + value.total_price
+                picks['refund'][value.pid]['price_tax'] = parseFloat(picks['refund'][value.pid]['price_tax']) + value.price_tax
+                picks['refund'][value.pid]['edizioni'] = parseFloat(picks['refund'][value.pid]['edizioni']) + value.edizioni
                 picks['refund'][value.pid]['order'].push(value.sale_id)
             }else{
                 picks['refund'][value.pid] = {
@@ -219,11 +321,15 @@ odoo.define('netaddiction_warehouse.vatregister', function (require) {
                     'price_tax':parseFloat(value.price_tax),
                     'tax_id':value.tax_id,
                     'edizioni':parseFloat(value.edizioni),
-                    'order':[value.sale_id]
+                    'order':[value.sale_id],
+                    'barcode':value.barcode
                 }
             }
             picks['refund'][value.pid]['order'] = $.unique(picks['refund'][value.pid]['order']);
             picks['refund'][value.pid]['qty_order'] = picks['refund'][value.pid]['order'].length
+            picks['refund'][value.pid]['total_price'] = parseFloat(picks['refund'][value.pid]['total_price']).toFixed(2)
+            picks['refund'][value.pid]['price_tax'] = parseFloat(picks['refund'][value.pid]['price_tax']).toFixed(2)
+            picks['refund'][value.pid]['edizioni'] = parseFloat(picks['refund'][value.pid]['edizioni']).toFixed(2)
         })
         
         
@@ -256,33 +362,44 @@ odoo.define('netaddiction_warehouse.vatregister', function (require) {
             $(pickings.done).each(function(index,value){
                 order.push(value.sale_id)
                 picks['done']['qty'] = picks['done']['qty'] + parseInt(value.qty);
-                picks['done']['taxed'] = picks['done']['taxed'] + parseFloat(value.total_price);
-                picks['done']['tax'] = picks['done']['tax'] + parseFloat(value.price_tax);
-                picks['done']['name_tax']['Edizioni'] = picks['done']['name_tax']['Edizioni'] + parseFloat(value.edizioni);
+                picks['done']['taxed'] = parseFloat(picks['done']['taxed']) + parseFloat(value.total_price);
+                picks['done']['tax'] = parseFloat(picks['done']['tax']) + parseFloat(value.price_tax);
+                picks['done']['name_tax']['Edizioni'] = parseFloat(picks['done']['name_tax']['Edizioni']) + parseFloat(value.edizioni);
                 if (value.tax_id in picks['done']['name_tax']){
-                    picks['done']['name_tax'][value.tax_id] = picks['done']['name_tax'][value.tax_id] + parseFloat(value.price_tax);
+                    picks['done']['name_tax'][value.tax_id] = parseFloat(picks['done']['name_tax'][value.tax_id]) + parseFloat(value.price_tax);
                 }else{
                     picks['done']['name_tax'][value.tax_id] = parseFloat(value.price_tax);
                 }
+                picks['done']['name_tax'][value.tax_id] = parseFloat(picks['done']['name_tax'][value.tax_id]).toFixed(2)
 
             });
             var refund_order = [];
             $(pickings.refund).each(function(index,value){
                 refund_order.push(value.sale_id)
                 picks['refund']['qty'] = picks['refund']['qty'] + parseInt(value.qty);
-                picks['refund']['taxed'] = picks['refund']['taxed'] + parseFloat(value.total_price);
-                picks['refund']['tax'] = picks['refund']['tax'] + parseFloat(value.price_tax);
-                picks['refund']['name_tax']['Edizioni'] = picks['refund']['name_tax']['Edizioni'] + parseFloat(value.edizioni);
+                picks['refund']['taxed'] = parseFloat(picks['refund']['taxed']) + parseFloat(value.total_price);
+                picks['refund']['tax'] = parseFloat(picks['refund']['tax']) + parseFloat(value.price_tax);
+                picks['refund']['name_tax']['Edizioni'] = parseFloat(picks['refund']['name_tax']['Edizioni']) + parseFloat(value.edizioni);
                 if (value.tax_id in picks['refund']['name_tax']){
-                    picks['refund']['name_tax'][value.tax_id] = picks['refund']['name_tax'][value.tax_id] + parseFloat(value.price_tax);
+                    picks['refund']['name_tax'][value.tax_id] = parseFloat(picks['refund']['name_tax'][value.tax_id]) + parseFloat(value.price_tax);
                 }else{
                     picks['refund']['name_tax'][value.tax_id] = parseFloat(value.price_tax);
                 }
+                picks['refund']['name_tax'][value.tax_id] = parseFloat(picks['refund']['name_tax'][value.tax_id]).toFixed(2)
             });
             refund_order = $.unique(refund_order);
             order = $.unique(order);
             picks['refund']['order_qty'] = refund_order.length
             picks['done']['order_qty'] = order.length
+
+            picks['refund']['taxed'] = parseFloat(picks['refund']['taxed']).toFixed(2)
+            picks['refund']['tax'] = parseFloat(picks['refund']['tax']).toFixed(2)
+            picks['refund']['name_tax']['Edizioni'] = parseFloat(picks['refund']['name_tax']['Edizioni']).toFixed(2)
+
+            picks['done']['taxed'] = parseFloat(picks['done']['taxed']).toFixed(2)
+            picks['done']['tax'] = parseFloat(picks['done']['tax']).toFixed(2)
+            picks['done']['name_tax']['Edizioni'] = parseFloat(picks['done']['name_tax']['Edizioni']).toFixed(2)
+
             this.pickings = picks;
         }
     });

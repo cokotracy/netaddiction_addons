@@ -5,6 +5,7 @@ from openerp.exceptions import ValidationError
 from openerp.tools import float_compare, float_round
 import openerp.addons.decimal_precision as dp
 import datetime
+from calendar import monthrange
 
 class AccountPicking(models.Model):
     _inherit = "stock.picking"
@@ -17,7 +18,8 @@ class AccountPicking(models.Model):
         scraped_type = self.env['stock.picking.type'].search([('name','=','Reso Difettati')]).id 
 
         date_from = '%s-%s-01 00:00:00' % (year,month)
-        date_to = '%s-%s-31 23:59:59' % (year,month)
+        last = monthrange(year, month)
+        date_to = '%s-%s-%s 23:59:59' % (year,month,last[1])
         pickings = self.search([('date_done','>=',date_from),('date_done','<=',date_to),('picking_type_id','in',[out_type]),('state','=','done')])
         results = {'done':[],'refund':[]}
         ref_pid = {}
@@ -26,6 +28,7 @@ class AccountPicking(models.Model):
                 attr = {
                         'product_id':proc.sale_line_id.product_id.display_name,
                         'pid':proc.sale_line_id.product_id.id,
+                        'barcode':proc.sale_line_id.product_id.barcode,
                         'qty':proc.sale_line_id.product_uom_qty,
                         'total_price':proc.sale_line_id.price_total,
                         'price_tax':proc.sale_line_id.price_tax,
@@ -53,6 +56,7 @@ class AccountPicking(models.Model):
                 attr = {
                         'product_id':line.product_id.display_name,
                         'pid':line.product_id.id,
+                        'barcode':line.product_id.barcode,
                         'qty':line.qty_done,
                         'picking_id':pick.name,
                         'date_done':pick.date_done,

@@ -39,7 +39,8 @@
         'views/manifest.xml',
         'views/time_settings.xml',
         'views/autopreparation.xml',
-        'views/products_movement.xml'
+        'views/products_movement.xml',
+        'views/move.xml'
     ],
     'qweb': [
         "static/src/xml/*.xml",
