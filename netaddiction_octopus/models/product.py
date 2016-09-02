@@ -92,9 +92,14 @@ class Product(models.Model):
         if self.group_key:
             template_id = self.env['product.template'].search([('octopus_group', '=', self.group_key)]).id
 
+        if self.attribute_ids and self.group_name:
+            name = self.group_name
+        else:
+            name = self.name
+
         product = self.env['product.product'].with_context(context).create({
             'product_tmpl_id': template_id,
-            'name': self.group_name or self.name,
+            'name': name,
             'barcode': self.barcode,
             'company_id': self.company_id.id,
             'final_price': self.price,
@@ -112,7 +117,7 @@ class Product(models.Model):
             'seller_ids': [(0, None, {
                 'company_id': self.company_id.id,
                 'name': self.supplier_id.id,
-                'product_name': self.group_name or self.name,
+                'product_name': name,
                 'product_code': self.supplier_code,
                 'avail_qty': self.supplier_quantity,
                 'price': self.supplier_price,
