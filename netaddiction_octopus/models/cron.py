@@ -163,16 +163,27 @@ class Cron(models.Model):
             'skip_notification_mail': True,
         }
 
+        batch_size = 100
+
         product_model = self.env['netaddiction_octopus.product']
         supplierinfo_model = self.env['product.supplierinfo']
 
         for supplier_id in suppliers:
-            products = product_model.search([('supplier_id', '=', supplier_id)]).mapped('supplier_code')
+            octopus_products = product_model.search([
+                ('supplier_id', '=', supplier_id),
+            ]).mapped('supplier_code')
 
-            supplierinfos = supplierinfo_model.search([
+            available_products = supplierinfo_model.search([
                 ('avail_qty', '>', 0),
                 ('name', '=', supplier_id),
-                ('product_code', 'not in', products),
-            ])
+            ]).mapped('product_code')
 
-            supplierinfos.with_context(context).write({'avail_qty': 0})
+            to_turn_off = [product for product in available_products if product not in octopus_products]
+
+            for i in range(0, len(to_turn_off), batch_size):
+                supplierinfos = supplierinfo_model.search([
+                    ('name', '=', supplier_id),
+                    ('product_code', 'in', to_turn_off[i:i + batch_size]),
+                ])
+
+                supplierinfos.with_context(context).write({'avail_qty': 0})
