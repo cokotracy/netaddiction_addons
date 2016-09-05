@@ -94,15 +94,20 @@ class Products(models.Model):
 
     @api.one
     def _get_sum_sales(self):
-        attr = [('product_id','=',self.id)]
-        results = self.env['sale.order.line'].search_count(attr)
-        self.sales_count=results
+        lines = self.env['sale.order.line'].search([('product_id', '=', self.id), ('state', 'not in', ['cancel','draft'])])
+        count = 0
+        for line in lines:
+            count += line.product_qty - line.qty_reverse
+        self.sales_count = count
 
     @api.one
     def _get_sum_purchases(self):
-        attr = [('product_id','=',self.id)]
-        results = self.env['purchase.order.line'].search_count(attr)
-        self.purchase_count=results
+        attr = [('product_id', '=', self.id)]
+        results = self.env['purchase.order.line'].search(attr)
+        count = 0
+        for line in results:
+            count += line.product_qty
+        self.purchase_count = count
 
     @api.one
     def _get_qty_available_now(self):
