@@ -159,6 +159,10 @@ class Cron(models.Model):
     def kill(self, suppliers):
         _logger.info('Kill!')
 
+        context = {
+            'skip_notification_mail': True,
+        }
+
         product_model = self.env['netaddiction_octopus.product']
         supplierinfo_model = self.env['product.supplierinfo']
 
@@ -171,4 +175,4 @@ class Cron(models.Model):
                 ('product_code', 'not in', products),
             ])
 
-            supplierinfos.write({'avail_qty': 0})
+            supplierinfos.with_context(context).write({'avail_qty': 0})
