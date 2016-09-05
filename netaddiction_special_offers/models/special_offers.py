@@ -433,6 +433,52 @@ class BonusOffer(models.Model):
             for pl in self.products_with_bonus_list:
                 pl.active = False
 
+    @api.multi
+    def apply_to_previous_orders(self):
+        u"""Metodo per aggiungere i bonus dell'offerta negli ordini fatti prima della creazione dell'offerta.
+        """
+        for offer in self:
+            if offer.active and not offer.only_one and offer.bonus_products_list and offer.products_with_bonus_list:
+                # non funziona per le offerte a scelta
+                id_list = [line.product_id.id for line in offer.products_with_bonus_list]
+                id_bonus_list = [line.product_id.id for line in offer.bonus_products_list]
+                picks = self.env["stock.picking"].search([("state", "not in", ("cancel", "done")), ("move_lines.product_id", "in", id_list)])
+                if picks and id_bonus_list:
+                    # prendo prodotti bonus e le location
+                    bonus_prods = self.env["product.product"].search([("id", "in", id_bonus_list)])
+                    location = self.env.ref('stock.stock_location_stock')
+                    location_dest = self.env.ref('stock.stock_location_customers')
+                    for pick in picks:
+                        # controllo che questa pick non abbia già i bonus
+                        already_have_bonus = [line for line in pick.move_lines if line.product_id.id in id_bonus_list]
+                        if already_have_bonus:
+                            continue
+                        # se non li ha aggiungo move line e sale order line per ogni bonus
+                        num = [line.product_uom_qty for line in pick.move_lines if line.product_id.id in id_list]
+                        num = sum(num)
+                        for prod in bonus_prods:
+                            if prod.sale_ok:
+                                data_pick = {
+                                    "product_id": prod.id,
+                                    "product_uom_qty": num,
+                                    "product_uom": prod.uom_id.id,
+                                    "picking_id": pick.id,
+                                    "location_id": location.id,
+                                    "location_dest_id": location_dest.id,
+                                    "name": prod.name,
+                                }
+                                data_order_line = {
+                                    "product_id": prod.id,
+                                    "product_uom_qty": num,
+                                    "product_uom": prod.uom_id.id,
+                                    "order_id": pick.sale_id.id,
+                                }
+                                self.env["stock.move"].create(data_pick)
+                                self.env["sale.order.line"].create(data_order_line)
+                        # va chiamata per far scalare la quantità del bonus
+                        pick.action_confirm()
+
+
 
 class BonusOfferLine(models.Model):
 
@@ -447,13 +493,14 @@ class BonusOfferLine(models.Model):
     @api.one
     @api.constrains('active')
     def _check_active(self):
-        print "Here"
+
         if not self.active:
-            print "not active"
+
             active_list = [bl for bl in self.bonus_offer_id.bonus_products_list if bl.active]
-            print active_list
+
             if not active_list and self.bonus_offer_id.active:
                 self.bonus_offer_id.active = False
+
 
 class ProductWithBonusOfferLine(models.Model):
 

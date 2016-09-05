@@ -368,6 +368,8 @@
                     </div>
                    <div class="oe_title">
                         <h1><field name="name" placeholder="Titolo offerta Bonus..."/></h1>
+                        <button  class="oe_highlight" name="apply_to_previous_orders" 
+                                string="vecchi ordini" type="object" /> 
                     </div>
                         <group string="Offerta" name="so_cat" colspan="4">
                             <group name="loc_left" class="oe_left" col="2">
