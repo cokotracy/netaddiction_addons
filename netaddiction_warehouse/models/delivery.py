@@ -18,34 +18,35 @@ class Orders(models.Model):
 
     @api.multi
     def action_confirm(self):
-        if self.state not in ('draft', 'pending'):
-            # se lo stato non  è draft è già stata chiamata action confirm
-            return False
+        for order in self:
+            if order.state not in ('draft', 'pending'):
+                # se lo stato non  è draft è già stata chiamata action confirm
+                continue
 
-        if len(self.order_line) == 0:
-            raise ValidationError("Devi inserire almeno un prodotto nell'ordine")
+            if len(order.order_line) == 0:
+                raise ValidationError("Devi inserire almeno un prodotto nell'ordine")
 
-        if not self.env.context.get('no_check_limit_and_action', False):
-            if not self.parent_order:
-                self.order_line.check_limit_and_action()
+            if not self.env.context.get('no_check_limit_and_action', False):
+                if not order.parent_order:
+                    order.order_line.check_limit_and_action()
 
-        self.pre_action_confirm()
-        old_state = self.state
+            order.pre_action_confirm()
+            old_state = order.state
 
-        super(Orders, self).action_confirm()
+            super(Orders, order).action_confirm()
 
-        if len(self.picking_ids) == 0:
-            self.create_shipping()
-            self.set_delivery_price()
-            for pick in self.picking_ids:
-                pick.generate_barcode()
-        if not self.env.context.get('no_do_action_quantity', False):
-            for line in self.order_line:
-                if not self.parent_order:
-                    line.product_id.do_action_quantity()
+            if len(order.picking_ids) == 0:
+                order.create_shipping()
+                order.set_delivery_price()
+                for pick in order.picking_ids:
+                    pick.generate_barcode()
+            if not self.env.context.get('no_do_action_quantity', False):
+                for line in order.order_line:
+                    if not order.parent_order:
+                        line.product_id.do_action_quantity()
 
-        if old_state == 'problem':
-            self.state = 'problem'
+            if old_state == 'problem':
+                order.state = 'problem'
         return True
 
     @api.multi
