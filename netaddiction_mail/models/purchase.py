@@ -10,14 +10,14 @@ import sys
 class Purhcase(models.Model):
     _inherit = 'purchase.order'
 
-    @api.multi
-    def button_cancel(self):
-        for order in self:
-            for line in order.order_line:
-                if self.state == 'purchase':
-                    line.send_mail_cancel(0,True)
+    # @api.multi
+    # def button_cancel(self):
+    #     for order in self:
+    #         for line in order.order_line:
+    #             if self.state == 'purchase':
+    #                 line.send_mail_cancel(0,True)
 
-        return super(Purhcase,self).button_cancel()
+    #     return super(Purhcase,self).button_cancel()
 
     @api.one
     def action_rfq_send(self):
@@ -99,18 +99,22 @@ class Purhcase(models.Model):
             self.state = 'sent'
 
 class PurchaseOrdersLine(models.Model):
-    _inherit="purchase.order.line"
+    _inherit = "purchase.order.line"
 
-
-    @api.one 
-    def send_mail_cancel(self,qty, unlink = False):
-    	subject = "Importante cancellazione ordine prodotto - Multiplayer.com - n. ordine %s" % (self.id,)
+    @api.one
+    def send_mail_cancel(self, qty):
+        subject = "Importante cancellazione ordine prodotto - Multiplayer.com - n. ordine %s" % (self.id,)
         email_from = 'acquisti@multiplayer.com'
         reply_to = 'riccardo.ioni@netaddiction.it'
         recipients = []
+
+        users = self.env["netaddiction.email.dispatcher"].get_users_from_group("netaddiction_acl.netaddiction_purchase_user_plus")
         to_partner = self.env['res.partner'].search([('parent_id','=',self.order_id.partner_id.id),('send_contact_purchase_orders','=',True)])
         for res in to_partner:
             recipients.append(res)
+        for u in users:
+            recipients.append(u)
+
         users = self.env["netaddiction.email.dispatcher"].get_users_from_group("netaddiction_acl.netaddiction_purchase_user_plus")
         for u in users:
             recipients.append(u)
@@ -121,58 +125,47 @@ class PurchaseOrdersLine(models.Model):
             if i.name == self.partner_id:
                 code = i.product_code
         qta = 0
-        query = self.search([('product_id','=',self.product_id.id),('state','=','purchase'),('order_id.partner_id','=',self.order_id.partner_id.id)])
+        query = self.search([('product_id', '=', self.product_id.id), ('state', '=', 'purchase'), ('order_id.partner_id', '=', self.order_id.partner_id.id)])
         for q in query:
             qta += q.product_qty
         line = "%s | COD.FOR. %s | EAN %s" % (self.product_id.display_name,code,self.product_id.barcode)
-        
+
         qty_to_down = self.product_qty - qty
+        if qty_to_down == 0:
+            qty_to_down = qty
         body = """
         Gentile Fornitore, <br>
         desidero informarti che abbiamo cancellato l'ordine del seguente prodotto:<br><br>
         =================================================<br>
-        %s 
+        %s<br>
         =================================================<br><br>
         DATA ORDINE: %s<br>
         PREZZO: %s<br>
         QTA: %s<br>
         NUOVA QUANTITA' IN BACKORDER: %s<br><br>
         Pertanto ti chiediamo di rimuoverlo dal vostro backorder.<br>
-        Qualora il prodotto venisse spedito nonostante la nostra cancellazione verra' immediatamente reso e la fattura relativa bloccata.<br>
         Distinti saluti,<br>
         Multiplayer.com
-        """ % (line,self.order_id.date_order,self.price_unit,int(qty_to_down),int(qta-qty_to_down))
-        
-        self.env["netaddiction.email.dispatcher"].send_mail(body, subject, email_from, recipients, None,reply_to)
-        
-        if not unlink:
-            self.update_picks(qty_to_down)
+        """ % (line, self.order_id.date_order, self.price_unit, int(qty_to_down), int(qta - qty_to_down))
 
-
-    @api.one 
-    def update_picks(self,qty_to_down):
-        for pick in self.order_id.picking_ids:
-            if pick.state != 'done':
-                for popi in pick.pack_operation_product_ids:
-                    if popi.product_id.id == self.product_id.id:
-                        popi.product_qty = popi.product_qty - qty_to_down 
-                        if popi.product_qty == 0:
-                            popi.unlink()
-
+        self.env["netaddiction.email.dispatcher"].send_mail(body, subject, email_from, recipients, None, reply_to)
 
     @api.one
-    def write(self,values):
+    def write(self, values):
         if 'product_qty' in values.keys():
             if self.product_qty < values['product_qty']:
-                raise Warning('Per Aggiungere quantità devi fare un nuovo Ordini a questo fornitore di questo prodotto.')
+                raise Warning('Per Aggiungere quantità devi fare un nuovo Ordine a questo fornitore di questo prodotto.')
             else:
                 if self.order_id.state == 'purchase':
                     self.send_mail_cancel(values['product_qty'])
 
+        return super(PurchaseOrdersLine, self).write(values)
 
-        return super(PurchaseOrdersLine,self).write(values)
+    @api.multi
+    def unlink(self):
+        for line in self:
+            print line.product_qty
+            if line.order_id.state == 'purchase':
+                line.send_mail_cancel(line.product_qty)
 
-
-
-
-
+        return super(PurchaseOrdersLine, self).unlink()
