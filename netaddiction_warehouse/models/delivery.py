@@ -111,7 +111,7 @@ class Orders(models.Model):
 
         new_procs.run()
 
-        self.env.cr.commit()
+        #self.env.cr.commit()
         return new_procs
 
     @api.multi
@@ -180,7 +180,7 @@ class Orders(models.Model):
 
         self.write({'delivery_price' : total_ship})
 
-        self.env.cr.commit()
+        #self.env.cr.commit()
 
 
     @api.multi
@@ -706,7 +706,7 @@ class StockPicking(models.Model):
             self.delivery_barcode = self._generate_barcode_sda()
 
         self.carrier_tracking_ref = self.delivery_barcode
-        self.env.cr.commit()
+        #self.env.cr.commit()
 
     @api.multi
     def _generate_barcode_bartolini(self):
