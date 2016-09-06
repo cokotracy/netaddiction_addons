@@ -21,7 +21,7 @@ class Order(models.Model):
         for order in self:
             if order.state not in ('draft', 'pending'):
                 # raise ValidationError("ordine non in draft")
-                return False
+                continue
 
             if not order.payment_method_id:
                 raise ValidationError("nessun metodo di pagamento selezionato")
