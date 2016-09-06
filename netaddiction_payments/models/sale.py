@@ -18,9 +18,14 @@ class Order(models.Model):
         (viene messo in vista in netaddiction orders).
         effettua la action confirm, crea fatture e pagamenti
         """
+        print "AAAAAA"
+        print self
+        print "BBBB"
         for order in self:
+            print order.id
             if order.state not in ('draft', 'pending'):
                 # raise ValidationError("ordine non in draft")
+                print order.state
                 continue
 
             if not order.payment_method_id:
