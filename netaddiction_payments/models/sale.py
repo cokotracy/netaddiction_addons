@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-from openerp import tools
 from openerp import models, fields, api
 from openerp.exceptions import ValidationError
 from float_compare import isclose
@@ -20,7 +19,8 @@ class Order(models.Model):
         effettua la action confirm, crea fatture e pagamenti
         """
         if self.state not in ('draft', 'pending'):
-            raise ValidationError("ordine non in draft")
+            # raise ValidationError("ordine non in draft")
+            return False
 
         if not self.payment_method_id:
             raise ValidationError("nessun metodo di pagamento selezionato")
