@@ -141,7 +141,7 @@ class TerminalVideo(supplier.Supplier):
         image='Img Lrg Web',
         date=lambda self, item: datetime.strptime(item['Data rilascio'], '%d/%m/%Y') if item['Data rilascio'] else None,
         supplier_code='Cod. interno',
-        supplier_price=lambda self, item: float(item['Listino'].replace(',', '.')) / 100 * (100 - DISCOUNTS.get(item['Categoria sconto'], 100)) if item['Listino'] else None,
+        supplier_price=lambda self, item: float(item['Listino'].replace(',', '.')) / 100.0 * (100 - DISCOUNTS.get(item['Categoria sconto'], 0)) if item['Listino'] else None,
         supplier_quantity='Q.ta in stock')
 
     def validate(self, item):
