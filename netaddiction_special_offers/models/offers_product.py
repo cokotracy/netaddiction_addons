@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from openerp import api, fields, models
+from math import floor
 
 
 class OffersProducts(models.Model):
@@ -19,7 +20,11 @@ class OffersProducts(models.Model):
         if self.offer_catalog_lines:
             curr_off = self.offer_catalog_lines[0]
             if curr_off:
-                self.offer_price = curr_off.fixed_price if curr_off.offer_type == 1 else (self.list_price - (self.list_price / 100) * curr_off.percent_discount)
+                if curr_off.offer_type == 1:
+                    self.offer_price = curr_off.fixed_price 
+                else:
+                    temp = (self.list_price - (self.list_price / 100) * curr_off.percent_discount)
+                    self.offer_price = floor(temp * 10) / 10
             else:
                 self.offer_price = 0.0
 

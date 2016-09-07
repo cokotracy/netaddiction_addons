@@ -22,6 +22,7 @@ class CatalogOffer(models.Model):
     offer_type = fields.Selection([(1, 'Prezzo Fisso'), (2, 'Percentuale')], string='Tipo Offerta', default=2)
     fixed_price = fields.Float(string="Prezzo fisso")
     percent_discount = fields.Integer(string="Sconto Percentuale", default=10)
+    percent_rounded_down = fields.Boolean(string='Arrotondamento', help="Arrotondamento prezzo offerta per difetto", default=True)
     products_list = fields.One2many('netaddiction.specialoffer.offer_catalog_line', 'offer_catalog_id', string='Lista prodotti', domain=['|', ('active', '=', False), ('active', '=', True)])
     end_cron_job = fields.Integer()
     start_cron_job = fields.Integer()

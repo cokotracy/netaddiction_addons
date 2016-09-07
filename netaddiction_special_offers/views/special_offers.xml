@@ -184,6 +184,7 @@
                                 <field name="offer_type" widget="radio"/>
                                 <field name="fixed_price" attrs="{'invisible':[('offer_type', '!=', 1)]}"/>
                                 <field name="percent_discount" attrs="{'invisible':[('offer_type', '!=', 2)]}" />
+                                <field name="percent_rounded_down" attrs="{'invisible':[('offer_type', '!=', 2)]}" />
                                 <button  class="oe_highlight" name="modify_products" 
                                 string="applica ai prodotti" type="object" /> 
 
