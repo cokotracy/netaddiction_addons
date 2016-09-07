@@ -5,13 +5,14 @@
             <field name="name">octopus.supplier.list</field>
             <field name="model">netaddiction_octopus.supplier</field>
             <field name="arch" type="xml">
-                <tree editable="top">
+                <tree editable="top" colors="gray:active==False">
                     <field name="order" widget="handle"/>
                     <field name="partner_id" string="Fornitore" domain="[('parent_id', '=', False)]"/>
                     <field name="handler"/>
                     <field name="can_add"/>
                     <button name="manage_categories" type="object" string="Gestione categorie"/>
                     <button name="manage_taxes" type="object" string="Gestione tasse"/>
+                    <field name="active"/>
                 </tree>
             </field>
         </record>
@@ -47,7 +48,7 @@
             <field name="view_type">form</field>
             <field name="view_id" ref="supplier_view_list"/>
             <field name="search_view_id" ref="supplier_view_search"/>
-            <field name="context">{"search_default_handler": 1}</field>
+            <field name="context">{"search_default_handler": 1, "active_test": False}</field>
         </record>
 
         <menuitem id="supplier_menu" name="Fornitori" parent="octopus_menu" groups="base.group_no_one" action="supplier_action"/>
