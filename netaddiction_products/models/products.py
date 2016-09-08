@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from openerp import models, fields, api, tools, SUPERUSER_ID
+from openerp.addons.netaddiction_products.utils.barcodes import get_ean13_check_digit
 from openerp.osv import fields as old_fields
 import openerp.addons.decimal_precision as dp
 import datetime
@@ -50,7 +51,7 @@ class Products(models.Model):
     qty_sum_suppliers = fields.Integer(string="Quantità dei fornitori", compute="_get_qty_suppliers",
         help="Somma delle quantità dei fornitori")
 
-    qty_single_order = fields.Integer(string="Quantità massima ordinabile" , help="Quantità massima ordinabile per singolo ordine/cliente")
+    qty_single_order = fields.Integer(string="Quantità massima ordinabile", help="Quantità massima ordinabile per singolo ordine/cliente")
 
     image_ids = fields.Many2many('ir.attachment', 'product_image_rel', 'product_id', 'attachment_id', string='Immagini')
 
@@ -208,6 +209,11 @@ class Products(models.Model):
         except IOError:
             if not context.get('skip_broken_images', False):
                 raise
+
+        if 'barcode' in vals:
+            # Se il barcode è un EAN13 a 12 cifre, lo normalizzo a 13
+            if get_ean13_check_digit('0' + vals['barcode'][:-1]) == vals['barcode'][-1]:
+                vals['barcode'] = '0' + vals['barcode']
 
         return super(Products, self).write(cr, uid, ids, vals, context)
 
