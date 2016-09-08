@@ -409,7 +409,7 @@ class Products(models.Model):
     @api.model
     def name_search(self, name, args=None, operator='ilike', limit=6):
         result = []
-
+        zerofill = name
         if name:
             try:
                 name = int(name)
@@ -419,16 +419,16 @@ class Products(models.Model):
                 result = self.search([('id', '=', int(name))] + args)
                 if result:
                     return result.name_get()
-
-            result = self.search([('barcode','=',name)] + args)
+                    
+            result = self.search([('barcode','=',zerofill)] + args)
             if result:
                 return result.name_get()
 
-            result = self.search([('seller_ids.product_code','=',name)] + args)
+            result = self.search([('seller_ids.product_code','=',zerofill)] + args)
             if result:
                 return result.name_get()
  
-            result = self.search([('name', 'ilike', name)] + args, limit=limit)
+            result = self.search([('name', 'ilike', zerofill)] + args, limit=limit)
             if result:
                 return result.name_get()
 
