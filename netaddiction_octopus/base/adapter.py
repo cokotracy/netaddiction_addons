@@ -119,4 +119,13 @@ class Adapter(object):
             else:
                 mapping[field] = match
 
+        # Barcode normalization
+
+        if mapping['barcode']:
+            barcode_model = self.env['barcode.nomenclature']
+
+            # UPC-A to EAN-13
+            if barcode_model.check_encoding(mapping['barcode'], 'upca'):
+                mapping['barcode'] = '0' + mapping['barcode']
+
         return mapping
