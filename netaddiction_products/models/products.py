@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 
 from openerp import models, fields, api, tools, SUPERUSER_ID
-from openerp.addons.netaddiction_products.utils.barcodes import get_ean13_check_digit
 from openerp.osv import fields as old_fields
 import openerp.addons.decimal_precision as dp
 import datetime
@@ -211,8 +210,8 @@ class Products(models.Model):
                 raise
 
         if 'barcode' in vals:
-            # Se il barcode è un EAN13 a 12 cifre, lo normalizzo a 13
-            if get_ean13_check_digit('0' + vals['barcode'][:-1]) == vals['barcode'][-1]:
+            # Se il barcode è un UPC-A lo converto in EAN-13
+            if self.env['barcode.nomenclature'].check_encoding(vals['barcode'], 'upca'):
                 vals['barcode'] = '0' + vals['barcode']
 
         return super(Products, self).write(cr, uid, ids, vals, context)
