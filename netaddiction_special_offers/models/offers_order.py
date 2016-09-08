@@ -17,14 +17,21 @@ class OfferOrder(models.Model):
     @api.one
     def reset_voucher(self):
         if len(self.offers_voucher) > 0:
-            for ovh in self.env['netaddiction.order.specialoffer.voucher.history'].search([("order_id", "=", self.id)]):
+            offer = self.offers_voucher[0].offer_id
+            print self.partner_id.vouchers_list
+            self.partner_id.vouchers_list = [(3, offer.id)]
+            print self.partner_id.vouchers_list
+            # for ovh in self.env['netaddiction.order.specialoffer.voucher.history'].search([("order_id", "=", self.id)]):
+            for ovh in self.offers_voucher:
                 ovh.order_line.product_id_change()
                 ovh.unlink()
-            # self._amount_all()
+
+        self.voucher_string = None
+        # self._amount_all()
 
     @api.one
     def apply_voucher_backend(self):
-        self.apply_voucher()
+        self.apply_voucher(voucher_string=self.voucher_string)
 
     def apply_voucher(self, **kwargs):
         """applica i voucher
@@ -36,16 +43,28 @@ class OfferOrder(models.Model):
             return
 
         voucher_string = kwargs.get("voucher_string")
+        print "A"
         if voucher_string is not None:
+            self.reset_voucher()
             self.voucher_string = voucher_string
-
-        self.reset_voucher()
+        else:
+            return False
+        print"B"
 
         if self.voucher_string and len(self.offers_voucher) == 0:
             offer = self.env['netaddiction.specialoffer.voucher'].search([("code", "=", self.voucher_string)])
             customer_check = offer and (not offer.one_user or (offer.associated_user.id == self.partner_id.id))
+            # TODO REMOVER
+            print self.partner_id.vouchers_list
+            used_voucher = [vaucher.id for vaucher in self.partner_id.vouchers_list] if self.partner_id.vouchers_list else []
+            if (offer.id in used_voucher):
+                raise VoucherAlreadyUsedException(voucher_string)
+
             if customer_check:
                 offer = offer[0]
+                print self.partner_id.vouchers_list
+                self.partner_id.vouchers_list = [(4, offer.id)]
+                print self.partner_id.vouchers_list
                 if offer.offer_type == 3:
                     if(offer.qty_limit > 0 and offer.qty_selled + 1 > offer.qty_limit):
                         raise QtyLimitException(None, None, offer.id, offer.qty_limit, 1, offer.qty_selled)
@@ -65,7 +84,7 @@ class OfferOrder(models.Model):
                             self.free_ship_prod = [(4, ol.product_id.id)]
 
                 else:
-                    # TODO CONTO DELLA SOMMA E CONTROLLO LIMITE NON SUPERATO
+                   
                     offer_ids = [ol.product_id.id for ol in offer.products_list if ol.active]
                     offer_cart_history_ids = [och.product_id.id for och in self.offers_cart]
                     tot_qty = 0
@@ -502,3 +521,17 @@ class OrderOfferVoucherHistory(models.Model):
     percent_discount = fields.Integer(string="Sconto Percentuale")
     order_line = fields.Many2one(comodel_name='sale.order.line')
     percent_effective_discount = fields.Float(string="Sconto percentuale applicato")
+
+class VoucherAlreadyUsedException(Exception):
+    def __init__(self, voucher_str):
+        super(VoucherAlreadyUsedException, self).__init__()
+        self.var_name = 'voucher_already_used'
+        self.voucher_str = voucher_str
+
+    def __str__(self):
+        s = u"Il cliente ha già usato il voucher %s" % (self.voucher_str)
+        return s
+
+    def __repr__(self):
+        s = u"Il cliente ha già usato il voucher %s" % (self.voucher_str)
+        return s

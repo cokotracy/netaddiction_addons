@@ -536,6 +536,7 @@ class VoucherOffer(models.Model):
     end_cron_job = fields.Integer()
     start_cron_job = fields.Integer()
     products_list = fields.One2many('netaddiction.specialoffer.offer_voucher_line', 'offer_voucher_id', string='Lista prodotti', domain=['|', ('active', '=', False), ('active', '=', True)])
+    customers_list = fields.Many2many('res.partner', string="Clienti")
 
     _sql_constraints = [
         ('name', 'unique(name)', 'Nome offerta deve essere unico!'),
@@ -676,3 +677,8 @@ class VoucherOfferLine(models.Model):
     def _check_percent_discount(self):
         if self.offer_type == 2 and (self.percent_discount <= 0 or self.percent_discount > 100):
             raise ValidationError("Il valore dello sconto percentuale non può essere minore di 0 o maggiore di 100")
+
+class VoucherPartner(models.Model):
+    _inherit = 'res.partner'
+
+    vouchers_list = fields.Many2many('netaddiction.specialoffer.voucher', string="Voucher usati")
