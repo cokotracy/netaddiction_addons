@@ -2,8 +2,7 @@
 from openerp import models, fields, api
 from openerp.exceptions import ValidationError
 from float_compare import isclose
-import logging
-_logger = logging.getLogger(__name__)
+
 
 class Order(models.Model):
     _inherit = 'sale.order'
@@ -20,14 +19,11 @@ class Order(models.Model):
         (viene messo in vista in netaddiction orders).
         effettua la action confirm, crea fatture e pagamenti
         """
-        _logger.info( "AAAAAA" )
-        _logger.info( self )
-        _logger.info( "BBBB")
+       
         for order in self:
-            _logger.info( order.id )
+           
             if order.state not in ('draft', 'pending'):
                 # raise ValidationError("ordine non in draft")
-                _logger.info( order.state )
                 continue
 
             if not order.payment_method_id:

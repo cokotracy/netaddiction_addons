@@ -18,16 +18,14 @@ class OfferOrder(models.Model):
     def reset_voucher(self):
         if len(self.offers_voucher) > 0:
             offer = self.offers_voucher[0].offer_id
-            print self.partner_id.vouchers_list
+           
             self.partner_id.vouchers_list = [(3, offer.id)]
-            print self.partner_id.vouchers_list
-            # for ovh in self.env['netaddiction.order.specialoffer.voucher.history'].search([("order_id", "=", self.id)]):
             for ovh in self.offers_voucher:
                 ovh.order_line.product_id_change()
                 ovh.unlink()
 
         self.voucher_string = None
-        # self._amount_all()
+
 
     @api.one
     def apply_voucher_backend(self):
@@ -43,28 +41,24 @@ class OfferOrder(models.Model):
             return
 
         voucher_string = kwargs.get("voucher_string")
-        print "A"
+       
         if voucher_string is not None:
             self.reset_voucher()
             self.voucher_string = voucher_string
         else:
             return False
-        print"B"
 
         if self.voucher_string and len(self.offers_voucher) == 0:
             offer = self.env['netaddiction.specialoffer.voucher'].search([("code", "=", self.voucher_string)])
-            customer_check = offer and (not offer.one_user or (offer.associated_user.id == self.partner_id.id))
-            # TODO REMOVER
-            print self.partner_id.vouchers_list
             used_voucher = [vaucher.id for vaucher in self.partner_id.vouchers_list] if self.partner_id.vouchers_list else []
             if (offer.id in used_voucher):
                 raise VoucherAlreadyUsedException(voucher_string)
 
+            customer_check = offer and (not offer.one_user or (offer.associated_user.id == self.partner_id.id))
+
             if customer_check:
                 offer = offer[0]
-                print self.partner_id.vouchers_list
                 self.partner_id.vouchers_list = [(4, offer.id)]
-                print self.partner_id.vouchers_list
                 if offer.offer_type == 3:
                     if(offer.qty_limit > 0 and offer.qty_selled + 1 > offer.qty_limit):
                         raise QtyLimitException(None, None, offer.id, offer.qty_limit, 1, offer.qty_selled)
