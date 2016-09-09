@@ -211,7 +211,7 @@ class Products(models.Model):
 
         if 'barcode' in vals:
             # Se il barcode è un UPC-A lo converto in EAN-13
-            if self.env['barcode.nomenclature'].check_encoding(vals['barcode'], 'upca'):
+            if self.pool['barcode.nomenclature'].check_encoding(vals['barcode'], 'upca'):
                 vals['barcode'] = '0' + vals['barcode']
 
         return super(Products, self).write(cr, uid, ids, vals, context)
