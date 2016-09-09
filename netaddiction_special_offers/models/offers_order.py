@@ -59,6 +59,7 @@ class OfferOrder(models.Model):
             if customer_check:
                 offer = offer[0]
                 self.partner_id.vouchers_list = [(4, offer.id)]
+                tot_qty = 0
                 if offer.offer_type == 3:
                     if(offer.qty_limit > 0 and offer.qty_selled + 1 > offer.qty_limit):
                         raise QtyLimitException(None, None, offer.id, offer.qty_limit, 1, offer.qty_selled)
@@ -76,12 +77,12 @@ class OfferOrder(models.Model):
                         # SPEDIZIONI GRATIS PER TUTTO l'ORDINE
                         for ol in self.order_line:
                             self.free_ship_prod = [(4, ol.product_id.id)]
-
+                    tot_qty = 1
                 else:
                    
                     offer_ids = [ol.product_id.id for ol in offer.products_list if ol.active]
                     offer_cart_history_ids = [och.product_id.id for och in self.offers_cart]
-                    tot_qty = 0
+                    
                     for ol in self.order_line:
                         # applico il voucher se non ci sono altre offerte sul prodotto
                         if (ol.product_id.id in offer_ids) and (ol.product_id.id not in offer_cart_history_ids) and (not ol.offer_type):
