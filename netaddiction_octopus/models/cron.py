@@ -39,6 +39,7 @@ class Cron(models.Model):
         _logger.info('Divide!')
 
         product_model = self.env['netaddiction_octopus.product']
+        barcode_model = self.env['barcode.nomenclature']
 
         for supplier in suppliers.values():
             _logger.info(' | %s (#%d)' % (supplier.name, supplier.id))
@@ -92,6 +93,13 @@ class Cron(models.Model):
                         if data is None:
                             discarted_products += 1
                             continue
+
+                        # Barcode normalization
+
+                        if data['barcode']:
+                            # UPC-A to EAN-13
+                            if barcode_model.check_encoding(data['barcode'], 'upca'):
+                                data['barcode'] = '0' + data['barcode']
 
                         datas[data['supplier_code']] = data
 
