@@ -96,7 +96,7 @@ class Cron(models.Model):
 
                         # Barcode normalization
 
-                        if data['barcode']:
+                        if data.get('barcode'):
                             # UPC-A to EAN-13
                             if barcode_model.check_encoding(data['barcode'], 'upca'):
                                 data['barcode'] = '0' + data['barcode']
