@@ -103,6 +103,8 @@ class PurchaseOrdersLine(models.Model):
 
     @api.one
     def send_mail_cancel(self, qty):
+        return  # TODO togliere / sistemare
+
         subject = "Importante cancellazione ordine prodotto - Multiplayer.com - n. ordine %s" % (self.id,)
         email_from = 'acquisti@multiplayer.com'
         reply_to = 'riccardo.ioni@netaddiction.it'
