@@ -366,7 +366,7 @@ class OrderUtilities(models.TransientModel):
 
         problem = False
         for ovh in order.offers_voucher:
-            if not ovh.offer_id or not ovh.offer_id.active or (ovh.offer_id.qty_limit > 0 and ovh.offer_id.qty_selled + ovh.qty > ovh.offer_id.qty_limit) or (ovh.offer_id.qty_max_buyable > 0 and ovh.qty > ovh.offer_id.qty_max_buyable):
+            if not ovh.offer_id or not ovh.offer_id.active or (ovh.offer_id.qty_limit > 0 and ovh.offer_id.qty_selled + ovh.qty > ovh.offer_id.qty_limit):
                 # se: l'offerta non è più attiva o è stata superata la quantità limite o è stata superata la quantità massima per singolo ordine
                 problem = True
                 break
