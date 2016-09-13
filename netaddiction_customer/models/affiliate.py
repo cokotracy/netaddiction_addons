@@ -2,6 +2,7 @@
 import openerp
 from openerp import models, fields, api
 from openerp.exceptions import ValidationError
+from openerp.tools import float_is_zero
 from hashids import Hashids
 from datetime import datetime, timedelta
 
@@ -195,7 +196,7 @@ class AffiliateUtilities(models.TransientModel):
     def register_commissions(self):
         orders = self.env["netaddiction.partner.affiliate.order.history"].search([("assigned", "=", False)])
         for order in orders:
-            if not order.affiliate_id.exclude and order.order_id.state == "done" and (datetime.now() - datetime.strptime(order.order_id.date_done, '%Y-%m-%d %H:%M:%S')) > timedelta(days=15):
+            if not order.affiliate_id.exclude and order.order_id.state == "done" and (datetime.now() - datetime.strptime(order.order_id.date_done, '%Y-%m-%d %H:%M:%S')) > timedelta(days=15) and float_is_zero(order.order_id.gift_discount, precision_digits=2):
                 order.affiliate_id.partner_id.add_gift_value(order.commission, "Affiliate")
                 order.affiliate_id.tot_gift_history += order.commission
                 order.assigned = True
