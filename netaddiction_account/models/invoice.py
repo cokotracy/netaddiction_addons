@@ -128,45 +128,68 @@ class Invoice(models.Model):
 
         new_lines = self.env['account.invoice.line']
         for pick in self.choose_wave_id.picking_ids:
-            lines = self.env['purchase.order'].search([('name','=',pick.origin)])
+            lines = self.env['purchase.order'].search([('name', '=', pick.origin)])
             if lines:
                 for line in pick.pack_operation_product_ids:
 
                     if line.qty_done > 0.0:
-                        get_price = self.env['purchase.order.line'].search([('product_id','=',line.product_id.id),('order_id','=',self.purchase_id.id)])
-                        if len(get_price) == 1:
-                            price = get_price.price_unit
-                            line_id = get_price.id
-                            anal = account_analytic_id.id
+                        get_price = self.env['purchase.order.line'].search([('product_id', '=', line.product_id.id), ('order_id', '=', self.purchase_id.id)])
+                        if get_price:
+                            for prod in get_price:
+
+                                price = prod.price_unit
+                                line_id = prod.id
+                                anal = prod.account_analytic_id.id
+                                taxes = line.product_id.supplier_taxes_id
+                                invoice_line_tax_ids = self.purchase_id.fiscal_position_id.map_tax(taxes)
+                                data = {
+                                    'purchase_line_id': line_id,
+                                    'name': line.product_id.name,
+                                    'origin': self.purchase_id.origin,
+                                    'uom_id': line.product_id.uom_id.id,
+                                    'product_id': line.product_id.id,
+                                    'account_id': self.env['account.invoice.line'].with_context({'journal_id': self.journal_id.id, 'type': 'in_invoice'})._default_account(),
+                                    'price_unit': price,
+                                    'quantity': line.qty_done,
+                                    'discount': 0.0,
+                                    'account_analytic_id': anal,
+                                    'invoice_line_tax_ids': invoice_line_tax_ids.ids
+                                }
+                                account = new_lines.get_invoice_line_account('in_invoice', line.product_id, self.purchase_id.fiscal_position_id, self.env.user.company_id)
+                                if account:
+                                    data['account_id'] = account.id
+                                    new_line = new_lines.new(data)
+                                    new_line._set_additional_fields(self)
+                                    new_lines += new_line
                         else:
                             price = 0
                             line_id = False
                             anal = False
-                        taxes = line.product_id.supplier_taxes_id
-                        invoice_line_tax_ids = self.purchase_id.fiscal_position_id.map_tax(taxes)
-                        data = {
-                            'purchase_line_id': line_id,
-                            'name': line.product_id.name,
-                            'origin': self.purchase_id.origin,
-                            'uom_id': line.product_id.uom_id.id,
-                            'product_id': line.product_id.id,
-                            'account_id': self.env['account.invoice.line'].with_context({'journal_id': self.journal_id.id, 'type': 'in_invoice'})._default_account(),
-                            'price_unit': price,
-                            'quantity': line.qty_done,
-                            'discount': 0.0,
-                            'account_analytic_id': anal,
-                            'invoice_line_tax_ids': invoice_line_tax_ids.ids
-                        }
-                        account = new_lines.get_invoice_line_account('in_invoice', line.product_id, self.purchase_id.fiscal_position_id, self.env.user.company_id)
-                        if account:
-                            data['account_id'] = account.id
-                        new_line = new_lines.new(data)
-                        new_line._set_additional_fields(self)
-                        new_lines += new_line
+                            taxes = line.product_id.supplier_taxes_id
+                            invoice_line_tax_ids = self.purchase_id.fiscal_position_id.map_tax(taxes)
+                            data = {
+                                'purchase_line_id': line_id,
+                                'name': line.product_id.name,
+                                'origin': self.purchase_id.origin,
+                                'uom_id': line.product_id.uom_id.id,
+                                'product_id': line.product_id.id,
+                                'account_id': self.env['account.invoice.line'].with_context({'journal_id': self.journal_id.id, 'type': 'in_invoice'})._default_account(),
+                                'price_unit': price,
+                                'quantity': line.qty_done,
+                                'discount': 0.0,
+                                'account_analytic_id': anal,
+                                'invoice_line_tax_ids': invoice_line_tax_ids.ids
+                            }
+                            account = new_lines.get_invoice_line_account('in_invoice', line.product_id, self.purchase_id.fiscal_position_id, self.env.user.company_id)
+                            if account:
+                                data['account_id'] = account.id
+                            new_line = new_lines.new(data)
+                            new_line._set_additional_fields(self)
+                            new_lines += new_line
 
-            #se non è una lista di carico è una lista di reso
+            # se non è una lista di carico è una lista di reso
             if len(lines) == 0:
-                results = self.env['stock.move'].search([('picking_id.wave_id','=',self.choose_wave_id.id)])
+                results = self.env['stock.move'].search([('picking_id.wave_id', '=', self.choose_wave_id.id)])
                 for r in results:
                     for line in r.quant_ids:
                         taxes = line.product_id.supplier_taxes_id
@@ -177,9 +200,9 @@ class Invoice(models.Model):
                             'uom_id': line.product_id.uom_id.id,
                             'product_id': line.product_id.id,
                             'account_id': self.env['account.invoice.line'].with_context({'journal_id': self.journal_id.id, 'type': 'in_invoice'})._default_account(),
-                            'price_unit': (line.inventory_value/line.qty),
+                            'price_unit': (line.inventory_value / line.qty),
                             'discount': 0.0,
-                            'quantity' : line.qty,
+                            'quantity': line.qty,
                             'invoice_line_tax_ids': invoice_line_tax_ids.ids
                         }
                         account = new_lines.get_invoice_line_account('in_invoice', line.product_id, self.purchase_id.fiscal_position_id, self.env.user.company_id)
@@ -188,7 +211,6 @@ class Invoice(models.Model):
                         new_line = new_lines.new(data)
                         new_line._set_additional_fields(self)
                         new_lines += new_line
-
 
         self.invoice_line_ids += new_lines
         self.purchase_id = False
