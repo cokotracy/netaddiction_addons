@@ -131,9 +131,8 @@ class Invoice(models.Model):
             lines = self.env['purchase.order'].search([('name', '=', pick.origin)])
             if lines:
                 for line in pick.pack_operation_product_ids:
-
                     if line.qty_done > 0.0:
-                        get_price = self.env['purchase.order.line'].search([('product_id', '=', line.product_id.id), ('order_id', '=', self.purchase_id.id)])
+                        get_price = self.env['purchase.order.line'].search([('product_id', '=', line.product_id.id), ('order_id', '=', pick.purchase_id.id)])
                         if get_price:
                             for prod in get_price:
 
