@@ -116,7 +116,7 @@ class CoDRegister(models.TransientModel):
     def set_delivery_to_invoice(self, pick, order, cod_id):
         """dato 'order' imposta qty_to_invoice per una spedizione e un contrassegno
         """
-        lines = [line for line in order.order_line if line.is_delivery and line.price_unit == pick.carrier_price and  line.qty_invoiced < line.product_uom_qty]
+        lines = [line for line in order.order_line if line.is_delivery and line.price_unit == pick.carrier_price and line.qty_invoiced < line.product_uom_qty]
 
         if lines:
             lines[0].qty_to_invoice = 1
@@ -172,8 +172,9 @@ class CoDRegister(models.TransientModel):
                 for payment in order.account_payment_ids:
 
                     if (isclose(payment.amount, amount, abs_tol=0.009)) and payment.journal_id.id == contrassegno.id and not payment.state == 'posted':
-                        _logger.warning("sto per fare il post del pagamento %s" % (payment.id))
+                        _logger.warning("sto per fare il post del pagamento %s name " % (payment.id, payment.name))
                         payment.post()
+                        _logger.warning("post eseguito per pagamento %s payment state %s name %s" % (payment.id, payment.state, payment.name))
                         found = True
                         break
                 if not found:
@@ -184,3 +185,7 @@ class CoDRegister(models.TransientModel):
                         all_paid = all_paid and p.state == 'posted'
                     if all_paid:
                         order.date_done = fields.Datetime.now()
+            else:
+                warning_list.append((None, line[key], None))
+        else:
+            warning_list.append((None, key, None))
