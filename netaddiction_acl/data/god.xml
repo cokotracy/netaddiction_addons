@@ -23,7 +23,7 @@
             <field name="groups_id" eval="[(4, ref('netaddiction_god'))]"/>
         </record>
         <record id="base.menu_sale_config" model="ir.ui.menu">
-            <field name="groups_id" eval="[(6,0, [ref('netaddiction_god')])]"/>
+            <field name="groups_id" eval="[(4,ref('netaddiction_god'))]"/>
         </record>
 
         
