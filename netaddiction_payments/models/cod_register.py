@@ -155,9 +155,13 @@ class CoDRegister(models.TransientModel):
                 _logger.warning(line)
 
                 # attenzione alle ultime due righe coi totali
-                line = strip_keys(line)
+                try:
+                    line = strip_keys(line)
 
-                self._check_line(line, warning_list, key, money_key, contrassegno, is_brt)
+                    self._check_line(line, warning_list, key, money_key, contrassegno, is_brt)
+                except Exception as e:
+                    _logger.warning(e)
+                    return
 
             if warning_list:
                 self.return_text = "non sono stati trovati pagamenti in contrassegno per i seguenti ordini nel file: %s" % warning_list
