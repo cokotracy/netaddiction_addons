@@ -12,21 +12,22 @@
                       class="oe_form_configuration">
                     <sheet>
                         <div>
-                            <button string="Apply"
+                            <button string="Registra"
                                     type="object"
                                     name="execute"
                                     class="oe_highlight"
                                     />
-                            or
-                            <button string="Cancel"
+                            
+                            <button string="Annulla"
                                     type="object"
                                     name="cancel"
                                     class="oe_link" />
                         </div>
 
-                        <group string="Card Settings">
+                        <group string="Registra contrassegni">
                             <field name="csv_file" />
 
+<field name="return_text" readonly="1" />
 
 
                         </group>

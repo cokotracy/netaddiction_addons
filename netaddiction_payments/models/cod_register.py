@@ -4,15 +4,12 @@ import base64
 import io
 from float_compare import isclose
 from openerp import models, fields, api
-from openerp.exceptions import Warning
-import logging
+
 
 SDA = "Numero riferimento spedizione"
 BRT = "Riferimenti"
 MONEY_BRT = "Euro"
 MONEY_SDA = "Importo contrassegno"
-
-_logger = logging.getLogger(__name__)
 
 
 def strip_keys(d):
@@ -27,6 +24,7 @@ class CoDRegister(models.TransientModel):
     _name = "netaddiction.cod.register"
 
     csv_file = fields.Binary('File')
+    return_text = fields.Text("Messaggio di ritorno")
 
     def set_order_cash_on_delivery(self, order_id, real_invoice=False):
         """ imposta l'ordine con id 'order_id' per essere pagato con contrassegno se l'ordine è in draft (bozza) o in sale (lavorazione).
@@ -140,7 +138,6 @@ class CoDRegister(models.TransientModel):
             money_key = MONEY_BRT if MONEY_BRT in head else MONEY_SDA
 
             warning_list = []
-            _logger.warning(head)
             contrassegno = self.env['ir.model.data'].get_object('netaddiction_payments', 'contrassegno_journal')
 
             self._check_line(head, warning_list, key, money_key, contrassegno, is_brt)
@@ -152,13 +149,14 @@ class CoDRegister(models.TransientModel):
                 self._check_line(line, warning_list, key, money_key, contrassegno, is_brt)
 
             if warning_list:
-                # raise Warning("non sono stati trovati pagamenti in contrassegno per i seguenti ordini nel file: %s" % warning_list)
-                _logger.warning(str(warning_list))
+                self.return_text = "non sono stati trovati pagamenti in contrassegno per i seguenti ordini nel file: %s" % warning_list
+            else:
+                self.return_text = "tutto ok!"
 
     def _check_line(self, line, warning_list, key, money_key, contrassegno, is_brt):
         found = False
         if line[key] and line[money_key]:
-            _logger.warning("ci sono le linee")
+
             order = None
             if is_brt:
                 order = self.env["sale.order"].search([("id", "=", line[key])])
@@ -168,18 +166,11 @@ class CoDRegister(models.TransientModel):
             if order:
                 amount_str = line[money_key].replace(",", ".").replace("€", "")
                 amount = float(amount_str)
-                _logger.warning("ordine trovato %s amount %s" % (order.name, amount))
 
                 for payment in order.account_payment_ids:
 
                     if (isclose(payment.amount, amount, abs_tol=0.009)) and payment.journal_id.id == contrassegno.id and not payment.state == 'posted':
-                        _logger.warning("sto per fare il post del pagamento %s name %s" % (payment.id, payment.name))
-                        try:
-                            payment.post()
-                        except Exception as e:
-                            _logger.warning(e)
-                            return
-                        _logger.warning("post eseguito per pagamento %s payment state %s name %s" % (payment.id, payment.state, payment.name))
+                        payment.post()
                         found = True
                         break
                 if not found:
@@ -192,5 +183,3 @@ class CoDRegister(models.TransientModel):
                         order.date_done = fields.Datetime.now()
             else:
                 warning_list.append((None, line[key], None))
-        else:
-            warning_list.append((None, key, None))
