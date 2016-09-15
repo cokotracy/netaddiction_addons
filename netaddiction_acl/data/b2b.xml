@@ -5,6 +5,9 @@
             <field name="name">Si Occupa delle vendite B2B</field>
             <field name="category_id" ref="netaddiction_sale_optional_group"/>
         </record>
+         <record id="base.menu_sale_config" model="ir.ui.menu">
+            <field name="groups_id" eval="[(4,ref('netaddiction_sale_b2b'))]"/>
+        </record>
 
 
     </data>
