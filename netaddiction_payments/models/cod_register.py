@@ -140,7 +140,7 @@ class CoDRegister(models.TransientModel):
             money_key = MONEY_BRT if MONEY_BRT in head else MONEY_SDA
 
             warning_list = []
-            _logger.warning(head )
+            _logger.warning(head)
             contrassegno = self.env['ir.model.data'].get_object('netaddiction_payments', 'contrassegno_journal')
 
             self._check_line(head, warning_list, key, money_key, contrassegno, is_brt)
@@ -152,7 +152,8 @@ class CoDRegister(models.TransientModel):
                 self._check_line(line, warning_list, key, money_key, contrassegno, is_brt)
 
             if warning_list:
-                raise Warning("non sono stati trovati pagamenti in contrassegno per i seguenti ordini nel file: %s" % warning_list)
+                # raise Warning("non sono stati trovati pagamenti in contrassegno per i seguenti ordini nel file: %s" % warning_list)
+                _logger.warning(str(warning_list))
 
     def _check_line(self, line, warning_list, key, money_key, contrassegno, is_brt):
         found = False
