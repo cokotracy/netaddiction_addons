@@ -173,7 +173,11 @@ class CoDRegister(models.TransientModel):
 
                     if (isclose(payment.amount, amount, abs_tol=0.009)) and payment.journal_id.id == contrassegno.id and not payment.state == 'posted':
                         _logger.warning("sto per fare il post del pagamento %s name " % (payment.id, payment.name))
-                        payment.post()
+                        try:
+                            payment.post()
+                        except Exception as e:
+                            _logger.warning(e)
+                            return
                         _logger.warning("post eseguito per pagamento %s payment state %s name %s" % (payment.id, payment.state, payment.name))
                         found = True
                         break
