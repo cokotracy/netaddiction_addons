@@ -4,9 +4,6 @@ import base64
 import io
 from float_compare import isclose
 from openerp import models, fields, api
-import logging
-_logger = logging.getLogger(__name__)
-
 
 SDA = "Numero riferimento spedizione"
 BRT = "Riferimenti"
@@ -128,19 +125,13 @@ class CoDRegister(models.TransientModel):
 
     @api.multi
     def execute(self):
-        _logger.warning("inizio execute")
         if self.csv_file:
-            _logger.warning("csv_file ok")
             decoded64 = base64.b64decode(self.csv_file)
-            _logger.warning("decoded64")
             decodedIO = io.BytesIO(decoded64)
-            _logger.warning("decodedIO")
             reader = csv.DictReader(decodedIO, delimiter=';')
-            _logger.warning("reader")
             # implementing the head-tail design pattern
             head = reader.next()
             head = strip_keys(head)
-            _logger.warning(head)
 
             is_brt = True if BRT in head else False
             key = BRT if is_brt else SDA
@@ -149,10 +140,12 @@ class CoDRegister(models.TransientModel):
             warning_list = []
             contrassegno = self.env['ir.model.data'].get_object('netaddiction_payments', 'contrassegno_journal')
 
-            self._check_line(head, warning_list, key, money_key, contrassegno, is_brt)
+            try:
+                self._check_line(head, warning_list, key, money_key, contrassegno, is_brt)
+            except Exception as e:
+                    warning_list.append("Problema con questa linea %s per questo motivo %s" % (head, e))
 
             for line in reader:
-                _logger.warning(line)
 
                 # attenzione alle ultime due righe coi totali
                 try:
@@ -160,8 +153,7 @@ class CoDRegister(models.TransientModel):
 
                     self._check_line(line, warning_list, key, money_key, contrassegno, is_brt)
                 except Exception as e:
-                    _logger.warning(e)
-                    return
+                    warning_list.append("Problema con questa linea %s per questo motivo %s" % (line, e))
 
             if warning_list:
                 self.return_text = "non sono stati trovati pagamenti in contrassegno per i seguenti ordini nel file: %s" % warning_list
