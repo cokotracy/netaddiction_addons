@@ -23,6 +23,8 @@ DISCOUNTS = {
     'Editoriali - Distribuiti': 32,
     'Editoriali - Ingrosso': 28,
     'Abbigliamento': 40,
+    'Toys Ing B - NR': 30,
+    'Toys Dis B - NR': 32,
 }
 
 
