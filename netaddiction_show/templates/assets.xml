@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <template id="assets" name="netaddiction_show assets">
+            <link rel="stylesheet" href="/netaddiction_warehouse/static/src/css/style.css" />
+            <script type="text/javascript" src="/netaddiction_warehouse/static/src/js/WebHub.js"></script>
+             <script type="text/javascript" src="/netaddiction_show/static/src/js/show.js"></script>
+        </template>
+    </data>
+</openerp>

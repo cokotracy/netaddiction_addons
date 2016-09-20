@@ -317,7 +317,8 @@ class Products(models.Model):
             'product' : product.display_name,
             'barcode' : product.barcode,
             'product_id' : product.id,
-            'allocations' : []
+            'allocations' : [],
+            'qty_available_now': product.qty_available_now
         }
         for res in results:
             allocations['allocations'].append({'shelf':res.wh_location_id.name,'qty':res.qty, 'line_id': res.id})
