@@ -9,6 +9,9 @@
             <field name="arch" type="xml">
                 <field name="name" position="replace">
                     <field name="name"/>
+                </field>
+                <field name="product_tmpl_id" position="replace">
+                    <field name="product_tmpl_id" class="oe_inline"  attrs="{'required': [('id', '!=', False)]}" style="font-size:12px !important"/><br/>
                     <button name="manage_aliases" type="object" string="Gestione Alias"/>
                 </field>
 
