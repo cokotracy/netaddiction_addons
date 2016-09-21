@@ -589,7 +589,7 @@ class Category(models.Model):
 class Attribute(models.Model):
     _inherit = 'product.attribute'
 
-    company_id = fields.Many2one('res.company', required=True)
+    company_id = fields.Many2one('res.company', required=True, default=lambda self: self.env.user.company_id)
 
 
 class AttributeValue(models.Model):
