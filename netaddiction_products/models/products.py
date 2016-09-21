@@ -577,7 +577,7 @@ class SupplierInfo(models.Model):
 class Category(models.Model):
     _inherit = 'product.category'
 
-    company_id = fields.Many2one('res.company', required=True)
+    company_id = fields.Many2one('res.company', required=True, default=lambda self: self.env.user.company_id)
     can_auto_deactivate_products = fields.Boolean('Disattiva automaticamente i prodotti', default=False,
         help='I prodotti vengono disattivati non appena la disponibilità in magazzino e le disponibilità dei '
              'fornitori scendono a zero.')
