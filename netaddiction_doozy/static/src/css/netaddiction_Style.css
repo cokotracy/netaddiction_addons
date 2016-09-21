@@ -62,3 +62,8 @@ SHEET MOD GRAFICHE
 .oe_form_sheetbg{
     padding: 0 !important;
 }
+
+
+.oe_title{
+    width: 60% !important;
+}
