@@ -7,7 +7,7 @@ import time, json
 from openerp.tools import DEFAULT_SERVER_DATETIME_FORMAT, DEFAULT_SERVER_DATE_FORMAT
 from error import Error
 from openerp.exceptions import ValidationError
-
+import base64
 from collections import defaultdict
 
 class StockPickingType(models.Model):
@@ -215,7 +215,22 @@ class StockPicking(models.Model):
     #CAMPO PER CONTARE I PEZZI DA SPEDIRE#
     number_of_pieces = fields.Integer(string="Pezzi",compute="_get_number_of_pieces")
     total_import = fields.Float(string="Importo",compute="_get_total_import")
-    
+
+    barcode_image = fields.Text(
+        string='Barcode image',
+        compute='_compute_barcode_image',
+    )
+
+    @api.one
+    def _compute_barcode_image(self):
+        barcode = self.env['report'].barcode('Code128',
+                self.delivery_barcode,
+                width=448,
+                height=50,
+                humanreadable=0)
+        barcode_base64 = base64.b64encode(barcode)
+        self.barcode_image = 'data:image/png;base64,' + barcode_base64
+
     @api.multi
     def action_cancel(self):
         contrassegno = self.env.ref('netaddiction_payments.contrassegno_journal')
