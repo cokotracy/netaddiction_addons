@@ -185,7 +185,7 @@ class Issue(models.Model):
         message = {
             'body' : self._get_message_close()
         } 
-        self._post_mail(message,comment_else=False)
+        # self._post_mail(message,comment_else=False)
 
         message = u"""
         Cambio Stato:<br>
@@ -213,7 +213,7 @@ class Issue(models.Model):
         message = {
             'body' : self._get_message_close()
         } 
-        self._post_mail(message,comment_else=False)
+        # self._post_mail(message,comment_else=False)
 
         message = u"""
         Cambio Stato:<br>
