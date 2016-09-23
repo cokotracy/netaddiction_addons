@@ -141,7 +141,7 @@ class TerminalVideo(supplier.Supplier):
         description='Trama',
         price=lambda self, item: float(item['Pvc'].replace(',', '.')) if item['Pvc'] else None,
         image='Img Lrg Web',
-        date=lambda self, item: datetime.strptime(item['Data rilascio'], '%d/%m/%Y') if item['Data rilascio'] else None,
+        date=lambda self, item: datetime.strptime(item['Data primo rilascio'], '%d/%m/%Y') if item['Data primo rilascio'] else None,
         supplier_code='Cod. interno',
         supplier_price=lambda self, item: float(item['Listino'].replace(',', '.')) / 100.0 * (100 - DISCOUNTS.get(item['Categoria sconto'], 0)) if item['Listino'] else None,
         supplier_quantity='Q.ta in stock')
@@ -150,6 +150,7 @@ class TerminalVideo(supplier.Supplier):
         assert item['Tipo record'] != 'E'
         assert float(item['Pvc'].replace(',', '.')) > 0
         assert item['Formato'] != 'Audio Cd'
+        assert 'rental)' not in item['Titolo'].lower()
 
     def group(self, item):
         group_name = item['Titolo'].rsplit('(', 1)[0].strip() if '(' in item['Titolo'] and item['Titolo'][-1] == ')' else item['Titolo']
