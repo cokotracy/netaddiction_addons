@@ -8,7 +8,7 @@ from openerp.exceptions import Warning
 
 
 class DigitalBonus(models.Model):
-    
+
     _name = "netaddiction.specialoffer.digital_bonus"
 
     csv_file = fields.Binary('File')
@@ -22,10 +22,19 @@ class DigitalBonus(models.Model):
     image = fields.Binary("Immagine", attachment=True,
         help="Limitata a 1024x1024px.")
     company_id = fields.Many2one(comodel_name='res.company', string='Company', required=True)
+    qty_limit = fields.Integer(string="Quantità limite", default=0, help="zero è illimitato")
+    qty_sold = fields.Integer(string="Quantità venduta", default=0)
+    assign_codes = fields.Boolean(string='Assegna Codici', help="assegna o prenota i codici agli ordini, se disattivato verrà solamente ", default=True)
+
+    @api.one
+    @api.constrains('qty_limit', 'qty_sold')
+    def _check_limit(self):
+        if self.assign_codes and self.qty_limit > 0 and self.qty_sold >= self.qty_limit:
+            self.active = False
 
     @api.one
     def process_file(self):
-        if self.csv_file:
+        if self.assign_codes and self.csv_file:
             decoded64 = base64.b64decode(self.csv_file)
             decodedIO = io.BytesIO(decoded64)
             reader = csv.reader(decodedIO)
@@ -48,14 +57,13 @@ class DigitalBonus(models.Model):
 
     @api.one
     def assign_old(self):
-        if not self.active:
+        if not self.active or not self.assign_codes:
             return
         id_list = [prod.id for prod in self.products_ids]
         orders = self.env["sale.order"].search([("order_line.product_id", "in", id_list), ("state", "in", ("sale", "problem", "partial_done", "done"))])
         if not orders:
             return
         codes = [code for code in self.code_ids if not code.sent and not code.order_id]
-        print orders, codes
         if not codes:
             return
         for order in orders:
@@ -70,6 +78,7 @@ class DigitalBonus(models.Model):
                     code.order_id = order.id
                     code.order_line_id = ol.id
                     counter += 1
+                    self.qty_sold += 1
 
     @api.one
     def send_all_valid(self):

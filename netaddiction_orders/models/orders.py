@@ -289,16 +289,25 @@ class Order(models.Model):
 
             if(self.state == 'draft'):
                 for line in self.order_line:
+                    # per tutte le order line..
                     for bonus_offer in line.product_id.code_ids:
+                        # per ogni offerta digitale del prodotto..
+                        if not bonus_offer.assign_codes or (bonus_offer.qty_limit > 0 and bonus_offer.qty_sold >= bonus_offer.qty_limit):
+                            # se l'offerta è esaurita o non ha codici passo alla prossima 
+                            print "hore"
+                            continue
                         codes = self.env["netaddiction.specialoffer.digital_code"].search([("bonus_id", "=", bonus_offer.id), ("sent", "=", False), ("order_id", "=", None)])
                         if len(codes) > 0:
+                            # ci sono i codici, li assegno
                             i = 0
                             while i < line.product_uom_qty and i < len(codes):
                                 code = codes[i]
                                 code.order_id = self.id
                                 code.order_line_id = line.id
                                 i += 1
+                            bonus_offer.qty_sold += i
                         else:
+                            # non ci sono i codici loggo (comunque potrebbero essere assegnati in seguito)
                             attr = {
                                 'subtype': "mt_comment",
                                 'res_id': self.id,
@@ -309,7 +318,7 @@ class Order(models.Model):
                             }
 
                             self.env['mail.message'].create(attr)
-                            return
+                            bonus_offer.qty_sold += line.product_uom_qty
 
     @api.one
     def action_problems(self):
@@ -385,6 +394,7 @@ class Order(models.Model):
                 # ristoro codici non mandati
                 for code in self.code_ids:
                     if not code.sent:
+                        code.bonus_id.qty_sold -= 1
                         code.order_id = None
                         code.order_line_id = None
 
@@ -396,13 +406,29 @@ class Order(models.Model):
 
     @api.depends('order_line.price_total')
     def _amount_all(self):
-        super(Order, self)._amount_all()
+        """override del metodo per ragioni di efficienza nel calcolo del  gift
+        """
         for order in self:
-            ret = order._compute_gift_amount()
+            amount_untaxed = amount_tax = 0.0
+            for line in order.order_line:
+                amount_untaxed += line.price_subtotal
+                amount_tax += line.price_tax
+            amount_total = amount_untaxed + amount_tax
+            ret = order._compute_gift_amount(amount_total)
             if ret:
-                order.update({'gift_discount': ret[0], 'amount_total': ret[1]})
+                order.update({
+                    'amount_untaxed': order.pricelist_id.currency_id.round(amount_untaxed),
+                    'amount_tax': order.pricelist_id.currency_id.round(amount_tax),
+                    'amount_total': ret[1],
+                    'gift_discount': ret[0],
+                })
             else:
-                order.update({'gift_discount': 0.0})
+                order.update({
+                    'amount_untaxed': order.pricelist_id.currency_id.round(amount_untaxed),
+                    'amount_tax': order.pricelist_id.currency_id.round(amount_tax),
+                    'amount_total': amount_total,
+                    'gift_discount': 0.0,
+                })
 
 
 class SaleOrderLine(models.Model):
