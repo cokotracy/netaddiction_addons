@@ -60,7 +60,18 @@ class CCData(models.Model):
     def unlink(self):
         for cc in self:
             if cc.active:
-                self.env["netaddiction.positivity.executor"].token_delete(self.customer_id.id, self.token)
+                open_payments = self.env['account.payment'].search([("state", "=", "draft"), ("partner_id", "=", self.customer_id.id), ("cc_token", "=", self.token)])
+                if open_payments:
+                    orders = ""
+                    for payment in open_payments:
+                        orders += " "
+                        orders += payment.order_id.name
+                    raise CardWithOrdersException(self.token, orders)
+
+                try:
+                    self.env["netaddiction.positivity.executor"].token_delete(self.customer_id.id, self.token)
+                except Exception:
+                    pass
         super(CCData, self).unlink()
 
 
@@ -68,3 +79,19 @@ class CCDataPartner(models.Model):
     _inherit = 'res.partner'
 
     ccdata_id = fields.One2many('netaddiction.partner.ccdata', 'customer_id', string="Carta")
+
+
+class CardWithOrdersException(Exception):
+    def __init__(self, token, err_str):
+        super(CardWithOrdersException, self).__init__(token)
+        self.var_name = 'confirm_exception'
+        self.err_str = err_str
+        self.token = token
+
+    def __str__(self):
+        s = u"Questa carta non puo' essere cancellata perche' connessa a ordini non completati : %s " % (self.err_str)
+        return s
+
+    def __repr__(self):
+        s = u"Questa carta non può essere cancellata perche' connessa a ordini non completati : %s " % (self.err_str)
+        return s
