@@ -1,2 +1,2 @@
 # -*- coding: utf-8 -*-
-from models import  special_offers, offers_product, offers_order, digital_bonus
+from models import  special_offers, offers_product, offers_order, digital_bonus, minimum

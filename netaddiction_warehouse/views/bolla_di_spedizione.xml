@@ -178,6 +178,9 @@
                                                             <t t-esc="procurement.sale_line_id.product_id.display_name"/><br/>
                                                             <span style="font-size:11px; float:left; margin-top:5px; margin-right:20px;">SKU: <strong><t t-esc="procurement.sale_line_id.product_id.id"/></strong></span>
                                                             <span style="font-size:11px; float:left; margin-top:5px;">BARCODE: <strong><t t-esc="procurement.sale_line_id.product_id.barcode"/></strong></span>
+                                                            <t t-if="procurement.sale_line_id.guaranteed_minimum_value &gt; 0">
+                                                                <span style="font-size:11px; float:left; margin-top:5px;">RIMBORSO GIFT PER MINIMO GARANTITO <strong><t t-esc="procurement.sale_line_id.guaranteed_minimum_value"/></strong></span>
+                                                            </t>
                                                         </td>
                                                         <td align="left" valign="middle" style="background-color:#FFFFFF; font-size:12px; line-height:12px; padding:5px; border-bottom:3px solid black;font-weight:normal !important">
                                                             <t t-esc="procurement.sale_line_id.price_unit"/>

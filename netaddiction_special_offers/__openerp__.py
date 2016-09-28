@@ -13,7 +13,9 @@
     'data' :[
         'views/special_offers.xml',
         'views/offer_product.xml',
-        'views/digital_bonus.xml'
+        'views/digital_bonus.xml',
+        'views/minimum.xml',
+        'data/acl_minimum.xml'
     ],
     'installable': True,
     'application': True,
