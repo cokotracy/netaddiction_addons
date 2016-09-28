@@ -118,7 +118,7 @@ class Show(models.Model):
 
         for pid in products:
             product = products[pid]
-            csvdata = [product['name'], product['barcode'], product['price'], product['qty'], product['unit_value'], 'Multiplayer.com', product['iva']]
+            csvdata = [product['name'].encode("utf8"), product['barcode'], product['price'], product['qty'], product['unit_value'], 'Multiplayer.com', product['iva']]
             writer.writerow(csvdata)
 
         self.export_file = base64.b64encode(output.getvalue()).decode()
