@@ -101,7 +101,8 @@ class OffersCatalogSaleOrderLine(models.Model):
         name = product.name_get()[0][1]
         if product.description_sale:
             name += '\n' + product.description_sale
-        vals['name'] = name
+        # questa è una mod per evitare che is porti dietro il nome del duplicato
+        vals['name'] = self.product_id.display_name
 
         self._compute_tax_id()
 
