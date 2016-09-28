@@ -9,6 +9,8 @@ from error import Error
 from openerp.exceptions import ValidationError
 import base64
 from collections import defaultdict
+import io
+import csv
 
 class StockPickingType(models.Model):
     _inherit = 'stock.picking.type'
@@ -572,6 +574,44 @@ class StockOperation(models.Model):
 
 class StockQuant(models.Model):
     _inherit='stock.quant'
+
+    @api.model
+    def inventory_csv(self):
+        wh = self.env.ref('stock.stock_location_stock').id
+        results = self.search([('location_id', '=', wh)])
+        products = {}
+        for res in results:
+            if res.product_id.id in products:
+                products[res.product_id.id]['qty'] += int(res.qty)
+                products[res.product_id.id]['inventory_value'] += round(res.inventory_value, 2)
+            else:
+                products[res.product_id.id] = {
+                    'name': res.product_id.display_name,
+                    'category': res.product_id.categ_id.display_name,
+                    'qty': int(res.qty),
+                    'inventory_value': round(res.inventory_value, 2),
+                }
+                text = ''
+                for loc in res.product_id.product_wh_location_line_ids:
+                    text += '| %s - %s |' % (loc.wh_location_id.name, loc.qty)
+
+                products[res.product_id.id]['location'] = text
+
+        output = io.BytesIO()
+        writer = csv.writer(output)
+        csvdata = ['Categoria', 'Prodotto', 'Quantità', 'Valore Totale', 'Scaffali']
+        writer.writerow(csvdata)
+        for product in products:
+            csvdata = [products[product]['category'].encode('utf8'), products[product]['name'].encode('utf8'), products[product]['qty'], products[product]['inventory_value'], products[product]['location']]
+            writer.writerow(csvdata)
+        data = base64.b64encode(output.getvalue()).decode()
+        output.close()
+        attr = {
+            'name': 'export %s' % date.today(),
+            'type': 'binary',
+            'datas': data
+        }
+        return self.env['ir.attachment'].create(attr)
 
     @api.model
     def get_quant_from_supplier(self,supplier_id):
