@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+        <report
+            id="netaddiction_new_invoice"
+            model="account.invoice"
+            string="NUOVA FATTURA"
+            report_type="qweb-pdf"
+            name="netaddiction_account.netaddiction_new_invoice2"
+            file="netaddiction_account.netaddiction_new_invoice2"
+        />
+    </data>
+</openerp>

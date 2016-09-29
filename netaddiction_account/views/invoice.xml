@@ -6,6 +6,9 @@
             <field name="model">account.invoice</field>
             <field name="inherit_id" ref="account.invoice_form"/>
             <field name="arch" type="xml">
+                <button name="action_invoice_sent" position="replace">
+                    <button name="complete_invoice_administration" type="object" string="Inviata" attrs="{'invisible':[('sent','=',True)]}" class="oe_highlight" groups="base.group_user"/>
+                </button>
             	<field name="date_invoice" position="before">
                     <field name="is_customer_invoice" attr="{'invisible':[('journal_id', '=', 1)]}" string="Fattura Cliente"/>
             	</field>

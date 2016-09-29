@@ -11,6 +11,13 @@ class Invoice(models.Model):
     is_customer_invoice = fields.Boolean(strong="È una Fattura?")
 
     @api.multi
+    def complete_invoice_administration(self):
+        for o in self:
+            o.sudo().sent = True
+        
+        return self.env['report'].get_action(self, 'netaddiction_account.netaddiction_new_invoice2')
+
+    @api.multi
     def invoice_validate(self):
         res = super(Invoice,self).invoice_validate()
         if self.is_customer_invoice:

@@ -16,5 +16,7 @@
     'data': [
         'views/invoice.xml',
         'views/registro_corrispettivi.xml',
+        'views/template_invoice.xml',
+        'views/report_invoice.xml',
     ]
 }
