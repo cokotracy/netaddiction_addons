@@ -443,7 +443,7 @@ class BonusOffer(models.Model):
                 # non funziona per le offerte a scelta
                 id_list = [line.product_id.id for line in offer.products_with_bonus_list]
                 id_bonus_list = [line.product_id.id for line in offer.bonus_products_list]
-                picks = self.env["stock.picking"].search([("state", "not in", ("cancel", "done")), ("move_lines.product_id", "in", id_list)])
+                picks = self.env["stock.picking"].search([("state", "not in", ("cancel", "done")), ("move_lines.product_id", "in", id_list)], order="date")
                 if picks and id_bonus_list:
                     # prendo prodotti bonus e le location
                     bonus_prods = self.env["product.product"].search([("id", "in", id_bonus_list)])
