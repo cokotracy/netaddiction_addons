@@ -16,6 +16,7 @@ class GiftOrder(models.Model):
             if self.partner_id.got_gift:
                 tot = 0.0
                 for ol in self.order_line:
+                    #devo ricalco
                     if ol.product_id.sale_ok:
                         tot += ol.price_total
 
@@ -34,7 +35,8 @@ class GiftOrder(models.Model):
 
     @api.onchange('gift_discount')
     def gift_changed(self):
-        self.gift_set_by_bo = True
+        if self.gift_discount > 0.0:
+            self.gift_set_by_bo = True
         
     @api.constrains('gift_discount')
     def _check_active(self):
