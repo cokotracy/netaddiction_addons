@@ -38,15 +38,16 @@ class ProductsStats(models.Model):
         return moves
 
     @api.multi
-    def get_sale_in_interval_date(self, date_start, date_finish, supplier=False, count_refund=False):
+    def get_sale_in_interval_date(self, date_start, date_finish, supplier=False, count_refund=False, order_states=['done', 'partial_done', 'pending']):
         # ritorna la quantità, il valore, il numero degli ordini[numero linee ordine] venduti nell'intervallo di tempo
         # in result: product_uom_qty = quantità, price_total = valore, product_id_count = numero_ordini, product_id = (id prod, name prod)
         # count_refund: se true toglie i resi nel periodo, altrimenti se ne fotte
+        # order_states sono gl istati da contare, per esempio in lavorazione per i preorder
         pids = []
         for product in self:
             pids.append(product.id)
         domain = [('order_id.date_order', '>=', date_start), ('order_id.date_order', '<=', date_finish), ('company_id', '=', self.env.user.company_id.id),
-                ('product_id', 'in', pids), ('state', 'in', ['done', 'partial_done', 'pending'])]
+                ('product_id', 'in', pids), ('state', 'in', order_states)]
         if supplier:
             domain.append(('product_id.seller_ids.name', '=', supplier))
         result = self.env['sale.order.line'].read_group(domain=domain, fields=['product_id', 'product_uom_qty', 'price_total', 'qty_reverse'], groupby=['product_id'])
