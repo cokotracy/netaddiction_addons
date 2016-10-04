@@ -152,22 +152,22 @@ class PurchaseOrdersLine(models.Model):
 
         self.env["netaddiction.email.dispatcher"].send_mail(body, subject, email_from, recipients, None, reply_to)
 
-    @api.one
-    def write(self, values):
-        if 'product_qty' in values.keys():
-            if self.product_qty < values['product_qty']:
-                raise Warning('Per Aggiungere quantità devi fare un nuovo Ordine a questo fornitore di questo prodotto.')
-            else:
-                if self.order_id.state == 'purchase':
-                    self.send_mail_cancel(values['product_qty'])
+    # @api.one
+    # def write(self, values):
+    #    if 'product_qty' in values.keys():
+    #        if self.product_qty < values['product_qty']:
+    #            raise Warning('Per Aggiungere quantità devi fare un nuovo Ordine a questo fornitore di questo prodotto.')
+    #        else:
+    #            if self.order_id.state == 'purchase':
+    #                self.send_mail_cancel(values['product_qty'])
 
-        return super(PurchaseOrdersLine, self).write(values)
+    #    return super(PurchaseOrdersLine, self).write(values)
 
-    @api.multi
-    def unlink(self):
-        for line in self:
-            print line.product_qty
-            if line.order_id.state == 'purchase':
-                line.send_mail_cancel(line.product_qty)
+    # @api.multi
+    # def unlink(self):
+    #    for line in self:
+    #        print line.product_qty
+    #        if line.order_id.state == 'purchase':
+    #            line.send_mail_cancel(line.product_qty)
 
-        return super(PurchaseOrdersLine, self).unlink()
+    #    return super(PurchaseOrdersLine, self).unlink()
