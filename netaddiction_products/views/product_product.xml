@@ -265,9 +265,16 @@
                                 <field name="property_valuation" default="real_time" readonly="1"/>
                             </group>
                         </page>
-                        <page string="Immagini" name="images">
+                        <page string="Media" name="media">
                             <group class="netaddiction">
-                                <field name="image_ids" widget="many2many_binary" string="Aggiungi" nolabel="1" class="oe_inline"/>
+                                <field name="image_ids" widget="many2many_binary" class="oe_inline"/>
+                            </group>
+                            <group>
+                                <field name="video_ids" context="{'product_id': active_id}">
+                                    <tree editable="top">
+                                        <field name="embed" widget="url"/>
+                                    </tree>
+                                </field>
                             </group>
                         </page>
                         <page string="Extra Dati" name="extra_datas">

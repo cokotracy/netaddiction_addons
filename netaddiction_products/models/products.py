@@ -53,6 +53,7 @@ class Products(models.Model):
     qty_single_order = fields.Integer(string="Quantità massima ordinabile", help="Quantità massima ordinabile per singolo ordine/cliente")
 
     image_ids = fields.Many2many('ir.attachment', 'product_image_rel', 'product_id', 'attachment_id', string='Immagini')
+    video_ids = fields.One2many('netaddiction_products.video', 'product_id', string='Video')
 
     qty_limit = fields.Integer(string="Quantità limite", help="Imposta la quantità limite prodotto (qty disponibile == qty_limit accade Azione)")
     limit_action = fields.Selection(string="Azione limite", help="Se qty_limit impostata decide cosa fare al raggiungimento di tale qty",
@@ -603,6 +604,13 @@ class Alias(models.Model):
 
     product_id = fields.Many2one('product.product', required=True)
     name = fields.Char('Nome')
+
+
+class Video(models.Model):
+    _name = 'netaddiction_products.video'
+
+    product_id = fields.Many2one('product.product', required=True)
+    embed = fields.Char('Embed')
 
 
 class ProductOrderQuantityExceededException(Exception):
