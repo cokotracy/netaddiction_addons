@@ -167,9 +167,7 @@ class Cron(models.Model):
     def kill(self, suppliers):
         _logger.info('Kill!')
 
-        context = {
-            'skip_notification_mail': True,
-        }
+        context = {}
 
         batch_size = 100
 

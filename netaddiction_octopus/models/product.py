@@ -78,7 +78,6 @@ class Product(models.Model):
             'mail_create_nolog': True,
             'mail_create_nosubscribe': True,
             'mail_notrack': True,
-            'skip_notification_mail': True,
         }
 
         if self.image:
@@ -131,9 +130,7 @@ class Product(models.Model):
             self.env.cr.commit()
 
     def chain(self, product, commit=True):
-        context = {
-            'skip_notification_mail': True,
-        }
+        context = {}
 
         product.with_context(context).write({
             'seller_ids': [(0, None, {
@@ -164,9 +161,7 @@ class Product(models.Model):
             'price': 'supplier_price',
         }
 
-        context = {
-            'skip_notification_mail': True,
-        }
+        context = {}
 
         # Aggiorna *supplierinfo* solo se i campi in *update_mapping* sono cambiati
         for supplierinfo_field, self_field in update_mapping.items():
