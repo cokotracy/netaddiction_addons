@@ -254,8 +254,15 @@ class ProductsMovement(models.TransientModel):
     qty_available = fields.Integer(string="Qtà in fiera")
     show_id = fields.Many2one(string="Fiera", comodel_name="netaddiction.show")
     qty_to_move = fields.Integer(string="Quantità da riallocare")
+    barcode_allocation = fields.Char(string="Barcode Scaffale")
     new_allocation = fields.Many2one(string="Dove Allocare", comodel_name="netaddiction.wh.locations")
     message = fields.Char(string="Messaggio")
+
+    @api.onchange('barcode_allocation')
+    def change_alloc(self):
+        loc = self.env['netaddiction.wh.locations'].search([('barcode', '=', self.barcode_allocation), ('company_id', '=', self.env.user.company_id.id)])
+        if loc:
+            self.new_allocation = loc.id
 
     @api.onchange('barcode')
     def search_product(self):
@@ -283,8 +290,13 @@ class ProductsMovement(models.TransientModel):
                         if qta < 0:
                             qta = 0
                         self.qty_available = qta
-                        self.qty_to_move = qta
+                        self.qty_to_move = 1
                         self.new_allocation = loc.id
+
+                    al = ''
+                    for line in product.product_wh_location_line_ids:
+                        al += '%s - %s \n' % (line.qty, line.wh_location_id.name)
+                    self.message = al
 
     @api.one
     def execute(self):
@@ -336,4 +348,5 @@ class ProductsMovement(models.TransientModel):
         self.product_id = False
         self.qty_available = False
         self.qty_to_move = False
+        self.barcode_allocation = False
         self.message = 'Prodotto Riallocato Correttamente'

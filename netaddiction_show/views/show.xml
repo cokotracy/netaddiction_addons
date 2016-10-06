@@ -7,9 +7,9 @@
             <field name="arch" type="xml">
                 <form string="show">
                     <header>
-                        <button name="create_csv" class="btn-primary" type="object" string="Crea Csv" />
-                        <button name="import_csv" class="btn" type="object" string="Importa Csv Ritorno Fiera" />
-                        <button name="close_show" class="btn" type="object" string="Chiudi Fiera" />
+                        <button name="create_csv" class="btn-primary" type="object" string="Crea Csv" attrs="{'invisible': [('state','=','done')]}"/>
+                        <button name="import_csv" class="btn" type="object" string="Importa Csv Ritorno Fiera" attrs="{'invisible': [('state','=','done')]}"/>
+                        <button name="close_show" class="btn" type="object" string="Chiudi Fiera" attrs="{'invisible': [('state','=','done')]}"/>
                         <field name="state" widget="statusbar"/>
                     </header>
                     <sheet>
@@ -146,6 +146,7 @@
                             <field name="qty_available" />
                         
                             <field name="qty_to_move"/>
+                            <field name="barcode_allocation"/>
                             <field name="new_allocation"/>
                         </group>
                         <group>
