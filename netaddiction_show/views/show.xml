@@ -140,8 +140,9 @@
                     <sheet>
                         <group>
                             <field name="message" readonly="1"/>
-                            <field name="show_id" domain="[('state','=','close')]" required="1"/>
+                            
                             <field name="barcode" autofocus="1"/>
+                            <field name="show_id" domain="[('state','=','close')]" required="1"/>
                             <field name="product_id" />
                             <field name="qty_available" />
                         
