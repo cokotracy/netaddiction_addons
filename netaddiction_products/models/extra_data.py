@@ -7,6 +7,7 @@ import xml.etree.ElementTree as ET
 import datetime
 import urllib2
 import json
+import re
 
 
 class ExtraData(models.Model):
@@ -97,19 +98,27 @@ class Products(models.Model):
             attr['value'] = poster['url']
             self.env['netaddiction.extradata.key.value'].sudo().create(attr)
 
+        # TODO: se ci dovessero essere problemi con i video cercare di trovare
+        # in modo migliore l'id del video
         attr['key'] = 'file_url'
         trailer = text.get('trailer', False)
-        if poster:
-            attr['value'] = trailer['file_url']
+        if trailer:
+            trailer = trailer['file_url']
+            l = [m.start() for m in re.finditer('/', trailer)]
+            start = l[-2] + 1
+            finish = l[-1]
+            video_id = trailer[start:finish]
+            attr['value'] = '<iframe src="https://video.netaddiction.it/embed/%s" frameborder="0" allowfullscreen></iframe>' % video_id
             self.env['netaddiction.extradata.key.value'].sudo().create(attr)
 
         attr['key'] = 'images'
         imgs = text.get('images', False)
         if poster:
-            attr['value'] = []
+            img_list = []
             f = imgs['still-frame']
             for i in f:
-                attr['value'].append(i['url'])
+                img_list.append(i['url'])
+            attr['value'] = json.dumps(img_list)
             self.env['netaddiction.extradata.key.value'].sudo().create(attr)
 
         attr['key'] = 'anno'
@@ -185,10 +194,10 @@ class Products(models.Model):
                             imgs.append(i.text)
                 img_search = self.env['netaddiction.extradata.key.value'].sudo().search([('product_id', '=', self.id), ('key', '=', 'images'), ('company_id', '=', self.env.user.id)])
                 if img_search:
-                    img_search.sudo().value = str(imgs)
+                    img_search.sudo().value = json.dumps(imgs)
                 else:
                     attr['key'] = 'images'
-                    attr['value'] = str(imgs)
+                    attr['value'] = json.dumps(imgs)
                     self.env['netaddiction.extradata.key.value'].sudo().create(attr)
 
             if sub.tag == 'video':
