@@ -103,12 +103,7 @@ class Products(models.Model):
         attr['key'] = 'file_url'
         trailer = text.get('trailer', False)
         if trailer:
-            trailer = trailer['file_url']
-            l = [m.start() for m in re.finditer('/', trailer)]
-            start = l[-2] + 1
-            finish = l[-1]
-            video_id = trailer[start:finish]
-            attr['value'] = '<iframe src="https://video.netaddiction.it/embed/%s" frameborder="0" allowfullscreen></iframe>' % video_id
+            attr['value'] = trailer['file_url']
             self.env['netaddiction.extradata.key.value'].sudo().create(attr)
 
         attr['key'] = 'images'
