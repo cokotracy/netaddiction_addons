@@ -4,6 +4,7 @@ from openerp import models, fields, api, tools, SUPERUSER_ID
 from openerp.osv import fields as old_fields
 import openerp.addons.decimal_precision as dp
 import datetime
+from openerp.tools.float_utils import float_round
 
 class Products(models.Model):
     _inherit = 'product.product'
@@ -45,8 +46,7 @@ class Products(models.Model):
 
     available_date = fields.Date(string="Data disponibilità")
 
-    qty_available_now = fields.Integer(string="Quantità Disponibile",compute="_get_qty_available_now",
-        help="Quantità Disponibile Adesso (qty in possesso - qty in uscita)",search="_search_available_now")
+    qty_available_now = fields.Integer(string="Quantità Disponibile", compute="_get_qty_available_now", help="Quantità Disponibile Adesso (qty in possesso - qty in uscita)", search="_search_available_now")
     qty_sum_suppliers = fields.Integer(string="Quantità dei fornitori", compute="_get_qty_suppliers",
         help="Somma delle quantità dei fornitori")
 
@@ -76,6 +76,104 @@ class Products(models.Model):
     property_valuation = fields.Selection( selection=[('manual_periodic', 'Periodic (manual)'),
                        ('real_time', 'Perpetual (automated)')], string="Valorizzazione Inventario", default="real_time", required=1)
 
+    def _product_available(self, cr, uid, ids, field_names=None, arg=False, context=None):
+        context = context or {}
+        field_names = field_names or []
+
+        domain_products = [('product_id', 'in', ids)]
+        domain_quant, domain_move_in, domain_move_out = [], [], []
+        domain_quant_loc, domain_move_in_loc, domain_move_out_loc = self._get_domain_locations(cr, uid, ids, context=context)
+        domain_move_in += self._get_domain_dates(cr, uid, ids, context=context) + [('state', 'not in', ('done', 'cancel', 'draft'))] + domain_products
+        domain_move_out += self._get_domain_dates(cr, uid, ids, context=context) + [('state', 'not in', ('done', 'cancel', 'draft'))] + domain_products
+        domain_quant += domain_products
+
+        if context.get('lot_id'):
+            domain_quant.append(('lot_id', '=', context['lot_id']))
+        if context.get('owner_id'):
+            domain_quant.append(('owner_id', '=', context['owner_id']))
+            owner_domain = ('restrict_partner_id', '=', context['owner_id'])
+            domain_move_in.append(owner_domain)
+            domain_move_out.append(owner_domain)
+        if context.get('package_id'):
+            domain_quant.append(('package_id', '=', context['package_id']))
+
+        domain_move_in += domain_move_in_loc
+        domain_move_out += domain_move_out_loc
+        moves_in = self.pool.get('stock.move').read_group(cr, uid, domain_move_in, ['product_id', 'product_qty'], ['product_id'], context=context)
+        moves_out = self.pool.get('stock.move').read_group(cr, uid, domain_move_out, ['product_id', 'product_qty'], ['product_id'], context=context)
+
+        domain_quant += domain_quant_loc
+        quants = self.pool.get('stock.quant').read_group(cr, uid, domain_quant, ['product_id', 'qty'], ['product_id'], context=context)
+        quants = dict(map(lambda x: (x['product_id'][0], x['qty']), quants))
+
+        moves_in = dict(map(lambda x: (x['product_id'][0], x['product_qty']), moves_in))
+        moves_out = dict(map(lambda x: (x['product_id'][0], x['product_qty']), moves_out))
+        res = {}
+        ctx = context.copy()
+        ctx.update({'prefetch_fields': False})
+        for product in self.browse(cr, uid, ids, context=ctx):
+            id = product.id
+            qty_available = float_round(quants.get(id, 0.0), precision_rounding=product.uom_id.rounding)
+            incoming_qty = float_round(moves_in.get(id, 0.0), precision_rounding=product.uom_id.rounding)
+            outgoing_qty = float_round(moves_out.get(id, 0.0), precision_rounding=product.uom_id.rounding)
+            virtual_available = float_round(quants.get(id, 0.0) + moves_in.get(id, 0.0) - moves_out.get(id, 0.0), precision_rounding=product.uom_id.rounding)
+            res[id] = {
+                'qty_available': qty_available,
+                'incoming_qty': incoming_qty,
+                'outgoing_qty': outgoing_qty,
+                'virtual_available': virtual_available,
+            }
+        return res
+
+    def _new_search_qty_available(self, cr, uid, obj, name, domain, context):
+        return self.pool.get('product.product').new_api_search_qty_available(cr, uid, domain, context=context)
+
+    @api.model
+    def new_api_search_qty_available(self, domain):
+        # ricerca per qty_available
+        # ritorna un dominio
+        # TODO: migliora per uguale o diverso e semmai rinomi qty_available come field con la nuova search_func togliendo il sopra.
+        wh_stock = self.env.ref('stock.stock_location_stock').id
+        pids = []
+        for field, operator, value in domain:
+            assert operator in ('<', '>', '=', '!=', '<=', '>='), 'Invalid domain operator'
+            assert isinstance(value, (float, int)), 'Invalid domain right operand'
+
+            if value == 0:
+                if operator == '>=':
+                    return []
+                if operator == '<':
+                    return [('id', '=', False)]
+
+                self.env.cr.execute("select product_id,sum(qty) from stock_quant where location_id = %s and reservation_id is Null and company_id = %s group by product_id having sum(qty) > %s", (wh_stock, self.env.user.company_id.id, 0))
+                results = self.env.cr.fetchall()
+                for res in results:
+                    pids.append(int(res[0]))
+
+                if operator in ('=', '<='):
+                    return [('id', 'not in', pids)]
+
+            if operator in ('=', '!='):
+                self.env.cr.execute("select product_id,sum(qty) from stock_quant where location_id = %s and reservation_id is Null and company_id = %s group by product_id having sum(qty) = %s", (wh_stock, self.env.user.company_id.id, value))
+                results = self.env.cr.fetchall()
+                for res in results:
+                    pids.append(int(res[0]))
+            if operator in ('>', '<='):
+                self.env.cr.execute("select product_id,sum(qty) from stock_quant where location_id = %s and reservation_id is Null and company_id = %s group by product_id having sum(qty) > %s", (wh_stock, self.env.user.company_id.id, value))
+                results = self.env.cr.fetchall()
+                for res in results:
+                    pids.append(int(res[0]))
+            if operator in ('>=', '<'):
+                self.env.cr.execute("select product_id,sum(qty) from stock_quant where location_id = %s and reservation_id is Null and company_id = %s group by product_id having sum(qty) >= %s", (wh_stock, self.env.user.company_id.id, value))
+                results = self.env.cr.fetchall()
+                for res in results:
+                    pids.append(int(res[0]))
+
+        if operator in ('=', '>', '>='):
+            return [('id', 'in', pids)]
+        if operator in ('!=', '<', '<='):
+            return [('id', 'not in', pids)]
+
     _columns = {
         'image': old_fields.binary("Image", attachment=True,
             help="This field holds the image used as image for the product, limited to 1024x1024px."),
@@ -85,8 +183,22 @@ class Products(models.Model):
         'image_small': old_fields.binary("Image", attachment=True,
             help="Small-sized image of the product. It is automatically resized as a 64x64px image, with aspect ratio preserved. "\
                  "Use this field anywhere a small image is required."),
+        'qty_available': old_fields.function(_product_available, multi='qty_available',
+            type='float', digits_compute=dp.get_precision('Product Unit of Measure'),
+            string='Quantity On Hand',
+            fnct_search=_new_search_qty_available,
+            help="Current quantity of products.\n"
+                 "In a context with a single Stock Location, this includes "
+                 "goods stored at this Location, or any of its children.\n"
+                 "In a context with a single Warehouse, this includes "
+                 "goods stored in the Stock Location of this Warehouse, or any "
+                 "of its children.\n"
+                 "stored in the Stock Location of the Warehouse of this Shop, "
+                 "or any of its children.\n"
+                 "Otherwise, this includes goods stored in any Stock Location "
+                 "with 'internal' type."),
     }
-
+    
     @api.one
     def _get_sum_bom(self):
         attr = [('product_id','=',self.id)]
