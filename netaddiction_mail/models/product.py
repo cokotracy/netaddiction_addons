@@ -44,9 +44,11 @@ class Products(models.Model):
         users += self.env["netaddiction.email.dispatcher"].get_users_from_group("netaddiction_acl.netaddiction_sale_user_manager")
         products_out = self.env["product.product"].search([("out_date", "=", date.today() + timedelta(days=7))])
         products_available = self.env["product.product"].search([("available_date", "=", date.today() + timedelta(days=7))])
+        products_out_lst = []
+        products_available_lst = []
         for product in products_out:
-            obj = "[SHOPPING] PRODOTTO IN USCITA %s id: %s data uscita %s" % (product.name, product.id, product.out_date)
-            self.env["netaddiction.email.dispatcher"].send_mail(obj, obj, "shopping@multiplayer.com", set(users))
+            products_out_lst.append(" %s id: %s data uscita %s <br>" % (product.name, product.id, product.out_date))
+        self.env["netaddiction.email.dispatcher"].send_mail("".join(products_out_lst), "[SHOPPING] PRODOTTI IN USCITA ESATTAMENTE TRA 7 GIORNI", "shopping@multiplayer.com", set(users))
         for product in products_available:
-            obj = "[SHOPPING] PRODOTTO DISPONIBILE IN 7 GIORNI %s id: %s data uscita %s" % (product.name, product.id, product.available_date)
-            self.env["netaddiction.email.dispatcher"].send_mail(obj, obj, "shopping@multiplayer.com", set(users))
+            products_available_lst.append("%s id: %s data uscita %s <br>" % (product.name, product.id, product.available_date))
+        self.env["netaddiction.email.dispatcher"].send_mail("".join(products_available_lst), "[SHOPPING] PRODOTTI DISPONIBILI ESATTAMENTE TRA 7 GIORNI", "shopping@multiplayer.com", set(users))
