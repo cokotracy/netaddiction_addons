@@ -163,5 +163,19 @@
                 </form>
             </field>
         </record>
+
+
+        <record model="ir.ui.view" id="netaddiction_stock_move_search_show">
+            <field name="name">netaddiction.stock.move.search.show</field>
+            <field name="model">stock.move</field>
+            <field name="inherit_id" ref="netaddiction_warehouse.netaddiction_stock_move_search"/>
+            <field name="arch" type="xml">
+                <field name="partner_id" position="after">
+                    <separator/>
+                    <filter name="resi" string="Partenza Fiera" domain="[('picking_id.name','ilike','SHOW/OUT')]"/>
+                    <filter name="resi" string="Ritorno Fiera" domain="[('picking_id.name','ilike','SHOW/IN')]"/>
+                </field>
+            </field>
+        </record>
     </data>
 </openerp>
