@@ -8,6 +8,9 @@ class Products(models.Model):
 
     @api.multi
     def write(self, values):
+        if self.env.context.get('skip_products_log_tracking', False):
+            return super(Products, self).write(values)
+
         old_intax = {}
         for product in self:
             log_line = self.env["netaddiction.log.line"]
