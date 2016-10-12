@@ -76,6 +76,26 @@ class Products(models.Model):
     property_valuation = fields.Selection( selection=[('manual_periodic', 'Periodic (manual)'),
                        ('real_time', 'Perpetual (automated)')], string="Valorizzazione Inventario", default="real_time", required=1)
 
+    med_inventory_value = fields.Float(string="Valore Medio Inventario Deivato", default=0, compute="_get_inventory_medium_value")
+    med_inventory_value_intax = fields.Float(string="Valore Medio Inventario Ivato", default=0, compute="_get_inventory_medium_value")
+
+    @api.one
+    def _get_inventory_medium_value(self):
+        stock = self.env.ref('stock.stock_location_stock').id
+        if self.qty_available > 0:
+            quants = self.env['stock.quant'].search([('product_id', '=', self.id), ('location_id', '=', stock), ('company_id', '=', self.env.user.company_id.id)])
+            qta = 0
+            value = 0
+            for quant in quants:
+                qta += quant.qty
+                value += quant.inventory_value
+            val = float(value) / float(qta)
+            result = self.supplier_taxes_id.compute_all(val)
+            self.med_inventory_value_intax = round(result['total_included'], 2)
+            self.med_inventory_value = round(result['total_excluded'], 2)
+        else:
+            self.med_inventory_value = 0
+
     def _product_available(self, cr, uid, ids, field_names=None, arg=False, context=None):
         context = context or {}
         field_names = field_names or []

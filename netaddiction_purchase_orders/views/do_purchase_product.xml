@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <record model="ir.ui.view" id="netaddiction_product_open_do_purchase">
+            <field name="name">netaddiction.button.do.purchase</field>
+            <field name="model">product.product</field>
+            <field name="inherit_id" ref="product.product_normal_form_view"/>
+            <field name="arch" type="xml">
+                <div name="button_box" position="inside">
+                    <button class="oe_stat_button" name="open_do_purchase" type="object" string="Acquista" icon="fa-euro"/>
+                </div>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="netaddiction_do_purchase_product_form">
+            <field name="name">netaddiction.do.purchase.product.form</field>
+            <field name="model">do.purchase.product</field>
+            <field name="arch" type="xml">
+                <form>
+                    <group>
+                        <group>
+                            <field name="product_id" readonly="1"/>
+                            <field name="supplier"/>
+                        </group>
+                        <group>
+                            <field name="qty"/>
+                        </group>
+                    </group>
+                    <footer>
+                        <button type="object" name="do_put_in_purhcase_order" string="Acquista"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+    </data>
+</openerp>

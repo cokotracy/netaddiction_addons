@@ -223,6 +223,8 @@
                                     <field name="final_price" required="True" string="Prezzo Listino"/>
                                     <field name="special_price" string="Prezzo offerta base"/>
                                     <field name="lst_price" readonly="True" string="Prezzo di Vendita"/>
+                                    <field name="med_inventory_value" readonly="True"/>
+                                    <field name="med_inventory_value_intax" readonly="True"/>
                                 </group>
                                 <group name="group_general_right"  col="2" class="oe_right">
                                     <field name="categ_id" options="{'no_create': True}"/>
