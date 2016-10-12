@@ -92,7 +92,20 @@
                     <separator/>
                     <notebook>
                         <page string="Prodotti" name="product">
-                            <field name="product_list_product"/>
+                            <field name="product_list_product">
+                                <tree>
+                                    <field name="id"/>
+                                    <field name="display_name"/>
+                                    <field name="lst_price"/>
+                                    <field name="qty_available"/>
+                                    <field name="qty_available_now"/>
+                                    <field name="virtual_available"/>
+                                    <field name="barcode"/>
+                                    <field name="sale_ok"/>
+                                    <field name="visible"/>
+                                    <button type="object" name="open_product_line" string="Modifica"/>
+                                </tree>
+                            </field>
                         </page>
                         <page string="Movimentazioni Effettuate" name="move">
                             <field name="product_list">

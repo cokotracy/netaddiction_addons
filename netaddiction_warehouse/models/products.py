@@ -15,6 +15,18 @@ class Products(models.Model):
 
     days_shipping = fields.Integer(string="Consegnato in (in giorni)", compute = "_get_days_shipping")
 
+    @api.multi
+    def open_product_line(self):
+        self.ensure_one()
+        return {
+            'type': 'ir.actions.act_window',
+            'name': '%s' % self.display_name,
+            'view_type': 'form',
+            'view_mode': 'form',
+            'res_model': self._name,
+            'res_id': self.id,
+            'target': 'current',
+        }
     
 
     @api.multi
