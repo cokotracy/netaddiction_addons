@@ -109,6 +109,13 @@ class product_pricelist(models.Model):
 class ProductPriceItems(models.Model):
     _inherit = "product.pricelist.item"
 
+    b2b_real_price = fields.Float(string="Prezzo reale", compute="_get_real_price")
+
+    @api.one
+    def _get_real_price(self):
+        price = self.pricelist_id.price_rule_get(self.product_id.id, 1)
+        self.b2b_real_price = self.product_id.taxes_id.compute_all(price[self.pricelist_id.id][0])['total_excluded']
+
     @api.multi
     def open_form_item(self):
         return {
@@ -120,3 +127,23 @@ class ProductPriceItems(models.Model):
             'res_id': self.id,
             'target': 'current',
         }
+
+class Products(models.Model):
+    _inherit = 'product.product'
+
+    b2b_price = fields.Char(string="Prezzi B2B", compute="_compute_b2b_price")
+
+    @api.one
+    def _compute_b2b_price(self):
+        result = self.env['product.pricelist.item'].search([('product_id.id', '=', self.id)])
+        if result:
+            text = ''
+            for res in result:
+                price = res.pricelist_id.sudo().price_rule_get(self.id, 1)
+                b2b = self.taxes_id.compute_all(price[res.pricelist_id.id][0])
+                b2b_iva = b2b['total_included']
+                b2b_noiva = b2b['total_excluded']
+                text += '%s - %s [%s]; ' % (res.pricelist_id.name, str(round(b2b_noiva, 2)).replace('.', ','), str(round(b2b_iva, 2)).replace('.', ','))
+            self.b2b_price = text
+        else:
+            self.b2b_price = ''

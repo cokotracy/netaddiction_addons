@@ -6,7 +6,7 @@
             <field name="model">product.pricelist</field>
             <field name="inherit_id" ref="product.product_pricelist_view"/>
             <field name="arch" type="xml">
-                <field name="item_ids" position="before">
+                <field name="item_ids" position="replace">
                     <group>
                         <group>
                             <field name="expression" >
@@ -36,6 +36,13 @@
                     <group>
                         <button type="object" name="search_product" string="Cerca Prodotti"/>
                     </group>
+                    <field name="item_ids">
+                        <tree>
+                            <field name="product_id"/>
+                            <field name="price"/>
+                            <field name="b2b_real_price"/>
+                        </tree>
+                    </field>
                 </field>
             </field>
 
@@ -58,9 +65,22 @@
                     <field name="pricelist_id"/>
                     <field name="product_id"/>
                     <field name="price" string="Prezzo"/>
+                    <field name="b2b_real_price"/>
                     <button type="object" name="open_form_item" string="Modifica"/>
                 </tree>
             </field>
         </record>
+
+        <record model="ir.ui.view" id="netaddiction_pricelist_product_b2b">
+            <field name="name">netaddiction.product.pricelist.product.b2b</field>
+            <field name="model">product.product</field>
+            <field name="inherit_id" ref="product.product_normal_form_view"/>
+            <field name="arch" type="xml">
+                <field name="attribute_value_ids" position="before">
+                    <field name="b2b_price"/>
+                </field>
+            </field>
+        </record>
+
     </data>
 </openerp>
