@@ -12,16 +12,40 @@ class Pricelist(models.Model):
         ('final_price', 'Prezzo di listino')
     ), string="Basato su", required=True)
 
+class ProductPricelistCondition(models.Model):
+    _name = "pricelist.condition"
+
+    expression = fields.Many2one(comodel_name='netaddiction.expressions.expression', string='Espressione')
+    percentage_discount = fields.Integer(string="Percentuale di sconto")
 
 class product_pricelist(models.Model):
     _inherit = "product.pricelist"
 
-    expression = fields.Many2one(comodel_name='netaddiction.expressions.expression', string='Espressione')
+    expression = fields.Many2many(comodel_name='pricelist.condition', string='Espressioni')
 
     carrier_price = fields.Float(string="Costo Spedizione")
     carrier_gratis = fields.Float(string="Spedizione Gratis se valore maggiore di", default=0)
 
-    percent_price = fields.Float(string="Percentuale (sconto)")
+    percent_price = fields.Float(string="Percentuale default(sconto)")
+
+    search_field = fields.Char(string="Cerca prodotti")
+
+    @api.multi
+    def search_product(self):
+        self.ensure_one()
+        dom = [('pricelist_id', '=', self.id), ('product_id.name', 'ilike', self.search_field)]
+        self.search_field = ''
+        return {
+            'type': 'ir.actions.act_window',
+            'name': 'Cerca Prodotti in listino: %s' % self.name,
+            'view_type': 'form',
+            'view_mode': 'tree, form',
+            'res_model': 'product.pricelist.item',
+            'view_id': False,
+            'views': [(False, 'tree')],
+            'target': 'current',
+            'domain': dom,
+            'context': self.env.context}
 
     def _price_rule_get_multi(self, cr, uid, pricelist, products_by_qty_by_partner, context=None):
         """
@@ -58,19 +82,41 @@ class product_pricelist(models.Model):
     @api.one
     def populate_item_ids_from_expression(self):
         if self.expression:
-            dom = self.expression.find_products_domain()
+            pids = []
+            for line in self.item_ids:
+                pids.append(line.product_id.id)
+            for expr in self.expression:
+                dom = expr.expression.find_products_domain()
+                for prod in self.env['product.product'].search(dom):
+                    attr = {
+                        'applied_on': '0_product_variant',
+                        'product_id': prod.id,
+                        'compute_price': 'formula',
+                        'base': 'final_price',
+                        'price_discount': expr.percentage_discount,
+                        'pricelist_id': self.id,
+                        'percent_price': expr.percentage_discount,
+                    }
+                    if prod.id not in pids:
+                        self.env['product.pricelist.item'].create(attr)
         else:
             raise ValidationError("Se non metti un'espressione non posso aggiungere prodotti")
 
-        for prod in self.env['product.product'].search(dom):
-            attr = {
-                'applied_on': '0_product_variant',
-                'product_id': prod.id,
-                'compute_price': 'formula',
-                'base': 'final_price',
-                'price_discount': self.percent_price,
-                'pricelist_id': self.id,
-                'percent_price': self.percent_price,
-            }
+    @api.one
+    def delete_all_items(self):
+        self.item_ids.unlink()
 
-            self.env['product.pricelist.item'].create(attr)
+class ProductPriceItems(models.Model):
+    _inherit = "product.pricelist.item"
+
+    @api.multi
+    def open_form_item(self):
+        return {
+            'type': 'ir.actions.act_window',
+            'name': '%s' % self.display_name,
+            'view_type': 'form',
+            'view_mode': 'form',
+            'res_model': self._name,
+            'res_id': self.id,
+            'target': 'current',
+        }

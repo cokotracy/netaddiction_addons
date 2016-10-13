@@ -9,11 +9,17 @@
                 <field name="item_ids" position="before">
                     <group>
                         <group>
-                            <field name="expression"/>
+                            <field name="expression" >
+                                <tree editable="bottom">
+                                    <field name="expression"/>
+                                    <field name="percentage_discount"/>
+                                </tree>
+                            </field>
                             <field name="percent_price"/>
                         </group>
                         <group>
-                            <button type="object" name="populate_item_ids_from_expression" string="Aggiungi Prodotti" class="btn btn-primary oe_edit_only"/>
+                            <button type="object" name="populate_item_ids_from_expression" string="Aggiungi/Aggiorna Prodotti" class="btn btn-primary"/><br/>
+                            <button type="object" name="delete_all_items" string="Cancella tutto" style="background-color:#F64747; font-color:black; font-weight:bold; margin-top:10px" class="btn"/>
                         </group>
                     </group>
                     <group>
@@ -24,7 +30,36 @@
                             <field name="carrier_gratis"/>
                         </group>
                     </group>
+                    <group>
+                        <field name="search_field" placeholder="Cerca Prodotto nel listino"/>
+                    </group>
+                    <group>
+                        <button type="object" name="search_product" string="Cerca Prodotti"/>
+                    </group>
                 </field>
+            </field>
+
+        </record>
+
+        <record model="ir.ui.view" id="netaddiction_pricelist_condition_tree">
+            <field name="name">netaddiction.product.pricelist.condition.tree</field>
+            <field name="model">pricelist.condition</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="expression" required="1"/>
+                    <field name="percentage_discount"/>
+                </tree>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="product.product_pricelist_item_tree_view">
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="pricelist_id"/>
+                    <field name="product_id"/>
+                    <field name="price" string="Prezzo"/>
+                    <button type="object" name="open_form_item" string="Modifica"/>
+                </tree>
             </field>
         </record>
     </data>
