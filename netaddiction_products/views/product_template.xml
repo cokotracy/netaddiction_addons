@@ -6,10 +6,9 @@
             <field name="name">Varianti Prodotto</field>
             <field name="type">ir.actions.act_window</field>
             <field name="res_model">product.product</field>
-            <field name="context">{'search_default_product_tmpl_id': [active_id], 'default_product_tmpl_id': active_id}</field>
-            <field name="domain">['|',('active','=',True),('active','=',False)]</field>
-            <field name="search_view_id" ref="product.product_search_form_view"/>
-            <field name="view_ids"
+            
+            <field name="domain">[('product_tmpl_id','=',active_id),'|',('active','=',True),('active','=',False)]</field>
+             <field name="view_ids"
                    eval="[(5, 0, 0),
                           (0, 0, {'view_mode': 'tree'}),
                           (0, 0, {'view_mode': 'form'}),
