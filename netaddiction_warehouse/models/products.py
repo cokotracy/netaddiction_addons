@@ -34,16 +34,17 @@ class Products(models.Model):
         """
         funzione che spegne o mette esaurito il prodotto in base alla quantità disponibie e quantità limite
         """
+        # i sudo ci sono per il customer care
         qty_limit = self.qty_limit
         qty_single = self.qty_single_order
         action = self.limit_action
         #a questo punto faccio le operazioni sullo spegnimento
         if self.qty_available_now <= qty_limit:
             if action == 'no_purchasable':
-                self.sale_ok = False
+                self.sudo().sale_ok = False
             if action == 'deactive':
-                self.sale_ok = False
-                self.visible = False
+                self.sudo().sale_ok = False
+                self.sudo().visible = False
 
 
 
