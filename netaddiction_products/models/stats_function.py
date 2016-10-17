@@ -38,7 +38,7 @@ class ProductsStats(models.Model):
         return moves
 
     @api.multi
-    def get_sale_in_interval_date(self, date_start, date_finish, supplier=False, count_refund=False, order_states=['done', 'partial_done', 'pending']):
+    def get_sale_in_interval_date(self, date_start, date_finish, supplier=False, count_refund=False, order_states=['done', 'partial_done', 'sale', 'problem']):
         # ritorna la quantità, il valore, il numero degli ordini[numero linee ordine] venduti nell'intervallo di tempo
         # in result: product_uom_qty = quantità, price_total = valore, product_id_count = numero_ordini, product_id = (id prod, name prod)
         # count_refund: se true toglie i resi nel periodo, altrimenti se ne fotte

@@ -90,8 +90,8 @@ class Suppliers(models.Model):
                         'qty_all': 0
                     }
 
-            sale = products_preorder.get_sale_in_interval_date(date_start.strftime('%Y-%m-%d 00:00:00'), today.strftime('%Y-%m-%d 23:59:59'), count_refund=True, order_states=['sale', 'problem'])
-            sale_all = products_preorder.get_sale_in_interval_date('1999-01-01', today.strftime('%Y-%m-%d 23:59:59'), count_refund=True, order_states=['sale', 'problem'])
+            sale = products_preorder.get_sale_in_interval_date(date_start.strftime('%Y-%m-%d 00:00:00'), today.strftime('%Y-%m-%d 23:59:59'), count_refund=True)
+            sale_all = products_preorder.get_sale_in_interval_date('1999-01-01', today.strftime('%Y-%m-%d 23:59:59'), count_refund=True)
 
             preorders = {}
             for s in sale:

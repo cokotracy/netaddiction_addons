@@ -227,7 +227,7 @@ class Products(models.Model):
 
     @api.one
     def _get_sum_sales(self):
-        lines = self.env['sale.order.line'].search([('product_id', '=', self.id), ('state', 'not in', ['cancel','draft'])])
+        lines = self.env['sale.order.line'].search([('product_id', '=', self.id), ('state', 'not in', ['cancel', 'draft', 'pending'])])
         count = 0
         for line in lines:
             count += line.product_qty - line.qty_reverse
