@@ -217,3 +217,16 @@ class Suppliers(models.Model):
             products[line['product_id'][0]] += line['product_qty']
 
         return products
+
+    @api.multi
+    def download_report(self):
+        new_attach = self.sudo().generate_monday_report()
+        return {
+            'type': 'ir.actions.act_window',
+            'name': '%s' % new_attach[0].name,
+            'view_type': 'form',
+            'view_mode': 'form',
+            'res_model': 'ir.attachment',
+            'res_id': new_attach[0].id,
+            'target': 'current',
+        }
