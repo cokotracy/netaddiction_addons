@@ -18,14 +18,12 @@ class OfferOrder(models.Model):
     def reset_voucher(self):
         if len(self.offers_voucher) > 0:
             offer = self.offers_voucher[0].offer_id
-           
             self.partner_id.vouchers_list = [(3, offer.id)]
             for ovh in self.offers_voucher:
                 ovh.order_line.product_id_change()
                 ovh.unlink()
 
         self.voucher_string = None
-
 
     @api.one
     def apply_voucher_backend(self):
@@ -41,7 +39,7 @@ class OfferOrder(models.Model):
             return
 
         voucher_string = kwargs.get("voucher_string")
-       
+
         if voucher_string is not None:
             self.reset_voucher()
             self.voucher_string = voucher_string
@@ -79,10 +77,10 @@ class OfferOrder(models.Model):
                             self.free_ship_prod = [(4, ol.product_id.id)]
                     tot_qty = 1
                 else:
-                   
+
                     offer_ids = [ol.product_id.id for ol in offer.products_list if ol.active]
                     offer_cart_history_ids = [och.product_id.id for och in self.offers_cart]
-                    
+
                     for ol in self.order_line:
                         # applico il voucher se non ci sono altre offerte sul prodotto
                         if (ol.product_id.id in offer_ids) and (ol.product_id.id not in offer_cart_history_ids) and (not ol.offer_type):
@@ -230,28 +228,24 @@ class OfferOrder(models.Model):
     def _verify_cart_offers(self, offer, pid_list, order_lines_usables):
         """Verifica se l'offerta offer è verificata per le linee order_lines e in caso la applica
         """
-        #controllo scadenze offerta
+        # controllo scadenze offerta
         if(offer.date_end > fields.Datetime.now()):
             if(offer.offer_type == 1):
-                #bundle
-                self._apply_bundle(offer,pid_list,order_lines_usables)
-                
-                
-                
+                # bundle
+                self._apply_bundle(offer, pid_list, order_lines_usables)
             elif(offer.offer_type == 2):
-               #nxm
-               self._apply_n_x_m(offer,pid_list,order_lines_usables)
+                # nxm
+                self._apply_n_x_m(offer, pid_list, order_lines_usables)
 
             elif (offer.offer_type == 3):
-                #nxprezzo
-                self._apply_n_x_price(offer,pid_list,order_lines_usables)
-                
-       
+                # nxprezzo
+                self._apply_n_x_price(offer, pid_list, order_lines_usables)
+
     @api.one
-    def _apply_n_x_m(self,offer,pid_list,order_lines_usables):
+    def _apply_n_x_m(self, offer, pid_list, order_lines_usables):
         """ applica l'offerta n x m offer alle order_lines in questo ordine
         """
-        order_lines =[]
+        order_lines = []
         for ol in self.order_line:
             if ol.id in order_lines_usables and ol.product_id.id in pid_list:
                 order_lines.append(ol)
@@ -260,38 +254,38 @@ class OfferOrder(models.Model):
             tot_qty += ol.product_uom_qty
 
         if tot_qty >= offer.n and offer.n > 0:
-            #divisione intera
-            part = tot_qty//offer.n
+            # divisione intera
+            part = tot_qty // offer.n
             num_prod_for_free = part * (offer.n - offer.m)
-            #ordino le order lines per price unit crescente
+            # ordino le order lines per price unit crescente
             order_lines.sort(key=lambda ol: ol.price_unit)
-            self._create_offer_cart_history_n(offer.n * part, order_lines,offer)
+            self._create_offer_cart_history_n(offer.n * part, order_lines, offer)
             i = 0
             for ol in order_lines:
-               
+
                 if(ol.product_uom_qty <= num_prod_for_free - i):
                     ol.price_unit = 0.0
                     order_lines_usables.remove(ol.id)
                     i += int(ol.product_uom_qty)
-                        
+
                 elif ol:
-                    #spezza le linee
-                    res = self._split_order_line(ol,num_prod_for_free -i,ol.product_uom_qty - (num_prod_for_free -i))
+                    # spezza le linee
+                    res = self._split_order_line(ol, num_prod_for_free - i, ol.product_uom_qty - (num_prod_for_free - i))
                     order_lines_usables.remove(ol.id)
                     ol.price_unit = 0.0
                     new_ol = res[0] if res[0] else None
                     if new_ol:
                         order_lines_usables.append(new_ol.id)
                     i = num_prod_for_free
-                #EXIT CONDITION
+                # EXIT CONDITION
                 if i >= num_prod_for_free:
                     break
 
     @api.one
-    def _apply_n_x_price(self,offer,pid_list,order_lines_usables):
+    def _apply_n_x_price(self, offer, pid_list, order_lines_usables):
         """ applica l'offerta n x prezzo offer alle order_lines in questo ordine
         """
-        order_lines =[]
+        order_lines = []
         for ol in self.order_line:
             if ol.id in order_lines_usables and ol.product_id.id in pid_list:
                 order_lines.append(ol)
@@ -299,15 +293,15 @@ class OfferOrder(models.Model):
         for ol in order_lines:
             tot_qty += ol.product_uom_qty
         if tot_qty >= offer.n and offer.n > 0:
-            #divisione intera
-            part = tot_qty//offer.n
+            # divisione intera
+            part = tot_qty // offer.n
             num_prod_to_reduce = part * offer.n
-            #ordino le order lines per price unit crescente
+            # ordino le order lines per price unit crescente
             order_lines.sort(key=lambda ol: ol.price_unit)
-            self._create_offer_cart_history_n(offer.n * part, order_lines,offer)
+            self._create_offer_cart_history_n(offer.n * part, order_lines, offer)
             i = 0
             for ol in order_lines:
-            
+
                 if(ol and ol.product_uom_qty <= num_prod_to_reduce - i):
                     # tax = ol.tax_id.amount
                     # detax = offer.n_price / (float(1) + float(tax/100))
@@ -316,10 +310,10 @@ class OfferOrder(models.Model):
                     ol.price_unit = self.env['account.tax']._fix_tax_included_price(offer.n_price, ol.product_id.taxes_id, ol.tax_id)
                     order_lines_usables.remove(ol.id)
                     i += int(ol.product_uom_qty)
-                        
+
                 elif ol:
-                    #spezza le linee
-                    res = self._split_order_line(ol,num_prod_to_reduce -i,ol.product_uom_qty - (num_prod_to_reduce -i))
+                    # spezza le linee
+                    res = self._split_order_line(ol, num_prod_to_reduce - i, ol.product_uom_qty - (num_prod_to_reduce - i))
                     # tax = ol.tax_id.amount
                     # detax = offer.n_price / (float(1) + float(tax/100))
                     # deiva = round(detax,2)
@@ -402,7 +396,7 @@ class OfferOrder(models.Model):
             return ret
 
     @api.one
-    def _create_offer_cart_history_n(self,num, order_lines,offer):
+    def _create_offer_cart_history_n(self, num, order_lines, offer):
         """ Questo metodo crea le OrderOfferCartHistory per l'offerta nxm o nxprice che accomuna tutte le order_lines. Le order_lines vengono visitate dall'inizio fino al raggiungimento di num (quindi le order_lines devono essere già ordinate secondo un criterio sensato)
             num = numero di prodotti a cui deve essere applicata l'offerta (anche quelli che non saranno scontati nel caso del n x m)
             Raise QtyMaxBuyableException nel caso in cui sia stata superata una qty_max_buyable
@@ -451,7 +445,7 @@ class OfferOrder(models.Model):
                     offer_line = ofcl
                     break
             if offer_line:
-                if (offer_line.qty_max_buyable > 0 and ol.product_uom_qty > offer_line.qty_max_buyable):
+                if (offer_line.qty_max_buyable > 0 and bundle_cnt[ol.product_id.id] > offer_line.qty_max_buyable):
                     # pulizia dei record history già creati
                     offers_cart_history = self.env['netaddiction.order.specialoffer.cart.history'].search([("order_id", "=", self.id), ("offer_name", "=", offer_line.offer_cart_id.name)])
                     for och in offers_cart_history:
@@ -480,7 +474,6 @@ class OfferOrder(models.Model):
         # detax = full_price / (float(1) + float(tax/100))
         # deiva = round(detax,2)
         # return float(deiva)
-
 
 
 class OrderOfferCartHistory(models.Model):
@@ -516,6 +509,7 @@ class OrderOfferVoucherHistory(models.Model):
     percent_discount = fields.Integer(string="Sconto Percentuale")
     order_line = fields.Many2one(comodel_name='sale.order.line')
     percent_effective_discount = fields.Float(string="Sconto percentuale applicato")
+
 
 class VoucherAlreadyUsedException(Exception):
     def __init__(self, voucher_str):
