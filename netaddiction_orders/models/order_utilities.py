@@ -233,17 +233,17 @@ class OrderUtilities(models.TransientModel):
 
         prod = self.env["product.product"].search([("id", "=", product_id)])
 
-        if not prod or not prod.active:
+        if not prod or (quantity > 0 and not prod.active):
             raise ProductNotActiveAddToCartException(product_id, "add_to_cart")
 
         if order and order.partner_id.id == partner_id and order.state == "draft":
 
             # se il prodotto è spento o esaurito eccezione
-            if not prod.sale_ok:
+            if quantity > 0 and not prod.sale_ok:
                 if not self.env.context.get('no_check_product_sold_out', False):
                     raise ProductSoldOutAddToCartException(product_id, prod.name, "prodotto %s  sale_ok: %s" % (prod.name, prod.sale_ok))
 
-            if not order.partner_id.is_b2b and quantity > LIMIT_QTY_PER_PRODUCT:
+            if quantity > 0 and not order.partner_id.is_b2b and quantity > LIMIT_QTY_PER_PRODUCT:
                 raise QuantityOverLimitException(prod.name)
 
             order.reset_cart()
