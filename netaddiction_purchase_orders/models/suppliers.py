@@ -34,7 +34,7 @@ class Suppliers(models.Model):
 
             prods = []
             products = {}
-            shipped = self.get_products_shipped(date_start.strftime('%Y-%m-%d %H:%M:%S'), today.strftime('%Y-%m-%d %H:%M:%S'), count_refund=True)
+            shipped = self.get_products_shipped(date_start.strftime('%Y-%m-%d 00:00:00'), today.strftime('%Y-%m-%d 23:59:59'), count_refund=True)
             for s in shipped:
                 prods.append(s['product_id'][0])
                 products[s['product_id'][0]] = {
@@ -45,7 +45,7 @@ class Suppliers(models.Model):
                     'qty_all': 0
                 }
             p_a = self.env['product.product'].search([('id', 'in', prods)])
-            moves = p_a.get_shipped_in_interval_date('1999-01-01', today.strftime('%Y-%m-%d %H:%M:%S'), supplier=self.id, count_refund=True)
+            moves = p_a.get_shipped_in_interval_date('1999-01-01', today.strftime('%Y-%m-%d 23:59:59'), supplier=self.id, count_refund=True)
             for m in moves:
                 if m['product_id'][0] in products:
                     products[m['product_id'][0]]['qty_all'] = m['product_uom_qty']
@@ -55,8 +55,8 @@ class Suppliers(models.Model):
             for p in products_stock:
                 pids_stock.append(p['product_id'][0])
             ps = self.env['product.product'].search([('id', 'in', pids_stock)])
-            stock_moves_all = ps.get_shipped_in_interval_date('1999-01-01', today.strftime('%Y-%m-%d %H:%M:%S'), supplier=self.id, count_refund=True)
-            stock_moves_week = ps.get_shipped_in_interval_date(date_start.strftime('%Y-%m-%d %H:%M:%S'), today.strftime('%Y-%m-%d %H:%M:%S'), supplier=self.id, count_refund=True)
+            stock_moves_all = ps.get_shipped_in_interval_date('1999-01-01', today.strftime('%Y-%m-%d 23:59:59'), supplier=self.id, count_refund=True)
+            stock_moves_week = ps.get_shipped_in_interval_date(date_start.strftime('%Y-%m-%d 00:00:00'), today.strftime('%Y-%m-%d 23:59:59'), supplier=self.id, count_refund=True)
             for s in stock_moves_week:
                 if s['product_id'][0] not in products:
                     products[s['product_id'][0]] = {
@@ -90,8 +90,8 @@ class Suppliers(models.Model):
                         'qty_all': 0
                     }
 
-            sale = products_preorder.get_sale_in_interval_date(date_start.strftime('%Y-%m-%d %H:%M:%S'), today.strftime('%Y-%m-%d %H:%M:%S'), count_refund=True, order_states=['sale', 'problem'])
-            sale_all = products_preorder.get_sale_in_interval_date('1999-01-01', today.strftime('%Y-%m-%d %H:%M:%S'), count_refund=True, order_states=['sale', 'problem'])
+            sale = products_preorder.get_sale_in_interval_date(date_start.strftime('%Y-%m-%d 00:00:00'), today.strftime('%Y-%m-%d 23:59:59'), count_refund=True)
+            sale_all = products_preorder.get_sale_in_interval_date('1999-01-01', today.strftime('%Y-%m-%d 23:59:59'), count_refund=True)
 
             preorders = {}
             for s in sale:
@@ -217,3 +217,16 @@ class Suppliers(models.Model):
             products[line['product_id'][0]] += line['product_qty']
 
         return products
+
+    @api.multi
+    def download_report(self):
+        new_attach = self.sudo().generate_monday_report()
+        return {
+            'type': 'ir.actions.act_window',
+            'name': '%s' % new_attach[0].name,
+            'view_type': 'form',
+            'view_mode': 'form',
+            'res_model': 'ir.attachment',
+            'res_id': new_attach[0].id,
+            'target': 'current',
+        }

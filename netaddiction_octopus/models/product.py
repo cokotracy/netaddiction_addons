@@ -80,6 +80,11 @@ class Product(models.Model):
             'mail_notrack': True,
         }
 
+        # TODO togliere
+        if self.category_id.id == 6:
+            return
+        # END-TODO
+
         if self.image:
             try:
                 raw_image = HTTPDownloader().download(self.image, raw=True)

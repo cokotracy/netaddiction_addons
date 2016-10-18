@@ -21,17 +21,21 @@ class Products(models.Model):
             domain.append(('seller_ids.name','=',int(supplier_id)))
 
         products = self.search(domain)
+
+        pids = []
         for prod in products:
-            #search = self.env['purchase.order.line'].search([('product_id','=',prod.id),('state','=','draft')])
-            #qty = 0
-            #purchases = ''
-            #for s in search:
-            #    qty = qty + s.product_qty
+            pids.append(prod.id)
+            search = self.env['purchase.order.line'].search([('product_id','=',prod.id),('state','=','draft')])
+            qty = 0
+            purchases = ''
+            for s in search:
+                qty = qty + s.product_qty
+
             visible = 1
             if prod.qty_available - prod.outgoing_qty + prod.incoming_qty >= 0:
                 #escludo i prodotti con prevista >= 0 (già ordinati)
                 visible = 0
-            
+
             if prod.out_date:
                 if datetime.strptime(prod.out_date,'%Y-%m-%d') > datetime.now():
                     visible = 0
@@ -43,13 +47,13 @@ class Products(models.Model):
                 'qty_available_now' : prod.qty_available_now,
                 'virtual_available' : prod.virtual_available,
                 'outgoing_qty' : prod.outgoing_qty,
-                'incoming_qty' : prod.incoming_qty,
+                'incoming_qty' : (int(prod.incoming_qty) + int(qty)),
                 #'inorder_qty' : qty,
                 'seller_ids' : [],
                 'visible' : visible,
                 'barcode' : prod.barcode,
                 'category': prod.categ_id.id,
-                'out_date':prod.out_date
+                'out_date':prod.out_date,
             }
 
             for sup in prod.seller_ids:
@@ -63,6 +67,53 @@ class Products(models.Model):
                         'product_code' : sup.product_code
                         })
             result.append(attr)
+
+        # qua cerco i prodotti solo in prenotazione
+        preorders = self.search([('out_date', '>', date.today().strftime('%Y-%m-%d'))])
+        for prod in preorders:
+            if prod.id not in pids:
+                search = self.env['purchase.order.line'].search([('product_id','=',prod.id),('state','=','draft')])
+                qty = 0
+                purchases = ''
+                for s in search:
+                    qty = qty + s.product_qty
+                visible = 1
+                if prod.qty_available - prod.outgoing_qty + prod.incoming_qty >= 0:
+                    #escludo i prodotti con prevista >= 0 (già ordinati)
+                    visible = 0
+                
+                if prod.out_date:
+                    if datetime.strptime(prod.out_date,'%Y-%m-%d') > datetime.now():
+                        visible = 0
+
+                attr = {
+                    'id' : prod.id,
+                    'display_name' : prod.display_name,
+                    'qty_available' : prod.qty_available,
+                    'qty_available_now' : prod.qty_available_now,
+                    'virtual_available' : prod.virtual_available,
+                    'outgoing_qty' : prod.outgoing_qty,
+                    'incoming_qty' : (int(prod.incoming_qty) + int(qty)),
+                    #'inorder_qty' : qty,
+                    'seller_ids' : [],
+                    'visible' : visible,
+                    'barcode' : prod.barcode,
+                    'category': prod.categ_id.id,
+                    'out_date':prod.out_date
+                }
+
+                for sup in prod.seller_ids:
+                    if sup.name.active:
+                        attr['seller_ids'].append({
+                            'id' : sup.name.id,
+                            'name' : sup.name.name,
+                            'price' : sup.price,
+                            'delay' : sup.delay,
+                            'avail_qty' : sup.avail_qty,
+                            'product_code' : sup.product_code
+                            })
+                result.append(attr)
+
         return result
 
 class PurchaseOrders(models.Model):

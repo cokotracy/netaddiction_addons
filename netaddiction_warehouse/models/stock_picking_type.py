@@ -61,6 +61,59 @@ class StockPickingWave(models.Model):
     in_exit = fields.Boolean(string="In uscita",default=False) #FORSE DA CAMBIARE IN_ENTRATA (in realtà se true è una lista purchase)
     reverse_supplier = fields.Boolean(string="Resi a Fornitore",default=False) 
 
+    product_list = fields.Many2many(string="Movimenti", comodel_name="stock.pack.operation", compute="_get_list_product")
+    product_list_product = fields.Many2many(string="Prodotti caricati/scaricati", comodel_name="product.product", compute="_get_list_product")
+
+    supplier = fields.Many2one(string="Fornitore", default=False, comodel_name="res.partner", compute="_get_suppliers", search="_search_supplier")
+    date_done = fields.Datetime(string="Data", default=False, compute="_get_date", search="_search_date")
+
+    @api.one
+    def _get_date(self):
+        date = False
+        for pick in self.picking_ids:
+            date = pick.date_done
+            break
+        self.date_done = date
+
+    def _search_date(self, operator, value):
+        domain = [('picking_ids.date_done', operator, value)]
+        return domain
+
+    @api.one
+    def _get_suppliers(self):
+        # lo so è all'inverso ma non mi rompete le palle - Matteo -
+        if self.in_exit:
+            sup = False
+            for pick in self.picking_ids:
+                sup = pick.partner_id.id
+                break
+            self.supplier = sup
+
+    def _search_supplier(self, operator, value):
+        assert operator in ('=', 'ilike', 'like'), 'Dominio invalido per il fornitore'
+
+        domain = [('picking_ids.partner_id.name', 'ilike', value), ('in_exit', '=', True)]
+        result = self.search(domain)
+        ids = []
+        for res in result:
+            ids.append(res.id)
+
+        return [('id', 'in', ids)]
+
+    @api.one
+    def _get_list_product(self):
+        products = []
+        pids = []
+
+        for pick in self.picking_ids:
+            for operation in pick.pack_operation_product_ids:
+                if operation.qty_done > 0:
+                    products.append(operation.id)
+                    pids.append(operation.product_id.id)
+
+        self.product_list = [(6, False, products)]
+        self.product_list_product = [(6, False, pids)]
+
     @api.multi
     def get_product_list(self):
         """

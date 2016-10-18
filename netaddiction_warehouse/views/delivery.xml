@@ -56,5 +56,82 @@
             </field>
         </record>
 
+        <record model="ir.ui.view" id="netaddiction_search_picking_eave">
+            <field name="name">netaddiction.search.picking.wave</field>
+            <field name="model">stock.picking.wave</field>
+            <field name="inherit_id" ref="stock_picking_wave.view_picking_wave_filter"/>
+            <field name="arch" type="xml">
+                <search>
+                    <filter name="acquisti" string="Carico" domain="[('in_exit','=',True)]"/>
+                    <filter name="uscita" string="Clienti" domain="[('in_exit','=',False)]"/>
+                    <separator/>
+                    <filter name="Today" string="Oggi" domain="[('date_done','&gt;',(context_today()).strftime('%Y-%m-%d 00:00:00'))]"/>
+                    <filter name="Yesterday" string="Ieri" domain="[('date_done','&gt;',(context_today()-datetime.timedelta(days=1)).strftime('%Y-%m-%d 00:00:00'),('date_done','&lt;',(context_today()).strftime('%Y-%m-%d 00:00:00')))]"/>
+                    <field name="supplier"/>
+                </search>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="netaddiction_picking_wave_form">
+            <field name="name">netaddiction.picking_wave_form</field>
+            <field name="model">stock.picking.wave</field>
+            <field name="inherit_id" ref="stock_picking_wave.view_picking_wave_form"/>
+            <field name="arch" type="xml">
+
+                <field name="user_id" position="before">
+                    <field name="in_exit" invisible="1"/>
+                    <field name="supplier" attrs="{'invisible':[('in_exit','=',False)]}"/>
+                    <field name="date_done"/>
+                </field>
+                <field name="user_id" position="attributes">
+                    <attributes name="invisible">1</attributes>
+                </field>
+                <field name="picking_ids" position="after">
+                    <br/>
+                    <br/>
+                    <separator/>
+                    <notebook>
+                        <page string="Prodotti" name="product">
+                            <field name="product_list_product">
+                                <tree>
+                                    <field name="id"/>
+                                    <field name="display_name"/>
+                                    <field name="lst_price"/>
+                                    <field name="qty_available"/>
+                                    <field name="qty_available_now"/>
+                                    <field name="virtual_available"/>
+                                    <field name="barcode"/>
+                                    <field name="sale_ok"/>
+                                    <field name="visible"/>
+                                    <button type="object" name="open_product_line" string="Modifica"/>
+                                </tree>
+                            </field>
+                        </page>
+                        <page string="Movimentazioni Effettuate" name="move">
+                            <field name="product_list">
+                                <tree>
+                                    <field name="product_id"/>
+                                    <field name="qty_done"/>
+                                </tree>
+                            </field>
+                        </page>
+                    </notebook>
+                    
+
+                </field>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="netaddiction_picking_wave_tree">
+            <field name="name">netaddiction.picking_wave_tree</field>
+            <field name="model">stock.picking.wave</field>
+            <field name="inherit_id" ref="stock_picking_wave.view_picking_wave_tree"/>
+            <field name="arch" type="xml">
+                <field name="user_id" position="replace">
+                    <field name="supplier"/>
+                    <field name="date_done"/>
+                </field>
+            </field>
+        </record>
     </data>
 </openerp>

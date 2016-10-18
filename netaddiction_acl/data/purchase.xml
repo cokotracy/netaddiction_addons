@@ -27,7 +27,9 @@
         </record>
 
         
-
+        <record id="netaddiction_purchase_orders.netaddiction_product_open_do_purchase" model="ir.ui.view">
+            <field name="groups_id" eval="[(4, ref('netaddiction_purchase_user'))]"/>
+        </record>
         <!--MENU-->
         <record id="base.menu_purchase_root" model="ir.ui.menu">
             <field name="groups_id" eval="[(4, ref('netaddiction_purchase_user'))]"/>

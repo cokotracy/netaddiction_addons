@@ -11,6 +11,8 @@ class OfferCatalogLine(models.Model):
 
     @api.multi
     def write(self, values):
+        if self.env.context.get('skip_offer_catalog_lines_log_tracking', False):
+            return super(OfferCatalogLine, self).write(values)
 
         old_offer_price = {}
         log_line = self.env["netaddiction.log.line"]

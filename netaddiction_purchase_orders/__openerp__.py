@@ -18,7 +18,8 @@
         'views/res_partner.xml',
         'data/cron.xml',
         'views/wave.xml',
-        'views/move.xml'
+        'views/move.xml',
+        'views/do_purchase_product.xml'
     ],
     'qweb':[
         "static/src/xml/*.xml",

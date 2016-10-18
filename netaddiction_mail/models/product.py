@@ -16,9 +16,9 @@ class Products(models.Model):
         users = self.env["netaddiction.email.dispatcher"].get_users_from_group("netaddiction_acl.netaddiction_products_data_entry_user_manager")
         users += self.env["netaddiction.email.dispatcher"].get_users_from_group("netaddiction_acl.netaddiction_sale_user_manager")
         if self.sale_ok:
-            obj = "[SHOPPING] PRODOTTO NON PIU ESAURITO %s id: %s" % (self.name, self.id)
+            obj = "[SHOPPING] PRODOTTO NON PIU ESAURITO [%s] %s id: %s" % (self.categ_id.name, self.name, self.id)
         else:
-            obj = "[SHOPPING] PRODOTTO ESAURITO %s id: %s" % (self.name, self.id)
+            obj = "[SHOPPING] PRODOTTO ESAURITO [%s] %s id: %s" % (self.categ_id.name, self.name, self.id)
         self.env["netaddiction.email.dispatcher"].send_mail(obj, obj, "shopping@multiplayer.com", set(users))
 
     @api.one
@@ -30,9 +30,9 @@ class Products(models.Model):
         users = self.env["netaddiction.email.dispatcher"].get_users_from_group("netaddiction_acl.netaddiction_products_data_entry_user_manager")
         users += self.env["netaddiction.email.dispatcher"].get_users_from_group("netaddiction_acl.netaddiction_sale_user_manager")
         if self.visible:
-            obj = "[SHOPPING] PRODOTTO ACCESO %s id: %s" % (self.name, self.id)
+            obj = "[SHOPPING] PRODOTTO ACCESO [%s] %s id: %s" % (self.categ_id.name, self.name, self.id)
         else:
-            obj = "[SHOPPING] PRODOTTO SPENTO %s id: %s" % (self.name, self.id)
+            obj = "[SHOPPING] PRODOTTO SPENTO [%s] %s id: %s" % (self.categ_id.name, self.name, self.id)
         self.env["netaddiction.email.dispatcher"].send_mail(obj, obj, "shopping@multiplayer.com", set(users))
 
     @api.model
