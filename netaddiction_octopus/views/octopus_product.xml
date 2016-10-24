@@ -5,13 +5,14 @@
             <field name="name">octopus.product.list</field>
             <field name="model">netaddiction_octopus.product</field>
             <field name="arch" type="xml">
-                <tree>
+                <tree create="false" edit="false" delete="false" fonts="bold:is_new==True">
                     <field name="supplier_id"/>
                     <field name="supplier_code"/>
                     <field name="name"/>
                     <field name="category_id"/>
                     <field name="group_name"/>
                     <field name="group_key"/>
+                    <field name="is_new"/>
                 </tree>
             </field>
         </record>
@@ -21,6 +22,7 @@
             <field name="model">netaddiction_octopus.product</field>
             <field name="arch" type="xml">
                 <search>
+                    <filter name="filter_is_new" string="Nuovi" domain="[('is_new', '=', True)]"/>
                     <filter name="group_group" string="Gruppo" context="{'group_by': 'group_key'}"/>
                     <filter name="group_barcode" string="Barcode" context="{'group_by': 'barcode'}"/>
                     <filter name="group_supplier_id" string="Fornitore" context="{'group_by': 'supplier_id'}"/>
@@ -32,8 +34,15 @@
             <field name="name">octopus.product.form</field>
             <field name="model">netaddiction_octopus.product</field>
             <field name="arch" type="xml">
-                <form>
+                <form create="false" edit="false" delete="false">
+                    <header>
+                        <button string="Importa" type="object" name="import_product" class="oe_highlight"
+                            attrs="{'invisible': [('is_new', '=', False)]}"/>
+                    </header>
                     <sheet>
+                        <group string="Stato">
+                            <field name="is_new"/>
+                        </group>
                         <group string="Dettagli">
                             <field name="barcode"/>
                             <field name="name"/>
@@ -67,8 +76,9 @@
             <field name="res_model">netaddiction_octopus.product</field>
             <field name="view_type">form</field>
             <field name="view_id" ref="product_view_list"/>
+            <field name="context">{'search_default_filter_is_new': True}</field>
         </record>
 
-        <menuitem id="product_menu" name="Prodotti" parent="octopus_menu" groups="base.group_no_one" action="product_action"/>
+        <menuitem id="product_menu" name="Prodotti Octopus" parent="stock.menu_stock_warehouse_mgmt" groups="netaddiction_acl.netaddiction_products_data_entry_user" action="product_action"/>
     </data>
 </openerp>

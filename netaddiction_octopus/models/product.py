@@ -5,7 +5,7 @@ import logging
 from base64 import b64encode
 from operator import xor
 
-from openerp import models, fields
+from openerp import api, fields, models
 from openerp.addons.decimal_precision import get_precision
 
 from ..base.downloaders import HTTPDownloader
@@ -23,6 +23,7 @@ class Template(models.Model):
 class Product(models.Model):
     _name = 'netaddiction_octopus.product'
 
+    is_new = fields.Boolean('Nuovo', default=False)
     barcode = fields.Char('Barcode', index=True)
     supplier_id = fields.Many2one('res.partner', string='Fornitore', domain=[('supplier', '=', True)])
     supplier_code = fields.Char('Codice fornitore')
@@ -40,6 +41,24 @@ class Product(models.Model):
     company_id = fields.Many2one('res.company', 'Società')
     group_key = fields.Char('Chiave gruppo')
     group_name = fields.Char('Nome gruppo')
+
+    @api.multi
+    def import_product(self):
+        self.ensure_one()
+        self.is_new = False
+
+        product = self.add(active=False)
+
+        return {
+            'name': 'Importazione prodotti Octopus',
+            'view_type': 'form',
+            'view_mode': 'form',
+            'view_id': False,
+            'res_model': 'product.product',
+            'type': 'ir.actions.act_window',
+            'target': 'new',
+            'res_id': product.id,
+        }
 
     def save(self, can_add=False, commit=True):
         if self.barcode is None:
@@ -68,9 +87,9 @@ class Product(models.Model):
                 return self.chain(product, commit=commit)
 
             if can_add:
-                return self.add(commit=commit)
+                self.is_new = True
 
-    def add(self, commit=True):
+    def add(self, commit=True, active=True):
         image = None
         template_id = None
 
@@ -79,11 +98,6 @@ class Product(models.Model):
             'mail_create_nosubscribe': True,
             'mail_notrack': True,
         }
-
-        # TODO togliere
-        if self.category_id.id == 6:
-            return
-        # END-TODO
 
         if self.image:
             try:
@@ -102,6 +116,7 @@ class Product(models.Model):
             name = self.name
 
         product = self.env['product.product'].with_context(context).create({
+            'active': active,
             'product_tmpl_id': template_id,
             'name': name,
             'barcode': self.barcode,
@@ -134,6 +149,8 @@ class Product(models.Model):
         if commit:
             self.env.cr.commit()
 
+        return product
+
     def chain(self, product, commit=True):
         context = {}
 
@@ -160,6 +177,21 @@ class Product(models.Model):
                 ('name', '=', self.supplier_id.id),
                 ('product_code', '=', self.supplier_code),
             ])
+
+        # Aggiunge l'immagine ai prodotti che ancora non ne hanno una
+        if self.image:
+            if product is None:
+                product = supplierinfo.product_id
+
+            if not product.image:
+                try:
+                    raw_image = HTTPDownloader().download(self.image, raw=True)
+                except Exception, e:
+                    _logger.error("Download non riuscito per l'immagine %s (%s)" % (self.image, e.message))
+                else:
+                    image = b64encode(raw_image)
+
+                product.image = image
 
         update_mapping = {
             'avail_qty': 'supplier_quantity',
