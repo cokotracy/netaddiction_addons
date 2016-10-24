@@ -217,7 +217,7 @@ class Orders(models.Model):
 
         if not self.partner_id.is_b2b:
             if delivery_price is None:
-                delivery_price = self.simulate_total_delivery_price()
+                delivery_price = self.simulate_total_delivery_price(option=self.delivery_option)
 
             amount += delivery_price
 
