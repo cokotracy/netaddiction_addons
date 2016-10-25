@@ -9,7 +9,7 @@
     'category': 'Technical Settings',
     'version': '1.0',
     'depends': ['base', 'product', 'netaddiction_products', 'netaddiction_warehouse', 'netaddiction_purchase_orders',
-        'sale', 'netaddiction_contributions'],
+        'sale', 'netaddiction_contributions', 'netaddiction_octopus'],
     'data': [
         'data/delete.xml',
         'data/products_data_entry.xml',
@@ -27,6 +27,7 @@
         'views/res_partner.xml',
         'views/sale.xml',
         'data/god.xml',
+        'data/octopus.xml',
     ],
     'application': True,
 
