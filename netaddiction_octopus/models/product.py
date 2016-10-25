@@ -193,6 +193,9 @@ class Product(models.Model):
 
                 product.image = image
 
+                if commit:
+                    self.env.cr.commit()
+
         update_mapping = {
             'avail_qty': 'supplier_quantity',
             'price': 'supplier_price',
