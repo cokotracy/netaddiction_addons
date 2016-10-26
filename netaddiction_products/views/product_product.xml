@@ -285,8 +285,10 @@
                             </group>
                         </page>
                         <page string="Extra Dati" name="extra_datas">
-                            <label for ="extra_data_id"/>
+                            <group>
                                 <field name="extra_data_id"/>
+                                <field name="push_data_id"/>
+                            </group>
                                 <button type="object" name="api_get_extra_data" string="Recupera Extra Dati"/>
                             <field name="extra_data" readonly="1">
 

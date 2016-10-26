@@ -32,6 +32,7 @@ class Products(models.Model):
     extra_data = fields.One2many(string="Extra_Data", comodel_name="netaddiction.extradata.key.value", inverse_name="product_id")
 
     extra_data_id = fields.Char(string="Id Scheda Extra Dati")
+    push_data_id = fields.Char(string="Id Scheda Push Dati")
 
     @api.one
     def api_get_extra_data(self):
