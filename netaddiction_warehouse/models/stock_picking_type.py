@@ -270,6 +270,7 @@ class StockPicking(models.Model):
     #CAMPO PER CONTARE I PEZZI DA SPEDIRE#
     number_of_pieces = fields.Integer(string="Pezzi",compute="_get_number_of_pieces")
     total_import = fields.Float(string="Importo",compute="_get_total_import")
+    partner_rating = fields.Selection(related='partner_id.rating', store=False)
 
     barcode_image = fields.Text(
         string='Barcode image',

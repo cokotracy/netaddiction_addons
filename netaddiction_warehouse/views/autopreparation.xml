@@ -74,12 +74,22 @@
             <field name="model">stock.picking</field>
             <field name="priority" eval="30"/>
             <field name="inherit_id" ref="stock.vpicktree"/>
-            <field name="arch" type="xml">
-                <field name="location_dest_id" invisible="1"/>
-                <field name="origin" position="after">
-                	<field name="sale_order_status"/>
-                	<field name="sale_order_payment_method"/>
-                </field>
+            <field name="arch" type="xml">  
+                <tree position="replace">
+                    <tree decoration-muted="state == 'cancel'" decoration-danger="partner_rating == '0'" >
+                        <field name="name"/>
+                        <field name="partner_id"/>
+                        <field name="partner_rating"/>
+                        <field name="min_date"/>
+                        <field name="origin"/>
+                        <field name="state"/>
+                        <field name="sale_order_status"/>
+                        <field name="sale_order_payment_method"/>
+                        <field name="picking_type_id"/>
+                        <field name="backorder_id"/>
+                        <field name="date_done"/>
+                    </tree>
+                </tree>
             </field>
         </record>
 
