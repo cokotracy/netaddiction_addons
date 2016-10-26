@@ -22,6 +22,10 @@ class Show(models.Model):
         comodel_name='netaddiction.sell.quant',
         inverse_name='name',
         string='Prodotti Venduti')
+    show_difference_ids = fields.One2many(
+        comodel_name='netaddiction.difference.quant',
+        inverse_name='name',
+        string='Differenze')
     date_start = fields.Date(string="Data inizio")
     date_finish = fields.Date(string="Data fine")
     state = fields.Selection(string="Stato", selection=[('draft', 'Nuova'), ('open', 'Aperta'), ('close', 'Chiusa')], default="draft")
@@ -34,6 +38,7 @@ class Show(models.Model):
         compute="_get_sell_value")
     export_file = fields.Binary(string="Csv", attachment=True)
     import_file = fields.Binary(string="Csv Ritorno Fiera", attachment=True)
+    report_file = fields.Binary(string="Csv Ritorno Fiera", attachment=True)
 
     sale_stock_value = fields.Float(string="Valore acquistato venduto", compute="_get_sale_stock_value")
     sale_sell_value = fields.Float(string="Valore venduto", compute="_get_sale_sell_value")
@@ -202,6 +207,124 @@ class Show(models.Model):
             location.sudo().unlink()
 
         return 1
+
+    @api.one
+    def difference(self):
+        gone = {}
+        sell = {}
+        returned = {}
+        for line in self.show_quant_ids:
+            if line.product_id in gone.keys():
+                gone[line.product_id]['qta'] += line.qty
+                gone[line.product_id]['value'] += (line.stock_value / line.qty)
+            else:
+                gone[line.product_id] = {
+                    'qta': line.qty,
+                    'value': (line.stock_value / line.qty)
+                }
+        for line in self.show_sell_ids:
+            if line.product_id in sell.keys():
+                sell[line.product_id]['qta'] += line.qty
+                sell[line.product_id]['value'] += line.public_price
+                sell[line.product_id]['stock_value'] += line.stock_value
+            else:
+                sell[line.product_id] = {
+                    'qta': line.qty,
+                    'value': line.public_price,
+                    'stock_value': line.stock_value
+                }
+        for line in self.show_return_ids:
+            if line.product_id in returned.keys():
+                returned[line.product_id]['qta'] += line.qty
+            else:
+                returned[line.product_id] = {
+                    'qta': line.qty
+                }
+
+        difference = {}
+        report = {}
+        for product in gone:
+            sell_qty = 0
+            sell_value = 0
+            sell_stock = 0
+            if product in sell.keys():
+                sell_qty = sell[product]['qta']
+                sell_value = sell[product]['value']
+                sell_stock = sell[product]['stock_value']
+            returned_qty = 0
+            if product in returned.keys():
+                returned_qty = returned[product]['qta']
+
+            report[product] = {
+                'gone': gone[product]['qta'],
+                'value_gone': gone[product]['value'],
+                'sell': sell_qty,
+                'value_sell': sell_value,
+                'value_sell_stock': sell_stock,
+                'returned': returned_qty
+            }
+
+            diff = gone[product]['qta'] - sell_qty
+            if diff != returned_qty:
+                difference[product] = {
+                    'gone': gone[product]['qta'],
+                    'sell': sell_qty,
+                    'returned': returned_qty,
+                    'diff': (diff - returned_qty)
+                }
+
+        for d in difference:
+            attr = {
+                'name': self.id,
+                'product_id': d.id,
+                'gone': difference[d]['gone'],
+                'sell': difference[d]['sell'],
+                'returned': difference[d]['returned'],
+                'diff': difference[d]['diff'],
+                'date_move': datetime.date.today(),
+            }
+            self.env['netaddiction.difference.quant'].create(attr)
+
+        output = io.BytesIO()
+        writer = csv.writer(output)
+        csvdata = ['Nome', 'Partita', 'Valore Partita', 'Venduta', 'Fatturato Venduta', 'Valore Venduta', 'Ritornata']
+        writer.writerow(csvdata)
+        for product in report:
+            csvdata = [product.display_name.encode('utf8'), report[product]['gone'], report[product]['value_gone'], report[product]['sell'], report[product]['value_sell'], report[product]['value_sell_stock'], report[product]['returned']]
+            writer.writerow(csvdata)
+        self.report_file = base64.b64encode(output.getvalue()).decode()
+        output.close()
+
+    @api.model
+    def verify_old_pickup(self, barcodes):
+        result = {
+            'qta': 0
+        }
+        product = self.env['product.product'].search([('barcode', 'in', barcodes)])
+        if product:
+            quants = self.env['netaddiction.show.quant'].search([('product_id', '=', product.id)])
+            qta = 0
+            for q in quants:
+                qta += q.qty
+            result['qta'] = qta
+
+        return result
+
+
+class DiffQuant(models.Model):
+    _name = "netaddiction.difference.quant"
+
+    name = fields.Many2one(
+        comodel_name="netaddiction.show",
+        string="Fiera")
+    product_id = fields.Many2one(
+        comodel_name="product.product",
+        string="Prodotto")
+    date_move = fields.Date(string="Data Creazione")
+    diff = fields.Integer(string="Differenza")
+    gone = fields.Integer(string="Partita")
+    sell = fields.Integer(string="Venduta")
+    returned = fields.Integer(string="Ritornata")
 
 class ShowQuant(models.Model):
     _name = "netaddiction.show.quant"

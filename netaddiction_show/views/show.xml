@@ -7,9 +7,10 @@
             <field name="arch" type="xml">
                 <form string="show">
                     <header>
-                        <button name="create_csv" class="btn-primary" type="object" string="Crea Csv" attrs="{'invisible': [('state','=','done')]}"/>
-                        <button name="import_csv" class="btn" type="object" string="Importa Csv Ritorno Fiera" attrs="{'invisible': [('state','=','done')]}"/>
-                        <button name="close_show" class="btn" type="object" string="Chiudi Fiera" attrs="{'invisible': [('state','=','done')]}"/>
+                        <button name="create_csv" class="btn-primary" type="object" string="Crea Csv" attrs="{'invisible': [('state','=','close')]}"/>
+                        <button name="import_csv" class="btn" type="object" string="Importa Csv Ritorno Fiera" attrs="{'invisible': [('state','=','close')]}"/>
+                        <button name="close_show" class="btn" type="object" string="Chiudi Fiera" attrs="{'invisible': [('state','=','close')]}"/>
+                        <button name="difference" class="btn" type="object" string="Calcola Differenze" attrs="{'invisible': [('state','!=','close')]}"/>
                         <field name="state" widget="statusbar"/>
                     </header>
                     <sheet>
@@ -33,35 +34,50 @@
                                 <field name="import_file"/>
                             </group>
                         </group>
-                        <group>
-                            <field name="show_quant_ids" readonly="1">
-                                <tree>
-                                    <field name="product_id"/>
-                                    <field name="qty"/>
-                                    <field name="stock_value"/>
-                                    <field name="public_price"/>
-                                </tree>
-                            </field>
-                        </group>
-                        <group>
-                            <field name="show_sell_ids" readonly="1">
-                                <tree>
-                                    <field name="product_id"/>
-                                    <field name="qty"/>
-                                    <field name="stock_value"/>
-                                    <field name="public_price"/>
-                                </tree>
-                            </field>
-                        </group>
-                        <group>
-                            <field name="show_return_ids" readonly="1">
-                                <tree>
-                                    <field name="product_id"/>
-                                    <field name="qty"/>
-                                </tree>
-                            </field>
-                        </group>
-
+                        <notebook>
+                            <page name="quant_ids" string="Prodotti Partiti">
+                                <field name="show_quant_ids" readonly="1">
+                                    <tree>
+                                        <field name="product_id"/>
+                                        <field name="qty"/>
+                                        <field name="stock_value"/>
+                                        <field name="public_price"/>
+                                    </tree>
+                                </field>
+                            </page>
+                            <page name="sell_ids" string="Prodotti Venduti">
+                                <field name="show_sell_ids" readonly="1">
+                                    <tree>
+                                        <field name="product_id"/>
+                                        <field name="qty"/>
+                                        <field name="stock_value"/>
+                                        <field name="public_price"/>
+                                    </tree>
+                                </field>
+                            </page>
+                            <page name="returned_ids" string="Prodotti Tornati">
+                                <field name="show_return_ids" readonly="1">
+                                    <tree>
+                                        <field name="product_id"/>
+                                        <field name="qty"/>
+                                    </tree>
+                                </field>
+                            </page>
+                            <page name="report" string="Report">
+                                <group>
+                                    <field name="report_file"/>
+                                </group>
+                                <field name="show_difference_ids" readonly="1">
+                                    <tree>
+                                        <field name="product_id"/>
+                                        <field name="gone"/>
+                                        <field name="sell"/>
+                                        <field name="returned"/>
+                                        <field name="diff"/>
+                                    </tree>
+                                </field>
+                            </page>
+                        </notebook>
                     </sheet>
                 </form>
             </field>

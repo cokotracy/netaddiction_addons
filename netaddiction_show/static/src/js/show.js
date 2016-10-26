@@ -37,6 +37,7 @@ $(document).ready(function(){
             $('.error_msg').remove();
             $('.done_msg').remove();
             $('#sup_text').remove();
+            $('#qta_verify_text').remove();
             var barcode_list = []
             barcode_list.push(barcode)
             barcode = '0'+barcode
@@ -62,6 +63,11 @@ $(document).ready(function(){
                 }else{
                     $('.error_msg').remove();
                     $('#result').before('<p id="sup_text">Scegli il ripiano da cui spostare la quantità desiderata</p>');
+                    show_model.call('verify_old_pickup', [barcode_list]).then(function(verify){
+                        if(parseInt(verify.qta) > 0){
+                            $('#result').before('<p id="qta_verify_text" style="background-color: #EF4836;text-transform: uppercase; padding: 10px;">Ne hai già caricati in fiera <b>' + verify.qta + '</b></p>');
+                        }
+                    });
                     $('#result').html(core.qweb.render("block_new_allocation_show",{shelf : result}));
                 }
             });
