@@ -455,6 +455,10 @@ class StockPicking(models.Model):
 
     @api.model 
     def create_reverse(self,attr,order_id):
+        resale = False
+        if 'resale' in attr.keys():
+            resale = True
+            attr.pop('resale', None)
         #INIZIO CREAZIONE NOTA DI CREDITO
         order = self.env['sale.order'].search([('id','=',int(order_id))])
         
@@ -502,10 +506,14 @@ class StockPicking(models.Model):
             ids.origin = inv.number
         #FINE CREAZIONE NOTA DI CREDITO
 
+        resi = self.env['netaddiction.wh.locations'].search([('barcode','=','0000000002')])
+
         obj = self.create(attr)
         obj.action_confirm()
         for line in obj.pack_operation_product_ids:
             line.write({'qty_done' : line.product_qty})
+            if resale:
+                self.env['netaddiction.wh.locations.line'].allocate(line.product_id.id, int(line.product_qty),resi.id)
 
         obj.do_new_transfer()
 

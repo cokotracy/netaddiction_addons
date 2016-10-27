@@ -41,7 +41,7 @@ odoo.define('netaddiction_warehouse.reso_cliente', function (require) {
                     self.location_reverse = loc.id;
                 })
 
-                new Model('sale.order.line').query(['product_id','product_qty','qty_delivered','qty_invoiced','qty_reverse']).filter([['order_id','=',parseInt(self.active_order_id)]]).all().then(function(active_order_line){
+                new Model('sale.order.line').query(['product_id','product_qty','qty_delivered','qty_invoiced','qty_reverse']).filter([['order_id','=',parseInt(self.active_order_id)],['is_delivery','=',0],['is_payment','=',0]]).all().then(function(active_order_line){
                     var lines = []
                     for (var l in active_order_line){
                         if (parseInt(active_order_line[l].qty_delivered) > 0){
@@ -169,7 +169,7 @@ odoo.define('netaddiction_warehouse.reso_cliente', function (require) {
                     'product_uom_id' : 1
                 }];
                 pack_operation_product_ids.push(new_line)
-                new Model('netaddiction.wh.locations.line').call('allocate',[parseInt(resale_lines[s]['pid']),parseInt(resale_lines[s]['qta']),parseInt(self.location_reverse)]);
+                // new Model('netaddiction.wh.locations.line').call('allocate',[parseInt(resale_lines[s]['pid']),parseInt(resale_lines[s]['qta']),parseInt(self.location_reverse)]);
             }
             var attr = {
                 'partner_id' : parseInt(self.active_order.partner_id[0]),
@@ -179,6 +179,7 @@ odoo.define('netaddiction_warehouse.reso_cliente', function (require) {
                 'location_id' : parseInt(self.operations.reverse_resale.default_location_src_id),
                 'sale_id' : parseInt(self.active_order_id),
                 'pack_operation_product_ids' : pack_operation_product_ids,
+                'resale': 1
             }
 
             
