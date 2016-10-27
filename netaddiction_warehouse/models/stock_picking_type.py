@@ -512,13 +512,16 @@ class StockPicking(models.Model):
         obj.action_confirm()
         for line in obj.pack_operation_product_ids:
             line.write({'qty_done' : line.product_qty})
-            if resale:
-                self.env['netaddiction.wh.locations.line'].allocate(line.product_id.id, int(line.product_qty),resi.id)
 
         obj.do_new_transfer()
 
         move = self.env['stock.move'].search([('picking_id','=',obj.id)])
         move.write({'origin' : obj.origin})
+
+        for line in obj.pack_operation_product_ids:
+            if resale:
+                self.env['netaddiction.wh.locations.line'].allocate(line.product_id.id, int(line.product_qty), resi.id)
+
 
     @api.model
     def create_supplier_reverse(self,products,supplier,operations):
