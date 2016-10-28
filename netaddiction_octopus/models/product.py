@@ -68,7 +68,7 @@ class Product(models.Model):
             ])
 
             if supplierinfo:
-                return self.update(supplierinfo, commit=commit)
+                return self.update(supplierinfo=supplierinfo, commit=commit)
         else:
             product = self.env['product.product'].search([
                 ('barcode', '=', self.barcode),
@@ -82,7 +82,7 @@ class Product(models.Model):
                 ])
 
                 if supplierinfo:
-                    return self.update(supplierinfo, commit=commit)
+                    return self.update(supplierinfo=supplierinfo, commit=commit)
 
                 return self.chain(product, commit=commit)
 
