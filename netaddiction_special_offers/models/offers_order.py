@@ -84,7 +84,7 @@ class OfferOrder(models.Model):
                     for ol in self.order_line:
                         # applico il voucher se non ci sono altre offerte sul prodotto
                         # if (ol.product_id.id in offer_ids) and (ol.product_id.id not in offer_cart_history_ids) and (not ol.offer_type):
-                        if (ol.product_id.id in offer_ids) and (ol.product_id.id not in offer_cart_history_ids):
+                        if (ol.product_id.id in offer_ids):
                             # tax = ol.tax_id.amount
                             discount = 0.0
                             if offer.offer_type == 1:
