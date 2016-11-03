@@ -246,35 +246,79 @@ $(document).ready(function(){
                                 }
 
                                 if(products.length>1){
-                                    $('.error_msg').remove();
-                                    NotifyVibrate()
-                                    NotifyBeep()
-                                    window.shelfs = new Array();
-                                    var passing_shelfs = new Array();
-                                    $(products).each(function(index,value){
-                                        window.shelfs.push({'name' : $(value).attr('data-shelf'), 'id' :$(value).attr('data-shelf-id'),'qty':$(value).find('.qty_for_shelf').text() })
-                                        passing_shelfs.push($(value).attr('data-shelf'));
+                                    var href = window.location.href;
+                                    var wave_id = href.substr(href.lastIndexOf('/') + 1);
+                                    wave_id = wave_id.replace(/\D/g,'');
+                                    pid = $(products[0]).attr('data-pid');
+                                    filter = [['picking_id.wave_id','=',parseInt(wave_id)],['product_id','=',parseInt(pid)]]
+                                    new Model('stock.pack.operation').query().filter(filter).all().then(function(res){
+                                        var qty_done = 0
+                                        var qty_all = 0
+                                        $(res).each(function(index,value){
+                                            qty_done = qty_done + parseInt(value.qty_done)
+                                            qty_all = qty_all +parseInt(value.product_qty)
+                                        })
+                                        if( qty_all == qty_done ){
+                                            NotifyVibrate()
+                                            NotifyBeep()
+                                            if($('.error_msg').length){
+                                                $('.error_msg').text('Prodotto già pickuppato da qualcun altro');
+                                            }else{
+                                                $('#barcode-form').before(core.qweb.render("Error",{error : 'Prodotto già pickuppato da qualcun altro'}));
+                                            }
+                                        }else{
+                                            $('.error_msg').remove();
+                                            if(qty_done > 0){
+                                                $('#barcode-form').before(core.qweb.render("Error",{error : 'Attenzione: il prodotto è già stato pickuppato da una delle locazioni.'}));
+                                            }
+                                            NotifyVibrate()
+                                            NotifyBeep()
+                                            window.shelfs = new Array();
+                                            var passing_shelfs = new Array();
+                                            $(products).each(function(index,value){
+                                                window.shelfs.push({'name' : $(value).attr('data-shelf'), 'id' :$(value).attr('data-shelf-id'),'qty':$(value).find('.qty_for_shelf').text() })
+                                                passing_shelfs.push($(value).attr('data-shelf'));
+                                            })
+                                            NotifyMessage('Da quale ripiano vuoi scaricare il prodotto?',passing_shelfs,response_message)
+                                            $('#barcode-form').before(core.qweb.render("shelfs_choice",{shelfs : window.shelfs, }));
+                                            $('.shelf_pick').on('click',function(e){
+                                                e.preventDefault();
+                                                response_message($(this).attr('data-ids'));
+                                            })
+                                            window.setTimeout(function() {window.scrollTo('.error_msg',{duration:'slow'});}, 0);
+                                            return true;
+                                        }
                                     })
-                                    NotifyMessage('Da quale ripiano vuoi scaricare il prodotto?',passing_shelfs,response_message)
-                                    $('#barcode-form').before(core.qweb.render("shelfs_choice",{shelfs : window.shelfs, }));
-                                    $('.shelf_pick').on('click',function(e){
-                                        e.preventDefault();
-                                        response_message($(this).attr('data-ids'));
-                                    })
-                                    window.setTimeout(function() {window.scrollTo('.error_msg',{duration:'slow'});}, 0);
-                                    return true;
                                 }
 
                                 if(products.length==1){
-                                    $('.error_msg').remove();
-                                    /*var qty = $(products[0]).find('.qty_for_shelf').text()
-                                    qty = parseInt(qty)
-                                    if(qty>1){
-
-                                    }*/
-                                    window.shelfs = new Array();
-                                    window.shelfs.push({'name' : $(products[0]).attr('data-shelf'), 'id' :$(products[0]).attr('data-shelf-id'),'qty':$(products[0]).find('.qty_for_shelf').text() })
-                                    response_message(0);
+                                    var href = window.location.href;
+                                    var wave_id = href.substr(href.lastIndexOf('/') + 1);
+                                    wave_id = wave_id.replace(/\D/g,'');
+                                    pid = $(products).attr('data-pid');
+                                    filter = [['picking_id.wave_id','=',parseInt(wave_id)],['product_id','=',parseInt(pid)]]
+                                    new Model('stock.pack.operation').query().filter(filter).all().then(function(res){
+                                        var qty_done = 0
+                                        var qty_all = 0
+                                        $(res).each(function(index,value){
+                                            qty_done = qty_done + parseInt(value.qty_done)
+                                            qty_all = qty_all +parseInt(value.product_qty)
+                                        })
+                                        if( qty_all == qty_done ){
+                                            NotifyVibrate()
+                                            NotifyBeep()
+                                            if($('.error_msg').length){
+                                                $('.error_msg').text('Prodotto già pickuppato da qualcun altro');
+                                            }else{
+                                                $('#barcode-form').before(core.qweb.render("Error",{error : 'Prodotto già pickuppato da qualcun altro'}));
+                                            }
+                                        }else{
+                                            $('.error_msg').remove();
+                                            window.shelfs = new Array();
+                                            window.shelfs.push({'name' : $(products[0]).attr('data-shelf'), 'id' :$(products[0]).attr('data-shelf-id'),'qty':$(products[0]).find('.qty_for_shelf').text() })
+                                            response_message(0);
+                                        }
+                                    })
                                 }
                             },
             'set_pick_up' : function set_pick_up(wave_id,shelf_id,barcode,qty_to_down){

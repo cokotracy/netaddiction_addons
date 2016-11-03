@@ -105,7 +105,10 @@
                         Cliente
                     </th>
                     <th>
-                        # Prodotti
+                        # Prodotti Pick
+                    </th>
+                    <th>
+                        # Prodotti Tot
                     </th>
                     <th>
                         Azione
@@ -132,11 +135,14 @@
                         <td data-field="products_row">
                             <span class="nprod"><t t-esc="count_products[order.id]" /></span>
                         </td>
+                        <td data-field="products_all">
+                            <span class="pallprod"><t t-esc="count_all[order.id]" /></span>
+                        </td>
                         <td data-field="action">
-                            <t t-if="count_products[order.id] > 1">
+                            <t t-if="count_products[order.id] &gt; 1 and count_all[order.id] == count_products[order.id]">
                                 <button type="button" class="btn btn-sm oe_button btn btn-primary choose">Scegli</button>
                             </t>
-                            <t t-if="count_products[order.id] == 1">
+                            <t t-if="count_products[order.id] == 1 and count_all[order.id] == 1">
                                 <button type="button" class="btn btn-sm oe_button btn btn-success complete">Completa</button>
                             </t>
                         </td>
