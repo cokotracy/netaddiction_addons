@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from openerp import models, fields, api
-
+import datetime
 
 
 class Condition(models.Model):
@@ -12,7 +12,7 @@ class Condition(models.Model):
     #subject_type = fields.Selection([('category','Categoria'),('attribute','Attributo'),('product','Prodotto')], string='Tipo Soggetto',required=True)
     # subject_id = fields.Integer(string = "Soggetto")
     #product_id = fields.Many2one(comodel_name ='product.product', string='Prodotto', ondelete='cascade', help="Specify a product if this rule only applies to one product. Keep empty otherwise.")
-    subject_type = fields.Selection([('category','Categoria'),('attribute','Attributo')], string='Tipo Soggetto',required=True)
+    subject_type = fields.Selection([('category','Categoria'),('attribute','Attributo'),('available','In Magazzino'),('preorder','In Prenotazione')], string='Tipo Soggetto',required=True)
     categ_id = fields.Many2one(comodel_name ='product.category', string='Categoria', ondelete='cascade', help="Specify a product category if this rule only applies to products belonging to this category or its children categories. Keep empty otherwise.")
     attrib_id = fields.Many2one(comodel_name ='product.attribute.value', string='Attributo', ondelete='cascade', help="Specify a product Attribute if this rule only applies to products belonging to this attribute or its children categories. Keep empty otherwise.")
     expression_id = fields.Many2one(comodel_name='netaddiction.expressions.expression',
@@ -44,6 +44,28 @@ class Expression(models.Model):
             elif condition.subject_type == 'attribute':
                 m1 = 'attribute_value_ids'
                 m2 = condition.attrib_id.id
+            elif condition.subject_type == 'available':
+                m1 = 'qty_available'
+                if condition.value:
+                    op = '>'
+                else:
+                    op = '<='
+                m2 = 0
+            elif condition.subject_type == 'preorder':
+                today = datetime.datetime.now().strftime('%Y-%m-%d')
+                if condition.value:
+                    m1 = 'out_date'
+                    op = '>'
+                    m2 = today
+                else:
+                    m1 = 'id'
+                    op = 'not in'
+                    result = self.env['product.product'].search([('out_date','>',today)])
+                    ids = []
+                    for res in result:
+                        ids.append(res.id)
+                    m2 = ids
+                
             # elif condition.subject_type == 'product':
             #     m1 = 'id'
             #     m2 = condition.product_id.id
@@ -78,6 +100,27 @@ class Expression(models.Model):
             elif condition.subject_type == 'attribute':
                 m1 = 'attribute_value_ids'
                 m2 = condition.attrib_id.id
+            elif condition.subject_type == 'available':
+                m1 = 'qty_available'
+                if condition.value:
+                    op = '>'
+                else:
+                    op = '<='
+                m2 = 0
+            elif condition.subject_type == 'preorder':
+                today = datetime.datetime.now().strftime('%Y-%m-%d')
+                if condition.value:
+                    m1 = 'out_date'
+                    op = '>'
+                    m2 = today
+                else:
+                    m1 = 'id'
+                    op = 'not in'
+                    result = self.env['product.product'].search([('out_date','>',today)])
+                    ids = []
+                    for res in result:
+                        ids.append(res.id)
+                    m2 = ids
             # elif condition.subject_type == 'product':
             #     m1 = 'id'
             #     m2 = condition.product_id.id
