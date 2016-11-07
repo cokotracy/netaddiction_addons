@@ -72,6 +72,7 @@ class NetaddictionManifest(models.Model):
     manifest_file2 = fields.Binary(string="File2", attachment=True)
     date = fields.Date(string="Data Manifest")
     carrier_id = fields.Many2one(string="Corriere",comodel_name="delivery.carrier")
+    date_sent = fields.Datetime(string="Data spedizione")
 
     @api.one 
     def send_manifest(self):
@@ -107,6 +108,7 @@ class NetaddictionManifest(models.Model):
                 sem2 = io.BytesIO('')
                 sem_name2 = '%s%s.chk' % (prefix2,name)
                 ftp.storbinary('STOR %s' % sem_name2, sem2)
+                self.date_sent = datetime.datetime.now()
             except Exception, e:  
                 raise ValidationError(str(e))
                 
@@ -123,6 +125,7 @@ class NetaddictionManifest(models.Model):
                 ftp.storbinary('STOR %s.clidati.dat' % name, bio)
                 semaforo = io.BytesIO('')
                 ftp.storbinary('STOR %s.clidati.dis' % name, semaforo)
+                self.date_sent = datetime.datetime.now()
             except Exception, e:  
                 raise ValidationError(str(e))
 

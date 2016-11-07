@@ -33,6 +33,7 @@
                        	<group colspan="4">
                        		<group>
                         		<field name="carrier_id" readonly="1"/>
+                                <field name="date_sent" readonly="1"/>
                         	</group>
                         	<group>
                         		<field name="date" readonly="1"/>
