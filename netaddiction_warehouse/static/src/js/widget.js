@@ -574,6 +574,20 @@ openerp.netaddiction_warehouse = function(instance, local) {
        },
        doBarcode : function(e){
             var barcode = $(e.currentTarget).val();
+
+            var barcode_list = []
+            barcode_list.push(barcode)
+            barcode = '0'+barcode
+            barcode_list.push(barcode)
+            barcode = barcode.replace(/^0+/, '');
+            barcode_list.push(barcode)
+            barcode = barcode.toLowerCase();
+            barcode_list.push(barcode)
+            barcode = barcode.charAt(0).toUpperCase() + barcode.slice(1);
+            barcode_list.push(barcode)
+            barcode = barcode.toUpperCase();
+            barcode_list.push(barcode)
+
             var qta = parseInt($('#qta').val());
 
             $(e.currentTarget).val('').focus();
@@ -582,7 +596,7 @@ openerp.netaddiction_warehouse = function(instance, local) {
             if (qta < 0){
                 return this_cgo.do_warn("QUANTITA NEGATIVA","La quantità caricata non può essere negativa");
             }
-            new instance.web.Model('stock.pack.operation').query(['id','product_id','product_qty','qty_done']).filter([['picking_id.wave_id','=',this_cgo.wave],['product_id.barcode','=',barcode]]).all().then(function(line){
+            new instance.web.Model('stock.pack.operation').query(['id','product_id','product_qty','qty_done']).filter([['picking_id.wave_id','=',this_cgo.wave],['product_id.barcode','in',barcode_list]]).all().then(function(line){
                 var results = []
                 var qty_residual = 0;
                 var pqty = 0;
