@@ -65,5 +65,14 @@
             <field name="perm_write" eval="1"/>
             <field name="perm_unlink" eval="0"/>
         </record>
+        <record id="netaddiction_difference_quant_access" model="ir.model.access">
+            <field name="name">Netaddiction Difference Move</field>
+            <field name="model_id" search="[('model','=','netaddiction.difference.quant')]" model="ir.model"/>
+            <field name="group_id" ref="netaddiction_show_manager"/>
+            <field name="perm_read" eval="1"/>
+            <field name="perm_create" eval="1"/>
+            <field name="perm_write" eval="1"/>
+            <field name="perm_unlink" eval="0"/>
+        </record>
     </data>
 </openerp>
