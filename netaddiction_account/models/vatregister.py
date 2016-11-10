@@ -25,8 +25,9 @@ class AccountPicking(models.Model):
         ref_pid = {}
         for pick in pickings:
             for proc in pick.group_id.procurement_ids:
+                variant = ", ".join([v.name for v in proc.sale_line_id.product_id.attribute_value_ids])
                 attr = {
-                        'product_id':proc.sale_line_id.product_id.display_name,
+                        'product_id':proc.sale_line_id.product_id.name + ' (' + variant + ')',
                         'pid':proc.sale_line_id.product_id.id,
                         'barcode':proc.sale_line_id.product_id.barcode,
                         'qty':proc.sale_line_id.product_uom_qty,
@@ -53,8 +54,9 @@ class AccountPicking(models.Model):
         refunds = self.search([('date_done','>=',date_from),('date_done','<=',date_to),('picking_type_id','in',[refund_type,scraped_type]),('state','=','done')])
         for pick in refunds:
             for line in pick.pack_operation_product_ids:
+                variant = ", ".join([v.name for v in proc.sale_line_id.product_id.attribute_value_ids])
                 attr = {
-                        'product_id':line.product_id.display_name,
+                        'product_id':line.product_id.name + ' (' + variant + ')',
                         'pid':line.product_id.id,
                         'barcode':line.product_id.barcode,
                         'qty':line.qty_done,
