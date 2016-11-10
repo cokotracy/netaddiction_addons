@@ -27,7 +27,7 @@ class AccountPicking(models.Model):
             for proc in pick.group_id.procurement_ids:
                 variant = ", ".join([v.name for v in proc.sale_line_id.product_id.attribute_value_ids])
                 attr = {
-                        'product_id':proc.sale_line_id.product_id.name + ' (' + variant + ')',
+                        'product_id':proc.sale_line_id.product_id.name_template + ' (' + variant + ')',
                         'pid':proc.sale_line_id.product_id.id,
                         'barcode':proc.sale_line_id.product_id.barcode,
                         'qty':proc.sale_line_id.product_uom_qty,
@@ -56,7 +56,7 @@ class AccountPicking(models.Model):
             for line in pick.pack_operation_product_ids:
                 variant = ", ".join([v.name for v in proc.sale_line_id.product_id.attribute_value_ids])
                 attr = {
-                        'product_id':line.product_id.name + ' (' + variant + ')',
+                        'product_id':line.product_id.name_template + ' (' + variant + ')',
                         'pid':line.product_id.id,
                         'barcode':line.product_id.barcode,
                         'qty':line.qty_done,
