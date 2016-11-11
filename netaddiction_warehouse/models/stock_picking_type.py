@@ -271,11 +271,30 @@ class StockPicking(models.Model):
     number_of_pieces = fields.Integer(string="Pezzi",compute="_get_number_of_pieces")
     total_import = fields.Float(string="Importo",compute="_get_total_import")
     partner_rating = fields.Selection(related='partner_id.rating', store=False)
+    is_b2b = fields.Boolean(string="B2B", compute="compute_b2b", search="search_b2b")
 
     barcode_image = fields.Text(
         string='Barcode image',
         compute='_compute_barcode_image',
     )
+
+    @api.one
+    def compute_b2b(self):
+        if self.sale_id.is_b2b:
+            self.is_b2b = True
+        else:
+            self.is_b2b = False
+
+    def search_b2b(self, operator, value):
+        pickings = self.search([('sale_id.is_b2b', '=', True)])
+        ids = []
+        for p in pickings:
+            ids.append(p.id)
+        if value:
+            op = 'in'
+        else:
+            op = 'not in'
+        return [('id', op, ids)]
 
     @api.one
     def _compute_barcode_image(self):

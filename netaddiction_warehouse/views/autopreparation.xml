@@ -35,8 +35,8 @@
                         	('min_date','&lt;=',context_today().strftime('%%Y-%%m-%%d 23:59:59'))]"/>
                         <filter name="today" string="In Ritardo" domain="[('min_date','&lt;',context_today().strftime('%%Y-%%m-%%d'))]"/>
                         <separator/>
-                        <filter name="is_B2B" string="B2B" domain="[('move_lines.procurement_id.sale_line_id.order_id.is_b2b','=',True)]" />
-                        <filter name="not_B2B" string="Escludi B2B" domain="[('move_lines.procurement_id.sale_line_id.order_id.is_b2b','=',False)]" />
+                        <filter name="is_B2B" string="B2B" domain="[('is_b2b','=',True)]" />
+                        <filter name="not_B2B" string="Escludi B2B" domain="[('is_b2b','=',False)]" />
                         <separator/>
                         <filter name="contrassegno" string="Contrassegno" domain="[('move_lines.procurement_id.sale_line_id.order_id.account_payment_ids.journal_id.id','=',11)]" />
                         <filter name="cc" string="Carta di Credito" domain="[('move_lines.procurement_id.sale_line_id.order_id.account_payment_ids.journal_id.id','=',%(netaddiction_payments.cc_journal)d)]" />
