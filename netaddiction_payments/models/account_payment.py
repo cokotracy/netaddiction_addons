@@ -1,4 +1,5 @@
 from openerp import models, fields, api
+from openerp.addons.celery_queue.decorators import CeleryTask
 
 class AccountPayment(models.Model):
     """docstring for AccountPayment"""
@@ -20,6 +21,11 @@ class AccountPayment(models.Model):
 
     paypal_transaction_id = fields.Char(string='ID transazione paypal')
     sofort_transaction_id = fields.Char(string='ID transazione sofort')
+
+    @CeleryTask(queue='sequential')
+    @api.multi
+    def post(self):
+        return super(AccountPayment, self).post()
 
     @api.onchange('cc_selection')
     def onchange_cc_selection(self):

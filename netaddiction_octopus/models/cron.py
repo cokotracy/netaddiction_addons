@@ -160,7 +160,7 @@ class Cron(models.Model):
 
         for product in products:
             try:
-                product.update(product=product)
+                product.update()
             except Exception, e:
                 _logger.error('Salvaggio del prodotto non riuscito (%s)' % e)
 

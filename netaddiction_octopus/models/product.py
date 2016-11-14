@@ -68,7 +68,7 @@ class Product(models.Model):
             ])
 
             if supplierinfo:
-                return self.update(supplierinfo=supplierinfo, commit=commit)
+                return self.update(supplierinfo, commit=commit)
         else:
             product = self.env['product.product'].search([
                 ('barcode', '=', self.barcode),
@@ -82,7 +82,7 @@ class Product(models.Model):
                 ])
 
                 if supplierinfo:
-                    return self.update(supplierinfo=supplierinfo, commit=commit)
+                    return self.update(supplierinfo, commit=commit)
 
                 return self.chain(product, commit=commit)
 
@@ -168,11 +168,8 @@ class Product(models.Model):
         if commit:
             self.env.cr.commit()
 
-    def update(self, product=None, supplierinfo=None, commit=True):
-        if not xor(product is None, supplierinfo is None):
-            raise Exception('You must specify a product or a supplier info')
-
-        if product is not None:
+    def update(self, supplierinfo=None, commit=True):
+        if supplierinfo is None:
             supplierinfo = self.env['product.supplierinfo'].search([
                 ('name', '=', self.supplier_id.id),
                 ('product_code', '=', self.supplier_code),
@@ -180,8 +177,7 @@ class Product(models.Model):
 
         # Aggiunge l'immagine ai prodotti che ancora non ne hanno una
         if self.image:
-            if product is None:
-                product = supplierinfo.product_id
+            product = supplierinfo.product_id
 
             if not product.image:
                 try:

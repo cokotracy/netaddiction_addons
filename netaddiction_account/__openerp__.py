@@ -12,7 +12,8 @@
     'category': 'Technical Settings',
     'version': '1',
     'depends': ['base','product','sale','purchase','mrp','account','netaddiction_products',
-        'netaddiction_special_offers', 'netaddiction_b2b','netaddiction_purchase_orders','netaddiction_warehouse'],
+        'netaddiction_special_offers', 'netaddiction_b2b','netaddiction_purchase_orders','netaddiction_warehouse',
+        'celery_queue'],
     'data': [
         'views/invoice.xml',
         'views/registro_corrispettivi.xml',

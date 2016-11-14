@@ -4,11 +4,24 @@ from openerp import models, fields, api
 from openerp.exceptions import ValidationError
 from openerp.tools import float_compare, float_round
 import openerp.addons.decimal_precision as dp
+from openerp.addons.celery_queue.decorators import CeleryTask
 
 class Invoice(models.Model):
     _inherit = "account.invoice"
 
     is_customer_invoice = fields.Boolean(strong="È una Fattura?")
+
+    @CeleryTask(queue='sequential')
+    @api.multi
+    def delay_signal_workflow(self, signal):
+        return super(Invoice, self).signal_workflow(signal)
+
+    @api.multi
+    def signal_workflow(self, signal):
+        if signal == 'invoice_open':
+            return self.delay_signal_workflow(signal)
+
+        return super(Invoice, self).signal_workflow(signal)
 
     @api.multi
     def complete_invoice_administration(self):
