@@ -145,7 +145,8 @@ class CatalogOffer(models.Model):
     @api.one
     def turn_on(self):
         for pl in self.env['netaddiction.specialoffer.offer_catalog_line'].search([('offer_catalog_id', '=', self.id), ('active', '=', False)]):
-            pl.qty_limit = pl.product_qty_available_now
+            if self.qty_limit_is_available:
+                pl.qty_limit = pl.product_qty_available_now
             pl.active = True
 
         self.write({'active': True})
