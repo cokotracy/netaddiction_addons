@@ -24,7 +24,7 @@ class AccountPayment(models.Model):
 
     @CeleryTask(queue='sequential')
     @api.multi
-    def delay_post(self):
+    def delay_post(self, context=None):
         return super(AccountPayment, self).post()
 
     @api.onchange('cc_selection')

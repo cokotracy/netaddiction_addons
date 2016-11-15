@@ -13,7 +13,7 @@ class Invoice(models.Model):
 
     @CeleryTask(queue='sequential')
     @api.multi
-    def delay_signal_workflow(self, signal):
+    def delay_signal_workflow(self, signal, context=None):
         return super(Invoice, self).signal_workflow(signal)
 
     @api.multi
