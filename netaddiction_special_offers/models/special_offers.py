@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from openerp import SUPERUSER_ID, api, fields, models
 from openerp.exceptions import ValidationError
+from math import floor
 
 
 class CatalogOffer(models.Model):
@@ -26,6 +27,8 @@ class CatalogOffer(models.Model):
     products_list = fields.One2many('netaddiction.specialoffer.offer_catalog_line', 'offer_catalog_id', string='Lista prodotti', domain=['|', ('active', '=', False), ('active', '=', True)])
     end_cron_job = fields.Integer()
     start_cron_job = fields.Integer()
+
+    qty_limit_is_available = fields.Boolean(string="La quantità limite è quella disponibile", default=False)
 
     _sql_constraints = [
         ('name', 'unique(name)', 'Nome offerta deve essere unico!'),
@@ -142,6 +145,7 @@ class CatalogOffer(models.Model):
     @api.one
     def turn_on(self):
         for pl in self.env['netaddiction.specialoffer.offer_catalog_line'].search([('offer_catalog_id', '=', self.id), ('active', '=', False)]):
+            pl.qty_limit = pl.product_qty_available_now
             pl.active = True
 
         self.write({'active': True})
@@ -180,6 +184,11 @@ class OfferCatalogLine(models.Model):
     priority = fields.Integer(string="priorità", default=0)
     company_id = fields.Many2one('res.company', string='Azienda', related='offer_catalog_id.company_id', store=True)
 
+    # campo related per il prezzo medio di acquisto
+    product_offer_price_fake = fields.Float(string="Prezzo Offerta", compute="compute_offer_price_fake", store=False, default=0)
+    med_inventory_value_intax = fields.Float(related="product_id.med_inventory_value_intax", store=False)
+    product_qty_available_now = fields.Integer(related="product_id.qty_available_now", store="False")
+
     @api.one
     @api.constrains('fixed_price', 'offer_type')
     def _check_fixed_price(self):
@@ -197,6 +206,15 @@ class OfferCatalogLine(models.Model):
     def _check_priority(self):
         self.priority = self.offer_catalog_id[0].priority
         self.offer_type = self.offer_catalog_id[0].offer_type
+
+    @api.one
+    def compute_offer_price_fake(self):
+
+        if self.offer_type == 1:
+            self.product_offer_price_fake = self.fixed_price
+        else:
+            temp = (self.product_id.list_price - (self.product_id.list_price / 100) * self.percent_discount)
+            self.product_offer_price_fake = floor(temp * 10) / 10
 
 
 class ShoppingCartOffer(models.Model):

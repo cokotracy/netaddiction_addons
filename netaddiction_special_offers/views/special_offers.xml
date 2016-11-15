@@ -185,6 +185,7 @@
                                 <field name="fixed_price" attrs="{'invisible':[('offer_type', '!=', 1)]}"/>
                                 <field name="percent_discount" attrs="{'invisible':[('offer_type', '!=', 2)]}" />
                                 <field name="percent_rounded_down" attrs="{'invisible':[('offer_type', '!=', 2)]}" />
+                                <field name="qty_limit_is_available"/>
                                 <button  class="oe_highlight" name="modify_products" 
                                 string="applica ai prodotti" type="object" /> 
 
@@ -215,11 +216,14 @@
                         
                                   <tree string="Sales Order Lines" editable="bottom">
                                     <field name="product_id" />
+                                    <field name="product_qty_available_now"/>
                                      <field name="qty_max_buyable" />
                                       <field name="qty_limit" />
                                        <field name="qty_min" />
                                         <field name="offer_type"/>
                                         <field name="fixed_price" attrs="{'invisible':[('offer_type', '!=', 1)]}"/>
+                                        <field name="product_offer_price_fake" />
+                                <field name="med_inventory_value_intax"/>
                                     <field name="percent_discount" attrs="{'invisible':[('offer_type', '!=', 2)]}" />
                                     <field name="qty_selled" attrs="{'readonly': 1}" />
                                     <field name="priority" attrs="{'readonly': 1}"/>
@@ -535,6 +539,7 @@
                                        <field name="qty_min" />
                                         <field name="offer_type"/>
                                         <field name="fixed_price" attrs="{'invisible':[('offer_type', '!=', 1)]}"/>
+
                                     <field name="percent_discount" attrs="{'invisible':[('offer_type', '!=', 2)]}" />
                                     <field name="qty_selled" attrs="{'readonly': 1}" />
                                     <field name="priority" attrs="{'readonly': 1}"/>
