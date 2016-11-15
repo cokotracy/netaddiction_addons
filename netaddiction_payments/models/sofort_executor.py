@@ -136,7 +136,7 @@ class SofortExecutor(models.TransientModel):
             for delivery in order.picking_ids:
                 delivery.payment_id = payment.id
 
-            payment.post()
+            payment.delay_post()
 
         return True
 

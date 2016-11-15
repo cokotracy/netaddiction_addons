@@ -542,7 +542,7 @@ class PositivityExecutor(models.TransientModel):
                     payment.cc_status = state
                 elif state == 'posted':
                     payment.cc_status = 'commit'
-                    payment.post()
+                    payment.delay_post()
                 break
         if not found:
             # non ho trovato un pagamento da associare, ne creo uno (la situazione richiederà un intervento manuale)

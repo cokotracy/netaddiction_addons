@@ -177,7 +177,7 @@ class CoDRegister(models.TransientModel):
                 for payment in order.account_payment_ids:
 
                     if (isclose(payment.amount, amount, abs_tol=0.009)) and payment.journal_id.id == contrassegno.id and not payment.state == 'posted':
-                        payment.post()
+                        payment.delay_post()
                         found = True
                         break
                 if not found:

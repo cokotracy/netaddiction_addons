@@ -45,7 +45,7 @@ class CashExecutor(models.TransientModel):
                     inv.signal_workflow('invoice_open')
                     # inv.payement_id = [(6, 0, [payment.id])]
 
-                payment.post()
+                payment.delay_post()
 
                 #assegno il pagamento alle spedizioni
                 for delivery in order.picking_ids: 
