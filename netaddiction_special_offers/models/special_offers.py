@@ -2,6 +2,8 @@
 from openerp import SUPERUSER_ID, api, fields, models
 from openerp.exceptions import ValidationError
 from math import floor
+import StringIO
+import base64
 
 
 class CatalogOffer(models.Model):
@@ -29,6 +31,21 @@ class CatalogOffer(models.Model):
     start_cron_job = fields.Integer()
 
     qty_limit_is_available = fields.Boolean(string="La quantità limite è quella disponibile", default=False)
+
+    pid_list = fields.Binary(string="Lista id prodotti")
+
+    @api.one
+    def get_pid_list(self):
+        ids = []
+        for product in self.products_list:
+            ids.append(product.id)
+
+        text = ','.join(str(x) for x in ids)
+        output = StringIO.StringIO()
+        output.write(text)
+
+        self.pid_list = base64.b64encode(output.getvalue().encode("utf8"))
+        output.close()
 
     _sql_constraints = [
         ('name', 'unique(name)', 'Nome offerta deve essere unico!'),
