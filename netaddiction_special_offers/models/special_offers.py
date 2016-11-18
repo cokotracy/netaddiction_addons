@@ -90,7 +90,7 @@ class CatalogOffer(models.Model):
 
         nextcall = res.date_end
         name = "[Scadenza]Cron job per offerta id %s" % res.id
-        res.end_cron_job = res.pool.get('ir.cron').create(self.env.cr, self.env.uid, {
+        res.end_cron_job = res.pool.get('ir.cron').create(self.env.cr, SUPERUSER_ID, {
             'name': name,
             'user_id': SUPERUSER_ID,
             'model': 'netaddiction.specialoffer.catalog',
@@ -106,7 +106,7 @@ class CatalogOffer(models.Model):
 
             nextcall = res.date_start
             name = "[Inizio]Cron job per offerta id %s" % res.id
-            res.end_cron_job = res.pool.get('ir.cron').create(self.env.cr, self.env.uid, {
+            res.end_cron_job = res.pool.get('ir.cron').create(self.env.cr, SUPERUSER_ID, {
                 'name': name,
                 'user_id': SUPERUSER_ID,
                 'model': 'netaddiction.specialoffer.catalog',
@@ -331,7 +331,7 @@ class ShoppingCartOffer(models.Model):
         res = super(ShoppingCartOffer, self).create(values)
         nextcall = res.date_end
         name = "[Scadenza]Cron job per offerta id %s" % res.id
-        res.end_cron_job = res.pool.get('ir.cron').create(self.env.cr, self.env.uid, {
+        res.end_cron_job = res.pool.get('ir.cron').create(self.env.cr, SUPERUSER_ID, {
             'name': name,
             'user_id': SUPERUSER_ID,
             'model': 'netaddiction.specialoffer.cart',
@@ -348,7 +348,7 @@ class ShoppingCartOffer(models.Model):
 
             nextcall = res.date_start
             name = "[Inizio]Cron job per offerta id %s" % res.id
-            res.end_cron_job = res.pool.get('ir.cron').create(self.env.cr, self.env.uid, {
+            res.end_cron_job = res.pool.get('ir.cron').create(self.env.cr, SUPERUSER_ID, {
                 'name': name,
                 'user_id': SUPERUSER_ID,
                 'model': 'netaddiction.specialoffer.cart',
@@ -619,7 +619,7 @@ class VoucherOffer(models.Model):
         res = super(VoucherOffer, self).create(values)
         nextcall = res.date_end
         name = "[Scadenza]Cron job per offerta id %s" % res.id
-        res.end_cron_job = res.pool.get('ir.cron').create(self.env.cr, self.env.uid, {
+        res.end_cron_job = res.pool.get('ir.cron').create(self.env.cr, SUPERUSER_ID, {
             'name': name,
             'user_id': SUPERUSER_ID,
             'model': 'netaddiction.specialoffer.voucher',
@@ -634,7 +634,7 @@ class VoucherOffer(models.Model):
                 pl.active = False
             nextcall = res.date_start
             name = "[Inizio]Cron job per offerta id %s" % res.id
-            res.end_cron_job = res.pool.get('ir.cron').create(self.env.cr, self.env.uid, {
+            res.end_cron_job = res.pool.get('ir.cron').create(self.env.cr, SUPERUSER_ID, {
                 'name': name,
                 'user_id': SUPERUSER_ID,
                 'model': 'netaddiction.specialoffer.voucher',
