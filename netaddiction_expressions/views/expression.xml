@@ -90,7 +90,7 @@
                     <field name="categ_id" attrs="{'invisible':[('subject_type', '!=', 'category')], 'required':[('subject_type', '=', 'category')]}"/>
                     <field name="attrib_id" attrs="{'invisible':[('subject_type', '!=', 'attribute')],'required':[('subject_type', '=', 'attribute')]}" />
 <!--                     <field name="product_id" attrs="{'invisible':[('subject_type', '!=', 'product')],'required':[('subject_type', '=', 'product')]}" /> -->
-                    <field name="out_date" attrs="{'invisible':[('subject_type', '!=', 'out_date')],'required':[('subject_type', '=', 'attribute')]}" />
+                    <field name="out_date" attrs="{'invisible':[('subject_type', '!=', 'out_date')]}" />
                     <field name="value"/>
                 </tree>
             </field>
@@ -107,8 +107,8 @@
                             <field name="categ_id" attrs="{'invisible':[('subject_type', '!=', 'category')], 'required':[('subject_type', '=', 'category')]}"/>
                             <field name="attrib_id" attrs="{'invisible':[('subject_type', '!=', 'attribute')],'required':[('subject_type', '=', 'attribute')]}" />
                             <!-- <field name="product_id" attrs="{'invisible':[('subject_type', '!=', 'product')],'required':[('subject_type', '=', 'product')]}" /> -->
-                            <field name="operator" attrs="{'invisible':[('subject_type', '!=', 'out_date')],'required':[('subject_type', '=', 'attribute')]}" />
-                            <field name="out_date" attrs="{'invisible':[('subject_type', '!=', 'out_date')],'required':[('subject_type', '=', 'attribute')]}" />
+                            <field name="operator" attrs="{'invisible':[('subject_type', '!=', 'out_date')]}" />
+                            <field name="out_date" attrs="{'invisible':[('subject_type', '!=', 'out_date')]}" />
                             <field name="value" />
                             
                           
