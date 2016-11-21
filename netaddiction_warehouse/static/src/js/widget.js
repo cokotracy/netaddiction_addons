@@ -44,6 +44,14 @@ openerp.netaddiction_warehouse = function(instance, local) {
         }
     }
 
+    /*function get_products_residual(wave_id){
+        new instance.web.Model('stock.picking.wave').query(['product_list']).filter([['id','=',parseInt(wave_id)]]).first().then(function(result){
+            new instance.web.Model('stock.pack.operation').query(['product_id','qty_done']).filter([['id','in',result.product_list]]).all().then(function(packs){
+                console.log(packs)
+            })
+        })
+    }*/
+
     local.controllo_pickup = instance.Widget.extend({
     	start: function() {
     		self = this
@@ -66,7 +74,9 @@ openerp.netaddiction_warehouse = function(instance, local) {
             "click .partner" : "doOpenPartner",
             "click .choose" : "doGoToOrder",
             "click .complete" : "ValidateOrderTr",
-            "click #validateAll" : "ValidateOrderAll"
+            "click #validateAll" : "ValidateOrderAll",
+            'change .explode_barcode' : "SearchProduct",
+            'click .open_under': 'OpenUnder'
         },
     	init: function(parent,wave_id,wave_name){
     		this._super(parent);
@@ -75,6 +85,7 @@ openerp.netaddiction_warehouse = function(instance, local) {
             this_list = this
             $('#search').val('');
             $('#search').focus();
+            //get_products_residual(wave_id)
     	},
         doReturnParent : function(e){
             e.preventDefault();
@@ -114,7 +125,9 @@ openerp.netaddiction_warehouse = function(instance, local) {
                         var ids = [];
                         var count_products = {};
                         var count_all = {};
+                        var products_array = {}
                         for (var key in filtered){
+                            products_array[filtered[key].id] = {}
                             for(var i in filtered[key].pack_operation_product_ids){
                                 ids.push(filtered[key].pack_operation_product_ids[i]);
                                 count_products[filtered[key].id] = 0;
@@ -122,17 +135,97 @@ openerp.netaddiction_warehouse = function(instance, local) {
                             }
                         }
                         new instance.web.Model('stock.pack.operation').query(['qty_done','product_id','picking_id', 'product_qty']).filter([['id','in',ids]]).all().then(function(result){
+                            
                             for(var k in result){
                                 var inte = parseInt(result[k].picking_id[0]);
                                 count_products[inte] = count_products[inte] + parseInt(result[k].qty_done);
                                 count_all[inte] = count_all[inte] + parseInt(result[k].product_qty);
+                                arr = new Array()
+                                arr['product_id'] = result[k].product_id
+                                arr['qty'] = result[k].product_qty
+                                products_array[inte][result[k].product_id[0]] = arr
                             }
-
-                            $('.open_wave_list').append(QWeb.render('open_wave_order_list',{'orders' : filtered, 'count_products' : count_products, 'count_all' : count_all}))
+                            $('.open_wave_list').append(QWeb.render('open_wave_order_list',{'orders' : filtered, 'count_products' : count_products, 'count_all' : count_all, 'explodes': products_array}))
                             $('#validateAll').show();
                         });
                     }
                 });
+        },
+        OpenUnder: function(e){
+            var wid = $(e.currentTarget).closest('tr').attr('data-id')
+            $(e.currentTarget).hide();
+            $('#under_tr_'+wid).show();
+            $('#under_tr_'+wid).find('.explode_barcode').focus()
+        },
+        SearchProduct : function(e){
+            var barcode_list = []
+            var barcode = $(e.currentTarget).val();
+            barcode_list.push(barcode)
+
+            barcode = '0'+barcode
+            barcode_list.push(barcode)
+
+            barcode = barcode.replace(/^0+/, '');
+            barcode_list.push(barcode)
+
+            barcode = barcode.toLowerCase();
+            barcode_list.push(barcode)
+            barcode = barcode.charAt(0).toUpperCase() + barcode.slice(1);
+            barcode_list.push(barcode)
+
+            barcode = barcode.toUpperCase();
+            barcode_list.push(barcode)
+            new instance.web.Model('product.product').query(['id']).filter([['barcode','in',barcode_list]]).first().then(function(pid){
+                wash_and_focus_input($('.explode_barcode'));
+                var st = false
+                if(pid != null){
+                    var wid = $(e.currentTarget).attr('data-id');
+                    $('#table_'+wid+' tr').each(function(inv,vl){
+                        if(parseInt($(vl).attr('data-id')) == parseInt(pid.id) ){
+                            var qty_done = parseInt($(vl).find('.qty_done').text())
+                            var back_color = $(vl).css('background')
+                            if(qty_done>0){
+                                color_tr($('#table_'+wid+' .pid_'+pid.id));
+                                
+                                setTimeout(function() {
+                                    return_color_tr($(vl),back_color);
+                                }, 400)
+                                
+                                $(vl).find('.qty_done').text((qty_done-1))
+                                if((qty_done-1)==0){
+                                    $(vl).find('td').css('color','#dddddd');
+                                    $(vl).addClass('finished')
+                                }
+                                st = true
+
+                                var count_all = 0
+                                var count_finished = 0
+                                $('#table_'+wid+' tr').each(function(index,value){
+                                    count_all = count_all +1;
+                                    if($(value).hasClass('finished')){
+                                        count_finished = count_finished + 1;
+                                    }
+                                })
+
+                                if(count_finished==count_all){
+                                    $('#complete_'+wid).show();
+                                }
+                            }else{
+                                st = true
+                                return this_list.do_warn('PRODOTTO GIA TERMINATO','Il barcode <b>'+barcode+'</b> appartiene ad un prodotto già terminato');
+                            }
+                        }
+                    })
+                }else{
+                    st = true
+                    return this_list.do_warn('BARCODE INESISTENTE','Il barcode <b>'+barcode+'</b> non esiste');
+                }
+                
+                if(!st){
+                    return this_list.do_warn('BARCODE NON PRESENTE','Il barcode <b>'+barcode+'</b> non è presente nell\'ordine corrente');
+                }
+                
+            })
         },
         doOpenOrder : function(e){
             e.preventDefault();
@@ -186,12 +279,14 @@ openerp.netaddiction_warehouse = function(instance, local) {
         ValidateOrderTr : function(e) {
             var id = $(e.currentTarget).closest('tr').attr('data-id');
             url = url_report+id
-            window.open(url,'titolo','scrollbars=no,resizable=yes, width=1000,height=700,status=no,location=no,toolbar=no');
+            var pop = window.open(url,'titolo','scrollbars=no,resizable=yes, width=1000,height=700,status=no,location=no,toolbar=no');
+            pop.print()
             new instance.web.Model('stock.picking').call('do_validate_orders',[id]).then(function(result){
                 value = $(e.currentTarget).closest('tr');
                 $(value).css('color','#dddddd');
                 $(value).find('a').css('color','#dddddd');
                 $(value).find('button').hide();
+                $('#under_tr_'+id).hide()
                 $('#search').val('');
                 $('#search').focus();
             });
@@ -202,6 +297,7 @@ openerp.netaddiction_warehouse = function(instance, local) {
                 if(parseInt($(value).text())==1){
                     trs.push(parseInt($(value).closest('tr').attr('data-id')))
                     disable_tr($(value).closest('tr'));
+                    $(value).closest('tr').find('.complete').hide()
                 }
             })
             new instance.web.Model('stock.picking').call('do_multi_validate_orders',[trs]).then(function(result){
@@ -328,7 +424,8 @@ openerp.netaddiction_warehouse = function(instance, local) {
         },
         ValidateOrder : function(e){
             url = url_report+this_order.order_id
-            window.open(url,'titolo','scrollbars=no,resizable=yes, width=1000,height=700,status=no,location=no,toolbar=no');
+            var pop = window.open(url,'titolo','scrollbars=no,resizable=yes, width=1000,height=700,status=no,location=no,toolbar=no');
+            pop.print()
             new instance.web.Model('stock.picking').call('do_validate_orders',[this_order.order_id]).then(function(result){
                 $('.order_tr').each(function(index,value){
                     if($(value).attr('data-id')==this_order.order_id){

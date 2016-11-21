@@ -122,7 +122,7 @@
             </tfoot>
             <tbody>
                 <t t-foreach="orders" t-as="order">
-                    <tr t-attf-data-id="{{order.id}}" class="order_tr">
+                    <tr t-attf-data-id="{{order.id}}" class="order_tr" >
                         <td data-field="sale_order">
                             <a t-attf-data-id="{{order.sale_id[0]}}" class="sale_order"><t t-esc="order.sale_id[1]"/></a>
                         </td>
@@ -140,13 +140,29 @@
                         </td>
                         <td data-field="action">
                             <t t-if="count_products[order.id] &gt; 1 and count_all[order.id] == count_products[order.id]">
-                                <button type="button" class="btn btn-sm oe_button btn btn-primary choose">Scegli</button>
+                                <span class="open_under" style="cursor:pointer">APRI</span>
+                                <button type="button" class="btn btn-sm oe_button btn btn-success complete" t-attf-id="complete_{{order.id}}" style="display:none">Completa</button>
                             </t>
                             <t t-if="count_products[order.id] == 1 and count_all[order.id] == 1">
                                 <button type="button" class="btn btn-sm oe_button btn btn-success complete">Completa</button>
                             </t>
                         </td>
                     </tr>
+                    <t t-if="count_all[order.id] &gt; 1">
+                        <tr t-attf-id="under_tr_{{order.id}}" style=" display:none">
+                            <td colspan="6" style="text-align:center">
+                                <input type="text" class="explode_barcode" t-attf-data-id="{{order.id}}" style="width:100%"/>
+                                <table class="explode_table" t-attf-id="table_{{order.id}}" style="width:100%">
+                                    <t t-foreach="explodes[order.id]" t-as="pp">
+                                        <tr t-attf-data-id="{{explodes[order.id][pp]['product_id'][0]}}" t-attf-class="pid_{{explodes[order.id][pp]['product_id'][0]}} order_product_list">
+                                            <td><b class="qty_done"><t t-esc="explodes[order.id][pp]['qty']"/></b></td>
+                                            <td><t t-esc="explodes[order.id][pp]['product_id'][1]"/></td>
+                                        </tr>
+                                    </t>
+                                </table> 
+                            </td>
+                        </tr>
+                    </t>
                 </t>
             </tbody>
         </table>
