@@ -38,7 +38,8 @@ class CatalogOffer(models.Model):
     def get_pid_list(self):
         ids = []
         for product in self.products_list:
-            ids.append(product.product_id.id)
+            if product.active:
+                ids.append(product.product_id.id)
 
         text = ','.join(str(x) for x in ids)
         output = StringIO.StringIO()
