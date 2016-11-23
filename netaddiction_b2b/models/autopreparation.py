@@ -85,10 +85,10 @@ class Autopreparation_b2b(models.TransientModel):
                 note.append('Mancano dati nell\'indirizzo di spedizione')
                 pay = False
 
-            if stock.sale_id.customer_comment:
-                error_stock.append(stock.id)
-                note.append('Commento Cliente')
-                pay = False
+            # if stock.sale_id.customer_comment:
+            #    error_stock.append(stock.id)
+            #    note.append('Commento Cliente')
+            #    pay = False
 
             if len(note)>0:
                 attr = {
