@@ -282,7 +282,8 @@ openerp.netaddiction_warehouse = function(instance, local) {
             var pop = window.open(url,'titolo','scrollbars=no,resizable=yes, width=1000,height=700,status=no,location=no,toolbar=no');
             pop.print()
             new instance.web.Model('stock.picking').call('do_validate_orders',[id]).then(function(result){
-                if('error' in result){
+                console.log(result)
+                if(result){
                     pop.close()
                     value = $(e.currentTarget).closest('tr');
                     $(value).css('color','red');
