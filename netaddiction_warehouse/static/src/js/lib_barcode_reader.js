@@ -150,6 +150,7 @@ $(document).ready(function(){
                                 wh_line_id = $('#barcode').attr('wh_line_id');
                                 allocations.call('put_json_new_allocation',[barcode,qty,pid,wh_line_id]).then(function(result){
                                     $('.done_msg').remove();
+                                    $('.orange_msg').remove();
                                     if(result.result == 0){
                                         NotifyVibrate()
                                         NotifyPlay()
@@ -171,6 +172,7 @@ $(document).ready(function(){
                             },
             'pick_up_barcode' : function pick_up_barcode(barcode){
                                 $('.done_msg').remove();
+                                $('.orange_msg').remove();
                                 var products = new Array();
                                 $('.product_row').each(function(index,value){
                                     if($(value).attr('data-barcode') == barcode){
