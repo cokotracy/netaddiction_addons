@@ -326,7 +326,12 @@ $(document).ready(function(){
                                 wave.call('wave_pick_ip',[barcode,shelf_id,wave_id,qty_to_down])
                                 $('.product_row').each(function(index,value){
                                     if($(value).attr('data-barcode') == barcode && $(value).attr('data-shelf-id')==shelf_id){
-                                        $('#result').before('<div class="done_msg">Hai scaricato '+qty_to_down+' - '+$(value).find('.name_pid').text()+ '</div>');
+                                        var classe = 'done_msg'
+                                        if(parseInt(qty_to_down) > 1){
+                                            classe = 'orange_msg'
+                                        }
+                                        var nome_ripiano = $(value).attr('data-shelf')
+                                        $('#result').before('<div class="'+classe+'">Hai scaricato <b>'+qty_to_down+'</b> - '+$(value).find('.name_pid').text()+' da <b>'+nome_ripiano+'</b></div>');
                                         window.setTimeout(function() {window.scrollTo(value,{duration:0});}, 0);
                                         $(value).css('background-color','#87D37C').slideUp(1000);
                                         setTimeout(function() {

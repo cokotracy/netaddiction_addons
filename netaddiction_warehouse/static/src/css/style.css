@@ -139,6 +139,12 @@ ERROR
     padding: 10px;
     margin-bottom: 10px;
 }
+.orange_msg{
+    background-color: #F89406;
+    text-transform: uppercase;
+    padding: 10px;
+    margin-bottom: 10px;
+}
 
 #close_reverse{
     width: 100%;

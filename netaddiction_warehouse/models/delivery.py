@@ -604,6 +604,14 @@ class StockPicking(models.Model):
     def do_validate_orders(self,pick_id):
         this = self.search([('id','=',int(pick_id))])
 
+        if this.sale_id.state != 'sale':
+            text = u"La spedizione %s dell'ordine %s non può essere spedita perchè lo stato non è in lavorazione, l'ordine verrà tolto dalla lista. Ricordati di ricaricare i prodotti" % (this.name, this.sale_id.name)
+            if this.sale_id.state == 'problem':
+                this.wave_id = False
+                for l in this.pack_operation_product_ids:
+                    l.qty_done = 0
+            return {'error': text, 'id': this.id}
+
         #for pay in this.sale_id.account_payment_ids:
         #    if this.total_import == pay.amount and pay.state == 'posted'
 
@@ -728,8 +736,16 @@ class StockPicking(models.Model):
 
     @api.model
     def do_multi_validate_orders(self,picks):
+        ids = {'error':[], 'print': []}
         for p in picks:
-            self.do_validate_orders(p)
+            res = self.do_validate_orders(p)
+            if res:
+                ids['error'].append(res['id'])
+            else:
+                ids['print'].append(p)
+
+        if len(ids['error']) > 0:
+            return ids
 
 class deliveryCarrier(models.Model):
     _inherit="delivery.carrier"

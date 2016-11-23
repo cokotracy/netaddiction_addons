@@ -355,7 +355,8 @@ class Products(models.Model):
         """
         self.ensure_one()
         shelf = {}
-        for alloc in self.product_wh_location_line_ids:
+        result = self.order_shelf()
+        for alloc in result:
             if qty>0:
                 if qty <= alloc.qty:
                     shelf[alloc.wh_location_id] = int(qty) 
@@ -365,6 +366,38 @@ class Products(models.Model):
                     qty = int(qty) - int(alloc.qty)
 
         return shelf
+
+    @api.multi
+    def order_shelf(self):
+        # ordina i ripiani del prodotto
+        self.ensure_one
+        v = {}
+        pre = []
+        middle = []
+        for loc in self.product_wh_location_line_ids:
+            sp = loc.wh_location_id.name.split('/')
+            pre.append(sp[0])
+            middle.append(int(sp[1]))
+        pre = list(set(pre))
+        middle = list(set(middle))
+        pre.sort()
+        middle.sort()
+        for loc in self.product_wh_location_line_ids:
+            sp = loc.wh_location_id.name.split('/')
+            pind = pre.index(sp[0])
+            mind = middle.index(int(sp[1]))
+            if pind not in v.keys():
+                v[pind] = {}
+            if mind not in v[pind].keys():
+                v[pind][mind] = [loc]
+            else:
+                v[pind][mind].append(loc)
+
+        result = []
+        for i in v:
+            for t in v[i]:
+                result += v[i][t]
+        return result
 
 class ConfigShippingTime(models.TransientModel):
     _inherit = 'res.config.settings'

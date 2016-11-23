@@ -282,6 +282,17 @@ openerp.netaddiction_warehouse = function(instance, local) {
             var pop = window.open(url,'titolo','scrollbars=no,resizable=yes, width=1000,height=700,status=no,location=no,toolbar=no');
             pop.print()
             new instance.web.Model('stock.picking').call('do_validate_orders',[id]).then(function(result){
+                if('error' in result){
+                    pop.close()
+                    value = $(e.currentTarget).closest('tr');
+                    $(value).css('color','red');
+                    $(value).find('a').css('color','red');
+                    $(value).find('button').hide();
+                    $('#under_tr_'+id).hide()
+                    $('#search').val('');
+                    $('#search').focus();
+                    return this_list.do_warn('ORDINE NON IN LAVORAZIONE',result['error']);
+                }
                 value = $(e.currentTarget).closest('tr');
                 $(value).css('color','#dddddd');
                 $(value).find('a').css('color','#dddddd');
@@ -301,16 +312,40 @@ openerp.netaddiction_warehouse = function(instance, local) {
                 }
             })
             new instance.web.Model('stock.picking').call('do_multi_validate_orders',[trs]).then(function(result){
-                data = {
-                    'ids': trs,
-                    'model': 'stock.picking',
+                if('error' in result){
+                    $('.order_tr').each(function(index,value){
+                        var i = parseInt($(value).attr('data-id'))
+                        $.each(result['error'], function(z,b){
+                            if(parseInt(b) == i){
+                                $(value).css('color','red');
+                                $(value).find('a').css('color','red');
+                                $(value).find('button').hide();
+                            }
+                        })
+                        data = {
+                            'ids': result['print'],
+                            'model': 'stock.picking',
+                        }
+                        this_list.do_action({
+                            type: 'ir.actions.report.xml',
+                            report_name: 'netaddiction_warehouse.bolla_di_spedizione',
+                            datas: data,
+                            
+                        })
+                    })
+                }else{
+                    data = {
+                        'ids': trs,
+                        'model': 'stock.picking',
+                    }
+                    this_list.do_action({
+                        type: 'ir.actions.report.xml',
+                        report_name: 'netaddiction_warehouse.bolla_di_spedizione',
+                        datas: data,
+                        
+                    })
                 }
-                this_list.do_action({
-                    type: 'ir.actions.report.xml',
-                    report_name: 'netaddiction_warehouse.bolla_di_spedizione',
-                    datas: data,
-                    
-                })
+                
                 $('#search').val('');
                 $('#search').focus();
             })
