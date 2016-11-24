@@ -355,8 +355,7 @@ class Products(models.Model):
         """
         self.ensure_one()
         shelf = {}
-        result = self.order_shelf()
-        for alloc in result:
+        for alloc in self.product_wh_location_line_ids:
             if qty>0:
                 if qty <= alloc.qty:
                     shelf[alloc.wh_location_id] = int(qty) 

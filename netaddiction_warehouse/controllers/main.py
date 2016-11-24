@@ -149,40 +149,40 @@ class InventoryApp(http.Controller):
 
         sorted_list = sorted(datas.items(), key = lambda (k,v): k)
 
-        pre = []
-        middle = []
-        for s in sorted_list:
-            sp = s[0].split('/')
-            pre.append(sp[0])
-            middle.append(int(sp[1]))
-        pre = list(set(pre))
-        middle = list(set(middle))
-        pre.sort()
-        middle.sort()
-        
-        v = {}
-        for s in sorted_list:
-            sp = s[0].split('/')
-            pind = pre.index(sp[0])
-            mind = middle.index(int(sp[1]))
-            if pind not in v.keys():
-                v[pind] = {}
-            if mind not in v[pind].keys():
-                v[pind][mind] = [s]
-            else:
-                v[pind][mind].append(s)
+        # pre = []
+        # middle = []
+        # for s in sorted_list:
+        #     sp = s[0].split('/')
+        #     pre.append(sp[0])
+        #     middle.append(int(sp[1]))
+        # pre = list(set(pre))
+        # middle = list(set(middle))
+        # pre.sort()
+        # middle.sort()
+        # 
+        # v = {}
+        # for s in sorted_list:
+        #     sp = s[0].split('/')
+        #     pind = pre.index(sp[0])
+        #     mind = middle.index(int(sp[1]))
+        #     if pind not in v.keys():
+        #         v[pind] = {}
+        #     if mind not in v[pind].keys():
+        #         v[pind][mind] = [s]
+        #     else:
+        #         v[pind][mind].append(s)
 
-        result = []
-        for i in v:
-            for t in v[i]:
-                result += v[i][t]
+        # result = []
+        # for i in v:
+        #     for t in v[i]:
+        #         result += v[i][t]
 
         return request.render(
             'netaddiction_warehouse.wave', 
             {
                 'user' : user,
                 'top_back_url' : '/inventory/app/pick_up',
-                'lists' : result,
+                'lists' : sorted_list,
                 'top_title' : wave.display_name,
                 'is_reverse' : is_reverse
             }
