@@ -604,7 +604,7 @@ class StockPicking(models.Model):
     def do_validate_orders(self,pick_id):
         this = self.search([('id','=',int(pick_id))])
 
-        if this.sale_id.state != 'sale':
+        if this.sale_id.state in ['problem', 'cancel']:
             text = u"La spedizione %s dell'ordine %s non può essere spedita perchè lo stato non è in lavorazione, l'ordine verrà tolto dalla lista. Ricordati di ricaricare i prodotti" % (this.name, this.sale_id.name)
             if this.sale_id.state == 'problem':
                 this.wave_id = False
