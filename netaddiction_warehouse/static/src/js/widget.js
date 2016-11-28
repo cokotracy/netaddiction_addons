@@ -313,7 +313,7 @@ openerp.netaddiction_warehouse = function(instance, local) {
                 }
             })
             new instance.web.Model('stock.picking').call('do_multi_validate_orders',[trs]).then(function(result){
-                if('error' in result){
+                if(result){
                     $('.order_tr').each(function(index,value){
                         var i = parseInt($(value).attr('data-id'))
                         $.each(result['error'], function(z,b){
