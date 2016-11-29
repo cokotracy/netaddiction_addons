@@ -221,8 +221,6 @@ class Orders(models.Model):
 
             amount += delivery_price
 
-        amount -= self.compute_voucher_discount()
-
         return amount
 
 
