@@ -37,6 +37,7 @@ class Affiliate(models.Model):
     tot_cancelled = fields.Float(string='Quantità ordini cancellati', compute="_compute_tot_cancelled")
     tot_gift_history = fields.Float(string='Commissioni totali ottenute', default=0.0)
 
+
     @api.model
     def create(self, values):
         myself = super(Affiliate, self).create(values)
@@ -155,6 +156,9 @@ class AffiliateOrderHistory(models.Model):
     commission = fields.Float(string="Commissioni guadagnate")
     assigned = fields.Boolean(string="Commissioni assegnate")
     company_id = fields.Many2one('res.company', string='Azienda', related='order_id.company_id', store=True)
+    order_state = fields.Selection(related='order_id.state', store=False)
+    order_date_done = fields.Datetime(related='order_id.date_done', store=False)
+
 
 
 class AffiliateUtilities(models.TransientModel):

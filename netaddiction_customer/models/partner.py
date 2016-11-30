@@ -70,7 +70,9 @@ class Partner(models.Model):
         )
 
         for field in fields:
-            if (getattr(self, field) or False) != (getattr(partner, field) or False):
+            value = partner.get(field) if isinstance(partner, dict) else getattr(partner, field)
+
+            if (getattr(self, field) or False) != (value or False):
                 return False
 
         return True
