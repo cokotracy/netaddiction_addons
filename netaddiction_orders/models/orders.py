@@ -118,6 +118,8 @@ class Order(models.Model):
                     raise Warning(_('I pagamenti non sono completati'))
             else:
                 super(Order, order).action_done()
+                if self.state == 'done':
+                    self.date_done = fields.Datetime.now()
 
     @api.multi
     def _check_action_done(self):
