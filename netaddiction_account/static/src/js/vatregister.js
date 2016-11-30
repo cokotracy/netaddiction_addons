@@ -23,6 +23,7 @@ odoo.define('netaddiction_warehouse.vatregister', function (require) {
 
       return parts[2].substring(0, 2); 
     }
+
     
     var vatregister = Widget.extend({
         template : 'vatregister_top',
@@ -31,7 +32,8 @@ odoo.define('netaddiction_warehouse.vatregister', function (require) {
                 "click #products" : "filterProducts",
                 'click #total': "filterTotal",
                 'click #multiplayer': "filterMultiplayer",
-                'click #days':"filterDays"
+                'click #days':"filterDays",
+                'click #categ_group':"filterCateg"
             },
         init : function(parent){
             this._super(parent);
@@ -76,8 +78,89 @@ odoo.define('netaddiction_warehouse.vatregister', function (require) {
             $('#content_vatregister').html('');
             var t = new days(null,this.pickings);
             return t.appendTo('#content_vatregister');
+        },
+        filterCateg: function(e){
+            $('#content_vatregister').html('');
+            var t = new categ(null,this.pickings);
+            return t.appendTo('#content_vatregister');
         }
     });
+
+    var categ = Widget.extend({
+        template:'table_vatregister_categ',
+        init : function(parent,pickings){
+            this.pickings = {'done':{},'refund':{}}
+            var total_price = 0;
+            var price_tax = 0;
+            var edizioni = 0;
+            var picks = this.pickings;
+            $(pickings.done).each(function(index,value){
+                total_price = total_price + parseFloat(value.total_price);
+                price_tax = price_tax + parseFloat(value.price_tax);
+                edizioni = edizioni + parseFloat(value.edizioni);
+                var categ = value.categ;
+                if(categ in picks['done']){
+                    picks['done'][categ]['qty'] = picks['done'][categ]['qty'] + parseInt(value.qty)
+                    picks['done'][categ]['total_price'] = parseFloat(picks['done'][categ]['total_price']) + parseFloat(value.total_price)
+                    picks['done'][categ]['price_tax'] = parseFloat(picks['done'][categ]['price_tax']) + parseFloat(value.price_tax)
+                    picks['done'][categ]['edizioni'] = parseFloat(picks['done'][categ]['edizioni']) + parseFloat(value.edizioni)
+                    picks['done'][categ]['order'].push(value.sale_id) 
+                }else{
+                    picks['done'][categ] = {
+                        'qty':parseInt(value.qty),
+                        'total_price':parseFloat(value.total_price),
+                        'price_tax':parseFloat(value.price_tax),
+                        'edizioni':parseFloat(value.edizioni),
+                        'order': [value.sale_id]
+                    }
+                }
+                picks['done'][categ]['order'] = $.unique(picks['done'][categ]['order']);
+                picks['done'][categ]['qty_order'] = picks['done'][categ]['order'].length
+                picks['done'][categ]['total_price'] = parseFloat(picks['done'][categ]['total_price']).toFixed(2)
+                picks['done'][categ]['price_tax'] = parseFloat(picks['done'][categ]['price_tax']).toFixed(2)
+                picks['done'][categ]['edizioni'] = parseFloat(picks['done'][categ]['edizioni']).toFixed(2)
+            });
+            this.total_price = total_price.toFixed(2);
+            this.price_tax = price_tax.toFixed(2);
+            this.edizioni = edizioni.toFixed(2);
+            
+            total_price = 0
+            price_tax = 0
+            edizioni = 0
+            $(pickings.refund).each(function(index,value){
+                total_price = total_price + parseFloat(value.total_price);
+                price_tax = price_tax + parseFloat(value.price_tax);
+                edizioni = edizioni + parseFloat(value.edizioni);
+                var categ = value.categ;
+                if (categ in picks['refund']){
+                    picks['refund'][categ]['qty'] = picks['refund'][categ]['qty'] + parseInt(value.qty)
+                    picks['refund'][categ]['total_price'] = parseFloat(picks['refund'][categ]['total_price']) + parseFloat(value.total_price)
+                    picks['refund'][categ]['price_tax'] = parseFloat(picks['refund'][categ]['price_tax']) + parseFloat(value.price_tax)
+                    picks['refund'][categ]['edizioni'] = parseFloat(picks['refund'][categ]['edizioni']) + parseFloat(value.edizioni)
+                    picks['refund'][categ]['order'].push(value.sale_id)
+                }else{
+                    picks['refund'][categ] = {
+                        'qty':parseInt(value.qty),
+                        'total_price':parseFloat(value.total_price),
+                        'price_tax':parseFloat(value.price_tax),
+                        'edizioni':parseFloat(value.edizioni),
+                        'order': [value.sale_id]
+                    }
+                }
+                picks['refund'][categ]['order'] = $.unique(picks['refund'][categ]['order']);
+                picks['refund'][categ]['qty_order'] = picks['refund'][categ]['order'].length
+                picks['refund'][categ]['total_price'] = parseFloat(picks['refund'][categ]['total_price']).toFixed(2)
+                picks['refund'][categ]['price_tax'] = parseFloat(picks['refund'][categ]['price_tax']).toFixed(2)
+                picks['refund'][categ]['edizioni'] = parseFloat(picks['refund'][categ]['edizioni']).toFixed(2)
+
+                
+            });
+            this.refund_total_price = total_price.toFixed(2);
+            this.refund_price_tax = price_tax.toFixed(2);
+            this.refund_edizioni = edizioni.toFixed(2);
+            
+        }
+    })
 
     var days = Widget.extend({
         template:'table_vatregister_days',
