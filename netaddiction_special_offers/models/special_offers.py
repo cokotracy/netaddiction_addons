@@ -162,6 +162,7 @@ class CatalogOffer(models.Model):
 
     @api.one
     def turn_on(self):
+        print "you turn me on!"
         for pl in self.env['netaddiction.specialoffer.offer_catalog_line'].search([('offer_catalog_id', '=', self.id), ('active', '=', False)]):
             if self.qty_limit_is_available:
                 pl.qty_limit = pl.product_qty_available_now
@@ -312,6 +313,7 @@ class ShoppingCartOffer(models.Model):
 
     @api.one
     def turn_on(self):
+        print "you turn me on!"
         for pl in self.env['netaddiction.specialoffer.offer_cart_line'].search([('offer_cart_id', '=', self.id), ('active', '=', False)]):
             pl.active = True
         self.write({'active': True})
