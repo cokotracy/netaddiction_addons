@@ -11,6 +11,7 @@ class Order(models.Model):
     payment_method_name = fields.Char(related='payment_method_id.name', string='Nome Pagamento')
     pay_pal_tran_id = fields.Char(string='ID transazione paypal')
     cc_selection = fields.Many2one('netaddiction.partner.ccdata', string='Carta di credito')
+    sofort_tran_id = fields.Char(string='ID transazione Sofort')
 
     @api.multi
     def manual_confirm(self):
@@ -33,9 +34,10 @@ class Order(models.Model):
             pp_journal = self.env['ir.model.data'].get_object('netaddiction_payments', 'paypal_journal')
             contrassegno_journal = self.env['ir.model.data'].get_object('netaddiction_payments', 'contrassegno_journal')
             zero_journal = self.env['ir.model.data'].get_object('netaddiction_payments', 'zeropay_journal')
+            sofort_journal = self.env['ir.model.data'].get_object('netaddiction_payments', 'sofort_journal')
             cash_journal = self.env['account.journal'].search([('code', '=', 'CSH1')])
 
-            if order.payment_method_id.id not in [cc_journal.id, pp_journal.id, contrassegno_journal.id, cash_journal.id, zero_journal.id]:
+            if order.payment_method_id.id not in [cc_journal.id, pp_journal.id, contrassegno_journal.id, cash_journal.id, zero_journal.id, sofort_journal.id]:
                 raise ValidationError("metodo di pagamento non valido")
 
             if order.payment_method_id.id == cc_journal.id and not order.cc_selection:
@@ -43,6 +45,9 @@ class Order(models.Model):
 
             if order.payment_method_id.id == pp_journal.id and not order.pay_pal_tran_id:
                 raise ValidationError("Inserire un ID  transazione paypal")
+
+            if order.payment_method_id.id == sofort_journal.id and not order.sofort_tran_id:
+                raise ValidationError("Inserire un ID  transazione sofort")
 
             if not isclose(order.amount_total, 0.0) and order.payment_method_id.id == zero_journal.id:
                 raise ValidationError("Non è un ordine a costo zero!")
@@ -67,6 +72,9 @@ class Order(models.Model):
                 if order.payment_method_id.id == cash_journal.id:
                     transient = self.env["netaddiction.cash.executor"].create({})
                     transient.register_cash_payment(order.partner_id.id, order.amount_total, order.id)
+                if order.payment_method_id.id == sofort_journal.id:
+                    transient = self.env["netaddiction.sofort.executor"].create({})
+                    transient._manual_register_payment(order.sofort_tran_id, order)
 
             if transient:
                 transient.unlink()

@@ -144,6 +144,57 @@ class SofortExecutor(models.TransientModel):
         for line in order.order_line:
             line.qty_to_invoice = line.product_uom_qty
 
+    def _manual_register_payment(self, transaction_id, order):
+        pp_aj = self.env['ir.model.data'].get_object('netaddiction_payments', 'sofort_journal')
+        pay_inbound = self.env["account.payment.method"].search([("payment_type", "=", "inbound")])
+        pay_inbound = pay_inbound[0] if isinstance(pay_inbound, list) else pay_inbound
+        if pp_aj and pay_inbound:
+            name = self.env['ir.sequence'].with_context(ir_sequence_date=fields.Date.context_today(self)).next_by_code('account.payment.customer.invoice')
+            pp_id = pp_aj.id
+            payment = self.env["account.payment"].create({
+                "partner_type": "customer",
+                "partner_id": order.partner_id.id,
+                "journal_id": pp_id,
+                "amount": order.amount_total,
+                "order_id": order.id,
+                "state": 'draft',
+                "payment_type": 'inbound',
+                "payment_method_id": pay_inbound.id,
+                "name": name,
+                'communication': order.name,
+                'sofort_transaction_id': transaction_id,
+
+            })
+
+            order.payment_method_id = pp_aj.id
+            order.state = 'draft'
+            order.action_confirm()
+
+            self._set_order_to_invoice(order)
+
+            inv_lst = order.action_invoice_create()
+
+            payment.invoice_ids = [(4, inv, None) for inv in inv_lst]
+
+            for inv_id in inv_lst:
+                inv = self.env["account.invoice"].search([("id", "=", inv_id)])
+                inv.is_customer_invoice = self.real_invoice
+                if order.gift_discount > 0.0:
+                    gift_value = self.env["netaddiction.gift_invoice_helper"].compute_gift_value(order.gift_discount, order.amount_total, inv.amount_total)
+                    self.env["netaddiction.gift_invoice_helper"].gift_to_invoice(gift_value, inv)
+                inv.signal_workflow('invoice_open')
+                # inv.payement_id = [(6, 0, [payment.id])]
+
+            # assegno il pagamento alle spedizioni
+            for delivery in order.picking_ids:
+                delivery.payment_id = payment.id
+
+            payment.delay_post()
+
+            return True
+        return False
+
+
     # CRON CANCELLAZIONE PENDING SOFORT
     # @api.model
     # def _search_pending_sofort(self):
