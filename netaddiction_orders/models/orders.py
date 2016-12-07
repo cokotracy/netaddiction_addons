@@ -48,7 +48,7 @@ class Order(models.Model):
             raise Warning(_('pending'))
 
     @api.one
-    def action_pending(self):
+    def action_partial_done(self):
         self.state = 'partial_done'
 
     ##########

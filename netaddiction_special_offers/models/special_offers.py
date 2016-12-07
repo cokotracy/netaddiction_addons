@@ -15,7 +15,7 @@ class CatalogOffer(models.Model):
     expression_id = fields.Many2one(comodel_name='netaddiction.expressions.expression', string='Espressione')
     company_id = fields.Many2one(comodel_name='res.company', string='Company', required=True)
     author_id = fields.Many2one(comodel_name='res.users', string='Autore', required=True)
-    date_start = fields.Datetime('Start Date', help="Data di inizio della offerta", required=True)
+    date_start = fields.Datetime('Start Date', help="Data di inizio della offerta, se non impostata l'offerta comincia subito", required=False)
     date_end = fields.Datetime('End Date', help="Data di fine dell'offerta", required=True)
     priority = fields.Selection([(1, '1'), (2, '2'), (3, '3'), (4, '4'), (5, '5'), (6, '6'), (7, '7'), (8, '8'), (9, '9'), (10, '10')], string='Priorità', default=1, required=True)
     qty_max_buyable = fields.Integer(string='Quantità massima acquistabile', help="Quantità massima di prodotti acquistabili in un singolo ordine in questa offerta. 0 è illimitato")
@@ -63,10 +63,28 @@ class CatalogOffer(models.Model):
     @api.constrains('date_start', 'date_end')
     def _check_dates(self):
 
-        if(self.date_start >= self.date_end):
+        if(self.date_start and self.date_start >= self.date_end):
             raise ValidationError("Data fine offerta non può essere prima della data di inizio offerta")
-        for cron in self.env['ir.cron'].search([('id', '=', self.end_cron_job)]):
+        for cron in self.env['ir.cron'].search([('id', '=', self.end_cron_job), ('active', '=', True)]):
             cron.nextcall = self.date_end
+        found_cron = False
+        for cron in self.env['ir.cron'].search([('id', '=', self.start_cron_job), ('active', '=', True)]):
+            cron.nextcall = self.date_start
+            found_cron = True
+        if not found_cron and self.date_start:
+
+            nextcall = self.date_start
+            name = "[Inizio]Cron job per offerta CATALOGO id %s" % self.id
+            self.start_cron_job = self.pool.get('ir.cron').create(self.env.cr, self.env.uid, {
+                'name': name,
+                'user_id': SUPERUSER_ID,
+                'model': 'netaddiction.specialoffer.catalog',
+                'function': 'turn_on',
+                'nextcall': nextcall,
+                'args': repr([self.id]),
+                'numbercall': "1",
+
+            })
 
     @api.one
     @api.constrains('priority')
@@ -90,7 +108,7 @@ class CatalogOffer(models.Model):
         res = super(CatalogOffer, self).create(values)
 
         nextcall = res.date_end
-        name = "[Scadenza]Cron job per offerta id %s" % res.id
+        name = "[Scadenza]Cron job per offerta CATALOGO id %s" % res.id
         res.end_cron_job = res.pool.get('ir.cron').create(self.env.cr, self.env.uid, {
             'name': name,
             'user_id': SUPERUSER_ID,
@@ -100,14 +118,14 @@ class CatalogOffer(models.Model):
             'args': repr([res.id]),
             'numbercall': "1",
         })
-        if res.date_start > now:
+        if res.date_start and res.date_start > now:
             res.active = False
             for pl in res.products_list:
                 pl.active = False
 
             nextcall = res.date_start
-            name = "[Inizio]Cron job per offerta id %s" % res.id
-            res.end_cron_job = res.pool.get('ir.cron').create(self.env.cr, self.env.uid, {
+            name = "[Inizio]Cron job per offerta CATALOGO id %s" % res.id
+            res.start_cron_job = res.pool.get('ir.cron').create(self.env.cr, self.env.uid, {
                 'name': name,
                 'user_id': SUPERUSER_ID,
                 'model': 'netaddiction.specialoffer.catalog',
@@ -117,6 +135,8 @@ class CatalogOffer(models.Model):
                 'numbercall': "1",
 
             })
+        else:
+            res.turn_on()
 
         return res
 
@@ -245,7 +265,7 @@ class ShoppingCartOffer(models.Model):
     expression_id = fields.Many2one(comodel_name='netaddiction.expressions.expression', string='Espressione')
     author_id = fields.Many2one(comodel_name='res.users', string='Autore', required=True)
     company_id = fields.Many2one(comodel_name='res.company', string='Company', required=True)
-    date_start = fields.Datetime('Start Date', help="Data di inizio della offerta", required=True)
+    date_start = fields.Datetime('Start Date', help="Data di inizio della offerta, se non impostata l'offerta comincia subito", required=False)
     date_end = fields.Datetime('End Date', help="Data di fine dell'offerta", required=True)
     priority = fields.Selection([(1, '1'), (2, '2'), (3, '3'), (4, '4'), (5, '5'), (6, '6'), (7, '7'), (8, '8'), (9, '9'), (10, '10')], string='Priorità', default=1, required=True)
     qty_max_buyable = fields.Integer(string='Quantità massima acquistabile', help="Quantità massima di prodotti acquistabili in un singolo ordine in questa offerta. 0 è illimitato", required=True)
@@ -290,10 +310,28 @@ class ShoppingCartOffer(models.Model):
     @api.constrains('date_start', 'date_end')
     def _check_dates(self):
 
-        if(self.date_start >= self.date_end):
+        if(self.date_start and self.date_start >= self.date_end):
             raise ValidationError("Data fine offerta non può essere prima della data di inizio offerta")
-        for cron in self.env['ir.cron'].search([('id', '=', self.end_cron_job)]):
+        for cron in self.env['ir.cron'].search([('id', '=', self.end_cron_job), ('active', '=', True)]):
             cron.nextcall = self.date_end
+        found_cron = False
+        for cron in self.env['ir.cron'].search([('id', '=', self.start_cron_job), ('active', '=', True)]):
+            cron.nextcall = self.date_start
+            found_cron = True
+        if not found_cron and self.date_start:
+
+            nextcall = self.date_start
+            name = "[Inizio]Cron job per offerta Carrello id %s" % self.id
+            self.start_cron_job = self.pool.get('ir.cron').create(self.env.cr, self.env.uid, {
+                'name': name,
+                'user_id': SUPERUSER_ID,
+                'model': 'netaddiction.specialoffer.cart',
+                'function': 'turn_on',
+                'nextcall': nextcall,
+                'args': repr([self.id]),
+                'numbercall': "1",
+
+            })
 
     @api.one
     @api.constrains('offer_type', 'n', 'n_price')
@@ -318,7 +356,6 @@ class ShoppingCartOffer(models.Model):
 
     @api.model
     def create(self, values):
-
         """
         quando  creo una offerta verifico anche che le date siano dopo la data corrente
         e creo i cron
@@ -331,7 +368,7 @@ class ShoppingCartOffer(models.Model):
 
         res = super(ShoppingCartOffer, self).create(values)
         nextcall = res.date_end
-        name = "[Scadenza]Cron job per offerta id %s" % res.id
+        name = "[Scadenza]Cron job per offerta CARRELLO id %s" % res.id
         res.end_cron_job = res.pool.get('ir.cron').create(self.env.cr, self.env.uid, {
             'name': name,
             'user_id': SUPERUSER_ID,
@@ -341,15 +378,14 @@ class ShoppingCartOffer(models.Model):
             'args': repr([res.id]),
             'numbercall': "1",
         })
-        if res.date_start > fields.Datetime.now():
-
+        if res.date_start and res.date_start > now:
             res.active = False
             for pl in res.products_list:
                 pl.active = False
 
             nextcall = res.date_start
-            name = "[Inizio]Cron job per offerta id %s" % res.id
-            res.end_cron_job = res.pool.get('ir.cron').create(self.env.cr, self.env.uid, {
+            name = "[Inizio]Cron job per offerta CARRELLO id %s" % res.id
+            res.start_cron_job = res.pool.get('ir.cron').create(self.env.cr, self.env.uid, {
                 'name': name,
                 'user_id': SUPERUSER_ID,
                 'model': 'netaddiction.specialoffer.cart',
@@ -359,6 +395,8 @@ class ShoppingCartOffer(models.Model):
                 'numbercall': "1",
 
             })
+        else:
+            res.turn_on()
 
         return res
 
@@ -560,7 +598,7 @@ class VoucherOffer(models.Model):
     author_id = fields.Many2one(comodel_name='res.users', string='Autore', required=True)
     company_id = fields.Many2one(comodel_name='res.company', string='Company', required=True)
     expression_id = fields.Many2one(comodel_name='netaddiction.expressions.expression', string='Espressione')
-    date_start = fields.Datetime('Start Date', help="Data di inizio della offerta", required=True)
+    date_start = fields.Datetime('Start Date', help="Data di inizio della offerta, se non impostata l'offerta comincia subito", required=False)
     date_end = fields.Datetime('End Date', help="Data di fine dell'offerta", required=True)
     qty_limit = fields.Integer(string='Quantità limite', help="Quantità limite di prodotti vendibili in questa offerta. 0 è illimitato", required=True)
     qty_selled = fields.Float(string='Quantità venduta', default=0.0)
@@ -590,10 +628,28 @@ class VoucherOffer(models.Model):
     @api.constrains('date_start', 'date_end')
     def _check_dates(self):
 
-        if(self.date_start >= self.date_end):
+        if(self.date_start and self.date_start >= self.date_end):
             raise ValidationError("Data fine offerta non può essere prima della data di inizio offerta")
-        for cron in self.env['ir.cron'].search([('id', '=', self.end_cron_job)]):
+        for cron in self.env['ir.cron'].search([('id', '=', self.end_cron_job), ('active', '=', True)]):
             cron.nextcall = self.date_end
+        found_cron = False
+        for cron in self.env['ir.cron'].search([('id', '=', self.start_cron_job), ('active', '=', True)]):
+            cron.nextcall = self.date_start
+            found_cron = True
+        if not found_cron and self.date_start:
+
+            nextcall = self.date_start
+            name = "[Inizio]Cron job per offerta Voucher id %s" % self.id
+            self.start_cron_job = self.pool.get('ir.cron').create(self.env.cr, self.env.uid, {
+                'name': name,
+                'user_id': SUPERUSER_ID,
+                'model': 'netaddiction.specialoffer.voucher',
+                'function': 'turn_on',
+                'nextcall': nextcall,
+                'args': repr([self.id]),
+                'numbercall': "1",
+
+            })
 
     @api.multi
     def write(self, values):
@@ -619,7 +675,7 @@ class VoucherOffer(models.Model):
 
         res = super(VoucherOffer, self).create(values)
         nextcall = res.date_end
-        name = "[Scadenza]Cron job per offerta id %s" % res.id
+        name = "[Scadenza]Cron job per offerta VOUCHER id %s" % res.id
         res.end_cron_job = res.pool.get('ir.cron').create(self.env.cr, self.env.uid, {
             'name': name,
             'user_id': SUPERUSER_ID,
@@ -629,13 +685,14 @@ class VoucherOffer(models.Model):
             'args': repr([res.id]),
             'numbercall': "1",
         })
-        if res.date_start > fields.Datetime.now():
+        if res.date_start and res.date_start > now:
             res.active = False
             for pl in res.products_list:
                 pl.active = False
+
             nextcall = res.date_start
-            name = "[Inizio]Cron job per offerta id %s" % res.id
-            res.end_cron_job = res.pool.get('ir.cron').create(self.env.cr, self.env.uid, {
+            name = "[Inizio]Cron job per offerta VOUCHER id %s" % res.id
+            res.start_cron_job = res.pool.get('ir.cron').create(self.env.cr, self.env.uid, {
                 'name': name,
                 'user_id': SUPERUSER_ID,
                 'model': 'netaddiction.specialoffer.voucher',
@@ -645,6 +702,8 @@ class VoucherOffer(models.Model):
                 'numbercall': "1",
 
             })
+        else:
+            res.turn_on()
 
         return res
 
