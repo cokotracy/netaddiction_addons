@@ -88,6 +88,26 @@
             <field name="perm_write" eval="1"/>
             <field name="perm_unlink" eval="1"/>
         </record>
+
+        <!--Alias-->
+        <record id="netaddiction_products_data_entry_user_acces_product_alias" model="ir.model.access">
+            <field name="name">Alias Prodotto</field>
+            <field name="model_id" search="[('model','=','netaddiction_products.alias')]" model="ir.model"/>
+            <field name="group_id" ref="netaddiction_products_data_entry_user_base"/>
+            <field name="perm_read" eval="1"/>
+            <field name="perm_create" eval="0"/>
+            <field name="perm_write" eval="0"/>
+            <field name="perm_unlink" eval="0"/>
+        </record>
+        <record id="netaddiction_products_data_entry_user_plus_acces_product_alias" model="ir.model.access">
+            <field name="name">Alias Prodotto</field>
+            <field name="model_id" search="[('model','=','netaddiction_products.alias')]" model="ir.model"/>
+            <field name="group_id" ref="netaddiction_products_data_entry_user"/>
+            <field name="perm_read" eval="1"/>
+            <field name="perm_create" eval="1"/>
+            <field name="perm_write" eval="1"/>
+            <field name="perm_unlink" eval="1"/>
+        </record>
         
         <!--ACL PER DATA ENTRY USER-->
         <record id="netaddiction_products_data_entry_user_acces_product_template" model="ir.model.access">
