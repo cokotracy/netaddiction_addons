@@ -1,2 +1,2 @@
 # -*- coding: utf-8 -*-
-from models import  product
+from models import config, product, order

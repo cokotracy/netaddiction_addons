@@ -32,7 +32,7 @@
                                <field name="ebay_id" attrs="{'readonly': 1}"/>
                                <field name="ebay_price" />
                                <field name="set_ebay_price" />
-                               <field name="ebay_category_id" attrs="{'readonly': 1}"/>
+            
 
                              </group>
 
