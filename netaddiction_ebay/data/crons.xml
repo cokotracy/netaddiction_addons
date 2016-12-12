@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data noupdate="0">
+        <!--Crea la funzionalità ed il gruppo associato-->
+        <record id="ir_cron_ebay_cron_hourly" model="ir.cron">
+            <field name="name">EBAY: upload nuovi prodotti, update, get orders e end</field>
+            <field name="user_id" ref="base.user_root"/>
+            <field name="interval_number">1</field>
+            <field name="interval_type">hours</field>
+            <field name="numbercall">-1</field>
+            <field eval="False" name="doall"/>
+            <field eval="'product.product'" name="model"/>
+            <field eval="'_ebay_cron_hourly'" name="function"/>
+            <field name="args" eval="'()'" />
+        </record>
+        <record id="ir_cron_ebay_cron_daily" model="ir.cron">
+            <field name="name">EBAY: relist, completa ordini e rimozione expired id</field>
+            <field name="user_id" ref="base.user_root"/>
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <field name="numbercall">-1</field>
+            <field eval="False" name="doall"/>
+            <field eval="'product.product'" name="model"/>
+            <field eval="'_ebay_cron_daily'" name="function"/>
+            <field name="args" eval="'()'" />
+        </record>
+    </data>
+</openerp>

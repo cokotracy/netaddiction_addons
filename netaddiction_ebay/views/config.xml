@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+        
+
+        <record id="netaddiction_ebay_config" model="ir.ui.view">
+            <field name="name">Configurazioni Ebay</field>
+            <field name="model">netaddiction.ebay.config</field>
+            <field name="arch" type="xml">
+                <form string="Manifest" class="oe_form_configuration">
+                    <header>
+                        <button string="Save" type="object"
+                            name="execute" class="oe_highlight"/>
+                        or
+                        <button string="Cancel" type="object"
+                            name="cancel" class="oe_link"/>
+                    </header>
+                    
+                    <group>
+                        <div>
+                            <div>
+                                <label for="paypal_account"/>
+                                <field name="paypal_account"/>
+                            </div>
+                            <div>
+                                <label for="max_num_retry"/>
+                                <field name="max_num_retry"/>
+                            </div>
+                        </div>
+                    </group>
+                </form>
+            </field>
+        </record>
+
+        <record id="netaddiction_ebay_config_action" model="ir.actions.act_window">
+            <field name="name">Ebay</field>
+            <field name="res_model">netaddiction.ebay.config</field>
+            <field name="view_id" ref="netaddiction_ebay_config"/>
+            <field name="view_mode">form</field>
+            <field name="target">inline</field>
+        </record>
+
+        <menuitem id="netaddiction_ebay_config_menu" name="Ebay"
+                      parent="account.menu_finance_configuration" action="netaddiction_ebay_config_action"/>
+    </data>
+</openerp>

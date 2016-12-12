@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data noupdate="1">
+        <!--Crea la funzionalità ed il gruppo associato-->
+        <record id="paypal_account" model="ir.values">
+            <field name="name">paypal_account</field>
+            <field name="model">netaddiction.ebay.config</field>
+        </record>
+        <record id="max_num_retry" model="ir.values">
+            <field name="name">max_num_retry</field>
+            <field name="model">netaddiction.ebay.config</field>
+        </record>
+        <record id="ebay_last_update" model="ir.values">
+            <field name="name">ebay_last_update</field>
+            <field name="model">netaddiction.ebay.config</field>
+        </record>
+        <record id="ebay_last_order_check" model="ir.values">
+            <field name="name">ebay_last_order_check</field>
+            <field name="model">netaddiction.ebay.config</field>
+        </record>
+    </data>
+</openerp>
