@@ -541,6 +541,7 @@ class EbayProducts(models.Model):
         Se sono scadute le immagini su ebay le esegue un nuovo upload.
         """
         last_executed = self.env["ir.values"].search([("name", "=", "ebay_last_update"), ("model", "=", "netaddiction.ebay.config")]).value
+        last_executed = last_executed if last_executed else (datetime.now() - timedelta(days=1)).strftime("%Y-%m-%d %H:%M:%S")
 
         products_on_ebay = self.env["product.product"].search([("on_ebay", "=", True), ("ebay_id", "!=", '')])
         products_on_ebay = [p.id for p in products_on_ebay]

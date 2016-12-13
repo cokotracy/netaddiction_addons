@@ -21,7 +21,7 @@ RETURNS_ACCEPTED = "Rimborsati entro 10 giorni"
 
 INSURANCE_INCLUDED = "IncludedInShippingHandling"
 IT_COURIER = "IT_ExpressCourier"
-SHIPPING_COST = "5.00"
+SHIPPING_COST = "4.90"
 ADDITIONAL_COST = "0.00"
 SHIPPING_PRIORITY = "1"
 DISPATCH_MAX_TIME = "2"
