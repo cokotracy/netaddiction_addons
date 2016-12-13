@@ -113,8 +113,14 @@ class ProductPriceItems(models.Model):
 
     @api.one
     def _get_real_price(self):
-        price = self.pricelist_id.price_rule_get(self.product_id.id, 1)
-        self.b2b_real_price = self.product_id.taxes_id.compute_all(price[self.pricelist_id.id][0])['total_excluded']
+        if self.product_id:
+            price = self.pricelist_id.price_rule_get(self.product_id.id, 1)
+            # qua faccio i ltry perchè nella creazione della nuova pricelist non ha subito l'id e succede un casino se non salvi prima
+            try:
+                prid = self.pricelist_id.id
+                self.b2b_real_price = self.product_id.taxes_id.compute_all(price[prid][0])['total_excluded']
+            except:
+                pass
 
     @api.multi
     def open_form_item(self):
