@@ -470,8 +470,8 @@ class EbayProducts(models.Model):
     @api.model
     def _upload_new_products_to_ebay(self):
         u"""Prende i prodotti da mettere su ebay che non hanno un ebay_id, carica le loro immagini, e apre la relativa asta."""
-        # ebay_id = False convenzione per 'non hostato su ebay'
-        products_to_upload = self.env["product.product"].search([("on_ebay", "=", True), ("ebay_id", "=", False)])
+        # ebay_id = '' convenzione per 'non hostato su ebay'
+        products_to_upload = self.env["product.product"].search([("on_ebay", "=", True), ("ebay_id", "=", '')])
 
         if products_to_upload:
             environment = lmslib.PRODUCTION
@@ -542,18 +542,18 @@ class EbayProducts(models.Model):
         """
         last_executed = self.env["ir.values"].search([("name", "=", "ebay_last_update"), ("model", "=", "netaddiction.ebay.config")]).value
 
-        products_on_ebay = self.env["product.product"].search([("on_ebay", "=", True), ("ebay_id", "!=", False)])
+        products_on_ebay = self.env["product.product"].search([("on_ebay", "=", True), ("ebay_id", "!=", '')])
         products_on_ebay = [p.id for p in products_on_ebay]
 
-        products_sold = self.env["sale.order.line"].search([("state", "in", ["sale", "done", "partial_done"]), ("write_date", ">=", last_executed), ("product_id", 'in', products_on_ebay),("order_id.from_ebay","=",False)])
+        products_sold = self.env["sale.order.line"].search([("state", "in", ["sale", "done", "partial_done"]), ("write_date", ">=", last_executed), ("product_id", 'in', products_on_ebay), ("order_id.from_ebay", "=", False)])
         products_sold = [p.product_id for p in products_sold]
 
-        products_modified = self.env["product.product"].search([("on_ebay", "=", True), ("ebay_id", "!=", False), ("write_date", ">=", last_executed)])
+        products_modified = self.env["product.product"].search([("on_ebay", "=", True), ("ebay_id", "!=", ''), ("write_date", ">=", last_executed)])
         # elimino i duplicati e faccio il merge delle due liste
         set_product_sold = set(products_sold)
         products_to_update = list(set_product_sold) + list(set(products_modified) - set_product_sold)
 
-        products_image_expired = self.env["product.product"].search([("on_ebay", "=", True), ("ebay_id", "!=", False), ("ebay_image_expiration_date", "<", last_executed)])
+        products_image_expired = self.env["product.product"].search([("on_ebay", "=", True), ("ebay_id", "!=", ''), ("ebay_image_expiration_date", "<", last_executed)])
 
         products_to_update = products_to_update + list(set(products_image_expired) - set(products_to_update))
 
@@ -620,7 +620,7 @@ class EbayProducts(models.Model):
         u"""Prende tutti i prodotti ancora da tenere su ebay la cui inserzione è scaduta e li relista su ebay."""
         now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         # prodotti la cui inserzione è scaduta
-        products_expired = self.env["product.product"].search([("on_ebay", "=", True), ("ebay_id", "!=", False), ("ebay_expiration_date", "<", now)])
+        products_expired = self.env["product.product"].search([("on_ebay", "=", True), ("ebay_id", "!=", ''), ("ebay_expiration_date", "<", now)])
 
         if products_expired:
             # TODO CHANGE API SANDBOX api.ebay.com
@@ -689,7 +689,7 @@ class EbayProducts(models.Model):
         """
         now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
-        products_to_end = self.env["product.product"].search([("on_ebay", "=", False), ("ebay_id", "!=", False), ("ebay_expiration_date", ">", now)])
+        products_to_end = self.env["product.product"].search([("on_ebay", "=", False), ("ebay_id", "!=", ''), ("ebay_expiration_date", ">", now)])
 
         if products_to_end:
             # TODO CHANGE API SANDBOX api.ebay.com
@@ -714,7 +714,7 @@ class EbayProducts(models.Model):
                         if product_ended:
                             product = product_ended[0]
                             product.ebay_expiration_date = datetime.strptime(end_date, "%Y-%m-%dT%H:%M:%S.%fZ")
-                            product.ebay_id = False
+                            product.ebay_id = ''
 
             problems = [p for p in products_to_end if "%s" % p.id not in ended_products]
             if problems:
@@ -726,10 +726,10 @@ class EbayProducts(models.Model):
         """
         now = (datetime.now() - timedelta(days=90)).strftime("%Y-%m-%d %H:%M:%S")
 
-        products = self.env["product.product"].search([("on_ebay", "=", False), ("ebay_id", "!=", False), ("ebay_expiration_date", "<", now)])
+        products = self.env["product.product"].search([("on_ebay", "=", False), ("ebay_id", "!=", ''), ("ebay_expiration_date", "<", now)])
 
         for product in products:
-            product.ebay_id = False
+            product.ebay_id = ''
 
     @api.model
     def _get_ebay_orders(self):
