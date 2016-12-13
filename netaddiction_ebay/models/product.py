@@ -45,9 +45,9 @@ class EbayProducts(models.Model):
 
         curr_price = self.offer_price if self.offer_price > 0.0 else self.list_price
 
-        gadget_category = self.env["product.category"].search([("name", "=", "Gadget")])
-        if gadget_category and self.categ_id.id != gadget_category.id:
-            curr_price += (curr_price / 100.0) * 10.0
+        # gadget_category = self.env["product.category"].search([("name", "=", "Gadget")])
+        # if gadget_category and self.categ_id.id != gadget_category.id:
+        #     curr_price += (curr_price / 100.0) * 10.0
 
         decimal, curr_price = math.modf(curr_price)
         curr_price += 0.9
@@ -714,7 +714,7 @@ class EbayProducts(models.Model):
                         product_ended = [p for p in products_to_end if p.id == int(prod_id)]
                         if product_ended:
                             product = product_ended[0]
-                            product.ebay_expiration_date = datetime.strptime(end_date, "%Y-%m-%dT%H:%M:%S.%fZ")
+                            product.ebay_expiration_date = datetime.strptime(end_date['end'], "%Y-%m-%dT%H:%M:%S.%fZ")
                             product.ebay_id = ''
 
             problems = [p for p in products_to_end if "%s" % p.id not in ended_products]
