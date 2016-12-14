@@ -356,11 +356,11 @@ class EbayXMLBuilder(models.TransientModel):
 
         ret = {}
         root = objectify.fromstring(xml)
-        _logger.debug("***********************************************")
-        _logger.debug("%s" % xml)
-        _logger.debug("***********************************************")
-        _logger.debug("%s" % root)
-        _logger.debug("***********************************************")
+        _logger.warning("***********************************************")
+        _logger.warning("%s" % xml)
+        _logger.warning("***********************************************")
+        _logger.warning("%s" % root)
+        _logger.warning("***********************************************")
         for resp in root.EndFixedPriceItemResponse:
             # print resp.Ack.text
             if resp.Ack.text != "Failure":

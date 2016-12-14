@@ -392,7 +392,6 @@ class EbayProducts(models.Model):
         response = download_file.sendRequest()
 
         xml = download_file.getResponse()
-        self._send_ebay_error_mail("%s , %s" % (download_file._response, response), '[EBAY] DEBUG enditem2')
 
         if xml:
             pass
@@ -515,7 +514,7 @@ class EbayProducts(models.Model):
             self._search_and_remove_ebay_jobs(environment, ["AddFixedPriceItemRequest"], ["Created", "InProcess", "Scheduled"])
 
             xml = self._add_fixed_price_items_to_ebay(environment, uu_id, xml_builder, prods, contrassegno)
-            print xml
+            
             if not xml:
                 return
             items = xml_builder.parse_addfixed_response(xml)
@@ -705,8 +704,7 @@ class EbayProducts(models.Model):
             uu_id = uuid.uuid4()
 
             xml = self._end_fixed_price_items_on_ebay(environment, uu_id, xml_builder, prods)
-            # TODO remove
-            self._send_ebay_error_mail("%s" % xml, '[EBAY] DEBUG ')
+
             if not xml:
                 return False
             ended_products = xml_builder.parse_endfixed_response(xml)
