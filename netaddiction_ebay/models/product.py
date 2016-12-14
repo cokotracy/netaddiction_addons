@@ -392,7 +392,7 @@ class EbayProducts(models.Model):
         response = download_file.sendRequest()
 
         xml = download_file.getResponse()
-        self._send_ebay_error_mail("%s , %s" % (download_file._response,response), '[EBAY] DEBUG enditem2')
+        self._send_ebay_error_mail("%s , %s" % (download_file._response, response), '[EBAY] DEBUG enditem2')
 
         if xml:
             pass
