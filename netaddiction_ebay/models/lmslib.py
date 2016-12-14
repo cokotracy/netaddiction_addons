@@ -637,12 +637,12 @@ class DownloadFile( FileTransferService ):
 
             ret = unzipped.read()
             break
+        self._response = response
         return ret 
         # fp = open( 'data_responses.zip', 'wb' )
         # fp.write( data )
         # fp.close()
-        
-        # self._response = response
+
 
 
 class StartDownloadJob( BulkDataExchangeService ):

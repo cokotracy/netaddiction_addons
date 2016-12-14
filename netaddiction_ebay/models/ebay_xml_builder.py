@@ -383,15 +383,3 @@ class EbayXMLBuilder(models.TransientModel):
         # print etree.tostring(root, xml_declaration=True, pretty_print=True)
         return etree.tostring(root, xml_declaration=True, pretty_print=True)
 
-    def parse(self, xml):
-
-        ret = {}
-        root = objectify.fromstring(xml)
-        print etree.tostring(root, xml_declaration=True, pretty_print=True)
-        return
-        for resp in root.EndFixedPriceItemResponse:
-            # print resp.Ack.text
-            if resp.Ack.text != "Failure":
-                ret[resp.CorrelationID.text] = {'end': resp.EndTime.text}
-
-        return ret

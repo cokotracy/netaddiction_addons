@@ -392,6 +392,7 @@ class EbayProducts(models.Model):
         response = download_file.sendRequest()
 
         xml = download_file.getResponse()
+        self._send_ebay_error_mail("%s , %s" % (download_file._response,response), '[EBAY] DEBUG enditem2')
 
         if xml:
             pass
@@ -682,7 +683,7 @@ class EbayProducts(models.Model):
 
             problems = [p for p in products_expired if "%s" % p.id not in relisted_products]
             if problems:
-                self._send_ebay_error_mail("Non sono riuscito ad aggiungere questi prodotti %s %s" % (problems, xml), '[EBAY] ERRORE nel relist di nuovi prodotti su ebay ' )
+                self._send_ebay_error_mail("Non sono riuscito ad aggiungere questi prodotti %s %s" % (problems, xml), '[EBAY] ERRORE nel relist di nuovi prodotti su ebay ')
 
     @api.model
     def _end_products_on_ebay(self):
@@ -693,7 +694,7 @@ class EbayProducts(models.Model):
         products_to_end = self.env["product.product"].search([("on_ebay", "=", False), ("ebay_id", "!=", ''), ("ebay_expiration_date", ">", now)])
 
         if products_to_end:
-            # TODO CHANGE API SANDBOX api.ebay.com
+
             environment = lmslib.PRODUCTION
 
             # SEARCH FOR ACTIVE JOB
@@ -760,7 +761,6 @@ class EbayProducts(models.Model):
                 #     print("Call Success: %s in length" % len(api.response.content))
 
                 # print(api.response.content)
-                xml_builder.parse(api.response.content)
 
                 # print(api.response.json())
                 # print("Response Reply: %s" % api.response.reply)
