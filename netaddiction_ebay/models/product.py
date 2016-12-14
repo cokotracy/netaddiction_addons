@@ -532,7 +532,7 @@ class EbayProducts(models.Model):
 
             problems = [p for p in products_to_upload if "%s" % p.id not in items]
             if problems:
-                self._send_ebay_error_mail("Non sono riuscito ad aggiungere questi prodotti %s " % problems, '[EBAY] ERRORE nell upload di nuovi prodotti su ebay %s' % xml)
+                self._send_ebay_error_mail("Non sono riuscito ad aggiungere questi prodotti %s %s " % (problems, xml), '[EBAY] ERRORE nell upload di nuovi prodotti su ebay')
 
     @api.model
     def _update_products_on_ebay(self):
@@ -613,7 +613,7 @@ class EbayProducts(models.Model):
                         product.ebay_image_url = prods[prod_id]["ebay_image"]
                         product.ebay_image_expiration_date = datetime.strptime(images[prod_id]['expire_date'], "%Y-%m-%dT%H:%M:%S.%fZ")
             if error_products:
-                self._send_ebay_error_mail("errore ritornato da revise fixed price  %s " % error_products, '[EBAY] ERRORE errore ritornato da revise fixed price %s' % xml)
+                self._send_ebay_error_mail("errore ritornato da revise fixed price  %s %s " % (error_products, xml), '[EBAY] ERRORE errore ritornato da revise fixed price ')
                 return
 
     @api.model
@@ -682,7 +682,7 @@ class EbayProducts(models.Model):
 
             problems = [p for p in products_expired if "%s" % p.id not in relisted_products]
             if problems:
-                self._send_ebay_error_mail("Non sono riuscito ad aggiungere questi prodotti %s " % problems, '[EBAY] ERRORE nel relist di nuovi prodotti su ebay %s' % xml)
+                self._send_ebay_error_mail("Non sono riuscito ad aggiungere questi prodotti %s %s" % (problems, xml), '[EBAY] ERRORE nel relist di nuovi prodotti su ebay ' )
 
     @api.model
     def _end_products_on_ebay(self):
@@ -704,6 +704,8 @@ class EbayProducts(models.Model):
             uu_id = uuid.uuid4()
 
             xml = self._end_fixed_price_items_on_ebay(environment, uu_id, xml_builder, prods)
+            # TODO remove
+            self._send_ebay_error_mail("%s" % xml, '[EBAY] DEBUG ')
             if not xml:
                 return False
             ended_products = xml_builder.parse_endfixed_response(xml)
@@ -719,7 +721,7 @@ class EbayProducts(models.Model):
 
             problems = [p for p in products_to_end if "%s" % p.id not in ended_products]
             if problems:
-                self._send_ebay_error_mail("Non sono riuscito a terminare questi prodotti %s " % problems, '[EBAY] ERRORE nel end di nuovi prodotti su ebay %s' % xml)
+                self._send_ebay_error_mail("Non sono riuscito a terminare questi prodotti %s %s" % (problems, xml), '[EBAY] ERRORE nel end di nuovi prodotti su ebay ')
 
     @api.model
     def _remove_expired_ebay_ids(self):
@@ -1027,22 +1029,22 @@ class EbayProducts(models.Model):
     def _ebay_cron_hourly(self):
         try:
             self._upload_new_products_to_ebay()
-        except Exception:
-            pass
+        except Exception as e:
+            self._send_ebay_error_mail("%s" % e, '[EBAY] ECCEZIONE lanciata da _upload_new_products_to_ebay ')
 
         try:
             self._update_products_on_ebay()
-        except Exception:
-            pass
+        except Exception as e:
+            self._send_ebay_error_mail("%s" % e, '[EBAY] ECCEZIONE lanciata da _update_products_on_ebay ')
 
         try:
             self._get_ebay_orders()
-        except Exception:
-            pass
+        except Exception as e:
+            self._send_ebay_error_mail("%s" % e, '[EBAY] ECCEZIONE lanciata da _get_ebay_orders ')
         try:
             self._end_products_on_ebay()
-        except Exception:
-            pass
+        except Exception as e:
+            self._send_ebay_error_mail("%s" % e, '[EBAY] ECCEZIONE lanciata da _end_products_on_ebay ')
 
         return True
 
@@ -1050,14 +1052,14 @@ class EbayProducts(models.Model):
     def _ebay_cron_daily(self):
         try:
             self._remove_expired_ebay_ids()
-        except Exception:
-            pass
+        except Exception as e:
+            self._send_ebay_error_mail("%s" % e, '[EBAY] ECCEZIONE lanciata da _remove_expired_ebay_ids ')
         try:
             self._complete_ebay_orders()
-        except Exception:
-            pass
+        except Exception as e:
+            self._send_ebay_error_mail("%s" % e, '[EBAY] ECCEZIONE lanciata da _complete_ebay_orders ')
         try:
             self._relist_products_on_ebay()
-        except Exception:
-            pass
+        except Exception as e:
+            self._send_ebay_error_mail("%s" % e, '[EBAY] ECCEZIONE lanciata da _relist_products_on_ebay ')
         return True
