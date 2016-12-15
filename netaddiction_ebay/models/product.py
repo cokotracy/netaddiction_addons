@@ -10,12 +10,13 @@ import pprint
 import time
 import ebaysdk
 import random
+import logging
 from ebaysdk.utils import getNodeText
 from ebaysdk.exception import ConnectionError
 from ebaysdk.trading import Connection as Trading
 
 MAX_NUM_JOB_CHECK = 20
-
+_logger = logging.getLogger(__name__)
 
 class EbayProducts(models.Model):
     _inherit = 'product.product'
@@ -711,12 +712,11 @@ class EbayProducts(models.Model):
 
             if ended_products:
                 for prod_id, end_date in ended_products.iteritems():
-                    if prod_id in prods:
-                        product_ended = [p for p in products_to_end if p.id == int(prod_id)]
-                        if product_ended:
-                            product = product_ended[0]
-                            product.ebay_expiration_date = datetime.strptime(end_date['end'], "%Y-%m-%dT%H:%M:%S.%fZ")
-                            product.ebay_id = ''
+                    product_ended = [p for p in products_to_end if p.id == int(prod_id)]
+                    if product_ended:
+                        product = product_ended[0]
+                        product.ebay_expiration_date = datetime.strptime(end_date['end'], "%Y-%m-%dT%H:%M:%S.%fZ")
+                        product.ebay_id = ''
 
             problems = [p for p in products_to_end if "%s" % p.id not in ended_products]
             if problems:

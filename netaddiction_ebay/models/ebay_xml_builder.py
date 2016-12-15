@@ -233,16 +233,17 @@ class EbayXMLBuilder(models.TransientModel):
         root = objectify.fromstring(xml)
         _logger.warning("ADDFIXED***********************************************")
         _logger.warning("%s" % xml)
+        _logger.warning(xml)
         _logger.warning("ADDFIXED***********************************************")
         _logger.warning("%s" % type(xml))
         _logger.warning("ADDFIXED***********************************************")
-        _logger.warning("%s" % root)
+        _logger.warning(root)
         _logger.warning("FINE ADDFIXED***********************************************")
         for resp in root.AddFixedPriceItemResponse:
             # print resp.Ack.text
             if resp.Ack.text != "Failure":
                 ret[resp.CorrelationID.text] = {'id': resp.ItemID.text, 'start': resp.StartTime.text, 'end': resp.EndTime.text}
-
+        _logger.warning(ret)
         return ret
 
     def build_revise_fixed_price_items(self, products):
@@ -374,7 +375,7 @@ class EbayXMLBuilder(models.TransientModel):
             # print resp.Ack.text
             if resp.Ack.text != "Failure":
                 ret[resp.CorrelationID.text] = {'end': resp.EndTime.text}
-
+        _logger.warning(ret)
         return ret
 
     def build_get_seller_transactions_items(self, time_from_string, time_to_string):
