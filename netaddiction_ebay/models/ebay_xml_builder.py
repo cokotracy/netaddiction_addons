@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-import logging
 from openerp import models
 from lxml import etree, objectify
 # http://localhost:8069/web/image/product.template/6901/image/300x300?unique=1d457f6
@@ -33,7 +32,6 @@ END_REASON = "NotAvailable"
 
 IMAGE_URL_FORMAT = 'https://images.multiplayer.com/thumbs/%(splitter)s/%(model)s-%(field)s-%(pk)d-%(width)dx%(height)d-q%(quality)d.jpg'
 
-_logger = logging.getLogger(__name__)
 
 
 class EbayXMLBuilder(models.TransientModel):
@@ -231,19 +229,10 @@ class EbayXMLBuilder(models.TransientModel):
 
         ret = {}
         root = objectify.fromstring(xml)
-        _logger.warning("ADDFIXED***********************************************")
-        _logger.warning("%s" % xml)
-        _logger.warning(xml)
-        _logger.warning("ADDFIXED***********************************************")
-        _logger.warning("%s" % type(xml))
-        _logger.warning("ADDFIXED***********************************************")
-        _logger.warning(root)
-        _logger.warning("FINE ADDFIXED***********************************************")
         for resp in root.AddFixedPriceItemResponse:
             # print resp.Ack.text
             if resp.Ack.text != "Failure":
                 ret[resp.CorrelationID.text] = {'id': resp.ItemID.text, 'start': resp.StartTime.text, 'end': resp.EndTime.text}
-        _logger.warning(ret)
         return ret
 
     def build_revise_fixed_price_items(self, products):
@@ -364,18 +353,10 @@ class EbayXMLBuilder(models.TransientModel):
 
         ret = {}
         root = objectify.fromstring("%s" % xml)
-        _logger.warning("***********************************************")
-        _logger.warning("%s" % xml)
-        _logger.warning("***********************************************")
-        _logger.warning("%s" % type(xml))
-        _logger.warning("***********************************************")
-        _logger.warning("%s" % root)
-        _logger.warning("***********************************************")
         for resp in root.EndFixedPriceItemResponse:
             # print resp.Ack.text
             if resp.Ack.text != "Failure":
                 ret[resp.CorrelationID.text] = {'end': resp.EndTime.text}
-        _logger.warning(ret)
         return ret
 
     def build_get_seller_transactions_items(self, time_from_string, time_to_string):
