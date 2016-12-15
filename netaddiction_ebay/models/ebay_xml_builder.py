@@ -231,6 +231,13 @@ class EbayXMLBuilder(models.TransientModel):
 
         ret = {}
         root = objectify.fromstring(xml)
+        _logger.warning("ADDFIXED***********************************************")
+        _logger.warning("%s" % xml)
+        _logger.warning("ADDFIXED***********************************************")
+        _logger.warning("%s" % type(xml))
+        _logger.warning("ADDFIXED***********************************************")
+        _logger.warning("%s" % root)
+        _logger.warning("FINE ADDFIXED***********************************************")
         for resp in root.AddFixedPriceItemResponse:
             # print resp.Ack.text
             if resp.Ack.text != "Failure":
@@ -355,9 +362,11 @@ class EbayXMLBuilder(models.TransientModel):
     def parse_endfixed_response(self, xml):
 
         ret = {}
-        root = objectify.fromstring(xml)
+        root = objectify.fromstring("%s" % xml)
         _logger.warning("***********************************************")
         _logger.warning("%s" % xml)
+        _logger.warning("***********************************************")
+        _logger.warning("%s" % type(xml))
         _logger.warning("***********************************************")
         _logger.warning("%s" % root)
         _logger.warning("***********************************************")
