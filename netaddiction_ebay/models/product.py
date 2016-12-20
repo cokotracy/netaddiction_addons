@@ -14,7 +14,7 @@ from ebaysdk.utils import getNodeText
 from ebaysdk.exception import ConnectionError
 from ebaysdk.trading import Connection as Trading
 
-MAX_NUM_JOB_CHECK = 20
+MAX_NUM_JOB_CHECK = 40
 
 
 class EbayProducts(models.Model):
@@ -518,6 +518,7 @@ class EbayProducts(models.Model):
             if not xml:
                 return
             items = xml_builder.parse_addfixed_response(xml)
+            duplicates = []
             if items:
                 for prod_id, item in items.iteritems():
                     if prod_id in prods:
@@ -529,10 +530,14 @@ class EbayProducts(models.Model):
                             product.ebay_expiration_date = datetime.strptime(item["end"], "%Y-%m-%dT%H:%M:%S.%fZ")
                             product.ebay_image_url = prods[prod_id]["ebay_image"]
                             product.ebay_image_expiration_date = datetime.strptime(images[prod_id]['expire_date'], "%Y-%m-%dT%H:%M:%S.%fZ")
+                            if item['duplicate']:
+                                duplicates.append((product.name, product.id))
 
             problems = [p for p in products_to_upload if "%s" % p.id not in items]
             if problems:
                 self._send_ebay_error_mail("Non sono riuscito ad aggiungere questi prodotti %s %s " % (problems, xml), '[EBAY] ERRORE nell upload di nuovi prodotti su ebay')
+            if duplicates:
+                self._send_ebay_error_mail("Duplicati nell' AddFixedPriceItem %s" % duplicates, '[EBAY] WARNING duplicati')
 
     @api.model
     def _update_products_on_ebay(self):

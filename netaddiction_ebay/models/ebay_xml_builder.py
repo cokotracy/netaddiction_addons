@@ -232,7 +232,11 @@ class EbayXMLBuilder(models.TransientModel):
         for resp in root.AddFixedPriceItemResponse:
             # print resp.Ack.text
             if resp.Ack.text != "Failure":
-                ret[resp.CorrelationID.text] = {'id': resp.ItemID.text, 'start': resp.StartTime.text, 'end': resp.EndTime.text}
+                ret[resp.CorrelationID.text] = {'id': resp.ItemID.text, 'start': resp.StartTime.text, 'end': resp.EndTime.text, 'duplicate': False}
+            else:
+                for error in resp.Errors:
+                    if error.Errors.ErrorId.text == "21919067":
+                        ret[resp.CorrelationID.text] = {'duplicate': True, 'id': resp.ItemID.text, 'start': resp.StartTime.text, 'end': resp.EndTime.text}
         return ret
 
     def build_revise_fixed_price_items(self, products):
