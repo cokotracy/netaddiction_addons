@@ -234,15 +234,19 @@ class EbayXMLBuilder(models.TransientModel):
         root = objectify.fromstring(xml)
         for resp in root.AddFixedPriceItemResponse:
             # print resp.Ack.text
+            _logger.warning("***************************************")
             _logger.warning("%s" % resp)
+            _logger.warning("***************************************")
             if resp.Ack.text != "Failure":
                 ret[resp.CorrelationID.text] = {'id': resp.ItemID.text, 'start': resp.StartTime.text, 'end': resp.EndTime.text, 'duplicate': False}
             else:
                 for error in resp.Errors:
-                    _logger.warning("%s" % error.Errors.ErrorId.text)
-                    if error.Errors.ErrorId.text == "21919067":
+                    _logger.warning("%s" % error.ErrorId.text)
+                    if error.ErrorId.text == "21919067":
+                        _logger.warning("£££££££££££££££££££££££££££££££££££££££££")
                         _logger.warning("%s" % resp.ItemID.text)
                         _logger.warning("%s" % resp.StartTime.text)
+                        _logger.warning("£££££££££££££££££££££££££££££££££££££££££")
                         ret[resp.CorrelationID.text] = {'duplicate': True, 'id': resp.ItemID.text, 'start': resp.StartTime.text, 'end': resp.EndTime.text}
         return ret
 
