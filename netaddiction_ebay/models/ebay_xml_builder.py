@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import logging
 from openerp import models
 from lxml import etree, objectify
 # http://localhost:8069/web/image/product.template/6901/image/300x300?unique=1d457f6
@@ -31,6 +32,8 @@ ITA = "Italy"
 END_REASON = "NotAvailable"
 
 IMAGE_URL_FORMAT = 'https://images.multiplayer.com/thumbs/%(splitter)s/%(model)s-%(field)s-%(pk)d-%(width)dx%(height)d-q%(quality)d.jpg'
+
+_logger = logging.getLogger(__name__)
 
 
 
@@ -231,11 +234,15 @@ class EbayXMLBuilder(models.TransientModel):
         root = objectify.fromstring(xml)
         for resp in root.AddFixedPriceItemResponse:
             # print resp.Ack.text
+            _logger.warning("%s" % resp)
             if resp.Ack.text != "Failure":
                 ret[resp.CorrelationID.text] = {'id': resp.ItemID.text, 'start': resp.StartTime.text, 'end': resp.EndTime.text, 'duplicate': False}
             else:
                 for error in resp.Errors:
+                    _logger.warning("%s" % error.Errors.ErrorId.text)
                     if error.Errors.ErrorId.text == "21919067":
+                        _logger.warning("%s" % resp.ItemID.text)
+                        _logger.warning("%s" % resp.StartTime.text)
                         ret[resp.CorrelationID.text] = {'duplicate': True, 'id': resp.ItemID.text, 'start': resp.StartTime.text, 'end': resp.EndTime.text}
         return ret
 
