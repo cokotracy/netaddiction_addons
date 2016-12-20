@@ -241,8 +241,8 @@ class EbayXMLBuilder(models.TransientModel):
                 ret[resp.CorrelationID.text] = {'id': resp.ItemID.text, 'start': resp.StartTime.text, 'end': resp.EndTime.text, 'duplicate': False}
             else:
                 for error in resp.Errors:
-                    _logger.warning("%s" % error.ErrorId.text)
-                    if error.ErrorId.text == "21919067":
+                    _logger.warning("%s" % error.ErrorCode.text)
+                    if error.ErrorCode.text == "21919067":
                         _logger.warning("£££££££££££££££££££££££££££££££££££££££££")
                         _logger.warning("%s" % resp.ItemID.text)
                         _logger.warning("%s" % resp.StartTime.text)
