@@ -232,11 +232,12 @@ class EbayXMLBuilder(models.TransientModel):
 
         ret = {}
         root = objectify.fromstring(xml)
+        _logger.warning("***************************************")
+        _logger.warning(etree.tostring(root, pretty_print=True))
+        _logger.warning("***************************************")
+        
         for resp in root.AddFixedPriceItemResponse:
             # print resp.Ack.text
-            _logger.warning("***************************************")
-            _logger.warning("%s" % resp)
-            _logger.warning("***************************************")
             if resp.Ack.text != "Failure":
                 ret[resp.CorrelationID.text] = {'id': resp.ItemID.text, 'start': resp.StartTime.text, 'end': resp.EndTime.text, 'duplicate': False}
             else:
