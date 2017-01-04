@@ -244,11 +244,12 @@ class EbayXMLBuilder(models.TransientModel):
                 for error in resp.Errors:
                     _logger.warning("%s" % error.ErrorCode.text)
                     if error.ErrorCode.text == "21919067":
-                        _logger.warning("£££££££££££££££££££££££££££££££££££££££££")
-                        _logger.warning("%s" % resp.ItemID.text)
-                        _logger.warning("%s" % resp.StartTime.text)
-                        _logger.warning("£££££££££££££££££££££££££££££££££££££££££")
-                        ret[resp.CorrelationID.text] = {'duplicate': True, 'id': resp.ItemID.text, 'start': resp.StartTime.text, 'end': resp.EndTime.text}
+                        id_ebay = None
+                        for error_value in resp.Errors.ErrorParameters:
+                            if error_value.get("ParamID") == "1":
+                                id_ebay = error_value.Value.text
+                        if id_ebay:
+                            ret[resp.CorrelationID.text] = {'duplicate': True, 'id': id_ebay}
         return ret
 
     def build_revise_fixed_price_items(self, products):
