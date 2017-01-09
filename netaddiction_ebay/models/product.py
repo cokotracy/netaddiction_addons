@@ -526,12 +526,13 @@ class EbayProducts(models.Model):
                         if products_uploaded:
                             product = products_uploaded[0]
                             product.ebay_id = item['id']
-                            product.ebay_published_date = datetime.strptime(item["start"], "%Y-%m-%dT%H:%M:%S.%fZ")
-                            product.ebay_expiration_date = datetime.strptime(item["end"], "%Y-%m-%dT%H:%M:%S.%fZ")
-                            product.ebay_image_url = prods[prod_id]["ebay_image"]
-                            product.ebay_image_expiration_date = datetime.strptime(images[prod_id]['expire_date'], "%Y-%m-%dT%H:%M:%S.%fZ")
                             if item['duplicate']:
                                 duplicates.append((product.name, product.id))
+                            else:
+                                product.ebay_published_date = datetime.strptime(item["start"], "%Y-%m-%dT%H:%M:%S.%fZ")
+                                product.ebay_expiration_date = datetime.strptime(item["end"], "%Y-%m-%dT%H:%M:%S.%fZ")
+                                product.ebay_image_url = prods[prod_id]["ebay_image"]
+                                product.ebay_image_expiration_date = datetime.strptime(images[prod_id]['expire_date'], "%Y-%m-%dT%H:%M:%S.%fZ")
 
             problems = [p for p in products_to_upload if "%s" % p.id not in items]
             if problems:
