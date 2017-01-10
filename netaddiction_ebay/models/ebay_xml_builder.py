@@ -245,7 +245,7 @@ class EbayXMLBuilder(models.TransientModel):
                     _logger.warning("%s" % error.ErrorCode.text)
                     if error.ErrorCode.text == "21919067":
                         id_ebay = None
-                        for error_value in resp.Errors.ErrorParameters:
+                        for error_value in error.ErrorParameters:
                             if error_value.get("ParamID") == "1":
                                 id_ebay = error_value.Value.text
                         if id_ebay:
