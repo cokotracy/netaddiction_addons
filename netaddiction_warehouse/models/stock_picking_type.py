@@ -706,13 +706,19 @@ class StockQuant(models.Model):
         for res in result:
             if res.product_id.id in quants:
                 quants[res.product_id.id]['qty']+=res.qty
-                #quants[res.product_id]['inventory_value']+=res.inventory_value
+                # quants[res.product_id.id]['inventory_value']+=res.product_id.med_inventory_value*res.qty
+                # quants[res.product_id.id]['single_inventory']=res.product_id.med_inventory_value
+                quants[res.product_id.id]['inventory_value']+=res.inventory_value
+                quants[res.product_id.id]['single_inventory']=res.inventory_value/res.qty
             else:
                 quants[res.product_id.id] = {
                     'id':res.product_id.id,
                     'name':res.product_id.display_name,
                     'qty':res.qty,
-                    #'inventory_value':res.inventory_value
+                    'inventory_value':res.inventory_value,
+                    'single_inventory':res.inventory_value/res.qty
+                    # 'inventory_value':res.product_id.med_inventory_value*res.qty,
+                    # 'single_inventory':res.product_id.med_inventory_value
                 }
         return quants
 
@@ -726,13 +732,15 @@ class StockQuant(models.Model):
         for res in result:
             if res.product_id.id in quants:
                 quants[res.product_id.id]['qty']+=res.qty
-                #quants[res.product_id]['inventory_value']+=res.inventory_value
+                quants[res.product_id.id]['inventory_value']+=res.inventory_value
+                quants[res.product_id.id]['single_inventory']=res.inventory_value/res.qty
             else:
                 quants[res.product_id.id] = {
                     'id':res.product_id.id,
                     'name':res.product_id.display_name,
                     'qty':res.qty,
-                    #'inventory_value':res.inventory_value
+                    'inventory_value':res.inventory_value,
+                    'single_inventory':res.inventory_value/res.qty
                 }
         return quants
 

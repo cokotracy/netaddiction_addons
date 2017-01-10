@@ -87,6 +87,12 @@
                 <th help="Quantità da rendere">
                   Qty Rend
                 </th>
+                <th>
+                  Valore Unitario
+                </th>
+                <th>
+                  Valore
+                </th>
             </tr>
         </thead>
         <tfoot>
@@ -109,6 +115,12 @@
               </td>
               <td>
                 <input type="number" class="qty_reverse" t-attf-max="{{products[product].qty}}" min="0" style="width:70px" value="0" t-attf-id="qta_{{products[product].id}}"/>
+              </td>
+              <td>
+                <t t-esc="products[product].single_inventory"/>
+              </td>
+              <td>
+                <t t-esc="products[product].inventory_value"/>
               </td>
             </tr>
           </t>

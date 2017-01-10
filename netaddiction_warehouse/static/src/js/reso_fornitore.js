@@ -67,6 +67,7 @@ odoo.define('netaddiction_warehouse.supplier_reverse', function (require) {
             this.products = {};
             this.pager = null;
             this.limit = 40;
+            this.total_mag = 0;
             this.actionmanager = new ActionManager(this);
             this.selectedProducts = {
                 'scraped' : new Array(),
@@ -167,13 +168,20 @@ odoo.define('netaddiction_warehouse.supplier_reverse', function (require) {
             }
              new Model('stock.quant').call('get_quant_from_supplier',[supplier_id]).then(function(result){
                 var count = 0
+                self.total_mag = 0;
                 for(var p in result){
                     self.products[result[p].id] = {}
                     self.products[result[p].id]['id'] = result[p].id
                     self.products[result[p].id]['name'] = result[p].name
                     self.products[result[p].id]['qty'] = result[p].qty
+                    self.products[result[p].id]['inventory_value'] = result[p].inventory_value.toLocaleString()
+                    self.products[result[p].id]['single_inventory'] = result[p].single_inventory.toLocaleString()
+                    self.total_mag = self.total_mag + result[p].inventory_value
                     count = count + 1
                 }
+                self.total_mag = self.total_mag.toLocaleString();
+                $('#total_mag').remove();
+                $('#search_supplier').after('<span id="total_mag">&nbsp;<span>Totale Magazzino: </span><b>'+self.total_mag+'</b></span>');
                 
                 $('#content_reverse').html(qweb.render('table_scraped',{products : self.products}));
 
@@ -186,6 +194,7 @@ odoo.define('netaddiction_warehouse.supplier_reverse', function (require) {
         get_scraped_products : function(supplier_id,product_name){
             $('.product_line').remove();
             $('#pager').html('');
+            self.total_mag = 0;
             this.products = {};
             var location_id = this.operations.reverse_supplier_scraped.default_location_src_id[0];
             var filter = [['company_id','=',session.company_id],['location_id','=',parseInt(location_id)]]
@@ -199,9 +208,14 @@ odoo.define('netaddiction_warehouse.supplier_reverse', function (require) {
                     self.products[result[p].id]['id'] = result[p].id
                     self.products[result[p].id]['name'] = result[p].name
                     self.products[result[p].id]['qty'] = result[p].qty
+                    self.products[result[p].id]['inventory_value'] = result[p].inventory_value.toLocaleString()
+                    self.products[result[p].id]['single_inventory'] = result[p].single_inventory.toLocaleString()
+                    self.total_mag = self.total_mag + result[p].inventory_value
                     count = count + 1
                 }
-                
+                self.total_mag = self.total_mag.toLocaleString();
+                $('#total_mag').remove();
+                $('#search_supplier').after('<span id="total_mag">&nbsp;<span>Totale Magazzino: </span><b>'+self.total_mag+'</b></span>');
                 $('#content_reverse').html(qweb.render('table_scraped',{products : self.products}));
 
                 $(self.selectedProducts.scraped).each(function(index,product){
