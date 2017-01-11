@@ -1000,7 +1000,7 @@ class EbayProducts(models.Model):
 
     def _build_category_dictionary(self):
         return {
-            self.env["product.category"].search([("name", "=", "Abbigliamento")]).id: "167905",
+            self.env["product.category"].search([("name", "=", "Abbigliamento")]).id: "11450",
             self.env["product.category"].search([("name", "=", "Figures")]).id: "348",
             self.env["product.category"].search([("name", "=", "Film e Serie TV")]).id: "617",
             self.env["product.category"].search([("name", "=", "Gadget")]).id: {
