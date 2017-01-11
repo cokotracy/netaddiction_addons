@@ -15,4 +15,13 @@ class Order(models.Model):
         obj = "[SHOPPING] ANNULLATO ordine %s %s" % (self.name, ", ".join(set(categories)))
         self.env["netaddiction.email.dispatcher"].send_mail(obj, obj, "shopping@multiplayer.com", set(users))
 
+        pp_journal = self.env['ir.model.data'].get_object('netaddiction_payments', 'paypal_journal')
+        sofort_journal = self.env['ir.model.data'].get_object('netaddiction_payments', 'sofort_journal')
+
+        if self.state not in ["draft, done, pending"] and self.payment_method_id.id in [pp_journal.id, sofort_journal.id]:
+            obj = "[SHOPPING] PAGAMENTO ANNULLATO RIMBORSO DA FARE ordine %s %s" % (self.name, ", ".join(set(categories)))
+            users_2 = self.env["netaddiction.email.dispatcher"].get_users_from_group("netaddiction_sale_customer_care")
+            users_2 += self.env["netaddiction.email.dispatcher"].get_users_from_group("netaddiction_acl.netaddiction_sale_user_manager")
+            self.env["netaddiction.email.dispatcher"].send_mail(obj, obj, "shopping@multiplayer.com", set(users_2))
+
         super(Order, self).action_cancel()
