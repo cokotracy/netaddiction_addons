@@ -8,9 +8,9 @@ class EmailDispatcher(models.TransientModel):
     """
     _name = "netaddiction.email.dispatcher"
 
-    def send_mail(self, body, subject, email_from, recipients, attachment_ids=None, reply_to = None):
+    def send_mail(self, body, subject, email_from, recipients, attachment_ids=None, reply_to=None):
         """
-        recipients: lista di stringhe contenenti le mail
+        recipients: lista di partners
         """
 
         email_to = ",".join([r.email for r in recipients])
@@ -21,7 +21,27 @@ class EmailDispatcher(models.TransientModel):
             'email_to': email_to,
         }
         if reply_to:
-            values['reply_to']=reply_to
+            values['reply_to'] = reply_to
+
+        email = self.env['mail.mail'].create(values)
+
+        if attachment_ids:
+            email['attachment_ids'] = [(6, 0, attachment_ids), ]
+        
+        email.send()
+
+    def send_mail_fixed_recipients(self, body, subject, email_from, recipients, attachment_ids=None, reply_to=None):
+        """
+        recipients:  stringa contenente le mail
+        """
+        values = {
+            'subject': subject,
+            'body_html': body,
+            'email_from': email_from,
+            'email_to': recipients,
+        }
+        if reply_to:
+            values['reply_to'] = reply_to
 
         email = self.env['mail.mail'].create(values)
 

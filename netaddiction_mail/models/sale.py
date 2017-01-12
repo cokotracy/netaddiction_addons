@@ -20,7 +20,7 @@ class Order(models.Model):
 
         if self.state not in ["draft, done, pending"] and self.payment_method_id.id in [pp_journal.id, sofort_journal.id]:
             obj = "[SHOPPING] PAGAMENTO ANNULLATO RIMBORSO DA FARE ordine %s %s" % (self.name, ", ".join(set(categories)))
-            users_2 = ["shopping@multiplayer.com, riccardo.ioni@netaddiction.it"]
-            self.env["netaddiction.email.dispatcher"].send_mail(obj, obj, "shopping@multiplayer.com", set(users_2))
+            users_2 = "shopping@multiplayer.com, riccardo.ioni@netaddiction.it"
+            self.env["netaddiction.email.dispatcher"].send_mail_fixed_recipients(obj, obj, "shopping@multiplayer.com", users_2)
 
         super(Order, self).action_cancel()
