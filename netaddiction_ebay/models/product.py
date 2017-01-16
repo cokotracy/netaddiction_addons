@@ -965,7 +965,7 @@ class EbayProducts(models.Model):
 
         # creare ordine e mandarlo in lavorazione
         self._send_ebay_error_mail("", '[EBAY] 12')
-        public_price_list = self.env["product.pricelist"].search([("name", "=", "Listino Pubblico")])[0].id
+        # public_price_list = self.env["product.pricelist"].search([("name", "=", "Listino Pubblico")])[0].id
         self._send_ebay_error_mail("", '[EBAY] 12a')
         sda = self.env["delivery.carrier"].search([('name', '=', 'Corriere Espresso SDA')])[0].id
         self._send_ebay_error_mail("", '[EBAY] 12b')
