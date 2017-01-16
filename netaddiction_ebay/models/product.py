@@ -750,6 +750,8 @@ class EbayProducts(models.Model):
         last_executed = self.env["ir.values"].search([("name", "=", "ebay_last_order_check"), ("model", "=", "netaddiction.ebay.config")]).value
         last_executed = last_executed if last_executed else (datetime.now() - timedelta(days=1)).strftime("%Y-%m-%d %H:%M:%S")
 
+        self._send_ebay_error_mail("%s %s" % (last_executed, now) , '[EBAY] DEBUG ')
+        error_transaction = []
         try:
             
             api = Trading(debug=False, config_file=None, appid="Multipla-15da-4ecf-b93c-a64ed3b924f3", certid="9514cd34-39e2-45f7-9a62-9a68ff704d4b", devid="639886ba-b87c-4189-9173-0bc9d268a3ef", token="AgAAAA**AQAAAA**aAAAAA**53qKVg**nY+sHZ2PrBmdj6wVnY+sEZ2PrA2dj6wDk4OlC5mFpAmdj6x9nY+seQ**9awAAA**AAMAAA**pGvmfVg208g0mF4bPruXlZXREgznIU2JA2sBrkCyNi4fbZTRLVCUfUs5N2jG1V7q2vLOX9ctNGna3RrbgNNBnpQIzvUWg2Z9Z+/pnJuM4pIZcpI5Jfig3OOLdI4vzS1O9T+g0D23GTpmjE3dWWaiBp5Hsisdd08pm6y6eTCvLVRJbcEZHdhlmpmREzJTCzmOGGUImS4nu7kGGGftUZ++cLHgZ8OcGNDq7pxtdnRRR7cDttMtCuEJQYqx4ITxgd+QUX3Q8wkd0pGMsiSG9lrEnyxYFhGdJ7sprmbKMevgkHzmmY6IVg461PajZOBR6jOL0H55tFLN4UHsi3B8fhxuG+r52gQNrXA9tzXdFdwaOnqvRIly5XrrkM25Wk0REzbK5qVK+w5xbtVqu2OgzfHCaqe/jKoWYHzijICTgQKR4Fso9zL/PVzW8mlIjdoaxt2BcOJkzXNstduH6AK0yw2V/rLWcXlwuXf/Go1yJdDHDf7KfU/z2LxDQNbzSDg5Dm0Wl20v9A0bqL39V3umt3d/fAD1Lj/gRk/zWW/pyVIf0SyoLi+y2acjfADK+MGg5asp6Xbx0iHHj5Hg125LNUyVzmNZNKWqBAeFZBvqRtKAF/5JXeOdNENBvvJcgMZZymXMxLJ+C7nQsjkTXFyBRV1jEuBwuilJWge4Txj29YvT4PCUVGmT8lswGJ7NyqXCSAa0aZPCw5ObIpMQWlKqxCjGO9N1taTHJjk8JoPokStlKG4iA839oWKBxOId+8eFeIuS",
@@ -781,7 +783,6 @@ class EbayProducts(models.Model):
                 # print "TOTAL NUMBER OF ENTRIES: %s" % resp["PaginationResult"]["TotalNumberOfEntries"]
                 tot_pag = int(resp["PaginationResult"]["TotalNumberOfPages"])
                 tot_transaction = int(resp["ReturnedTransactionCountActual"])
-                error_transaction = []
                 if tot_transaction > 1:
                     for transaction in resp["TransactionArray"]["Transaction"]:
                         if transaction['Status']['eBayPaymentStatus'] != 'NoPaymentFailure' or transaction['Status']['CheckoutStatus'] != 'CheckoutComplete':
@@ -804,6 +805,8 @@ class EbayProducts(models.Model):
             # print(e.response.dict())
             self._send_ebay_error_mail("problema di connessione %s " % e, '[EBAY] ERRORE nel get order')
             return
+
+        self._send_ebay_error_mail("qui ", '[EBAY] qui ok')
 
         self.env["ir.values"].search([("name", "=", "ebay_last_order_check"), ("model", "=", "netaddiction.ebay.config")]).value = datetime.now()
         if error_transaction:
