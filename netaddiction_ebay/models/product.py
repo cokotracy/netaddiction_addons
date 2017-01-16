@@ -757,7 +757,6 @@ class EbayProducts(models.Model):
             api = Trading(debug=False, config_file=None, appid="Multipla-15da-4ecf-b93c-a64ed3b924f3", certid="9514cd34-39e2-45f7-9a62-9a68ff704d4b", devid="639886ba-b87c-4189-9173-0bc9d268a3ef", token="AgAAAA**AQAAAA**aAAAAA**53qKVg**nY+sHZ2PrBmdj6wVnY+sEZ2PrA2dj6wDk4OlC5mFpAmdj6x9nY+seQ**9awAAA**AAMAAA**pGvmfVg208g0mF4bPruXlZXREgznIU2JA2sBrkCyNi4fbZTRLVCUfUs5N2jG1V7q2vLOX9ctNGna3RrbgNNBnpQIzvUWg2Z9Z+/pnJuM4pIZcpI5Jfig3OOLdI4vzS1O9T+g0D23GTpmjE3dWWaiBp5Hsisdd08pm6y6eTCvLVRJbcEZHdhlmpmREzJTCzmOGGUImS4nu7kGGGftUZ++cLHgZ8OcGNDq7pxtdnRRR7cDttMtCuEJQYqx4ITxgd+QUX3Q8wkd0pGMsiSG9lrEnyxYFhGdJ7sprmbKMevgkHzmmY6IVg461PajZOBR6jOL0H55tFLN4UHsi3B8fhxuG+r52gQNrXA9tzXdFdwaOnqvRIly5XrrkM25Wk0REzbK5qVK+w5xbtVqu2OgzfHCaqe/jKoWYHzijICTgQKR4Fso9zL/PVzW8mlIjdoaxt2BcOJkzXNstduH6AK0yw2V/rLWcXlwuXf/Go1yJdDHDf7KfU/z2LxDQNbzSDg5Dm0Wl20v9A0bqL39V3umt3d/fAD1Lj/gRk/zWW/pyVIf0SyoLi+y2acjfADK+MGg5asp6Xbx0iHHj5Hg125LNUyVzmNZNKWqBAeFZBvqRtKAF/5JXeOdNENBvvJcgMZZymXMxLJ+C7nQsjkTXFyBRV1jEuBwuilJWge4Txj29YvT4PCUVGmT8lswGJ7NyqXCSAa0aZPCw5ObIpMQWlKqxCjGO9N1taTHJjk8JoPokStlKG4iA839oWKBxOId+8eFeIuS",
                        warnings=True, timeout=20, domain='api.ebay.com')
 
-            self._send_ebay_error_mail("qui ", '[EBAY] 1')
 
             curr_pag = 0
             tot_pag = 1
@@ -781,13 +780,10 @@ class EbayProducts(models.Model):
                 # print("Response Reply: %s" % replystr[:150])
 
                 resp = api.response.dict()
-                print resp
-                self._send_ebay_error_mail("%s "%resp, '[EBAY] 2')
                 # print "TOTAL NUMBER OF ENTRIES: %s" % resp["PaginationResult"]["TotalNumberOfEntries"]
                 tot_pag = int(resp["PaginationResult"]["TotalNumberOfPages"])
                 tot_transaction = int(resp["ReturnedTransactionCountActual"])
                 if tot_transaction > 1:
-                    self._send_ebay_error_mail("", '[EBAY] 3')
                     for transaction in resp["TransactionArray"]["Transaction"]:
                         if transaction['Status']['eBayPaymentStatus'] != 'NoPaymentFailure' or transaction['Status']['CheckoutStatus'] != 'CheckoutComplete':
                             pass
@@ -810,7 +806,6 @@ class EbayProducts(models.Model):
             self._send_ebay_error_mail("problema di connessione %s " % e, '[EBAY] ERRORE nel get order')
             return
 
-        self._send_ebay_error_mail("qui ", '[EBAY] qui ok')
 
         self.env["ir.values"].search([("name", "=", "ebay_last_order_check"), ("model", "=", "netaddiction.ebay.config")]).value = datetime.now()
         if error_transaction:
@@ -882,7 +877,6 @@ class EbayProducts(models.Model):
         """
         utility per creare un ordine a partire da una transazione ebay
         """
-        self._send_ebay_error_mail("", '[EBAY] 6')
         buyer = transaction["Buyer"]
         user = self.env["res.partner"].search([("email", "=", buyer["Email"])])
         user = user[0] if user else None
@@ -896,14 +890,11 @@ class EbayProducts(models.Model):
         if user:
             find_ship_address = False
             for child in user.child_ids:
-                self._send_ebay_error_mail("%s" % shipping_dict, '[EBAY] 9')
                 if child.type == "delivery" and child.equals(shipping_dict):
                     find_ship_address = True
                     user_shipping = child
                     break
             if not find_ship_address:
-                self._send_ebay_error_mail("%s" % shipping_dict, '[EBAY] 9b')
-                self._send_ebay_error_mail("", '[EBAY] 10')
                 shipping_dict['company_id'] = user.company_id.id
                 shipping_dict['is_company'] = False
                 shipping_dict['type'] = 'delivery'
@@ -914,13 +905,10 @@ class EbayProducts(models.Model):
                 user_shipping = self.env["res.partner"].create(shipping_dict)
             billings = [child for child in user.child_ids if child.type == 'invoice']
             if billings:
-                self._send_ebay_error_mail("%s" % shipping_dict, '[EBAY] 9c')
                 user_billing = billings[0]
             else:
-                self._send_ebay_error_mail("%s" % shipping_dict, '[EBAY] 9d')
                 user_billing = self.env["res.partner"].create({'name': user.name, 'type': 'invoice', 'street': shipping_address["Street1"], 'phone': shipping_address["Phone"], 'country_id': italy_id.id, 'city': shipping_address["CityName"], 'zip': shipping_address["PostalCode"], 'parent_id': user.id, 'company_id': user.company_id.id, 'street2': shipping_address["Street2"]})
         else:
-            self._send_ebay_error_mail("", '[EBAY] 11')
             # creare user e indirizzo che sega
             company_id = self.env["res.company"].search([("name", "=", "Multiplayer.com")])[0].id
             user = self.env["res.partner"].create({
@@ -964,18 +952,12 @@ class EbayProducts(models.Model):
                 'notify_email': 'none'})
 
         # creare ordine e mandarlo in lavorazione
-        self._send_ebay_error_mail("", '[EBAY] 12')
         # public_price_list = self.env["product.pricelist"].search([("name", "=", "Listino Pubblico")])[0].id
-        self._send_ebay_error_mail("", '[EBAY] 12a')
         sda = self.env["delivery.carrier"].search([('name', '=', 'Corriere Espresso SDA')])[0].id
-        self._send_ebay_error_mail("", '[EBAY] 12b')
         brt = self.env["delivery.carrier"].search([('name', '=', 'Corriere Espresso BRT')])[0].id
-        self._send_ebay_error_mail("", '[EBAY] 12c')
         # print public_price_list
-        journal_id = None
-        self._send_ebay_error_mail("", '[EBAY] 12d')
+        journal_id = None      
         pay_pal_tran_id = ''
-        self._send_ebay_error_mail("", '[EBAY] 13')
         if (transaction["Status"]["PaymentMethodUsed"] == "PayPal"):
             self._send_ebay_error_mail("", '[EBAY] 14')
             journal_id = self.env['ir.model.data'].get_object('netaddiction_payments', 'paypal_journal').id
