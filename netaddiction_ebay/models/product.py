@@ -10,6 +10,7 @@ import pprint
 import time
 import ebaysdk
 import random
+import traceback
 from ebaysdk.utils import getNodeText
 from ebaysdk.exception import ConnectionError
 from ebaysdk.trading import Connection as Trading
@@ -1045,7 +1046,7 @@ class EbayProducts(models.Model):
         try:
             self._get_ebay_orders()
         except Exception as e:
-            self._send_ebay_error_mail("%s" % e, '[EBAY] ECCEZIONE lanciata da _get_ebay_orders ')
+            self._send_ebay_error_mail("%s  %s" % (e,traceback.print_exc()), '[EBAY] ECCEZIONE lanciata da _get_ebay_orders ')
         try:
             self._end_products_on_ebay()
         except Exception as e:
