@@ -38,6 +38,19 @@ class Partner(models.Model):
 
         return res
 
+    def _commercial_fields(self, *args, **kwargs):
+        """
+        Rimuove il campo *vat* dai commercial fields per evitare che venga sovrascritto dai vari _commercial_sync_to_*.
+        """
+        commercial_fields = super(Partner, self)._commercial_fields(*args, **kwargs)
+
+        try:
+            commercial_fields.remove('vat')
+        except ValueError:
+            pass
+
+        return commercial_fields
+
     @api.constrains('is_default_address')
     @api.one
     def update_default_address(self):
