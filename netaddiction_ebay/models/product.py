@@ -900,7 +900,7 @@ class EbayProducts(models.Model):
             self._send_ebay_error_mail("", '[EBAY] 8')
             find_ship_address = False
             for child in user.child_ids:
-                self._send_ebay_error_mail("", '[EBAY] 9')
+                self._send_ebay_error_mail("%s" % shipping_dict, '[EBAY] 9')
                 if child.type == "delivery" and child.equals(shipping_dict):
                     find_ship_address = True
                     user_shipping = child
@@ -963,14 +963,16 @@ class EbayProducts(models.Model):
                 'notify_email': 'none'})
 
         # creare ordine e mandarlo in lavorazione
+        self._send_ebay_error_mail("", '[EBAY] 12')
         public_price_list = self.env["product.pricelist"].search([("name", "=", "Listino Pubblico")])[0].id
         sda = self.env["delivery.carrier"].search([('name', '=', 'Corriere Espresso SDA')])[0].id
         brt = self.env["delivery.carrier"].search([('name', '=', 'Corriere Espresso BRT')])[0].id
         # print public_price_list
         journal_id = None
         pay_pal_tran_id = ''
-
+        self._send_ebay_error_mail("", '[EBAY] 13')
         if (transaction["Status"]["PaymentMethodUsed"] == "PayPal"):
+            self._send_ebay_error_mail("", '[EBAY] 14')
             journal_id = self.env['ir.model.data'].get_object('netaddiction_payments', 'paypal_journal').id
             pay_pal_tran_id = transaction["MonetaryDetails"]["Payments"]["Payment"]["ReferenceID"]['value']
         elif (transaction["Status"]["PaymentMethodUsed"] == "COD"):
@@ -980,6 +982,7 @@ class EbayProducts(models.Model):
 
         quantity = int(transaction["QuantityPurchased"])
         prod = self.env["product.product"].browse(int(transaction["Item"]["SKU"]))
+        self._send_ebay_error_mail("", '[EBAY] 15')
         if not prod:
             return "product not found %s " % transaction["Item"]["SKU"]
 
