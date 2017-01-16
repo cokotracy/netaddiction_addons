@@ -792,7 +792,6 @@ class EbayProducts(models.Model):
                         if transaction['Status']['eBayPaymentStatus'] != 'NoPaymentFailure' or transaction['Status']['CheckoutStatus'] != 'CheckoutComplete':
                             pass
                         else:
-                            self._send_ebay_error_mail("", '[EBAY] 5')
                             ret_str = self._create_ebay_order(transaction)
                             if ret_str != "OK":
                                 error_transaction.append([transaction["TransactionID"], ret_str])
@@ -801,7 +800,6 @@ class EbayProducts(models.Model):
                     if transaction['Status']['eBayPaymentStatus'] != 'NoPaymentFailure' or transaction['Status']['CheckoutStatus'] != 'CheckoutComplete':
                         pass
                     else:
-                        self._send_ebay_error_mail("", '[EBAY] 4')
                         ret_str = self._create_ebay_order(transaction)
                         if ret_str != "OK":
                             error_transaction.append([transaction["TransactionID"], ret_str])
@@ -892,12 +890,10 @@ class EbayProducts(models.Model):
         # print user
         shipping_address = buyer["BuyerInfo"]["ShippingAddress"]
         italy_id = self.env["res.country"].search([('code', '=', 'IT')])[0]
-        shipping_dict = {'name': shipping_address["Name"], 'street': shipping_address["Street1"], 'phone': shipping_address["Phone"], 'country_id': italy_id, 'city': shipping_address["CityName"], 'zip': shipping_address["PostalCode"]}
+        shipping_dict = {'name': shipping_address["Name"], 'street': shipping_address["Street1"], 'phone': shipping_address["Phone"], 'country_id': italy_id, 'city': shipping_address["CityName"], 'zip': shipping_address["PostalCode"], 'street2': shipping_address["Street2"]}
         user_shipping = None
         user_billing = None
-        self._send_ebay_error_mail("", '[EBAY] 7')
         if user:
-            self._send_ebay_error_mail("", '[EBAY] 8')
             find_ship_address = False
             for child in user.child_ids:
                 self._send_ebay_error_mail("%s" % shipping_dict, '[EBAY] 9')
@@ -906,6 +902,7 @@ class EbayProducts(models.Model):
                     user_shipping = child
                     break
             if not find_ship_address:
+                self._send_ebay_error_mail("%s" % shipping_dict, '[EBAY] 9b')
                 self._send_ebay_error_mail("", '[EBAY] 10')
                 shipping_dict['company_id'] = user.company_id.id
                 shipping_dict['is_company'] = False
@@ -917,9 +914,11 @@ class EbayProducts(models.Model):
                 user_shipping = self.env["res.partner"].create(shipping_dict)
             billings = [child for child in user.child_ids if child.type == 'invoice']
             if billings:
+                self._send_ebay_error_mail("%s" % shipping_dict, '[EBAY] 9c')
                 user_billing = billings[0]
             else:
-                user_billing = self.env["res.partner"].create({'name': user.name, 'type': 'invoice', 'street': shipping_address["Street1"], 'phone': shipping_address["Phone"], 'country_id': italy_id.id, 'city': shipping_address["CityName"], 'zip': shipping_address["PostalCode"], 'parent_id': user.id, 'company_id': user.company_id.id})
+                self._send_ebay_error_mail("%s" % shipping_dict, '[EBAY] 9d')
+                user_billing = self.env["res.partner"].create({'name': user.name, 'type': 'invoice', 'street': shipping_address["Street1"], 'phone': shipping_address["Phone"], 'country_id': italy_id.id, 'city': shipping_address["CityName"], 'zip': shipping_address["PostalCode"], 'parent_id': user.id, 'company_id': user.company_id.id, 'street2': shipping_address["Street2"]})
         else:
             self._send_ebay_error_mail("", '[EBAY] 11')
             # creare user e indirizzo che sega
@@ -937,6 +936,7 @@ class EbayProducts(models.Model):
                 'name': shipping_address["Name"],
                 'company_id': company_id,
                 'street': shipping_address["Street1"],
+                'street2': shipping_address["Street2"],
                 'phone': shipping_address["Phone"],
                 'country_id': italy_id.id,
                 'city': shipping_address["CityName"],
@@ -951,6 +951,7 @@ class EbayProducts(models.Model):
                 'name': shipping_address["Name"],
                 'company_id': company_id,
                 'street': shipping_address["Street1"],
+                'street2': shipping_address["Street2"],
                 'phone': shipping_address["Phone"],
                 'country_id': italy_id.id,
                 'city': shipping_address["CityName"],
