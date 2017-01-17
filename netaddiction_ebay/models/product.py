@@ -882,7 +882,7 @@ class EbayProducts(models.Model):
         # print user
         shipping_address = buyer["BuyerInfo"]["ShippingAddress"]
         italy_id = self.env["res.country"].search([('code', '=', 'IT')])[0]
-        shipping_dict = {'name': shipping_address["Name"], 'street': shipping_address["Street1"], 'phone': shipping_address["Phone"], 'country_id': italy_id, 'city': shipping_address["CityName"], 'zip': shipping_address["PostalCode"], 'street2': shipping_address["Street2"] or False}
+        shipping_dict = {'name': shipping_address["Name"], 'street': shipping_address["Street1"], 'phone': shipping_address["Phone"], 'country_id': italy_id, 'city': shipping_address["CityName"], 'zip': shipping_address["PostalCode"], 'street2': shipping_address.get("Street2") or False}
         user_shipping = None
         user_billing = None
         if user:
@@ -905,48 +905,46 @@ class EbayProducts(models.Model):
             if billings:
                 user_billing = billings[0]
             else:
-                user_billing = self.env["res.partner"].create({'name': user.name, 'type': 'invoice', 'street': shipping_address["Street1"], 'phone': shipping_address["Phone"], 'country_id': italy_id.id, 'city': shipping_address["CityName"], 'zip': shipping_address["PostalCode"], 'parent_id': user.id, 'company_id': user.company_id.id, 'street2': shipping_address["Street2"] or False})
+                user_billing = self.env["res.partner"].create({'name': user.name, 'type': 'invoice', 'street': shipping_dict["street"], 'phone': shipping_dict["phone"], 'country_id': italy_id.id, 'city': shipping_dict["city"], 'zip': shipping_dict["zip"], 'parent_id': user.id, 'company_id': user.company_id.id, 'street2': shipping_dict["street2"]})
         else:
             # creare user e indirizzo che sega
             company_id = self.env["res.company"].search([("name", "=", "Multiplayer.com")])[0].id
             user = self.env["res.partner"].create({
-                'name': shipping_address["Name"],
+                'name': shipping_dict["name"],
                 'company_id': company_id,
                 'email': buyer["Email"],
                 'is_company': True,
                 'customer': True,
                 'type': 'contact',
-                'phone': shipping_address["Phone"],
+                'phone': shipping_dict["phone"],
                 'notify_email': 'none'})
             user_shipping = self.env["res.partner"].create({
-                'name': shipping_address["Name"],
+                'name': shipping_dict["name"],
                 'company_id': company_id,
-                'street': shipping_address["Street1"],
-                'street2': shipping_address["Street2"] or False,
-                'phone': shipping_address["Phone"],
+                'street': shipping_dict["street"],
+                'street2': shipping_dict["street2"],
+                'phone': shipping_dict["phone"],
                 'country_id': italy_id.id,
-                'city': shipping_address["CityName"],
-                'zip': shipping_address["PostalCode"],
+                'city': shipping_dict["city"],
+                'zip': shipping_dict["zip"],
                 'parent_id': user.id,
                 'is_company': False,
                 'customer': True,
                 'type': 'delivery',
-                'phone': shipping_address["Phone"],
                 'notify_email': 'none'})
             user_billing = self.env["res.partner"].create({
-                'name': shipping_address["Name"],
+                'name': shipping_dict["name"],
                 'company_id': company_id,
-                'street': shipping_address["Street1"],
-                'street2': shipping_address["Street2"] or False,
-                'phone': shipping_address["Phone"],
+                'street': shipping_dict["street"],
+                'street2': shipping_dict["street2"] ,
+                'phone': shipping_dict["phone"],
                 'country_id': italy_id.id,
-                'city': shipping_address["CityName"],
-                'zip': shipping_address["PostalCode"],
+                'city': shipping_dict["city"],
+                'zip': shipping_dict["zip"],
                 'parent_id': user.id,
                 'is_company': False,
                 'customer': True,
                 'type': 'invoice',
-                'phone': shipping_address["Phone"],
                 'notify_email': 'none'})
 
         # creare ordine e mandarlo in lavorazione
