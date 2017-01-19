@@ -225,6 +225,9 @@ class EbayXMLBuilder(models.TransientModel):
             returns_accepted_option.text = RETURNS_ACCEPTED_OPTION
             returns_accepted = etree.SubElement(return_policy, "ReturnsAccepted")
             returns_accepted.text = RETURNS_ACCEPTED
+        _logger.warning("***************************************")
+        _logger.warning(etree.tostring(bulk_root, xml_declaration=True, pretty_print=True))
+        _logger.warning("***************************************")
         # print etree.tostring(bulk_root, xml_declaration=True, pretty_print=True)
         return etree.tostring(bulk_root, xml_declaration=True, pretty_print=True)
 
@@ -232,9 +235,6 @@ class EbayXMLBuilder(models.TransientModel):
 
         ret = {}
         root = objectify.fromstring(xml)
-        _logger.warning("***************************************")
-        _logger.warning(etree.tostring(root, pretty_print=True))
-        _logger.warning("***************************************")
         
         for resp in root.AddFixedPriceItemResponse:
             # print resp.Ack.text

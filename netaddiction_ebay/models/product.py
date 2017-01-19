@@ -429,7 +429,7 @@ class EbayProducts(models.Model):
 
         xml_addfixed = xml_builder.build_add_fixed_price_items(prods, paypal_account, str(contrassegno.lst_price))
 
-        self._send_ebay_error_mail("%s" % xml_addfixed, '[EBAY] debug AddFixedPriceItem')
+        self._send_ebay_error_mail(" %s " % xml_addfixed, '[EBAY] debug AddFixedPriceItem')
 
         resp_struct = self._upload_file_to_ebay_and_start_job(environment, uu_id, xml_addfixed, job_id, file_id)
 
@@ -881,7 +881,6 @@ class EbayProducts(models.Model):
         """
         utility per creare un ordine a partire da una transazione ebay
         """
-        self._send_ebay_error_mail(" %s " % transaction, '[EBAY] Debug Ordine')
         buyer = transaction["Buyer"]
         user = self.env["res.partner"].search([("email", "=", buyer["Email"])])
         user = user[0] if user else None
