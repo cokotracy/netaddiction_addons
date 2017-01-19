@@ -429,6 +429,8 @@ class EbayProducts(models.Model):
 
         xml_addfixed = xml_builder.build_add_fixed_price_items(prods, paypal_account, str(contrassegno.lst_price))
 
+        self._send_ebay_error_mail("%s" % xml_addfixed, '[EBAY] debug AddFixedPriceItem')
+
         resp_struct = self._upload_file_to_ebay_and_start_job(environment, uu_id, xml_addfixed, job_id, file_id)
 
         if not resp_struct:
@@ -745,7 +747,7 @@ class EbayProducts(models.Model):
     def _get_ebay_orders(self):
         """Crea gli ordini provenienti da eBay
         """
-        xml_builder = self.env["netaddiction.ebay.xmlbuilder"].create({})
+
         now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         last_executed = self.env["ir.values"].search([("name", "=", "ebay_last_order_check"), ("model", "=", "netaddiction.ebay.config")]).value
         last_executed = last_executed if last_executed else (datetime.now() - timedelta(days=1)).strftime("%Y-%m-%d %H:%M:%S")
@@ -781,9 +783,14 @@ class EbayProducts(models.Model):
                 # print "TOTAL NUMBER OF ENTRIES: %s" % resp["PaginationResult"]["TotalNumberOfEntries"]
                 tot_pag = int(resp["PaginationResult"]["TotalNumberOfPages"])
                 tot_transaction = int(resp["ReturnedTransactionCountActual"])
+                # controllo sugli ordini già scaricati non completati necessario perchè ebay te li rimanda 
+                # dopo che gli hai detto che sono stati spediti
+                received_transactions = self.env["sale.order"].search([("from_ebay", "=", True), ("ebay_completed", "=", False)])
+                received_transactions = [order.ebay_transaction_id for order in received_transactions]
+
                 if tot_transaction > 1:
                     for transaction in resp["TransactionArray"]["Transaction"]:
-                        if transaction['Status']['eBayPaymentStatus'] != 'NoPaymentFailure' or transaction['Status']['CheckoutStatus'] != 'CheckoutComplete':
+                        if transaction['Status']['eBayPaymentStatus'] != 'NoPaymentFailure' or transaction['Status']['CheckoutStatus'] != 'CheckoutComplete' or transaction["TransactionID"] in received_transactions:
                             pass
                         else:
                             ret_str = self._create_ebay_order(transaction)
