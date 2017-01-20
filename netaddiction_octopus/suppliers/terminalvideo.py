@@ -129,7 +129,8 @@ class TerminalVideo(supplier.Supplier):
     downloader = FTPDownloader(
         hostname='ftp.terminalvideo.com',
         username='MultiplShopp',
-        password='Tvide0Ftp258')
+        password='Tvide0Ftp258',
+        silently_encode=False)
 
     parser = CSVParser(
         delimiter=';',

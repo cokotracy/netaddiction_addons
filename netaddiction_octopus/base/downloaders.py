@@ -5,6 +5,9 @@ from ftplib import FTP
 
 
 class Downloader(object):
+    def __init__(self, silently_encode=True):
+        self.silently_encode = silently_encode
+
     def encode(self, source):
         return unicode(source, errors='ignore')
 
@@ -13,7 +16,8 @@ class Downloader(object):
 
 
 class FTPDownloader(Downloader):
-    def __init__(self, hostname, username, password):
+    def __init__(self, hostname, username, password, *args, **kwargs):
+        super(FTPDownloader, self).__init__(*args, **kwargs)
         self.hostname = hostname
         self.username = username
         self.password = password
@@ -40,11 +44,15 @@ class FTPDownloader(Downloader):
 
         tempfile.close()
 
-        return self.encode(source)
+        if self.silently_encode:
+            source = self.encode(source)
+
+        return source
 
 
 class HTTPDownloader(Downloader):
-    def __init__(self, body=None, headers={}):
+    def __init__(self, body=None, headers={}, *args, **kwargs):
+        super(HTTPDownloader, self).__init__(*args, **kwargs)
         self.body = body
         self.headers = headers
 
@@ -60,4 +68,7 @@ class HTTPDownloader(Downloader):
         if raw:
             return source
 
-        return self.encode(source)
+        if self.silently_encode:
+            source = self.encode(source)
+
+        return source
