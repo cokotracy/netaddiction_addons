@@ -34,8 +34,10 @@ class Products(models.Model):
     extra_data_id = fields.Char(string="Id Scheda Extra Dati")
     push_data_id = fields.Char(string="Id Scheda Push Dati")
 
-    @api.one
+    @api.multi
     def api_get_extra_data(self):
+        self.ensure_one()
+
         api_data = {
             'multi': 'api_get_extra_data_multi',
             'movie': 'api_get_extra_data_movie'
@@ -49,6 +51,15 @@ class Products(models.Model):
                 raise Warning("Devi inserire l'id della scheda dai cui recuperare i dati")
         else:
             raise Warning("A questa categoria non è associata nessuna API")
+
+        return {
+            'type': 'ir.actions.act_window',
+            'res_model': 'product.product',
+            'view_type': 'form',
+            'view_mode': 'form',
+            'res_id': self.id,
+            'target': 'new',
+        }
 
     @api.one
     def api_get_extra_data_movie(self):
