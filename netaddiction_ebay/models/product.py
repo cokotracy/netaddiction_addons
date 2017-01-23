@@ -218,7 +218,7 @@ class EbayProducts(models.Model):
         get_jobs.buildRequest(jobtype_list=job_types, jobstatus_list=job_statuses)
         get_jobs.sendRequest()
         response, resp_struct = get_jobs.getResponse()
-        self._send_ebay_error_mail("%s /n %s" % (response, resp_struct), '[EBAY] Debug GetJobs')
+        self._send_ebay_error_mail("%s /n %s" % (response, pprint.pformat(resp_struct)), '[EBAY] Debug GetJobs')
         # print response
         # pprint.pprint(resp_struct)
 
@@ -228,7 +228,7 @@ class EbayProducts(models.Model):
                 abort_job.buildRequest(job['jobId'])
                 abort_job.sendRequest()
                 response, resp_struct = abort_job.getResponse()
-                self._send_ebay_error_mail("%s /n %s" % (response, resp_struct), '[EBAY] Debug Abort Job')
+                self._send_ebay_error_mail("%s /n %s" % (response, pprint.pformat(resp_struct)), '[EBAY] Debug Abort Job')
 
     def _revise_products_on_ebay(self, environment, uu_id, xml_builder, prods):
 
@@ -485,7 +485,7 @@ class EbayProducts(models.Model):
 
             # SEARCH FOR ACTIVE JOB
             self._search_and_remove_ebay_jobs(environment, ["UploadSiteHostedPictures"], ["Created", "InProcess", "Scheduled"])
-            self._search_and_remove_ebay_jobs(environment, ["AddFixedPriceItemRequest"], ["Created", "InProcess", "Scheduled", "Aborted", "Failed"])
+            self._search_and_remove_ebay_jobs(environment, ["AddFixedPriceItemRequest"], ["Created", "InProcess", "Scheduled", "Aborted", "Failed", "Completed"])
             prods = {}
 
             # creo il dizionario products con i dati da mandare a ebay
