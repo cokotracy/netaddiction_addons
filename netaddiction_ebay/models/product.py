@@ -218,6 +218,7 @@ class EbayProducts(models.Model):
         get_jobs.buildRequest(jobtype_list=job_types, jobstatus_list=job_statuses)
         get_jobs.sendRequest()
         response, resp_struct = get_jobs.getResponse()
+        self._send_ebay_error_mail("%s /n %s" % (response, resp_struct), '[EBAY] Debug GetJobs')
         # print response
         # pprint.pprint(resp_struct)
 
@@ -226,6 +227,8 @@ class EbayProducts(models.Model):
             for job in resp_struct:
                 abort_job.buildRequest(job['jobId'])
                 abort_job.sendRequest()
+                response, resp_struct = abort_job.getResponse()
+                self._send_ebay_error_mail("%s /n %s" % (response, resp_struct), '[EBAY] Debug Abort Job')
 
     def _revise_products_on_ebay(self, environment, uu_id, xml_builder, prods):
 
@@ -947,7 +950,7 @@ class EbayProducts(models.Model):
                 'name': shipping_dict["name"],
                 'company_id': company_id,
                 'street': shipping_dict["street"],
-                'street2': shipping_dict["street2"] ,
+                'street2': shipping_dict["street2"],
                 'phone': shipping_dict["phone"],
                 'country_id': italy_id.id,
                 'city': shipping_dict["city"],
