@@ -482,6 +482,7 @@ class EbayProducts(models.Model):
 
             # SEARCH FOR ACTIVE JOB
             self._search_and_remove_ebay_jobs(environment, ["UploadSiteHostedPictures"], ["Created", "InProcess", "Scheduled"])
+            self._search_and_remove_ebay_jobs(environment, ["AddFixedPriceItemRequest"], ["Created", "InProcess", "Scheduled", "Aborted", "Failed"])
             prods = {}
 
             # creo il dizionario products con i dati da mandare a ebay
@@ -517,7 +518,7 @@ class EbayProducts(models.Model):
             self._search_and_remove_ebay_jobs(environment, ["AddFixedPriceItemRequest"], ["Created", "InProcess", "Scheduled"])
 
             xml = self._add_fixed_price_items_to_ebay(environment, uu_id, xml_builder, prods, contrassegno)
-            
+
             if not xml:
                 return
             items = xml_builder.parse_addfixed_response(xml)
@@ -578,17 +579,18 @@ class EbayProducts(models.Model):
             # creo il dizionario products con i dati da mandare a ebay
             category_dict = self._build_category_dictionary()
             for product in products_to_update:
-                category = category_dict.get(product.categ_id.id, '139973')
-                category = category if not isinstance(category, dict) else category.get(product.attribute_value_ids[0].id, category[0])
-                prods[str(product.id)] = {
-                    'qty': str(product.qty_available_now),
-                    'name': product.name[:80],
-                    'ean': str(product.barcode),
-                    'ebay_id': product.ebay_id,
-                    'description': product.description,
-                    'ebay_image': product.ebay_image_url,
-                    'ebay_category': category,
-                    'price': str(product.ebay_price), }
+                if product.qty_available_now > 0:
+                    category = category_dict.get(product.categ_id.id, '139973')
+                    category = category if not isinstance(category, dict) else category.get(product.attribute_value_ids[0].id, category[0])
+                    prods[str(product.id)] = {
+                        'qty': str(product.qty_available_now),
+                        'name': product.name[:80],
+                        'ean': str(product.barcode),
+                        'ebay_id': product.ebay_id,
+                        'description': product.description,
+                        'ebay_image': product.ebay_image_url,
+                        'ebay_category': category,
+                        'price': str(product.ebay_price), }
 
             products_reupdate_images = ["%s" % p.id for p in products_to_update if p.ebay_image_expiration_date < last_executed]
 
@@ -700,6 +702,9 @@ class EbayProducts(models.Model):
         now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
         products_to_end = self.env["product.product"].search([("on_ebay", "=", False), ("ebay_id", "!=", ''), ("ebay_expiration_date", ">", now)])
+        products_out_of_stock = self.env["product.product"].search([("on_ebay", "=", True), ("ebay_id", "!=", ''), ("ebay_expiration_date", ">", now), ("qty_available_now", "<", 1)])
+
+        products_to_end = list(set(products_to_end + products_out_of_stock))
 
         if products_to_end:
 
@@ -1051,7 +1056,7 @@ class EbayProducts(models.Model):
         try:
             self._get_ebay_orders()
         except Exception as e:
-            self._send_ebay_error_mail("%s  %s" % (e,traceback.print_exc()), '[EBAY] ECCEZIONE lanciata da _get_ebay_orders ')
+            self._send_ebay_error_mail("%s  %s" % (e, traceback.print_exc()), '[EBAY] ECCEZIONE lanciata da _get_ebay_orders ')
         try:
             self._end_products_on_ebay()
         except Exception as e:
