@@ -15,7 +15,7 @@ from ebaysdk.utils import getNodeText
 from ebaysdk.exception import ConnectionError
 from ebaysdk.trading import Connection as Trading
 
-MAX_NUM_JOB_CHECK = 40
+MAX_NUM_JOB_CHECK = 100
 
 
 class EbayProducts(models.Model):
@@ -706,8 +706,9 @@ class EbayProducts(models.Model):
 
         products_to_end = self.env["product.product"].search([("on_ebay", "=", False), ("ebay_id", "!=", ''), ("ebay_expiration_date", ">", now)])
         products_out_of_stock = self.env["product.product"].search([("on_ebay", "=", True), ("ebay_id", "!=", ''), ("ebay_expiration_date", ">", now), ("qty_available_now", "<", 1)])
+        products_dead = self.env["product.product"].search([("on_ebay", "=", False), ("ebay_id", "!=", ''), ("ebay_expiration_date", "", False)])
 
-        products_to_end = list(set(products_to_end + products_out_of_stock))
+        products_to_end = list(set(products_to_end + products_out_of_stock + products_dead))
 
         if products_to_end:
 
