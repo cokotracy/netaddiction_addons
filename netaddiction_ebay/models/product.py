@@ -485,7 +485,7 @@ class EbayProducts(models.Model):
 
             # SEARCH FOR ACTIVE JOB
             self._search_and_remove_ebay_jobs(environment, ["UploadSiteHostedPictures"], ["Created", "InProcess", "Scheduled"])
-            self._search_and_remove_ebay_jobs(environment, ["AddFixedPriceItemRequest"], ["Created", "InProcess", "Scheduled", "Aborted", "Failed", "Completed"])
+            # self._search_and_remove_ebay_jobs(environment, ["AddFixedPriceItem"], ["Created", "InProcess", "Scheduled", "Aborted", "Failed", "Completed"])
             prods = {}
 
             # creo il dizionario products con i dati da mandare a ebay
@@ -518,7 +518,7 @@ class EbayProducts(models.Model):
             # upload prodotti come fixed price items
             uu_id = uuid.uuid4()
             contrassegno = self.env.ref('netaddiction_payments.product_contrassegno')
-            self._search_and_remove_ebay_jobs(environment, ["AddFixedPriceItemRequest"], ["Created", "InProcess", "Scheduled"])
+            self._search_and_remove_ebay_jobs(environment, ["AddFixedPriceItem"], ["Created", "InProcess", "Scheduled"])
 
             xml = self._add_fixed_price_items_to_ebay(environment, uu_id, xml_builder, prods, contrassegno)
 
