@@ -218,7 +218,7 @@ class EbayProducts(models.Model):
         get_jobs.buildRequest(jobtype_list=job_types, jobstatus_list=job_statuses)
         get_jobs.sendRequest()
         response, resp_struct = get_jobs.getResponse()
-        self._send_ebay_error_mail("%s /n %s" % (response, pprint.pformat(resp_struct)), '[EBAY] Debug GetJobs')
+        # self._send_ebay_error_mail("%s /n %s" % (response, pprint.pformat(resp_struct)), '[EBAY] Debug GetJobs')
         # print response
         # pprint.pprint(resp_struct)
 
@@ -228,7 +228,7 @@ class EbayProducts(models.Model):
                 abort_job.buildRequest(job['jobId'])
                 abort_job.sendRequest()
                 response, resp_struct = abort_job.getResponse()
-                self._send_ebay_error_mail("%s /n %s" % (response, pprint.pformat(resp_struct)), '[EBAY] Debug Abort Job')
+                # self._send_ebay_error_mail("%s /n %s" % (response, pprint.pformat(resp_struct)), '[EBAY] Debug Abort Job')
 
     def _revise_products_on_ebay(self, environment, uu_id, xml_builder, prods):
 
@@ -432,7 +432,7 @@ class EbayProducts(models.Model):
 
         xml_addfixed = xml_builder.build_add_fixed_price_items(prods, paypal_account, str(contrassegno.lst_price))
 
-        self._send_ebay_error_mail(" %s " % xml_addfixed, '[EBAY] debug AddFixedPriceItem')
+        # self._send_ebay_error_mail(" %s " % xml_addfixed, '[EBAY] debug AddFixedPriceItem')
 
         resp_struct = self._upload_file_to_ebay_and_start_job(environment, uu_id, xml_addfixed, job_id, file_id)
 
@@ -487,12 +487,13 @@ class EbayProducts(models.Model):
             self._search_and_remove_ebay_jobs(environment, ["UploadSiteHostedPictures"], ["Created", "InProcess", "Scheduled"])
             # self._search_and_remove_ebay_jobs(environment, ["AddFixedPriceItem"], ["Created", "InProcess", "Scheduled", "Aborted", "Failed", "Completed"])
             prods = {}
-
+            book_id = self.env["product.category"].search([("name", "=", "Libri e Fumetti")]).id
             # creo il dizionario products con i dati da mandare a ebay
             category_dict = self._build_category_dictionary()
             for product in products_to_upload:
                 category = category_dict.get(product.categ_id.id, '139973')
                 category = category if not isinstance(category, dict) else category.get(product.attribute_value_ids[0].id, category[0])
+                isbn = product.barcode if product.categ_id.id == book_id else None
                 prods[str(product.id)] = {
                     'qty': str(product.qty_available_now),
                     'name': product.name[:80],
@@ -500,7 +501,8 @@ class EbayProducts(models.Model):
                     'description': product.description,
                     'ebay_image': "TO_FILL",
                     'ebay_category': category,
-                    'price': str(product.ebay_price), }
+                    'price': str(product.ebay_price),
+                    'isbn': isbn, }
 
             xml_builder = self.env["netaddiction.ebay.xmlbuilder"].create({})
             # upload immagini
@@ -579,12 +581,15 @@ class EbayProducts(models.Model):
             self._search_and_remove_ebay_jobs(environment, ["ReviseFixedPriceItem"], ["Created", "InProcess", "Scheduled"])
             prods = {}
 
+            book_id = self.env["product.category"].search([("name", "=", "Libri e Fumetti")]).id
+
             # creo il dizionario products con i dati da mandare a ebay
             category_dict = self._build_category_dictionary()
             for product in products_to_update:
                 if product.qty_available_now > 0:
                     category = category_dict.get(product.categ_id.id, '139973')
                     category = category if not isinstance(category, dict) else category.get(product.attribute_value_ids[0].id, category[0])
+                    isbn = product.barcode if product.categ_id.id == book_id else None
                     prods[str(product.id)] = {
                         'qty': str(product.qty_available_now),
                         'name': product.name[:80],
@@ -593,7 +598,8 @@ class EbayProducts(models.Model):
                         'description': product.description,
                         'ebay_image': product.ebay_image_url,
                         'ebay_category': category,
-                        'price': str(product.ebay_price), }
+                        'price': str(product.ebay_price), 
+                        'isbn': isbn, }
 
             products_reupdate_images = ["%s" % p.id for p in products_to_update if p.ebay_image_expiration_date < last_executed]
 
@@ -645,11 +651,13 @@ class EbayProducts(models.Model):
             self._search_and_remove_ebay_jobs(environment, ["RelistFixedPriceItem"], ["Created", "InProcess", "Scheduled"])
             prods = {}
 
+            book_id = self.env["product.category"].search([("name", "=", "Libri e Fumetti")]).id
             # creo il dizionario products con i dati da mandare a ebay
             category_dict = self._build_category_dictionary()
             for product in products_expired:
                 category = category_dict.get(product.categ_id.id, '1')
                 category = category if not isinstance(category, dict) else category.get(product.attribute_value_ids[0].id, '1')
+                isbn = product.barcode if product.categ_id.id == book_id else None
                 prods[str(product.id)] = {
                     'qty': str(product.qty_available_now),
                     'name': product.name[:80],
@@ -660,6 +668,7 @@ class EbayProducts(models.Model):
                     'ebay_category': category,
                     'price': str(product.ebay_price), 
                     'id': str(product.id),
+                    'isbn': isbn,
                 }
 
             products_reupdate_images = ["%s" % p.id for p in products_expired if p.ebay_image_expiration_date < now]
