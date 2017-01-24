@@ -1029,10 +1029,10 @@ class EbayProducts(models.Model):
             self.env["product.category"].search([("name", "=", "Film e Serie TV")]).id: "617",
             self.env["product.category"].search([("name", "=", "Gadget")]).id: {
                 self.env["product.attribute.value"].search([("name", "=", "Portachiavi")]).id: "3628",
-                0: "165266"
+                0: "234"
             },
             self.env["product.category"].search([("name", "=", "Giochi")]).id: {
-                self.env["product.attribute.value"].search([("name", "=", "Giochi da Tavolo")]).id: "180349",
+                self.env["product.attribute.value"].search([("name", "=", "Giochi da Tavolo")]).id: "234",
                 self.env["product.attribute.value"].search([("name", "=", "Carte Collezionabili")]).id: "2535",
                 self.env["product.attribute.value"].search([("name", "=", "LEGO")]).id: "19006",
                 0: "234"

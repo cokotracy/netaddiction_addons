@@ -78,7 +78,8 @@ class DigitalBonus(models.Model):
                     code.order_id = order.id
                     code.order_line_id = ol.id
                     counter += 1
-                    self.qty_sold += 1
+                    # commentata perchè raddoppia la quantità
+                    # self.qty_sold += 1
 
     @api.one
     def send_all_valid(self):
