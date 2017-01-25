@@ -56,7 +56,7 @@ class Product(models.Model):
             'view_id': False,
             'res_model': 'product.product',
             'type': 'ir.actions.act_window',
-            'target': 'new',
+            'target': 'current',
             'res_id': product.id,
         }
 
