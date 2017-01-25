@@ -176,7 +176,7 @@ class Product(models.Model):
             ])
 
         # Aggiunge l'immagine ai prodotti che ancora non ne hanno una
-        if self.image:
+        if self.image and False:
             product = supplierinfo.product_id
 
             if not product.image:
