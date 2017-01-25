@@ -119,7 +119,7 @@
                     <filter string="Figures" domain="[('categ_id','ilike','Figures')]"/>
                     <filter string="Film e Serie TV" domain="[('categ_id','ilike','Film e Serie TV')]"/>
                     <filter string="Gadget" domain="[('categ_id','ilike','Gadget')]"/>
-                    <filter string="Giochi" domain="[('categ_id','ilike','Giochi')]"/>
+                    <filter string="Giochi" domain="[('categ_id','=','Giochi')]"/>
                     <filter string="Libri e Fumetti" domain="[('categ_id','ilike','Libri e Fumetti')]"/>
                     <filter string="Modellismo e Model Kit" domain="[('categ_id','ilike','Modellismo e Model Kit')]"/>
                     <filter string="Pro Gaming" domain="[('categ_id','ilike','Pro Gaming')]"/>
@@ -289,15 +289,8 @@
                                 <field name="extra_data_id"/>
                                 <field name="push_data_id"/>
                             </group>
-                                <button type="object" name="api_get_extra_data" string="Recupera Extra Dati"/>
-                            <field name="extra_data" readonly="1">
+                            <field name="extra_data" widget="extra_data_field" readonly="1"/>
 
-                                <tree string="extra_data_tree">
-                                    <field name="key_type"/>
-                                    <field name="key"/>
-                                    <field name="value"/>
-                                </tree>
-                            </field>
                         </page>
                         <page string="Tasse" name="taxes_netaddiction">
                             <group name="taxes"  col="4" >
