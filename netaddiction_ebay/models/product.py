@@ -806,6 +806,8 @@ class EbayProducts(models.Model):
                 received_transactions = self.env["sale.order"].search([("from_ebay", "=", True), ("ebay_completed", "=", False)])
                 received_transactions = [order.ebay_transaction_id for order in received_transactions]
 
+                self._send_ebay_error_mail("EBAY DEBUG %s " % resp, '[EBAY] DEBUG')
+
                 if tot_transaction > 1:
                     for transaction in resp["TransactionArray"]["Transaction"]:
                         if transaction['Status']['eBayPaymentStatus'] != 'NoPaymentFailure' or transaction['Status']['CheckoutStatus'] != 'CheckoutComplete' or transaction["TransactionID"] in received_transactions:
