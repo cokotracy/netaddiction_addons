@@ -56,7 +56,7 @@ class Product(models.Model):
             'view_id': False,
             'res_model': 'product.product',
             'type': 'ir.actions.act_window',
-            'target': 'new',
+            'target': 'current',
             'res_id': product.id,
         }
 
@@ -176,7 +176,7 @@ class Product(models.Model):
             ])
 
         # Aggiunge l'immagine ai prodotti che ancora non ne hanno una
-        if self.image:
+        if self.image and False:
             product = supplierinfo.product_id
 
             if not product.image:

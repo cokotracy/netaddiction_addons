@@ -4,6 +4,7 @@
         <template id="assets_backend" name="netaddiction_products assets" inherit_id="web.assets_backend">
             <xpath expr="." position="inside">
                 <link rel="stylesheet" href="/netaddiction_products/static/src/css/products.css"/>
+                <script type="text/javascript" src="/netaddiction_products/static/src/js/new_fields.js"></script>
             </xpath>
         </template>
     </data>

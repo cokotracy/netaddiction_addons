@@ -16,6 +16,6 @@
         'views/assets.xml',
         'views/product_product.xml',
         'views/product_template.xml',
-        'views/api_set_extra_data.xml'
+        'views/api_set_extra_data.xml',
     ]
 }
