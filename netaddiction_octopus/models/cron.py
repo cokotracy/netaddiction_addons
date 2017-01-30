@@ -39,6 +39,7 @@ class Cron(models.Model):
         _logger.info('Divide!')
 
         product_model = self.env['netaddiction_octopus.product']
+        blacklist_model = self.env['netaddiction_octopus.blacklist']
         barcode_model = self.env['barcode.nomenclature']
 
         for supplier in suppliers.values():
@@ -47,6 +48,8 @@ class Cron(models.Model):
             datas = {}
 
             handler = registry[supplier.handler](supplier.partner_id)
+
+            blacklist = blacklist_model.search([('supplier_id', '=', supplier.id)]).mapped('supplier_code')
 
             categories = {
                 (category['field'], category['code'] if category['field'].startswith('[field]') else None): {
@@ -118,7 +121,8 @@ class Cron(models.Model):
                 # Saving products
 
                 for data in datas.values():
-                    product_model.create(data)
+                    if data['supplier_code'] not in blacklist:
+                        product_model.create(data)
 
                 # Reporting results
 

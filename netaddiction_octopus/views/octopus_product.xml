@@ -13,6 +13,7 @@
                     <field name="group_name"/>
                     <field name="group_key"/>
                     <field name="is_new"/>
+                    <button name="blacklist_product" type="object" string="Rimuovi" confirm="Sicuro sicuro?"/>
                 </tree>
             </field>
         </record>

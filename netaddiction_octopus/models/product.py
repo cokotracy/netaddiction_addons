@@ -60,6 +60,17 @@ class Product(models.Model):
             'res_id': product.id,
         }
 
+    @api.multi
+    def blacklist_product(self):
+        self.ensure_one()
+
+        self.env['netaddiction_octopus.blacklist'].create({
+            'supplier_id': self.supplier_id.id,
+            'supplier_code': self.supplier_code,
+        })
+
+        self.unlink()
+
     def save(self, can_add=False, commit=True):
         if self.barcode is None:
             supplierinfo = self.env['product.supplierinfo'].search([
