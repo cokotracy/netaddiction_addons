@@ -56,7 +56,7 @@ class OffersCatalogSaleOrderLine(models.Model):
         Nel caso di che la offer line abbia più oggetti di quelli massimi consentiti dall'offerta per singolo ordine
         viene lanciata una  QtyMaxBuyableException
         """
-        if(offer.date_end > fields.Date.today()):
+        if(offer.date_end > fields.Datetime.now()):
             if(offer_line.qty_max_buyable > 0 and uom_quantity > offer_line.qty_max_buyable):
                 raise QtyMaxBuyableException(product.name, product.id, offer.id, offer_line.qty_max_buyable, uom_quantity)
 
