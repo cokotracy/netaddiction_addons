@@ -49,7 +49,7 @@ class Cron(models.Model):
 
             handler = registry[supplier.handler](supplier.partner_id)
 
-            blacklist = blacklist_model.search([('supplier_id', '=', supplier.id)]).mapped('supplier_code')
+            blacklist = blacklist_model.search([('supplier_id', '=', supplier.partner_id.id)]).mapped('supplier_code')
 
             categories = {
                 (category['field'], category['code'] if category['field'].startswith('[field]') else None): {
