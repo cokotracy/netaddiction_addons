@@ -781,32 +781,15 @@ class EbayProducts(models.Model):
             while(curr_pag < tot_pag):
                 curr_pag += 1
                 api.execute('GetSellerTransactions', {'ModTimeFrom': last_executed, 'ModTimeTo': now, 'DetailLevel': 'ReturnAll', 'Pagination': {'EntriesPerPage': '200', 'PageNumber': '%s' % curr_pag}})
-                # if api.warnings():
-                #     print("Warnings" + api.warnings())
-
-                # if api.response.content:
-                #     print("Call Success: %s in length" % len(api.response.content))
-
-                # print(api.response.content)
-
-                # print(api.response.json())
-                # print("Response Reply: %s" % api.response.reply)
-
-                # dictstr = "%s" % api.response.dict()
-                # print("Response dictionary: %s..." % dictstr[:150])
-                # replystr = "%s" % api.response.reply
-                # print("Response Reply: %s" % replystr[:150])
 
                 resp = api.response.dict()
-                # print "TOTAL NUMBER OF ENTRIES: %s" % resp["PaginationResult"]["TotalNumberOfEntries"]
+
                 tot_pag = int(resp["PaginationResult"]["TotalNumberOfPages"])
                 tot_transaction = int(resp["ReturnedTransactionCountActual"])
                 # controllo sugli ordini già scaricati non completati necessario perchè ebay te li rimanda 
                 # dopo che gli hai detto che sono stati spediti
                 received_transactions = self.env["sale.order"].search([("from_ebay", "=", True), ("ebay_completed", "=", False)])
                 received_transactions = [order.ebay_transaction_id for order in received_transactions]
-
-                self._send_ebay_error_mail("EBAY DEBUG %s " % resp, '[EBAY] DEBUG')
 
                 if tot_transaction > 1:
                     for transaction in resp["TransactionArray"]["Transaction"]:
@@ -899,7 +882,7 @@ class EbayProducts(models.Model):
             tot_pag = 1
             while(curr_pag < tot_pag):
                 curr_pag += 1
-                api.execute('GetOrdersRequest', {'ModTimeFrom': last_executed, 'ModTimeTo': now, 'DetailLevel': 'ReturnAll', 'Pagination': {'EntriesPerPage': '200', 'PageNumber': '%s' % curr_pag}})
+                api.execute('GetOrders', {'ModTimeFrom': last_executed, 'ModTimeTo': now, 'DetailLevel': 'ReturnAll', 'Pagination': {'EntriesPerPage': '200', 'PageNumber': '%s' % curr_pag}})
 
                 resp = api.response.dict()
                 self._send_ebay_error_mail("EBAY DEBUG %s " % resp, '[EBAY] GET ORDERS')
