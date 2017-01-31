@@ -21,6 +21,12 @@ class Order(models.Model):
         if self.created_by_the_customer and self.state not in ["draft, done, pending"] and self.payment_method_id.id in [pp_journal.id, sofort_journal.id]:
             obj = "[SHOPPING] PAGAMENTO ANNULLATO RIMBORSO DA FARE ordine %s %s" % (self.name, ", ".join(set(categories)))
             users_2 = "shopping@multiplayer.com, riccardo.ioni@netaddiction.it"
-            self.env["netaddiction.email.dispatcher"].send_mail_fixed_recipients(obj, obj, "shopping@multiplayer.com", users_2)
+            transaction_id = self.pay_pal_tran_id if self.pay_pal_tran_id else None
+            for payment in self.account_payment_ids:
+                if payment.journal_id.id == pp_journal.id:
+                    transaction_id = payment.paypal_transaction_id
+                    break
+
+            self.env["netaddiction.email.dispatcher"].send_mail_fixed_recipients("ID transazione %s" % transaction_id, obj, "shopping@multiplayer.com", users_2)
 
         super(Order, self).action_cancel()

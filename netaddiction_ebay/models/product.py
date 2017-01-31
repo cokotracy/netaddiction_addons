@@ -882,6 +882,33 @@ class EbayProducts(models.Model):
                 # print errors
                 self._send_ebay_error_mail("problemi con queste transazioni %s " % errors, '[EBAY] ERRORE nel complete_ebay_order')
 
+    @api.model
+    def _get_new_orders(self):
+        """Crea gli ordini provenienti da eBay
+        """
+
+        now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        last_executed = self.env["ir.values"].search([("name", "=", "ebay_last_order_check"), ("model", "=", "netaddiction.ebay.config")]).value
+        last_executed = last_executed if last_executed else (datetime.now() - timedelta(days=1)).strftime("%Y-%m-%d %H:%M:%S")
+
+        try:
+            api = Trading(debug=False, config_file=None, appid="Multipla-15da-4ecf-b93c-a64ed3b924f3", certid="9514cd34-39e2-45f7-9a62-9a68ff704d4b", devid="639886ba-b87c-4189-9173-0bc9d268a3ef", token="AgAAAA**AQAAAA**aAAAAA**53qKVg**nY+sHZ2PrBmdj6wVnY+sEZ2PrA2dj6wDk4OlC5mFpAmdj6x9nY+seQ**9awAAA**AAMAAA**pGvmfVg208g0mF4bPruXlZXREgznIU2JA2sBrkCyNi4fbZTRLVCUfUs5N2jG1V7q2vLOX9ctNGna3RrbgNNBnpQIzvUWg2Z9Z+/pnJuM4pIZcpI5Jfig3OOLdI4vzS1O9T+g0D23GTpmjE3dWWaiBp5Hsisdd08pm6y6eTCvLVRJbcEZHdhlmpmREzJTCzmOGGUImS4nu7kGGGftUZ++cLHgZ8OcGNDq7pxtdnRRR7cDttMtCuEJQYqx4ITxgd+QUX3Q8wkd0pGMsiSG9lrEnyxYFhGdJ7sprmbKMevgkHzmmY6IVg461PajZOBR6jOL0H55tFLN4UHsi3B8fhxuG+r52gQNrXA9tzXdFdwaOnqvRIly5XrrkM25Wk0REzbK5qVK+w5xbtVqu2OgzfHCaqe/jKoWYHzijICTgQKR4Fso9zL/PVzW8mlIjdoaxt2BcOJkzXNstduH6AK0yw2V/rLWcXlwuXf/Go1yJdDHDf7KfU/z2LxDQNbzSDg5Dm0Wl20v9A0bqL39V3umt3d/fAD1Lj/gRk/zWW/pyVIf0SyoLi+y2acjfADK+MGg5asp6Xbx0iHHj5Hg125LNUyVzmNZNKWqBAeFZBvqRtKAF/5JXeOdNENBvvJcgMZZymXMxLJ+C7nQsjkTXFyBRV1jEuBwuilJWge4Txj29YvT4PCUVGmT8lswGJ7NyqXCSAa0aZPCw5ObIpMQWlKqxCjGO9N1taTHJjk8JoPokStlKG4iA839oWKBxOId+8eFeIuS",
+                       warnings=True, timeout=20, domain='api.ebay.com')
+
+            curr_pag = 0
+            tot_pag = 1
+            while(curr_pag < tot_pag):
+                curr_pag += 1
+                api.execute('GetOrdersRequest', {'ModTimeFrom': last_executed, 'ModTimeTo': now, 'DetailLevel': 'ReturnAll', 'Pagination': {'EntriesPerPage': '200', 'PageNumber': '%s' % curr_pag}})
+
+                resp = api.response.dict()
+                self._send_ebay_error_mail("EBAY DEBUG %s " % resp, '[EBAY] GET ORDERS')
+
+        except ConnectionError as e:
+            self._send_ebay_error_mail("problema di connessione %s " % e, '[EBAY] ERRORE nel get order')
+            return
+        return
+
     def _send_ebay_error_mail(self, body, subject):
         """
         utility invio mail errore ebay
@@ -1068,6 +1095,10 @@ class EbayProducts(models.Model):
         except Exception as e:
             self._send_ebay_error_mail("%s" % e, '[EBAY] ECCEZIONE lanciata da _update_products_on_ebay ')
 
+        try:
+            self._get_new_orders()
+        except Exception as e:
+            self._send_ebay_error_mail("%s  %s" % (e, traceback.print_exc()), '[EBAY] ECCEZIONE lanciata da _get_new_orders ')
         try:
             self._get_ebay_orders()
         except Exception as e:
