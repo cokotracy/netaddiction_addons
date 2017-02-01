@@ -888,11 +888,12 @@ class EbayProducts(models.Model):
 
                 resp = api.response.dict()
                 self._send_ebay_error_mail("EBAY DEBUG %s " % resp, '[EBAY] GET ORDERS')
-
+                return
                 tot_pag = int(resp["PaginationResult"]["TotalNumberOfPages"])
                 tot_orders = int(resp["ReturnedOrderCountActual"])
                 # controllo sugli ordini già scaricati non completati necessario perchè ebay te li rimanda 
                 # dopo che gli hai detto che sono stati spediti
+                
                 received_transactions = self.env["sale.order"].search([("from_ebay", "=", True), ("ebay_completed", "=", False)])
                 received_transactions = [order.ebay_order_id for order in received_transactions]
                 if tot_orders >= 1:
