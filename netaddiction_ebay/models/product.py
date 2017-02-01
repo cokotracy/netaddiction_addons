@@ -783,6 +783,7 @@ class EbayProducts(models.Model):
                 api.execute('GetSellerTransactions', {'ModTimeFrom': last_executed, 'ModTimeTo': now, 'DetailLevel': 'ReturnAll', 'Pagination': {'EntriesPerPage': '200', 'PageNumber': '%s' % curr_pag}})
 
                 resp = api.response.dict()
+                self._send_ebay_error_mail("EBAY DEBUG %s " % resp, '[EBAY] GET TRANSACTION')
 
                 tot_pag = int(resp["PaginationResult"]["TotalNumberOfPages"])
                 tot_transaction = int(resp["ReturnedTransactionCountActual"])
@@ -880,12 +881,28 @@ class EbayProducts(models.Model):
 
             curr_pag = 0
             tot_pag = 1
+            error_orders = []
             while(curr_pag < tot_pag):
                 curr_pag += 1
                 api.execute('GetOrders', {'ModTimeFrom': last_executed, 'ModTimeTo': now, 'DetailLevel': 'ReturnAll', 'Pagination': {'EntriesPerPage': '200', 'PageNumber': '%s' % curr_pag}})
 
                 resp = api.response.dict()
                 self._send_ebay_error_mail("EBAY DEBUG %s " % resp, '[EBAY] GET ORDERS')
+
+                tot_pag = int(resp["PaginationResult"]["TotalNumberOfPages"])
+                tot_orders = int(resp["ReturnedOrderCountActual"])
+                # controllo sugli ordini già scaricati non completati necessario perchè ebay te li rimanda 
+                # dopo che gli hai detto che sono stati spediti
+                received_transactions = self.env["sale.order"].search([("from_ebay", "=", True), ("ebay_completed", "=", False)])
+                received_transactions = [order.ebay_order_id for order in received_transactions]
+                if tot_orders >= 1:
+                    for order in resp["OrderArray"]["Order"]:
+                        if order['CheckoutStatus']['eBayPaymentStatus'] != 'NoPaymentFailure' or order['CheckoutStatus']['Status'] != 'CheckoutComplete' or order["OrderID"] in received_transactions:
+                            pass
+                        else:
+                            ret_str = self._create_ebay_order(order)
+                            if ret_str != "OK":
+                                error_orders.append([order["OrderID"], ret_str])
 
         except ConnectionError as e:
             self._send_ebay_error_mail("problema di connessione %s " % e, '[EBAY] ERRORE nel get order')
