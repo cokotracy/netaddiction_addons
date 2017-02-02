@@ -37,6 +37,8 @@ class DbLine(supplier.Supplier):
         },
     ]
 
+    categories = 'categoria', 'iva'
+
     downloader = FTPDownloader(
         hostname='ftp.dbline.it',
         username='area17',
