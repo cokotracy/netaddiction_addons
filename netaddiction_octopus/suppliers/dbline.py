@@ -55,3 +55,6 @@ class DbLine(supplier.Supplier):
         supplier_code='codice_fornitore',
         supplier_price='costo',
         supplier_quantity='quantita')
+
+    def group(self, item):
+        return None
