@@ -285,6 +285,7 @@
                             </group>
                         </page>
                         <page string="Extra Dati" name="extra_datas">
+                            <button type="object" name="push_data" string="Log Push" class="btn"/>
                             <group>
                                 <field name="extra_data_id"/>
                                 <field name="push_data_id"/>

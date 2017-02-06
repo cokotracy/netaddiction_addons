@@ -75,6 +75,16 @@ class Products(models.Model):
     push_data_id = fields.Char(string="Id Scheda Push Dati")
 
     @api.multi
+    def push_data(self):
+        self.ensure_one()
+        config = self.env['netaddiction.extra.data.settings'].sudo().search([('category', '=', self.categ_id.id), ('company_id', '=', self.env.user.company_id.id)])
+        site = None
+        if config:
+            site = config.api_set
+        log_line = self.env["netaddiction.log.line"]
+        log_line.sudo().create(log_line.create_tracking_values(False, True, 'push_data', 'boolean', 'product.product', self.id, self.env.uid, self.company_id.id, object_name=site))
+
+    @api.multi
     def api_get_extra_data(self):
         self.ensure_one()
 
