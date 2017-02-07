@@ -1,17 +1,14 @@
 # -*- coding: utf-8 -*-
 from datetime import datetime, timedelta
 from openerp import models, fields, api
-from ebay_xml_builder import EbayXMLBuilder
+from collections import defaultdict
 import math
 import re
 import lmslib
 import uuid
-import pprint
 import time
-import ebaysdk
 import random
 import traceback
-from ebaysdk.utils import getNodeText
 from ebaysdk.exception import ConnectionError
 from ebaysdk.trading import Connection as Trading
 
@@ -787,27 +784,60 @@ class EbayProducts(models.Model):
 
                 tot_pag = int(resp["PaginationResult"]["TotalNumberOfPages"])
                 tot_transaction = int(resp["ReturnedTransactionCountActual"])
-                # controllo sugli ordini già scaricati non completati necessario perchè ebay te li rimanda 
+                # controllo sugli ordini già scaricati non completati necessario perchè ebay te li rimanda
                 # dopo che gli hai detto che sono stati spediti
                 received_transactions = self.env["sale.order"].search([("from_ebay", "=", True), ("ebay_completed", "=", False)])
                 received_transactions = [order.ebay_transaction_id for order in received_transactions]
+                transactions = [transaction for transaction in resp["TransactionArray"]["Transaction"]]
+                groupped_transactions = defaultdict(list)
 
-                if tot_transaction > 1:
-                    for transaction in resp["TransactionArray"]["Transaction"]:
-                        if transaction['Status']['eBayPaymentStatus'] != 'NoPaymentFailure' or transaction['Status']['CheckoutStatus'] != 'CheckoutComplete' or transaction["TransactionID"] in received_transactions:
-                            pass
-                        else:
+                for transaction in transactions:
+                    groupped_transactions[transaction["Buyer"]["Email"]].append(transaction)
+
+                for user, transactions in groupped_transactions:
+                    num_transactions = len(transactions)
+                    if num_transactions == 1:
+                        transaction = transactions[0]
+                        if transaction['Status']['eBayPaymentStatus'] == 'NoPaymentFailure' and transaction['Status']['CheckoutStatus'] == 'CheckoutComplete' and transaction["TransactionID"] not in received_transactions:
                             ret_str = self._create_ebay_order(transaction)
                             if ret_str != "OK":
                                 error_transaction.append([transaction["TransactionID"], ret_str])
-                elif tot_transaction == 1:
-                    transaction = resp["TransactionArray"]["Transaction"]
-                    if transaction['Status']['eBayPaymentStatus'] != 'NoPaymentFailure' or transaction['Status']['CheckoutStatus'] != 'CheckoutComplete':
-                        pass
-                    else:
-                        ret_str = self._create_ebay_order(transaction)
-                        if ret_str != "OK":
-                            error_transaction.append([transaction["TransactionID"], ret_str])
+                    elif num_transactions > 1:
+                        # se le transazioni sono tutte pagate faccio l'ordine
+                        # altrimenti se sono tutte non pagate le unisco
+                        # altrimenti mail e segnalazione
+                        paid_number = 0
+                        for transaction in transactions:
+                            if transaction['Status']['eBayPaymentStatus'] != 'NoPaymentFailure' or transaction['Status']['CheckoutStatus'] != 'CheckoutComplete':
+                                paid_number += 1
+                        if paid_number == 0:
+                            # unisci!
+                            trasaction_array = []
+                            total = 0.0
+                            for transaction in transactions:
+                                trasaction_array.append({'Transaction': {'Item': {'ItemID': transaction["Item"]["ItemID"]}, ' TransactionID': transaction["TransactionID"]}})
+                                total += float(transaction["TransactionPrice"]['value'])
+
+                            total += 4.90
+                            api.execute('AddOrder', {'Order': {'TransactionArray': trasaction_array, 'Total': '%s' % total, 'CreatingUserRole': 'Seller', 'ShippingDetails': {'CODCost': '3.0'}, 'PaymentMethods': ['PayPal', 'COD'], 'ShippingServiceOptions': {'ImportCharge': '4.9'}}})
+                            resp = api.response.dict()
+
+                            if resp["Ack"] != "Success" and resp["Ack"] != "Warning":
+                                self._send_ebay_error_mail(" %s " % resp, '[EBAY] ERRORE nel AddOrder')
+
+                        elif paid_number == num_transactions:
+                            # fai ordine
+                            ret_str = self._create_ebay_order(transactions, multi=True)
+                            if ret_str != "OK":
+                                for transaction in transactions:
+                                    error_transaction.append([transaction["TransactionID"], ret_str])
+                        else:
+                            # hmmmmm... fai partire le transazioni pagate?
+                            for transaction in transactions:
+                                if transaction['Status']['eBayPaymentStatus'] == 'NoPaymentFailure' and transaction['Status']['CheckoutStatus'] == 'CheckoutComplete' and transaction["TransactionID"] not in received_transactions:
+                                        ret_str = self._create_ebay_order(transaction)
+                                        if ret_str != "OK":
+                                            error_transaction.append([transaction["TransactionID"], ret_str])
 
         except ConnectionError as e:
             # print(e)
@@ -834,7 +864,12 @@ class EbayProducts(models.Model):
                        warnings=True, timeout=20, domain='api.ebay.com')
                 errors = []
                 for order in orders:
-                    api.execute('CompleteSale', {'ItemID': order.ebay_item_id, 'TransactionID': order.ebay_transaction_id, 'Paid': 'true', 'Shipped': 'true'})
+                    transaction_ids = order.ebay_transaction_id.split()
+                    item_ids = order.ebay_item_id.split()
+                    index = 0
+                    for transaction_id in transaction_ids:
+                        api.execute('CompleteSale', {'ItemID': item_ids[index], 'TransactionID': transaction_id, 'Paid': 'true', 'Shipped': 'true'})
+                        index += 1
                     # if api.warnings():
                     #     print("Warnings" + api.warnings())
 
@@ -866,50 +901,6 @@ class EbayProducts(models.Model):
                 # print errors
                 self._send_ebay_error_mail("problemi con queste transazioni %s " % errors, '[EBAY] ERRORE nel complete_ebay_order')
 
-    @api.model
-    def _get_new_orders(self):
-        """Crea gli ordini provenienti da eBay
-        """
-
-        now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-        last_executed = self.env["ir.values"].search([("name", "=", "ebay_last_order_check"), ("model", "=", "netaddiction.ebay.config")]).value
-        last_executed = last_executed if last_executed else (datetime.now() - timedelta(days=1)).strftime("%Y-%m-%d %H:%M:%S")
-
-        try:
-            api = Trading(debug=False, config_file=None, appid="Multipla-15da-4ecf-b93c-a64ed3b924f3", certid="9514cd34-39e2-45f7-9a62-9a68ff704d4b", devid="639886ba-b87c-4189-9173-0bc9d268a3ef", token="AgAAAA**AQAAAA**aAAAAA**53qKVg**nY+sHZ2PrBmdj6wVnY+sEZ2PrA2dj6wDk4OlC5mFpAmdj6x9nY+seQ**9awAAA**AAMAAA**pGvmfVg208g0mF4bPruXlZXREgznIU2JA2sBrkCyNi4fbZTRLVCUfUs5N2jG1V7q2vLOX9ctNGna3RrbgNNBnpQIzvUWg2Z9Z+/pnJuM4pIZcpI5Jfig3OOLdI4vzS1O9T+g0D23GTpmjE3dWWaiBp5Hsisdd08pm6y6eTCvLVRJbcEZHdhlmpmREzJTCzmOGGUImS4nu7kGGGftUZ++cLHgZ8OcGNDq7pxtdnRRR7cDttMtCuEJQYqx4ITxgd+QUX3Q8wkd0pGMsiSG9lrEnyxYFhGdJ7sprmbKMevgkHzmmY6IVg461PajZOBR6jOL0H55tFLN4UHsi3B8fhxuG+r52gQNrXA9tzXdFdwaOnqvRIly5XrrkM25Wk0REzbK5qVK+w5xbtVqu2OgzfHCaqe/jKoWYHzijICTgQKR4Fso9zL/PVzW8mlIjdoaxt2BcOJkzXNstduH6AK0yw2V/rLWcXlwuXf/Go1yJdDHDf7KfU/z2LxDQNbzSDg5Dm0Wl20v9A0bqL39V3umt3d/fAD1Lj/gRk/zWW/pyVIf0SyoLi+y2acjfADK+MGg5asp6Xbx0iHHj5Hg125LNUyVzmNZNKWqBAeFZBvqRtKAF/5JXeOdNENBvvJcgMZZymXMxLJ+C7nQsjkTXFyBRV1jEuBwuilJWge4Txj29YvT4PCUVGmT8lswGJ7NyqXCSAa0aZPCw5ObIpMQWlKqxCjGO9N1taTHJjk8JoPokStlKG4iA839oWKBxOId+8eFeIuS",
-                       warnings=True, timeout=20, domain='api.ebay.com')
-
-            curr_pag = 0
-            tot_pag = 1
-            error_orders = []
-            while(curr_pag < tot_pag):
-                curr_pag += 1
-                api.execute('GetOrders', {'ModTimeFrom': last_executed, 'ModTimeTo': now, 'DetailLevel': 'ReturnAll', 'Pagination': {'EntriesPerPage': '200', 'PageNumber': '%s' % curr_pag}})
-
-                resp = api.response.dict()
-                self._send_ebay_error_mail("EBAY DEBUG %s " % resp, '[EBAY] GET ORDERS')
-                return
-                tot_pag = int(resp["PaginationResult"]["TotalNumberOfPages"])
-                tot_orders = int(resp["ReturnedOrderCountActual"])
-                # controllo sugli ordini già scaricati non completati necessario perchè ebay te li rimanda 
-                # dopo che gli hai detto che sono stati spediti
-                
-                received_transactions = self.env["sale.order"].search([("from_ebay", "=", True), ("ebay_completed", "=", False)])
-                received_transactions = [order.ebay_order_id for order in received_transactions]
-                if tot_orders >= 1:
-                    for order in resp["OrderArray"]["Order"]:
-                        if order['CheckoutStatus']['eBayPaymentStatus'] != 'NoPaymentFailure' or order['CheckoutStatus']['Status'] != 'CheckoutComplete' or order["OrderID"] in received_transactions:
-                            pass
-                        else:
-                            ret_str = self._create_ebay_order(order)
-                            if ret_str != "OK":
-                                error_orders.append([order["OrderID"], ret_str])
-
-        except ConnectionError as e:
-            self._send_ebay_error_mail("problema di connessione %s " % e, '[EBAY] ERRORE nel get order')
-            return
-        return
-
     def _send_ebay_error_mail(self, body, subject):
         """
         utility invio mail errore ebay
@@ -925,10 +916,13 @@ class EbayProducts(models.Model):
         email = self.env['mail.mail'].create(values)
         email.send()
 
-    def _create_ebay_order(self, transaction):
+    def _create_ebay_order(self, transaction, multi=False):
         """
         utility per creare un ordine a partire da una transazione ebay
         """
+        if multi:
+            transactions = transaction
+            transaction = transaction[0]
         buyer = transaction["Buyer"]
         user = self.env["res.partner"].search([("email", "=", buyer["Email"])])
         user = user[0] if user else None
@@ -937,6 +931,9 @@ class EbayProducts(models.Model):
         shipping_address = buyer["BuyerInfo"]["ShippingAddress"]
         italy_id = self.env["res.country"].search([('code', '=', 'IT')])[0]
         shipping_dict = {'name': shipping_address["Name"], 'street': shipping_address["Street1"], 'phone': shipping_address["Phone"], 'country_id': italy_id, 'city': shipping_address["CityName"], 'zip': shipping_address["PostalCode"], 'street2': shipping_address.get("Street2") or False}
+        if not shipping_dict["street2"]:
+            parsed = re.findall('\d+', shipping_dict["street"])
+            shipping_dict['street2'] = parsed[-1] if parsed else False
         user_shipping = None
         user_billing = None
         if user:
@@ -1037,14 +1034,33 @@ class EbayProducts(models.Model):
                 'ebay_transaction_id': transaction["TransactionID"],
             })
             # print transaction["TransactionPrice"]
-            order_line = self.env["sale.order.line"].create({
-                "order_id": order.id,
-                "product_id": prod.id,
-                "product_uom_qty": quantity,
-                "product_uom": prod.uom_id.id,
-                "name": prod.display_name,
-                "price_unit": float(transaction["TransactionPrice"]['value']),
-            })
+            if not multi:
+                order_line = self.env["sale.order.line"].create({
+                    "order_id": order.id,
+                    "product_id": prod.id,
+                    "product_uom_qty": quantity,
+                    "product_uom": prod.uom_id.id,
+                    "name": prod.display_name,
+                    "price_unit": float(transaction["TransactionPrice"]['value']),
+                })
+            else:
+                transaction_id = ""
+                item_id = ""
+                for t in transactions:
+                    order_line = self.env["sale.order.line"].create({
+                        "order_id": order.id,
+                        "product_id": prod.id,
+                        "product_uom_qty": quantity,
+                        "product_uom": prod.uom_id.id,
+                        "name": prod.display_name,
+                        "price_unit": float(t["TransactionPrice"]['value']),
+                    })
+                    transaction_id += t["TransactionID"]
+                    transaction_id += " "
+                    item_id += t["Item"]["ItemID"]
+                    item_id += " "
+                order.ebay_transaction_id = transaction_id
+                order.ebay_item_id = item_id
 
             order.manual_confirm()
         except Exception as e:
@@ -1096,10 +1112,6 @@ class EbayProducts(models.Model):
         except Exception as e:
             self._send_ebay_error_mail("%s" % e, '[EBAY] ECCEZIONE lanciata da _update_products_on_ebay ')
 
-        try:
-            self._get_new_orders()
-        except Exception as e:
-            self._send_ebay_error_mail("%s  %s" % (e, traceback.print_exc()), '[EBAY] ECCEZIONE lanciata da _get_new_orders ')
         try:
             self._get_ebay_orders()
         except Exception as e:
