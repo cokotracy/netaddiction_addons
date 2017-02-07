@@ -784,6 +784,9 @@ class EbayProducts(models.Model):
 
                 tot_pag = int(resp["PaginationResult"]["TotalNumberOfPages"])
                 tot_transaction = int(resp["ReturnedTransactionCountActual"])
+                if tot_transaction < 1:
+                    pass
+                    
                 # controllo sugli ordini già scaricati non completati necessario perchè ebay te li rimanda
                 # dopo che gli hai detto che sono stati spediti
                 received_transactions = self.env["sale.order"].search([("from_ebay", "=", True), ("ebay_completed", "=", False)])

@@ -8,5 +8,4 @@ class EbayOrder(models.Model):
     from_ebay = fields.Boolean(string='Da Ebay', default=False)
     ebay_transaction_id = fields.Char(string="Ebay TransactionID")
     ebay_item_id = fields.Char(string="Ebay ItemID del prodotto nell'ordine")
-    ebay_order_id = fields.Char(string="Ebay Order ID", default="")
     ebay_completed = fields.Boolean(string='Completato su eBay', default=False)
