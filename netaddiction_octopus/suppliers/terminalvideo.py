@@ -145,7 +145,7 @@ class TerminalVideo(supplier.Supplier):
         date=lambda self, item: datetime.strptime(item['Data primo rilascio'], '%d/%m/%Y') if item['Data primo rilascio'] else None,
         supplier_code='Cod. interno',
         supplier_price=lambda self, item: float(item['Listino'].replace(',', '.')) / 100.0 * (100 - DISCOUNTS.get(item['Categoria sconto'], 0)) if item['Listino'] else None,
-        supplier_quantity='Q.ta in stock')
+        supplier_quantity=lambda self, item: item['Q.ta in stock'] or 0)
 
     def validate(self, item):
         assert item['Tipo record'] != 'E'

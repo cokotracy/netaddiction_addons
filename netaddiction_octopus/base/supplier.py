@@ -86,17 +86,24 @@ class Supplier(object):
 
     def merge(self, files):
         merged = {}
+        value_keys = set([])
+
+        for f in files:
+            if len(f):
+                value_keys.update(f[f.keys()[0]].keys())
 
         for f in files:
             for key, value in f.items():
+                for value_key in value_keys:
+                    if value_key not in value:
+                        value[value_key] = None
+
                 if key not in merged:
                     merged[key] = {}
 
                 merged[key].update(value)
 
-        length = max([len(m) for m in merged.values()])
-
-        return [m for m in merged.values() if len(m) == length]
+        return merged.values()
 
     def pull(self):
         data = []
