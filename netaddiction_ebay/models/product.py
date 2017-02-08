@@ -809,7 +809,7 @@ class EbayProducts(models.Model):
 
                     self._send_ebay_error_mail(" %s ahahhahaha %s" % (resp["TransactionArray"]["Transaction"], groupped_transactions), '[EBAY] DEBUG nel get order')
 
-                    for transactions in groupped_transactions:
+                    for user, transactions in groupped_transactions.iteritems():
                         num_transactions = len(transactions)
                         # se le transazioni sono tutte pagate faccio l'ordine
                         # altrimenti se sono tutte non pagate le unisco
