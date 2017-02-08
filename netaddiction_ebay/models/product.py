@@ -1108,21 +1108,21 @@ class EbayProducts(models.Model):
         try:
             self._upload_new_products_to_ebay()
         except Exception as e:
-            self._send_ebay_error_mail("%s" % e, '[EBAY] ECCEZIONE lanciata da _upload_new_products_to_ebay ')
+            self._send_ebay_error_mail("%s  %s" % (e, '\n'.join(traceback.format_stack())), '[EBAY] ECCEZIONE lanciata da _upload_new_products_to_ebay ')
 
         try:
             self._update_products_on_ebay()
         except Exception as e:
-            self._send_ebay_error_mail("%s" % e, '[EBAY] ECCEZIONE lanciata da _update_products_on_ebay ')
+            self._send_ebay_error_mail("%s  %s" % (e, '\n'.join(traceback.format_stack())), '[EBAY] ECCEZIONE lanciata da _update_products_on_ebay ')
 
         try:
             self._get_ebay_orders()
         except Exception as e:
-            self._send_ebay_error_mail("%s  %s" % (e, traceback.print_stack()), '[EBAY] ECCEZIONE lanciata da _get_ebay_orders ')
+            self._send_ebay_error_mail("%s  %s" % (e, '\n'.join(traceback.format_stack())), '[EBAY] ECCEZIONE lanciata da _get_ebay_orders ')
         try:
             self._end_products_on_ebay()
         except Exception as e:
-            self._send_ebay_error_mail("%s" % e, '[EBAY] ECCEZIONE lanciata da _end_products_on_ebay ')
+            self._send_ebay_error_mail("%s  %s" % (e, '\n'.join(traceback.format_stack())), '[EBAY] ECCEZIONE lanciata da _end_products_on_ebay ')
 
         return True
 
@@ -1131,13 +1131,13 @@ class EbayProducts(models.Model):
         try:
             self._remove_expired_ebay_ids()
         except Exception as e:
-            self._send_ebay_error_mail("%s" % e, '[EBAY] ECCEZIONE lanciata da _remove_expired_ebay_ids ')
+            self._send_ebay_error_mail("%s  %s" % (e, '\n'.join(traceback.format_stack())), '[EBAY] ECCEZIONE lanciata da _remove_expired_ebay_ids ')
         try:
             self._complete_ebay_orders()
         except Exception as e:
-            self._send_ebay_error_mail("%s" % e, '[EBAY] ECCEZIONE lanciata da _complete_ebay_orders ')
+            self._send_ebay_error_mail("%s  %s" % (e, '\n'.join(traceback.format_stack())), '[EBAY] ECCEZIONE lanciata da _complete_ebay_orders ')
         try:
             self._relist_products_on_ebay()
         except Exception as e:
-            self._send_ebay_error_mail("%s" % e, '[EBAY] ECCEZIONE lanciata da _relist_products_on_ebay ')
+            self._send_ebay_error_mail("%s  %s" % (e, '\n'.join(traceback.format_stack())), '[EBAY] ECCEZIONE lanciata da _relist_products_on_ebay ')
         return True
