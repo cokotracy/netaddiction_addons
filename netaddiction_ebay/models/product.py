@@ -807,6 +807,8 @@ class EbayProducts(models.Model):
                     for transaction in transactions:
                         groupped_transactions[transaction["Buyer"]["Email"]].append(transaction)
 
+                    self._send_ebay_error_mail(" %s ahahhahaha %s" % (resp["TransactionArray"]["Transaction"], groupped_transactions), '[EBAY] DEBUG nel get order')
+
                     for transactions in groupped_transactions:
                         num_transactions = len(transactions)
                         # se le transazioni sono tutte pagate faccio l'ordine
