@@ -775,6 +775,9 @@ class EbayProducts(models.Model):
 
             curr_pag = 0
             tot_pag = 1
+            # controllo sugli ordini già scaricati non completati necessario perchè ebay te li rimanda
+            # dopo che gli hai detto che sono stati spediti
+            received_transactions = self.env["sale.order"].search([("from_ebay", "=", True), ("ebay_completed", "=", False)])
             while(curr_pag < tot_pag):
                 curr_pag += 1
                 api.execute('GetSellerTransactions', {'ModTimeFrom': last_executed, 'ModTimeTo': now, 'DetailLevel': 'ReturnAll', 'Pagination': {'EntriesPerPage': '200', 'PageNumber': '%s' % curr_pag}})
@@ -785,27 +788,27 @@ class EbayProducts(models.Model):
                 tot_pag = int(resp["PaginationResult"]["TotalNumberOfPages"])
                 tot_transaction = int(resp["ReturnedTransactionCountActual"])
                 if tot_transaction < 1:
+                    # nessuna transazione
                     continue
 
-                # controllo sugli ordini già scaricati non completati necessario perchè ebay te li rimanda
-                # dopo che gli hai detto che sono stati spediti
-                received_transactions = self.env["sale.order"].search([("from_ebay", "=", True), ("ebay_completed", "=", False)])
-                received_transactions = [order.ebay_transaction_id for order in received_transactions]
-                transactions = [transaction for transaction in resp["TransactionArray"]["Transaction"]]
-                groupped_transactions = defaultdict(list)
-
-                for transaction in transactions:
-                    groupped_transactions[transaction["Buyer"]["Email"]].append(transaction)
-
-                for transactions in groupped_transactions:
-                    num_transactions = len(transactions)
-                    if num_transactions == 1:
-                        transaction = transactions[0]
-                        if transaction['Status']['eBayPaymentStatus'] == 'NoPaymentFailure' and transaction['Status']['CheckoutStatus'] == 'CheckoutComplete' and transaction["TransactionID"] not in received_transactions:
+                elif tot_transaction == 1:
+                    # 1 transazione, resp["TransactionArray"]["Transaction"] c'è un dizionario che rappresenta la transazione
+                    transaction = resp["TransactionArray"]["Transaction"]
+                    if transaction['Status']['eBayPaymentStatus'] == 'NoPaymentFailure' and transaction['Status']['CheckoutStatus'] == 'CheckoutComplete' and transaction["TransactionID"] not in received_transactions:
                             ret_str = self._create_ebay_order(transaction)
                             if ret_str != "OK":
                                 error_transaction.append([transaction["TransactionID"], ret_str])
-                    elif num_transactions > 1:
+                else:
+                    # > 1 transazione, in resp["TransactionArray"]["Transaction"] c'è una lista di transazioni
+                    received_transactions = [order.ebay_transaction_id for order in received_transactions]
+                    transactions = [transaction for transaction in resp["TransactionArray"]["Transaction"]]
+                    groupped_transactions = defaultdict(list)
+
+                    for transaction in transactions:
+                        groupped_transactions[transaction["Buyer"]["Email"]].append(transaction)
+
+                    for transactions in groupped_transactions:
+                        num_transactions = len(transactions)
                         # se le transazioni sono tutte pagate faccio l'ordine
                         # altrimenti se sono tutte non pagate le unisco
                         # altrimenti mail e segnalazione
