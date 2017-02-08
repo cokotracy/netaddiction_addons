@@ -1118,7 +1118,7 @@ class EbayProducts(models.Model):
         try:
             self._get_ebay_orders()
         except Exception as e:
-            self._send_ebay_error_mail("%s  %s" % (e, traceback.print_exc()), '[EBAY] ECCEZIONE lanciata da _get_ebay_orders ')
+            self._send_ebay_error_mail("%s  %s" % (e, traceback.print_stack()), '[EBAY] ECCEZIONE lanciata da _get_ebay_orders ')
         try:
             self._end_products_on_ebay()
         except Exception as e:
