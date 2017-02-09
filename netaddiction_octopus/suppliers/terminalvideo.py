@@ -151,7 +151,30 @@ class TerminalVideo(supplier.Supplier):
         assert item['Tipo record'] != 'E'
         assert float(item['Pvc'].replace(',', '.')) > 0
         assert item['Formato'] != 'Audio Cd'
-        assert 'rental)' not in item['Titolo'].lower()
+
+        # Name exclusion
+
+        name_exclusions = (
+            'rental)',
+            '[Edizione: Francia]',
+            '[Edizione: Germania]',
+            '[Edizione: Regno Unito]',
+            '[Edizione: Olanda]',
+            '[Edizione: Scandinavia]',
+            '[Edizione: Spagna]',
+            '[Edizione: Stati Uniti]',
+            '[Edizione: Usa]',
+        )
+
+        lowercase_name = item['Titolo'].lower()
+
+        for exclusion in name_exclusions:
+            assert exclusion not in lowercase_name
+
+        # Book preorder
+
+        if item['_file'] == 'Libri' and item['Data primo rilascio']:
+            assert datetime.strptime(item['Data primo rilascio'], '%d/%m/%Y') <= datetime.now()
 
     def group(self, item):
         group_name = item['Titolo'].rsplit('(', 1)[0].strip() if '(' in item['Titolo'] and item['Titolo'][-1] == ')' else item['Titolo']
