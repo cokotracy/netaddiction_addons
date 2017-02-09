@@ -836,6 +836,7 @@ class EbayProducts(models.Model):
                                 total += 4.90
                                 api.execute('AddOrder', {'Order': {'TransactionArray': trasaction_array, 'Total': '%s' % total, 'CreatingUserRole': 'Seller', 'ShippingDetails': {'CODCost': '3.0'}, 'PaymentMethods': ['PayPal', 'COD'], 'ShippingServiceOptions': {'ImportCharge': '4.9'}}})
                                 resp = api.response.dict()
+                                self._send_ebay_error_mail(" %s " % resp, '[EBAY] DEBUG ADD order')
 
                                 if resp["Ack"] != "Success" and resp["Ack"] != "Warning":
                                     self._send_ebay_error_mail(" %s " % resp, '[EBAY] ERRORE nel AddOrder')
