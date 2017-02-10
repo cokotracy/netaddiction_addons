@@ -807,8 +807,6 @@ class EbayProducts(models.Model):
                     for transaction in transactions:
                         groupped_transactions[transaction["Buyer"]["Email"]].append(transaction)
 
-                    
-
                     for user, transactions in groupped_transactions.iteritems():
                         num_transactions = len(transactions)
                         # se le transazioni sono tutte pagate faccio l'ordine
@@ -1125,10 +1123,10 @@ class EbayProducts(models.Model):
         except Exception as e:
             self._send_ebay_error_mail("%s  %s" % (e, traceback.print_exc()), '[EBAY] ECCEZIONE lanciata da _upload_new_products_to_ebay ')
 
-        try:
-            self._update_products_on_ebay()
-        except Exception as e:
-            self._send_ebay_error_mail("%s  %s" % (e, traceback.print_exc()), '[EBAY] ECCEZIONE lanciata da _update_products_on_ebay ')
+        # try:
+        self._update_products_on_ebay()
+        # except Exception as e:
+        #     self._send_ebay_error_mail("%s  %s" % (e, traceback.print_exc()), '[EBAY] ECCEZIONE lanciata da _update_products_on_ebay ')
 
         # try:
         self._get_ebay_orders()
