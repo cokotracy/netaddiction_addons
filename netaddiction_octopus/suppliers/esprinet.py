@@ -8,8 +8,8 @@ class Esprinet(supplier.Supplier):
     files = [
         {
             'name': 'Main',
-            'mapping': {
-                'dispoP.txt.zip': (
+            'mapping': (
+                ('dispoP.txt.zip', (
                     'Codice',
                     'CodiceProduttore',
                     'CodiceEAN',
@@ -46,8 +46,8 @@ class Esprinet(supplier.Supplier):
                     'TempoGaranziaEndUser',
                     'StreetPrice',
                     'QtaMinimaOrd',
-                ),
-            },
+                )),
+            ),
         },
     ]
 

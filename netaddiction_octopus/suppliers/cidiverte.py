@@ -8,14 +8,14 @@ class Cidiverte(supplier.Supplier):
     files = [
         {
             'name': 'Main',
-            'mapping': {
-                'listino_multiplayer.txt': (
+            'mapping': (
+                ('listino_multiplayer.txt', (
                     'barcode',
                     'codice',
                     'prezzo',
                     'disponibilita',
-                )
-            }
+                )),
+            ),
         },
     ]
 

@@ -10,8 +10,8 @@ class DbLine(supplier.Supplier):
     files = [
         {
             'name': 'Main',
-            'mapping': {
-                '/NSArea/A17/ECOPRO.TXT': (
+            'mapping': (
+                ('/NSArea/A17/ECOPRO.TXT', (
                     'categoria',
                     'prenotazione',
                     'data_uscita',
@@ -32,8 +32,8 @@ class DbLine(supplier.Supplier):
                     'valutazione',
                     'data_inserimento',
                     'prezzo_vendita_dbline',
-                ),
-            },
+                )),
+            ),
         },
     ]
 

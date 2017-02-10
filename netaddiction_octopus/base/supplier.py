@@ -24,7 +24,7 @@ class SupplierBase(type):
         'categories': DefaultValue(()),
         'downloader': RequiredValue(Downloader),
         'parser': RequiredValue(Parser),
-        'mapping': dict,
+        'mapping': set,
         'validate': callable,
         'group': callable,
     }
@@ -73,7 +73,7 @@ class Supplier(object):
 
         join = files.get('join')
 
-        for location, mapping in files['mapping'].items():
+        for location, mapping in files['mapping']:
             source = self.downloader.download(location % parameters)
             parsed = self.parser.parse(source, mapping, join)
 
@@ -92,13 +92,16 @@ class Supplier(object):
             if len(f):
                 value_keys.update(f[f.keys()[0]].keys())
 
-        for f in files:
+        for i, f in enumerate(files):
             for key, value in f.items():
                 for value_key in value_keys:
                     if value_key not in value:
                         value[value_key] = None
 
                 if key not in merged:
+                    if i > 0:
+                        continue
+
                     merged[key] = {}
 
                 merged[key].update(value)

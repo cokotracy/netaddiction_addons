@@ -8,8 +8,8 @@ class Drako(supplier.Supplier):
     files = [
         {
             'name': 'Main',
-            'mapping': {
-                'multiplayer_it.txt': (
+            'mapping': (
+                ('multiplayer_it.txt', (
                     'Nome_Cat',
                     'ID_Articolo',
                     'Codice_Vendor',
@@ -27,8 +27,8 @@ class Drako(supplier.Supplier):
                     'EAN',
                     'Indirizzo Immagine',
                     'Testo Prodotto',
-                ),
-            },
+                )),
+            ),
         },
     ]
 

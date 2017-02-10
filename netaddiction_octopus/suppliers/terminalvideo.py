@@ -100,26 +100,26 @@ class TerminalVideo(supplier.Supplier):
     files = [
         {
             'name': 'Merchandising',
-            'mapping': {
-                'Merchandising/DBmerchandisingFull.txt': _MAPPING['catalog'],
-                'Stock/StocklistTotale.txt': _MAPPING['availability'],
-            },
+            'mapping': (
+                ('Merchandising/DBmerchandisingFull.txt', _MAPPING['catalog']),
+                ('Stock/StocklistTotale.txt', _MAPPING['availability']),
+            ),
             'join': 'Cod. barre',
         },
         {
             'name': 'HomeVideo',
-            'mapping': {
-                'Video/DBHomeVideoFull.txt': _MAPPING['catalog'],
-                'Stock/StocklistTotale.txt': _MAPPING['availability'],
-            },
+            'mapping': (
+                ('Video/DBHomeVideoFull.txt', _MAPPING['catalog']),
+                ('Stock/StocklistTotale.txt', _MAPPING['availability']),
+            ),
             'join': 'Cod. barre',
         },
         {
             'name': 'Libri',
-            'mapping': {
-                'Libri/DBLibriFull.txt': _MAPPING['catalog'],
-                'Stock/StocklistTotale.txt': _MAPPING['availability'],
-            },
+            'mapping': (
+                ('Libri/DBLibriFull.txt', _MAPPING['catalog']),
+                ('Stock/StocklistTotale.txt', _MAPPING['availability']),
+            ),
             'join': 'Cod. barre',
         },
     ]

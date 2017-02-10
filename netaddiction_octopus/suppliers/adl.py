@@ -8,8 +8,8 @@ class Adl(supplier.Supplier):
     files = [
         {
             'name': 'Main',
-            'mapping': {
-                'http://www.adl.it/?lang=it&section=getlistino&dealer=d00859972586b32ce5610b93c5d83455': (
+            'mapping': (
+                ('http://www.adl.it/?lang=it&section=getlistino&dealer=d00859972586b32ce5610b93c5d83455', (
                     'id_categoria',
                     'id_sottocategoria',
                     'nome_categoria',
@@ -42,8 +42,8 @@ class Adl(supplier.Supplier):
                     'larghezza',
                     'profondita',
                     'peso',
-                ),
-            },
+                )),
+            ),
         },
     ]
 

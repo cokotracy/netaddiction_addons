@@ -14,15 +14,15 @@ class CosmicGroup(supplier.Supplier):
     files = [
         {
             'name': 'Main',
-            'mapping': {
-                'magazzino/a6sinte.txt': (
+            'mapping': (
+                ('magazzino/a6sinte.txt', (
                     'editore',
                     'codice',
                     'titolo',
                     'prezzo',
                     'quantita',
-                ),
-            },
+                )),
+            ),
         },
     ]
 

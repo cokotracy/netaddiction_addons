@@ -8,8 +8,8 @@ class PromoVideo(supplier.Supplier):
     files = [
         {
             'name': 'Main',
-            'mapping': {
-                'listino_prvd.txt': (
+            'mapping': (
+                ('listino_prvd.txt', (
                     'barcode',
                     'codice',
                     'descrizione',
@@ -32,8 +32,8 @@ class PromoVideo(supplier.Supplier):
                     'data_modifica_vendita',
                     'data_modifica_articolo',
                     'sku',
-                ),
-            },
+                )),
+            ),
         },
     ]
 
