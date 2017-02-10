@@ -807,7 +807,7 @@ class EbayProducts(models.Model):
                     for transaction in transactions:
                         groupped_transactions[transaction["Buyer"]["Email"]].append(transaction)
 
-                    self._send_ebay_error_mail(" %s ahahhahaha %s" % (resp["TransactionArray"]["Transaction"], groupped_transactions), '[EBAY] DEBUG nel get order')
+                    
 
                     for user, transactions in groupped_transactions.iteritems():
                         num_transactions = len(transactions)
@@ -827,14 +827,16 @@ class EbayProducts(models.Model):
                                     paid_number += 1
                             if paid_number == 0:
                                 # unisci!
-                                trasaction_array = []
+                                transaction_array = []
                                 total = 0.0
                                 for transaction in transactions:
-                                    trasaction_array.append({'Transaction': {'Item': {'ItemID': transaction["Item"]["ItemID"]}, ' TransactionID': transaction["TransactionID"]}})
+                                    transaction_array.append({'Transaction': {'Item': {'ItemID': transaction["Item"]["ItemID"]}, ' TransactionID': transaction["TransactionID"]}})
                                     total += float(transaction["TransactionPrice"]['value'])
 
                                 total += 4.90
-                                api.execute('AddOrder', {'Order': {'TransactionArray': trasaction_array, 'Total': '%s' % total, 'CreatingUserRole': 'Seller', 'ShippingDetails': {'CODCost': '3.0'}, 'PaymentMethods': ['PayPal', 'COD'], 'ShippingServiceOptions': {'ImportCharge': '4.9'}}})
+                                self._send_ebay_error_mail(" %s " % transaction_array, '[EBAY] DEBUG nel get order')
+
+                                api.execute('AddOrder', {'Order': {'TransactionArray': transaction_array, 'Total': '%s' % total, 'CreatingUserRole': 'Seller', 'ShippingDetails': {'CODCost': '3.0'}, 'ShippingServiceOptions': {'ImportCharge': '4.9'}}})
                                 resp = api.response.dict()
                                 self._send_ebay_error_mail(" %s " % resp, '[EBAY] DEBUG ADD order')
 
