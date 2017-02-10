@@ -1149,8 +1149,8 @@ class EbayProducts(models.Model):
             self._complete_ebay_orders()
         except Exception as e:
             self._send_ebay_error_mail("%s  %s" % (e, traceback.print_exc()), '[EBAY] ECCEZIONE lanciata da _complete_ebay_orders ')
-        try:
-            self._relist_products_on_ebay()
-        except Exception as e:
-            self._send_ebay_error_mail("%s  %s" % (e, traceback.print_exc()), '[EBAY] ECCEZIONE lanciata da _relist_products_on_ebay ')
+        # try:
+        #     self._relist_products_on_ebay()
+        # except Exception as e:
+        #     self._send_ebay_error_mail("%s  %s" % (e, traceback.print_exc()), '[EBAY] ECCEZIONE lanciata da _relist_products_on_ebay ')
         return True
