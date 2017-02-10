@@ -13,13 +13,11 @@ class Products(models.Model):
         if self.env.context.get('skip_notification_mail', False):
             return
 
-        users = self.env["netaddiction.email.dispatcher"].get_users_from_group("netaddiction_acl.netaddiction_products_data_entry_user_manager")
-        users += self.env["netaddiction.email.dispatcher"].get_users_from_group("netaddiction_acl.netaddiction_sale_user_manager")
-        if self.sale_ok:
-            obj = "[SHOPPING] PRODOTTO NON PIU ESAURITO [%s] %s id: %s" % (self.categ_id.name, self.name, self.id)
-        else:
+        if not self.sale_ok:
+            users = self.env["netaddiction.email.dispatcher"].get_users_from_group("netaddiction_acl.netaddiction_products_data_entry_user_manager")
+            users += self.env["netaddiction.email.dispatcher"].get_users_from_group("netaddiction_acl.netaddiction_sale_user_manager")
             obj = "[SHOPPING] PRODOTTO ESAURITO [%s] %s id: %s" % (self.categ_id.name, self.name, self.id)
-        self.env["netaddiction.email.dispatcher"].send_mail(obj, obj, "shopping@multiplayer.com", set(users))
+            self.env["netaddiction.email.dispatcher"].send_mail(obj, obj, "shopping@multiplayer.com", set(users))
 
     @api.one
     @api.constrains('visible')
