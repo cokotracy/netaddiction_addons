@@ -104,7 +104,9 @@ class Supplier(object):
 
                     merged[key] = {}
 
-                merged[key].update(value)
+                for k, v in value.items():
+                    if merged[key].get(k) is None:
+                        merged[key][k] = v
 
         return merged.values()
 
