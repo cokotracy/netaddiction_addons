@@ -780,9 +780,10 @@ class EbayProducts(models.Model):
             tot_pag = 1
             # controllo sugli ordini già scaricati non completati necessario perchè ebay te li rimanda
             # dopo che gli hai detto che sono stati spediti
-            received_transactions = self.env["sale.order"].search([("from_ebay", "=", True), ("ebay_completed", "=", False)])
+            received_transactions = self.env["sale.order"].search([("from_ebay", "=", True), ('state', "!=", "cancel")])
             received_transactions = [order.ebay_transaction_id.split() for order in received_transactions]
             received_transactions = [item for sublist in received_transactions for item in sublist]
+            _logger.warning("[EBAY] RECEIVED TRANSACTIONS %s" % received_transactions)
             while(curr_pag < tot_pag):
                 curr_pag += 1
                 api.execute('GetSellerTransactions', {'ModTimeFrom': last_executed, 'ModTimeTo': now, 'DetailLevel': 'ReturnAll', 'Pagination': {'EntriesPerPage': '200', 'PageNumber': '%s' % curr_pag}})
@@ -819,7 +820,7 @@ class EbayProducts(models.Model):
                         # altrimenti mail e segnalazione
                         if num_transactions == 1:
                             transaction = transactions[0]
-                            _logger.warning("[EBAY] creo ordine per %s transazione %s" % (user, transaction))
+                            _logger.warning("[EBAY] creo ordine per %s eBayPaymentStatus %s CheckoutStatus %s transaction_id %s  transazione %s" % (user, transaction['Status']['eBayPaymentStatus'], transaction['Status']['CheckoutStatus'], transaction["TransactionID"], transaction))
                             if transaction['Status']['eBayPaymentStatus'] == 'NoPaymentFailure' and transaction['Status']['CheckoutStatus'] == 'CheckoutComplete' and transaction["TransactionID"] not in received_transactions:
                                 ret_str = self._create_ebay_order(transaction)
                                 if ret_str != "OK":
@@ -834,13 +835,13 @@ class EbayProducts(models.Model):
                                 transaction_array = []
                                 total = 0.0
                                 for transaction in transactions:
-                                    transaction_array.append({'Item': {'ItemID': transaction["Item"]["ItemID"]}, ' TransactionID': transaction["TransactionID"]})
+                                    transaction_array.append({'Item': {'ItemID': transaction["Item"]["ItemID"]}, 'TransactionID': transaction["TransactionID"]})
                                     total += float(transaction["TransactionPrice"]['value'])
 
                                 total += 4.90
                                 self._send_ebay_error_mail(" %s " % transaction_array, '[EBAY] DEBUG nel get order')
 
-                                api.execute('AddOrder', {'Order': {'TransactionArray': {'Transaction': transaction_array}, 'Total': '%s' % total, 'CreatingUserRole': 'Seller', 'ShippingDetails': {'CODCost': '3.0'}, 'ShippingServiceOptions': {'ImportCharge': '4.9'}}})
+                                api.execute('AddOrder', {'Order': {'TransactionArray': {'Transaction': transaction_array}, 'Total': '%s' % total, 'CreatingUserRole': 'Seller', 'ShippingDetails': {'CODCost': '3.0'}, 'PaymentMethods': ['PayPal', 'COD'], 'ShippingServiceOptions': {'ImportCharge': '4.9'}}})
                                 resp = api.response.dict()
                                 self._send_ebay_error_mail(" %s " % resp, '[EBAY] DEBUG ADD order')
 
