@@ -852,7 +852,7 @@ class EbayProducts(models.Model):
                             total += 4.90
                             self._send_ebay_error_mail(" %s " % transaction_array, '[EBAY] DEBUG nel get order')
                             try:
-                                api.execute('AddOrder', {'Order': {'TransactionArray': {'Transaction': transaction_array}, 'Total currencyID="EUR"': '%s' % total, 'CreatingUserRole': 'Seller', 'ShippingDetails': {'CODCost': '3.0'}, 'PaymentMethods': ['PayPal', 'COD'], 'ShippingServiceOptions': {'ImportCharge': '4.9'}}})
+                                api.execute('AddOrder', {'Order': {'TransactionArray': {'Transaction': transaction_array}, 'Total currencyID="EUR"': {'#text': '%s' % total, '@attrs': {'currencyID': 'EUR'}}, 'CreatingUserRole': 'Seller', 'ShippingDetails': {'CODCost': '3.0'}, 'PaymentMethods': ['PayPal', 'COD'], 'ShippingServiceOptions': {'ImportCharge': '4.9'}}})
                                 resp = api.response.dict()
                                 self._send_ebay_error_mail(" %s " % resp, '[EBAY] DEBUG ADD order')
 
@@ -873,8 +873,6 @@ class EbayProducts(models.Model):
                                         ret_str = self._create_ebay_order(transaction)
                                         if ret_str != "OK":
                                             error_transaction.append([transaction["TransactionID"], ret_str])
-
-        
 
         self.env["ir.values"].search([("name", "=", "ebay_last_order_check"), ("model", "=", "netaddiction.ebay.config")]).value = datetime.now()
         if error_transaction:
