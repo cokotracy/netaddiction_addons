@@ -9,10 +9,13 @@ import uuid
 import time
 import random
 import traceback
+import logging
 from ebaysdk.exception import ConnectionError
 from ebaysdk.trading import Connection as Trading
 
 MAX_NUM_JOB_CHECK = 100
+
+_logger = logging.getLogger(__name__)
 
 
 class EbayProducts(models.Model):
@@ -810,11 +813,13 @@ class EbayProducts(models.Model):
 
                     for user, transactions in groupped_transactions.iteritems():
                         num_transactions = len(transactions)
+                        _logger.warning("[EBAY] %s num %s" % (user, num_transactions))
                         # se le transazioni sono tutte pagate faccio l'ordine
                         # altrimenti se sono tutte non pagate le unisco
                         # altrimenti mail e segnalazione
                         if num_transactions == 1:
                             transaction = transactions[0]
+                            _logger.warning("[EBAY] creo ordine per %s transazione %s" % (user, transaction))
                             if transaction['Status']['eBayPaymentStatus'] == 'NoPaymentFailure' and transaction['Status']['CheckoutStatus'] == 'CheckoutComplete' and transaction["TransactionID"] not in received_transactions:
                                 ret_str = self._create_ebay_order(transaction)
                                 if ret_str != "OK":
@@ -829,13 +834,13 @@ class EbayProducts(models.Model):
                                 transaction_array = []
                                 total = 0.0
                                 for transaction in transactions:
-                                    transaction_array.append({'Transaction': {'Item': {'ItemID': transaction["Item"]["ItemID"]}, ' TransactionID': transaction["TransactionID"]}})
+                                    transaction_array.append({'Item': {'ItemID': transaction["Item"]["ItemID"]}, ' TransactionID': transaction["TransactionID"]})
                                     total += float(transaction["TransactionPrice"]['value'])
 
                                 total += 4.90
                                 self._send_ebay_error_mail(" %s " % transaction_array, '[EBAY] DEBUG nel get order')
 
-                                api.execute('AddOrder', {'Order': {'TransactionArray': transaction_array, 'Total': '%s' % total, 'CreatingUserRole': 'Seller', 'ShippingDetails': {'CODCost': '3.0'}, 'ShippingServiceOptions': {'ImportCharge': '4.9'}}})
+                                api.execute('AddOrder', {'Order': {'TransactionArray': {'Transaction': transaction_array}, 'Total': '%s' % total, 'CreatingUserRole': 'Seller', 'ShippingDetails': {'CODCost': '3.0'}, 'ShippingServiceOptions': {'ImportCharge': '4.9'}}})
                                 resp = api.response.dict()
                                 self._send_ebay_error_mail(" %s " % resp, '[EBAY] DEBUG ADD order')
 
