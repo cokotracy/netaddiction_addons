@@ -962,7 +962,11 @@ class EbayProducts(models.Model):
         shipping_dict = {'name': shipping_address["Name"], 'street': shipping_address["Street1"], 'phone': shipping_address["Phone"], 'country_id': italy_id, 'city': shipping_address["CityName"], 'zip': shipping_address["PostalCode"], 'street2': shipping_address.get("Street2") or False}
         if not shipping_dict["street2"]:
             parsed = re.findall('\d+', shipping_dict["street"])
-            shipping_dict['street2'] = parsed[-1] if parsed else False
+            if parsed:
+                shipping_dict['street2'] = parsed[-1] 
+                shipping_dict["street"].translate(None, parsed[-1])
+            else:
+                shipping_dict['street2'] = False
         user_shipping = None
         user_billing = None
         if user:
