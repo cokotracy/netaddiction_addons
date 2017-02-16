@@ -852,7 +852,7 @@ class EbayProducts(models.Model):
                             total += 4.90
                             self._send_ebay_error_mail(" %s " % transaction_array, '[EBAY] DEBUG nel get order')
                             try:
-                                api.execute('AddOrder', {'Order': {'TransactionArray': {'Transaction': transaction_array}, 'Total currencyID="EUR"': {'#text': '%s' % total, '@attrs': {'currencyID': 'EUR'}}, 'CreatingUserRole': 'Seller', 'ShippingDetails': {'CODCost': '3.0'}, 'PaymentMethods': ['PayPal', 'COD'], 'ShippingServiceOptions': {'ImportCharge': '4.9'}}})
+                                api.execute('AddOrder', {'Order': {'TransactionArray': {'Transaction': transaction_array}, 'Total': {'#text': '%s' % total, '@attrs': {'currencyID': 'EUR'}}, 'CreatingUserRole': 'Seller', 'ShippingDetails': {'CODCost': '3.0'}, 'PaymentMethods': ['PayPal', 'COD'], 'ShippingServiceOptions': {'ImportCharge': '4.9'}}})
                                 resp = api.response.dict()
                                 self._send_ebay_error_mail(" %s " % resp, '[EBAY] DEBUG ADD order')
 
@@ -963,7 +963,7 @@ class EbayProducts(models.Model):
         if not shipping_dict["street2"]:
             parsed = re.findall('\d+', shipping_dict["street"])
             if parsed:
-                shipping_dict['street2'] = parsed[-1] 
+                shipping_dict['street2'] = parsed[-1]
                 shipping_dict["street"].translate(None, parsed[-1])
             else:
                 shipping_dict['street2'] = False
