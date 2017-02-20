@@ -334,9 +334,6 @@ class Order(models.Model):
     def pre_action_confirm(self):
         for order in self:
             if order.state in ('draft', 'pending'):
-                
-                # aggiorna data ordine
-                order.date_order = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
 
                 for order_line in order.order_line:
                     if not order_line.product_id.active or not order_line.product_id.sale_ok:
