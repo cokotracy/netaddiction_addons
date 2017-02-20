@@ -1135,10 +1135,10 @@ class EbayProducts(models.Model):
 
     @api.model
     def _ebay_cron_hourly(self):
-        try:
-            self._upload_new_products_to_ebay()
-        except Exception as e:
-            self._send_ebay_error_mail("%s  %s" % (e, traceback.print_exc()), '[EBAY] ECCEZIONE lanciata da _upload_new_products_to_ebay ')
+        # try:
+        self._upload_new_products_to_ebay()
+        # except Exception as e:
+        #     self._send_ebay_error_mail("%s  %s" % (e, traceback.print_exc()), '[EBAY] ECCEZIONE lanciata da _upload_new_products_to_ebay ')
 
         # try:
         self._update_products_on_ebay()
