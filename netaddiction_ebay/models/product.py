@@ -492,7 +492,8 @@ class EbayProducts(models.Model):
             category_dict = self._build_category_dictionary()
             for product in products_to_upload:
                 category = category_dict.get(product.categ_id.id, '139973')
-                category = category if not isinstance(category, dict) else category.get(product.attribute_value_ids[0].id, category[0])
+                if isinstance(category, dict):
+                    category = category.get(product.attribute_value_ids[0].id, category[0]) if product.attribute_value_ids else category[0]
                 isbn = product.barcode if product.categ_id.id == book_id else None
                 prods[str(product.id)] = {
                     'qty': str(product.qty_available_now),
@@ -588,7 +589,8 @@ class EbayProducts(models.Model):
             for product in products_to_update:
                 if product.qty_available_now > 0:
                     category = category_dict.get(product.categ_id.id, '139973')
-                    category = category if not isinstance(category, dict) else category.get(product.attribute_value_ids[0].id, category[0])
+                    if isinstance(category, dict):
+                        category = category.get(product.attribute_value_ids[0].id, category[0]) if product.attribute_value_ids else category[0]
                     isbn = product.barcode if product.categ_id.id == book_id else None
                     prods[str(product.id)] = {
                         'qty': str(product.qty_available_now),
@@ -656,7 +658,8 @@ class EbayProducts(models.Model):
             category_dict = self._build_category_dictionary()
             for product in products_expired:
                 category = category_dict.get(product.categ_id.id, '1')
-                category = category if not isinstance(category, dict) else category.get(product.attribute_value_ids[0].id, '1')
+                if isinstance(category, dict):
+                        category = category.get(product.attribute_value_ids[0].id, category[0]) if product.attribute_value_ids else category[0]
                 isbn = product.barcode if product.categ_id.id == book_id else None
                 prods[str(product.id)] = {
                     'qty': str(product.qty_available_now),
@@ -1135,20 +1138,20 @@ class EbayProducts(models.Model):
 
     @api.model
     def _ebay_cron_hourly(self):
-        # try:
-        self._upload_new_products_to_ebay()
-        # except Exception as e:
-        #     self._send_ebay_error_mail("%s  %s" % (e, traceback.print_exc()), '[EBAY] ECCEZIONE lanciata da _upload_new_products_to_ebay ')
+        try:
+            self._upload_new_products_to_ebay()
+        except Exception as e:
+            self._send_ebay_error_mail("%s  %s" % (e, traceback.print_exc()), '[EBAY] ECCEZIONE lanciata da _upload_new_products_to_ebay ')
 
-        # try:
-        self._update_products_on_ebay()
-        # except Exception as e:
-        #     self._send_ebay_error_mail("%s  %s" % (e, traceback.print_exc()), '[EBAY] ECCEZIONE lanciata da _update_products_on_ebay ')
+        try:
+            self._update_products_on_ebay()
+        except Exception as e:
+            self._send_ebay_error_mail("%s  %s" % (e, traceback.print_exc()), '[EBAY] ECCEZIONE lanciata da _update_products_on_ebay ')
 
-        # try:
-        self._get_ebay_orders()
-        # except Exception as e:
-        #     self._send_ebay_error_mail("%s  %s" % (e, traceback.print_exc()), '[EBAY] ECCEZIONE lanciata da _get_ebay_orders ')
+        try:
+            self._get_ebay_orders()
+        except Exception as e:
+            self._send_ebay_error_mail("%s  %s" % (e, traceback.print_exc()), '[EBAY] ECCEZIONE lanciata da _get_ebay_orders ')
         try:
             self._end_products_on_ebay()
         except Exception as e:
