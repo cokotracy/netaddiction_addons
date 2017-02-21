@@ -842,7 +842,7 @@ class EbayProducts(models.Model):
                     elif num_transactions > 1:
                         paid_number = 0
                         for transaction in transactions:
-                            if transaction['Status']['eBayPaymentStatus'] == 'NoPaymentFailure' and transaction['Status']['CheckoutStatus'] == 'CheckoutComplete':
+                            if transaction['Status']['eBayPaymentStatus'] == 'NoPaymentFailure' and transaction['Status']['CheckoutStatus'] == 'CheckoutComplete' and transaction["TransactionID"] not in received_transactions:
                                 paid_number += 1
                         if paid_number == 0:
                             # unisci!
