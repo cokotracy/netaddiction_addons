@@ -56,3 +56,21 @@ class EmailDispatcher(models.TransientModel):
             return self.env["res.users"].search([("groups_id", "in", group.id)])
         else:
             return False
+
+    # rimosso perchè troppo lento, in  res partner _notify_by_email. 
+    # def send_notification(self, body, subject, email_from, recipients, attachment_ids=None, reply_to=None):
+
+    #     recipient_partners = []
+    #     for recipient in recipients:
+    #         recipient_partners.append((4, recipient.sudo().partner_id.id))
+    #     self.env['mail.message'].sudo().create({
+    #         'type': 'notification',
+    #         # 'author_id': sender.sudo().partner_id.id,
+    #         'partner_ids': recipient_partners,
+
+    #         'subject': subject,
+    #         'body': body,
+
+    #         'subtype': 'mt_comment'
+    #     })
+

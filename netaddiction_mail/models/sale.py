@@ -9,11 +9,11 @@ class Order(models.Model):
     @api.multi
     def action_cancel(self):
 
-        users = self.env["netaddiction.email.dispatcher"].get_users_from_group("netaddiction_acl.netaddiction_products_data_entry_user_manager")
-        users += self.env["netaddiction.email.dispatcher"].get_users_from_group("netaddiction_acl.netaddiction_sale_user_manager")
+        # users = self.env["netaddiction.email.dispatcher"].get_users_from_group("netaddiction_acl.netaddiction_products_data_entry_user_manager")
+        # users += self.env["netaddiction.email.dispatcher"].get_users_from_group("netaddiction_acl.netaddiction_sale_user_manager")
         categories = [line.product_id.categ_id.name for line in self.order_line]
-        obj = "[SHOPPING] ANNULLATO ordine %s %s" % (self.name, ", ".join(set(categories)))
-        self.env["netaddiction.email.dispatcher"].send_mail(obj, obj, "shopping@multiplayer.com", set(users))
+        # obj = "[SHOPPING] ANNULLATO ordine %s %s" % (self.name, ", ".join(set(categories)))
+        # self.env["netaddiction.email.dispatcher"].send_mail(obj, obj, "shopping@multiplayer.com", set(users))
 
         pp_journal = self.env['ir.model.data'].get_object('netaddiction_payments', 'paypal_journal')
         sofort_journal = self.env['ir.model.data'].get_object('netaddiction_payments', 'sofort_journal')

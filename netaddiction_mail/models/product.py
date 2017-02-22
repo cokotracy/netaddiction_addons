@@ -14,32 +14,38 @@ class Products(models.Model):
             return
 
         if not self.sale_ok:
-            users = self.env["netaddiction.email.dispatcher"].get_users_from_group("netaddiction_acl.netaddiction_products_data_entry_user_manager")
-            users += self.env["netaddiction.email.dispatcher"].get_users_from_group("netaddiction_acl.netaddiction_sale_user_manager")
+            # TODO risistemare acl per mail o fare menu di configurazione
+            # users = self.env["netaddiction.email.dispatcher"].get_users_from_group("netaddiction_acl.netaddiction_products_data_entry_user_manager")
+            # users += self.env["netaddiction.email.dispatcher"].get_users_from_group("netaddiction_acl.netaddiction_sale_user_manager")
             obj = "[SHOPPING] PRODOTTO ESAURITO [%s] %s id: %s" % (self.categ_id.name, self.name, self.id)
-            self.env["netaddiction.email.dispatcher"].send_mail(obj, obj, "shopping@multiplayer.com", set(users))
+            users_2 = "andrea.alunni@netaddiction.it, riccardo.ioni@netaddiction.it"
+            # self.env["netaddiction.email.dispatcher"].send_notification(obj, obj, "shopping@multiplayer.com", set(users))
+            self.env["netaddiction.email.dispatcher"].send_mail_fixed_recipients(obj, obj, "shopping@multiplayer.com", users_2)
 
     @api.one
     @api.constrains('visible')
     def _check_visible(self):
         if self.env.context.get('skip_notification_mail', False):
             return
-
-        users = self.env["netaddiction.email.dispatcher"].get_users_from_group("netaddiction_acl.netaddiction_products_data_entry_user_manager")
-        users += self.env["netaddiction.email.dispatcher"].get_users_from_group("netaddiction_acl.netaddiction_sale_user_manager")
+        # TODO risistemare acl per mail o fare menu di configurazione
+        # users = self.env["netaddiction.email.dispatcher"].get_users_from_group("netaddiction_acl.netaddiction_products_data_entry_user_manager")
+        # users += self.env["netaddiction.email.dispatcher"].get_users_from_group("netaddiction_acl.netaddiction_sale_user_manager")
+        users_2 = "andrea.alunni@netaddiction.it, riccardo.ioni@netaddiction.it"
         if self.visible:
             obj = "[SHOPPING] PRODOTTO ACCESO [%s] %s id: %s" % (self.categ_id.name, self.name, self.id)
         else:
             obj = "[SHOPPING] PRODOTTO SPENTO [%s] %s id: %s" % (self.categ_id.name, self.name, self.id)
-        self.env["netaddiction.email.dispatcher"].send_mail(obj, obj, "shopping@multiplayer.com", set(users))
+        # self.env["netaddiction.email.dispatcher"].send_notification(obj, obj, "shopping@multiplayer.com", set(users))
+        self.env["netaddiction.email.dispatcher"].send_mail_fixed_recipients(obj, obj, "shopping@multiplayer.com", users_2)
 
     @api.model
     def _verify_release_date(self):
         if self.env.context.get('skip_notification_mail', False):
             return
-
-        users = self.env["netaddiction.email.dispatcher"].get_users_from_group("netaddiction_acl.netaddiction_products_data_entry_user_manager")
-        users += self.env["netaddiction.email.dispatcher"].get_users_from_group("netaddiction_acl.netaddiction_sale_user_manager")
+        # TODO risistemare acl per mail o fare menu di configurazione
+        # users = self.env["netaddiction.email.dispatcher"].get_users_from_group("netaddiction_acl.netaddiction_products_data_entry_user_manager")
+        # users += self.env["netaddiction.email.dispatcher"].get_users_from_group("netaddiction_acl.netaddiction_sale_user_manager")
+        users_2 = "andrea.alunni@netaddiction.it, riccardo.ioni@netaddiction.it"
         products_out = self.env["product.product"].search([("out_date", "=", date.today() + timedelta(days=7))])
         products_available = self.env["product.product"].search([("available_date", "=", date.today() + timedelta(days=7))])
         products_out_lst = []
@@ -47,8 +53,10 @@ class Products(models.Model):
         if products_out:
             for product in products_out:
                 products_out_lst.append(" %s id: %s data uscita %s <br>" % (product.name, product.id, product.out_date))
-            self.env["netaddiction.email.dispatcher"].send_mail("".join(products_out_lst), "[SHOPPING] PRODOTTI IN USCITA ESATTAMENTE TRA 7 GIORNI", "shopping@multiplayer.com", set(users))
+            # self.env["netaddiction.email.dispatcher"].send_notification("".join(products_out_lst), "[SHOPPING] PRODOTTI IN USCITA ESATTAMENTE TRA 7 GIORNI", "shopping@multiplayer.com", set(users))
+            self.env["netaddiction.email.dispatcher"].send_mail_fixed_recipients("".join(products_out_lst), "[SHOPPING] PRODOTTI IN USCITA ESATTAMENTE TRA 7 GIORNI", "shopping@multiplayer.com", users_2)
         if products_available_lst:
             for product in products_available:
                 products_available_lst.append("%s id: %s data uscita %s <br>" % (product.name, product.id, product.available_date))
-            self.env["netaddiction.email.dispatcher"].send_mail("".join(products_available_lst), "[SHOPPING] PRODOTTI DISPONIBILI ESATTAMENTE TRA 7 GIORNI", "shopping@multiplayer.com", set(users))
+            # self.env["netaddiction.email.dispatcher"].send_notification("".join(products_available_lst), "[SHOPPING] PRODOTTI DISPONIBILI ESATTAMENTE TRA 7 GIORNI", "shopping@multiplayer.com", set(users))
+            self.env["netaddiction.email.dispatcher"].send_mail_fixed_recipients("".join(products_out_lst), "[SHOPPING] PRODOTTI IN USCITA ESATTAMENTE TRA 7 GIORNI", "shopping@multiplayer.com", users_2)
