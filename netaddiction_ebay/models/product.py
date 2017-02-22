@@ -1049,10 +1049,7 @@ class EbayProducts(models.Model):
         else:
             return "pagamento sconosciuto"
 
-        quantity = int(transaction["QuantityPurchased"])
-        prod = self.env["product.product"].browse(int(transaction["Item"]["SKU"]))
-        if not prod:
-            return "product not found %s " % transaction["Item"]["SKU"]
+
 
         try:
             order = self.env["sale.order"].create({
@@ -1071,6 +1068,10 @@ class EbayProducts(models.Model):
             })
             # print transaction["TransactionPrice"]
             if not multi:
+                quantity = int(transaction["QuantityPurchased"])
+                prod = self.env["product.product"].browse(int(transaction["Item"]["SKU"]))
+                if not prod:
+                    return "product not found %s " % transaction["Item"]["SKU"]
                 order_line = self.env["sale.order.line"].create({
                     "order_id": order.id,
                     "product_id": prod.id,
@@ -1083,6 +1084,10 @@ class EbayProducts(models.Model):
                 transaction_id = ""
                 item_id = ""
                 for t in transactions:
+                    quantity = int(t["QuantityPurchased"])
+                    prod = self.env["product.product"].browse(int(t["Item"]["SKU"]))
+                    if not prod:
+                        return "product not found %s " % t["Item"]["SKU"]
                     order_line = self.env["sale.order.line"].create({
                         "order_id": order.id,
                         "product_id": prod.id,
