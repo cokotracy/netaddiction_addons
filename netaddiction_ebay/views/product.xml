@@ -40,6 +40,7 @@
     
                                <field name="ebay_published_date" attrs="{'readonly': 1}"/>
                                <field name="ebay_expiration_date" attrs="{'readonly': 1}"/>
+                               <field name="ebay_image_expiration_date" />
                                <field name="ebay_selled" attrs="{'readonly': 1}"/>
 
                              
