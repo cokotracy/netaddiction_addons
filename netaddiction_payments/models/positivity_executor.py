@@ -434,11 +434,17 @@ class PositivityExecutor(models.TransientModel):
 
     def auth_and_check_b2b(self, partner, partner_email, amount, token, order_list, invoice):
         """Metodo che si interfaccia con BNL per effettuare una autorizzazione e conferma di un pagamento.
-        Viene utilizzato sono per i clienti b2b. 
+        Viene utilizzato sono per i clienti b2b.
         se l'operazione ha successo ciene creato un pagamento e associato alla fattura 'invoice'.
+        'parner' = res.partner b2b
+        'partner_email' = stringa email del partner
+        'amount' = somma dei totali degli ordini
+        ATTENZIONE AMOUNT NON RICONTROLLATO
+        'token' = stringa token associato alla carta da utilizzare
+        'order_list' = lista di ordini
 
         Returns:
-        - False Se il partner non è b2b 
+        - False Se il partner non è b2b o se uno degli ordini nella lista non è b2b
         - La PaymentConfirmResponse altrimenti
         Raise:
         - PaymentException se non c'è un pagamento associato all'ordine con l'amount indicato, se l'order id è sbagliato o se BNL ritorna errrore
@@ -463,6 +469,9 @@ class PositivityExecutor(models.TransientModel):
         """
         if not partner.is_b2b:
             return False
+        for order in order_list:
+            if not order.is_b2b:
+                return False
 
         cc_journal = self.env['ir.model.data'].get_object('netaddiction_payments', 'cc_journal')
 

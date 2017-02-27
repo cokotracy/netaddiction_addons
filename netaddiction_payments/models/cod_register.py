@@ -93,6 +93,40 @@ class CoDRegister(models.TransientModel):
 
         return False
 
+    ##############
+    def set_order_cash_on_delivery_b2b(self, partner_id, amount, order_list, invoice):
+        u"""Meteodo per impostare una lusta di ordini 'order_list' b2b come da pagare con contrassegno.
+        'partner_id' = id del partner b2b
+        'amount' = somma dei totali degli ordini
+        ATTENZIONE AMOUNT NON RICONTROLLATO
+
+        se l'operazione ha successo ciene creato un pagamento e associato alla fattura 'invoice'.
+
+        Returns:
+        - False se uno degli ordini nella lista non è b2b
+        - True altrimenti
+
+        """
+        for order in order_list:
+            if not order.is_b2b:
+                return False
+        cod_journal_id = self.env['ir.model.data'].get_object('netaddiction_payments', 'contrassegno_journal').id
+        for order in order_list:
+            if order.state == 'draft':
+                order.action_confirm()
+            order.payment_method_id = cod_journal_id
+        name = self.env['ir.sequence'].with_context(ir_sequence_date=fields.Date.context_today(self)).next_by_code('account.payment.customer.invoice')
+        pay_inbound = self.env["account.payment.method"].search([("payment_type", "=", "inbound")])
+        pay_inbound = pay_inbound[0] if isinstance(pay_inbound, list) else pay_inbound
+        payment = self.env["account.payment"].create({"partner_type": "customer", "partner_id": partner_id, "journal_id": cod_journal_id, "amount": amount, "state": "draft", "payment_type": 'inbound', "payment_method_id": pay_inbound.id, "name": name, 'communication': " ".join(str(o.name) for o in order_list), })
+        payment.invoice_ids = [(4, invoice.id, None)]
+        for order in order_list:
+                order.account_payment_ids = [(6, payment.id, None)]
+        payment.delay_post()
+        return True
+
+
+
     def _set_order_to_invoice(self, stock_move, order):
         """dato 'order' imposta qty_to_invoice alla quantità giusta solo per i prodotti che si trovano in 'stock_move'
         """
