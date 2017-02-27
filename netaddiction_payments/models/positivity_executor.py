@@ -432,6 +432,87 @@ class PositivityExecutor(models.TransientModel):
             self._set_payment_or_create('posted', order, amount, response.tranID, token, cc_journal)
             return response
 
+    def auth_and_check_b2b(self, partner, partner_email, amount, token, order_list, invoice):
+        """Metodo che si interfaccia con BNL per effettuare una autorizzazione e conferma di un pagamento.
+        Viene utilizzato sono per i clienti b2b. 
+        se l'operazione ha successo ciene creato un pagamento e associato alla fattura 'invoice'.
+
+        Returns:
+        - False Se il partner non è b2b 
+        - La PaymentConfirmResponse altrimenti
+        Raise:
+        - PaymentException se non c'è un pagamento associato all'ordine con l'amount indicato, se l'order id è sbagliato o se BNL ritorna errrore
+        -Le eccezioni legate alle chiamate SOAP
+
+
+        esempio di return se corretto
+        (PaymentAuthResponse){
+            tid = "06822153"
+            rc = "IGFS_000"
+            error = False
+            errorDesc = "TRANSAZIONE OK"
+            signature = "zMMcEqHlXfm4Gamj74PrYyoJ5trSu6AFJyGzvPPKOI4="
+            shopID = "25374297"
+            tranID = 3062266680697637
+            authCode = "276671"
+            brand = "MASTERCARD"
+            maskedPan = "540117******2227"
+            payInstrToken = "26dc14f2a44709f89e7fa0ce8f629870"
+            status = "C"
+ }
+        """
+        if not partner.is_b2b:
+            return False
+
+        cc_journal = self.env['ir.model.data'].get_object('netaddiction_payments', 'cc_journal')
+
+        client = Client("https://s2s.bnlpositivity.it/BNL_CG_SERVICES/services/PaymentTranGatewayPort?wsdl")
+
+        request_data = client.factory.create('PaymentAuthRequest')
+
+        tid, kSig = self.get_tid_ksig_MOTO()
+
+        partner_id = partner.id
+        order_ids = " ".join(str(o.id) for o in order_list)
+
+        shop_id = str(partner_id) + str(order_ids)
+        shop_user_ref = partner_email
+        # token = cypher.hmacmd5(kSig,[pan,exp_month,exp_year])
+        currency = "EUR"
+        trType = "PURCHASE"
+
+        vc_amount = int(amount * 100)
+        addInfo1 = str(order_ids)
+
+        lst = [tid, shop_id, shop_user_ref, trType, vc_amount, currency, token, addInfo1]
+        signature = cypher.hmacsha256(kSig, lst)
+
+        request_data.tid = tid
+        request_data.shopID = shop_id
+        request_data.addInfo1 = addInfo1
+        request_data.shopUserRef = shop_user_ref
+        request_data.signature = signature
+        request_data.payInstrToken = token
+        request_data.trType = trType
+        request_data.amount = vc_amount
+        request_data.currencyCode = currency
+
+        response = client.service.auth(request_data)
+
+        if response.error:
+            raise payment_exception.PaymentException(payment_exception.CREDITCARD, "errore ritornato da BNL in risposta alla richiesta di auth %s" % response.errorDesc)
+        else:
+            name = self.env['ir.sequence'].with_context(ir_sequence_date=fields.Date.context_today(self)).next_by_code('account.payment.customer.invoice')
+            pay_inbound = self.env["account.payment.method"].search([("payment_type", "=", "inbound")])
+            pay_inbound = pay_inbound[0] if isinstance(pay_inbound, list) else pay_inbound
+            token_card = self.env["netaddiction.partner.ccdata"].search([("token", "=", token)])
+            payment = self.env["account.payment"].create({"partner_type": "customer", "partner_id": partner_id, "journal_id": cc_journal.id, "amount": amount, "state": "draft", "payment_type": 'inbound', "payment_method_id": pay_inbound.id, "name": name, 'communication': " ".join(str(o.name) for o in order_list), 'token': token, 'last_four': token_card.last_four, 'month': token_card.month, 'year': token_card.year, 'name': token_card.name, 'cc_status': 'auth', 'cc_tran_id': response.tranID})
+            payment.invoice_ids = [(4, invoice.id, None)]
+            for order in order_list:
+                order.account_payment_ids = [(6, payment.id, None)]
+            payment.delay_post()
+
+
     def get_tid_ksig(self):
         """utility method
         """
