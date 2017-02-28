@@ -335,6 +335,10 @@ class Order(models.Model):
         for order in self:
             if order.state in ('draft', 'pending'):
 
+                # aggiorna data ordine
+                if not order.parent_order:
+                    order.date_order = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+
                 for order_line in order.order_line:
                     if not order_line.product_id.active or not order_line.product_id.sale_ok:
                         if not self.env.context.get('no_check_product_sold_out', False):
