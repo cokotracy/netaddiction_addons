@@ -11,6 +11,7 @@ import base64
 from collections import defaultdict
 import io
 import csv
+import locale
 
 class StockPickingType(models.Model):
     _inherit = 'stock.picking.type'
@@ -658,6 +659,70 @@ class StockOperation(models.Model):
 
 class StockQuant(models.Model):
     _inherit='stock.quant'
+
+    @api.model
+    def get_inventory_at_date(self, from_date, to_date, company_id):
+        # prendo tutte le movimentazioni tra oggi e inv_date
+        # sommo algebricamente rispetto alla quantità attuale del prodotto e avrò la quantità in inv_date
+        # ciò che non è stato movimentato evidentemente era così già allora
+        # per la valorizzazione devo trovare la quant corrispondente alla move e comportarmi come per le qty
+        moves = self.env['stock.move'].search([('state', '=', 'done'), ('company_id', '=', company_id), ('date', '>=', from_date), ('date', '<=', to_date)])
+        inventory = {}
+        for move in moves:
+            if move.product_id in inventory.keys():
+                # operi in base alla movimentazione
+                # se proviene da wh allora è un + (è uscito)
+                # se arriva a wh lo devi togliere rispetto a oggi
+                if(move.location_id.id == 12):
+                    inventory[move.product_id]['qty'] += move.product_uom_qty
+                elif(move.location_dest_id.id == 12):
+                    inventory[move.product_id]['qty'] -= move.product_uom_qty
+            else:
+                inventory[move.product_id] = {}
+                inventory[move.product_id]['qty'] = move.product_id.qty_available
+                if(move.location_id.id == 12):
+                    inventory[move.product_id]['qty'] += move.product_uom_qty
+                elif(move.location_dest_id.id == 12):
+                    inventory[move.product_id]['qty'] -= move.product_uom_qty
+
+        print inventory
+
+    @api.model
+    def reports_inventario(self, domain, supplier_results):
+        result = self.env['product.product'].search(domain)
+        output = io.BytesIO()
+        writer = csv.writer(output)
+        csvdata = ['Categoria', 'Prodotto', 'Sku', 'Barcode', 'Qty Allocata', 'Valore Medio Unitario', 'Valore Totale', 'Prezzo di Vendita', 'Scaffali']
+        writer.writerow(csvdata)
+        locale.setlocale(locale.LC_ALL, '')
+        for res in result:
+            # TODO: se suppleir_results metti i valori di quel fornitore sicuro
+            qty_available = res.qty_available
+            total_inventory = qty_available * res.med_inventory_value
+            price = res.intax_price
+            if(res.offer_price):
+                price = res.offer_price
+
+            total_inventory = locale.format("%.2f", total_inventory, grouping=True)
+            price = locale.format("%.2f", price, grouping=True)
+            med = locale.format("%.2f", res.med_inventory_value, grouping=True)
+
+            csvdata = [res.categ_id.display_name.encode('utf8'), res.display_name.encode('utf8'), str(res.id), str(res.barcode), int(qty_available), med, total_inventory, price]
+            for line in res.product_wh_location_line_ids:
+                text = str(line.qty) + ' ' + line.wh_location_id.name.encode('utf8')
+                csvdata.append(text)
+            writer.writerow(csvdata)
+        data = base64.b64encode(output.getvalue()).decode()
+        output.close()
+        name = 'export %s.csv' % datetime.now()
+        attr = {
+            'name': name,
+            'datas_fname': name,
+            'type': 'binary',
+            'datas': data
+        }
+        new_id = self.env['ir.attachment'].create(attr)
+        return new_id.id
 
     @api.model
     def inventory_csv(self):

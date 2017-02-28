@@ -234,13 +234,13 @@ class Products(models.Model):
                                 delay = sup.delay
                             else:
                                 if int(sup.name.supplier_priority) == int(this_priority) and int(sup.avail_qty) > 0:
-                                    if sup.delay < delay:
+                                    if sup.price < price:
                                         qty = sup.avail_qty
                                         delay = sup.delay
                                         supplier = sup
                                         this_priority = sup.name.supplier_priority
                                         price = sup.price
-                                    elif sup.delay == delay and sup.price < price:
+                                    elif sup.price == price and sup.delay < delay:
                                         qty = sup.avail_qty
                                         delay = sup.delay
                                         supplier = sup

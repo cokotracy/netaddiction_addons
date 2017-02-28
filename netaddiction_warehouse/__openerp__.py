@@ -40,7 +40,8 @@
         'views/time_settings.xml',
         'views/autopreparation.xml',
         'views/products_movement.xml',
-        'views/move.xml'
+        'views/move.xml',
+        'views/inventory_reports.xml'
     ],
     'qweb': [
         "static/src/xml/*.xml",

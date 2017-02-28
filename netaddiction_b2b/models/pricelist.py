@@ -16,7 +16,11 @@ class ProductPricelistCondition(models.Model):
     _name = "pricelist.condition"
 
     expression = fields.Many2one(comodel_name='netaddiction.expressions.expression', string='Espressione')
-    percentage_discount = fields.Integer(string="Percentuale di sconto")
+    percentage_discount = fields.Integer(string="Percentuale")
+    typology = fields.Selection(selection=(
+        ('discount', 'Sconto'),
+        ('inflation', 'Rincaro')
+    ), string="Tipo Listino", required=False, default="discount")
 
 class product_pricelist(models.Model):
     _inherit = "product.pricelist"
@@ -29,6 +33,10 @@ class product_pricelist(models.Model):
     percent_price = fields.Float(string="Percentuale default(sconto)")
 
     search_field = fields.Char(string="Cerca prodotti")
+
+    @api.multi
+    def write(self ,values):
+        return super(product_pricelist,self).write(values)
 
     @api.multi
     def search_product(self):
@@ -58,33 +66,47 @@ class product_pricelist(models.Model):
         for pid in results:
             price = results[pid][0]
             other_val = results[pid][1]
-
-            # TODO: le due query sottostanti possono essere evitate perché
-            # in products_by_qty_by_partner ci sono già i prodotti
-            objs = self.pool('product.product').search(cr, uid, [('id', '=', int(pid))])
-            obj = self.pool('product.product').browse(cr, uid, objs, context=context)
-
-            # tassa = obj.taxes_id.amount
-
-            # if tassa:
-            #    detax = obj.offer_price / (float(1) + float(tassa/100))
-            # else:
-            #    detax = obj.offer_price
-
-            # offer_detax = round(detax, 2)
-
-            real_price = obj.offer_price if (obj.offer_price > 0 and obj.offer_price < price) else price
-
+            real_price = 0
+            # prendo il rigo della pricelist per vedere se è una scontistica o un rincaro
+            rows = self.pool("product.pricelist.item").search(cr, uid, [('id', '=', int(other_val))])
+            row = self.pool('product.pricelist.item').browse(cr, uid, rows, context=context)
+            
+            if row:
+                obj = row[0].product_id
+                if row[0].typology == 'inflation':
+                    per = row[0].percent_price / 100
+                    purchase = row[0].purchase_price
+                    percent = purchase * per
+                    real_price = purchase + percent
+                    # deve tornare iva inclusa
+                    real_price = row[0].product_id.supplier_taxes_id.compute_all(real_price)['total_included']
+                else:
+                    per = row[0].percent_price / 100
+                    percent = obj.final_price * per
+                    real_price = obj.final_price - percent
+                real_price = obj.special_price if (obj.special_price > 0 and obj.special_price < real_price) else real_price
+                real_price = obj.offer_price if (obj.offer_price > 0 and obj.offer_price < real_price) else real_price
             results[pid] = (real_price, other_val)
 
         return results
+
+    @api.model
+    def cron_updater(self):
+        pricelist = self.search([('active', '=', True)])
+        for price in pricelist:
+            if price.expression:
+                price.populate_item_ids_from_expression()
 
     @api.one
     def populate_item_ids_from_expression(self):
         if self.expression:
             pids = []
+            lines = {}
             for line in self.item_ids:
                 pids.append(line.product_id.id)
+                lines[line.product_id.id] = line
+                if line.qty_available_now <= line.qty_lmit_b2b:
+                    line.unlink()
             for expr in self.expression:
                 dom = expr.expression.find_products_domain()
                 for prod in self.env['product.product'].search(dom):
@@ -96,6 +118,7 @@ class product_pricelist(models.Model):
                         'price_discount': expr.percentage_discount,
                         'pricelist_id': self.id,
                         'percent_price': expr.percentage_discount,
+                        'typology': expr.typology,
                     }
                     if prod.id not in pids:
                         self.env['product.pricelist.item'].create(attr)
@@ -110,6 +133,34 @@ class ProductPriceItems(models.Model):
     _inherit = "product.pricelist.item"
 
     b2b_real_price = fields.Float(string="Prezzo reale", compute="_get_real_price")
+    typology = fields.Selection(selection=(
+        ('discount', 'Sconto'),
+        ('inflation', 'Rincaro')
+    ), string="Tipo Listino", required=False, default="discount")
+    qty_lmit_b2b = fields.Integer("Quantità Limite B2B", default=0)
+
+    qty_available_now = fields.Integer("Quantità Disponibile", related="product_id.qty_available_now")
+    purchase_price = fields.Float("Prezzo Di Acquisto", compute="_get_purchase_price")
+
+    @api.one
+    def _get_purchase_price(self):
+        if self.product_id:
+            if self.qty_available_now > 0:
+                self.purchase_price = self.product_id.med_inventory_value
+            else:
+                # se non è disponibile:
+                # 1) cerco l'ultimo carico
+                # 2) prezzo medio fornitori
+                po = self.env['purchase.order.line'].search([('product_id', '=', self.product_id.id)], order='create_date desc', limit=1)
+                if po:
+                    self.purchase_price = po[0].price_unit
+                else:
+                    price = 0
+                    num = 0
+                    for sup in self.product_id.seller_ids:
+                        num += 1
+                        price += sup.price
+                    self.purchase_price = price / num
 
     @api.one
     def _get_real_price(self):
@@ -145,8 +196,11 @@ class Products(models.Model):
         if result:
             text = ''
             for res in result:
-                price = res.pricelist_id.sudo().price_rule_get(self.id, 1)
-                b2b = self.taxes_id.compute_all(price[res.pricelist_id.id][0])
+                if res.pricelist_id.id:
+                    price = res.pricelist_id.sudo().price_rule_get(self.id, 1)
+                    b2b = self.taxes_id.compute_all(price[res.pricelist_id.id][0])
+                else:
+                    b2b = self.taxes_id.compute_all(self.final_price)
                 b2b_iva = b2b['total_included']
                 b2b_noiva = b2b['total_excluded']
                 text += '%s - %s [%s]; ' % (res.pricelist_id.name, str(round(b2b_noiva, 2)).replace('.', ','), str(round(b2b_iva, 2)).replace('.', ','))

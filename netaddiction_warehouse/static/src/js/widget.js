@@ -55,12 +55,136 @@ openerp.netaddiction_warehouse = function(instance, local) {
     local.controllo_pickup = instance.Widget.extend({
     	start: function() {
     		self = this
-         	return new instance.web.Model('stock.picking.wave').query(['display_name','id']).filter([['state','=','in_progress'],['in_exit','=',false],['reverse_supplier','=',false]]).all().then(function(filtered){
-                
-                var list = new local.homepage(self,filtered);
-				list.appendTo(self.$el);
+         	return new instance.web.Model('stock.picking.wave').query(['display_name','id','picking_ids']).filter([['state','=','in_progress'],['in_exit','=',false],['reverse_supplier','=',false]]).all().then(function(filtered){
+                /**cerco ordini con queste picking**/
+                new instance.web.Model('stock.picking.wave').query(['display_name','id','picking_ids']).filter([['picking_ids.sale_id.is_b2b','=',true],['state','=','in_progress'],['in_exit','=',false],['reverse_supplier','=',false]]).all().then(function(b2b){
+                    $.each(filtered,function(i,v){
+                        $.each(b2b,function(k,b){
+                            if(b.id == v.id){
+                                v.is_b2b = true;
+                            }
+                        })
+                    })
+                    var list = new local.homepage(self,filtered);
+                    list.appendTo(self.$el);
+                })
             });   
 
+        },
+    });
+
+    local.OpenB2B = instance.Widget.extend({
+        template: 'open_wave_b2b',
+        events: {
+            "change #search" : "doSearchBarcode",
+            "click #complete_b2b": "doCloseB2B"
+        },
+        init: function(parent,wave_id,wave_name){
+            this._super(parent);
+            this.wave_id = wave_id;
+            this.wave_name = wave_name;
+            this.results = {};
+            $('#search').val('');
+            $('#search').focus();
+            new instance.web.Model('stock.pack.operation').query(['product_id','qty_done']).filter([['picking_id.wave_id','=',parseInt(wave_id)]]).all().then(function(results){
+                var all_results = {};
+                $.each(results,function(i,v){
+                    if(v.product_id[0] in all_results){
+                        all_results[v.product_id[0]]['qty_done'] = all_results[v.product_id[0]]['qty_done'] + v.qty_done;
+                    }else{
+                        all_results[v.product_id[0]] = {}
+                        all_results[v.product_id[0]]['qty_done'] = v.qty_done;
+                        all_results[v.product_id[0]]['product'] = v.product_id;
+                    }
+                });
+                $('.open_wave_list').append(QWeb.render('b2b_list',{results:all_results}));
+            });
+        },
+        doCloseB2B: function(e){
+            var self = this;
+            new instance.web.Model('stock.picking.wave').call('close_b2b_wave',[this.wave_id,this.wave_id]).then(function(res){
+                data = {
+                    'ids': [res['invoice']],
+                    'model': 'account.invoice',
+                }
+                self.do_action({
+                    type: 'ir.actions.report.xml',
+                    report_name: 'netaddiction_b2b.bolla_di_spedizione_b2b',
+                    datas: data,
+                    
+                })
+            });
+        },
+        doSearchBarcode : function(e){
+            var self=this;
+            e.preventDefault();
+            var barcode_list = []
+            var barcode = $(e.currentTarget).val();
+            barcode_list.push(barcode)
+
+            barcode = '0'+barcode
+            barcode_list.push(barcode)
+
+            barcode = barcode.replace(/^0+/, '');
+            barcode_list.push(barcode)
+
+            barcode = barcode.toLowerCase();
+            barcode_list.push(barcode)
+            barcode = barcode.charAt(0).toUpperCase() + barcode.slice(1);
+            barcode_list.push(barcode)
+
+            barcode = barcode.toUpperCase();
+            barcode_list.push(barcode);
+            wash_and_focus_input($('#search'))
+
+            new instance.web.Model('product.product').query(['id']).filter([['barcode','in',barcode_list]]).first().then(function(product){
+                if(!product){
+                    return self.do_warn('BARCODE INESISTENTE');
+                }else{
+                    var go = false;
+                    $.each($(self.$el).find('.row_product'),function(i,v){
+                        var id = $(v).attr('data-id');
+                        if(parseInt(id)==parseInt(product.id)){
+                            self.get_product(v);
+                            go=true;
+                        }
+                    });
+                    if(!go){
+                        return self.do_warn('BARCODE NON PRESENTE IN LISTA');
+                    }
+                }
+            });
+        },
+        get_product(row){
+            var qty_done = parseInt($(row).find('.qty_done').text())
+            var back_color = $(row).css('background')
+            if(qty_done>0){
+                color_tr($(row));
+                                
+                setTimeout(function() {
+                    return_color_tr($(row),back_color);
+                }, 400)
+                                
+                $(row).find('.qty_done').text((qty_done-1))
+                if((qty_done-1)==0){
+                    $(row).find('td').css('color','#dddddd');
+                    $(row).addClass('finished');
+                }
+                st = true
+
+                var count_all = 0
+                var count_finished = 0
+                $(row).closest('tr').each(function(index,value){
+                    count_all = count_all +1;
+                    if($(value).hasClass('finished')){
+                        count_finished = count_finished + 1;
+                    }
+                })
+
+                if(count_finished==count_all){
+                    $('#complete_b2b').show();
+                }
+            }
         },
     });
 
@@ -494,7 +618,12 @@ openerp.netaddiction_warehouse = function(instance, local) {
     	doOpenWave : function(e){
     		var id = $(e.currentTarget).attr('data-id');
     		var wave_name = $(e.currentTarget).find('.wave_name').text();
-    		var open = new local.openList(home,id,wave_name);
+            var b2b = $(e.currentTarget).attr('data-b2b');
+            if(b2b){
+                var open = new local.OpenB2B(home,id,wave_name);
+            }else{
+                var open = new local.openList(home,id,wave_name);
+            }
             home.do_hide();
             open.appendTo(home.parent.$el)
     	}

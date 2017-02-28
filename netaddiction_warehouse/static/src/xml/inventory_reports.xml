@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<templates id="template_inventory_reports" xml:space="preserve">
+    <t t-name="inventory_reports_base">
+        <div class="oe-control-panel" id="inventory_top_block" style="position:fixed;width:100%">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-md-6 oe-cp-title">
+                        <ol class="oe-view-title breadcrumb"><li class="active">Reports Inventario</li></ol>
+                    </div>
+                    <div class="oe-cp-search-view col-md-6">
+                        <button type="button" class="btn btn-primary export_csv" style="position:fixed;right:10px">Esporta Csv</button> 
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-2 oe-button-column">
+                        <b>Valore: </b>
+                        <span id="inventory_value">
+                            <t t-call="InventoryValueLoading"/>
+                        </span>
+                    </div>
+                    <div class="col-md-10 oe-button-column">
+                        <div class="oe-cp-pager" style="position:fixed; right:10px">
+                            <select id="attributes" style="margin-right:10px"></select>
+                            <select id="suppliers" style="margin-right:10px"></select>
+                            <select id="categories" style="margin-right:10px"></select>
+                            <span>
+                                <div class="oe_pager_value" style="display: inline-block">
+                                    <span class="oe_list_pager_state"> <span id="from">0</span> - <span id="to">0</span> di <span id="all">0</span></span>
+                                </div>
+                                <div class="btn-group btn-group-sm oe-pager-buttons net_search_div" style="display: inline-block">
+                                    <a class="fa fa-chevron-left btn btn-default oe-pager-button prev_page"  type="button" ></a>
+                                                    
+                                    <a class="fa fa-chevron-right btn btn-default oe-pager-button next_page"  type="button" ></a>
+                                </div>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="inventory_table">
+
+        </div>
+    </t>
+
+    <t t-name="InventoryValueLoading">
+        <span><a href="#" id="get_inventory_value">Clicca per calcolare il valore..</a></span>
+    </t>
+
+    <t t-name="InventoryValue">
+        <span><t t-esc="value"/> €</span>
+    </t>
+
+    <t t-name="InventoryTableProducts">
+        <table class="oe_list_content">
+            <thead >
+                <tr>
+                    <th id="th1">Categoria</th>
+                    <th id="th3">Prodotto</th>
+                    <th id="th2">Sku</th>
+                    <th id="th8">Barcode</th>
+                    <th id="th4">Qtà Allocata</th>
+                    <th id="th5">Qtà Disponibile</th>
+                    <th id="th9">Prezzo di Vendita</th>
+                    <th id="th6">Valore Medio</th>
+                    <th id="th7">Valore Totale</th>
+                </tr>
+            </thead>
+            <tbody>
+                <t t-foreach="products" t-as="product">
+                    <tr>
+                        <td style="width:15%" data-id="th1"><t t-esc="product.categ_id[1]"/></td>
+                        <td style="width:55" data-id="th3"><a href="#" class="open_product" t-attf-data-id="{{product.id}}"><b><t t-esc="product.display_name"/></b></a></td>
+                        <td style="width:5%" data-id="th2"><t t-esc="product.id"/></td>
+                        <td style="width:5%" data-id="th8"><t t-esc="product.barcode"/></td>
+                        <td style="width:5%" data-id="th4"><t t-esc="product.qty_available"/></td>
+                        <td style="width:5%" data-id="th5"><t t-esc="product.qty_available_now"/></td>
+                        <td style="width:5%" data-id="th9"><t t-esc="product.price"/></td>
+                        <td style="width:5%" data-id="th6"><t t-esc="product.med_inventory_value"/></td>
+                        <td style="width:10%" data-id="th7"><t t-esc="product.total_inventory"/></td>
+                    </tr>
+                </t>
+            </tbody>
+            <tfoot><tr></tr></tfoot>
+        </table>
+    </t>
+
+    <t t-name="CategoriesSelect">
+        <t t-foreach="categories" t-as="category">
+            <option t-attf-value="{{category.id}}"><t t-esc="category.display_name"/></option>
+        </t>
+    </t>
+    <t t-name="SuppliersSelect">
+        <option value="0">Tutti i Fornitori</option>
+        <t t-foreach="suppliers" t-as="supplier">
+            <option t-attf-value="{{supplier.id}}"><t t-esc="supplier.name"/></option>
+        </t>
+    </t>
+
+    <t t-name="AttributesSelect">
+        <option value="0">Tutti gli Attributi</option>
+        <t t-foreach="attributes" t-as="attribute">
+            <option t-attf-value="{{attribute.id}}"><t t-esc="attribute.display_name"/></option>
+        </t>
+    </t>
+
+</templates>

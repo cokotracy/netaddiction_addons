@@ -121,7 +121,7 @@ class CoDRegister(models.TransientModel):
         payment = self.env["account.payment"].create({"partner_type": "customer", "partner_id": partner_id, "journal_id": cod_journal_id, "amount": amount, "state": "draft", "payment_type": 'inbound', "payment_method_id": pay_inbound.id, "name": name, 'communication': " ".join(str(o.name) for o in order_list), })
         payment.invoice_ids = [(4, invoice.id, None)]
         for order in order_list:
-                order.account_payment_ids = [(6, payment.id, None)]
+                order.account_payment_ids = [(6, False, [payment.id])]
         payment.delay_post()
         return True
 

@@ -38,9 +38,9 @@
                     </tfoot>
                     <tbody>
                         <t t-foreach="widget.waves" t-as="wave">
-                            <tr t-attf-data-id="{{wave.id}}" class="wave_tr">
+                            <tr t-attf-data-id="{{wave.id}}" class="wave_tr" t-attf-data-b2b="{{wave.is_b2b}}">
                                 <td data-field="display_name">
-                                    <b class="wave_name"><t t-esc="wave.display_name"/></b>
+                                    <b class="wave_name"><t t-esc="wave.display_name"/> <t t-if="wave.is_b2b"> - <span style="color:red">B2B</span></t></b>
                                 </td>
                             </tr>
                         </t>
@@ -89,6 +89,66 @@
                 
             </div>
         </div>
+    </t>
+
+    <t t-name="open_wave_b2b">
+        <div class="oe-control-panel">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-md-6 oe-cp-title">
+                        <ol class="oe-view-title breadcrumb">
+                            <li>
+                                <a id="control_homepage">Liste Pickup da Controllare</a>
+                            </li>
+                            <li class="active"><t t-esc="widget.wave_name"/></li>
+                        </ol>
+                    </div>
+                    <div class="oe-cp-search-view col-md-6">
+                        <div class="oe_searchview form-control input-sm">
+                        <div class="oe_searchview_search fa fa-lg fa-search" title="Cerca ancora"></div>
+                        <div class="oe_searchview_facets">
+                            <input type="text" id="search" name="search" placeholder="Barcode Prodotto" autofocus="on"/>
+                        </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6 oe-button-column">
+                        <div class="oe-cp-buttons">
+                            <div class="oe_list_buttons">
+                                <button id="complete_b2b" class="btn btn-sm btn-primary o_list_button_import" type="button" style="display:none">
+                                    Completa Lista
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="oe-view-manager oe_view_manager_current">
+            <div class="oe_list o_list_view oe_view open_wave_list">
+               
+            </div>
+        </div>
+    </t>
+
+    <t t-name="b2b_list">
+         <table class="oe_list_content">
+            <thead>
+                <tr class="oe_list_header_columns">
+                    <th>Prodotto</th>
+                    <th>Quantità</th>
+                </tr>
+            </thead>
+            <tbody>
+                <t t-foreach="results" t-as="product">
+                    <tr class="row_product" t-attf-data-id="{{results[product]['product'][0]}}">
+                        <td><b><t t-esc="results[product]['product'][1]"/></b></td>
+                        <td><b class="qty_done"><t t-esc="results[product]['qty_done']"/></b></td>
+                    </tr>
+                </t>
+            </tbody>
+        </table>
     </t>
 
     <t t-name="open_wave_order_list">

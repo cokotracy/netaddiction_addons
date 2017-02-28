@@ -89,4 +89,17 @@ class StockPicking(models.Model):
 
         invoice.state= 'draft'
         invoice.compute_taxes()
+
+        mail = {
+            'subject': 'Fattura Accompagnatoria B2B %s' % (invoice.name),
+            'email_from': 'shopping@multiplayer.com',
+            'reply_to': 'shopping@multiplayer.com',
+            'email_to': 'valeria.risoldi@netaddiction.it',
+            'email_cc': 'matteo.piciucchi@netaddiction.it,riccardo.ioni@netaddiction.it,andrea.alunni@netaddiction.it',
+            'body_html': 'Emettere fattura accompagnatoria: <br/><a href="https://backoffice.netaddiction.it/web#id='+str(invoice.id)+'&view_type=form&model=account.invoice">Link Fattura</a>',
+            'model':'account.invoice',
+            'res_id':invoice.id
+        }
+        email = self.env['mail.mail'].create(mail)
+        email.send()
         return invoice

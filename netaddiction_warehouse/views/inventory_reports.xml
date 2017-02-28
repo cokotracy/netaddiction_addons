@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+        <template id="netaddiction_warehouse_files_inventory_reports" name="netaddiction_warehouse_assets_backend" inherit_id="web.assets_backend">
+            <xpath expr="." position="inside">
+                <script type="text/javascript" src="/netaddiction_warehouse/static/src/js/inventory_reports.js"/>
+            </xpath>
+        </template>
+
+        <record id="netaddiction_warehouse_assets_inventory_reports" model="ir.actions.client">
+            <field name="name">Inventario</field>
+            <field name="tag">netaddiction_warehouse.inventory_reports</field>
+        </record>
+
+        <menuitem id="netaddiction_warehouse_inventory_reports_menu" name="Inventario" parent="stock.menu_warehouse_report"
+            action="netaddiction_warehouse_assets_inventory_reports" sequence="70"/>
+    </data>
+</openerp>

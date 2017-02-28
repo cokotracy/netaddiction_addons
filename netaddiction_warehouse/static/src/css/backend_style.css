@@ -57,3 +57,9 @@
 .active_reverse{
     background-color: white;
 }
+
+/*inventory_reports*/
+#thead div{
+    float:left;
+    border:1px solid;
+}
