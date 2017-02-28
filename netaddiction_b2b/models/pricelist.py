@@ -86,7 +86,7 @@ class product_pricelist(models.Model):
                     real_price = obj.final_price - percent
                 real_price = obj.special_price if (obj.special_price > 0 and obj.special_price < real_price) else real_price
                 real_price = obj.offer_price if (obj.offer_price > 0 and obj.offer_price < real_price) else real_price
-            results[pid] = (real_price, other_val)
+                results[pid] = (real_price, other_val)
 
         return results
 
