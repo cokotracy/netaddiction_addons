@@ -18,7 +18,7 @@
     'version': '0.1',
     'data': [
         'data/menu.xml',
-        'data/load_css.xml'
+        'data/load_css.xml',
     ],
     'qweb': ['static/src/xml/template.xml'],
     'installable': True,

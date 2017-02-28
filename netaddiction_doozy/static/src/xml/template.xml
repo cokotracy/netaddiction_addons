@@ -23,5 +23,256 @@
 		</t>
 	</t>
 
+	<!--net2many widget per nuove many2many o one2many-->
+	<t t-name="Net2Many">
+        <div class="oe_net_2many">
+            <t t-if="widget.get('effective_readonly')">
+                <t t-call="Net2Many_table"/>
+            </t>
+            <t t-if="!widget.get('effective_readonly')">
+                <t t-call="Net2Many_table"/>
+            </t>
+        </div>
+    </t>
+
+    <t t-name="Net2Many_table">
+    	<div class="col-md-12 net_search_div">
+    		<t t-if="widget.node.attrs.searchable">
+    			<input type="text" class="net_search" t-attf-placeholder="Ricerca {{widget.string}}" t-attf-value="{{widget.search_string}}"/>
+    		</t>
+    	</div>
+    	<div class="oe-x2m-control-panel container-fluid col-md-12 net_search_div">
+    		<div class="oe-cp-pager" style="float:right">
+    			<span>
+    				<div class="oe_pager_value" style="display: inline-block">
+        				<span class="oe_list_pager_state"><t t-esc="widget.node.pager.min"/> - <t t-esc="widget.node.pager.max"/> di <t t-esc="widget.node.pager.all_results"/></span>
+    				</div>
+    				<div class="btn-group btn-group-sm oe-pager-buttons net_search_div" style="display: inline-block">
+    					<t t-if="widget.node.pager.min &gt; 1">
+        					<a class="fa fa-chevron-left btn btn-default oe-pager-button prev_page"  type="button" ></a>
+        				</t>
+        				<t t-if="widget.node.pager.max &lt; widget.node.pager.all_results">
+				        	<a class="fa fa-chevron-right btn btn-default oe-pager-button next_page"  type="button" ></a>
+				        </t>
+				        <t t-if="!widget.get('effective_readonly')">
+				        	<t t-if="!widget.node.attrs.notaddlist">
+								<button type="button" class="fa btn btn-primary net_add_button fa-list  " data-original-title="" title="Aggiungi da lista">
+			    				</button>
+			    			</t>
+		    				<button type="button" class="fa btn btn-default net_add_new_row fa-plus  " data-original-title="" title="Crea Nuovo" style="margin-left:0 !important">
+		    				</button>
+				        </t>
+				    </div>
+				</span>
+			</div>
+			<t t-if="widget.node.attrs.searchable">
+				<div class="button_search oe-cp-pager">
+	    			<span>
+	    				<button type="button" class="btn btn-sm oe_button btn btn-primary net_button_search" data-original-title="" title="">
+	        				<span>Cerca</span>
+	    				</button>
+	    			</span>
+	    		</div>
+	    	</t>
+    	</div>
+    	<t t-if="results">
+    		<t t-call="net_2_many_tbody"/>
+    	</t>
+    	<t t-if="!results">
+    		<t t-call="net_2_many_tbody_blank"/>
+    	</t>
+    </t>
+
+   	<t t-name="net_url_many2one">
+   		<b><a href="#" class="open_object" t-attf-data-id="{{value[0]}}" t-attf-data-obj="{{obj}}">
+   			<t t-esc="value[1]"/>
+   		</a></b>
+   	</t>
+    <!--Net2many finish-->
+
+    <t t-name="dialog_net_fields_error">
+        <div class="modal-body">
+            <t t-if="text">
+                <span><t t-esc="text"/></span>
+            </t>
+        </div>
+    </t>
+
+    <t t-name="net_2_many_tbody">
+    	<table class="oe_list_content">
+    		<thead>
+    			<tr>
+		    		<t t-foreach="widget.node.attrs.net_fields" t-as="field">
+		    			<th><t t-esc="widget.node.attrs.net_fields_property[field].string"/></th>
+		    		</t>
+		    		<t t-if="!widget.get('effective_readonly')">
+		    			<th style="width:1% !important"></th>
+		    		</t>
+		    	</tr>
+	    	</thead>
+	    	<tbody>
+	    		<t t-foreach="results" t-as="row">
+	    			<tr t-attf-data-id="{{row.id}}" class="net_row">
+		    			<t t-call="net2many_row">
+		    				<t t-set="row" t-value="row"/>
+		    			</t>
+		    		</tr>
+	    		</t>
+	    	</tbody>
+	    	<tfoot><tr></tr></tfoot>
+    	</table>
+    </t>
+
+    <t t-name="net2many_row">
+    		<t t-foreach="widget.node.attrs.net_fields" t-as="field">
+	    		<td t-attf-data-name="{{field}}">
+	    			<t t-if="widget.node.attrs.net_fields_property[field].type == 'many2one'">
+	    				<t t-call="net_url_many2one">
+	    					<t t-set="value" t-value="row[field]"/>
+	    					<t t-set="obj" t-value="widget.node.attrs.net_fields_property[field].relation"/>
+	    				</t>
+	    			</t>
+	    			<t t-if="widget.node.attrs.net_fields_property[field].type != 'many2one'">
+	    				<t t-esc="row[field]"/>
+	    			</t>
+	    		</td>
+	    	</t>
+	    	<t t-if="!widget.get('effective_readonly')">
+	    		<td><button type="button" class="fa net_many_delete fa-trash  " data-original-title="" title=""/></td>
+	    	</t>
+    </t>
+
+    <t t-name="net_2_many_tbody_blank">
+    	<table class="oe_list_content">
+    		<thead>
+    			<tr>
+		    		<t t-foreach="widget.node.attrs.net_fields" t-as="field">
+		    			<th><t t-esc="field"/></th>
+		    		</t>
+		    		<t t-if="!widget.get('effective_readonly')">
+		    			<th style="width:1% !important"></th>
+		    		</t>
+		    	</tr>
+	    	</thead>
+	    	<tbody>
+	    		
+	    	</tbody>
+	    	<tfoot><tr></tr></tfoot>
+    	</table>
+    </t>
+
+    <t t-name="net_2_many_all_relation_tbody">
+    	<t t-if="widget.node.attrs.searchable">
+	    	<div class="col-md-12 net_search_div">
+	    		<input type="text" class="net_search" t-attf-placeholder="Ricerca {{widget.string}}" t-attf-value="{{widget.search_string}}"/>
+	    	</div>
+	    </t>
+    	<div class="oe-x2m-control-panel container-fluid col-md-12 net_search_div">
+    		<div class="oe-cp-pager" style="float:right">
+    			<span>
+    				<div class="btn-group btn-group-sm oe-pager-buttons net_search_div" style="display: inline-block">
+    					<t t-if="offset &gt; 0">
+        					<a class="fa fa-chevron-left btn btn-default oe-pager-button prev_page"  type="button" ></a>
+        				</t>
+        				<t t-if="all == limit">
+        					<a class="fa fa-chevron-right btn btn-default oe-pager-button next_page"  type="button" ></a>
+        				</t>
+				    </div>
+				</span>
+			</div>
+			<t t-if="widget.node.attrs.searchable">
+				<div class="button_search oe-cp-pager">
+		    		<span>
+		    			<button type="button" class="btn btn-sm oe_button btn btn-primary net_button_search" data-original-title="" title="">
+		        			<span>Cerca</span>
+		    			</button>
+		    		</span>
+		    	</div>
+		    </t>
+
+    	</div>
+    	<table class="oe_list_content">
+    		<thead>
+    			<tr>
+		    		<t t-foreach="widget.node.attrs.net_fields" t-as="field">
+		    			<th><t t-esc="widget.node.attrs.net_fields_property[field].string"/></th>
+		    		</t>
+		    	</tr>
+	    	</thead>
+	    	<tbody>
+	    		<t t-foreach="widget.all_relation_objects" t-as="row">
+	    			<tr t-attf-data-id="{{row.id}}" class="net_row">
+	    				<t t-foreach="widget.node.attrs.net_fields" t-as="field">
+	    					<td>
+	    						<t t-if="widget.node.attrs.net_fields_property[field].type == 'many2one'">
+	    							<b><t t-esc="row[field][1]"/></b>
+	    						</t>
+	    						<t t-if="widget.node.attrs.net_fields_property[field].type != 'many2one'">
+	    							<t t-esc="row[field]"/>
+	    						</t>
+
+	    					</td>
+	    				</t>
+	    			</tr>
+	    		</t>
+	    	</tbody>
+	    	<tfoot><tr></tr></tfoot>
+    	</table>
+    </t>
+
+    <t t-name="Net2Many_InputField">
+    	<input type="text" t-attf-value="{{value}}" class="input_modify" style="width:100%!important"/>
+    </t>
+    
+    <t t-name="Net2Many_many2one_field">
+    	<input type="text" t-attf-value="{{value}}" class="many2one_input_modify" style="width:100%!important"/>
+    	<div class="autocomplete">
+
+    	</div>
+    </t>
+
+    <t t-name="Net2Many_SelectionField">
+    	<select class="input_modify">
+    		<t t-foreach="selection" t-as="select">
+    			<t t-if="select[1] == value">
+    				<option t-attf-value="{{select[0]}}" selected="selected"><t t-esc="select[1]"/></option>
+    			</t>
+    			<t t-if="select[1] != value">
+    				<option t-attf-value="{{select[0]}}"><t t-esc="select[1]"/></option>
+    			</t>
+    		</t>
+    	</select>
+    </t>
+
+    <t t-name="Net2Many_Autocomplete">
+    	<t t-if="no_results">
+    		<div class="net_choose_one">
+    			<b>Nessun Risultato trovato...</b>
+    		</div>
+    	</t>
+    	<t t-if="results">
+	    	<t t-foreach="results" t-as="result">
+	    		<div class="net_choose_one">
+	    			<span class="autocomplete_results" t-attf-data-id="{{result[0]}}"><b><t t-esc="result[1]"/></b></span>
+	    			<a href="#" class="autocomplete_go_product" t-attf-data-id="{{result[0]}}" t-attf-data-obj="{{relation}}">Apri</a>
+	    		</div>
+	    	</t>
+	    	<div class="net_choose_search">
+	    		<t t-if="offset_prev">
+	    			<a href="#" class="autocomplete_prev" t-attf-data-off="{{offset_prev}}"><b>Indietro</b></a> -
+	    		</t>
+	    		<t t-if="!offset_prev">
+	    			<a href="#" class="autocomplete_prev" data-off="0"><b>Indietro</b></a> -
+	    		</t>
+	    		<t t-if="offset_next">
+	    			<a href="#" class="autocomplete_next" t-attf-data-off="{{offset_next}}"><b>Avanti</b></a>
+	    		</t>
+	    		<t t-if="!offset_next">
+	    			<a href="#" class="autocomplete_next" data-off="6"><b>Avanti</b></a>
+	    		</t>
+	    	</div>
+	    </t>
+    </t>
+
 </templates>
 

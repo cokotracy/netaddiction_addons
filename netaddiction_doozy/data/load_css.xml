@@ -9,6 +9,7 @@
 <xpath expr="." position="inside">
 
 <link rel="stylesheet" href="/netaddiction_doozy/static/src/css/netaddiction_Style.css"/>
+<script type="text/javascript" src="/netaddiction_doozy/static/src/js/net_fields.js"></script>
 
 </xpath>
 

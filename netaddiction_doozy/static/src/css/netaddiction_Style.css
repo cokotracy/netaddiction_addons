@@ -67,3 +67,44 @@ SHEET MOD GRAFICHE
 .oe_title{
     width: 52% !important;
 }
+
+/*net2many*/
+.net_search_div{
+    padding-right: 0 !important;
+}
+.net_search{
+    float:right !important;
+    width:30%;
+}
+.button_search, .add_button{
+    padding-top: 5px;
+    float:right;
+}
+.net_add_button{
+    padding:4px 10px;
+}
+.autocomplete{
+    display:none;
+    border: 1px solid #ccc;
+    background: white;
+    position:absolute;
+}
+.net_choose_one,.net_choose_search{
+    border-bottom:1px solid #ccc;
+    padding: 2px 4px;
+}
+.net_choose_search{
+    color:#337AB7;
+}
+.net_choose_one:hover, .autocomplete_hovered{
+    background-color: #EEEEEE; 
+}
+.autocomplete_results,.net_choose_one{
+    float:left;
+}
+.net_choose_one{
+    width:100%;
+}
+.autocomplete_go_product{
+    float:right;
+}
