@@ -632,8 +632,8 @@ class EbayProducts(models.Model):
                 for product in products_to_update:
                     id_string = "%s" % product.id
                     if id_string not in error_products and id_string in images_ids:
-                        product.ebay_image_url = prods[prod_id]["ebay_image"]
-                        product.ebay_image_expiration_date = datetime.strptime(images[prod_id]['expire_date'], "%Y-%m-%dT%H:%M:%S.%fZ")
+                        product.ebay_image_url = prods[id_string]["ebay_image"]
+                        product.ebay_image_expiration_date = datetime.strptime(images[id_string]['expire_date'], "%Y-%m-%dT%H:%M:%S.%fZ")
             if error_products:
                 self._send_ebay_error_mail("errore ritornato da revise fixed price  %s %s " % (error_products, xml), '[EBAY] ERRORE errore ritornato da revise fixed price ')
                 return
@@ -1049,8 +1049,6 @@ class EbayProducts(models.Model):
         else:
             return "pagamento sconosciuto"
 
-
-
         try:
             order = self.env["sale.order"].create({
                 'partner_id': user.id,
@@ -1080,6 +1078,7 @@ class EbayProducts(models.Model):
                     "name": prod.display_name,
                     "price_unit": float(transaction["TransactionPrice"]['value']),
                 })
+                prod.ebay_selled += 1
             else:
                 transaction_id = ""
                 item_id = ""
@@ -1100,6 +1099,7 @@ class EbayProducts(models.Model):
                     transaction_id += " "
                     item_id += t["Item"]["ItemID"]
                     item_id += " "
+                    prod.ebay_selled += 1
                 order.ebay_transaction_id = transaction_id
                 order.ebay_item_id = item_id
 
@@ -1151,7 +1151,7 @@ class EbayProducts(models.Model):
         try:
             self._update_products_on_ebay()
         except Exception as e:
-            self._send_ebay_error_mail("%s  %s" % (e, traceback.print_exc()), '[EBAY] ECCEZIONE lanciata da _update_products_on_ebay ')
+            self._send_ebay_error_mail("%s  %s  ****  %s" % (e, traceback.format_exc(), ''.join(traceback.format_stack())), '[EBAY] ECCEZIONE lanciata da _update_products_on_ebay ')
 
         try:
             self._get_ebay_orders()
