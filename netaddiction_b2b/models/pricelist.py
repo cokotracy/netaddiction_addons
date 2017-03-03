@@ -55,40 +55,48 @@ class product_pricelist(models.Model):
             'domain': dom,
             'context': self.env.context}
 
-    #def _price_rule_get_multi(self, cr, uid, pricelist, products_by_qty_by_partner, context=None):
-    #    """
-    #    Serve a dare il prezzo corretto alla pricelist: se l'offer_price è inferiore al prezzo dell'attuale pricelist
-    #    allore restituisco l'offer price.
-    #    """
-    #    results = super(product_pricelist, self)._price_rule_get_multi(cr, uid, pricelist, products_by_qty_by_partner,
-    #        context=context)
-#
-    #    for pid in results:
-    #        price = results[pid][0]
-    #        other_val = results[pid][1]
-    #        real_price = 0
-    #        # prendo il rigo della pricelist per vedere se è una scontistica o un rincaro
-    #        rows = self.pool("product.pricelist.item").search(cr, uid, [('id', '=', int(other_val))])
-    #        row = self.pool('product.pricelist.item').browse(cr, uid, rows, context=context)
-    #        
-    #        if row:
-    #            obj = row[0].product_id
-    #            if row[0].typology == 'inflation':
-    #                per = row[0].percent_price / 100
-    #                purchase = row[0].purchase_price
-    #                percent = purchase * per
-    #                real_price = purchase + percent
-    #                # deve tornare iva inclusa
-    #                real_price = row[0].product_id.supplier_taxes_id.compute_all(real_price)['total_included']
-    #            else:
-    #                per = row[0].percent_price / 100
-    #                percent = obj.final_price * per
-    #                real_price = obj.final_price - percent
-    #            real_price = obj.special_price if (obj.special_price > 0 and obj.special_price < real_price) else real_price
-    #            real_price = obj.offer_price if (obj.offer_price > 0 and obj.offer_price < real_price) else real_price
-    #            results[pid] = (real_price, other_val)
-#
-    #    return results
+    def _price_rule_get_multi(self, cr, uid, pricelist, products_by_qty_by_partner, context=None):
+        """
+        Serve a dare il prezzo corretto alla pricelist: se l'offer_price è inferiore al prezzo dell'attuale pricelist
+        allore restituisco l'offer price.
+        """
+        results = super(product_pricelist, self)._price_rule_get_multi(cr, uid, pricelist, products_by_qty_by_partner,
+            context=context)
+        public = self.pool('ir.model.data').search(cr, uid, [('model', '=', 'product.pricelist'), ('name', '=', 'list0')])
+        pub = self.pool('ir.model.data').browse(cr, uid, public, context=context)
+
+        if pricelist.id == pub[0].res_id:
+            return results
+
+        # potrebbe essere richiesto lo stesso da un'altra pricelist, se non ha il rigo corrispondente ritorna results sennò fai un bordello
+        # {295923: (9.99, False)}
+
+        for pid in results:
+            real_price = results[pid][0]
+            pricelist_line = results[pid][1]
+            if pricelist_line:
+                # prendo il rigo della pricelist per vedere se è una scontistica o un rincaro
+                rows = self.pool("product.pricelist.item").search(cr, uid, [('id', '=', int(pricelist_line))])
+                row = self.pool('product.pricelist.item').browse(cr, uid, rows, context=context)
+
+                if row:
+                    obj = row[0].product_id
+                    if row[0].typology == 'inflation':
+                        per = row[0].percent_price / 100
+                        purchase = row[0].purchase_price
+                        percent = purchase * per
+                        real_price = purchase + percent
+                        # deve tornare iva inclusa
+                        real_price = row[0].product_id.supplier_taxes_id.compute_all(real_price)['total_included']
+                    else:
+                        per = row[0].percent_price / 100
+                        percent = obj.final_price * per
+                        real_price = obj.final_price - percent
+                    real_price = obj.special_price if (obj.special_price > 0 and obj.special_price < real_price) else real_price
+                    real_price = obj.offer_price if (obj.offer_price > 0 and obj.offer_price < real_price) else real_price
+                    results[pid] = (real_price, pricelist_line)
+
+        return results
 
     @api.model
     def cron_updater(self):

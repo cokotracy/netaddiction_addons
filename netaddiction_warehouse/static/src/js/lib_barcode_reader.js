@@ -1,6 +1,6 @@
 window.BarcodeData = function(barcode, type, typeText) {
 	barcode = $('#barcode').val(barcode);
-	$('#barcode-form').trigger('submit');
+    $('#barcode-form').trigger('submit');
 };
 
 window.NotifyVibrate = function(){
