@@ -38,7 +38,13 @@ def replace_vowels(text):
         ).replace(u"ü", u"u"
         ).replace(u"°", u''
         ).replace(u"č", u"c"
-        ).replace(u"ú", u"u")
+        ).replace(u"ú", u"u"
+        ).replace(u'È', u'E'
+        ).replace(u'É', u'E'
+        ).replace(u'À', u'A'
+        ).replace(u'Ù', u'U'
+        ).replace(u'Ò', u'O'
+        ).replace(u'Ì', u'I')
 
 
 def cleanWinChars(text):
