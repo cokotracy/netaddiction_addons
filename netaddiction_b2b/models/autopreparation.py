@@ -139,8 +139,8 @@ class Autopreparation_b2b(models.TransientModel):
             # piazziamo i pagamenti
             # se c'è qualche errore cancello l'invoice precedentemente creata
             bonifico = self.env.ref('netaddiction_payments.allowance_journal')
-            contrassegno = self.env.ref('netaddiction_payments.cc_journal')
-            carta = self.env.ref('netaddiction_payments.contrassegno_journal')
+            contrassegno = self.env.ref('netaddiction_payments.contrassegno_journal')
+            carta = self.env.ref('netaddiction_payments.cc_journal')
             pay_inbound = self.env["account.payment.method"].search([("payment_type", "=", "inbound")])
             pay_inbound = pay_inbound[0] if isinstance(pay_inbound, list) else pay_inbound
             if payment_base.id == bonifico.id:
@@ -161,7 +161,7 @@ class Autopreparation_b2b(models.TransientModel):
                 payment.delay_post()
             elif payment_base.id == contrassegno.id:
                 self.env['netaddiction.cod.register'].set_order_cash_on_delivery_b2b(partner_base.id, invoice.amount_total, order_list, invoice)
-            elif partner_base.id == carta.id:
+            elif payment_base.id == carta.id:
                 try:
                     token = order_list[0].cc_selection.token
                     self.env['netaddiction.positivity.executor'].auth_and_check_b2b(partner_base, partner_base.email, invoice.amount_total, token, order_list, invoice)
@@ -172,7 +172,7 @@ class Autopreparation_b2b(models.TransientModel):
             else:
                 raise Warning("Metodo di pagamento errato")
         else:
-            view_id = self.env['ir.ui.view'].search([('name','=','stock.vpicktree')])
+            view_id = self.env['ir.ui.view'].search([('name', '=', 'stock.vpicktree')])
             action = {
                 'type': 'ir.actions.act_window',
                 'res_model': "stock.picking",

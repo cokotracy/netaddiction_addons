@@ -197,16 +197,19 @@ odoo.define('netaddiction_doozy',function(require){
                     var objs = [];
                     $.each(results,function(i,result){
                         $.each(fields, function(x,field){
-                            if(self.node.attrs.net_fields_property[field].type=='float'){
-                                result[field] = result[field].toLocaleString();
+                            if(field in self.node.attrs.net_fields_property){
+                                if(self.node.attrs.net_fields_property[field].type=='float'){
+                                    result[field] = result[field].toLocaleString();
+                                }
+                                if(self.node.attrs.net_fields_property[field].type=='selection'){
+                                    $.each(self.node.attrs.net_fields_property[field].selection, function(d,sel){
+                                        if(sel[0]==result[field]){
+                                            result[field] = sel[1];
+                                        }
+                                    });
+                                }
                             }
-                            if(self.node.attrs.net_fields_property[field].type=='selection'){
-                                $.each(self.node.attrs.net_fields_property[field].selection, function(d,sel){
-                                    if(sel[0]==result[field]){
-                                        result[field] = sel[1];
-                                    }
-                                });
-                            }
+                            
                         })
                     });
                     self.now_results = results;
