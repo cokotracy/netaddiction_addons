@@ -694,7 +694,7 @@ class StockQuant(models.Model):
         writer = csv.writer(output)
         csvdata = ['Categoria', 'Prodotto', 'Sku', 'Barcode', 'Qty Allocata', 'Valore Medio Unitario', 'Valore Totale', 'Prezzo di Vendita', 'Scaffali']
         writer.writerow(csvdata)
-        locale.setlocale(locale.LC_ALL, '')
+        locale.setlocale(locale.LC_ALL, 'it_IT.UTF8')
         for res in result:
             # TODO: se suppleir_results metti i valori di quel fornitore sicuro
             qty_available = res.qty_available
