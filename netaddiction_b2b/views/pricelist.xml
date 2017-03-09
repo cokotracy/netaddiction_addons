@@ -13,7 +13,8 @@
                         </group>
                         <group>
                             <button type="object" name="populate_item_ids_from_expression" string="Aggiungi/Aggiorna Prodotti" class="btn btn-primary"/><br/>
-                            <button type="object" name="delete_all_items" string="Cancella tutto" style="margin-top:10px" class="btn btn-danger"/>
+                            <button type="object" name="delete_all_items" string="Cancella tutto" style="margin-top:10px" class="btn btn-danger"/><b/>
+                            <button type="object" name="get_csv" string="CSV" style="margin-top:10px" class="btn btn-success"/>
                         </group>
                     </group>
                     <group>

@@ -55,6 +55,22 @@ class OrderUtilities(models.TransientModel):
 
         return None, False
 
+    def check_quantity_b2b(self, order, product_id, qty):
+        # controlla se l'ordine è b2b, eventualmente cerca se i lprodotto è presente in quel listino
+        # se è presente nel listino assegnato allora controlla la quantità limite b2b
+        if order.is_b2b:
+            pricelist_line = self.env['product.pricelist.item'].search([('product_id', '=', product_id), ('pricelist_id', '=', order.pricelist_id.id)])
+            if pricelist_line:
+                product = self.env['product.product'].browse(product_id)
+                qty_limit = pricelist_line.qty_lmit_b2b
+                qty_residual = product.qty_available_now - qty_limit
+                if product.qty_available_now - qty < qty_limit:
+                    if qty_residual < 0:
+                        qty_residual = 0
+                    message = "Non puoi ordinare piu di %s pezzi per %s " % (qty_residual, product.display_name)
+                    raise ProductOrderQuantityExceededLimitException(product_id, qty_residual, message)
+
+
     def add_to_cart(self, order, product_id, quantity, partner_id=None, bonus_list=None):
         u"""Aggiunge un prodotto al carrello di un utente, se il prodotto è già presente nel carrello ne aggiorna la quantità sommando.
 
@@ -110,6 +126,7 @@ class OrderUtilities(models.TransientModel):
             ol = None
             for line in order.order_line:
                 if line.product_id.id == product_id:
+                    self.check_quantity_b2b(order, product_id, line.product_uom_qty + quantity)
                     if not order.partner_id.is_b2b and line.product_uom_qty + quantity > LIMIT_QTY_PER_PRODUCT:
                         raise QuantityOverLimitException(line.product_id.name)
                     prod.check_quantity_product(line.product_uom_qty + quantity)
@@ -121,6 +138,7 @@ class OrderUtilities(models.TransientModel):
                     break
 
             if not found:
+                self.check_quantity_b2b(order, product_id, quantity)
                 prod.check_quantity_product(quantity)
                 self._check_offers_catalog(prod, quantity)
                 ol = self.env["sale.order.line"].create({
@@ -246,6 +264,8 @@ class OrderUtilities(models.TransientModel):
             if quantity > 0 and not order.partner_id.is_b2b and quantity > LIMIT_QTY_PER_PRODUCT:
                 raise QuantityOverLimitException(prod.name)
 
+            self.check_quantity_b2b(order, product_id, quantity)
+
             order.reset_cart()
 
             order.reset_voucher()
@@ -324,6 +344,7 @@ class OrderUtilities(models.TransientModel):
                     line.unlink()
                     raise ProductSoldOutAddToCartException(prod_id, prod_name, "prodotto %s  sale_ok: %s" % (prod_name, prod_sale_ok))
             try:
+                self.check_quantity_b2b(order, line.product_id.id, line.product_uom_qty)
                 line.product_id.check_quantity_product(line.product_uom_qty)
             except (ProductOrderQuantityExceededLimitException, ProductOrderQuantityExceededException), e:
                 if line.bonus_father_id:

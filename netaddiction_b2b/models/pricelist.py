@@ -2,7 +2,11 @@
 
 from openerp import models, fields, api
 from openerp.exceptions import ValidationError
-
+import io
+import csv
+import locale
+import datetime
+import base64
 
 class Pricelist(models.Model):
     _inherit = 'product.pricelist.item'
@@ -33,6 +37,40 @@ class product_pricelist(models.Model):
     percent_price = fields.Float(string="Percentuale default(sconto)")
 
     search_field = fields.Char(string="Cerca prodotti")
+
+    @api.multi
+    def get_csv(self):
+        self.ensure_one()
+        output = io.BytesIO()
+        writer = csv.writer(output)
+        csvdata = ['Sku', 'Prodotto', 'Barcode', 'Quantita', 'Prezzo']
+        writer.writerow(csvdata)
+        locale.setlocale(locale.LC_ALL, 'it_IT.UTF8')
+        for line in self.item_ids:
+            if line.product_id:
+                price = locale.format("%.2f", line.b2b_real_price, grouping=True)
+                csvdata = [line.product_id.id, line.product_id.display_name.encode('utf8'), line.product_id.barcode.encode('utf8'), line.qty_available_now, price]
+                writer.writerow(csvdata)
+        data = base64.b64encode(output.getvalue()).decode()
+        output.close()
+        name = 'Multiplayer_com_B2B_%s.csv' % datetime.date.today()
+        attr = {
+            'name': name,
+            'datas_fname': name,
+            'type': 'binary',
+            'datas': data
+        }
+        new_id = self.env['ir.attachment'].create(attr)
+        return {
+            'type': 'ir.actions.act_window',
+            'res_model': 'ir.attachment',
+            'res_id': new_id.id,
+            'context': {},
+            'title': "Apri: Csv",
+            'readonly': True,
+            'view_type': 'form',
+            "view_mode": 'form',
+        }
 
     @api.multi
     def write(self ,values):
