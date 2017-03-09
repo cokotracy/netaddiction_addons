@@ -602,8 +602,10 @@ class EbayProducts(models.Model):
                         'ebay_category': category,
                         'price': str(product.ebay_price), 
                         'isbn': isbn, }
+                else:
+                    product.on_ebay = False
 
-            products_reupdate_images = ["%s" % p.id for p in products_to_update if p.ebay_image_expiration_date < last_executed]
+            products_reupdate_images = ["%s" % p.id for p in products_to_update if p.ebay_image_expiration_date < last_executed and p.on_ebay]
 
             xml_builder = self.env["netaddiction.ebay.xmlbuilder"].create({})
             images = {}
@@ -969,7 +971,8 @@ class EbayProducts(models.Model):
             parsed = re.findall('\d+', shipping_dict["street"])
             if parsed:
                 shipping_dict['street2'] = parsed[-1]
-                shipping_dict["street"].translate(None, parsed[-1])
+                # shipping_dict["street"].translate(None, parsed[-1])
+                shipping_dict["street"] = re.sub(parsed[-1], '', shipping_dict["street"])
             else:
                 shipping_dict['street2'] = False
         user_shipping = None
