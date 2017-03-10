@@ -183,12 +183,15 @@ class CatalogOffer(models.Model):
 
     @api.one
     def turn_on(self):
-        for pl in self.env['netaddiction.specialoffer.offer_catalog_line'].search([('offer_catalog_id', '=', self.id), ('active', '=', False)]):
-            if self.qty_limit_is_available:
-                pl.qty_limit = pl.product_qty_available_now
-            pl.active = True
+        if not self.active:
+            for pl in self.env['netaddiction.specialoffer.offer_catalog_line'].search([('offer_catalog_id', '=', self.id), ('active', '=', False)]):
+                if self.qty_limit_is_available:
+                    pl.qty_limit = pl.product_qty_available_now if pl.product_qty_available_now > 0 else 0
+                    pl.active = pl.product_qty_available_now > 0
+                else:
+                    pl.active = True
 
-        self.write({'active': True})
+            self.write({'active': True})
 
     @api.multi
     def _compute_qty_selled(self):
@@ -281,6 +284,8 @@ class ShoppingCartOffer(models.Model):
     end_cron_job = fields.Integer()
     start_cron_job = fields.Integer()
 
+    qty_limit_is_available = fields.Boolean(string="La quantità limite è quella disponibile", default=False)
+
     _sql_constraints = [
         ('name', 'unique(name)', 'Nome offerta deve essere unico!'),
     ]
@@ -351,9 +356,14 @@ class ShoppingCartOffer(models.Model):
 
     @api.one
     def turn_on(self):
-        for pl in self.env['netaddiction.specialoffer.offer_cart_line'].search([('offer_cart_id', '=', self.id), ('active', '=', False)]):
-            pl.active = True
-        self.write({'active': True})
+        if not self.active:
+            for pl in self.env['netaddiction.specialoffer.offer_cart_line'].search([('offer_cart_id', '=', self.id), ('active', '=', False)]):
+                if self.qty_limit_is_available:
+                    pl.qty_limit = pl.qty_limit = pl.product_qty_available_now if pl.product_qty_available_now > 0 else 0
+                    pl.active = pl.product_qty_available_now > 0
+                else:
+                    pl.active = True
+            self.write({'active': True})
 
     @api.model
     def create(self, values):
@@ -461,6 +471,8 @@ class OfferCartLine(models.Model):
     priority = fields.Integer(string="priorità", default=0)
     qty_selled = fields.Float(string='Quantità venduta', default=0.0)
     company_id = fields.Many2one('res.company', string='Azienda', related='offer_cart_id.company_id', store=True)
+
+    product_qty_available_now = fields.Integer(related="product_id.qty_available_now", store=False)
 
     @api.one
     @api.constrains('offer_cart_id')
