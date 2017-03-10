@@ -227,7 +227,7 @@ class OfferCatalogLine(models.Model):
     # campo related per il prezzo medio di acquisto
     product_offer_price_fake = fields.Float(string="Prezzo Offerta", compute="compute_offer_price_fake", store=False, default=0)
     med_inventory_value_intax = fields.Float(related="product_id.med_inventory_value_intax", store=False)
-    product_qty_available_now = fields.Integer(related="product_id.qty_available_now", store="False")
+    product_qty_available_now = fields.Integer(related="product_id.qty_available_now", store=False)
 
     @api.one
     @api.constrains('fixed_price', 'offer_type')
