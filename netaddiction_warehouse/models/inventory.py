@@ -31,7 +31,7 @@ class StockInventory(models.Model):
                     # se non ho l'ordine, trovo per quel prodotto, le quants con in_date (data d'ingresso) minore della sua data
                     # nell'hisotry di queste quant controllo quante ne mancano e semmai gliele assegno
                     if not sup and not self.deleted_order_id:
-                        old_moves = self.env['stock.move'].search([('product_id.id', '=', quant.product_id.id), ('date', '<', quant.in_date), ('location_dest_id.id', '=', wh_stock)], order="date desc")
+                        old_moves = self.env['stock.move'].search([('product_id.id', '=', quant.product_id.id), ('date', '<', quant.in_date), ('location_dest_id.id', '=', wh_stock), ('picking_type_id', '=', 1)], order="date desc")
                         if old_moves:
                             quant.history_ids = [(4, old_moves[0].id, False)]
         return True
