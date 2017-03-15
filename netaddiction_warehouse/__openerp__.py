@@ -41,7 +41,8 @@
         'views/autopreparation.xml',
         'views/products_movement.xml',
         'views/move.xml',
-        'views/inventory_reports.xml'
+        'views/inventory_reports.xml',
+        'views/stock_inventory.xml'
     ],
     'qweb': [
         "static/src/xml/*.xml",

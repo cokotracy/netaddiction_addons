@@ -660,6 +660,21 @@ class StockOperation(models.Model):
 class StockQuant(models.Model):
     _inherit='stock.quant'
 
+    @api.multi
+    def get_supplier(self):
+        self.ensure_one()
+        sup = False
+        for history in self.history_ids:
+            if history.picking_type_id.id == 1:
+                sup = history.picking_partner_id
+
+        # if not sup:
+        #    moves = self.env['stock.move'].search([('picking_type_id', '=', 1), ('product_id', '=', self.product_id.id), ('date', '<=', self.in_date)], order='date desc', limit=1)
+        #    if moves:
+        #        sup = moves.picking_partner_id
+
+        return sup
+
     @api.model
     def get_inventory_at_date(self, from_date, to_date, company_id):
         # prendo tutte le movimentazioni tra oggi e inv_date
