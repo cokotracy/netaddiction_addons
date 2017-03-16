@@ -35,3 +35,12 @@ class StockInventory(models.Model):
                         if old_moves:
                             quant.history_ids = [(4, old_moves[0].id, False)]
         return True
+
+    @api.multi
+    def action_done(self, value):
+        super(StockInventory, self).action_done(context=value)
+
+        for inv in self:
+            inv.assign_supplier()
+
+        return True
