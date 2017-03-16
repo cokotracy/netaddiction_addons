@@ -41,6 +41,6 @@ class StockInventory(models.Model):
         super(StockInventory, self).action_done(context=value)
 
         for inv in self:
-            inv.assign_supplier()
+            inv.sudo().assign_supplier()
 
         return True
