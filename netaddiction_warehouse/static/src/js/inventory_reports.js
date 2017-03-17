@@ -37,6 +37,10 @@ odoo.define('netaddiction_warehouse.inventory_reports', function (require) {
             self.category = false;
             self.attribute = false;
             self.attribute_filter = false;
+
+            self.available_deactive = false;
+            self.supplier_available_deactive = false;
+            self.supplier_zero_negative_active = false;
         },
         events: {
             'click .next_page': 'NextPage',
@@ -46,16 +50,52 @@ odoo.define('netaddiction_warehouse.inventory_reports', function (require) {
             'click #get_inventory_value': 'get_inventory_values',
             'click .open_product': 'OpenProduct',
             'change #attributes': 'ChangeAttributes',
-            'click .export_csv': 'ExportCsv'
+            'click .export_csv': 'ExportCsv',
+            'click #available_deactive': 'Available_deactive',
+            'click #supplier_available_deactive': 'Supplier_available_deactive',
+            'click #supplier_zero_negative_active': 'Supplier_zero_negative_active'
         },
         start: function(){
             var self = this;
-            self.get_products(false);
             //self.get_inventory_values();
-            self.$el.html(QWeb.render("inventory_reports_base", {widget: self}));
+            var active_id = parseInt(session.active_id);
+            new Model('ir.model.data').query(['complete_name']).filter([['res_id','=',active_id],['model','=','ir.ui.menu']]).first().then(function(menu){
+                if(menu){
+                    if(menu.complete_name == 'netaddiction_warehouse.products_problem'){
+                        self.$el.html(QWeb.render("inventory_reports_base", {widget: self, is_problematic: true}));
+                        self.available_deactive = true;
+                        self.get_products(false);
+                    }else{
+                        self.get_products(false);
+                        self.$el.html(QWeb.render("inventory_reports_base", {widget: self}));
+                    }
+                }else{
+                    self.get_products(false);
+                    self.$el.html(QWeb.render("inventory_reports_base", {widget: self}));
+                }
+                
+            });
             self.construct_categories();
             self.construct_suppliers();
             self.construct_attributes();
+        },
+        Available_deactive: function(){
+            this.supplier_available_deactive = false;
+            this.supplier_zero_negative_active = false;
+            this.available_deactive = true;
+            this.get_products(false);
+        },
+        Supplier_available_deactive: function(){
+            this.available_deactive = false;
+            this.supplier_available_deactive = true;
+            this.supplier_zero_negative_active = false;
+            this.get_products(false);
+        },
+        Supplier_zero_negative_active: function(){
+            this.available_deactive = false;
+            this.supplier_available_deactive = false;
+            this.supplier_zero_negative_active = true;
+            this.get_products(false);
         },
         ExportCsv: function(e){
             var self = this;
@@ -218,6 +258,18 @@ odoo.define('netaddiction_warehouse.inventory_reports', function (require) {
             var self=this;
             var fields = ['id', 'barcode', 'display_name', 'categ_id', 'med_inventory_value', 'med_inventory_value_intax', 'qty_available', 'qty_available_now', 'product_wh_location_line_ids', 'intax_price', 'offer_price'];
             var filter = [['product_wh_location_line_ids','!=',false],['company_id','=',self.company_id]];
+            /**mi immetto qua per cambiare i filtri per i prodotti problematici**/
+            if(self.available_deactive){
+                var text = 'Prodotti Problematici - In Magazzino, Spenti';
+                $('.breadcrumb li').text(text);
+                filter = [['product_wh_location_line_ids','!=',false],['company_id','=',self.company_id], ['sale_ok','=',false]];
+            }
+            if(self.supplier_available_deactive){
+                var text = 'Prodotti Problematici - Disponibili al fornitore, qty <= 0, spenti';
+                $('.breadcrumb li').text(text);
+                filter = [['qty_available','<=',0],['seller_ids.avail_qty','>',0], ['company_id','=',self.company_id], ['sale_ok','=',false]];
+            }
+
             if(self.categ_filter){
                 filter.push(self.categ_filter);
             }
@@ -225,31 +277,63 @@ odoo.define('netaddiction_warehouse.inventory_reports', function (require) {
                 filter.push(['id','in',self.suppliers_pids]);
             }
             if(self.attribute_filter){
-                filter.push(self.attribute_filter)
+                filter.push(self.attribute_filter);
             }
-            new Model('product.product').query(fields).filter(filter).offset(self.offset).limit(self.limit).order_by(self.order_by).all().then(function(products){
-                var new_products = [];
-                $.each(products, function(i,product){
-                    product['total_inventory'] = (product.med_inventory_value * product.qty_available).toLocaleString();
-                    product.med_inventory_value = product.med_inventory_value.toLocaleString();
-                    if(product.offer_price){
-                        product.price = product.offer_price.toLocaleString();
-                    }else{
-                        product.price = product.intax_price.toLocaleString();
-                    }
-                    if(self.suppliers_pids){
-                        product.qty_available = self.suppliers_results[self.supplier]['products'][product.id]['qty'];
-                        product['total_inventory'] = self.suppliers_results[self.supplier]['products'][product.id]['inventory_value'].toLocaleString();
-                    }
+
+            if(self.supplier_zero_negative_active){
+                var text = 'Prodotti Problematici - Qty <= 0, accesi, non in prenotazione, fornitore a zero';
+                $('.breadcrumb li').text(text);
+                new Model('product.product').call('problematic_product').then(function(results){
+                    self.all = parseInt(results.length);
+                    var ids = results.splice(self.offset, self.limit);
+                    new Model('product.product').query(fields).filter([['id','in',ids]]).all().then(function(products){
+                        var new_products = [];
+                        $.each(products, function(i,product){
+                            product['total_inventory'] = (product.med_inventory_value * product.qty_available).toLocaleString();
+                            product.med_inventory_value = product.med_inventory_value.toLocaleString();
+                            if(product.offer_price){
+                                product.price = product.offer_price.toLocaleString();
+                            }else{
+                                product.price = product.intax_price.toLocaleString();
+                            }
+                            if(self.suppliers_pids){
+                                product.qty_available = self.suppliers_results[self.supplier]['products'][product.id]['qty'];
+                                product['total_inventory'] = self.suppliers_results[self.supplier]['products'][product.id]['inventory_value'].toLocaleString();
+                            }
+                        });
+                        self.$el.find('#inventory_table').html(QWeb.render("InventoryTableProducts", {products: products}));
+                        framework.unblockUI();
+                        self.set_height();
+                        self.set_pager();
+                    });
                 });
-                self.$el.find('#inventory_table').html(QWeb.render("InventoryTableProducts", {products: products}));
-                framework.unblockUI();
-                self.set_height();
-                self.set_pager();
-            });
-            new Model('product.product').query(['id']).filter(filter).count().then(function(count){
-                self.all = parseInt(count);
-            });
+            }else{
+                new Model('product.product').query(fields).filter(filter).offset(self.offset).limit(self.limit).order_by(self.order_by).all().then(function(products){
+                    var new_products = [];
+                    $.each(products, function(i,product){
+                        product['total_inventory'] = (product.med_inventory_value * product.qty_available).toLocaleString();
+                        product.med_inventory_value = product.med_inventory_value.toLocaleString();
+                        if(product.offer_price){
+                            product.price = product.offer_price.toLocaleString();
+                        }else{
+                            product.price = product.intax_price.toLocaleString();
+                        }
+                        if(self.suppliers_pids){
+                            product.qty_available = self.suppliers_results[self.supplier]['products'][product.id]['qty'];
+                            product['total_inventory'] = self.suppliers_results[self.supplier]['products'][product.id]['inventory_value'].toLocaleString();
+                        }
+                    });
+                    self.$el.find('#inventory_table').html(QWeb.render("InventoryTableProducts", {products: products}));
+                    framework.unblockUI();
+                    self.set_height();
+                    self.set_pager();
+                });
+                new Model('product.product').query(['id']).filter(filter).count().then(function(count){
+                    self.all = parseInt(count);
+                });
+            }
+
+            
         },
         set_height: function(){
             var self = this;

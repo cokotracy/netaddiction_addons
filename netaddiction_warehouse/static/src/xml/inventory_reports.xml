@@ -6,24 +6,42 @@
             <div class="container-fluid">
                 <div class="row">
                     <div class="col-md-6 oe-cp-title">
-                        <ol class="oe-view-title breadcrumb"><li class="active">Reports Inventario</li></ol>
+                        <t t-if="is_problematic">
+                            <ol class="oe-view-title breadcrumb"><li class="active">Prodotti Problematici</li></ol>
+                        </t>
+                        <t t-if="!is_problematic">
+                            <ol class="oe-view-title breadcrumb"><li class="active">Reports Inventario</li></ol>
+                        </t>
                     </div>
                     <div class="oe-cp-search-view col-md-6">
-                        <button type="button" class="btn btn-primary export_csv" style="position:fixed;right:10px">Esporta Csv</button> 
+                        <t t-if="!is_problematic">
+                            <button type="button" class="btn btn-primary export_csv" style="position:fixed;right:10px">Esporta Csv</button>
+                        </t>
+                        <t t-if="is_problematic">
+                            <button type="button" class="btn btn-primary" id="available_deactive" style="position:fixed;right:10px">Magazzino - Spenti</button>
+                            <button type="button" class="btn btn-primary" id="supplier_available_deactive" style="position:fixed;right:170px">Spenti - Fornitore positivo</button>
+                            <button type="button" class="btn btn-primary" id="supplier_zero_negative_active" style="position:fixed;right:370px">Accesi - Fornitore zero</button>
+                        </t>
                     </div>
                 </div>
                 <div class="row">
                     <div class="col-md-2 oe-button-column">
-                        <b>Valore: </b>
-                        <span id="inventory_value">
-                            <t t-call="InventoryValueLoading"/>
-                        </span>
+                        <t t-if="!is_problematic">
+                            <b>Valore: </b>
+                            <span id="inventory_value">
+                                <t t-call="InventoryValueLoading"/>
+                            </span>
+                        </t>
                     </div>
                     <div class="col-md-10 oe-button-column">
                         <div class="oe-cp-pager" style="position:fixed; right:10px">
+                            
                             <select id="attributes" style="margin-right:10px"></select>
-                            <select id="suppliers" style="margin-right:10px"></select>
+                            <t t-if="!is_problematic">
+                                <select id="suppliers" style="margin-right:10px"></select>
+                            </t>
                             <select id="categories" style="margin-right:10px"></select>
+                            
                             <span>
                                 <div class="oe_pager_value" style="display: inline-block">
                                     <span class="oe_list_pager_state"> <span id="from">0</span> - <span id="to">0</span> di <span id="all">0</span></span>

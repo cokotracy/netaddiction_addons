@@ -15,6 +15,13 @@ class Products(models.Model):
 
     days_shipping = fields.Integer(string="Consegnato in (in giorni)", compute = "_get_days_shipping")
 
+    @api.model
+    def problematic_product(self):
+        results = self.search([('qty_available', '<=', 0), ('seller_ids.avail_qty', '>', 0), ('sale_ok', '=', True), '|', ('out_date', '<=', datetime.date.today()), ('out_date', '=', False)])
+        alls = self.search([('qty_available', '<=', 0), ('sale_ok', '=', True), '|', ('out_date', '<=', datetime.date.today()), ('out_date', '=', False)])
+        res = alls - results
+        return res.mapped('id')
+
     @api.multi
     def open_product_line(self):
         self.ensure_one()
