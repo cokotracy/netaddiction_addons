@@ -359,7 +359,7 @@ class ShoppingCartOffer(models.Model):
         if not self.active:
             for pl in self.env['netaddiction.specialoffer.offer_cart_line'].search([('offer_cart_id', '=', self.id), ('active', '=', False)]):
                 if self.qty_limit_is_available:
-                    pl.qty_limit = pl.qty_limit = pl.product_qty_available_now if pl.product_qty_available_now > 0 else 0
+                    pl.qty_limit = pl.product_qty_available_now if pl.product_qty_available_now > 0 else 0
                     pl.active = pl.product_qty_available_now > 0
                 else:
                     pl.active = True
