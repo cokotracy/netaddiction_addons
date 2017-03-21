@@ -17,6 +17,8 @@ MAX_NUM_JOB_CHECK = 100
 
 _logger = logging.getLogger(__name__)
 
+CONTEXT = {u'lang': u'it_IT', u'tz': u'Europe/Rome', u'uid': 1}
+
 
 class EbayProducts(models.Model):
     _inherit = 'product.product'
@@ -497,7 +499,7 @@ class EbayProducts(models.Model):
                 isbn = product.barcode if product.categ_id.id == book_id else None
                 prods[str(product.id)] = {
                     'qty': str(product.qty_available_now),
-                    'name': product.name[:80],
+                    'name': product.with_context(CONTEXT).name[:80],
                     'ean': str(product.barcode),
                     'description': product.description,
                     'ebay_image': "TO_FILL",
@@ -537,7 +539,7 @@ class EbayProducts(models.Model):
                             product = products_uploaded[0]
                             product.ebay_id = item['id']
                             if item['duplicate']:
-                                duplicates.append((product.name, product.id))
+                                duplicates.append((product.with_context(CONTEXT).name[:80], product.id))
                             else:
                                 product.ebay_published_date = datetime.strptime(item["start"], "%Y-%m-%dT%H:%M:%S.%fZ")
                                 product.ebay_expiration_date = datetime.strptime(item["end"], "%Y-%m-%dT%H:%M:%S.%fZ")
@@ -594,7 +596,7 @@ class EbayProducts(models.Model):
                     isbn = product.barcode if product.categ_id.id == book_id else None
                     prods[str(product.id)] = {
                         'qty': str(product.qty_available_now),
-                        'name': product.name[:80],
+                        'name': product.with_context(CONTEXT).name[:80],
                         'ean': str(product.barcode),
                         'ebay_id': product.ebay_id,
                         'description': product.description,
@@ -667,7 +669,7 @@ class EbayProducts(models.Model):
                 isbn = product.barcode if product.categ_id.id == book_id else None
                 prods[str(product.id)] = {
                     'qty': str(product.qty_available_now),
-                    'name': product.name[:80],
+                    'name': product.with_context(CONTEXT).name[:80],
                     'ean': str(product.barcode),
                     'ebay_id': product.ebay_id,
                     'description': product.description,
