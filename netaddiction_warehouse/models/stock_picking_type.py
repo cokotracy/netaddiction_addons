@@ -722,7 +722,7 @@ class StockQuant(models.Model):
             price = locale.format("%.2f", price, grouping=True)
             med = locale.format("%.2f", res.med_inventory_value, grouping=True)
 
-            csvdata = [res.categ_id.display_name.encode('utf8'), res.display_name.encode('utf8'), str(res.id), str(res.barcode), int(qty_available), med, total_inventory, price]
+            csvdata = [res.categ_id.display_name.encode('utf8'), res.with_context({'lang': u'it_IT', 'tz': u'Europe/Rome'}).display_name.encode('utf8'), str(res.id), str(res.barcode), int(qty_available), med, total_inventory, price]
             for line in res.product_wh_location_line_ids:
                 text = str(line.qty) + ' ' + line.wh_location_id.name.encode('utf8')
                 csvdata.append(text)

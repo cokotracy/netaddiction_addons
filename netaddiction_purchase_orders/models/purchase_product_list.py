@@ -10,7 +10,9 @@ class Products(models.Model):
 
 
     @api.model
-    def get_qty_available_negative(self,search,supplier_id = None):
+    def get_qty_available_negative(self,search,supplier_id = None, context=None):
+        if not context:
+            context = {}
         result = []
         if search:
             domain = [('company_id','=',self.env.user.company_id.id),('qty_available_now','<',0),('barcode','=',str(search))]
@@ -42,7 +44,7 @@ class Products(models.Model):
 
             attr = {
                 'id' : prod.id,
-                'display_name' : prod.display_name,
+                'display_name' : prod.with_context(context).display_name,
                 'qty_available' : prod.qty_available,
                 'qty_available_now' : prod.qty_available_now,
                 'virtual_available' : prod.virtual_available,

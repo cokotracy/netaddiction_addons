@@ -6,7 +6,7 @@ openerp.netaddiction_purchase_orders = function(instance, local) {
         local.ProductList = instance.Widget.extend({
             start: function() {
             	self = this
-                return new instance.web.Model('product.product').call('get_qty_available_negative',[false,false]).then(function(products){
+                return new instance.web.Model('product.product').call('get_qty_available_negative',[false,false,instance.session.user_context]).then(function(products){
                     new instance.web.Model('res.partner').call('get_all_suppliers').then(function(suppliers){
                         new instance.web.Model('product.category').call('get_all_categories').then(function(categories){
                             var list = new local.List(self,products,suppliers,categories);
