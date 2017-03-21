@@ -722,8 +722,8 @@ class EbayProducts(models.Model):
         """
         now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
-        products_to_end = self.env["product.product"].search([("on_ebay", "=", False), ("ebay_id", "!=", ''), ("ebay_expiration_date", ">", now)])
-        products_out_of_stock = self.env["product.product"].search([("on_ebay", "=", True), ("ebay_id", "!=", ''), ("ebay_expiration_date", ">", now), ("qty_available_now", "<", 1)])
+        products_to_end = self.env["product.product"].search([("on_ebay", "=", False), ("ebay_id", "!=", ''), ])
+        products_out_of_stock = self.env["product.product"].search([("on_ebay", "=", True), ("ebay_id", "!=", ''), ("qty_available_now", "<", 1)])
         products_dead = self.env["product.product"].search([("on_ebay", "=", False), ("ebay_id", "!=", ''), ("ebay_expiration_date", "=", False)])
 
         products_to_end = list(set(products_to_end + products_out_of_stock + products_dead))
