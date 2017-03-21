@@ -34,7 +34,6 @@ class Products(models.Model):
             'res_id': self.id,
             'target': 'current',
         }
-    
 
     @api.multi
     def do_action_quantity(self):
@@ -45,7 +44,7 @@ class Products(models.Model):
         qty_limit = self.qty_limit
         qty_single = self.qty_single_order
         action = self.limit_action
-        #a questo punto faccio le operazioni sullo spegnimento
+        # a questo punto faccio le operazioni sullo spegnimento
         if self.qty_available_now <= qty_limit:
             if action == 'no_purchasable':
                 self.sudo().sale_ok = False
@@ -53,7 +52,11 @@ class Products(models.Model):
                 self.sudo().sale_ok = False
                 self.sudo().visible = False
 
-
+            # resetto le variabili, richiesta Andreone/Riccardo del 21 marzo 2017 per la gestione dei prodotti spenti/accesi
+            # solo se la qty_limit == 0
+            if qty_limit == 0:
+                self.qty_single_order = 0
+                self.limit_action = 'nothing'
 
     @api.one 
     def _get_days_available(self):
