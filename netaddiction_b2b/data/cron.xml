@@ -12,5 +12,17 @@
             <field eval="'cron_updater'" name="function"/>
             <field name="args" eval="'()'" />
         </record>
+
+        <record id="ir_cron_create_csv" model="ir.cron">
+            <field name="name">B2B Csv Builder</field>
+            <field name="user_id" ref="base.user_root"/>
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <field name="numbercall">-1</field>
+            <field eval="False" name="doall"/>
+            <field eval="'product.pricelist'" name="model"/>
+            <field eval="'cron_create_csv'" name="function"/>
+            <field name="args" eval="'()'" />
+        </record>
     </data>
 </openerp>

@@ -7,6 +7,7 @@ import csv
 import locale
 import datetime
 import base64
+from ftplib import FTP
 
 class Pricelist(models.Model):
     _inherit = 'product.pricelist.item'
@@ -26,6 +27,12 @@ class ProductPricelistCondition(models.Model):
         ('inflation', 'Rincaro')
     ), string="Tipo Listino", required=False, default="discount")
 
+class Pricelist_FTP_User(models.Model):
+    _name = 'netaddiction_pricelist_ftp_user'
+
+    partner_id = fields.Many2one(string="Cliente", comodel_name="res.partner")
+    path = fields.Char(string="Cartella FTP")
+
 class product_pricelist(models.Model):
     _inherit = "product.pricelist"
 
@@ -38,21 +45,14 @@ class product_pricelist(models.Model):
 
     search_field = fields.Char(string="Cerca prodotti")
 
+    generate_csv_ftp = fields.Boolean(string="Genera CSV Periodico")
+
+    ftp_user = fields.Many2many(string="Clienti/Cartelle", comodel_name="netaddiction_pricelist_ftp_user")
+
     @api.multi
     def get_csv(self):
         self.ensure_one()
-        output = io.BytesIO()
-        writer = csv.writer(output)
-        csvdata = ['Sku', 'Prodotto', 'Barcode', 'Quantita', 'Prezzo']
-        writer.writerow(csvdata)
-        locale.setlocale(locale.LC_ALL, 'it_IT.UTF8')
-        for line in self.item_ids:
-            if line.product_id:
-                price = locale.format("%.2f", line.b2b_real_price, grouping=True)
-                csvdata = [line.product_id.id, line.product_id.display_name.encode('utf8'), line.product_id.barcode.encode('utf8'), line.qty_available_now, price]
-                writer.writerow(csvdata)
-        data = base64.b64encode(output.getvalue()).decode()
-        output.close()
+        data = self.create_csv()
         name = 'Multiplayer_com_B2B_%s.csv' % datetime.date.today()
         attr = {
             'name': name,
@@ -71,6 +71,44 @@ class product_pricelist(models.Model):
             'view_type': 'form',
             "view_mode": 'form',
         }
+
+    @api.multi
+    def create_csv(self, ftp=False):
+        self.ensure_one()
+        output = io.BytesIO()
+        writer = csv.writer(output)
+        csvdata = ['Sku', 'Prodotto', 'Barcode', 'Quantita', 'Prezzo']
+        writer.writerow(csvdata)
+        locale.setlocale(locale.LC_ALL, 'it_IT.UTF8')
+        for line in self.item_ids:
+            if line.product_id:
+                price = locale.format("%.2f", line.b2b_real_price, grouping=True)
+                csvdata = [line.product_id.id, line.product_id.with_context({'lang': u'it_IT', 'tz': u'Europe/Rome'}).display_name.encode('utf8'), line.product_id.barcode.encode('utf8'), line.qty_available_now, price]
+                writer.writerow(csvdata)
+
+        if ftp:
+            # sparo in ftp
+            # le cartelle le chiameremo con un nome adatto al listino
+            # oppure avrò una lista di utenti con la cartella associata
+            # ogni utente ha associata una cartella con user e password, se non ce l'ha associata fanculo
+            ftp = FTP('srv-ftp.multiplayer.com', 'ecom-admin', 'fj4789h3784hf8')
+            for line in self.ftp_user:
+                output.seek(0)
+                path = '/%s' % line.path
+                ftp.cwd(path)
+                ftp.storbinary('STOR %s' % 'Listino_Multiplayer_com.csv', output)
+
+        data = base64.b64encode(output.getvalue()).decode()
+
+        output.close()
+
+        return data
+
+    @api.model
+    def cron_create_csv(self):
+        pricelist = self.search([('active', '=', True), ('generate_csv_ftp', '=', True)])
+        for price in pricelist:
+            price.create_csv(ftp=True)
 
     @api.multi
     def write(self ,values):
