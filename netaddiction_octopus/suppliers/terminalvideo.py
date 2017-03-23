@@ -11,18 +11,14 @@ from ..base.parsers import CSVParser
 
 DISCOUNTS = {
     'PVC Ingrosso': 25,
-    'PVC Ingrosso N.S.': 20,
+    'PVC Ingrosso NS': 20,
     'PVC Disney': 17.5,
     'PVC Distribuiti': 32,
-    'PVC Distribuiti Editoriali': 32,
-    'PVC Ingrosso Editoriali': 28,
-    'PVC Ingrosso Dvd Edit': 25,
-    'PVC Ingrosso N.S. Dvd Edit.': 20,
-    'PVC Disney Edit.': 17.5,
-    'PVC Distribuiti Dvd Edit': 32,
     'Editoriali - Distribuiti': 32,
     'Editoriali - Ingrosso': 28,
     'Abbigliamento': 40,
+    'Musica - Ingrosso': 25,
+    'Toys Dis A - R': 32,
     'Toys Ing B - NR': 30,
     'Toys Dis B - NR': 32,
 }
