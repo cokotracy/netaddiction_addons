@@ -48,15 +48,15 @@ class Products(models.Model):
         if self.qty_available_now <= qty_limit:
             if action == 'no_purchasable':
                 self.sudo().sale_ok = False
+                if qty_limit == 0:
+                    self.sudo().qty_single_order = 0
+                    self.sudo().limit_action = 'nothing'
             if action == 'deactive':
                 self.sudo().sale_ok = False
                 self.sudo().visible = False
-
-            # resetto le variabili, richiesta Andreone/Riccardo del 21 marzo 2017 per la gestione dei prodotti spenti/accesi
-            # solo se la qty_limit == 0
-            if qty_limit == 0:
-                self.qty_single_order = 0
-                self.limit_action = 'nothing'
+                if qty_limit == 0:
+                    self.sudo().qty_single_order = 0
+                    self.sudo().limit_action = 'nothing'
 
     @api.one 
     def _get_days_available(self):
