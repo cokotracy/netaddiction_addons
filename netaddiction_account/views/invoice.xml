@@ -116,7 +116,7 @@
                         <filter string="Ordini Completati" domain="[('order_id.state', '=', 'done')]"/>
                         <separator/>
                         <filter string="BRT" domain="[('order_id.carrier_id','=',2)]"/>
-                        <filter string="SDA" domain="[('order_id.carrier_id','=',3))]"/>
+                        <filter string="SDA" domain="[('order_id.carrier_id','=',3)]"/>
                         <separator/>
                         <filter string="Bozza" domain="[('state','=','draft')]" name="state_draft"/>
                         <filter string="Emesso" domain="[('state','=','posted')]" name="state_posted"/>
