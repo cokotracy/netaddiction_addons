@@ -7,7 +7,6 @@
             <field name="inherit_id" ref="stock.view_move_form"/>
             <field name="arch" type="xml">
                 <field name="state" position="before">
-                    <button type="object" name="delete_backorder" string="Cancella Backorder" />
                 </field> 
             </field>
         </record>

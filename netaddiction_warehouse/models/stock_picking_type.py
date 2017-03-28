@@ -256,10 +256,20 @@ class StockPickingWave(models.Model):
                     wiz_id.process()
                     backorder_pick = self.env['stock.picking'].search([('backorder_id', '=', out.id)])
                     backorder_pick.write({'wave_id' : None})
-                else:
-                    order = self.env['purchase.order'].search([('name','=',out.origin)])
-                    order.button_done()
                 out.do_new_transfer()
+
+                origin = out.origin
+                order = self.env['purchase.order'].search([('name', '=', origin)])
+                if len(order.order_line) == 0:
+                    order.state = 'cancel'
+                    order.unlink()
+                else:
+                    close = True
+                    for pick in order.picking_ids:
+                        if pick.state not in ['cancel', 'done']:
+                            close = False
+                    if close:
+                        order.button_done()
             else:
                 out.write({'wave_id' : None})
 
