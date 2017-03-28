@@ -16,7 +16,6 @@ odoo.define('netaddiction_purchase_orders.backorder', function (require) {
     var QWeb = core.qweb;
     var common = require('web.form_common');
 
-
     var Backorder = Widget.extend({
         init: function(parent){
             var self = this;
@@ -46,7 +45,7 @@ odoo.define('netaddiction_purchase_orders.backorder', function (require) {
             self.get_incoming_suppliers();
             self.get_incoming_qty_suppliers();
         },
-        get_incoming_suppliers(){
+        get_incoming_suppliers: function(){
             var self = this;
             new Model('stock.picking').query([]).filter([['picking_type_id','=',self.picking_type],['state','not in',['done', 'cancel']]]).order_by('partner_id').group_by('partner_id').then(function(results){
                 var suppliers = [];
@@ -77,7 +76,7 @@ odoo.define('netaddiction_purchase_orders.backorder', function (require) {
             var w = $('.oe_client_action').outerWidth();
             self.$el.find('#backorder_top_block').outerWidth(w);
         },
-        get_incoming_qty_suppliers(){
+        get_incoming_qty_suppliers: function(e){
             var self = this;
             new Model('stock.move').call('get_incoming_number_products_values').then(function(results){
                 var tot = 0;
@@ -248,7 +247,6 @@ odoo.define('netaddiction_purchase_orders.backorder', function (require) {
                     self.__parentedChildren[1].destroy();
                     
 
-                    /**piazzo un log**/
                     new Model('stock.move').call('log_change_backorder',[supplier, self.products[supplier][pid]['product_name'], self.products[supplier][pid]['supplier_code'], pid, old, new_value, self.context.uid, self.company_id]);
                 });
             }
@@ -317,5 +315,8 @@ odoo.define('netaddiction_purchase_orders.backorder', function (require) {
         }
     });
 
+
     core.action_registry.add("netaddiction_purchase_orders.backorder", Backorder);
 });
+
+    
