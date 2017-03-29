@@ -493,6 +493,7 @@ class EbayProducts(models.Model):
             # creo il dizionario products con i dati da mandare a ebay
             category_dict = self._build_category_dictionary()
             for product in products_to_upload:
+                product.ebay_price = product.compute_ebay_price()
                 category = category_dict.get(product.categ_id.id, '139973')
                 if isinstance(category, dict):
                     category = category.get(product.attribute_value_ids[0].id, category[0]) if product.attribute_value_ids else category[0]
@@ -590,6 +591,7 @@ class EbayProducts(models.Model):
             category_dict = self._build_category_dictionary()
             for product in products_to_update:
                 if product.qty_available_now > 0:
+                    product.ebay_price = product.compute_ebay_price()
                     category = category_dict.get(product.categ_id.id, '139973')
                     if isinstance(category, dict):
                         category = category.get(product.attribute_value_ids[0].id, category[0]) if product.attribute_value_ids else category[0]
@@ -663,6 +665,7 @@ class EbayProducts(models.Model):
             # creo il dizionario products con i dati da mandare a ebay
             category_dict = self._build_category_dictionary()
             for product in products_expired:
+                product.ebay_price = product.compute_ebay_price()
                 category = category_dict.get(product.categ_id.id, '1')
                 if isinstance(category, dict):
                         category = category.get(product.attribute_value_ids[0].id, category[0]) if product.attribute_value_ids else category[0]
