@@ -95,5 +95,43 @@
                 </pivot>
             </field>
         </record>
+
+
+        <record model="ir.ui.view" id="netaddiction_search_payments">
+            <field name="name">netaddiction.search.payments</field>
+            <field name="model">account.payment</field>
+            <field name="inherit_id" ref="account.view_account_payment_search"/>
+            <field name="arch" type="xml">
+                <search position="replace">
+                    <search>
+                        <field name="name" filter_domain="['|', ('name','ilike',self), ('communication','ilike',self)]" string="Description"/>
+                        <separator/>
+                        <field name="partner_id"/>
+                        <field name="journal_id"/>
+                        <field name="company_id" groups="base.group_multi_company"/>
+                        <filter string="Debiti" domain="[('payment_type','=','outbound')]"/>
+                        <filter string="Crediti" domain="[('payment_type','=','inbound')]"/>
+                        <filter string="Trasferimenti" domain="[('payment_type','=','transfer')]"/>
+                        <separator/>
+                        <filter string="Ordini Completati" domain="[('order_id.state', '=', 'done')]"/>
+                        <separator/>
+                        <filter string="BRT" domain="[('order_id.carrier_id','=',2)]"/>
+                        <filter string="SDA" domain="[('order_id.carrier_id','=',3)]"/>
+                        <separator/>
+                        <filter string="Bozza" domain="[('state','=','draft')]" name="state_draft"/>
+                        <filter string="Emesso" domain="[('state','=','posted')]" name="state_posted"/>
+                        <filter string="Inviato" domain="[('state','=','sent')]" name="state_sent"/>
+                        <filter string="Riconciliato" domain="[('state','=','reconciled')]"/>
+                        <separator/>
+                        <filter string="Partner" domain="[]" context="{'group_by': 'partner_id'}"/>
+                        <filter string="Journal" domain="[]" context="{'group_by': 'journal_id'}"/>
+                        <filter string="Payment Method" domain="[]" context="{'group_by': 'payment_method_id'}"/>
+                        <filter string="State" domain="[]" context="{'group_by': 'state'}"/>
+                        <filter string="Currency" domain="[]" context="{'group_by': 'currency_id'}" groups="base.group_multi_currency"/>
+                        <filter string="Company" domain="[]" context="{'group_by': 'company_id'}" groups="base.group_multi_company"/>
+                    </search>
+                </search>
+            </field>
+        </record>
     </data>
 </openerp>

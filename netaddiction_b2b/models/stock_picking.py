@@ -22,6 +22,8 @@ class StockPicking(models.Model):
         names = [so.name for so in orders]
         
         term_id = int(orders[0].partner_id.payment_term_id.id)
+        payment_name = orders[0].payment_method_id.name
+        vat = orders[0].partner_invoice_id.vat
         
         pick_id = False
         delivery_barcode = False
@@ -96,7 +98,7 @@ class StockPicking(models.Model):
             'reply_to': 'shopping@multiplayer.com',
             'email_to': 'valeria.risoldi@netaddiction.it',
             'email_cc': 'matteo.piciucchi@netaddiction.it,riccardo.ioni@netaddiction.it,andrea.alunni@netaddiction.it',
-            'body_html': 'Emettere fattura accompagnatoria: <br/><a href="https://backoffice.netaddiction.it/web#id='+str(invoice.id)+'&view_type=form&model=account.invoice">Link Fattura</a>',
+            'body_html': 'Emettere fattura accompagnatoria: <br/><a href="https://backoffice.netaddiction.it/web#id='+str(invoice.id)+'&view_type=form&model=account.invoice">Link Fattura</a><br/>METODO PAGAMENTO <b>'+payment_name+'</b><br/>P.IVA:<b>'+vat+'</b>',
             'model':'account.invoice',
             'res_id':invoice.id
         }

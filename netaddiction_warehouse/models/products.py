@@ -34,7 +34,6 @@ class Products(models.Model):
             'res_id': self.id,
             'target': 'current',
         }
-    
 
     @api.multi
     def do_action_quantity(self):
@@ -45,15 +44,19 @@ class Products(models.Model):
         qty_limit = self.qty_limit
         qty_single = self.qty_single_order
         action = self.limit_action
-        #a questo punto faccio le operazioni sullo spegnimento
+        # a questo punto faccio le operazioni sullo spegnimento
         if self.qty_available_now <= qty_limit:
             if action == 'no_purchasable':
                 self.sudo().sale_ok = False
+                if qty_limit == 0:
+                    self.sudo().qty_single_order = 0
+                    self.sudo().limit_action = 'nothing'
             if action == 'deactive':
                 self.sudo().sale_ok = False
                 self.sudo().visible = False
-
-
+                if qty_limit == 0:
+                    self.sudo().qty_single_order = 0
+                    self.sudo().limit_action = 'nothing'
 
     @api.one 
     def _get_days_available(self):

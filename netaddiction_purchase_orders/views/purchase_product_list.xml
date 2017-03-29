@@ -5,6 +5,7 @@
             <xpath expr="." position="inside">
                 <link rel="stylesheet" href="/netaddiction_purchase_orders/static/src/css/product_list.css" />
                 <script type="text/javascript" src="/netaddiction_purchase_orders/static/src/js/widget.js"/>
+                <script type="text/javascript" src="/netaddiction_purchase_orders/static/src/js/backorder.js"/>
             </xpath>
         </template>
 
@@ -29,5 +30,12 @@
         </record>
 
         
+
+        <record id="netaddiction_purchase_backorder" model="ir.actions.client">
+            <field name="name">Backorder</field>
+            <field name="tag">netaddiction_purchase_orders.backorder</field>
+        </record>
+        
+        <menuitem id="purchase.menu_action_picking_tree_in_move" name="Backorder" action="netaddiction_purchase_backorder" parent="purchase.menu_purchase_control"/>
     </data>
 </openerp>
