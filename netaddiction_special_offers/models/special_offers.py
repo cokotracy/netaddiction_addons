@@ -563,6 +563,7 @@ class BonusOffer(models.Model):
                                     "order_id": pick.sale_id.id,
                                 }
                                 self.env["stock.move"].create(data_pick)
+                                print pick.sale_id.id
                                 self.env["sale.order.line"].create(data_order_line)
                         # va chiamata per far scalare la quantità del bonus
                         pick.action_confirm()
