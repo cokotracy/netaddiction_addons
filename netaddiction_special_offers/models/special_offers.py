@@ -286,9 +286,25 @@ class ShoppingCartOffer(models.Model):
 
     qty_limit_is_available = fields.Boolean(string="La quantità limite è quella disponibile", default=False)
 
+    pid_list = fields.Binary(string="Lista id prodotti")
+
     _sql_constraints = [
         ('name', 'unique(name)', 'Nome offerta deve essere unico!'),
     ]
+
+    @api.one
+    def get_pid_list(self):
+        ids = []
+        for product in self.products_list:
+            if product.active:
+                ids.append(product.product_id.id)
+
+        text = ','.join(str(x) for x in ids)
+        output = StringIO.StringIO()
+        output.write(text)
+
+        self.pid_list = base64.b64encode(output.getvalue().encode("utf8"))
+        output.close()
 
     @api.one
     @api.constrains('active')
@@ -563,7 +579,6 @@ class BonusOffer(models.Model):
                                     "order_id": pick.sale_id.id,
                                 }
                                 self.env["stock.move"].create(data_pick)
-                                print pick.sale_id.id
                                 self.env["sale.order.line"].create(data_order_line)
                         # va chiamata per far scalare la quantità del bonus
                         pick.action_confirm()

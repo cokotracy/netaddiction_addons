@@ -346,7 +346,14 @@
                                 </tree>
                     </field>
                   
-                 
+                  <group>
+                        <group>
+                            <button name="get_pid_list" type="object" string="Genere Lista Id Prodotti"/>
+                        </group>
+                        <group>
+                            <field name="pid_list"/>
+                        </group>
+                    </group>
                       
                        
                        
