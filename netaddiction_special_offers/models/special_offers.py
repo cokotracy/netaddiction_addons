@@ -641,6 +641,7 @@ class VoucherOffer(models.Model):
     start_cron_job = fields.Integer()
     products_list = fields.One2many('netaddiction.specialoffer.offer_voucher_line', 'offer_voucher_id', string='Lista prodotti', domain=['|', ('active', '=', False), ('active', '=', True)])
     customers_list = fields.Many2many('res.partner', string="Clienti")
+    one_for_customer = fields.Boolean(string='Uno per cliente', help="Fa si che il voucher sia utilizzabile una sola volta per cliente", default=False)
 
     _sql_constraints = [
         ('name', 'unique(name)', 'Nome offerta deve essere unico!'),

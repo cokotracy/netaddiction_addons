@@ -48,9 +48,11 @@ class OfferOrder(models.Model):
 
         if self.voucher_string and len(self.offers_voucher) == 0:
             offer = self.env['netaddiction.specialoffer.voucher'].search([("code", "=", self.voucher_string)])
-            used_voucher = [vaucher.id for vaucher in self.partner_id.vouchers_list] if self.partner_id.vouchers_list else []
-            if (offer.id in used_voucher):
-                raise VoucherAlreadyUsedException(voucher_string)
+            if offer.one_for_customer:
+                # controllo voucher non già usato se one for customer
+                used_voucher = [vaucher.id for vaucher in self.partner_id.vouchers_list] if self.partner_id.vouchers_list else []
+                if (offer.id in used_voucher):
+                    raise VoucherAlreadyUsedException(voucher_string)
 
             customer_check = offer and (not offer.one_user or (offer.associated_user.id == self.partner_id.id))
 

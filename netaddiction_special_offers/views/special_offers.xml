@@ -484,6 +484,7 @@
                                 <field name="author_id"/>
                                 <field name="company_id"/>
                                 <field name="code"/>
+                                <field name="one_for_customer"/>
                                 <field name="id"  attrs="{'invisible': True}"/>
                              
                             
