@@ -289,6 +289,34 @@ class StockPicking(models.Model):
         compute='_compute_barcode_image',
     )
 
+    @api.multi
+    def verify_quantity(self):
+        # verifica che la quantità dei prodotti di questa spedizione sia identica a quella dell'ordine
+        self.ensure_one()
+        if len(self.sale_id.picking_ids) == 1:
+            qty_pick = 0
+            qty_sale = 0
+            for line in self.pack_operation_ids:
+                qty_pick += line.product_qty
+            for line in self.sale_id.order_line:
+                if not line.is_delivery and not line.is_payment:
+                    qty_sale += line.product_uom_qty
+            if qty_pick > qty_sale:
+                return True
+        else:
+            qty_pick = 0
+            qty_sale = 0
+            for line in self.sale_id.order_line:
+                if not line.is_delivery and not line.is_payment:
+                    qty_sale += line.product_uom_qty
+            for pick in self.sale_id.picking_ids:
+                for line in pick.move_lines:
+                    qty_pick += line.product_qty
+            if qty_pick > qty_sale:
+                return True
+
+        return False
+
     @api.one
     def compute_b2b(self):
         if self.sale_id.is_b2b:

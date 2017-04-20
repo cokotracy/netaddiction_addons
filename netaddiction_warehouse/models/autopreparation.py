@@ -44,6 +44,10 @@ class autopreparation(models.TransientModel):
                 note.append('Mancano dati nell\'indirizzo di spedizione')
                 pay = False
 
+            if stock.verify_quantity():
+                error_stock.append(stock.id)
+                note.append('Una spedizione dell\'ordine ha un prodotto con quantità maggiore di quella acquistata dal cliente')
+                pay = False
             #if stock.sale_id.customer_comment:
             #    error_stock.append(stock.id)
             #    note.append('Commento Cliente')
