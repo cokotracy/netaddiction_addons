@@ -9,10 +9,9 @@ class Cron(models.Model):
 
     @api.model
     def run(self):
-        print 'ok'
         domain = [['product_wh_location_line_ids', '!=', False], ['company_id', '=', 1]]
         inventory_file = self.env['stock.quant'].reports_inventario(domain, None)
-        print inventory_file
+
         subject = 'Inventario mensile Multiplayer.com %s' % datetime.date.today()
         email_from = 'supporto@multiplayer.com'
         reply_to = 'matteo.piciucchi@netaddiction.it'
