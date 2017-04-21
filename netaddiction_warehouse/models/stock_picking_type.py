@@ -310,8 +310,9 @@ class StockPicking(models.Model):
                 if not line.is_delivery and not line.is_payment:
                     qty_sale += line.product_uom_qty
             for pick in self.sale_id.picking_ids:
-                for line in pick.move_lines:
-                    qty_pick += line.product_qty
+                if pick.picking_type_id.id == 2:
+                    for line in pick.move_lines:
+                        qty_pick += line.product_qty
             if qty_pick > qty_sale:
                 return True
 
