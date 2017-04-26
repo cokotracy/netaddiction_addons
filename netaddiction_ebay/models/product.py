@@ -859,7 +859,7 @@ class EbayProducts(models.Model):
                             total = 0.0
                             for transaction in transactions:
                                 transaction_array.append({'Item': {'ItemID': transaction["Item"]["ItemID"]}, 'TransactionID': transaction["TransactionID"]})
-                                total += float(transaction["TransactionPrice"]['value'])
+                                total += float(transaction["TransactionPrice"]['value']) * int(transaction["QuantityPurchased"])
 
                             total += 4.90
                             self._send_ebay_error_mail(" %s totale %s " % (transaction_array, total), '[EBAY] DEBUG nel get order')
