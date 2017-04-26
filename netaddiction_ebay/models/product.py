@@ -862,9 +862,9 @@ class EbayProducts(models.Model):
                                 total += float(transaction["TransactionPrice"]['value'])
 
                             total += 4.90
-                            self._send_ebay_error_mail(" %s " % transaction_array, '[EBAY] DEBUG nel get order')
+                            self._send_ebay_error_mail(" %s totale %s " % (transaction_array, total), '[EBAY] DEBUG nel get order')
                             try:
-                                api.execute('AddOrder', {'Order': {'TransactionArray': {'Transaction': transaction_array}, 'Total': {'#text': '%s' % total, '@attrs': {'currencyID': 'EUR'}}, 'CreatingUserRole': 'Seller', 'ShippingDetails': {'CODCost': '3.0'}, 'PaymentMethods': ['PayPal', 'COD'], 'ShippingServiceOptions': {'ShippingServicePriority': '1', 'ShippingService': 'IT_ExpressCourier', 'ShippingServiceCost': '4.9'}}})
+                                api.execute('AddOrder', {'Order': {'TransactionArray': {'Transaction': transaction_array}, 'Total': {'#text': '%s' % total, '@attrs': {'currencyID': 'EUR'}}, 'CreatingUserRole': 'Seller', 'ShippingDetails': {'CODCost': '3.0'}, 'PaymentMethods': ['PayPal', 'COD'], 'ShippingServiceOptions': {'ShippingServicePriority': '1', 'ShippingService': 'IT_ExpressCourier', 'ShippingServiceCost': '4.90', 'ShippingServiceAdditionalCost': '0.00', 'ShippingSurcharge': '0.00'}}})
                                 resp = api.response.dict()
                                 self._send_ebay_error_mail(" %s " % resp, '[EBAY] DEBUG ADD order')
 
