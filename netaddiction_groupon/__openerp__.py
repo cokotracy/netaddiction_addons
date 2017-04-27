@@ -11,6 +11,9 @@
     'depends': ['base', 'product', 'sale', 'purchase', 'mrp', 'stock', 'netaddiction_products', 'netaddiction_warehouse'],
     'data': [
         'data/groupon_location.xml',
+        'views/locations.xml',
+        'data/menu.xml',
+        'data/acl.xml'
     ],
     'installable': True,
     'application': True,

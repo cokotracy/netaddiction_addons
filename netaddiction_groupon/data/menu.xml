@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+
+        <menuitem id="menu_netaddiction_groupon"
+          name="Groupon"
+          sequence="32"
+        />
+
+        <record model="ir.actions.act_url" id="netaddiction_groupon_app">
+            <field name="name">Mobile App</field>
+            <field name="url">/show</field>
+            <field name="target">self</field>
+        </record>
+
+        <menuitem id="menu_netaddiction_groupon_reservations"
+          name="Riserva Prodotti"
+          sequence="10"
+          action="netaddiction_groupon_app"
+          parent="menu_netaddiction_groupon"
+        />
+    </data>
+</openerp>

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+        <record id="product_normal_form_view_groupon_locations" model="ir.ui.view">
+            <field name="name">netaddiction.product.groupon.form.locations</field>
+            <field name="model">product.product</field>
+            <field name="priority" eval="30"/>
+            <field name="inherit_id" ref="netaddiction_warehouse.product_normal_form_view_locations"/>
+            <field name="arch" type="xml">
+                <group name="locations" position="after">
+                    <group name="groupon_locations" string="Allocazioni Groupon">
+                        <field name="groupon_wh_location_line_ids" readonly="1" nolabel="1">
+                            <tree>
+                                <field name="wh_location_id"/>
+                                <field name="qty"/>
+                            </tree>
+                        </field>
+                    </group>
+                </group>
+            </field>
+        </record>
+    </data>
+</openerp>

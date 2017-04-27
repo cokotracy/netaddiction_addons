@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data noupdate="0">
+        <record model="ir.module.category" id="netaddiction_groupon_group">
+            <field name="name">Netaddiction Groupon</field>
+            <field name="description">Quelli che controllano Groupon</field>
+            <field name="sequence">99</field>
+        </record>
+
+        <record id="netaddiction_groupon_manager" model="res.groups">
+            <field name="name">Utente Manager</field>
+            <field name="category_id" ref="netaddiction_groupon_group"/>
+            <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+        </record>
+
+        <record id="menu_netaddiction_groupon" model="ir.ui.menu">
+            <field name="groups_id" eval="[(4, ref('netaddiction_groupon_manager'))]"/>
+        </record>
+        <record id="menu_netaddiction_groupon_reservations" model="ir.ui.menu">
+            <field name="groups_id" eval="[(4, ref('netaddiction_groupon_manager'))]"/>
+        </record>
+
+        <record id="netaddiction_groupon_locations_access" model="ir.model.access">
+            <field name="name">Groupon Locations</field>
+            <field name="model_id" search="[('model','=','groupon.wh.locations')]" model="ir.model"/>
+            <field name="group_id" ref="netaddiction_groupon_manager"/>
+            <field name="perm_read" eval="1"/>
+            <field name="perm_create" eval="1"/>
+            <field name="perm_write" eval="1"/>
+            <field name="perm_unlink" eval="1"/>
+        </record>
+        <record id="netaddiction_groupon_locations_line_access" model="ir.model.access">
+            <field name="name">Groupon Locations Line</field>
+            <field name="model_id" search="[('model','=','groupon.wh.locations.line')]" model="ir.model"/>
+            <field name="group_id" ref="netaddiction_groupon_manager"/>
+            <field name="perm_read" eval="1"/>
+            <field name="perm_create" eval="1"/>
+            <field name="perm_write" eval="1"/>
+            <field name="perm_unlink" eval="1"/>
+        </record>
+    </data>
+</openerp>
