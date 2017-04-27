@@ -7,16 +7,17 @@
           sequence="32"
         />
 
-        <record model="ir.actions.act_url" id="netaddiction_groupon_app">
-            <field name="name">Mobile App</field>
-            <field name="url">/show</field>
-            <field name="target">self</field>
+        <record model="ir.actions.act_window" id="netaddiction_groupon_reserve">
+            <field name="name">Groupon Riserva Prodotti</field>
+            <field name="res_model">groupon.reserve.product</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
         </record>
 
         <menuitem id="menu_netaddiction_groupon_reservations"
           name="Riserva Prodotti"
           sequence="10"
-          action="netaddiction_groupon_app"
+          action="netaddiction_groupon_reserve"
           parent="menu_netaddiction_groupon"
         />
     </data>
