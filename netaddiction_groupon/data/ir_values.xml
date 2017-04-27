@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data noupdate="1">
+        <!--Crea la funzionalità ed il gruppo associato-->
+        <record id="groupon_customer_id" model="ir.values">
+            <field name="name">groupon_customer_id</field>
+            <field name="model">groupon.config</field>
+        </record>
+    </data>
+</openerp>

@@ -13,7 +13,9 @@
         'data/groupon_location.xml',
         'views/locations.xml',
         'data/menu.xml',
-        'data/acl.xml'
+        'data/acl.xml',
+        'data/ir_values.xml',
+        'views/config.xml',
     ],
     'installable': True,
     'application': True,
