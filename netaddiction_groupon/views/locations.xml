@@ -30,9 +30,24 @@
                             <field name="product_id"/>
                             <field name="qty_available" readonly="1"/>
                             <field name="qty_to_reserve"/>
+                            <field name="groupon_price"/>
                         </group>
                     </sheet>
                 </form>
+            </field>
+        </record>
+
+        <record id="view_groupon_reserve_product_tree" model="ir.ui.view">
+            <field name="name">Groupon riserva prodotto Tree</field>
+            <field name="model">groupon.reserve.product</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="product_id"/>
+                    <field name="qty_to_reserve"/>
+                    <field name="groupon_price"/>
+                    <field name="create_date"/>
+                    <field name="create_uid"/>
+                </tree>
             </field>
         </record>
     </data>

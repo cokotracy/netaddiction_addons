@@ -11,13 +11,27 @@
             <field name="name">Groupon Riserva Prodotti</field>
             <field name="res_model">groupon.reserve.product</field>
             <field name="view_type">form</field>
-            <field name="view_mode">form</field>
+            <field name="view_mode">form,tree</field>
         </record>
 
         <menuitem id="menu_netaddiction_groupon_reservations"
           name="Riserva Prodotti"
           sequence="10"
           action="netaddiction_groupon_reserve"
+          parent="menu_netaddiction_groupon"
+        />
+
+        <record model="ir.actions.act_window" id="netaddiction_groupon_warehouse">
+            <field name="name">Groupon Magazzino</field>
+            <field name="res_model">stock.quant</field>
+            <field name="view_id" ref="stock.view_stock_quant_tree"/>
+            <field name="domain" eval="[('location_id', '=', ref('netaddiction_groupon.netaddiction_stock_groupon'))]"/>
+        </record>
+
+        <menuitem id="menu_netaddiction_groupon_warehouse"
+          name="Groupon Magazzino"
+          sequence="19"
+          action="netaddiction_groupon_warehouse"
           parent="menu_netaddiction_groupon"
         />
     </data>

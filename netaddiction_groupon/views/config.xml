@@ -38,6 +38,6 @@
         </record>
 
         <menuitem id="netaddiction_groupon_config_menu" name="Configurazione"
-                      parent="menu_netaddiction_groupon" action="netaddiction_groupon_config_action"/>
+                      parent="menu_netaddiction_groupon" action="netaddiction_groupon_config_action" sequence="99"/>
     </data>
 </openerp>

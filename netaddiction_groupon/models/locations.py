@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from openerp import models, fields, api
 from openerp.exceptions import except_orm
+import datetime
 
 class GrouponLocations(models.Model):
     _name = 'groupon.wh.locations'
@@ -29,45 +30,56 @@ class GrouponProducts(models.Model):
         inverse_name='product_id',
         string='Allocazioni Groupon')
 
-class GrouponReserve(models.TransientModel):
+class GrouponReserve(models.Model):
 
     _name = "groupon.reserve.product"
 
     product_id = fields.Many2one(string="Prodotto", comodel_name="product.product")
-    qty_available = fields.Integer(string="Qtà in magazzino")
+    qty_available = fields.Integer(string="Qtà disponibile")
     qty_to_reserve = fields.Integer(string="Quantità da riservare")
+    groupon_price = fields.Float(string="Prezzo di vendita a Groupon")
 
     @api.onchange('product_id')
     def _get_products_data(self):
-        self.qty_available = self.product_id.qty_available
+        self.qty_available = self.product_id.qty_available_now
 
     @api.model
     def create(self, values):
         product_id = values['product_id']
         qty_to_reserve = values['qty_to_reserve']
+        groupon_price = values['groupon_price']
+
+        if not product_id:
+            raise except_orm('Errore grave', 'Non hai scelto il prodotto da riservare')
+
         product = self.env['product.product'].browse(product_id)
 
         groupon_warehouse = self.env.ref('netaddiction_groupon.netaddiction_stock_groupon').id
 
-        if qty_to_reserve > product.qty_available:
+        if qty_to_reserve > product.qty_available_now:
             raise except_orm('Errore grave', 'La quantità da riservare non può essere maggiore di quella disponibile')
 
-        if qty_to_reserve < 0:
+        if qty_to_reserve <= 0:
             raise except_orm('Errore gravissimo', 'Dai, serio, mi stai prendendo per i fondelli. Come pretendi di spostare una quantità negativa?')
+
+        if groupon_price <= 0:
+            raise except_orm("Errore gravissimo", "Non hai assegnato un prezzo di vendita a Groupon")
 
         # trova le locations da cui spostare
         # crea le nuove location di groupon
         # decrementa le quantità
         locations = {}
         for location in product.product_wh_location_line_ids:
-            if qty_to_reserve <= location.qty:
-                locations[location] = qty_to_reserve
-            else:
-                locations[location] = location.qty
-                qty_to_reserve -= location.qty
+            if qty_to_reserve > 0:
+                if qty_to_reserve <= location.qty:
+                    locations[location] = qty_to_reserve
+                    qty_to_reserve = 0
+                else:
+                    locations[location] = location.qty
+                    qty_to_reserve -= location.qty
 
         for location in locations:
-            # location.decrease(locations[location])
+            location.decrease(locations[location])
             # cerca se esiste la locazione speculare per il magazzino Groupon
             groupon_location = self.env['groupon.wh.locations'].search([('barcode', '=', location.wh_location_id.barcode)])
             if len(groupon_location) == 0:
@@ -78,11 +90,36 @@ class GrouponReserve(models.TransientModel):
                     'stock_location_id': groupon_warehouse
                 }
                 groupon_new_location = self.env['groupon.wh.locations'].create(attr)
-                print groupon_new_location
-            print groupon_location
-            # self.env['groupon.wh.locations.line'].allocate(product_id, locations[location], new_loc_id)
+                new_loc_id = groupon_new_location.id
+            else:
+                new_loc_id = groupon_location.id
+
+            self.env['groupon.wh.locations.line'].allocate(product_id, locations[location], new_loc_id)
+
         # sposta il prodotto
+        type_groupon_out = self.env.ref('netaddiction_groupon.groupon_type_out').id
+        wh_stock = self.env.ref('stock.stock_location_stock').id
+        attr = {
+            'picking_type_id': type_groupon_out,
+            'move_type': 'one',
+            'priority': '1',
+            'location_id': wh_stock,
+            'location_dest_id': groupon_warehouse,
+            'move_lines': [(0, 0, {'product_id': product_id, 'product_uom_qty': int(values['qty_to_reserve']),
+                'state': 'draft',
+                'product_uom': product.uom_id.id,
+                'name': 'WH/Stock > Magazzino Groupon',
+                'picking_type_id': type_groupon_out,
+                'origin': 'Groupon %s' % (datetime.date.today(),)})],
+        }
+        pick = self.env['stock.picking'].sudo().create(attr)
+        pick.sudo().action_confirm()
+        pick.sudo().force_assign()
+        for line in pick.pack_operation_product_ids:
+            line.sudo().write({'qty_done': line.product_qty})
+        pick.sudo().do_transfer()
 
         # controlla i limiti del prodotto
+        product.do_action_quantity()
 
-        return self
+        return super(GrouponReserve, self).create(values)
