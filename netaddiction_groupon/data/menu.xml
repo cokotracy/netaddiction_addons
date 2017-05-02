@@ -21,6 +21,20 @@
           parent="menu_netaddiction_groupon"
         />
 
+        <record model="ir.actions.act_window" id="netaddiction_groupon_return">
+            <field name="name">Groupon Ritorno Prodotti</field>
+            <field name="res_model">groupon.return.product</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form,tree</field>
+        </record>
+
+        <menuitem id="menu_netaddiction_groupon_return"
+          name="Ritorno Prodotti"
+          sequence="11"
+          action="netaddiction_groupon_return"
+          parent="menu_netaddiction_groupon"
+        />
+
         <record model="ir.actions.act_window" id="netaddiction_groupon_warehouse">
             <field name="name">Groupon Magazzino</field>
             <field name="res_model">stock.quant</field>
