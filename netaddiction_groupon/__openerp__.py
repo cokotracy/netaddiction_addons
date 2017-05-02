@@ -16,6 +16,7 @@
         'data/acl.xml',
         'data/ir_values.xml',
         'views/config.xml',
+        'views/orders.xml',
     ],
     'installable': True,
     'application': True,

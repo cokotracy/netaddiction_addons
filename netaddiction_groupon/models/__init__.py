@@ -1,2 +1,2 @@
 # -*- coding: utf-8 -*-
-import locations, config
+import locations, config, orders
