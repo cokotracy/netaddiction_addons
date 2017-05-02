@@ -17,10 +17,14 @@
             <field name="model">netaddiction.groupon.sale.order</field>
             <field name="arch" type="xml">
                 <tree name="groupon_order list">
+                    <field name="name"/>
+                    <field name="product_id"/>
+                    <field name="partner_shipping_id"/>
                     <field name="groupon_number"/>
                     <field name="groupon_order_date"/>
                     <field name="groupon_cost"/>
                     <field name="groupon_sell_price"/>
+                    <field name="state"/>
                 </tree>
             </field>
         </record>
@@ -31,12 +35,12 @@
             <field name="arch" type="xml">
                 <form string="groupon_order Form">
                      <header>
-                        <field name="state" widget="statusbar" statusbar_visible="draft,sale,done"/>
+                        <field name="state" widget="statusbar" statusbar_visible="draft,sent"/>
                     </header>
                     <sheet>
                    
-                        <field name="id"/>
-                        <group string="Ordine Groupon" name="so_cat" colspan="4">
+                        <h1><field name="name"/></h1>
+                        <group name="so_cat" colspan="4">
                             <group name="loc_left" class="oe_left" col="2">
                                 <field name="partner_shipping_id"/>
                                 <field name="partner_invoice_id"/>
@@ -54,10 +58,13 @@
                                 
                             </group>
                         </group>
-                        <div>
-                        <field name="picking_ids"/>
-                        <field name="customer_comment"/>
-                        </div>
+                        <group string="Spedizioni" name="shipping_ids">
+                            <field name="picking_ids" nolabel="1" readonly="1"/>
+                        </group>
+                        <group string="Commento Cliente" name="customer_comment">
+                            <field name="customer_comment" nolabel="1" readonly="1"/>
+                        </group>
+                       
                      </sheet>
                 </form>
             </field>

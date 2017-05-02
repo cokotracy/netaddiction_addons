@@ -13,7 +13,9 @@ class GrouponOrder(models.Model):
     state = fields.Selection([
         ('draft', 'Nuovo'),
         ('sent', 'Completato'),
-    ], string='Stato', readonly=True, copy=False, index=True)
+    ], string='Stato', readonly=True, copy=False, index=True, default="draft")
+
+    name = fields.Char(string="nome", compute="_get_order_name")
 
     groupon_number = fields.Char(string="Numero Ordine Groupon")
 
@@ -25,15 +27,19 @@ class GrouponOrder(models.Model):
 
     quantity = fields.Integer(string="Quantità")
 
-    partner_shipping_id = fields.Many2one('res.patner', 'Indirizzo spedizione')
+    partner_shipping_id = fields.Many2one('res.partner', 'Indirizzo spedizione')
 
-    partner_invoice_id = fields.Many2one('res.patner', 'Indirizzo fatturazione')
+    partner_invoice_id = fields.Many2one('res.partner', 'Indirizzo fatturazione')
 
     groupon_cost = fields.Float(string="Prezzo di acquisto Groupon")
 
     groupon_sell_price = fields.Float(string="Prezzo di vendita Groupon")
 
     picking_ids = fields.Many2many('stock.picking', string='Spedizioni')
+
+    @api.one
+    def _get_order_name(self):
+        self.name = 'GRP%05d' % (self.id)
 
 
 class GrouponRegister(models.TransientModel):
