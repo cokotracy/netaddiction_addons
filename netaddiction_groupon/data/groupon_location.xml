@@ -23,6 +23,13 @@
             <field name="number_increment">1</field>
             <field name="number_next_actual">1</field>
         </record>
+        <record model="ir.sequence" id="groupon_customer_sequence_out">
+            <field name="name">Cliente Groupon in uscita</field>
+            <field name="prefix">GROUPON/CUSTOMER/OUT/</field>
+            <field name="padding">5</field>
+            <field name="number_increment">1</field>
+            <field name="number_next_actual">1</field>
+        </record>
 
         <record model="stock.picking.type" id="groupon_type_out">
             <field name="name">Groupon in uscita</field>
@@ -36,6 +43,13 @@
             <field name="sequence_id" ref="groupon_sequence_in"/>
             <field name="code">incoming</field>
             <field name="default_location_dest_id" ref="stock.stock_location_stock"/>
+            <field name="default_location_src_id" ref="netaddiction_stock_groupon"/>
+        </record>
+        <record model="stock.picking.type" id="groupon_customer_type_out">
+            <field name="name">Cliente Groupon in uscita</field>
+            <field name="sequence_id" ref="groupon_customer_sequence_out"/>
+            <field name="code">outgoing</field>
+            <field name="default_location_dest_id" ref="stock.stock_location_customers"/>
             <field name="default_location_src_id" ref="netaddiction_stock_groupon"/>
         </record>
     </data>

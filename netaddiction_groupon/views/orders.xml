@@ -65,7 +65,7 @@
 
         <menuitem id="menu_netaddiction_sales_Groupon_Order"
           name="Ordini Groupon"
-          parent="menu_netaddiction_groupon"
+          parent="menu_netaddiction_groupon_super"
           sequence="20"
           action= "netaddiction_groupon_order_base"
         />
@@ -115,7 +115,7 @@
 
         <menuitem id="menu_netaddiction_sales_Groupon_Register"
           name="Registra Groupon"
-          parent="menu_netaddiction_groupon"
+          parent="menu_netaddiction_groupon_super"
           sequence="29"
           action= "action_netaddiction_Groupon_Register_menu"
         />

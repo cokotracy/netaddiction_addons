@@ -7,6 +7,13 @@
           sequence="32"
         />
 
+        <menuitem id="menu_netaddiction_groupon_super"
+          name="Groupon"
+          sequence="10"
+          action="netaddiction_groupon_order_base"
+          parent="menu_netaddiction_groupon"
+        />
+        
         <record model="ir.actions.act_window" id="netaddiction_groupon_reserve">
             <field name="name">Groupon Riserva Prodotti</field>
             <field name="res_model">groupon.reserve.product</field>
@@ -18,7 +25,7 @@
           name="Riserva Prodotti"
           sequence="10"
           action="netaddiction_groupon_reserve"
-          parent="menu_netaddiction_groupon"
+          parent="menu_netaddiction_groupon_super"
         />
 
         <record model="ir.actions.act_window" id="netaddiction_groupon_return">
@@ -32,7 +39,7 @@
           name="Ritorno Prodotti"
           sequence="11"
           action="netaddiction_groupon_return"
-          parent="menu_netaddiction_groupon"
+          parent="menu_netaddiction_groupon_super"
         />
 
         <record model="ir.actions.act_window" id="netaddiction_groupon_warehouse">
@@ -44,9 +51,9 @@
 
         <menuitem id="menu_netaddiction_groupon_warehouse"
           name="Groupon Magazzino"
-          sequence="19"
+          sequence="89"
           action="netaddiction_groupon_warehouse"
-          parent="menu_netaddiction_groupon"
+          parent="menu_netaddiction_groupon_super"
         />
     </data>
 </openerp>
