@@ -41,6 +41,14 @@ class GrouponOrder(models.Model):
     def _get_order_name(self):
         self.name = 'GRP%05d' % (self.id)
 
+    @api.one
+    def unlink(self):
+        """Cancello solo gli ordini in draft."""
+        if self.state == "draft":
+            for pick in self.picking_ids:
+                pick.unlink()
+            super(GrouponOrder, self).unlink()
+
 
 class GrouponRegister(models.TransientModel):
     _name = "netaddiction.groupon.register"
