@@ -46,7 +46,7 @@
                                 <field name="partner_invoice_id"/>
                                 <field name="product_id"/>
                                 <field name="quantity"/>
-                                
+                                <field name="wave_id"/>
                              
                             
                             </group>
@@ -125,16 +125,5 @@
             <field name="view_mode">form</field>
             <field name="target">inline</field>
         </record>
-
-
-        <menuitem id="menu_netaddiction_sales_Groupon_Register"
-          name="Registra Groupon"
-          parent="menu_netaddiction_groupon_super"
-          sequence="29"
-          action= "action_netaddiction_Groupon_Register_menu"
-        />
-
-
-
     </data>
 </openerp>

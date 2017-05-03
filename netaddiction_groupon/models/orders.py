@@ -36,6 +36,8 @@ class GrouponOrder(models.Model):
 
     picking_ids = fields.Many2many('stock.picking', string='Spedizioni')
 
+    wave_id = fields.Many2one(comodel_name="groupon.pickup.wave", string="Lista Prelievo")
+
     _sql_constraints = [
         ('groupon_number_unique', 'UNIQUE(groupon_number)', 'Numero ordine groupon già esistente!'),
     ]
