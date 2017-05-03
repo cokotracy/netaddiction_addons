@@ -155,7 +155,6 @@ class GrouponReturn(models.Model):
             qty += res.qty
         return qty
 
-    # TODO: create
     @api.model
     def create(self, values):
         product_id = values['product_id']

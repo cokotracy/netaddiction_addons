@@ -70,9 +70,6 @@
                                 </tree>
                             </field>
                         </group>
-                        <group string="Commento Cliente" name="customer_comment">
-                            <field name="customer_comment" nolabel="1" readonly="1"/>
-                        </group>
                        
                      </sheet>
                 </form>
@@ -102,6 +99,12 @@
                             <field name="csv_file" />
 
                         </group>
+                        
+
+                        <group name="result_text">
+                            <field name="return_text" readonly="1" />
+                        </group>
+
                         <group>
                             <button string="Registra"
                                     type="object"

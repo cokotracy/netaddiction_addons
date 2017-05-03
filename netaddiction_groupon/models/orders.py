@@ -18,11 +18,9 @@ class GrouponOrder(models.Model):
 
     name = fields.Char(string="nome", compute="_get_order_name")
 
-    groupon_number = fields.Char(string="Numero Ordine Groupon")
+    groupon_number = fields.Char(string="Numero Ordine Groupon", required=True)
 
     groupon_order_date = fields.Datetime(string="Data ordine su groupon")
-
-    customer_comment = fields.Text(string="Commento Cliente")
 
     product_id = fields.Many2one('product.product', 'Prodotto')
 
@@ -37,6 +35,10 @@ class GrouponOrder(models.Model):
     groupon_sell_price = fields.Float(string="Prezzo di vendita Groupon")
 
     picking_ids = fields.Many2many('stock.picking', string='Spedizioni')
+
+    _sql_constraints = [
+        ('groupon_number_unique', 'UNIQUE(groupon_number)', 'Numero ordine groupon già esistente!'),
+    ]
 
     @api.one
     def _get_order_name(self):
@@ -53,6 +55,7 @@ class GrouponOrder(models.Model):
 
     @api.multi
     def create_shipping(self):
+        # TODO: contorllare quantità e semmai mettere in problema
         groupon_shipping_type = self.env.ref('netaddiction_groupon.groupon_customer_type_out').id
         groupon_warehouse = self.env.ref('netaddiction_groupon.netaddiction_stock_groupon').id
         customer_wh = self.env.ref('stock.stock_location_customers').id
@@ -93,25 +96,29 @@ class GrouponRegister(models.TransientModel):
             decodedIO = io.BytesIO(decoded64)
             reader = csv.DictReader(decodedIO, delimiter=',')
             groupon_user_id = self.env['ir.values'].search([("name", "=", "groupon_customer_id"), ("model", "=", "groupon.config")]).value
-
+            warning_list = []
+            counter = 0
+            total_rows = 0
             for line in reader:
-                print line
-
-            return 1
+                total_rows += 1
+                try:
+                    self.create_addresses_and_order(groupon_user_id, line)
+                    counter += 1
+                except Exception as e:
+                    warning_list.append((e, line))
 
             if warning_list:
-                self.return_text = "non sono stati trovati pagamenti in contrassegno per i seguenti ordini nel file: %s" % warning_list
+                self.return_text = "IMPORTATI SOLO %s su %s ATTENZIONE PROBLEMI CON QUESTI ORDINI: %s" % (counter, total_rows, warning_list)
             else:
-                self.return_text = "tutto ok!"
+                self.return_text = "tutto ok caricati %s ordini" % counter
 
     def create_addresses_and_order(self, groupon_user_id, line):
-        return 1
         # creare user e indirizzo che sega
         italy_id = self.env["res.country"].search([('code', '=', 'IT')])[0]
         ship_address_street, ship_address_number = self.split_addresses(line["shipment_address_street"], line["shipment_address_street_2"])
         bill_address_street, bill_address_number = self.split_addresses(line["billing_address_street"], '')
 
-        company_id = self.env["res.company"].search([("name", "=", "Multiplayer.com")])[0].id
+        company_id = self.env.user.company_id.id
         user_shipping = self.env["res.partner"].create({
             'name': line["shipment_address_name"],
             'company_id': company_id,
@@ -140,13 +147,19 @@ class GrouponRegister(models.TransientModel):
             'customer': True,
             'type': 'invoice',
             'notify_email': 'none'})
+        product = self.env["product.product"].search([("barcode", "=", line["merchant_sku_item"])])
+        if not product:
+            raise Exception("Prodotto %s" % line["merchant_sku_item"])
         order = self.env["netaddiction.groupon.sale.order"].create({
             'partner_invoice_id': user_billing.id,
             'partner_shipping_id': user_shipping.id,
             'state': 'draft',
-            'groupon_number': line[''],
-            'groupon_order_date': line[''],
-            'customer_comment': line['']})
+            'groupon_number': line['groupon_number'],
+            'groupon_order_date': line['order_date'],
+            'quantity': line['quantity_requested'],
+            'groupon_cost': line["groupon_cost"],
+            'groupon_sell_price': line["sell_price"],
+            'product_id': product.id})
 
     def split_addresses(self, street1, street2):
         address_number = street2
@@ -158,4 +171,3 @@ class GrouponRegister(models.TransientModel):
                 # shipping_dict["street"].translate(None, parsed[-1])
                 address_street = re.sub(parsed[-1], '', address_street)
         return address_street, address_number
-
