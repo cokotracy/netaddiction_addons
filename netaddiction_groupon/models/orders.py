@@ -4,6 +4,7 @@ import io
 import csv
 import re
 from openerp import models, fields, api
+import datetime
 
 
 class GrouponOrder(models.Model):
@@ -44,11 +45,39 @@ class GrouponOrder(models.Model):
     @api.one
     def unlink(self):
         """Cancello solo gli ordini in draft."""
+        # TODO: sistemare le picking: annullarle e valutare uno stato cancel
         if self.state == "draft":
             for pick in self.picking_ids:
                 pick.unlink()
             super(GrouponOrder, self).unlink()
 
+    @api.multi
+    def create_shipping(self):
+        groupon_shipping_type = self.env.ref('netaddiction_groupon.groupon_customer_type_out').id
+        groupon_warehouse = self.env.ref('netaddiction_groupon.netaddiction_stock_groupon').id
+        customer_wh = self.env.ref('stock.stock_location_customers').id
+        for order in self:
+            if len(order.picking_ids) == 0:
+                # creare la spedizione
+                attr = {
+                    'picking_type_id': groupon_shipping_type,
+                    'move_type': 'one',
+                    'priority': '1',
+                    'location_id': groupon_warehouse,
+                    'location_dest_id': customer_wh,
+                    'partner_id': order.partner_shipping_id.id,
+                    'move_lines': [(0, 0, {'product_id': order.product_id.id, 'product_uom_qty': int(order.quantity),
+                        'state': 'draft',
+                        'product_uom': order.product_id.uom_id.id,
+                        'name': 'Magazzino Groupon > Punto di Stoccaggio Partner/Clienti',
+                        'picking_type_id': groupon_shipping_type,
+                        'origin': '%s' % (order.name,)})],
+                }
+                pick = self.env['stock.picking'].sudo().create(attr)
+                pick.sudo().action_confirm()
+                pick.sudo().force_assign()
+                order.picking_ids = [(4, pick.id, False)]
+        return True
 
 class GrouponRegister(models.TransientModel):
     _name = "netaddiction.groupon.register"

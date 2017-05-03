@@ -59,7 +59,16 @@
                             </group>
                         </group>
                         <group string="Spedizioni" name="shipping_ids">
-                            <field name="picking_ids" nolabel="1" readonly="1"/>
+                            <field name="picking_ids" nolabel="1" readonly="1">
+                                <tree>
+                                    <field name="name"/>
+                                    <field name="min_date"/>
+                                    <field name="picking_type_id"/>
+                                    <field name="state"/>
+                                    <field name="carrier_id"/>
+                                    <field name="delivery_barcode"/>
+                                </tree>
+                            </field>
                         </group>
                         <group string="Commento Cliente" name="customer_comment">
                             <field name="customer_comment" nolabel="1" readonly="1"/>
@@ -88,22 +97,17 @@
                 <form string="Inserisci file"
                       class="oe_form_configuration">
                     <sheet>
-                        <div>
+
+                        <group string="Registra Ordini">
+                            <field name="csv_file" />
+
+                        </group>
+                        <group>
                             <button string="Registra"
                                     type="object"
                                     name="execute"
                                     class="oe_highlight"
                                     />
-                            
-                            <button string="Annulla"
-                                    type="object"
-                                    name="cancel"
-                                    class="oe_link" />
-                        </div>
-
-                        <group string="Registra Ordini">
-                            <field name="csv_file" />
-
                         </group>
 
                     </sheet>
