@@ -91,6 +91,7 @@ class GrouponRegister(models.TransientModel):
     @api.multi
     def execute(self):
         """Legge il csv e crea gli ordini di groupon."""
+        self.ensure_one()
         if self.csv_file:
             decoded64 = base64.b64decode(self.csv_file)
             decodedIO = io.BytesIO(decoded64)
@@ -105,12 +106,18 @@ class GrouponRegister(models.TransientModel):
                     self.create_addresses_and_order(groupon_user_id, line)
                     counter += 1
                 except Exception as e:
-                    warning_list.append((e, line))
+                    if type(e).__name__ == 'IntegrityError':
+                        warning_list.append('Ordine Groupon numero %s già esistente' % line['groupon_number'])
+                    else:
+                        warning_list.append((e, line['groupon_number']))
 
             if warning_list:
-                self.return_text = "IMPORTATI SOLO %s su %s ATTENZIONE PROBLEMI CON QUESTI ORDINI: %s" % (counter, total_rows, warning_list)
+                #self.return_text = "IMPORTATI SOLO %s su %s ATTENZIONE PROBLEMI CON QUESTI ORDINI: " % (counter, total_rows, )
+                pass
             else:
-                self.return_text = "tutto ok caricati %s ordini" % counter
+                #self.return_text = "tutto ok caricati %s ordini" % counter
+                pass
+
 
     def create_addresses_and_order(self, groupon_user_id, line):
         # creare user e indirizzo che sega
