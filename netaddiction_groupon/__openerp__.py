@@ -18,7 +18,8 @@
         'views/config.xml',
         'views/orders.xml',
         'views/assets.xml',
-        'views/wave.xml'
+        'views/wave.xml',
+        'templates/groupon.xml'
     ],
     'installable': True,
     'application': True,
