@@ -61,9 +61,6 @@
                         <group string="Spedizioni" name="shipping_ids">
                             <field name="picking_ids" nolabel="1" readonly="1"/>
                         </group>
-                        <group string="Commento Cliente" name="customer_comment">
-                            <field name="customer_comment" nolabel="1" readonly="1"/>
-                        </group>
                        
                      </sheet>
                 </form>
@@ -103,7 +100,7 @@
 
                         <group string="Registra Ordini">
                             <field name="csv_file" />
-
+                            <field name="return_text" readonly="1" />
                         </group>
 
                     </sheet>
