@@ -12,14 +12,14 @@
     'data': [
         'data/groupon_location.xml',
         'views/locations.xml',
-        'data/menu.xml',
-        'data/acl.xml',
         'data/ir_values.xml',
         'views/config.xml',
         'views/orders.xml',
         'views/assets.xml',
         'views/wave.xml',
-        'templates/groupon.xml'
+        'templates/groupon.xml',
+        'data/menu.xml',
+        'data/acl.xml',
     ],
     'installable': True,
     'application': True,

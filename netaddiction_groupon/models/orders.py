@@ -16,6 +16,8 @@ class GrouponOrder(models.Model):
     state = fields.Selection([
         ('draft', 'Nuovo'),
         ('sent', 'Completato'),
+        ('problem', 'Problema'),
+        ('cancel', 'Annullato'),
     ], string='Stato', readonly=True, copy=False, index=True, default="draft")
 
     name = fields.Char(string="nome", compute="_get_order_name")
@@ -47,17 +49,16 @@ class GrouponOrder(models.Model):
     @api.one
     @api.constrains('groupon_number')
     def _check_groupon_number(self):
-        if len(self.search([('groupon_number', '=', self.groupon_number)])) > 1:
+        if len(self.search([('groupon_number', '=', self.groupon_number), ('state', '!=', 'cancel')])) > 1:
                 raise ValidationError("Esiste già un ordine groupon con questo numero ordine %s" % self.groupon_number)
 
     @api.one
     def unlink(self):
         """Cancello solo gli ordini in draft."""
-        # TODO: sistemare le picking: annullarle e valutare uno stato cancel
         if self.state == "draft":
             for pick in self.picking_ids:
-                pick.unlink()
-            super(GrouponOrder, self).unlink()
+                pick.action_cancel()
+            self.state = "cancel"
 
     @api.multi
     def create_shipping(self):
