@@ -98,6 +98,7 @@ class GrouponRegister(models.TransientModel):
     @api.multi
     def execute(self):
         """Legge il csv e crea gli ordini di groupon."""
+        self.ensure_one()
         if self.csv_file:
             decoded64 = base64.b64decode(self.csv_file)
             decodedIO = io.BytesIO(decoded64)
@@ -116,10 +117,9 @@ class GrouponRegister(models.TransientModel):
 
             if warning_list:
                 raise Warning("PROBLEMA: IMPORTATI SOLO %s su %s" % (counter, total_rows), "ATTENZIONE PROBLEMI CON QUESTI ORDINI: %s" % warning_list)
-                
             else:
                 raise Warning("TUTTO OK caricati %s ordini" % counter)
-                
+
 
     def create_addresses_and_order(self, groupon_user_id, line):
         # creare user e indirizzo che sega
