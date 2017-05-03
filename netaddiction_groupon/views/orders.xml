@@ -101,9 +101,6 @@
                         </group>
                         
 
-                        <group name="result_text">
-                            <field name="return_text" readonly="1" />
-                        </group>
 
                         <group>
                             <button string="Registra"

@@ -11,11 +11,19 @@ openerp.netaddiction_groupon = function(instance, local) {
                     self.$buttons.find('.oe_button_create_list_pickup').on('click', self.proxy('create_pickup'));
                     self.$buttons.find('.oe_button_import_groupon').on('click', self.proxy('import_groupon'));
                 }
+                if(self.model == 'groupon.reserve.product' || self.model == 'groupon.return.product' || self.model == 'groupon.pickup.wave'){
+                    self.$buttons.find('.o_list_button_import').remove();
+                }
             }
         },
         create_pickup: function(){
+            var self = this;
             return new instance.web.Model('groupon.pickup.wave').call('create_wave').then(function(results){
-                console.log(results)
+                if(results == 'ok'){
+                    self.do_notify('Lista creata con successo');
+                }else{
+                    self.do_warn('Errore creazione lista', results)
+                }
             });
         },
         import_groupon: function(){

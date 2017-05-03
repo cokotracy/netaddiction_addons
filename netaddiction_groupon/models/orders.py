@@ -4,6 +4,8 @@ import io
 import csv
 import re
 from openerp import models, fields, api
+from openerp.exceptions import ValidationError
+from openerp.exceptions import Warning
 import datetime
 
 
@@ -38,13 +40,15 @@ class GrouponOrder(models.Model):
 
     wave_id = fields.Many2one(comodel_name="groupon.pickup.wave", string="Lista Prelievo")
 
-    _sql_constraints = [
-        ('groupon_number_unique', 'UNIQUE(groupon_number)', 'Numero ordine groupon già esistente!'),
-    ]
-
     @api.one
     def _get_order_name(self):
         self.name = 'GRP%05d' % (self.id)
+
+    @api.one
+    @api.constrains('groupon_number')
+    def _check_groupon_number(self):
+        if len(self.search([('groupon_number', '=', self.groupon_number)])) > 1:
+                raise ValidationError("Esiste già un ordine groupon con questo numero ordine %s" % self.groupon_number)
 
     @api.one
     def unlink(self):
@@ -88,7 +92,6 @@ class GrouponRegister(models.TransientModel):
     _name = "netaddiction.groupon.register"
 
     csv_file = fields.Binary('File')
-    return_text = fields.Text("Messaggio di ritorno")
 
     @api.multi
     def execute(self):
@@ -108,17 +111,12 @@ class GrouponRegister(models.TransientModel):
                     self.create_addresses_and_order(groupon_user_id, line)
                     counter += 1
                 except Exception as e:
-                    if type(e).__name__ == 'IntegrityError':
-                        warning_list.append('Ordine Groupon numero %s già esistente' % line['groupon_number'])
-                    else:
-                        warning_list.append((e, line['groupon_number']))
+                    warning_list.append((e, line['groupon_number']))
 
             if warning_list:
-                #self.return_text = "IMPORTATI SOLO %s su %s ATTENZIONE PROBLEMI CON QUESTI ORDINI: " % (counter, total_rows, )
-                pass
+                raise Warning("PROBLEMA: IMPORTATI SOLO %s su %s" % (counter, total_rows), "ATTENZIONE PROBLEMI CON QUESTI ORDINI: %s" % warning_list)
             else:
-                #self.return_text = "tutto ok caricati %s ordini" % counter
-                pass
+                raise Warning("TUTTO OK caricati %s ordini" % counter)
 
 
     def create_addresses_and_order(self, groupon_user_id, line):

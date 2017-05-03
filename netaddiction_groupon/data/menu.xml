@@ -55,5 +55,18 @@
           action="netaddiction_groupon_warehouse"
           parent="menu_netaddiction_groupon_super"
         />
+
+        <record model="ir.actions.act_window" id="netaddiction_groupon_wave">
+            <field name="name">Groupon Liste Prelievo</field>
+            <field name="res_model">groupon.pickup.wave</field>
+            <field name="view_id" ref="netaddiction_groupon.view_groupon_wave_tree"/>
+        </record>
+
+        <menuitem id="menu_netaddiction_groupon_wave_list"
+          name="Groupon Liste Prelievo"
+          sequence="70"
+          action="netaddiction_groupon_wave"
+          parent="menu_netaddiction_groupon_super"
+        />
     </data>
 </openerp>

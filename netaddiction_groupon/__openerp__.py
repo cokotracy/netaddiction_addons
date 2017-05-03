@@ -17,7 +17,8 @@
         'data/ir_values.xml',
         'views/config.xml',
         'views/orders.xml',
-        'views/assets.xml'
+        'views/assets.xml',
+        'views/wave.xml'
     ],
     'installable': True,
     'application': True,

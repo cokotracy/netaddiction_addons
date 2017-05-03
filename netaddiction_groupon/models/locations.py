@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from openerp import models, fields, api
-from openerp.exceptions import except_orm
+from openerp.exceptions import Warning
 import datetime
 
 class GrouponLocations(models.Model):
@@ -55,20 +55,20 @@ class GrouponReserve(models.Model):
         groupon_price = values['groupon_price']
 
         if not product_id:
-            raise except_orm('Errore grave', 'Non hai scelto il prodotto da riservare')
+            raise Warning('Non hai scelto il prodotto da riservare')
 
         product = self.env['product.product'].browse(product_id)
 
         groupon_warehouse = self.env.ref('netaddiction_groupon.netaddiction_stock_groupon').id
 
         if qty_to_reserve > product.qty_available_now:
-            raise except_orm('Errore grave', 'La quantità da riservare non può essere maggiore di quella disponibile')
+            raise Warning('La quantità da riservare non può essere maggiore di quella disponibile')
 
         if qty_to_reserve <= 0:
-            raise except_orm('Errore gravissimo', 'Dai, serio, mi stai prendendo per i fondelli. Come pretendi di spostare una quantità negativa?')
+            raise Warning('Dai, serio, mi stai prendendo per i fondelli. Come pretendi di spostare una quantità negativa?')
 
         if groupon_price <= 0:
-            raise except_orm("Errore gravissimo", "Non hai assegnato un prezzo di vendita a Groupon")
+            raise Warning("Non hai assegnato un prezzo di vendita a Groupon")
 
         # trova le locations da cui spostare
         # crea le nuove location di groupon
@@ -162,13 +162,13 @@ class GrouponReturn(models.Model):
         qty_groupon = int(self.get_groupon_qty(product_id))
 
         if not product_id:
-            raise except_orm('Errore grave', 'Non hai scelto il prodotto da ritornare')
+            raise Warning('Non hai scelto il prodotto da ritornare')
 
         if qty_to_return > qty_groupon:
-            raise except_orm('Errore grave', 'La quantità da ritornae non può essere maggiore di quella disponibile nel magazzino Groupon')
+            raise Warning('La quantità da ritornae non può essere maggiore di quella disponibile nel magazzino Groupon')
 
         if qty_to_return <= 0:
-            raise except_orm('Errore gravissimo', 'Dai, serio, mi stai prendendo per i fondelli. Come pretendi di spostare una quantità negativa?')
+            raise Warning('Dai, serio, mi stai prendendo per i fondelli. Come pretendi di spostare una quantità negativa?')
 
         product = self.env['product.product'].browse(product_id)
 
