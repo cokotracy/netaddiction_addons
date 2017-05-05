@@ -16,7 +16,7 @@ class GrouponPickup(models.Model):
 
     @api.one
     def unlink(self):
-        if self.state != 'draft':
+        if self.state == 'draft':
             return super(GrouponPickup, self).unlink()
 
         raise Warning("Non puoi cancellare una lista prelievo completata.")
@@ -64,3 +64,38 @@ class GrouponPickup(models.Model):
                     qty = int(qty) - int(alloc.qty)
 
         return shelf
+
+    @api.model
+    def pickup_product(self, wave, product_id, shelf, qty):
+        wave = int(wave)
+        product_id = int(product_id)
+        shelf = int(shelf)
+        qty = int(qty)
+        results = self.env['netaddiction.groupon.sale.order'].search([('product_id.id', '=', product_id), ('wave_id.id', '=', wave)])
+
+        if len(results) == 0:
+            return {'result': 0, 'error': 'Prodotto non presente in lista'}
+
+        allocations = self.env['groupon.wh.locations.line'].search([('product_id.id', '=', product_id), ('wh_location_id.id', '=', shelf)])
+
+        if len(allocations) == 0:
+            return {'result': 0, 'error': 'Il prodotto non risulta allocato'}
+
+        if allocations.qty < qty:
+            return {'result': 0, 'error': 'Il prodotto risulta allocato con quantità inferiore a quella da scalare'}
+
+        allocations.decrease(qty)
+
+        for res in results:
+            for picks in res.picking_ids:
+                for pick in picks.pack_operation_product_ids:
+                    if pick.product_id.id == product_id:
+                        remaining = pick.product_qty - pick.qty_done
+                        if remaining <= qty:
+                            pick.qty_done = pick.product_qty
+                            qty -= pick.product_qty
+                        else:
+                            pick.qty_done = pick.qty_done + qty
+                            qty = 0
+
+        return {'ok': 'ok'}

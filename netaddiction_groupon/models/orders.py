@@ -42,6 +42,13 @@ class GrouponOrder(models.Model):
 
     wave_id = fields.Many2one(comodel_name="groupon.pickup.wave", string="Lista Prelievo")
 
+    #@api.model
+    #def create(self, values):
+    #    res = super(GrouponOrder, self).create(values)
+    #    order = self.browse(res)
+    #    order.create_shipping()
+    #    return res
+
     @api.one
     def _get_order_name(self):
         self.name = 'GRP%05d' % (self.id)
@@ -135,7 +142,13 @@ class GrouponRegister(models.TransientModel):
             if warning_list:
                 raise Warning("PROBLEMA: IMPORTATI SOLO %s su %s /n ATTENZIONE PROBLEMI CON QUESTI ORDINI: %s" % (counter, total_rows, warning_list))
             else:
-                raise Warning("TUTTO OK caricati %s ordini" % counter)
+                return {
+                    'view_type': 'form',
+                    'view_mode': 'tree,form',
+                    'res_model': 'netaddiction.groupon.sale.order',
+                    'target': 'current',
+                    'type': 'ir.actions.act_window'
+                }
 
     def create_addresses_and_order(self, groupon_user_id, line):
         # creare user e indirizzo che sega
@@ -185,7 +198,6 @@ class GrouponRegister(models.TransientModel):
             'groupon_cost': line["groupon_cost"],
             'groupon_sell_price': line["sell_price"],
             'product_id': product.id})
-        print order.name, order.groupon_number, order.state
 
     def split_addresses(self, street1, street2):
         address_number = street2
