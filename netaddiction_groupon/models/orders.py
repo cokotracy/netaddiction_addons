@@ -133,7 +133,7 @@ class GrouponRegister(models.TransientModel):
                     warning_list.append((e, line['groupon_number']))
 
             if warning_list:
-                raise Warning("PROBLEMA: IMPORTATI SOLO %s su %s" % (counter, total_rows), "ATTENZIONE PROBLEMI CON QUESTI ORDINI: %s" % warning_list)
+                raise Warning("PROBLEMA: IMPORTATI SOLO %s su %s /n ATTENZIONE PROBLEMI CON QUESTI ORDINI: %s" % (counter, total_rows, warning_list))
             else:
                 raise Warning("TUTTO OK caricati %s ordini" % counter)
 
