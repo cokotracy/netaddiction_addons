@@ -1,16 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <openerp>
     <data>
-        <record model="ir.actions.act_window" id="netaddiction_groupon_order_base">
-            <field name="name">Ordini Groupon</field>
-            <field name="res_model">netaddiction.groupon.sale.order</field>
-            <field name="view_type">form</field>
-            <field name="view_mode">tree,form</field>
-            <field name="help" type="html">
-                <p class="oe_view_nocontent_create">Non ci sono ordini groupon.
-                </p>
-            </field>
-        </record>
+        
 
 <record model="ir.ui.view" id="netaddiction_groupon_order_tree">
             <field name="name">view.netaddiction_groupon_order_tree</field>
@@ -35,7 +26,7 @@
             <field name="arch" type="xml">
                 <form string="groupon_order Form">
                      <header>
-                        <field name="state" widget="statusbar" statusbar_visible="draft,sent"/>
+                        <field name="state" widget="statusbar" statusbar_visible="draft,problem,sent,cancel"/>
                     </header>
                     <sheet>
                    
@@ -76,15 +67,6 @@
             </field>
         </record>
 
-        <menuitem id="menu_netaddiction_sales_Groupon_Order"
-          name="Ordini Groupon"
-          parent="menu_netaddiction_groupon_super"
-          sequence="20"
-          action= "netaddiction_groupon_order_base"
-        />
-
-
-
 
 <record id="view_netaddiction_Groupon_Register"
                 model="ir.ui.view">
@@ -115,12 +97,5 @@
             </field>
         </record>
 
-        <record id="action_netaddiction_Groupon_Register_menu"
-                model="ir.actions.act_window">
-            <field name="name">Registra Groupon</field>
-            <field name="res_model">netaddiction.groupon.register</field>
-            <field name="view_mode">form</field>
-            <field name="target">inline</field>
-        </record>
     </data>
 </openerp>

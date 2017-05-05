@@ -7,6 +7,17 @@
           sequence="32"
         />
 
+        <record model="ir.actions.act_window" id="netaddiction_groupon_order_base">
+            <field name="name">Ordini Groupon</field>
+            <field name="res_model">netaddiction.groupon.sale.order</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">Non ci sono ordini groupon.
+                </p>
+            </field>
+        </record>
+
         <menuitem id="menu_netaddiction_groupon_super"
           name="Groupon"
           sequence="10"
@@ -68,5 +79,33 @@
           action="netaddiction_groupon_wave"
           parent="menu_netaddiction_groupon_super"
         />
+
+        <record model="ir.actions.act_url" id="netaddiction_groupon_link">
+            <field name="name">Mobile App</field>
+            <field name="url">/inventory/app/groupon_pick_up</field>
+            <field name="target">self</field>
+        </record>
+
+        <menuitem id="menu_netaddiction_groupon_app"
+          name="Mobile App"
+          sequence="90"
+          action="netaddiction_groupon_link"
+          parent="menu_netaddiction_groupon_super"
+        />
+
+        <menuitem id="menu_netaddiction_sales_Groupon_Order"
+          name="Ordini Groupon"
+          parent="menu_netaddiction_groupon_super"
+          sequence="20"
+          action= "netaddiction_groupon_order_base"
+        />
+
+        <record id="action_netaddiction_Groupon_Register_menu"
+                model="ir.actions.act_window">
+            <field name="name">Registra Groupon</field>
+            <field name="res_model">netaddiction.groupon.register</field>
+            <field name="view_mode">form</field>
+            <field name="target">inline</field>
+        </record>
     </data>
 </openerp>

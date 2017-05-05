@@ -42,6 +42,13 @@ class GrouponOrder(models.Model):
 
     wave_id = fields.Many2one(comodel_name="groupon.pickup.wave", string="Lista Prelievo")
 
+    #@api.model
+    #def create(self, values):
+    #    res = super(GrouponOrder, self).create(values)
+    #    order = self.browse(res)
+    #    order.create_shipping()
+    #    return res
+
     @api.one
     def _get_order_name(self):
         self.name = 'GRP%05d' % (self.id)
@@ -70,27 +77,45 @@ class GrouponOrder(models.Model):
         groupon_warehouse = self.env.ref('netaddiction_groupon.netaddiction_stock_groupon').id
         customer_wh = self.env.ref('stock.stock_location_customers').id
         for order in self:
-            if len(order.picking_ids) == 0:
-                # creare la spedizione
-                attr = {
-                    'picking_type_id': groupon_shipping_type,
-                    'move_type': 'one',
-                    'priority': '1',
-                    'location_id': groupon_warehouse,
-                    'location_dest_id': customer_wh,
-                    'partner_id': order.partner_shipping_id.id,
-                    'move_lines': [(0, 0, {'product_id': order.product_id.id, 'product_uom_qty': int(order.quantity),
-                        'state': 'draft',
-                        'product_uom': order.product_id.uom_id.id,
-                        'name': 'Magazzino Groupon > Punto di Stoccaggio Partner/Clienti',
+            if order.quantity <= self.get_qty_available_product(self.product_id):
+                if len(order.picking_ids) == 0:
+                    # creare la spedizione
+                    attr = {
                         'picking_type_id': groupon_shipping_type,
-                        'origin': '%s' % (order.name,)})],
-                }
-                pick = self.env['stock.picking'].sudo().create(attr)
-                pick.sudo().action_confirm()
-                pick.sudo().force_assign()
-                order.picking_ids = [(4, pick.id, False)]
+                        'move_type': 'one',
+                        'priority': '1',
+                        'location_id': groupon_warehouse,
+                        'location_dest_id': customer_wh,
+                        'partner_id': order.partner_shipping_id.id,
+                        'move_lines': [(0, 0, {'product_id': order.product_id.id, 'product_uom_qty': int(order.quantity),
+                            'state': 'draft',
+                            'product_uom': order.product_id.uom_id.id,
+                            'name': 'Magazzino Groupon > Punto di Stoccaggio Partner/Clienti',
+                            'picking_type_id': groupon_shipping_type,
+                            'origin': '%s' % (order.name,)})],
+                    }
+                    pick = self.env['stock.picking'].sudo().create(attr)
+                    pick.sudo().action_confirm()
+                    pick.sudo().force_assign()
+                    order.picking_ids = [(4, pick.id, False)]
+            else:
+                order.state = 'problem'
         return True
+
+    @api.model
+    def get_qty_available_product(self, product_id):
+        orders = self.search([('product_id.id', '=', product_id.id), ('state', '=', 'draft')])
+        qty = 0
+        for line in product_id.groupon_wh_location_line_ids:
+            qty += line.qty
+
+        for order in orders:
+            for pick in order.picking_ids:
+                for line in pick.pack_operation_product_ids:
+                    remaining = line.product_qty - line.qty_done
+                    qty -= remaining
+
+        return qty
 
 class GrouponRegister(models.TransientModel):
     _name = "netaddiction.groupon.register"
@@ -123,8 +148,13 @@ class GrouponRegister(models.TransientModel):
             if warning_list:
                 raise Warning("PROBLEMA: IMPORTATI SOLO %s su %s /n ATTENZIONE PROBLEMI CON QUESTI ORDINI: %s" % (counter, total_rows, warning_list))
             else:
-                raise Warning("TUTTO OK caricati %s ordini" % counter)
-
+                return {
+                    'view_type': 'form',
+                    'view_mode': 'tree,form',
+                    'res_model': 'netaddiction.groupon.sale.order',
+                    'target': 'current',
+                    'type': 'ir.actions.act_window'
+                }
 
     def create_addresses_and_order(self, groupon_user_id, line):
         # creare user e indirizzo che sega

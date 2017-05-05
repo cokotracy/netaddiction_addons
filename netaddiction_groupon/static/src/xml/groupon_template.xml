@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<templates id="template_groupon" xml:space="preserve">
+    <t t-name="grouponshelfs_choice">
+        <div class="block" id="result_shelfs">
+            <div class="block_title">
+                Da quale ripiano vuoi scaricare il prodotto?
+            </div>
+            <div class="block_content">
+                <p t-foreach="shelfs" t-as="shelf" >
+                    <a href="#" class="shelf_pick" t-attf-data-ids="{{shelf['id']}}" t-attf-data-pid="{{pid}}" t-attf-data-wave="{{wave}}"><t t-esc="shelf['name']"/></a>
+                </p>
+            </div>
+        </div>
+    </t>
+</templates>

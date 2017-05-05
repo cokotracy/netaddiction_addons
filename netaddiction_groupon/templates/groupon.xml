@@ -1,5 +1,17 @@
 <openerp>
     <data>
+        <template id="groupon_slide_menu">
+            <div id="slide_menu">
+                <div class="link_menu"><a href="#"><t t-esc="user.name"/></a></div>
+                <div class="link_menu"><a href="/">LOG OUT</a></div>
+                <div class="link_menu"><a href="/inventory/app">HOME</a></div>
+                <div class="link_menu"><a href="/inventory/app/allocation">ALLOCAZIONE</a></div>
+                <div class="link_menu"><a href="/inventory/app/search/from_product">CERCA</a></div>
+                <div class="link_menu"><a href="/inventory/app/pick_up">PICK UP</a></div>
+                <div class="link_menu"><a href="/inventory/app/groupon_pick_up">GROUPON</a></div>
+            </div>
+        </template>
+
         <template id="groupon_header_top">
             <head>
                 <title>Netaddiction Inventory APP</title>
@@ -26,7 +38,7 @@
                 <t t-call="netaddiction_warehouse.top_menu">
                     <t t-set="top_title" t-value="'GROUPON PICK UP'"/>
                 </t>
-                <t t-call="netaddiction_warehouse.slide_menu"/>
+                <t t-call="netaddiction_groupon.groupon_slide_menu"/>
                 <div id="content">
                     <div t-foreach="waves" t-as="wave" class="block" >
                         <a t-attf-href="/inventory/app/groupon_pick_up/{{wave.id}}" class="wave_link">
@@ -41,7 +53,7 @@
                 <t t-call="netaddiction_warehouse.top_menu">
                     <t t-set="top_title" t-value="'GROUPON PICK UP'"/>
                 </t>
-                <t t-call="netaddiction_warehouse.slide_menu"/>
+                <t t-call="netaddiction_groupon.groupon_slide_menu"/>
                 <div id="content">
                     <p><t t-esc="error"/></p>
                 </div>
@@ -53,7 +65,7 @@
                 <t t-call="netaddiction_warehouse.top_menu">
                     
                 </t>
-                <t t-call="netaddiction_warehouse.slide_menu"/>
+                <t t-call="netaddiction_groupon.groupon_slide_menu"/>
                 <div id="content">
                     <div id="barcode-block">
                         <label for="barcode" id="label_barcode">BARCODE PRODOTTO</label>
