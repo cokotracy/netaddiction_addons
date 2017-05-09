@@ -84,7 +84,6 @@ class GrouponReserve(models.Model):
                     qty_to_reserve -= location.qty
 
         for location in locations:
-            location.decrease(locations[location])
             # cerca se esiste la locazione speculare per il magazzino Groupon
             groupon_location = self.env['groupon.wh.locations'].search([('barcode', '=', location.wh_location_id.barcode)])
             if len(groupon_location) == 0:
@@ -100,6 +99,7 @@ class GrouponReserve(models.Model):
                 new_loc_id = groupon_location.id
 
             self.env['groupon.wh.locations.line'].allocate(product_id, locations[location], new_loc_id)
+            location.sudo().decrease(locations[location])
 
         # sposta il prodotto
         type_groupon_out = self.env.ref('netaddiction_groupon.groupon_type_out').id
@@ -110,6 +110,7 @@ class GrouponReserve(models.Model):
             'priority': '1',
             'location_id': wh_stock,
             'location_dest_id': groupon_warehouse,
+            'company_id': self.env.user.company_id.id,
             'move_lines': [(0, 0, {'product_id': product_id, 'product_uom_qty': int(values['qty_to_reserve']),
                 'state': 'draft',
                 'product_uom': product.uom_id.id,
@@ -185,10 +186,10 @@ class GrouponReturn(models.Model):
 
         # riporto nelle locazioni speculari del magazzino fisico
         for location in locations:
-            location.decrease(locations[location])
             wh_location = self.env['netaddiction.wh.locations'].search([('barcode', '=', location.wh_location_id.barcode)])
             if wh_location:
                 self.env['netaddiction.wh.locations.line'].allocate(product_id, locations[location], wh_location.id)
+            location.decrease(locations[location])
 
         # stock.picking in rientro
         type_groupon_in = self.env.ref('netaddiction_groupon.groupon_type_in').id
@@ -200,6 +201,7 @@ class GrouponReturn(models.Model):
             'priority': '1',
             'location_id': groupon_warehouse,
             'location_dest_id': wh_stock,
+            'company_id': self.env.user.company_id.id,
             'move_lines': [(0, 0, {'product_id': product_id, 'product_uom_qty': int(values['qty_to_return']),
                 'state': 'draft',
                 'product_uom': product.uom_id.id,

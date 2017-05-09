@@ -42,12 +42,23 @@ class GrouponOrder(models.Model):
 
     wave_id = fields.Many2one(comodel_name="groupon.pickup.wave", string="Lista Prelievo")
 
-    #@api.model
-    #def create(self, values):
-    #    res = super(GrouponOrder, self).create(values)
-    #    order = self.browse(res)
-    #    order.create_shipping()
-    #    return res
+    @api.one
+    def close(self):
+        self.state = 'sent'
+        for pick in self.picking_ids:
+            pick.do_new_transfer()
+
+    @api.one
+    def button_create_shipping(self):
+        self.create_shipping()
+        if self.state == 'problem':
+            raise Warning('Non ci sono prodotti disponibili per questo ordine nel magazzino Groupon.')
+
+    @api.model
+    def create(self, values):
+        res = super(GrouponOrder, self).create(values)
+        res.create_shipping()
+        return res
 
     @api.one
     def _get_order_name(self):
@@ -56,10 +67,8 @@ class GrouponOrder(models.Model):
     @api.one
     @api.constrains('groupon_number')
     def _check_groupon_number(self):
-        print "OH"
         print self.groupon_number
         if len(self.env["netaddiction.groupon.sale.order"].search([('groupon_number', '=', self.groupon_number), ('state', '!=', 'cancel')])) > 1:
-            print "EEEEEEEEEEE"
             raise ValidationError("Esiste già un ordine groupon con questo numero ordine %s" % self.groupon_number)
 
     @api.one
@@ -76,6 +85,7 @@ class GrouponOrder(models.Model):
         groupon_shipping_type = self.env.ref('netaddiction_groupon.groupon_customer_type_out').id
         groupon_warehouse = self.env.ref('netaddiction_groupon.netaddiction_stock_groupon').id
         customer_wh = self.env.ref('stock.stock_location_customers').id
+        carrier_id = self.env['ir.values'].search([("name", "=", "groupon_carrier_sku"), ("model", "=", "groupon.config")]).value
         for order in self:
             if order.quantity <= self.get_qty_available_product(self.product_id):
                 if len(order.picking_ids) == 0:
@@ -87,6 +97,7 @@ class GrouponOrder(models.Model):
                         'location_id': groupon_warehouse,
                         'location_dest_id': customer_wh,
                         'partner_id': order.partner_shipping_id.id,
+                        'carrier_id': int(carrier_id),
                         'move_lines': [(0, 0, {'product_id': order.product_id.id, 'product_uom_qty': int(order.quantity),
                             'state': 'draft',
                             'product_uom': order.product_id.uom_id.id,
@@ -95,9 +106,12 @@ class GrouponOrder(models.Model):
                             'origin': '%s' % (order.name,)})],
                     }
                     pick = self.env['stock.picking'].sudo().create(attr)
+                    code = 'GRP' + str(pick.id).zfill(10)
+                    pick.delivery_barcode = code
                     pick.sudo().action_confirm()
                     pick.sudo().force_assign()
                     order.picking_ids = [(4, pick.id, False)]
+                    self.state = 'draft'
             else:
                 order.state = 'problem'
         return True
@@ -114,7 +128,6 @@ class GrouponOrder(models.Model):
                 for line in pick.pack_operation_product_ids:
                     remaining = line.product_qty - line.qty_done
                     qty -= remaining
-
         return qty
 
 class GrouponRegister(models.TransientModel):

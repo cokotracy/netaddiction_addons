@@ -6,5 +6,10 @@
             <field name="name">groupon_customer_id</field>
             <field name="model">groupon.config</field>
         </record>
+
+        <record id="groupon_carrier_sku" model="ir.values">
+            <field name="name">groupon_carrier_sku</field>
+            <field name="model">groupon.config</field>
+        </record>
     </data>
 </openerp>

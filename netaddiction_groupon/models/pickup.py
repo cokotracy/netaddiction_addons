@@ -2,6 +2,8 @@
 from openerp import models, fields, api
 from openerp.exceptions import Warning
 from collections import defaultdict
+import datetime
+from ftplib import FTP
 
 class GrouponPickup(models.Model):
     _name = 'groupon.pickup.wave'
@@ -13,6 +15,30 @@ class GrouponPickup(models.Model):
         ('done', 'Completato'),
     ], string='Stato', readonly=True, default="draft")
     date_close = fields.Datetime(string="Data Chiusura")
+
+    @api.model
+    def get_picks(self, wave_id):
+        wave = self.browse(int(wave_id))
+        picks = []
+        for order in wave.order_ids:
+            for pick in order.picking_ids:
+                picks.append({'id': pick.id, 'barcode': pick.delivery_barcode, 'name': pick.partner_id.name, 'groupon_id': order.groupon_number, 'pick_barcode': pick.barcode_image})
+        return picks
+
+    @api.one
+    def close(self):
+        self.state = 'done'
+        for order in self.order_ids:
+            order.close()
+            for pick in order.picking_ids:
+                now = datetime.date.today()
+                manifest = self.env['netaddiction.manifest'].search([('date', '=', now), ('carrier_id', '=', pick.carrier_id.id)])
+                if len(manifest) == 0:
+                    man_id = self.env['netaddiction.manifest'].create({'date': now, 'carrier_id': pick.carrier_id.id}).id
+                else:
+                    man_id = manifest.id
+
+                pick.write({'manifest': man_id, 'delivery_read_manifest': False})
 
     @api.one
     def unlink(self):
@@ -26,13 +52,29 @@ class GrouponPickup(models.Model):
         orders = self.env['netaddiction.groupon.sale.order'].search([('state', '=', 'draft'), ('picking_ids', '!=', False), ('wave_id', '=', False)])
 
         if len(orders) > 0:
-            attr = {
-                'order_ids': [(6, False, orders.mapped('id'))],
-            }
-            wave = self.create(attr)
-            wave.name = 'Lista Groupon %s' % (wave.id)
-
-            return 'ok'
+            ids = []
+            problem_order = []
+            for order in orders:
+                if len(order.partner_shipping_id.street) > 30:
+                    order.state = 'problem'
+                    problem_order.append(order.name)
+                else:
+                    ids.append(order.id)
+            if len(ids) > 0:
+                attr = {
+                    'order_ids': [(6, False, ids)],
+                }
+                wave = self.create(attr)
+                wave.name = 'Lista Groupon %s' % (wave.id)
+                if len(problem_order) > 0:
+                    return 'Lista creata ma ci sono ordini con indirizzo troppo lungo: %s' % (problem_order)
+                else:
+                    return 'ok'
+            else:
+                if len(problem_order) > 0:
+                    return 'Ci sono ordini con indirizzo troppo lungo: %s' % (problem_order)
+                else:
+                    return 'Non ci sono ordini da pickuppare.'
         else:
             return 'Non ci sono ordini da pickuppare.'
 
@@ -99,3 +141,13 @@ class GrouponPickup(models.Model):
                             qty = 0
 
         return {'ok': 'ok'}
+
+    @api.multi
+    def get_ldv(self):
+        ftp = FTP('ftp.sda.it')
+        ftp.login('cli_c54566', 'inet54566')
+        ftp.cwd('send')
+        file_list = ftp.nlst()
+        data = ftp.dir()
+        print file_list
+        print data

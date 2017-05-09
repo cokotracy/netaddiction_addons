@@ -26,6 +26,8 @@
             <field name="arch" type="xml">
                 <form string="groupon_order Form">
                      <header>
+                        <button string="Chiudi" type="object" name="close" attrs="{'invisible': [('state', '!=', 'draft')]}"/>
+                        <button string="Crea Spedizione" type="object" name="button_create_shipping" attrs="{'invisible': [('state', '!=', 'problem')]}"/>
                         <field name="state" widget="statusbar" statusbar_visible="draft,problem,sent,cancel"/>
                     </header>
                     <sheet>
