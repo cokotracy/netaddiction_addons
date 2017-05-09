@@ -20,6 +20,8 @@
             <field name="arch" type="xml">
                 <form string="Lista Prelievo" class="oe_form_configuration">
                     <header>
+                        <button string="Chiudi" type="object" name="close" attrs="{'invisible': [('state', '!=', 'draft')]}"/>
+                        <button string="LDV" type="object" name="get_ldv" attrs="{'invisible': [('state', '=', 'draft')]}"/>
                         <field name="state" widget="statusbar" statusbar_visible="draft,done"/>
                     </header>
                     <sheet>

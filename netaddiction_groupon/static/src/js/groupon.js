@@ -1,4 +1,6 @@
 openerp.netaddiction_groupon = function(instance, local) {
+    var QWeb = instance.web.qweb;
+
     instance.web.ListView.include({
         render_buttons: function() {
             var self = this;
@@ -35,6 +37,59 @@ openerp.netaddiction_groupon = function(instance, local) {
                 context: {},
                 flags: {'form': {'action_buttons': false }}
             });
+        }
+    });
+
+    instance.web.FormView.include({
+        render_buttons: function() {
+            var self = this;
+            this._super.apply(this, arguments)
+            if(self.model == "groupon.pickup.wave"){
+                self.$buttons.find('.oe_form_button_create').remove();
+                self.$buttons.find('.oe_form_button_edit').css('float','left');
+                $('.oe-cp-buttons').css('width','50%');
+                
+                self.$buttons.append(' <button  class="btn btn-sm btn-info oe_button_print_groupon" type="button" style="margin-left:5px">Stampa Etichette</button> ');
+                self.$buttons.find('.oe_button_print_groupon').on('click', self.proxy('print_groupon'));
+            }
+        },
+        print_groupon: function(){
+            var self = this;
+            var id = self.dataset.ids[self.dataset.index];
+            $('.oe-control-panel').hide();
+            $('.oe_view_manager_current').hide();
+            var html = '';
+            new instance.web.Model('groupon.pickup.wave').call('get_picks',[id]).then(function(results){
+                console.log(results)
+                $.each(results,function(index,value){
+                    html = html +`<div class="page">
+                            <table  border="0" cellspacing="0" cellpadding="0" style="font-family:Arial, Helvetica, sans-serif; font-size:12px; font-weight:bold; line-height:14px; margin:0px; padding:0px; ">
+                                <tr>
+                                    <td>
+                                        <center>
+                                            <em style="font-size:12px">Ordine:</em>`+value.groupon_id+`<br/>
+                                            <em style="font-size:12px">Dest:</em>`+value.name+`
+                                        </center>
+                                    </td>
+
+                                </tr>
+
+                                <tr>
+                                    <td>
+                                        <image src="`+value.pick_barcode+`"/><br/>
+                                        <center><span>`+value.barcode+`</span></center>
+                                    </td>
+                                </tr>
+                            </table>
+                            
+                        </div>
+                        <br/><br/><br/>`;
+                })
+                    
+
+                $('.oe_application').append(html)
+            })
+            //$('.oe_application').append(id)
         }
     });
 }

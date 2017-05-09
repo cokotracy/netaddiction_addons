@@ -20,6 +20,7 @@
         'data/menu.xml',
         'data/acl.xml',
         'views/config.xml',
+        'views/manifest.xml'
     ],
     'installable': True,
     'application': True,
