@@ -67,8 +67,11 @@ class GrouponOrder(models.Model):
     @api.one
     @api.constrains('groupon_number')
     def _check_groupon_number(self):
-        if len(self.search([('groupon_number', '=', self.groupon_number), ('state', '!=', 'cancel')])) > 1:
-                raise ValidationError("Esiste già un ordine groupon con questo numero ordine %s" % self.groupon_number)
+        print "OH"
+        print self.groupon_number
+        if len(self.env["netaddiction.groupon.sale.order"].search([('groupon_number', '=', self.groupon_number), ('state', '!=', 'cancel')])) > 1:
+            print "EEEEEEEEEEE"
+            raise ValidationError("Esiste già un ordine groupon con questo numero ordine %s" % self.groupon_number)
 
     @api.one
     def unlink(self):
@@ -151,6 +154,9 @@ class GrouponRegister(models.TransientModel):
                 try:
                     self.create_addresses_and_order(groupon_user_id, line)
                     counter += 1
+                except ValidationError as e:
+                    print "HERE"
+                    return 1
                 except Exception as e:
                     warning_list.append((e, line['groupon_number']))
 
@@ -203,7 +209,7 @@ class GrouponRegister(models.TransientModel):
         product = self.env["product.product"].search([("barcode", "=", line["merchant_sku_item"])])
         if not product:
             raise Exception("Prodotto %s" % line["merchant_sku_item"])
-        order = self.env["netaddiction.groupon.sale.order"].create({
+        order = self.sudo().env["netaddiction.groupon.sale.order"].create({
             'partner_invoice_id': user_billing.id,
             'partner_shipping_id': user_shipping.id,
             'state': 'draft',
