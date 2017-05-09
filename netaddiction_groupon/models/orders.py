@@ -67,10 +67,8 @@ class GrouponOrder(models.Model):
     @api.one
     @api.constrains('groupon_number')
     def _check_groupon_number(self):
-        print "OH"
         print self.groupon_number
         if len(self.env["netaddiction.groupon.sale.order"].search([('groupon_number', '=', self.groupon_number), ('state', '!=', 'cancel')])) > 1:
-            print "EEEEEEEEEEE"
             raise ValidationError("Esiste già un ordine groupon con questo numero ordine %s" % self.groupon_number)
 
     @api.one
