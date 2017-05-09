@@ -153,7 +153,6 @@ class GrouponRegister(models.TransientModel):
                     self.create_addresses_and_order(groupon_user_id, line)
                     counter += 1
                 except ValidationError as e:
-                    print "HERE"
                     return 1
                 except Exception as e:
                     warning_list.append((e, line['groupon_number']))
