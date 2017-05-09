@@ -161,6 +161,8 @@ class GrouponRegister(models.TransientModel):
         italy_id = self.env["res.country"].search([('code', '=', 'IT')])[0]
         ship_address_street, ship_address_number = self.split_addresses(line["shipment_address_street"], line["shipment_address_street_2"])
         bill_address_street, bill_address_number = self.split_addresses(line["billing_address_street"], '')
+        country_state = self.env["res.country.state"].search([("code", "=", line["billing_address_stat"])])
+        prov = country_state.id if len(country_state) == 1 else None
 
         company_id = self.env.user.company_id.id
         user_shipping = self.env["res.partner"].create({
@@ -175,6 +177,7 @@ class GrouponRegister(models.TransientModel):
             'parent_id': groupon_user_id,
             'is_company': False,
             'customer': True,
+            'state_id': prov,
             'type': 'delivery',
             'notify_email': 'none'})
         user_billing = self.env["res.partner"].create({
@@ -189,6 +192,7 @@ class GrouponRegister(models.TransientModel):
             'parent_id': groupon_user_id,
             'is_company': False,
             'customer': True,
+            'state_id': prov,
             'type': 'invoice',
             'notify_email': 'none'})
         product = self.env["product.product"].search([("barcode", "=", line["merchant_sku_item"])])
