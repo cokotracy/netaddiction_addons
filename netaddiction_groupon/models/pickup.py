@@ -4,6 +4,7 @@ from openerp.exceptions import Warning
 from collections import defaultdict
 import datetime
 from ftplib import FTP
+import csv
 
 class GrouponPickup(models.Model):
     _name = 'groupon.pickup.wave'
@@ -147,7 +148,39 @@ class GrouponPickup(models.Model):
         ftp = FTP('ftp.sda.it')
         ftp.login('cli_c54566', 'inet54566')
         ftp.cwd('send')
-        file_list = ftp.nlst()
-        data = ftp.dir()
-        print file_list
-        print data
+        report_name = 'Report.Log'
+        report = open(report_name, 'wb')
+        ftp.retrbinary('RETR %s' % report_name, report.write)
+        report.close()
+
+        rfile = open(report_name, "r")
+        ldv = {}
+        for line in rfile.readlines():
+            sp = line.split('-')
+            name = sp[3].strip()
+            if name[0:3] == 'LDV':
+                ldv[sp[0].strip()] = name
+        dates = {}
+        for r in ldv:
+            dt = datetime.datetime.strptime(r, '%Y/%m/%d %H:%M:%S')
+            dates[dt] = ldv[r]
+        last = sorted(dates)[-1]
+        to_download = dates[last]
+        rfile.close()
+
+        csv_file = open(to_download, "wb")
+        ftp.retrbinary('RETR %s' % to_download, csv_file.write)
+        csv_file.close()
+        self.process_ldv(to_download)
+        ftp.close()
+
+    @api.one
+    def process_ldv(self, file):
+        ifile = open(file, "rb")
+        reader = csv.reader(ifile)
+        for row in reader:
+            if len(row) > 2:
+                barcode = row[4].strip()
+                pick = self.env['stock.picking'].search([('delivery_barcode', '=', barcode)])
+                if pick:
+                    pick.carrier_tracking_ref = row[0].strip()
