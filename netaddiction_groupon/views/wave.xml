@@ -22,6 +22,7 @@
                     <header>
                         <button string="Chiudi" type="object" name="close" attrs="{'invisible': [('state', '!=', 'draft')]}"/>
                         <button string="LDV" type="object" name="get_ldv" attrs="{'invisible': [('state', '=', 'draft')]}"/>
+                        <button string="Tracking File" type="object" name="generate_tracking" attrs="{'invisible': [('state', '=', 'draft')]}"/>
                         <field name="state" widget="statusbar" statusbar_visible="draft,done"/>
                     </header>
                     <sheet>
@@ -29,6 +30,7 @@
                             <field name="name"/>
                             <field name="create_date" readonly="1"/>
                             <field name="create_uid" readonly="1"/>
+                            <field name="tracking_file" readonly="1"/>
                         </group>
                         <group string="Ordini">
                             <field name="order_ids" nolabel="1"/>

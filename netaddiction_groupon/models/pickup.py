@@ -4,7 +4,9 @@ from openerp.exceptions import Warning
 from collections import defaultdict
 import datetime
 from ftplib import FTP
+import io
 import csv
+import base64
 
 class GrouponPickup(models.Model):
     _name = 'groupon.pickup.wave'
@@ -16,6 +18,7 @@ class GrouponPickup(models.Model):
         ('done', 'Completato'),
     ], string='Stato', readonly=True, default="draft")
     date_close = fields.Datetime(string="Data Chiusura")
+    tracking_file = fields.Binary(string="Tracking file")
 
     @api.model
     def get_picks(self, wave_id):
@@ -184,3 +187,17 @@ class GrouponPickup(models.Model):
                 pick = self.env['stock.picking'].search([('delivery_barcode', '=', barcode)])
                 if pick:
                     pick.carrier_tracking_ref = row[0].strip()
+
+    @api.one
+    def generate_tracking(self):
+        output = io.BytesIO()
+        writer = csv.writer(output)
+        csvdata = ['fulfillment_line_item_id', 'carrier' 'tracking_1', 'tracking_2', 'tracking_3', 'tracking_4', 'tracking_5', 'tracking_6', 'inventory_decrement_date']
+        writer.writerow(csvdata)
+
+        for order in self.order_ids:
+            pick = order.picking_ids[0]
+            csvdata = [order.groupon_number, 'SDA Express', pick.carrier_tracking_ref, '', '', '', '', '', datetime.datetime.now().strftime('%d/%m/%Y')]
+            writer.writerow(csvdata)
+        self.tracking_file = base64.b64encode(output.getvalue()).decode()
+        output.close()
