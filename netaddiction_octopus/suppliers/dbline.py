@@ -57,5 +57,18 @@ class DbLine(supplier.Supplier):
         supplier_price='costo',
         supplier_quantity='quantita')
 
+    def validate(self, item):
+        categories = (
+            'PS4',
+            'XONE',
+            'SWI',
+            'COS',
+            'GTA',
+            'FIG',
+            'ARG',
+        )
+
+        assert item['categoria'] in categories
+
     def group(self, item):
         return None
