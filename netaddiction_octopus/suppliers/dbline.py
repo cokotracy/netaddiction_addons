@@ -59,7 +59,9 @@ class DbLine(supplier.Supplier):
 
     def validate(self, item):
         categories = (
+            'GAAA',
             'PS4',
+            'PSVR'
             'XONE',
             'SWI',
             'COS',
