@@ -63,7 +63,7 @@ class DbLine(supplier.Supplier):
             'GACC',
             'ACCE',
             'PS4',
-            'PSVR'
+            'PSVR',
             'XONE',
             'SWI',
             'CDGI',
