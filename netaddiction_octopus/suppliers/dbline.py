@@ -74,7 +74,7 @@ class DbLine(supplier.Supplier):
             'ARG',
         )
 
-        assert item['categoria'] in categories
+        assert len([category for category in categories if category.startswith(item['categoria'])]) > 0
 
     def group(self, item):
         return None
