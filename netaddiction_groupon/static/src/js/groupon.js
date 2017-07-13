@@ -62,33 +62,19 @@ openerp.netaddiction_groupon = function(instance, local) {
             new instance.web.Model('groupon.pickup.wave').call('get_picks',[id]).then(function(results){
                 console.log(results)
                 $.each(results,function(index,value){
-                    html = html +`<div class="page">
-                            <table  border="0" cellspacing="0" cellpadding="0" style="font-family:Arial, Helvetica, sans-serif; font-size:12px; font-weight:bold; line-height:14px; margin:0px; padding:0px; ">
-                                <tr>
-                                    <td>
-                                        <center>
-                                            <em style="font-size:12px">Ordine:</em>`+value.groupon_id+`<br/>
-                                            <em style="font-size:12px">Dest:</em>`+value.name+`
-                                        </center>
-                                    </td>
+                    html = html + '<div class="page">';
+                    html = html + '<table  border="0" cellspacing="0" cellpadding="0" style="font-family:Arial, Helvetica, sans-serif; font-size:12px; font-weight:bold; line-height:14px; margin:0px; padding:0px; ">';
+                    html = html + '<tr><td><center><em style="font-size:12px">Ordine:</em>'+value.groupon_id+'<br/><em style="font-size:12px">Dest:</em>'+value.name+'</center></td>';
 
-                                </tr>
-
-                                <tr>
-                                    <td>
-                                        <image src="`+value.pick_barcode+`"/><br/>
-                                        <center><span>`+value.barcode+`</span></center>
-                                    </td>
-                                </tr>
-                            </table>
+                    html = html + '</tr><tr><td><image src="'+value.pick_barcode+'"/><br/><center><span>`+value.barcode+`</span></center></td></tr></table>';
                             
-                        </div>
-                        <br/><br/><br/>`;
-                })
+                    html = html +  '</div>';
+                    html = html +  '<br/><br/><br/>';
+                });
                     
 
                 $('.oe_application').append(html)
-            })
+            });
             //$('.oe_application').append(id)
         }
     });
