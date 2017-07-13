@@ -57,5 +57,24 @@ class DbLine(supplier.Supplier):
         supplier_price='costo',
         supplier_quantity='quantita')
 
+    def validate(self, item):
+        categories = (
+            'GAAA',
+            'GACC',
+            'ACCE',
+            'PS4',
+            'PSVR',
+            'XONE',
+            'SWI',
+            'CDGI',
+            'CAR',
+            'COS',
+            'GTA',
+            'FIG',
+            'ARG',
+        )
+
+        assert len([category for category in categories if item['codice_fornitore'].startswith(category)]) > 0
+
     def group(self, item):
         return None
