@@ -48,7 +48,7 @@
 
         <menuitem id="menu_view_netaddiction_prontocampaign_importer"
           name="Importa prontocampaign"
-          parent="base.view_view_custom_form"
+          parent="base.menu_partner_form"
           sequence="99"
           action= "action_netaddiction_prontocampaign_importer_menu"
         />
