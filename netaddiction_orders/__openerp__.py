@@ -14,5 +14,6 @@
     'depends': ['base', 'product', 'sale', 'purchase', 'mrp', 'account', 'netaddiction_customer_care', 'netaddiction_customer', 'netaddiction_special_offers', 'netaddiction_payments', 'netaddiction_products'],
     'data': [
         'views/orders.xml',
+        'views/tappetini.xml'
     ]
 }
