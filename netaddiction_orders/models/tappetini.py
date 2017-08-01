@@ -125,7 +125,7 @@ class TappetiniImporter(models.TransientModel):
             'carrier_id': random.choice([sda, brt]),
             'payment_method_id': journal_id,
             'pay_pal_tran_id': pay_pal_tran_id,
-
+            'pronto_campaign': True,
         })
         # print transaction["TransactionPrice"]
         quantity = int(line["Quanti"])

@@ -441,7 +441,8 @@ class StockPicking(models.Model):
             total += res['total_included']
         
             method_contrassegno_id = self.env['ir.model.data'].get_object('netaddiction_payments', 'contrassegno_journal').id
-            if self.sale_order_payment_method.id == method_contrassegno_id:
+
+            if self.sale_order_payment_method.id == method_contrassegno_id and not self.sale_id.pronto_campaign:
                 contrassegno = self.env.ref('netaddiction_payments.product_contrassegno')
                 res_c = self.carrier_id.product_id.taxes_id.compute_all(contrassegno.list_price)
                 total += res_c['total_included']

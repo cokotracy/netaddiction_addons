@@ -157,9 +157,8 @@ class CoDRegister(models.TransientModel):
 
                         invoice.signal_workflow('invoice_open')
                         # assegno pagamento a spedizione
-                        pick = [p for p in pick_lst if (isclose(p.total_import, payment.amount, abs_tol=0.009) and not p.payment_id)]
-                        if pick:
-                            pick[0].payment_id = payment.id
+                        for p in pick_lst:
+                            p.payment_id = payment.id
 
             return True
 

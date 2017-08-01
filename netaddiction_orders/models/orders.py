@@ -30,6 +30,8 @@ class Order(models.Model):
     parent_order = fields.Many2one(comodel_name="sale.order", string="Ordine Padre", ondelete="set null")
     child_orders = fields.One2many(comodel_name="sale.order", string="Ordini Figli", inverse_name='parent_order')
 
+    pronto_campaign = fields.Boolean(string="ordine proveniente da prontocampaign", default=False)
+
     ##############
     # ACTION STATE#
     ##############
