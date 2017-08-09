@@ -7,6 +7,8 @@ import random
 from openerp import models, fields, api
 from openerp.exceptions import ValidationError
 
+filter_nonascii = lambda s: re.sub(r'[^\x00-\x7F]+',' ', s)
+
 class TappetiniImporter(models.TransientModel):
     _name = "netaddiction.tappetini.register"
 
@@ -44,7 +46,7 @@ class TappetiniImporter(models.TransientModel):
 
         user = self.env["res.partner"].search([("email", "=", line["E-MAIL"])])
         user = user[0] if user else None
-        name = line["NOME"] + " " + line["COGNOME"]
+        name = filter_nonascii(line["NOME"]) + " " + filter_nonascii(line["COGNOME"])
         phone = line['CELLULARE']
         company_id = self.env.user.company_id.id
         if not user:
@@ -64,9 +66,9 @@ class TappetiniImporter(models.TransientModel):
         prov = country_state.id if len(country_state) == 1 else None
         country_id = italy_id
         # creare user e indirizzo che sega
-        street = line["INDIRIZZO COMPLETO"]
-        street2 = False
-        parsed = re.findall('\d+', line["INDIRIZZO COMPLETO"])
+        street = filter_nonascii(line["INDIRIZZO COMPLETO"])
+        street2 = "SNC"
+        parsed = re.findall('\d+', filter_nonascii(line["INDIRIZZO COMPLETO"]))
         if parsed:
             street2 = parsed[-1]
             street = re.sub(parsed[-1], '', street)
@@ -78,8 +80,8 @@ class TappetiniImporter(models.TransientModel):
             'street2': street2,
             'phone': phone,
             'country_id': country_id,
-            'city': line["LOCALITA"],
-            'zip': line["CAP"],
+            'city': filter_nonascii(line["LOCALITA"]),
+            'zip': line["CAP"].zfill(5),
             'state_id': prov,
             'parent_id': user.id,
             'is_company': False,
@@ -94,8 +96,8 @@ class TappetiniImporter(models.TransientModel):
             'street2': street2,
             'phone': phone,
             'country_id': country_id,
-            'city': line["LOCALITA"],
-            'zip': line["CAP"],
+            'city': filter_nonascii(line["LOCALITA"]),
+            'zip': line["CAP"].zfill(5),
             'state_id': prov,
             'parent_id': user.id,
             'is_company': False,
