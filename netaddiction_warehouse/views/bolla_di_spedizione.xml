@@ -30,7 +30,7 @@
                                                 </td>
                                             </tr>
                                             <tr>
-                                                <td align="center" valign="middle" style="font-size:9px; font-family:Arial, Helvetica, sans-serif;font-weight:normal !important">Tel.<span t-field="o.company_id.phone"/> - Mail:<span t-field="o.company_id.email"/></td>
+                                                <td align="center" valign="middle" style="font-size:9px; font-family:Arial, Helvetica, sans-serif;font-weight:normal !important">Mail:<span t-field="o.company_id.email"/></td>
                                             </tr>
                                             <tr>
                                                 <td height="10" colspan="2" align="left" valign="middle"></td>
@@ -77,16 +77,7 @@
                                                     <span t-field="o.company_id.logo" t-field-options="{&quot;widget&quot;: &quot;image&quot;, &quot;class&quot;: &quot;img-rounded&quot;}" />
                                                 </td>
                                                 <td width="110" height="21" align="right" valign="top">
-                                                    <table width="158" border="0" cellspacing="0" cellpadding="0" style="">
-                                                        <tbody>
-                                                            <tr>
-                                                                <td width="68" height="17" align="right" valign="bottom" style="background-color:#FFFFFF; border-top-left-radius:3px; border-bottom-left-radius:3px; line-height:16px; font-size:10px; padding-right:2px; vertical-align:bottom;">TEL.</td>
-                                                                <td width="90" height="17" align="left" valign="bottom" style="background-color:#FFFFFF; border-top-right-radius:3px; border-bottom-right-radius:3px; line-height:16px; font-size:15px; font-weight:bold;">
-                                                                    <span t-field="o.company_id.phone"/>
-                                                                </td>
-                                                            </tr>
-                                                        </tbody>
-                                                    </table>
+                                                    
                                                 </td>
                                             </tr>
                                             <tr>
