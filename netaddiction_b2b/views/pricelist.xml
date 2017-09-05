@@ -12,7 +12,7 @@
                 <field name="item_ids" position="replace">
                     <group>
                         <group>
-                            <field name="expression"  widget="net_2many" net_fields="expression,typology,percentage_discount" delete="1" inline="1"/>
+                            <field name="expression" />
                         </group>
                         <group>
                             <button type="object" name="populate_item_ids_from_expression" string="Aggiungi/Aggiorna Prodotti" class="btn btn-primary"/><br/>
@@ -28,7 +28,7 @@
                             <field name="carrier_gratis"/>
                         </group>
                     </group>
-                    <field name="item_ids" widget="net_2many" net_fields="product_id,qty_available_now,typology,qty_lmit_b2b,purchase_price,percent_price,b2b_real_price" searchable="product_id.id,product_id.barcode,product_id.name" context="{'default_applied_on':'0_product_variant'}" delete="1" inline="1"/>
+                    <field name="item_ids"  context="{'default_applied_on':'0_product_variant'}" />
                     <br/><br/>
                     <label for="ftp_user">FTP USER</label>
                         <field name="ftp_user" nolabel="true">
