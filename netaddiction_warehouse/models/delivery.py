@@ -306,18 +306,19 @@ class SaleOrderLine(models.Model):
         simile a check_number_delivery ma simula solo le posibili spedizioni
         """
         #dict di appoggio
-        support = defaultdict(list)
+        support = []
         
         for line in self:
             if not line.is_delivery and not line.is_payment:
-                if len(line.offer_cart_history) == 0 and len(line.offer_voucher_history) == 0:
-                    support['without_offer'] += [line] 
-                else:
+                support += [line]
+                #if len(line.offer_cart_history) == 0 and len(line.offer_voucher_history) == 0:
+                #    support['without_offer'] += [line] 
+                #else:
                     #ci sono delle offerte associate a questa linea
-                    if len(line.offer_cart_history)>0:
-                        support[line.offer_cart_history.offer_name].append(line)
-                    elif len(line.offer_voucher_history)>0:
-                        support[line.offer_voucher_history.offer_name].append(line) 
+                #    if len(line.offer_cart_history)>0:
+                #        support[line.offer_cart_history.offer_name].append(line)
+                #    elif len(line.offer_voucher_history)>0:
+                #        support[line.offer_voucher_history.offer_name].append(line) 
 
         return self._divide_lines(support, confirm_order)
 
@@ -326,26 +327,26 @@ class SaleOrderLine(models.Model):
         subdivision = defaultdict(list)
         previous_ids = []
         #do priorità alle linee senza offerta
-        for line in support['without_offer']:
-            data = line._get_shipping_information_data(previous_ids, confirm_order)
-            previous_ids += [line.id]
-            for dt in data:
-                subdivision[dt] += data[dt]
+        #for line in support['without_offer']:
+        #    data = line._get_shipping_information_data(previous_ids, confirm_order)
+        #    previous_ids += [line.id]
+        #    for dt in data:
+        #        subdivision[dt] += data[dt]
 
         #le linee singole non mi interessano più
-        del(support['without_offer'])
-        for offer in support:
+        #del(support['without_offer'])
+        for line in support:
             support_date = []
             support_line = []
             support_ids_line = []
-            for line in support[offer]:
-                attr = line.dict_order_line()
-                support_line += [attr]
-                support_ids_line += [line]
-                data = line._get_shipping_information_data(previous_ids)
-                previous_ids += [line.id]
-                for d in data:
-                    support_date += [d]
+           
+            attr = line.dict_order_line()
+            support_line += [attr]
+            support_ids_line += [line]
+            data = line._get_shipping_information_data(previous_ids)
+            previous_ids += [line.id]
+            for d in data:
+                support_date += [d]
 
             if confirm_order:
                 subdivision[max(support_date)] += support_ids_line
