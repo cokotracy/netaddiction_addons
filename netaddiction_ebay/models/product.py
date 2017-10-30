@@ -180,7 +180,7 @@ class EbayProducts(models.Model):
         try:
             xml_images = xml_builder.build_image_upload(products_id)
         except:
-            raise Exception("prodotto immagini %s" %product_id)
+            raise Exception("prodotto immagini %s" % products_id)
 
         resp_struct = self._upload_file_to_ebay_and_start_job(environment, uu_id, xml_images, job_id, file_id)
 
