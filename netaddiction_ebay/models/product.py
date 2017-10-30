@@ -177,7 +177,10 @@ class EbayProducts(models.Model):
             self._send_ebay_error_mail("createUploadJob Error: couldn't obtain jobId or fileReferenceId", '[EBAY] ERRORE Upload Images')
             return False
 
-        xml_images = xml_builder.build_image_upload(products_id)
+        try:
+            xml_images = xml_builder.build_image_upload(products_id)
+        except:
+            raise Exception("prodotto immagini %s" %product_id)
 
         resp_struct = self._upload_file_to_ebay_and_start_job(environment, uu_id, xml_images, job_id, file_id)
 
@@ -865,7 +868,7 @@ class EbayProducts(models.Model):
                             total += 4.90
                             self._send_ebay_error_mail(" %s totale %s " % (transaction_array, total), '[EBAY] DEBUG nel get order')
                             try:
-                                api.execute('AddOrder', {'Order': {'TransactionArray': {'Transaction': transaction_array}, 'Total': {'#text': '%s' % total, '@attrs': {'currencyID': 'EUR'}}, 'CreatingUserRole': 'Seller', 'PaymentMethods': ['PayPal', 'COD'], 'ShippingDetails': {'CODCost': '3.0', 'ShippingServiceOptions': {'ShippingServicePriority': '1', 'ShippingService': 'Other', 'ShippingServiceCost': '4.90', 'ShippingServiceAdditionalCost': '0.00', 'ShippingSurcharge': '0.00'}}}})
+                                api.execute('AddOrder', {'Order': {'TransactionArray': {'Transaction': transaction_array}, 'Total': {'#text': '%s' % total, '@attrs': {'currencyID': 'EUR'}}, 'CreatingUserRole': 'Seller', 'PaymentMethods': ['PayPal', 'COD'], 'ShippingDetails': {'CODCost': '3.0', 'ShippingServiceOptions': {'ShippingService': 'Other', 'ShippingServicePriority': '1', 'ShippingServiceCost': '4.90', 'ShippingServiceAdditionalCost': '0.00', 'ShippingSurcharge': '0.00'}}}})
                                 resp = api.response.dict()
                                 self._send_ebay_error_mail(" %s " % resp, '[EBAY] DEBUG ADD order')
 
@@ -1157,7 +1160,7 @@ class EbayProducts(models.Model):
         try:
             self._upload_new_products_to_ebay()
         except Exception as e:
-            self._send_ebay_error_mail(" %s  ****  %s" % (traceback.format_exc(), ''.join(traceback.format_stack())), '[EBAY] ECCEZIONE lanciata da _upload_new_products_to_ebay ')
+            self._send_ebay_error_mail(" %s  ****  %s  PRODUCT_ID: %s" % (traceback.format_exc(), ''.join(traceback.format_stack()), e), '[EBAY] ECCEZIONE lanciata da _upload_new_products_to_ebay ')
 
         try:
             self._update_products_on_ebay()
