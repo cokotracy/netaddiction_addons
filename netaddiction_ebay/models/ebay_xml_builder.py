@@ -72,7 +72,6 @@ class EbayXMLBuilder(models.TransientModel):
             'quality': quality,
         })
 
-
         return IMAGE_URL_FORMAT % kwargs
 
     def build_image_upload(self, products_id):
@@ -209,12 +208,12 @@ class EbayXMLBuilder(models.TransientModel):
             sku = etree.SubElement(item, "SKU")
             sku.text = prod_id
             product_listing_details = etree.SubElement(item, "ProductListingDetails")
-            brand_mpn = etree.SubElement(product_listing_details, "BrandMPN")
-            brand = etree.SubElement(brand_mpn, "Brand")
-            # brand.text = prod["name"][0:60]
-            brand.text = "Does Not Apply"
-            mpn = etree.SubElement(brand_mpn, "MPN")
-            mpn.text = prod["ean"][0:60]
+            # brand_mpn = etree.SubElement(product_listing_details, "BrandMPN")
+            # brand = etree.SubElement(brand_mpn, "Brand")
+            # # brand.text = prod["name"][0:60]
+            # brand.text = "Does Not Apply"
+            # mpn = etree.SubElement(brand_mpn, "MPN")
+            # mpn.text = prod["ean"][0:60]
             ean = etree.SubElement(product_listing_details, "EAN")
             ean.text = prod["ean"]
             if prod['isbn']:
