@@ -211,11 +211,11 @@ class EbayXMLBuilder(models.TransientModel):
             product_listing_details = etree.SubElement(item, "ProductListingDetails")
             brand_mpn = etree.SubElement(product_listing_details, "BrandMPN")
             brand = etree.SubElement(brand_mpn, "Brand")
-            # brand.text = prod["name"][0:60]
-            brand.text = "Unbranded" 
+            brand.text = prod["name"][0:60]
+            # brand.text = "Unbranded" 
             mpn = etree.SubElement(brand_mpn, "MPN")
-            # mpn.text = prod["ean"][0:60]
-            mpn.text = "Does Not Apply"
+            mpn.text = prod["ean"][0:60]
+            # mpn.text = "Does Not Apply"
             ean = etree.SubElement(product_listing_details, "EAN")
             ean.text = prod["ean"]
             if prod['isbn']:
