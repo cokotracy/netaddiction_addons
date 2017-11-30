@@ -99,7 +99,7 @@ class GiftCustomer(models.Model):
                 self.env["netaddiction.gift"].create({'partner_id': self.id, 'value': to_add, 'type_id': gtype.id})
 
     @api.one
-    def remove_gift_value(self,to_rmv):
+    def remove_gift_value(self, to_rmv):
         if self.got_gift:
             remaining = to_rmv
             gifts = [gift for gift in self.gift_ids]
@@ -111,6 +111,7 @@ class GiftCustomer(models.Model):
                     break
                 else:
                     remaining -= gift.value
+                    gift.value = 0.0
                     gift.unlink()
 
 
