@@ -138,8 +138,8 @@ class EbayXMLBuilder(models.TransientModel):
             name2 = etree.SubElement(name_value_2, "Name")
             name2.text = MPN
             item2 = etree.SubElement(name_value_2, "Value")
-            item2.text = prod["ean"]
-            # item2.text = "Does Not Apply"
+            # item2.text = prod["ean"]
+            item2.text = "Non applicabile"
             category_mapping = etree.SubElement(item, "CategoryMappingAllowed")
             category_mapping.text = "true"
             country = etree.SubElement(item, "Country")
@@ -214,8 +214,8 @@ class EbayXMLBuilder(models.TransientModel):
             brand.text = prod["name"][0:60]
             # brand.text = "Unbranded" 
             mpn = etree.SubElement(brand_mpn, "MPN")
-            mpn.text = prod["ean"][0:60]
-            # mpn.text = "Does Not Apply"
+            # mpn.text = prod["ean"]
+            mpn.text = "Non applicabile"
             ean = etree.SubElement(product_listing_details, "EAN")
             ean.text = prod["ean"]
             if prod['isbn']:
