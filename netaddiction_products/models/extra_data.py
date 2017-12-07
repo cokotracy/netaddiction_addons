@@ -121,8 +121,8 @@ class Products(models.Model):
 
     @api.one
     def api_get_extra_data_movie(self):
-        url_series = 'http://movieplayer.it/api/v1/tvseries/%s/?format=json&api_key=f260cc4fab3e6a2d268ee825905e9780ccdeed5a' % self.extra_data_id
-        url_movies = 'http://movieplayer.it/api/v1/movie/%s/?format=json&api_key=f260cc4fab3e6a2d268ee825905e9780ccdeed5a' % self.extra_data_id
+        url_series = 'https://movieplayer.it/api/v1/tvseries/%s/?format=json&api_key=f260cc4fab3e6a2d268ee825905e9780ccdeed5a' % self.extra_data_id
+        url_movies = 'https://movieplayer.it/api/v1/movie/%s/?format=json&api_key=f260cc4fab3e6a2d268ee825905e9780ccdeed5a' % self.extra_data_id
         try:
             response = urllib2.urlopen(url_series)
             text = json.load(response)
@@ -300,7 +300,7 @@ class Products(models.Model):
             'video': 'video_flv'
         }        # prende i dati da multiplayer.it
         try:
-            d = xmlrpclib.Server("http://multiplayer.it/service/")
+            d = xmlrpclib.Server("https://multiplayer.it/service/")
             root = ET.fromstring(d.get_gamecard_info(self.extra_data_id).encode('utf8'))
         except:
             raise Warning("C'è stato un problema nella connessione con multiplayer.it")
