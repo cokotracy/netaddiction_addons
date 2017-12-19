@@ -221,8 +221,8 @@ class EbayXMLBuilder(models.TransientModel):
             if prod['isbn']:
                 isbn = etree.SubElement(product_listing_details, "ISBN")
                 isbn.text = prod["isbn"][0:13]
-            product_id = etree.SubElement(product_listing_details, "ProductID")
-            product_id.text = prod_id
+            # product_id = etree.SubElement(product_listing_details, "ProductID")
+            # product_id.text = prod_id
             return_policy = etree.SubElement(item, "ReturnPolicy")
             refund_option = etree.SubElement(return_policy, "RefundOption")
             refund_option.text = MB_OPTION
