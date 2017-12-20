@@ -144,7 +144,7 @@ class EbayXMLBuilder(models.TransientModel):
             name3 = etree.SubElement(name_value_3, "Name")
             name3.text = "EAN"
             item3 = etree.SubElement(name_value_3, "Value")
-            item3.text = prod["ean"]
+            item3.text = prod["ean"][-13:]
             category_mapping = etree.SubElement(item, "CategoryMappingAllowed")
             category_mapping.text = "true"
             country = etree.SubElement(item, "Country")
@@ -230,7 +230,7 @@ class EbayXMLBuilder(models.TransientModel):
             name3 = etree.SubElement(name_value_3, "Name")
             name3.text = "EAN"
             item3 = etree.SubElement(name_value_3, "Value")
-            item3.text = prod["ean"]
+            item3.text = prod["ean"][-13:]
             # brand_mpn = etree.SubElement(product_listing_details, "BrandMPN")
             # brand = etree.SubElement(brand_mpn, "Brand")
             # brand.text = prod["name"][0:60]
