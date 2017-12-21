@@ -238,8 +238,8 @@ class EbayXMLBuilder(models.TransientModel):
             # mpn = etree.SubElement(brand_mpn, "MPN")
             # no mpn.text = prod["ean"]
             # mpn.text = "Non applicabile"
-            # ean = etree.SubElement(product_listing_details, "EAN")
-            # ean.text = prod["ean"]
+            ean = etree.SubElement(product_listing_details, "EAN")
+            ean.text = prod["ean"][-13:]
             if prod['isbn']:
                 # isbn = etree.SubElement(product_listing_details, "ISBN")
                 # isbn.text = prod["isbn"][0:13]
