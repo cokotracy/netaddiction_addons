@@ -238,13 +238,13 @@ class EbayXMLBuilder(models.TransientModel):
                 # name4.text = "UPC"
                 # item4 = etree.SubElement(name_value_4, "Value")
                 # item4.text = "Non applicabile"
-                brand_mpn = etree.SubElement(product_listing_details, "BrandMPN")
-                brand = etree.SubElement(brand_mpn, "Brand")
+                # brand_mpn = etree.SubElement(product_listing_details, "BrandMPN")
+                # brand = etree.SubElement(brand_mpn, "Brand")
                 # no brand.text = prod["name"][0:60]
-                brand.text = "- Senza marca/Generico -" 
-                mpn = etree.SubElement(brand_mpn, "MPN")
+                # brand.text = "- Senza marca/Generico -" 
+                # mpn = etree.SubElement(brand_mpn, "MPN")
                 # no mpn.text = prod["ean"]
-                mpn.text = "Non applicabile"
+                # mpn.text = "Non applicabile"
             ean = etree.SubElement(product_listing_details, "EAN")
             ean.text = prod["ean"][-13:]
             if prod['isbn']:
