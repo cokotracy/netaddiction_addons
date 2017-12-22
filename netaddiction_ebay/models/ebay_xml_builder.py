@@ -233,7 +233,7 @@ class EbayXMLBuilder(models.TransientModel):
                 name3.text = "EAN"
                 item3 = etree.SubElement(name_value_3, "Value")
                 item3.text = prod["ean"][-13:]
-                name_value_4 = etree.SubElement(product_listing_details, "NameValueList")
+                # name_value_4 = etree.SubElement(product_listing_details, "NameValueList")
                 # name4 = etree.SubElement(name_value_4, "Name")
                 # name4.text = "UPC"
                 # item4 = etree.SubElement(name_value_4, "Value")
