@@ -1140,7 +1140,7 @@ class EbayProducts(models.Model):
 
             },
             self.env["product.category"].search([("name", "=", "Libri e Fumetti")]).id: "268",
-            self.env["product.category"].search([("name", "=", "Modellismo e Model Kit")]).id: "222",
+            self.env["product.category"].search([("name", "=", "Modellismo e Model Kit")]).id: "180277",
             self.env["product.category"].search([("name", "=", "Pro Gaming")]).id: {
                 self.env["product.attribute.value"].search([("name", "=", "Tastiere")]).id: "33963",
                 self.env["product.attribute.value"].search([("name", "=", "Mouse")]).id: "23160",

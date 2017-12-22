@@ -214,8 +214,8 @@ class EbayXMLBuilder(models.TransientModel):
             sku = etree.SubElement(item, "SKU")
             sku.text = prod_id
             product_listing_details = etree.SubElement(item, "ProductListingDetails")
-            if prod["ebay_category"] not in ["617"]:
-                # prodotti bluray e dvd
+            if prod["ebay_category"] != "139973":
+                # prodotti non videogiochi
                 name_value = etree.SubElement(product_listing_details, "NameValueList")
                 name1 = etree.SubElement(name_value, "Name")
                 name1.text = BRAND
@@ -233,13 +233,18 @@ class EbayXMLBuilder(models.TransientModel):
                 name3.text = "EAN"
                 item3 = etree.SubElement(name_value_3, "Value")
                 item3.text = prod["ean"][-13:]
-                brand_mpn = etree.SubElement(product_listing_details, "BrandMPN")
-                brand = etree.SubElement(brand_mpn, "Brand")
+                name_value_4 = etree.SubElement(product_listing_details, "NameValueList")
+                name4 = etree.SubElement(name_value_4, "Name")
+                name4.text = "UPC"
+                item4 = etree.SubElement(name_value_4, "Value")
+                item4.text = "Non applicabile"
+                # brand_mpn = etree.SubElement(product_listing_details, "BrandMPN")
+                # brand = etree.SubElement(brand_mpn, "Brand")
                 # brand.text = prod["name"][0:60]
-                brand.text = "Unbranded" 
-                mpn = etree.SubElement(brand_mpn, "MPN")
+                # brand.text = "Unbranded" 
+                # mpn = etree.SubElement(brand_mpn, "MPN")
                 # no mpn.text = prod["ean"]
-                mpn.text = "Non applicabile"
+                # mpn.text = "Non applicabile"
             ean = etree.SubElement(product_listing_details, "EAN")
             ean.text = prod["ean"][-13:]
             if prod['isbn']:
