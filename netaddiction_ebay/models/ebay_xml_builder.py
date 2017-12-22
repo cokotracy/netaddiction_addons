@@ -214,8 +214,8 @@ class EbayXMLBuilder(models.TransientModel):
             sku = etree.SubElement(item, "SKU")
             sku.text = prod_id
             product_listing_details = etree.SubElement(item, "ProductListingDetails")
-            if prod["ebay_category"] != "139973":
-                # prodotti non videogiochi
+            if prod["ebay_category"] not in ["617"]:
+                # prodotti bluray e dvd
                 name_value = etree.SubElement(product_listing_details, "NameValueList")
                 name1 = etree.SubElement(name_value, "Name")
                 name1.text = BRAND

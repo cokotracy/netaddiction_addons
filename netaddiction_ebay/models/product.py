@@ -1125,28 +1125,28 @@ class EbayProducts(models.Model):
 
     def _build_category_dictionary(self):
         return {
-            self.env["product.category"].search([("name", "=", "Abbigliamento")]).id: "313",
-            self.env["product.category"].search([("name", "=", "Figures")]).id: "348",
+            self.env["product.category"].search([("name", "=", "Abbigliamento")]).id: "41964",
+            self.env["product.category"].search([("name", "=", "Figures")]).id: "246",
             self.env["product.category"].search([("name", "=", "Film e Serie TV")]).id: "617",
             self.env["product.category"].search([("name", "=", "Gadget")]).id: {
-                self.env["product.attribute.value"].search([("name", "=", "Portachiavi")]).id: "3628",
-                0: "234"
+                self.env["product.attribute.value"].search([("name", "=", "Portachiavi")]).id: "47137",
+                0: "1383"
             },
             self.env["product.category"].search([("name", "=", "Giochi")]).id: {
-                self.env["product.attribute.value"].search([("name", "=", "Giochi da Tavolo")]).id: "234",
-                self.env["product.attribute.value"].search([("name", "=", "Carte Collezionabili")]).id: "234",
+                self.env["product.attribute.value"].search([("name", "=", "Giochi da Tavolo")]).id: "2550",
+                self.env["product.attribute.value"].search([("name", "=", "Carte Collezionabili")]).id: "2536",
                 self.env["product.attribute.value"].search([("name", "=", "LEGO")]).id: "19006",
                 0: "234"
 
             },
             self.env["product.category"].search([("name", "=", "Libri e Fumetti")]).id: "268",
-            self.env["product.category"].search([("name", "=", "Modellismo e Model Kit")]).id: "234",
+            self.env["product.category"].search([("name", "=", "Modellismo e Model Kit")]).id: "222",
             self.env["product.category"].search([("name", "=", "Pro Gaming")]).id: {
                 self.env["product.attribute.value"].search([("name", "=", "Tastiere")]).id: "33963",
                 self.env["product.attribute.value"].search([("name", "=", "Mouse")]).id: "23160",
-                self.env["product.attribute.value"].search([("name", "=", "Cuffie / Headset / Auricolari")]).id: "112529",
+                self.env["product.attribute.value"].search([("name", "=", "Cuffie / Headset / Auricolari")]).id: "80183",
                 self.env["product.attribute.value"].search([("name", "=", "MousePad")]).id: "23895",
-                self.env["product.attribute.value"].search([("name", "=", "Monitor")]).id: "80053",
+                self.env["product.attribute.value"].search([("name", "=", "Monitor")]).id: "162497",
                 self.env["product.attribute.value"].search([("name", "=", "Controller")]).id: "117042",
                 0: "162"
 
