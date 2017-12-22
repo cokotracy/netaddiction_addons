@@ -133,7 +133,7 @@ class EbayXMLBuilder(models.TransientModel):
             name1.text = BRAND
             item1 = etree.SubElement(name_value, "Value")
             # item1.text = prod["name"][0:60]
-            item1.text = "Unbranded"
+            item1.text = "- Senza marca/Generico -"
             name_value_2 = etree.SubElement(item_specifics, "NameValueList")
             name2 = etree.SubElement(name_value_2, "Name")
             name2.text = MPN
@@ -221,7 +221,7 @@ class EbayXMLBuilder(models.TransientModel):
                 name1.text = BRAND
                 item1 = etree.SubElement(name_value, "Value")
                 # no  item1.text = prod["name"][0:60]
-                item1.text = "Unbranded"
+                item1.text = "- Senza marca/Generico -"
                 name_value_2 = etree.SubElement(product_listing_details, "NameValueList")
                 name2 = etree.SubElement(name_value_2, "Name")
                 name2.text = MPN
@@ -241,7 +241,7 @@ class EbayXMLBuilder(models.TransientModel):
                 brand_mpn = etree.SubElement(product_listing_details, "BrandMPN")
                 brand = etree.SubElement(brand_mpn, "Brand")
                 # no brand.text = prod["name"][0:60]
-                brand.text = "Unbranded" 
+                brand.text = "- Senza marca/Generico -" 
                 mpn = etree.SubElement(brand_mpn, "MPN")
                 # no mpn.text = prod["ean"]
                 mpn.text = "Non applicabile"
