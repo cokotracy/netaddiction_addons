@@ -138,8 +138,8 @@ class EbayXMLBuilder(models.TransientModel):
             name2 = etree.SubElement(name_value_2, "Name")
             name2.text = MPN
             item2 = etree.SubElement(name_value_2, "Value")
-            # item2.text = prod["ean"]
-            item2.text = "Non applicabile"
+            item2.text = prod_id
+            # item2.text = "Non applicabile"
             name_value_3 = etree.SubElement(item_specifics, "NameValueList")
             name3 = etree.SubElement(name_value_3, "Name")
             name3.text = "EAN"
@@ -226,8 +226,8 @@ class EbayXMLBuilder(models.TransientModel):
                 name2 = etree.SubElement(name_value_2, "Name")
                 name2.text = MPN
                 item2 = etree.SubElement(name_value_2, "Value")
-                # no  item2.text = prod["ean"]
-                item2.text = "Non applicabile"
+                item2.text = prod_id
+                # item2.text = "Non applicabile"
                 name_value_3 = etree.SubElement(product_listing_details, "NameValueList")
                 name3 = etree.SubElement(name_value_3, "Name")
                 name3.text = "EAN"
