@@ -441,7 +441,7 @@ class NetaddictionManifest(models.Model):
                 if delivery.sale_id.partner_shipping_id.state_id.code:
                     provincia = delivery.sale_id.partner_shipping_id.state_id.code 
                 else:
-                    provincia = ' '*2
+                    provincia = 'XX'
                     
                 file1.write(provincia) #provincia
                 
