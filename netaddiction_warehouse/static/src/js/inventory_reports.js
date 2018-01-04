@@ -53,7 +53,9 @@ odoo.define('netaddiction_warehouse.inventory_reports', function (require) {
             'click .export_csv': 'ExportCsv',
             'click #available_deactive': 'Available_deactive',
             'click #supplier_available_deactive': 'Supplier_available_deactive',
-            'click #supplier_zero_negative_active': 'Supplier_zero_negative_active'
+            'click #supplier_zero_negative_active': 'Supplier_zero_negative_active',
+            'click .activate_p': 'activate_product',
+            'click .deactivate_p': 'deactivate_product',
         },
         start: function(){
             var self = this;
@@ -253,6 +255,24 @@ odoo.define('netaddiction_warehouse.inventory_reports', function (require) {
                 });
                 self.$el.find('#inventory_value').html(QWeb.render("InventoryValue", {value: value.toLocaleString()}));
             })
+        },
+        activate_product: function(e){
+            e.preventDefault();
+            var self = this;
+            var id = $(e.currentTarget).closest('tr').find('.open_product').attr('data-id');
+            var row = $(e.currentTarget).closest('tr');
+            new Model('product.product').call("write", [[parseInt(id)], {'sale_ok': true}]).then(function(){
+                row.remove();
+            });
+        },
+        deactivate_product: function(e){
+            e.preventDefault();
+            var self = this;
+            var id = $(e.currentTarget).closest('tr').find('.open_product').attr('data-id');
+            var row = $(e.currentTarget).closest('tr');
+            new Model('product.product').call("write", [[parseInt(id)], {'sale_ok': false}]).then(function(){
+                row.remove();
+            });
         },
         get_products: function(){
             var self=this;

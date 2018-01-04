@@ -83,6 +83,7 @@
                     <th id="th9">Prezzo di Vendita</th>
                     <th id="th6">Valore Medio</th>
                     <th id="th7">Valore Totale</th>
+                    <th id="th17">Azione</th>
                 </tr>
             </thead>
             <tbody>
@@ -97,6 +98,7 @@
                         <td style="width:5%" data-id="th9"><t t-esc="product.price"/></td>
                         <td style="width:5%" data-id="th6"><t t-esc="product.med_inventory_value"/></td>
                         <td style="width:10%" data-id="th7"><t t-esc="product.total_inventory"/></td>
+                        <td style="width:10%" data-id="th17"><a href="#" class="activate_p">Accendi</a> - <a href="#" class="deactivate_p">Spegni</a></td>
                     </tr>
                 </t>
             </tbody>
