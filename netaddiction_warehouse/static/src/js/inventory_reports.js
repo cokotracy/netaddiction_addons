@@ -129,7 +129,7 @@ odoo.define('netaddiction_warehouse.inventory_reports', function (require) {
                 res_id:res_id,
                 context: {},
                 title: _t("Apri: Prodotto"),
-                readonly:true
+                readonly:false
             }).open();
         },
         ChangeCategory: function(e){
