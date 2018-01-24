@@ -2,6 +2,7 @@
 
 import locale
 import logging
+import datetime
 
 from collections import defaultdict
 
@@ -122,6 +123,12 @@ class Cron(models.Model):
 
                 for data in datas.values():
                     if data['supplier_code'] not in blacklist:
+                        if data['date']:
+                            try:
+                                datetime.datetime.strptime(data['date'], '%d/%m/%Y')
+                            except ValueError:
+                                continue
+
                         product_model.create(data)
 
                 # Reporting results
