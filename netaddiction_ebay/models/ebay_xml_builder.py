@@ -103,7 +103,7 @@ class EbayXMLBuilder(models.TransientModel):
         root = objectify.fromstring(xml)
         for img_data in root.UploadSiteHostedPicturesResponse:
             # print img_data.Ack.text
-            if img_data.Ack.text != "Failure" and img_data.CorrelationID:
+            if img_data.Ack.text != "Failure" and hasattr(img_data, "CorrelationID"):
                 ret[img_data.CorrelationID.text] = {'url': img_data.SiteHostedPictureDetails.FullURL.text, 'expire_date': img_data.SiteHostedPictureDetails.UseByDate.text}
 
         return ret
