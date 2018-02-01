@@ -4,11 +4,15 @@ import base64
 import io
 from float_compare import isclose
 from openerp import models, fields, api
+import logging
+import time
 
 SDA = "Numero riferimento spedizione"
 BRT = "Riferimenti"
 MONEY_BRT = "Euro"
 MONEY_SDA = "Importo contrassegno"
+
+_logger = logging.getLogger(__name__)
 
 
 def strip_keys(d):
@@ -29,6 +33,8 @@ class CoDRegister(models.TransientModel):
         """ imposta l'ordine con id 'order_id' per essere pagato con contrassegno se l'ordine è in draft (bozza) o in sale (lavorazione).
             Crea una fattura e un pagamento per ogni spedizione. Aggiunge spese di contrassegno.
         """
+        start_time = time.time()
+        _logger.info('CODREGISTER - %s - START' % order_id)
         order = self.env["sale.order"].search([("id", "=", order_id)])
         if order:
             if order.state == 'draft':
@@ -88,9 +94,12 @@ class CoDRegister(models.TransientModel):
                         pick = [p for p in pick_lst if (isclose(p.total_import, payment.amount, abs_tol=0.009) and not p.payment_id)]
                         if pick:
                             pick[0].payment_id = payment.id
-
+            end_time = time.time() - start_time
+            _logger.info('CODREGISTER - %s - FINISH TRUE %s' % (order_id,end_time))
             return True
 
+        end_time = time.time() - start_time
+        _logger.info('CODREGISTER - %s - FINISH TRUE %s' % (order_id,end_time))
         return False
 
 
