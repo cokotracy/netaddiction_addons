@@ -123,11 +123,10 @@ class Cron(models.Model):
 
                 for data in datas.values():
                     if data['supplier_code'] not in blacklist:
-                        if data.get('date', None):
-                            try:
-                                datetime.datetime.strptime(data['date'], '%d/%m/%Y')
-                            except ValueError:
-                                continue
+                        try:
+                            datetime.datetime.strptime(data['date'], '%d/%m/%Y')
+                        except:
+                            data['date'] = False
 
                         product_model.create(data)
 
