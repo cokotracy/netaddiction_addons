@@ -72,6 +72,8 @@ class DbLine(supplier.Supplier):
             'GTA',
             'FIG',
             'ARG',
+            'DVD',
+            'BRY',
         )
 
         assert len([category for category in categories if item['codice_fornitore'].startswith(category)]) > 0

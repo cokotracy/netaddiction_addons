@@ -124,7 +124,7 @@ class Cron(models.Model):
                 for data in datas.values():
                     if data['supplier_code'] not in blacklist:
                         try:
-                            datetime.datetime.strptime(data['date'], '%Y/%m/%d')
+                            datetime.datetime.strptime(data['date'], '%Y-%m-%d')
                         except:
                             if data.get('barcode') and data.get('date'):
                                 _logger.info(' %s Data Scartata: %s tipo: %s  ' % (data['barcode'], data['date'], type(data['date'])))
