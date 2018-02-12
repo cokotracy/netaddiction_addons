@@ -44,6 +44,7 @@ class ResetCatalog(models.Model):
                 count += 1
         print '[RESET] - Ho riattivato %s prodotti con quantità fornitore > 0' % count
 
+        print '[RESET] - Azzero tutte le quantità fornitore in attesa di octopus'
         row_supplierinfo.with_context(context).write({'avail_qty': 0})
         print '[RESET] - Ho azzerato la quantità di %s righe fornitore' % len(row_supplierinfo)
 
@@ -56,9 +57,9 @@ class ResetCatalog(models.Model):
         date_products = self.env['product.product'].search([('out_date', '>=', datetime.date.today()), ('active', '=', False)])
         count = 0
         for prod in date_products:
-            prod.active = True
+            prod.with_context(context).active = True
             if prod.qty_available_now > prod.qty_limit:
-                prod.sale_ok = True
+                prod.with_context(context).sale_ok = True
                 count += 1
         print '[RESET] - Ho messo in vendita %s su %s prodotti riattivati in prenotazione' % (count, len(date_products))
 
