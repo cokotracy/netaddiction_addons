@@ -126,6 +126,7 @@ class Cron(models.Model):
                         try:
                             datetime.datetime.strptime(data['date'], '%d/%m/%Y')
                         except:
+                            _logger.info(' %s Data Scartata: %s tipo: %s  ' % (data['barcode'], data['barcode'], type(data['barcode'])))
                             data['date'] = False
 
                         product_model.create(data)
