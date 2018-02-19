@@ -687,6 +687,8 @@ class SupplierInfo(models.Model):
             if not self.product_id.sale_ok and \
                     self.product_id.categ_id.can_auto_deactivate_products:
                 self.product_id.sale_ok = True
+                if not self.product_id.active:
+                    self.product_id.active = True
 
             if self.product_id.categ_id.auto_supplier_delay and \
                     self.delay != self.name.supplier_delivery_time:

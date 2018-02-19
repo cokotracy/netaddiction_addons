@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from openerp import api, models
+import time
 import datetime
 
 
@@ -17,6 +18,7 @@ class ResetCatalog(models.Model):
 
     @api.model
     def run_reset(self):
+        start = time.time()
         # spegnimento [active=False, sale_ok=False] tutti prodotti eccetto quelli presenti in magazzino e tipologia servizio.
         print '[RESET] - Parto ed estraggo i prodotti da disattivare'
         products_to_deactivate = self.env['product.product'].search([('qty_available', '<=', 0), ('type', '=', 'product')])
@@ -62,5 +64,6 @@ class ResetCatalog(models.Model):
                 prod.with_context(context).sale_ok = True
                 count += 1
         print '[RESET] - Ho messo in vendita %s su %s prodotti riattivati in prenotazione' % (count, len(date_products))
-
+        end = time.time()
+        print(end - start)
         return True
