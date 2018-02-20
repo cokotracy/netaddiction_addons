@@ -28,6 +28,7 @@ class ResetCatalog(models.Model):
             'mail_create_nosubscribe': True,
             'mail_notrack': True,
             'skip_notification_mail': True,
+            'skip_products_log_tracking': True
         }
         products_to_deactivate.with_context(context).write({'sale_ok': False, 'active': False})
         print '[RESET] - Ho disattivato %s prodotti' % len(products_to_deactivate)
