@@ -97,6 +97,7 @@ class Products(models.Model):
             self.med_inventory_value = 0
 
     def _product_available(self, cr, uid, ids, field_names=None, arg=False, context=None):
+        return super(Products, self)._product_available(cr, uid, ids, field_names, arg, context)
         context = context or {}
         field_names = field_names or []
 
