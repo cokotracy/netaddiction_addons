@@ -574,7 +574,7 @@ class Products(models.Model):
         today = datetime.datetime.today()
         for prod in prods:
             # spengo i prodotti che non hanno i fornitori e che non sono prenotazioni (NB i prodotti senza outdate non contano come prenotazioni)
-            if (prod.qty_sum_suppliers <= 0 and not (prod.out_date and (datetime.datetime.strptime(prod.out_date, "%Y-%m-%d") > today))):
+            if (prod.qty_sum_suppliers <= 0 and (not prod.out_date or (prod.out_date and (datetime.datetime.strptime(prod.out_date, "%Y-%m-%d") < today)))):
                 prod.sale_ok = False
 
 
