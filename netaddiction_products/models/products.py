@@ -567,6 +567,16 @@ class Products(models.Model):
 
         return False
 
+    @api.model
+    def _check_products_to_turn_off(self):
+        # prendo i prodotti vendibili ma con quantità disponibile <=0
+        prods = self.env["product.product"].search([("sale_ok", "=", True), ("qty_available_now", "<=", 0)])
+        today = datetime.datetime.today()
+        for prod in prods:
+            # spengo i prodotti che non hanno i fornitori e che non sono prenotazioni (NB i prodotti senza outdate non contano come prenotazioni)
+            if (prod.qty_sum_suppliers <= 0 and not (prod.out_date and (datetime.datetime.strptime(prod.out_date, "%Y-%m-%d") > today))):
+                prod.sale_ok = False
+
 
 class Template(models.Model):
     _inherit = 'product.template'

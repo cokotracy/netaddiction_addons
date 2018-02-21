@@ -17,5 +17,6 @@
         'views/product_product.xml',
         'views/product_template.xml',
         'views/api_set_extra_data.xml',
+        'data/products_turn_off_cron.xml',
     ]
 }
