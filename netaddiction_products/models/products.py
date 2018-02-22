@@ -248,54 +248,68 @@ class Products(models.Model):
         self.qty_available_now = int(self.qty_available) - int(self.outgoing_qty)
 
     def _search_available_now(self, operator, value):
+        domain = []
         ids = []
-        #wh = self.env['stock.location'].search([('company_id','=',self.env.user.company_id.id),('active','=',True),
-        #    ('usage','=','internal'),('scrap_location','=',False)])
-        wh = self.env.ref('stock.stock_location_stock')
-
-        search = [('location_id','=',wh.id),('reservation_id','=',False)]
-
         domain_for_zero = [('state', 'not in', ('done', 'cancel', 'draft')), ('company_id', '=', self.env.user.company_id.id)]
+        moves_out = self.env['stock.move'].read_group(domain=domain_for_zero, fields=['product_id', 'product_qty'], groupby='product_id')
+        product_ids = [prod['product_id'][0] for prod in moves_out]
+        products = self.env['product.product'].search([('id', 'in', product_ids)])
+        for prod in products:
+            qty_available_now = prod.qty_available_now
+            if operator == '<=' and qty_available_now <= value:
+                ids.append(prod.id)
+            if operator == '<' and qty_available_now < value:
+                ids.append(prod.id)
+            if operator == '>=' and qty_available_now < value:
+                ids.append(prod.id)
+            if operator == '>' and qty_available_now <= value:
+                ids.append(prod.id)
+            if operator == '=' and value >= 0 and qty_available_now != value:
+                ids.append(prod.id)
+            if operator == '=' and value < 0 and qty_available_now == value:
+                ids.append(prod.id)
 
-        if operator == '<' or operator == '<=' or operator == '=':
-            moves_out = self.env['stock.move'].read_group(domain = domain_for_zero, fields = ['product_id','product_qty'], groupby = 'product_id')
+        # caso in cui value è zero
+        if value == 0 and operator == '<=':
+            domain = ['|', ('qty_available', '<=', 0), ('id', 'in', ids)]
+        if value == 0 and operator == '<':
+            domain = [('id', 'in', ids)]
+        if value == 0 and operator == '>=':
+            available = self.env['product.product'].search([('qty_available', '>=', 0)])
+            t = [item for item in available.ids if item not in ids]
+            domain = [('id', 'in', t)]
+        if value == 0 and operator == '>':
+            available = self.env['product.product'].search([('qty_available', '>', 0)])
+            t = [item for item in available.ids if item not in ids]
+            domain = [('id', 'in', t)]
+        if value == 0 and operator == '=':
+            available = self.env['product.product'].search([('qty_available', '=', 0)])
+            t = [item for item in available.ids if item not in ids]
+            domain = [('id', 'in', t)]
 
-            for move in moves_out:
-                pid = self.env['product.product'].search([('id','=',int(move['product_id'][0]))])
-                if operator == '<' and pid.qty_available_now < value:
-                    ids.append(pid.id)
-                if operator == '<=' and pid.qty_available_now <= value:
-                    ids.append(pid.id)
-                if operator == '=' and pid.qty_available_now == value:
-                    ids.append(pid.id)
+        # caso in cui value è > 0
+        if value > 0 and (operator == '<=' or operator == '<'):
+            domain = ['|', ('qty_available', operator, value), ('id', 'in', ids)]
+        if value > 0 and (operator == '>=' or operator == '>'):
+            available = self.env['product.product'].search([('qty_available', operator, value)])
+            t = [item for item in available.ids if item not in ids]
+            domain = [('id', 'in', t)]
+        if value > 0 and operator == '=':
+            available = self.env['product.product'].search([('qty_available', '=', value)])
+            t = [item for item in available.ids if item not in ids]
+            domain = [('id', 'in', t)]
 
+        # caso in cui value è < 0
+        if value < 0 and (operator == '<=' or operator == '<'):
+            domain = [('id', 'in', ids)]
+        if value < 0 and (operator == '>=' or operator == '>'):
+            available = self.env['product.product'].search([('qty_available', operator, value)])
+            t = [item for item in available.ids if item not in ids]
+            domain = [('id', 'in', t)]
+        if value < 0 and operator == '=':
+            domain = [('id', 'in', ids)]
 
-        if operator == '>':
-            self.env.cr.execute("select product_id,sum(qty) from stock_quant where location_id = %s and reservation_id is Null and company_id = %s group by product_id having sum(qty) > %s", (wh.id,self.env.user.company_id.id,value))
-        if operator == '>=':
-            self.env.cr.execute("select product_id,sum(qty) from stock_quant where location_id = %s and reservation_id is Null and company_id = %s group by product_id having sum(qty) >= %s", (wh.id,self.env.user.company_id.id,value))
-        if operator == '=':
-            if value == 0:
-                products = self.env['product.product'].search([('qty_available','=',0),('company_id','=',self.env.user.company_id.id)])
-                for pid in products:
-                    if operator == '<' and pid.qty_available_now < value:
-                        ids.append(pid.id)
-                    if operator == '<=' and pid.qty_available_now <= value:
-                        ids.append(pid.id)
-                    if operator == '=' and pid.qty_available_now == value:
-                        ids.append(pid.id)
-
-            self.env.cr.execute("select product_id,sum(qty) from stock_quant where location_id = %s and reservation_id is Null and company_id = %s group by product_id having sum(qty) = %s", (wh.id,self.env.user.company_id.id,value))
-        if operator == '<':
-            self.env.cr.execute("select product_id,sum(qty) from stock_quant where location_id = %s and reservation_id is Null and company_id = %s group by product_id  having sum(qty) < %s", (wh.id,self.env.user.company_id.id,value))
-        if operator == '<=':
-            self.env.cr.execute("select product_id,sum(qty) from stock_quant where location_id = %s and reservation_id is Null and company_id = %s group by product_id having sum(qty) <= %s", (wh.id,self.env.user.company_id.id,value))
-
-        quants = self.env.cr.fetchall()
-        for quant in quants:
-            ids.append(quant[0])
-
-        return [('id','in',ids)]
+        return domain
 
     @api.one
     def _get_qty_suppliers(self):
