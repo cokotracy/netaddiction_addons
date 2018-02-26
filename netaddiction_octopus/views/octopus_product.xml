@@ -44,10 +44,15 @@
                         <group string="Stato">
                             <field name="is_new"/>
                         </group>
+                        <group>
+                            <button string="Cerca Immagine" type="object" name="search_image_qwant" class="oe_highlight"
+                            attrs="{'invisible': [('image', '!=', False)]}"/>
+                        </group>
                         <group string="Dettagli">
                             <field name="barcode"/>
                             <field name="name"/>
                             <field name="description"/>
+                            
                             <field name="image" widget="url"/>
                             <field name="date"/>
                             <field name="price"/>

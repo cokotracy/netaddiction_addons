@@ -10,6 +10,8 @@ from openerp.addons.decimal_precision import get_precision
 
 from ..base.downloaders import HTTPDownloader
 
+import requests, json
+
 
 _logger = logging.getLogger(__name__)
 
@@ -46,6 +48,9 @@ class Product(models.Model):
     def import_product(self):
         self.ensure_one()
         self.is_new = False
+        # eventualmente metto qua l'import dell'immagine devo farlo solo per i prodotti che non ce l'hanno
+        if not self.image:
+            self.search_image_qwant()
 
         product = self.add(active=False)
 
@@ -221,3 +226,17 @@ class Product(models.Model):
                     self.env.cr.commit()
 
                 break
+
+    @api.multi
+    def search_image_qwant(self):
+        # cerca tramite barcode un'immagine sul motore di ricerca QWANT, se la trova la mette in self.image
+        self.ensure_one()
+        barcode = self.barcode
+        url = "https://api.qwant.com/api/search/images?count=1&offset=1&q=%s" % barcode
+        headers = {
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.113 Safari/537.36',
+        }
+        data = requests.get(url, headers=headers).json()
+        if len(data['data']['result']['items']) > 0:
+            self.image = data['data']['result']['items'][0]['media']
+        return True
