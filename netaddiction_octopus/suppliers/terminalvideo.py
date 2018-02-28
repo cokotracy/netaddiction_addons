@@ -144,9 +144,11 @@ class TerminalVideo(supplier.Supplier):
         supplier_quantity=lambda self, item: item['Q.ta in stock'] or 0)
 
     def validate(self, item):
+
         assert item['Tipo record'] != 'E'
         assert float(item['Pvc'].replace(',', '.')) > 0
         assert item['Formato'] != 'Audio Cd'
+        
 
         # Name exclusion
 

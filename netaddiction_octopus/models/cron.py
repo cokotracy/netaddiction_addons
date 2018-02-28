@@ -83,6 +83,9 @@ class Cron(models.Model):
                 for item in items:
                     try:
                         handler.validate(item)
+                        # terminal video
+                        if supplier.partner_id.id == 57:
+                            assert (item['Q.ta in stock'] and int(item['Q.ta in stock']) > 0) or len(self.env['product.product'].search([('barcode', '=', item['Cod. barre'])])) > 0 or (item['Data primo rilascio'] and datetime.datetime.strptime(item['Data primo rilascio'], '%d/%m/%Y') > datetime.datetime.now())
                     except AssertionError:
                         rejected_products += 1
                         continue
@@ -123,14 +126,14 @@ class Cron(models.Model):
 
                 for data in datas.values():
                     if data['supplier_code'] not in blacklist:
-                        try:
-                            datetime.datetime.strptime(data['date'], '%Y-%m-%d')
-                        except:
-                            if data.get('barcode') and data.get('date'):
-                                _logger.info(' %s Data Scartata: %s tipo: %s  ' % (data['barcode'], data['date'], type(data['date'])))
-                            else:
-                                _logger.info('prodotto ignorato barcode: %s data: %s' % (data.get('barcode'), data.get('date')))
-                            data['date'] = False
+                        # try:
+                        #    datetime.datetime.strptime(data['date'], '%Y-%m-%d')
+                        #except:
+                            #if data.get('barcode') and data.get('date'):
+                            #    _logger.info(' %s Data Scartata: %s tipo: %s  ' % (data['barcode'], data['date'], type(data['date'])))
+                            #else:
+                            #    _logger.info('prodotto ignorato barcode: %s data: %s' % (data.get('barcode'), data.get('date')))
+                        #    data['date'] = False
 
                         product_model.create(data)
 
