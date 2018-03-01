@@ -640,6 +640,7 @@ class EbayProducts(models.Model):
 
             error_products = xml_builder.parse_revisefixed_response(xml)
             if images:
+                self._send_ebay_error_mail("%s" % images, '[EBAY] Debug Images date')
                 images_ids = images.keys()
                 for product in products_to_update:
                     id_string = "%s" % product.id
