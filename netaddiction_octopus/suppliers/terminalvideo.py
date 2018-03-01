@@ -144,9 +144,35 @@ class TerminalVideo(supplier.Supplier):
         supplier_quantity=lambda self, item: item['Q.ta in stock'] or 0)
 
     def validate(self, item):
+
         assert item['Tipo record'] != 'E'
         assert float(item['Pvc'].replace(',', '.')) > 0
         assert item['Formato'] != 'Audio Cd'
+        available = [
+            'Merchandising - Fantasy',
+            'Lego',
+            'Merchandising - Games',
+            'Merchandising - Music',
+            'Merchandising - Miscellanous',
+            'Merchandising - Anime/Manga/Comics',
+            'Merchandising - Disney',
+            'Animazione ragazzi',
+            'Film - Azione/Avventura',
+            'Film - Comico/Commedia',
+            'Film - Drammatico',
+            'Film - Family/Ragazzi',
+            'Film - Fantascienza',
+            'Film - Fantastico',
+            'Film - Giallo/Thriller',
+            'Film - Guerra',
+            'Film - Horror',
+            'Tv - serie',
+            'Animazione giapponese',
+            'Animazione adulti',
+            'Libri-Manga',
+            'Libri - Fumetti'
+        ]
+        assert item['Genere principale'] in available
 
         # Name exclusion
 
