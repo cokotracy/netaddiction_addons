@@ -13,7 +13,9 @@ SUPPLIERS = {
     # DBLine
     38: 5,
     # Esprinet
-    137: 5,
+    # 137: 5,
+    # Terminal
+    57: 5
 }
 
 SUPPLIERS_AVAILABLE = [('product_id.channelpilot', '=', False), ('product_id.sale_ok', '=', True), ('product_id.channelpilot_blacklist', '=', False)]
