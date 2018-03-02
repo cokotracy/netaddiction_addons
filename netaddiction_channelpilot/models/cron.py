@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 from openerp import api, models
-from ..settings import DOMAIN_AVAILABLE, SUPPLIERS, SUPPLIERS_AVAILABLE, OFF_DOMAIN, SUPPLIERS_OFF, FEED_DOMAIN
+from ..settings import DOMAIN_AVAILABLE, SUPPLIERS, SUPPLIERS_AVAILABLE, OFF_DOMAIN, SUPPLIERS_OFF
+
+import xml.etree.cElementTree as ET
 
 class FeedCron(models.Model):
     _name = 'netaddiction.cp.feedcron'
@@ -32,8 +34,7 @@ class FeedCron(models.Model):
         # spegno i prodotti che sono andati cin sale_ok = False
         results = self.env['product.product'].search(OFF_DOMAIN)
         if len(results) > 0:
-            # oppure lo rimuovi da cp oppure channelipilot = False
-            results.write({'channelpilot_blacklist': True})
+            results.write({'channelpilot': False})
             self.env.cr.commit()
 
         # prendo i prodotti con qty_fornitore < tot e che sono in channelpilot
@@ -42,11 +43,7 @@ class FeedCron(models.Model):
             results = self.env['product.supplierinfo'].search(domain)
             for res in results:
                 # oppure lo rimuovi da cp oppure channelipilot = False
-                res.product_id.channelpilot_blacklist = True
+                # se il prodotto non è in magazzino
+                if res.product_id.qty_available_now <= 0:
+                    res.product_id.channelpilot = False
             self.env.cr.commit()
-
-    @api.model
-    def create_feed(self):
-        # crea il feed file
-        results = self.env['product.product'].search(FEED_DOMAIN)
-        print len(results)

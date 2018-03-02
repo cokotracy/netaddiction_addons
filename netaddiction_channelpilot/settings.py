@@ -16,11 +16,11 @@ SUPPLIERS = {
     137: 5,
 }
 
-SUPPLIERS_AVAILABLE = [('product_id.channelpilot', '=', False), ('product_id.channelpilot_blacklist', '=', False), ('product_id.sale_ok', '=', True)]
+SUPPLIERS_AVAILABLE = [('product_id.channelpilot', '=', False), ('product_id.sale_ok', '=', True), ('product_id.channelpilot_blacklist', '=', False)]
 
 # SWITCH OFF
-OFF_DOMAIN = [('sale_ok', '=', False), ('channelpilot', '=', True), ('channelpilot_blacklist', '=', False)]
-SUPPLIERS_OFF = [('product_id.channelpilot', '=', True), ('product_id.channelpilot_blacklist', '=', False), ('product_id.sale_ok', '=', True)]
+OFF_DOMAIN = [('sale_ok', '=', False), ('channelpilot', '=', True)]
+SUPPLIERS_OFF = [('product_id.channelpilot', '=', True), ('product_id.sale_ok', '=', True)]
 
 # FEED
 FEED_DOMAIN = [('channelpilot', '=', True)]
