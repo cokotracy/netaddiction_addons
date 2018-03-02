@@ -549,7 +549,7 @@ class EbayProducts(models.Model):
                                 product.ebay_published_date = datetime.strptime(item["start"], "%Y-%m-%dT%H:%M:%S.%fZ")
                                 product.ebay_expiration_date = datetime.strptime(item["end"], "%Y-%m-%dT%H:%M:%S.%fZ")
                                 product.ebay_image_url = prods[prod_id]["ebay_image"]
-                                product.ebay_image_expiration_date = datetime.strptime(images[prod_id]['expire_date'], "%Y-%m-%dT%H:%M:%S.%fZ")
+                                product.ebay_image_expiration_date = datetime.strptime(images[prod_id]['expire_date'].split(".")[0], "%Y-%m-%dT%H:%M:%S")
 
             problems = [p for p in products_to_upload if "%s" % p.id not in items]
             if problems:
@@ -640,12 +640,13 @@ class EbayProducts(models.Model):
 
             error_products = xml_builder.parse_revisefixed_response(xml)
             if images:
+                self._send_ebay_error_mail("%s" % images, '[EBAY] Debug Images date')
                 images_ids = images.keys()
                 for product in products_to_update:
                     id_string = "%s" % product.id
                     if id_string not in error_products and id_string in images_ids:
                         product.ebay_image_url = prods[id_string]["ebay_image"]
-                        product.ebay_image_expiration_date = datetime.strptime(images[id_string]['expire_date'], "%Y-%m-%dT%H:%M:%S.%fZ")
+                        product.ebay_image_expiration_date = datetime.strptime(images[id_string]['expire_date'].split(".")[0], "%Y-%m-%dT%H:%M:%S")
             if error_products:
                 self._send_ebay_error_mail("errore ritornato da revise fixed price  %s %s " % (error_products, xml), '[EBAY] ERRORE errore ritornato da revise fixed price ')
                 return
