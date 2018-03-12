@@ -11,5 +11,17 @@
             <field name="model" eval="'netaddiction_octopus.cron'"/>
             <field name="function" eval="'run'"/>
         </record>
+
+        <record id="ir_cron_octopus_autoimport_action" model="ir.cron">
+            <field name="name">Octopus Autoimport</field>
+            <field name="user_id" ref="base.user_root"/>
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <field name="numbercall">-1</field>
+            <field name="doall" eval="False"/>
+            <field name="model" eval="'netaddiction_octopus.cron.autoimport'"/>
+            <field name="function" eval="'run_import'"/>
+            <field name="active" eval="False"/>
+        </record>
    </data>
 </openerp>

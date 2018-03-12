@@ -11,16 +11,11 @@
                     <button name="toggle_cp" type="object" string="CP" class="oe_stat_button" icon="fa-cloud-upload">
                       <field name="channelpilot" widget="boolean_button"/>
                     </button>
+
                     <button name="toggle_cp_blacklist" type="object" string="CP Black" class="oe_stat_button" icon="fa-minus">
                       <field name="channelpilot_blacklist" widget="boolean_button"/>
                     </button>
               </xpath>
-
-              <notebook position="inside">
-                  <page string="ChannelPilot" name="channel_pilot">
-
-                  </page>
-              </notebook>
             </field>
         </record>
     </data>

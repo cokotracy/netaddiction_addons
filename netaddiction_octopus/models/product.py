@@ -237,6 +237,7 @@ class Product(models.Model):
             'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.113 Safari/537.36',
         }
         data = requests.get(url, headers=headers).json()
-        if len(data['data']['result']['items']) > 0:
-            self.image = data['data']['result']['items'][0]['media']
+        if len(data) > 0 and 'data' in data.keys():
+            if len(data['data']['result']['items']) > 0:
+                self.image = data['data']['result']['items'][0]['media']
         return True

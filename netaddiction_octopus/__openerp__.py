@@ -16,6 +16,7 @@
         'views/octopus_supplier.xml',
         'views/octopus_product.xml',
         'views/octopus_tax.xml',
+        'views/autoimport.xml'
     ],
     'installable': True,
     'application': True,

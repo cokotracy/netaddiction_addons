@@ -17,4 +17,5 @@ class Template(models.Model):
     def toggle_cp_blacklist(self):
         for prod in self:
             prod.channelpilot_blacklist = not prod.channelpilot_blacklist
+            prod.channelpilot = False if prod.channelpilot_blacklist else True
         return True
