@@ -24,3 +24,7 @@ SUPPLIERS_OFF = [('product_id.channelpilot', '=', True), ('product_id.channelpil
 
 # FEED
 FEED_DOMAIN = [('channelpilot', '=', True)]
+
+# ACCESSI API
+MERCHANT_ID = "1RLU127HV2"
+SHOP_TOKEN = "TM1NBUL7T2TT91DBB6GJJ4PTBD"
