@@ -16,6 +16,7 @@ DISCOUNTS = {
     'PVC Distribuiti': 32,
     'Editoriali - Distribuiti': 32,
     'Editoriali - Ingrosso': 28,
+    'Editoriali - Ingrosso Plus': 28,
     'Abbigliamento': 40,
     'Musica - Ingrosso': 25,
     'Toys Dis A - R': 32,
