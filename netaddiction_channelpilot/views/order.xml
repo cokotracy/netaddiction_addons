@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+    	<record model="ir.ui.view" id="netaddiction_channelpilot_view_order">
+            <field name="name">netaddiction.channelpilot.order</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale.view_order_form"/>
+            <field name="arch" type="xml">
+                <field name="pricelist_id" position="after">
+                	<field name="from_channelpilot" readonly="1" />
+                </field>
+              <notebook position="inside">   
+                    <page name="channelpilot" string="ChannelPilot">
+                        <br/>
+                    <group name="channelpilot">
+                      <field string="Marketplace origine" name="channelpilot_marketplace" readonly="1"/>   
+                      </group> 
+                    </page>
+                </notebook> 
+            </field>
+        </record>
+    </data>
+</openerp>

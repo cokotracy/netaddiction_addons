@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data noupdate="0">
+        <!--Crea la funzionalità ed il gruppo associato-->
+        <record id="ir_cron_channel_pilot_deliveries" model="ir.cron">
+            <field name="name">CHANNELPILOT: conferma spedizioni</field>
+            <field name="user_id" ref="base.user_root"/>
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <field name="numbercall">-1</field>
+            <field eval="False" name="doall"/>
+            <field eval="'sale.order'" name="model"/>
+            <field eval="'_notify_cp_deliveries_cron'" name="function"/>
+            <field name="args" eval="'()'" />
+        </record>
+    </data>
+</openerp>
