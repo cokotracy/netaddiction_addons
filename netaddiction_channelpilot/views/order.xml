@@ -13,7 +13,12 @@
                     <page name="channelpilot" string="ChannelPilot">
                         <br/>
                     <group name="channelpilot">
-                      <field string="Marketplace origine" name="channelpilot_marketplace" readonly="1"/>   
+                      <field string="Marketplace origine" name="channelpilot_marketplace" readonly="1"/> 
+                      <field string="Order ID External" name="cp_order_id_external" readonly="1"/>
+                      <field string="Type ID" name="cp_typedID" readonly="1"/>
+                      <field string="Type ID Title" name="cp_typeTitle" readonly="1"/>
+                      <field string="Data pagamento su ChannelPilot" name="cp_original_date" readonly="1"/>
+                      <field string="Spedito ChannelPilot" name="cp_delivered" readonly="1"/> 
                       </group> 
                     </page>
                 </notebook> 

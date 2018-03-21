@@ -144,7 +144,7 @@ class ChannelPilotOrder(models.Model):
     def _create_cp_order(self, order, user, user_shipping, user_billing, client):
         """Crea l'ordine sul backoffice."""
         payment = order.payment
-        sda = self.env["delivery.carrier"].search([('name', '=', 'Corriere Espresso BRT')])[0].id
+        brt = self.env["delivery.carrier"].search([('name', '=', 'Corriere Espresso BRT')])[0].id
         journal_id = self.env['ir.model.data'].get_object('netaddiction_channelpilot', 'channel_journal').id
         cp_typedID = payment.typeID
         cp_typeTitle = payment.typeTitle
@@ -155,14 +155,15 @@ class ChannelPilotOrder(models.Model):
             'partner_shipping_id': user_shipping.id,
             'state': 'draft',
             'delivery_option': 'all',
-            'carrier_id': sda,
+            'carrier_id': brt,
             'payment_method_id': journal_id,
             'cp_typedID': cp_typedID,
             'cp_typeTitle': cp_typeTitle,
             'cp_original_date': cp_original_date,
             'from_channelpilot': True,
             'channelpilot_marketplace': order.orderHeader.source,
-            'cp_order_id_external': order.orderHeader.orderIdExternal
+            'cp_order_id_external': order.orderHeader.orderIdExternal,
+            'delivery_desired_price': order.shipping.costs.gross,
         })
         for product in order.itemsOrdered:
                 quantity = product.quantityOrdered
