@@ -32,7 +32,7 @@ class ChannelPilotOrder(models.Model):
         cp_orders = []
         problems = []
         self._send_cp_error_mail("  %s" % response, '[CHANNELPILOT -  DEBUG] getNewMarketplaceOrders result ')
-        for order in response.managedArticles:
+        for order in response.orders:
             # JUICE
             try:
                 (user, user_shipping, user_billing) = self._create_cp_customer_and_addresses(order.customer, order.addressDelivery, order.addressInvoice)
