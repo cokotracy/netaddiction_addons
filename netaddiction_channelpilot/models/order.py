@@ -35,7 +35,7 @@ class ChannelPilotOrder(models.Model):
         for order in response.orders:
             # JUICE
             try:
-                (user, user_shipping, user_billing) = self._create_cp_customer_and_addresses(order.customer, order.addressDelivery, order.addressInvoice)
+                (user, user_shipping, user_billing) = self._create_cp_customer_and_addresses(order.customer, order.addressInvoice, order.addressDelivery)
                 cp_order = self._create_cp_order(order, user, user_shipping, user_billing, client)
                 cp_orders.append(cp_order)
             except Exception as e:
@@ -69,7 +69,7 @@ class ChannelPilotOrder(models.Model):
         user = self.env["res.partner"].search([("email", "=", cp_customer.email)])
         user = user[0] if user else None
         name = cp_delivery.nameFull
-        name = name if "company" not in cp_delivery else name + " C/O " + cp_delivery.company
+        name = name if cp_delivery.company else name + " C/O " + cp_delivery.company
         country_id_1 = self.env["res.country"].search([('code', '=', cp_delivery.countryIso2)])[0]
         country_id_2 = self.env["res.country"].search([('code', '=', cp_invoice.countryIso2)])[0]
         shipping_dict = {'name': name, 'street': cp_delivery.streetTitle, 'phone': self._get_phone(cp_customer, cp_delivery), 'country_id': country_id_1.id, 'city': cp_delivery.city, 'zip': cp_delivery.zip, 'street2': cp_delivery.streetNumber}
@@ -133,11 +133,11 @@ class ChannelPilotOrder(models.Model):
 
     def _get_phone(self, cp_customer, cp_delivery):
         """Utility per il numero di telefono."""
-        if "phone" in cp_delivery and cp_delivery.phone:
+        if cp_delivery.phone:
             return cp_delivery.phone
-        elif "mobile" in cp_customer and cp_customer.mobile:
+        elif cp_customer.mobile:
             return cp_customer.mobile
-        elif "phone" in cp_customer and cp_customer.phone:
+        elif cp_customer.phone:
             return cp_customer.phone
         else:
             return None
