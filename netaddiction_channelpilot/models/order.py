@@ -145,6 +145,7 @@ class ChannelPilotOrder(models.Model):
         """Crea l'ordine sul backoffice."""
         payment = order.payment
         brt = self.env["delivery.carrier"].search([('name', '=', 'Corriere Espresso BRT')])[0].id
+        # TODO: AGGIUNGERE CONTROLLO CONTRASSEGNO PER QUANDO ANDREMO UNO SHOPPING CON CONTRASSEGNO
         journal_id = self.env['ir.model.data'].get_object('netaddiction_channelpilot', 'channel_journal').id
         cp_typedID = payment.typeID
         cp_typeTitle = payment.typeTitle
