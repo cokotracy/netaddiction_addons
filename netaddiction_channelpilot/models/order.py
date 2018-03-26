@@ -148,7 +148,7 @@ class ChannelPilotOrder(models.Model):
         brt = self.env["delivery.carrier"].search([('name', '=', 'Corriere Espresso BRT')])[0].id
         # TODO: AGGIUNGERE CONTROLLO CONTRASSEGNO PER QUANDO ANDREMO UNO SHOPPING CON CONTRASSEGNO
         journal_id = self.env['ir.model.data'].get_object('netaddiction_channelpilot', 'channel_journal').id
-        cp_typeID = payment.typeID
+        cp_typeID = payment.typeId
         cp_typeTitle = payment.typeTitle
         cp_original_date = payment.paymentTime
         bo_order = self.env["sale.order"].create({
