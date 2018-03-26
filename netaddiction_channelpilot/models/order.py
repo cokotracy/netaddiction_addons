@@ -44,7 +44,9 @@ class ChannelPilotOrder(models.Model):
             self._send_cp_error_mail(" [CHANNELPILOT -  IMPORT ORDERS] return da getNewMarketplaceOrders: %s - Questi gli ordini problematici: %s" % (response, problems), '[CHANNELPILOT -  IMPORT ORDERS] problemi nella conversione di alcuni')
 
         if cp_orders:
-            response_imported = client.service.setImportedOrders(cpAuth, cp_orders, False)
+            order_array = client.factory.create(u'CPOrderArray')
+            order_array.item = cp_orders
+            response_imported = client.service.setImportedOrders(cpAuth, order_array, False)
             if not response_imported or not response_imported.header or response_imported.header.resultCode != 200:
                 # bad shit
                 self._send_cp_error_mail(" [CHANNELPILOT -  IMPORT ORDERS] return da setImportedOrders: %s - Questo cp_deliveries: %s" % (response_imported, cp_orders), '[CHANNELPILOT -  IMPORT ORDERS] problemi nella setImportedOrders ')
@@ -146,6 +148,7 @@ class ChannelPilotOrder(models.Model):
         """Crea l'ordine sul backoffice."""
         payment = order.payment
         brt = self.env["delivery.carrier"].search([('name', '=', 'Corriere Espresso BRT')])[0].id
+        sda = self.env["delivery.carrier"].search([('name', '=', 'Corriere Espresso SDA')])[0].id
         # TODO: AGGIUNGERE CONTROLLO CONTRASSEGNO PER QUANDO ANDREMO UNO SHOPPING CON CONTRASSEGNO
         journal_id = self.env['ir.model.data'].get_object('netaddiction_channelpilot', 'channel_journal').id
         cp_typeID = payment.typeId
@@ -157,7 +160,7 @@ class ChannelPilotOrder(models.Model):
             'partner_shipping_id': user_shipping.id,
             'state': 'draft',
             'delivery_option': 'all',
-            'carrier_id': brt,
+            'carrier_id': brt if user_shipping.country_id.code == "IT" else sda,
             'payment_method_id': journal_id,
             'cp_typeID': cp_typeID,
             'cp_typeTitle': cp_typeTitle,
@@ -240,14 +243,16 @@ class ChannelPilotOrder(models.Model):
             cp_header.orderId = order.id
             cp_delivery = client.factory.create(u'CPDelivery')
             cp_delivery.orderHeader = cp_header
-            cp_delivery.carrierName = "BRT"
+            cp_delivery.carrierName = order.carrier_id.name
             cp_delivery.deliveryTime = order.picking_ids[0].date_of_shipping_home + "T12:00:00+01:00"
             cp_delivery.isDeliveryCompleted = True
             cp_delivery.trackingNumber = order.picking_ids[0].delivery_barcode
             cp_deliveries.append(cp_delivery)
 
         if cp_deliveries:
-            response_deliveries = client.service.registerDeliveries(cpAuth, cp_deliveries)
+            delivery_array = client.factory.create(u'CPDeliveryArray')
+            delivery_array.item = cp_deliveries
+            response_deliveries = client.service.registerDeliveries(cpAuth, delivery_array)
             if not response_deliveries or not response_deliveries.header or response_deliveries.header.resultCode != 200:
                 # bad shit
                 self._send_cp_error_mail(" [CHANNELPILOT -  DELIVERY] return da registerDeliveries: %s - Questi gli ordini presi in esame: %s - Questo cp_deliveries: %s" % (response_deliveries, orders, cp_deliveries), '[CHANNELPILOT -  DELIVERY] problemi nella conferma delle spedizioni ')
@@ -267,3 +272,52 @@ class ChannelPilotOrder(models.Model):
                             problems.append("Non trovo l'ordine di questo risultato: %s " % result)
                 if problems:
                     self._send_cp_error_mail(" [CHANNELPILOT -  DELIVERY] return da registerDeliveries: %s - Questi gli ordini presi in esame: %s - Questo cp_deliveries: %s - Questo è problems: %s" % (response_deliveries, orders, cp_deliveries, problems), '[CHANNELPILOT -  DELIVERY] problemi nella conferma delle spedizioni 2 ')
+
+    def _notify_cp_deliveries_cron_debug(self, order):
+        # Cron per impostare a spedito gli ordini cp
+        orders = self.env["sale.order"].search([("from_channelpilot", "=", True), ("cp_delivered", "=", False), ("id", "=", order)])
+        if not orders:
+            return []
+
+        client = Client("https://seller.api.channelpilot.com/3_0?wsdl")
+        cpAuth = client.factory.create(u'CPAuth')
+        cpAuth.merchantId = MERCHANT_ID
+        cpAuth.shopToken = SHOP_TOKEN
+        cp_deliveries = []
+        for order in orders:
+            cp_status = client.factory.create(u'CPOrderStatus')
+            cp_status.hasError = False
+            cp_header = client.factory.create(u'CPOrderHeader')
+            cp_header.orderId = order.id
+            cp_delivery = client.factory.create(u'CPDelivery')
+            cp_delivery.orderHeader = cp_header
+            cp_delivery.carrierName = order.carrier_id.name
+            cp_delivery.deliveryTime = order.picking_ids[0].date_of_shipping_home + "T12:00:00+01:00"
+            cp_delivery.isDeliveryCompleted = True
+            cp_delivery.trackingNumber = order.picking_ids[0].delivery_barcode
+            cp_deliveries.append(cp_delivery)
+
+        if cp_deliveries:
+            delivery_array = client.factory.create(u'CPDeliveryArray')
+            delivery_array.item = cp_deliveries
+            response_deliveries = client.service.registerDeliveries(cpAuth, delivery_array)
+            if not response_deliveries or not response_deliveries.header or response_deliveries.header.resultCode != 200:
+                # bad shit
+                self._send_cp_error_mail(" [CHANNELPILOT -  DELIVERY] return da registerDeliveries: %s - Questi gli ordini presi in esame: %s - Questo cp_deliveries: %s" % (response_deliveries, orders, cp_deliveries), '[CHANNELPILOT -  DELIVERY] problemi nella conferma delle spedizioni ')
+            else:
+                # alright
+                problems = []
+                for result in response_deliveries.updateResults:
+                    if result.header.resultCode != 200:
+                        # bad shit
+                        problems.append(result)
+                    else:
+                        temp = [x for x in orders if x.id == result.orderId]
+                        if temp:
+                            temp[0].cp_delivered = True
+                        else:
+                            # problemssss
+                            problems.append("Non trovo l'ordine di questo risultato: %s " % result)
+                if problems:
+                    self._send_cp_error_mail(" [CHANNELPILOT -  DELIVERY] return da registerDeliveries: %s - Questi gli ordini presi in esame: %s - Questo cp_deliveries: %s - Questo è problems: %s" % (response_deliveries, orders, cp_deliveries, problems), '[CHANNELPILOT -  DELIVERY] problemi nella conferma delle spedizioni 2 ')
+
