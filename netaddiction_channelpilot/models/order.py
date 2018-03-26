@@ -169,7 +169,7 @@ class ChannelPilotOrder(models.Model):
         })
         for product in order.itemsOrdered:
                 quantity = product.quantityOrdered
-                prod = self.env["product.product"].browse(product.article.id)
+                prod = self.env["product.product"].browse(int(product.article.id))
                 if not prod:
                     raise Exception("problema con l'ordine %s , Non si trova il prodotto %s" % (order.id, product.article.id))
                 order_line = self.env["sale.order.line"].create({
