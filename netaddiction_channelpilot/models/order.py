@@ -178,7 +178,7 @@ class ChannelPilotOrder(models.Model):
                     "product_uom_qty": quantity,
                     "product_uom": prod.uom_id.id,
                     "name": prod.display_name,
-                    "price_unit": product.costSingle,
+                    "price_unit": product.costsSingle.gross,
                 })
 
         bo_order.manual_confirm()
