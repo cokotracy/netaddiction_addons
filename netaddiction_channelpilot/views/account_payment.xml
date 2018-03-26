@@ -17,7 +17,7 @@
                             </group>
                 		<group name="loc_right" class="oe_right" col="2">
                       <field name="cp_typeTitle" attrs="{'readonly': 1}" string="Tipo CP"/>
-                      <field name="cp_typedID" attrs="{'readonly': 1}" string="ID CP"/>
+                      <field name="cp_typeID" attrs="{'readonly': 1}" string="ID CP"/>
                             </group>
                         </group> 
 
