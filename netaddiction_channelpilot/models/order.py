@@ -11,7 +11,7 @@ class ChannelPilotOrder(models.Model):
     from_channelpilot = fields.Boolean(string='Da ChannelPilot', default=False)
     channelpilot_marketplace = fields.Char(string="Marketplace ChannelPilot")
     cp_order_id_external = fields.Char(string='Id Ordine External')
-    cp_typedID = fields.Char(string='Id ChannelPilot')
+    cp_typeID = fields.Char(string='Id ChannelPilot')
     cp_typeTitle = fields.Char(string='Tipo ChannelPilot')
     cp_original_date = fields.Char(string='Data pagamento su ChannelPilot')
     cp_delivered = fields.Boolean(string='Spedito ChannelPilot', default=False)
@@ -148,7 +148,7 @@ class ChannelPilotOrder(models.Model):
         brt = self.env["delivery.carrier"].search([('name', '=', 'Corriere Espresso BRT')])[0].id
         # TODO: AGGIUNGERE CONTROLLO CONTRASSEGNO PER QUANDO ANDREMO UNO SHOPPING CON CONTRASSEGNO
         journal_id = self.env['ir.model.data'].get_object('netaddiction_channelpilot', 'channel_journal').id
-        cp_typedID = payment.typeID
+        cp_typeID = payment.typeID
         cp_typeTitle = payment.typeTitle
         cp_original_date = payment.paymentTime
         bo_order = self.env["sale.order"].create({
@@ -159,7 +159,7 @@ class ChannelPilotOrder(models.Model):
             'delivery_option': 'all',
             'carrier_id': brt,
             'payment_method_id': journal_id,
-            'cp_typedID': cp_typedID,
+            'cp_typeID': cp_typeID,
             'cp_typeTitle': cp_typeTitle,
             'cp_original_date': cp_original_date,
             'from_channelpilot': True,
