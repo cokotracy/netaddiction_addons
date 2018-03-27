@@ -7,14 +7,18 @@ window.NotifyVibrate = function(){
     WebHub.Notify.vibrate();
 }
 window.NotifyBeep = function(){
-    WebHub.Notify.beep();
+    var buzz = new Audio("https://"+window.location.hostname+"/netaddiction_warehouse/static/src/beep-05.mp3");
+    buzz.play();
+    //WebHub.Notify.beep();
 }
 window.PlayFailed = function(errorCode, errorDescription){
     alert("Play failed ("+errorCode+"): "+errorDescription);
 }
 window.NotifyPlay = function(){
     //TODO: cambiare con l'url dell'app in produzione
-    WebHub.Notify.play("https://"+window.location.hostname+"/netaddiction_warehouse/static/src/beep-03.mp3",WebHub.Folder.NONE,PlayFailed);
+    var buzz = new Audio("https://"+window.location.hostname+"/netaddiction_warehouse/static/src/beep-05.mp3");
+    buzz.play();
+    #WebHub.Notify.play("https://"+window.location.hostname+"/netaddiction_warehouse/static/src/beep-03.mp3",WebHub.Folder.NONE,PlayFailed);
 }
 window.NotifyMessage = function(message,response,function_dismissed){
     WebHub.Notify.message("",message,response,function_dismissed);
@@ -244,6 +248,8 @@ $(document).ready(function(){
                                         $('#barcode-form').before(core.qweb.render("Error",{error : 'Barcode non trovato nella lista'}));
                                     }
                                     window.setTimeout(function() {window.scrollTo('.error_msg',{duration:'slow'});}, 0);
+                                    $('#barcode').val('');
+                                    $('#barcode').focus();
                                     return true;
                                 }
 
@@ -268,6 +274,8 @@ $(document).ready(function(){
                                             }else{
                                                 $('#barcode-form').before(core.qweb.render("Error",{error : 'Prodotto già pickuppato da qualcun altro'}));
                                             }
+                                            $('#barcode').val('');
+                                            $('#barcode').focus();
                                         }else{
                                             $('.error_msg').remove();
                                             if(qty_done > 0){
@@ -288,6 +296,8 @@ $(document).ready(function(){
                                                 response_message($(this).attr('data-ids'));
                                             })
                                             window.setTimeout(function() {window.scrollTo('.error_msg',{duration:'slow'});}, 0);
+                                            $('#barcode').val('');
+                                            $('#barcode').focus();
                                             return true;
                                         }
                                     })
@@ -314,10 +324,14 @@ $(document).ready(function(){
                                             }else{
                                                 $('#barcode-form').before(core.qweb.render("Error",{error : 'Prodotto già pickuppato da qualcun altro'}));
                                             }
+                                            $('#barcode').val('');
+                                            $('#barcode').focus();
                                         }else{
                                             $('.error_msg').remove();
                                             window.shelfs = new Array();
                                             window.shelfs.push({'name' : $(products[0]).attr('data-shelf'), 'id' :$(products[0]).attr('data-shelf-id'),'qty':$(products[0]).find('.qty_for_shelf').text() })
+                                            $('#barcode').val('');
+                                            $('#barcode').focus();
                                             response_message(0);
                                         }
                                     })
