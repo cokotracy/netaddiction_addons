@@ -267,7 +267,7 @@ class ChannelPilotOrder(models.Model):
                         # bad shit
                         problems.append(result)
                     else:
-                        temp = [x for x in orders if x.id == result.orderHeader.orderId]
+                        temp = [x for x in orders if x.id == int(result.orderHeader.orderId)]
                         if temp:
                             temp[0].cp_delivered = True
                         else:
@@ -315,7 +315,7 @@ class ChannelPilotOrder(models.Model):
                         # bad shit
                         problems.append(result)
                     else:
-                        temp = [x for x in orders if x.id == result.orderHeader.orderId]
+                        temp = [x for x in orders if x.id == int(result.orderHeader.orderId)]
                         if temp:
                             temp[0].cp_delivered = True
                         else:
