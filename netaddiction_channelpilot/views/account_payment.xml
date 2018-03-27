@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <record model="ir.ui.view" id="netaddiction_view_account_payments">
+            <field name="name">netaddiction.channelpilot.payments</field>
+            <field name="model">account.payment</field>
+            <field name="inherit_id" ref="account.view_account_payment_form"/>
+            <field name="arch" type="xml">
+
+
+              <xpath expr="//group"
+                    position="after">   
+
+                      <group string="ChannelPilot" name="cp" colspan="4">
+                            <group name="loc_left" class="oe_left" col="2">
+                      <field name="cp_original_date" attrs="{'readonly': 1}" string="Data CP"/>
+                            </group>
+                		<group name="loc_right" class="oe_right" col="2">
+                      <field name="cp_typeTitle" attrs="{'readonly': 1}" string="Tipo CP"/>
+                      <field name="cp_typeID" attrs="{'readonly': 1}" string="ID CP"/>
+                            </group>
+                        </group> 
+
+                </xpath> 
+          </field>
+          </record>
+
+
+
+
+
+    </data>
+</openerp>

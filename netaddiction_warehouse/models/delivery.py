@@ -5,16 +5,22 @@ from openerp import models, fields, api
 import openerp.addons.decimal_precision as dp
 from openerp.exceptions import UserError
 from openerp.tools import float_is_zero, float_compare, DEFAULT_SERVER_DATETIME_FORMAT
-from collections import defaultdict,OrderedDict
+from collections import defaultdict, OrderedDict
 from openerp.exceptions import ValidationError
 import datetime
 import sys
 import lib_holidays
 
 class Orders(models.Model):
-    _inherit="sale.order"
+    _inherit = "sale.order"
     delivery_option = fields.Selection([('all', 'In una unica spedizione'), ('asap', 'Man mano che i prodotti sono disponibili')],
                                        string='Opzione spedizione')
+    # nuovo field inserito principalmente per le spedizioni di amazon: se questo campo è > 0.0 le spedizioni
+    # costeranno quanto il valore del campo, anche se secondo le logiche di multiplayer.com (vaucher, offerte)
+    #  avrebbero un altro costo. 
+    #  NB NON VIENE VISUALIZZATO NEL SIMULATE SHIPPING
+    #  NB2 SE IL PRODOTTO SPEDIZIONE FOSSE SOGGETTO A UNA OFFERTA CATALOGO (COSA ERRATA) delivery_desired_price non funzionerebbe
+    delivery_desired_price = fields.Float(string='prezzo desiderato per la spedizione', default=0.0)
 
     @api.multi
     def action_confirm(self):
@@ -126,14 +132,14 @@ class Orders(models.Model):
             raise ValidationError("Deve essere scelto un metodo di spedizione")
 
         free_prod_ship = []
-        if len(self.free_ship_prod)>0:
+        if len(self.free_ship_prod) > 0:
             #controlla le linee di spese gratis
             #ci vanno gli id dei prodotti
             for i in self.free_ship_prod:
                 free_prod_ship.append(i.id)
 
         sped_voucher = False
-        if len(self.offers_voucher)>0:
+        if len(self.offers_voucher) > 0:
             for i in self.offers_voucher:
                 if i.offer_type == 3:
                     sped_voucher = True
@@ -142,7 +148,7 @@ class Orders(models.Model):
         total_delivery_price = {}
 
         for pick in self.picking_ids:
-            #calcolo le spese base
+            # calcolo le spese base
             subtotal = 0
             ship_gratis = False
             for line in pick.group_id.procurement_ids:
@@ -154,31 +160,31 @@ class Orders(models.Model):
                 total_delivery_price[pick] = 0.00
             else:
                 total_delivery_price[pick] = self.carrier_id.fixed_price
-            
+
         total_ship = 0
         number_of_ship = 0
         taxes = self.carrier_id.product_id.taxes_id.filtered(lambda t: t.company_id.id == self.company_id.id)
         taxes_ids = taxes.ids
         for pick in total_delivery_price:
-            total_ship += total_delivery_price[pick]
+            price = total_delivery_price[pick] if float_compare(self.delivery_desired_price, 0.0, precision_rounding=4) <= 0 else self.delivery_desired_price
+            total_ship += price
             number_of_ship += 1
-            pick.write({'carrier_price' : total_delivery_price[pick]})
+            pick.write({'carrier_price': price})
             values = {
                 'order_id': self.id,
                 'name': self.carrier_id.name,
                 'product_uom_qty': 1,
                 'product_uom': self.carrier_id.product_id.uom_id.id,
                 'product_id': self.carrier_id.product_id.id,
-                'price_unit': total_delivery_price[pick],
+                'price_unit': price,
                 'tax_id': [(6, 0, taxes_ids)],
                 'is_delivery': True,
             }
             l = self.env['sale.order.line'].create(values)
             l.product_id_change()
-            l.write({'price_unit': total_delivery_price[pick]})
+            l.write({'price_unit': price})
 
-
-        self.write({'delivery_price' : total_ship})
+        self.write({'delivery_price': total_ship})
 
         #self.env.cr.commit()
 
