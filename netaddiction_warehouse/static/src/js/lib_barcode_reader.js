@@ -7,14 +7,18 @@ window.NotifyVibrate = function(){
     WebHub.Notify.vibrate();
 }
 window.NotifyBeep = function(){
-    WebHub.Notify.beep();
+    var buzz = new Audio("https://"+window.location.hostname+"/netaddiction_warehouse/static/src/beep-05.mp3");
+    buzz.play();
+    //WebHub.Notify.beep();
 }
 window.PlayFailed = function(errorCode, errorDescription){
     alert("Play failed ("+errorCode+"): "+errorDescription);
 }
 window.NotifyPlay = function(){
     //TODO: cambiare con l'url dell'app in produzione
-    WebHub.Notify.play("https://"+window.location.hostname+"/netaddiction_warehouse/static/src/beep-03.mp3",WebHub.Folder.NONE,PlayFailed);
+    var buzz = new Audio("https://"+window.location.hostname+"/netaddiction_warehouse/static/src/beep-05.mp3");
+    buzz.play();
+    //WebHub.Notify.play("https://"+window.location.hostname+"/netaddiction_warehouse/static/src/beep-03.mp3",WebHub.Folder.NONE,PlayFailed);
 }
 window.NotifyMessage = function(message,response,function_dismissed){
     WebHub.Notify.message("",message,response,function_dismissed);
@@ -27,7 +31,8 @@ window.submitform = function(e){
    
     barcode = $('#barcode').val();
     func = $('#barcode').attr('data-function');
-    odoo_function[func](barcode)
+    odoo_function[func](barcode);
+
 }
 
 window.response_message = function(index){
@@ -244,6 +249,8 @@ $(document).ready(function(){
                                         $('#barcode-form').before(core.qweb.render("Error",{error : 'Barcode non trovato nella lista'}));
                                     }
                                     window.setTimeout(function() {window.scrollTo('.error_msg',{duration:'slow'});}, 0);
+                                    $('#barcode').val('');
+                                    $('#barcode').focus();
                                     return true;
                                 }
 
@@ -268,6 +275,8 @@ $(document).ready(function(){
                                             }else{
                                                 $('#barcode-form').before(core.qweb.render("Error",{error : 'Prodotto già pickuppato da qualcun altro'}));
                                             }
+                                            $('#barcode').val('');
+                                            $('#barcode').focus();
                                         }else{
                                             $('.error_msg').remove();
                                             if(qty_done > 0){
@@ -288,6 +297,8 @@ $(document).ready(function(){
                                                 response_message($(this).attr('data-ids'));
                                             })
                                             window.setTimeout(function() {window.scrollTo('.error_msg',{duration:'slow'});}, 0);
+                                            $('#barcode').val('');
+                                            $('#barcode').focus();
                                             return true;
                                         }
                                     })
@@ -314,6 +325,8 @@ $(document).ready(function(){
                                             }else{
                                                 $('#barcode-form').before(core.qweb.render("Error",{error : 'Prodotto già pickuppato da qualcun altro'}));
                                             }
+                                            $('#barcode').val('');
+                                            $('#barcode').focus();
                                         }else{
                                             $('.error_msg').remove();
                                             window.shelfs = new Array();
@@ -345,6 +358,8 @@ $(document).ready(function(){
                                         }
                                         
                                         window.setTimeout(function() {window.scrollTo('.done_msg',{duration:'slow'});}, 0);
+                                        $('#barcode').val('');
+                                        $('#barcode').focus();
                                     }
                                 });
                                 
