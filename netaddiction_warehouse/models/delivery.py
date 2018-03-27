@@ -167,7 +167,6 @@ class Orders(models.Model):
         taxes_ids = taxes.ids
         for pick in total_delivery_price:
             price = total_delivery_price[pick] if float_compare(self.delivery_desired_price, 0.0, precision_rounding=4) <= 0 else self.delivery_desired_price
-            print "PRICE : %s" % price
             total_ship += price
             number_of_ship += 1
             pick.write({'carrier_price': price})

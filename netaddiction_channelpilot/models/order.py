@@ -32,6 +32,9 @@ class ChannelPilotOrder(models.Model):
         cp_orders = []
         problems = []
         self._send_cp_error_mail("  %s" % response, '[CHANNELPILOT -  DEBUG] getNewMarketplaceOrders result ')
+        if "orders" not in response:
+            # non ci sono ordini
+            return
         for order in response.orders:
             # JUICE
             try:
@@ -264,7 +267,7 @@ class ChannelPilotOrder(models.Model):
                         # bad shit
                         problems.append(result)
                     else:
-                        temp = [x for x in orders if x.id == result.orderId]
+                        temp = [x for x in orders if x.id == result.orderHeader.orderId]
                         if temp:
                             temp[0].cp_delivered = True
                         else:
@@ -312,7 +315,7 @@ class ChannelPilotOrder(models.Model):
                         # bad shit
                         problems.append(result)
                     else:
-                        temp = [x for x in orders if x.id == result.orderId]
+                        temp = [x for x in orders if x.id == result.orderHeader.orderId]
                         if temp:
                             temp[0].cp_delivered = True
                         else:
