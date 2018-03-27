@@ -6,8 +6,9 @@ window.BarcodeData = function(barcode, type, typeText) {
 window.NotifyVibrate = function(){
     WebHub.Notify.vibrate();
 }
+
 window.NotifyBeep = function(){
-    var buzz = new Audio("https://"+window.location.hostname+"/netaddiction_warehouse/static/src/beep-05.mp3");
+    var buzz = new Audio("http://localhost:8069/netaddiction_warehouse/static/src/beep-05.mp3");
     buzz.play();
     //WebHub.Notify.beep();
 }
@@ -16,9 +17,9 @@ window.PlayFailed = function(errorCode, errorDescription){
 }
 window.NotifyPlay = function(){
     //TODO: cambiare con l'url dell'app in produzione
-    var buzz = new Audio("https://"+window.location.hostname+"/netaddiction_warehouse/static/src/beep-05.mp3");
+    var buzz = new Audio("http://localhost:8069/netaddiction_warehouse/static/src/beep-05.mp3");
     buzz.play();
-    #WebHub.Notify.play("https://"+window.location.hostname+"/netaddiction_warehouse/static/src/beep-03.mp3",WebHub.Folder.NONE,PlayFailed);
+    //WebHub.Notify.play("https://"+window.location.hostname+"/netaddiction_warehouse/static/src/beep-03.mp3",WebHub.Folder.NONE,PlayFailed);
 }
 window.NotifyMessage = function(message,response,function_dismissed){
     WebHub.Notify.message("",message,response,function_dismissed);
