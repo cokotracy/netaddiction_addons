@@ -31,7 +31,8 @@ window.submitform = function(e){
    
     barcode = $('#barcode').val();
     func = $('#barcode').attr('data-function');
-    odoo_function[func](barcode)
+    odoo_function[func](barcode);
+
 }
 
 window.response_message = function(index){
@@ -330,8 +331,6 @@ $(document).ready(function(){
                                             $('.error_msg').remove();
                                             window.shelfs = new Array();
                                             window.shelfs.push({'name' : $(products[0]).attr('data-shelf'), 'id' :$(products[0]).attr('data-shelf-id'),'qty':$(products[0]).find('.qty_for_shelf').text() })
-                                            $('#barcode').val('');
-                                            $('#barcode').focus();
                                             response_message(0);
                                         }
                                     })
@@ -359,6 +358,8 @@ $(document).ready(function(){
                                         }
                                         
                                         window.setTimeout(function() {window.scrollTo('.done_msg',{duration:'slow'});}, 0);
+                                        $('#barcode').val('');
+                                        $('#barcode').focus();
                                     }
                                 });
                                 
