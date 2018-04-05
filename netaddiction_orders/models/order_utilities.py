@@ -3,7 +3,7 @@
 from openerp import models
 from openerp.addons.netaddiction_products.models.products import ProductOrderQuantityExceededLimitException, ProductOrderQuantityExceededException
 from openerp.addons.netaddiction_special_offers.models.offers_product import QtyLimitException, QtyMaxBuyableException
-import time
+
 
 LIMIT_QTY_PER_PRODUCT = 20
 
@@ -130,7 +130,6 @@ class OrderUtilities(models.TransientModel):
 
             found = False
             ol = None
-            start_time_quant = time.time()
             for line in order.order_line:
                 if line.product_id.id == product_id:
                     self.check_quantity_b2b(order, product_id, line.product_uom_qty + quantity)
@@ -143,20 +142,12 @@ class OrderUtilities(models.TransientModel):
                     ol = line
                     found = True
                     break
-            total_time_quant = time.time() - start_time_quant
 
             
             if not found:
-                start_time_b2b = time.time()
                 self.check_quantity_b2b(order, product_id, quantity)
-                total_time_b2b = time.time() - start_time_b2b
-                start_time_check = time.time()
                 prod.check_quantity_product(quantity)
-                total_time_check = time.time() - start_time_check
-                start_time_off = time.time()
                 self._check_offers_catalog(prod, quantity)
-                total_time_off = time.time() - start_time_off
-                start_time_ol = time.time()
                 ol = self.env["sale.order.line"].create({
                     "order_id": order.id,
                     "product_id": product_id,
@@ -164,12 +155,7 @@ class OrderUtilities(models.TransientModel):
                     "product_uom": prod.uom_id.id,
                     "name": prod.display_name,
                 })
-                total_time_ol = time.time() - start_time_ol
-                start_time_change = time.time()
                 ol.product_id_change()
-                total_time_change = start_time_change - time.time()
-
-            start_time_five = time.time()
 
             ret = {}
             if bonus_list:
@@ -223,8 +209,6 @@ class OrderUtilities(models.TransientModel):
                                 })
 
                                 ol_bonus.product_id_change()
-            total_time_five = start_time_five - time.time()
-            start_time_six = time.time()
             try:
                 order.extract_cart_offers()
                 order.apply_voucher()
@@ -236,10 +220,6 @@ class OrderUtilities(models.TransientModel):
 
             order._amount_all()
 
-            total_time_six = start_time_six - time.time()
-
-            message = "check_quantity_b2b: %s check_qty_product: %s _check_offers_catalog: %s Creazione OrderLine: %s product_id_change: %s Bonuslist ha valore: %s Six: %s" % (total_time_b2b, total_time_check, total_time_off, total_time_ol, total_time_change, bonus_list, total_time_six)
-            self._send_debug_mail(message, "DEBUG TEMPI B2B")
 
             return ret
 
