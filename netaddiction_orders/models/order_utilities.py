@@ -100,7 +100,7 @@ class OrderUtilities(models.TransientModel):
         
         """
 
-        start_time_one = time.time()
+
         if quantity <= 0:
             raise QuantityLessThanZeroException()
 
@@ -112,10 +112,9 @@ class OrderUtilities(models.TransientModel):
         if not prod or not prod.active:
             raise ProductNotActiveAddToCartException(product_id, "add_to_cart")
 
-        total_time_one = time.time() - start_time_one
 
         if order and order.partner_id.id == partner_id and order.state == "draft":
-            start_time_two = time.time()
+            
             # se il prodotto è spento o esaurito eccezione
             if not prod.sale_ok:
                 if not self.env.context.get('no_check_product_sold_out', False):
@@ -127,11 +126,11 @@ class OrderUtilities(models.TransientModel):
             order.reset_cart()
             order.reset_voucher()
 
-            total_time_two = start_time_two - time.time()
+            
 
             found = False
             ol = None
-            start_time_three = time.time()
+            start_time_quant = time.time()
             for line in order.order_line:
                 if line.product_id.id == product_id:
                     self.check_quantity_b2b(order, product_id, line.product_uom_qty + quantity)
@@ -144,13 +143,20 @@ class OrderUtilities(models.TransientModel):
                     ol = line
                     found = True
                     break
-            total_time_three = start_time_three - time.time()
+            total_time_quant = time.time() - start_time_quant
 
-            start_time_four = time.time()
+            
             if not found:
+                start_time_b2b = time.time()
                 self.check_quantity_b2b(order, product_id, quantity)
+                total_time_b2b = time.time() - start_time_b2b
+                start_time_check = time.time()
                 prod.check_quantity_product(quantity)
+                total_time_check = time.time() - start_time_check
+                start_time_off = time.time()
                 self._check_offers_catalog(prod, quantity)
+                total_time_off = time.time() - start_time_off
+                start_time_ol = time.time()
                 ol = self.env["sale.order.line"].create({
                     "order_id": order.id,
                     "product_id": product_id,
@@ -158,9 +164,10 @@ class OrderUtilities(models.TransientModel):
                     "product_uom": prod.uom_id.id,
                     "name": prod.display_name,
                 })
-
+                total_time_ol = time.time() - start_time_ol
+                start_time_change = time.time()
                 ol.product_id_change()
-            total_time_four = start_time_four - time.time()
+                total_time_change = start_time_change - time.time()
 
             start_time_five = time.time()
 
@@ -231,7 +238,7 @@ class OrderUtilities(models.TransientModel):
 
             total_time_six = start_time_six - time.time()
 
-            message = "One: %s Two: %s Three: %s Four: %s Five: %s Six: %s" % (total_time_one, total_time_two, total_time_three, total_time_four, total_time_five, total_time_six)
+            message = "check_quantity_b2b: %s check_qty_product: %s _check_offers_catalog: %s Creazione OrderLine: %s product_id_change: %s Bonuslist ha valore: %s Six: %s" % (total_time_b2b, total_time_check, total_time_off, total_time_ol, total_time_change, bonus_list, total_time_six)
             if order.partner_id.is_b2b:
                 self._send_debug_mail(message, "DEBUG TEMPI B2B")
 
