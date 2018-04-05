@@ -239,8 +239,7 @@ class OrderUtilities(models.TransientModel):
             total_time_six = start_time_six - time.time()
 
             message = "check_quantity_b2b: %s check_qty_product: %s _check_offers_catalog: %s Creazione OrderLine: %s product_id_change: %s Bonuslist ha valore: %s Six: %s" % (total_time_b2b, total_time_check, total_time_off, total_time_ol, total_time_change, bonus_list, total_time_six)
-            if order.partner_id.is_b2b:
-                self._send_debug_mail(message, "DEBUG TEMPI B2B")
+            self._send_debug_mail(message, "DEBUG TEMPI B2B")
 
             return ret
 
