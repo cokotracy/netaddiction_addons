@@ -3,6 +3,7 @@
 from openerp import models
 from openerp.addons.netaddiction_products.models.products import ProductOrderQuantityExceededLimitException, ProductOrderQuantityExceededException
 from openerp.addons.netaddiction_special_offers.models.offers_product import QtyLimitException, QtyMaxBuyableException
+import time
 
 LIMIT_QTY_PER_PRODUCT = 20
 
@@ -98,6 +99,8 @@ class OrderUtilities(models.TransientModel):
         -QuantityOverLimitException se quantity > LIMIT_QTY_PER_PRODUCT e cliente non b2b
         
         """
+
+        start_time_one = time.time()
         if quantity <= 0:
             raise QuantityLessThanZeroException()
 
@@ -109,8 +112,10 @@ class OrderUtilities(models.TransientModel):
         if not prod or not prod.active:
             raise ProductNotActiveAddToCartException(product_id, "add_to_cart")
 
-        if order and order.partner_id.id == partner_id and order.state == "draft":
+        total_time_one = time.time() - start_time_one
 
+        if order and order.partner_id.id == partner_id and order.state == "draft":
+            start_time_two = time.time()
             # se il prodotto è spento o esaurito eccezione
             if not prod.sale_ok:
                 if not self.env.context.get('no_check_product_sold_out', False):
@@ -122,8 +127,11 @@ class OrderUtilities(models.TransientModel):
             order.reset_cart()
             order.reset_voucher()
 
+            total_time_two = start_time_two - time.time()
+
             found = False
             ol = None
+            start_time_three = time.time()
             for line in order.order_line:
                 if line.product_id.id == product_id:
                     self.check_quantity_b2b(order, product_id, line.product_uom_qty + quantity)
@@ -136,7 +144,9 @@ class OrderUtilities(models.TransientModel):
                     ol = line
                     found = True
                     break
+            total_time_three = start_time_three - time.time()
 
+            start_time_four = time.time()
             if not found:
                 self.check_quantity_b2b(order, product_id, quantity)
                 prod.check_quantity_product(quantity)
@@ -150,6 +160,9 @@ class OrderUtilities(models.TransientModel):
                 })
 
                 ol.product_id_change()
+            total_time_four = start_time_four - time.time()
+
+            start_time_five = time.time()
 
             ret = {}
             if bonus_list:
@@ -203,7 +216,8 @@ class OrderUtilities(models.TransientModel):
                                 })
 
                                 ol_bonus.product_id_change()
-
+            total_time_five = start_time_five - time.time()
+            start_time_six = time.time()
             try:
                 order.extract_cart_offers()
                 order.apply_voucher()
@@ -214,6 +228,12 @@ class OrderUtilities(models.TransientModel):
                 raise e
 
             order._amount_all()
+
+            total_time_six = start_time_six - time.time()
+
+            message = "One: %s Two: %s Three: %s Four: %s Five: %s Six: %s" % (total_time_one, total_time_two, total_time_three, total_time_four, total_time_five, total_time_six)
+            if order.partner_id.is_b2b:
+                self._send_debug_mail(message, "DEBUG TEMPI B2B")
 
             return ret
 
@@ -407,6 +427,21 @@ class OrderUtilities(models.TransientModel):
                 raise QtyLimitException(product.name, product.id, offer_line.offer_catalog_id.id, offer_line.qty_limit, qty_ordered, offer_line.qty_selled)
             elif offer_line.qty_max_buyable > 0 and qty_ordered > offer_line.qty_max_buyable:
                 raise QtyMaxBuyableException(product.name, product.id, offer_line.offer_catalog_id.id, offer_line.qty_max_buyable, qty_ordered)
+
+    def _send_debug_mail(self, body, subject):
+        """
+        utility invio mail tempi
+        """
+        values = {
+            'subject': subject,
+            'body_html': body,
+            'email_from': "shopping@multiplayer.com",
+            # TODO 'email_to': "ecommerce-servizio@netaddiction.it",
+            'email_to': "andrea.bozzi@netaddiction.it, matteo.piciucchi@netaddiction.it",
+        }
+
+        email = self.env['mail.mail'].create(values)
+        email.send()
 
 
 class ProductNotActiveAddToCartException(Exception):
