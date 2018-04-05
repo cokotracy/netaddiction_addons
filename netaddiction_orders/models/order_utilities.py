@@ -157,30 +157,17 @@ class OrderUtilities(models.TransientModel):
                 self._check_offers_catalog(prod, quantity)
                 total_time_off = time.time() - start_time_off
                 start_time_ol = time.time()
-                if order.is_b2b:
-                    attrs_ol = {
-                        "order_id": order.id,
-                        "product_id": product_id,
-                        "product_uom_qty": quantity,
-                        "product_uom": prod.uom_id.id,
-                        "name": prod.display_name,
-                    }
-                    order.write({'order_line': [(0, False, attrs_ol)]})
-                    total_time_ol = time.time() - start_time_ol
-                    start_time_change = time.time()
-                    total_time_change = start_time_change - time.time()
-                else:
-                    ol = self.env["sale.order.line"].create({
-                        "order_id": order.id,
-                        "product_id": product_id,
-                        "product_uom_qty": quantity,
-                        "product_uom": prod.uom_id.id,
-                        "name": prod.display_name,
-                    })
-                    total_time_ol = time.time() - start_time_ol
-                    start_time_change = time.time()
-                    ol.product_id_change()
-                    total_time_change = start_time_change - time.time()
+                ol = self.env["sale.order.line"].create({
+                    "order_id": order.id,
+                    "product_id": product_id,
+                    "product_uom_qty": quantity,
+                    "product_uom": prod.uom_id.id,
+                    "name": prod.display_name,
+                })
+                total_time_ol = time.time() - start_time_ol
+                start_time_change = time.time()
+                ol.product_id_change()
+                total_time_change = start_time_change - time.time()
 
             start_time_five = time.time()
 
