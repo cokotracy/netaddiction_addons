@@ -132,6 +132,8 @@ class product_pricelist(models.Model):
             'context': self.env.context}
 
     def _price_rule_get_multi(self, cr, uid, pricelist, products_by_qty_by_partner, context=None):
+        import time
+        start_time = time.time()
         """
         Serve a dare il prezzo corretto alla pricelist: se l'offer_price è inferiore al prezzo dell'attuale pricelist
         allore restituisco l'offer price.
@@ -171,8 +173,21 @@ class product_pricelist(models.Model):
                     real_price = obj.special_price if (obj.special_price > 0 and obj.special_price < real_price) else real_price
                     real_price = obj.offer_price if (obj.offer_price > 0 and obj.offer_price < real_price) else real_price
                     results[pid] = (real_price, pricelist_line)
+        end_time = time.time()
+        sec = end_time - start_time
+        message = 'Esecuzione price_rule_get_multi: %s' % sec
+        values = {
+            'subject': 'DEBUG TEMPO PRICE RULE GET MULTI',
+            'body_html': message,
+            'email_from': "shopping@multiplayer.com",
+            # TODO 'email_to': "ecommerce-servizio@netaddiction.it",
+            'email_to': "andrea.bozzi@netaddiction.it, matteo.piciucchi@netaddiction.it",
+        }
 
+        email = self.pool('mail.mail').create(cr, uid, values, context=context)
+        self.pool('mail.mail').browse(cr, uid, [email], context=context).send()
         return results
+
 
     @api.model
     def cron_updater(self):
