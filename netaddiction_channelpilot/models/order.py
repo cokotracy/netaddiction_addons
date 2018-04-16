@@ -77,8 +77,8 @@ class ChannelPilotOrder(models.Model):
         name = name if not cp_delivery.company else name + " C/O " + cp_delivery.company
         country_id_1 = self.env["res.country"].search([('code', '=', cp_delivery.countryIso2)])[0]
         country_id_2 = self.env["res.country"].search([('code', '=', cp_invoice.countryIso2)])[0]
-        shipping_dict = {'name': name, 'street': cp_delivery.streetTitle, 'phone': self._get_phone(cp_customer, cp_delivery), 'country_id': country_id_1.id, 'city': cp_delivery.city, 'zip': cp_delivery.zip, 'street2': cp_delivery.streetNumber}
-        billing_dict = {'name': name, 'street': cp_invoice.streetTitle, 'phone': self._get_phone(cp_customer, cp_invoice), 'country_id': country_id_2.id, 'city': cp_invoice.city, 'zip': cp_invoice.zip, 'street2': cp_invoice.streetNumber}
+        shipping_dict = {'name': name, 'street': cp_delivery.streetTitle, 'phone': self._get_phone(cp_customer, cp_delivery), 'country_id': country_id_1.id, 'city': cp_delivery.city, 'zip': cp_delivery.zip, 'street2': cp_delivery.streetNumber, 'state_id': self._get_state(cp_delivery.state)}
+        billing_dict = {'name': name, 'street': cp_invoice.streetTitle, 'phone': self._get_phone(cp_customer, cp_invoice), 'country_id': country_id_2.id, 'city': cp_invoice.city, 'zip': cp_invoice.zip, 'street2': cp_invoice.streetNumber, 'state_id': self._get_state(cp_invoice.state)}
         user_shipping = None
         user_billing = None
         if user:
@@ -102,7 +102,7 @@ class ChannelPilotOrder(models.Model):
             else:
                 billing_dict['company_id'] = user.company_id.id
                 billing_dict['is_company'] = False
-                billing_dict['type'] = 'delivery'
+                billing_dict['type'] = 'invoice'
                 billing_dict['customer'] = True
                 billing_dict['parent_id'] = user.id
                 user_billing = self.env["res.partner"].create(billing_dict)
@@ -127,7 +127,7 @@ class ChannelPilotOrder(models.Model):
             shipping_dict['from_channelpilot'] = True
             billing_dict['company_id'] = user.company_id.id
             billing_dict['is_company'] = False
-            billing_dict['type'] = 'delivery'
+            billing_dict['type'] = 'invoice'
             billing_dict['customer'] = True
             billing_dict['parent_id'] = user.id
             billing_dict['from_channelpilot'] = True
@@ -146,6 +146,13 @@ class ChannelPilotOrder(models.Model):
             return cp_customer.phone
         else:
             return None
+
+    def _get_state(self, state):
+        if state:
+            res = self.env["res.better.zip"].search([("name", "=", state)])
+            if res:
+                return res[0].state_id.id
+        return None
 
     def _create_cp_order(self, order, user, user_shipping, user_billing, client):
         """Crea l'ordine sul backoffice."""
