@@ -11,40 +11,103 @@ from ftplib import FTP
 import StringIO
 import io
 
+SPECIAL_CHARS = {
+    # GRAVE
+    u'À': u'A',
+    u'È': u'E',
+    u'Ì': u'I',
+    u'Ò': u'O',
+    u'Ù': u'U',
+    u'à': u'a',
+    u'è': u'e',
+    u'ì': u'i',
+    u'ò': u'o',
+    u'ù': u'u',
+    # ACUTE
+    u'Á': u'A',
+    u'É': u'E',
+    u'Í': u'I',
+    u'Ó': u'O',
+    u'Ú': u'U',
+    u'Ý': u'Y',
+    u'á': u'a',
+    u'é': u'e',
+    u'í': u'i',
+    u'ó': u'o',
+    u'ú': u'u',
+    u'ý': u'y',
+    # CIRCUMFLEX
+    u'Â': u'A',
+    u'Ê': u'E',
+    u'Î': u'I',
+    u'Ô': u'O',
+    u'Û': u'U',
+    u'â': u'a',
+    u'ê': u'e',
+    u'î': u'i',
+    u'ô': u'o',
+    u'û': u'u',
+    # TILDE
+    u'Ã': u'A',
+    u'Ñ': u'N',
+    u'Õ': u'O',
+    u'ã': u'a',
+    u'ñ': u'n',
+    u'õ': u'o',
+    # UMLAUT
+    u'Ä': u'AE',
+    u'Ë': u'E',
+    u'Ï': u'I',
+    u'Ö': u'OE',
+    u'Ü': u'UE',
+    u'Ÿ': u'Y',
+    u'ä': u'ae',
+    u'ë': u'e',
+    u'ï': u'i',
+    u'ö': u'oe',
+    u'ü': u'ue',
+    u'ÿ': u'y',
+    # OTHER FOREIGN CHARACTERS,
+    u'¡': '!',
+    u'¿': '?',
+    u'Ç': 'c',
+    u'ç': 'c',
+    u'Œ': 'OE',
+    u'œ': 'oe',
+    u'ß': 'ss',
+    u'Ø': 'O',
+    u'ø': 'o',
+    u'Å': 'A',
+    u'å': 'a',
+    u'Æ': 'AE',
+    u'æ': 'ae',
+    u'Þ': '',
+    u'þ': '',
+    u'Ð': '',
+    u'ð': '',
+    u'«': '',
+    u'»': '',
+    u'‹': '',
+    u'›': '',
+    u'Š': 'S',
+    u'š': 's',
+    u'Ž': 'Z',
+    u'ž': 'z',
+    # CURRENCY SYMBOLS
+    u'¢': '',
+    u'£': '',
+    u'€': '',
+    u'¥': '',
+    u'ƒ': '',
+    u'¤': '',
+}
+
+
 def replace_vowels(text):
     """
     Sostituisce le vocali accentate con le corrispondenti non accentate
-    """         
-    return text.replace(u"à", u'a'
-        ).replace(u"á", u'a'
-        ).replace(u"ä", u'a'
-        ).replace(u"ã", u"a"
-        ).replace(u"â", u"a"
-        ).replace(u"è", u"e"
-        ).replace(u"é", u"e"
-        ).replace(u"ë", u"e"
-        ).replace(u"ê", u"e"
-        ).replace(u"ì", u"i"
-        ).replace(u"î", u"i"
-        ).replace(u"í", u"i"
-        ).replace(u"ï", u"i"
-        ).replace(u"ò", u"o"
-        ).replace(u"ô", u"o"
-        ).replace(u"ó", u"o"
-        ).replace(u"õ", u"o"
-        ).replace(u"ö", u"o"
-        ).replace(u"ù", u'u' 
-        ).replace(u"û", u'u' 
-        ).replace(u"ü", u"u"
-        ).replace(u"°", u''
-        ).replace(u"č", u"c"
-        ).replace(u"ú", u"u"
-        ).replace(u'È', u'E'
-        ).replace(u'É', u'E'
-        ).replace(u'À', u'A'
-        ).replace(u'Ù', u'U'
-        ).replace(u'Ò', u'O'
-        ).replace(u'Ì', u'I')
+    """
+    return "".join([SPECIAL_CHARS[char] if char in SPECIAL_CHARS.keys() else char for char in text])
 
 
 def cleanWinChars(text):
@@ -161,6 +224,8 @@ class NetaddictionManifest(models.Model):
 
         for delivery in self.delivery_ids:
             if delivery.delivery_read_manifest:
+                nation = delivery.sale_id.partner_shipping_id.country_id.code
+
                 payment = delivery.sale_order_payment_method
 
                 riga = 'CLI120522416' #CODICE IDENTIFICATIVO
@@ -174,13 +239,20 @@ class NetaddictionManifest(models.Model):
                 riga += ' '*count
                 riga += datetime.date.today().strftime('%Y%m%d')
                 riga += 'P'
-                riga += 'NETA30'
+
+                # ESTERO CODICE MITTENTE CAMPO 9
+                if nation == 'IT':
+                    riga += 'NETA30'
+                else:
+                    riga += '      '
+                # FINE ESTERO                
+
                 riga += ' '*14
                 azienda = 'NetAddiction srl'
                 riga += azienda
                 count = 40 - len(azienda)
                 riga += ' '*count
-                capo = 'Riccardo Ioni'
+                capo = 'Andrea Alunni'
                 riga += capo
                 count = 20 - len(capo)
                 riga += ' '*count
@@ -246,7 +318,12 @@ class NetaddictionManifest(models.Model):
                     mobile = mobile.replace('+39','')
                     mobile = mobile[0:15]
                 else:
-                    mobile = ' '*15
+                    # ESTERO TEELFONO
+                    if nation == 'IT':
+                        mobile = ' '*15
+                    else:
+                        mobile = '1'*15
+                    # FINE ESTERO
 
                 riga += mobile
                 count = 15 - len(mobile)
@@ -284,7 +361,14 @@ class NetaddictionManifest(models.Model):
                 riga += "001"
                 riga += "0001000"
                 riga += '0'*15
-                riga += 'EXT'
+
+                # ESTERO CODICE SERVIZIO CAMPO 34
+                if nation == 'IT':
+                    riga += 'EXT'
+                else:
+                    riga += 'EUD'
+                # FINE ESTERO
+
                 riga += ' '*40
                 riga += 'EU'
 
@@ -302,24 +386,75 @@ class NetaddictionManifest(models.Model):
                 else:
                     riga += ' '*12
 
-                riga += ' '*30
+                riga += ' ' * 30
                 riga += "0000516.46"
                 riga += delivery.delivery_barcode #numero spedizione
                 count = 25 - len(delivery.delivery_barcode)
-                riga += ' '*count
+                riga += ' ' * count
                 riga += 'TR'
-                riga += 'Varie'
-                count = 30 - len('Varie')
-                riga += ' '*count
+
+                # ESTERO CONTENUTO CAMPO 44
+                if nation == 'IT':
+                    riga += 'Varie'
+                    count = 30 - len('Varie')
+                else:
+                    riga += 'Videogames action figures'
+                    count = 30 - len('Videogames action figures')
+                # FINE ESTERO
+
+                riga += ' ' * count
                 riga += 'P'
-                riga += ' '*3
-                riga += ' '*3
-                riga += ' '*10
+
+                # ESTERO NAZIONE MITTENTE CAMPO 46
+                if nation == 'IT':
+                    riga += ' ' * 3
+                else:
+                    riga += 'IT '
+                # FINE ESTERO
+
+                # ESTERO NAZIONE DESTINATARIO
+                if nation == 'IT':
+                    riga += ' ' * 3
+                else:
+                    riga += nation + ' '
+                # FINE ESTERO
+
+                riga += ' ' * 10
                 riga += 'MGCS'
-                riga += ' '*5
+                riga += ' ' * 5
                 riga += ' '
                 riga += '03'
-                riga += ' '*20
+                riga += ' ' * 20
+
+                riga += ' ' * 3
+
+                # ESTERO EMAIL CLIENTE
+                if delivery.sale_id.partner_id.email:
+                    email_customer = delivery.sale_id.partner_id.email[0:50]
+                else:
+                    email_customer = 'example_ex@exampleit.ad'
+                if nation == 'IT':
+                    riga += ' '* 50
+                else:
+                    riga += email_customer
+                    count = 50 - len(email_customer)
+                    riga += ' ' * count
+                # ESTERO NUMERO TELEFONO CLIENTE
+                mobile = ''
+                if delivery.sale_id.partner_id.mobile:
+                    mobile = delivery.sale_id.partner_id.mobile.replace(' ','')
+                    mobile = mobile[0:14]
+                    mobile = mobile.replace('+', '').zfill(14)
+                riga += mobile
+                count = 14 - len(mobile)
+                riga += ' ' * count
+                riga += ' ' * 4
+                if nation == 'IT':
+                    riga += ' ' * 2
+                else:
+                    riga += 'C '
+                riga += ' ' * 79
+
                 riga += '\r\n'
                 file1.write(riga)
 
