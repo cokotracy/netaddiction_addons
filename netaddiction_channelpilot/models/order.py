@@ -254,7 +254,9 @@ class ChannelPilotOrder(models.Model):
             cp_delivery = client.factory.create(u'CPDelivery')
             cp_delivery.orderHeader = cp_header
             cp_delivery.carrierName = order.carrier_id.name
-            cp_delivery.deliveryTime = order.picking_ids[0].date_of_shipping_home + "T12:00:00+01:00"
+            split = order.picking_ids[0].date_done.split(" ")
+            cp_delivery.deliveryTime = split[0] + "T" + split[1] + "+01:00"
+            # cp_delivery.deliveryTime = order.picking_ids[0].date_of_shipping_home + "T12:00:00+01:00"
             cp_delivery.isDeliveryCompleted = True
             cp_delivery.trackingNumber = order.picking_ids[0].delivery_barcode
             cp_deliveries.append(cp_delivery)
@@ -302,7 +304,9 @@ class ChannelPilotOrder(models.Model):
             cp_delivery = client.factory.create(u'CPDelivery')
             cp_delivery.orderHeader = cp_header
             cp_delivery.carrierName = order.carrier_id.name
-            cp_delivery.deliveryTime = order.picking_ids[0].date_of_shipping_home + "T12:00:00+01:00"
+            split = order.picking_ids[0].date_done.split(" ")
+            cp_delivery.deliveryTime = split[0] + "T" + split[1] + "+01:00"
+            # cp_delivery.deliveryTime = order.picking_ids[0].date_of_shipping_home + "T12:00:00+01:00"
             cp_delivery.isDeliveryCompleted = True
             cp_delivery.trackingNumber = order.picking_ids[0].delivery_barcode
             cp_deliveries.append(cp_delivery)
