@@ -1127,11 +1127,11 @@ class EbayProducts(models.Model):
     def _build_category_dictionary(self):
         return {
             self.env["product.category"].search([("name", "=", "Abbigliamento")]).id: "183742",
-            self.env["product.category"].search([("name", "=", "Figures")]).id: "246",
+            self.env["product.category"].search([("name", "=", "Figures")]).id: "158666",
             self.env["product.category"].search([("name", "=", "Film e Serie TV")]).id: "617",
             self.env["product.category"].search([("name", "=", "Gadget")]).id: {
-                self.env["product.attribute.value"].search([("name", "=", "Portachiavi")]).id: "47137",
-                0: "1383"
+                self.env["product.attribute.value"].search([("name", "=", "Portachiavi")]).id: "72192",
+                0: "8894"
             },
             self.env["product.category"].search([("name", "=", "Giochi")]).id: {
                 self.env["product.attribute.value"].search([("name", "=", "Giochi da Tavolo")]).id: "2550",
@@ -1164,14 +1164,13 @@ class EbayProducts(models.Model):
             self._send_ebay_error_mail(" %s  ****  %s  PRODUCT_ID: %s" % (traceback.format_exc(), ''.join(traceback.format_stack()), e), '[EBAY] ECCEZIONE lanciata da _upload_new_products_to_ebay ')
 
         try:
-            self._update_products_on_ebay()
-        except Exception as e:
-            self._send_ebay_error_mail(" %s  ****  %s" % (traceback.format_exc(), ''.join(traceback.format_stack())), '[EBAY] ECCEZIONE lanciata da _update_products_on_ebay ')
-
-        try:
             self._get_ebay_orders()
         except Exception as e:
             self._send_ebay_error_mail(" %s  ****  %s" % (traceback.format_exc(), ''.join(traceback.format_stack())), '[EBAY] ECCEZIONE lanciata da _get_ebay_orders ')
+        try:
+            self._update_products_on_ebay()
+        except Exception as e:
+            self._send_ebay_error_mail(" %s  ****  %s" % (traceback.format_exc(), ''.join(traceback.format_stack())), '[EBAY] ECCEZIONE lanciata da _update_products_on_ebay ')
         try:
             self._end_products_on_ebay()
         except Exception as e:

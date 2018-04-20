@@ -216,7 +216,7 @@ class EbayXMLBuilder(models.TransientModel):
             product_listing_details = etree.SubElement(item, "ProductListingDetails")
             # include_ebay_details = etree.SubElement(product_listing_details, "IncludeeBayProductDetails")
             # include_ebay_details.text = "false"
-            if prod["ebay_category"] not in ["139973", "180277", "183742", "246", "268"]:
+            if prod["ebay_category"] not in ["139973", "180277", "183742", "246", "171228"]:
                 # prodotti non videogiochi non gadget
                 name_value = etree.SubElement(product_listing_details, "NameValueList")
                 name1 = etree.SubElement(name_value, "Name")
