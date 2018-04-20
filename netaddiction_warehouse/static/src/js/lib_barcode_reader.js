@@ -40,8 +40,9 @@ window.response_message = function(index){
     var href = window.location.href;
     var wave_id = href.substr(href.lastIndexOf('/') + 1);
     wave_id = wave_id.replace(/\D/g,'');
-    console.log(wave_id)
-    odoo_function['set_pick_up'](wave_id,window.shelfs[index]['id'],$('#barcode').val(),window.shelfs[index]['qty'])
+    odoo_function['set_pick_up'](wave_id,window.shelfs[index]['id'],$('#barcode').val(),window.shelfs[index]['qty']);
+    $('#barcode').val('');
+    $('#barcode').focus();
 }
 
 
@@ -297,8 +298,7 @@ $(document).ready(function(){
                                                 response_message($(this).attr('data-ids'));
                                             })
                                             window.setTimeout(function() {window.scrollTo('.error_msg',{duration:'slow'});}, 0);
-                                            $('#barcode').val('');
-                                            $('#barcode').focus();
+                                            
                                             return true;
                                         }
                                     })
