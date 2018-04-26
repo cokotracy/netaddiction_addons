@@ -110,7 +110,7 @@ class ChannelPilotOrder(models.Model):
             # creare user e indirizzo che sega
             company_id = self.env["res.company"].search([("name", "=", "Multiplayer.com")])[0].id
             user = self.env["res.partner"].create({
-                'name': cp_customer.nameFull,
+                'name': cp_delivery.nameFull,
                 'company_id': company_id,
                 'email': cp_customer.email,
                 'is_company': True,
