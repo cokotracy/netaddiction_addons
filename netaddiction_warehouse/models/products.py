@@ -87,44 +87,43 @@ class Products(models.Model):
         """
 
         holiday = lib_holidays.LibHolidays()
-        res = self.env["ir.values"].search([("name","=","hour_available")])
+        res = self.env["ir.values"].search([("name", "=", "hour_available")])
         ha = '16:00'
         for r in res:
             ha = r.value
-        hour_available = datetime.datetime.time(datetime.datetime.strptime(ha , '%H:%M'))
+        hour_available = datetime.datetime.time(datetime.datetime.strptime(ha, '%H:%M'))
 
         hna = '14:00'
-        res = self.env["ir.values"].search([("name","=","hour_not_available")])
+        res = self.env["ir.values"].search([("name", "=", "hour_not_available")])
         for r in res:
             hna = r.value
-        hour_not_available = datetime.datetime.time(datetime.datetime.strptime(hna , '%H:%M'))
+        hour_not_available = datetime.datetime.time(datetime.datetime.strptime(hna, '%H:%M'))
 
-        time_now = datetime.datetime.time(datetime.datetime.now(tz = pytz.timezone(self.env.user.tz)))
-      
-        #per prima cosa controllo se sono dopo hour_available
-        #aggiungo un giorno di processing
+        time_now = datetime.datetime.time(datetime.datetime.now(tz=pytz.timezone(self.env.user.tz)))
+        today = datetime.datetime.now(tz=pytz.timezone(self.env.user.tz)).date()
+
+        # per prima cosa controllo se sono dopo hour_available
+        # aggiungo un giorno di processing
         if shipping == 0 and time_now > hour_available:
             shipping += 1
-        #se invece non ce l'ho disponibile in magazzino controllo se sono dopo hour_not_available
-        #nel caso dovessi ordinarlo dal fornitore aggiungo un giorno di processing
-        
-        
+        # se invece non ce l'ho disponibile in magazzino controllo se sono dopo hour_not_available
+        # nel caso dovessi ordinarlo dal fornitore aggiungo un giorno di processing
 
         #calcolo il giorno in cui processo il pacco
-        day = datetime.date.today() + datetime.timedelta(days = shipping)
+        day = today + datetime.timedelta(days=shipping)
         
         #questo è il giorno in cui dovrei processare l'ordine
         while holiday.is_holiday(day):
-            day += datetime.timedelta(days = 1)
+            day += datetime.timedelta(days=1)
 
         #se il giorno di consegna è festa allora aggiungo
-        day += datetime.timedelta(days = int(shipping_days))
+        day += datetime.timedelta(days=int(shipping_days))
 
         while holiday.is_holiday(day):
-            day += datetime.timedelta(days = 1)
+            day += datetime.timedelta(days=1)
 
-        diff = day - datetime.date.today()
-        
+        diff = day - today
+
         diffdays = diff.days - shipping
 
         shipping += abs(diffdays)
