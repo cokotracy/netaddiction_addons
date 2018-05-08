@@ -14,6 +14,9 @@ class Partner(models.Model):
         Nel caso in cui uno dei campi in *fields* venga modificato e l'indirizzo in questione è già stato
         usato in uno o più ordini, ne crea una copia disattiva.
         """
+        if self.env.context.get('skip_reduplicate_partner', False):
+            return super(Partner, self).write(values)
+
         fields = (
             'name',
             'vat',
