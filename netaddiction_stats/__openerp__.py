@@ -12,8 +12,8 @@
     'category': 'Technical Settings',
     'version': '1',
     'depends': ['base', 'product', 'sale', 'purchase', 'mrp', 'account', 'netaddiction_products',
-        'netaddiction_special_offers', 'netaddiction_b2b', 'netaddiction_purchase_orders', 'netaddiction_warehouse', 'netaddiction_show'],
+        'netaddiction_special_offers', 'netaddiction_b2b', 'netaddiction_purchase_orders', 'netaddiction_warehouse', 'netaddiction_show', 'netaddiction_customer'],
     'data': [
-        
+        'views/affiliate.xml',
     ]
 }

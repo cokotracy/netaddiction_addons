@@ -1,2 +1,2 @@
 # -*- coding: utf-8 -*-
-import products, orders, picks
+import products, orders, picks, affiliate

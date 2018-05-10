@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+       <record model="ir.ui.view" id="affiliate_stats">
+            <field name="name">affiliate.stats.form</field>
+            <field name="model">netaddiction.partner.affiliate</field>
+            <field name="inherit_id" ref="netaddiction_customer.netaddiction_sales_affiliate_form"/>
+            <field name="arch" type="xml">
+                <notebook position="inside">
+                    <page string="Statistiche" name="affiliate_stats_file">
+                        <group>
+                            <group>
+                                <field name="stats_last_month_filename" invisible="0"/>
+                                <field name="stats_last_month" readonly="1" filename="stats_last_month_filename"/> 
+                            </group>
+                            <group>
+                                <button name="get_month_stats" class="btn-primary" type="object" string="Genera Mese Scorso" />
+                            </group>
+                        </group>
+                    </page>
+                </notebook>
+            </field>
+        </record>
+    </data>
+</openerp>
