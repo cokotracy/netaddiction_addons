@@ -31,7 +31,7 @@ class ChannelPilotOrder(models.Model):
             return
         cp_orders = []
         problems = []
-        self._send_cp_error_mail("  %s" % response, '[CHANNELPILOT -  DEBUG] getNewMarketplaceOrders result ')
+        # self._send_cp_error_mail("  %s" % response, '[CHANNELPILOT -  DEBUG] getNewMarketplaceOrders result ')
         if "orders" not in response:
             # non ci sono ordini
             return
