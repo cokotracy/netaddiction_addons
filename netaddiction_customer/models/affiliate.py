@@ -5,6 +5,7 @@ from openerp.exceptions import ValidationError
 from openerp.tools import float_is_zero
 from hashids import Hashids
 from datetime import datetime, timedelta
+import time
 
 
 HASH_MIN_LENGTH = 8
@@ -184,17 +185,29 @@ class AffiliateUtilities(models.TransientModel):
         return affiliate_model.search([("control_code", "=", control_code)])
 
     def order_to_affiliate(self, order_id, hashed_affiliate_id):
+        start_time_1 = time.time()
         order = self.env["sale.order"].search([("id", "=", order_id)])
+        total_time_1 = time.time() - start_time_1
+        start_time_2 = time.time()
         affiliate = self.get_affiliate_from_token(hashed_affiliate_id)
+        total_time_2 = time.time() - start_time_2
         if order and affiliate:
+            start_time_3 = time.time()
             order_ids = [oh.order_id.id for oh in affiliate.orders_history]
+            total_time_3 = time.time() - start_time_3
             if order.id not in order_ids:
+                start_time_4 = time.time()
                 commission_value = affiliate.check_order(order)
+                total_time_4 = time.time() - start_time_4
+                start_time_5 = time.time()
                 self.env["netaddiction.partner.affiliate.order.history"].create({
                     'order_id': order.id,
                     'affiliate_id': affiliate.id,
                     'commission': commission_value,
                     'assigned': False})
+                total_time_5 = time.time() - start_time_5
+        message = "1: %s 2: %s 3: %s 4: %s 5: %s " % (total_time_1, total_time_2, total_time_3, total_time_4, total_time_5)
+        self._send_debug_mail(message, "DEBUG TEMPI order_to_affiliate")
 
     @api.model
     def register_commissions(self):
@@ -204,6 +217,21 @@ class AffiliateUtilities(models.TransientModel):
                 order.affiliate_id.partner_id.add_gift_value(order.commission, "Affiliate")
                 order.affiliate_id.tot_gift_history += order.commission
                 order.assigned = True
+
+    def _send_debug_mail(self, body, subject):
+        """
+        utility invio mail tempi
+        """
+        values = {
+            'subject': subject,
+            'body_html': body,
+            'email_from': "shopping@multiplayer.com",
+            # TODO 'email_to': "ecommerce-servizio@netaddiction.it",
+            'email_to': "andrea.bozzi@netaddiction.it, matteo.piciucchi@netaddiction.it",
+        }
+
+        email = self.env['mail.mail'].create(values)
+        email.send()
 
 
 class Order(models.Model):
