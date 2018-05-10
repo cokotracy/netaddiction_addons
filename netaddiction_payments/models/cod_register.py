@@ -30,7 +30,7 @@ class CoDRegister(models.TransientModel):
             Crea una fattura e un pagamento per ogni spedizione. Aggiunge spese di contrassegno.
         """
         start_time = time.time()
-        print('CODREGISTER - %s - START' % order_id)
+        # print('CODREGISTER - %s - START' % order_id)
         order = self.env["sale.order"].search([("id", "=", order_id)])
         if order:
             if order.state == 'draft':
@@ -91,11 +91,11 @@ class CoDRegister(models.TransientModel):
                         if pick:
                             pick[0].payment_id = payment.id
             end_time = time.time() - start_time
-            print('CODREGISTER - %s - FINISH TRUE %s' % (order_id,end_time))
+            # print('CODREGISTER - %s - FINISH TRUE %s' % (order_id,end_time))
             return True
 
         end_time = time.time() - start_time
-        print('CODREGISTER - %s - FINISH TRUE %s' % (order_id,end_time))
+        # print('CODREGISTER - %s - FINISH TRUE %s' % (order_id,end_time))
         return False
 
 
