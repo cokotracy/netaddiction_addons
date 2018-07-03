@@ -160,23 +160,23 @@ class RegistroCorrispettivi(models.Model):
                     delivery_picks[date_done][pick.carrier_id.product_id.taxes_id.name]['value'] += carrier_price
                     delivery_picks[date_done][pick.carrier_id.product_id.taxes_id.name]['tax_value'] += pick.carrier_id.product_id.taxes_id.compute_all(carrier_price)['taxes'][0]['amount']
 
-            # aggiungi spese di contrassegno
-            value = self.env['ir.values'].search([("name", "=", "product_contrassegno"), ("model", "=", "registro.corrispettivi.config")])
-            if value:
-                if value.value:
-                    origin = pick.sale_id
-                    if check_sale_origin:
-                        try:
-                            origin = self.env['sale.order'].search([('name', '=', pick.origin)])
-                        except:
-                            origin = False
-                    if origin:
-                        for line in origin.order_line:
-                            if line.product_id.id == int(value.value):
-                                del_pick = delivery_picks[date_done].get(line.product_id.taxes_id.name, False)
-                                if del_pick:
-                                    delivery_picks[date_done][line.product_id.taxes_id.name]['value'] += line.price_total
-                                    delivery_picks[date_done][line.product_id.taxes_id.name]['tax_value'] += line.price_tax
+                # aggiungi spese di contrassegno
+                value = self.env['ir.values'].search([("name", "=", "product_contrassegno"), ("model", "=", "registro.corrispettivi.config")])
+                if value:
+                    if value.value:
+                        origin = pick.sale_id
+                        if check_sale_origin:
+                            try:
+                                origin = self.env['sale.order'].search([('name', '=', pick.origin)])
+                            except:
+                                origin = False
+                        if origin:
+                            for line in origin.order_line:
+                                if line.product_id.id == int(value.value):
+                                    del_pick = delivery_picks[date_done].get(line.product_id.taxes_id.name, False)
+                                    if del_pick:
+                                        delivery_picks[date_done][line.product_id.taxes_id.name]['value'] += line.price_total
+                                        delivery_picks[date_done][line.product_id.taxes_id.name]['tax_value'] += line.price_tax
 
         return delivery_picks, tax_names
 
