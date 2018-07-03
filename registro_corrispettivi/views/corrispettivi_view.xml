@@ -16,6 +16,7 @@
                             <field name="refund_picking_type_ids"/>
                             <field name="multidelivery"/>
                             <field name="refund_delivery_cost"/>
+                            <field name="product_contrassegno"/>
                         </group>
                     </div>
                 </form>

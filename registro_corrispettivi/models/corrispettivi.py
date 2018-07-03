@@ -140,13 +140,43 @@ class RegistroCorrispettivi(models.Model):
                     if line.product_id.taxes_id.name not in tax_names:
                         tax_names.append(line.product_id.taxes_id.name)
             if refund_delivery_cost:
+                carrier_price = 0
                 if multidelivery:
                     if pick.carrier_price > 0:
-                        delivery_picks[date_done][pick.carrier_id.product_id.taxes_id.name]['value'] += pick.carrier_price
-                        delivery_picks[date_done][pick.carrier_id.product_id.taxes_id.name]['tax_value'] += pick.carrier_id.product_id.taxes_id.compute_all(pick.carrier_price)['taxes'][0]['amount']
+                        carrier_price = pick.carrier_price
                 else:
-                    pass
-                    # TODO : se metti multidelivery a false che faccio?
+                    origin = pick.sale_id
+                    if check_sale_origin:
+                        try:
+                            origin = self.env['sale.order'].search([('name', '=', pick.origin)])
+                        except:
+                            origin = False
+                    if origin:
+                        for line in origin.order_line:
+                            if line.is_delivery:
+                                carrier_price = line.price_total
+                del_pick = delivery_picks[date_done].get(pick.carrier_id.product_id.taxes_id.name, False)
+                if del_pick:
+                    delivery_picks[date_done][pick.carrier_id.product_id.taxes_id.name]['value'] += carrier_price
+                    delivery_picks[date_done][pick.carrier_id.product_id.taxes_id.name]['tax_value'] += pick.carrier_id.product_id.taxes_id.compute_all(carrier_price)['taxes'][0]['amount']
+
+            # aggiungi spese di contrassegno
+            value = self.env['ir.values'].search([("name", "=", "product_contrassegno"), ("model", "=", "registro.corrispettivi.config")])
+            if value:
+                if value.value:
+                    origin = pick.sale_id
+                    if check_sale_origin:
+                        try:
+                            origin = self.env['sale.order'].search([('name', '=', pick.origin)])
+                        except:
+                            origin = False
+                    if origin:
+                        for line in origin.order_line:
+                            if line.product_id.id == int(value.value):
+                                del_pick = delivery_picks[date_done].get(line.product_id.taxes_id.name, False)
+                                if del_pick:
+                                    delivery_picks[date_done][line.product_id.taxes_id.name]['value'] += line.price_total
+                                    delivery_picks[date_done][line.product_id.taxes_id.name]['tax_value'] += line.price_tax
 
         return delivery_picks, tax_names
 
@@ -215,7 +245,7 @@ class RegistroCorrispettivi(models.Model):
             delivery_sheet.write(i, total_horizontal[1], xlwt.Formula("SUM(%s%s;%s%s)" % (horizontal[1][0], i + 1, horizontal[1][1], i + 1)))
 
 # Callse per la configurazione dei corrispettivi
-class PubProductConfig(models.TransientModel):
+class RegistroCorrispettiviConfig(models.TransientModel):
     _inherit = 'res.config.settings'
     _name = 'registro.corrispettivi.config'
 
@@ -223,6 +253,25 @@ class PubProductConfig(models.TransientModel):
     refund_picking_type_ids = fields.Many2many(string="Resi", comodel_name="stock.picking.type", relation="corrispettivi_config_refund_type")
     multidelivery = fields.Boolean(string="Calcola su carrier_price (usato per le multispedizioni)")
     refund_delivery_cost = fields.Boolean(string="Contare le spese di spedizione nei Resi")
+    product_contrassegno = fields.Many2one(string="Prodotto contrassegno", comodel_name="product.product")
+
+    @api.model
+    def get_default_product_contrassegno(self, fields):
+        value = self.env['ir.values'].search([("name", "=", "product_contrassegno"), ("model", "=", "registro.corrispettivi.config")])
+        if not value:
+            return {'product_contrassegno': False}
+
+        return {'product_contrassegno': int(value.value)}
+
+    @api.model
+    def set_default_product_contrassegno(self, values):
+        res = self.browse(values[0])
+        values = self.env['ir.values'].search([("name", "=", "product_contrassegno"), ("model", "=", "registro.corrispettivi.config")])
+        if values:
+            values.value = res.product_contrassegno.id
+            return True
+
+        return self.env['ir.values'].create({'name': 'product_contrassegno', 'value': res.product_contrassegno.id, 'model': 'registro.corrispettivi.config'})
 
     @api.model
     def get_default_refund_delivery_cost(self, fields):
