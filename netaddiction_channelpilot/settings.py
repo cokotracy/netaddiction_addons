@@ -11,11 +11,11 @@ DOMAIN_AVAILABLE = [('active', '=', True), ('sale_ok', '=', True), ('visible', '
 # id fornitore : qty minima per feed
 SUPPLIERS = {
     # DBLine
-    38: 5,
+    # 38: 5,
     # Esprinet
     # 137: 5,
     # Terminal
-    57: 5
+    # 57: 5
 }
 
 SUPPLIERS_AVAILABLE = [('product_id.channelpilot', '=', False), ('product_id.sale_ok', '=', True), ('product_id.channelpilot_blacklist', '=', False)]
