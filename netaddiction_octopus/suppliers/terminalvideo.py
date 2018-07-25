@@ -158,20 +158,8 @@ class TerminalVideo(supplier.Supplier):
             'Merchandising - Anime/Manga/Comics',
             'Merchandising - Disney',
             'Animazione ragazzi',
-            'Film - Azione/Avventura',
-            'Film - Comico/Commedia',
-            'Film - Drammatico',
-            'Film - Family/Ragazzi',
-            'Film - Fantascienza',
-            'Film - Fantastico',
-            'Film - Giallo/Thriller',
-            'Film - Guerra',
-            'Film - Horror',
-            'Tv - serie',
             'Animazione giapponese',
             'Animazione adulti',
-            'Libri-Manga',
-            'Libri - Fumetti'
         ]
         assert item['Genere principale'] in available
 
