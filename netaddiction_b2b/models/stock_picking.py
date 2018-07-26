@@ -97,7 +97,7 @@ class StockPicking(models.Model):
             'email_from': 'shopping@multiplayer.com',
             'reply_to': 'shopping@multiplayer.com',
             'email_to': 'valeria.risoldi@netaddiction.it',
-            'email_cc': 'matteo.piciucchi@netaddiction.it,riccardo.ioni@netaddiction.it,andrea.alunni@netaddiction.it,angelica.paulucci@netaddiction.it',
+            'email_cc': 'matteo.piciucchi@netaddiction.it,andrea.alunni@netaddiction.it,angelica.paulucci@netaddiction.it,claudia.celotto@netaddiction.it',
             'body_html': 'Emettere fattura accompagnatoria: <br/><a href="https://backoffice.netaddiction.it/web#id='+str(invoice.id)+'&view_type=form&model=account.invoice">Link Fattura</a><br/>METODO PAGAMENTO <b>'+payment_name+'</b><br/>P.IVA:<b>'+vat+'</b>',
             'model':'account.invoice',
             'res_id':invoice.id
