@@ -257,7 +257,7 @@ class OrderUtilities(models.TransientModel):
 
         prod = self.env["product.product"].search([("id", "=", product_id)])
 
-        if not prod or (quantity > 0 and not prod.active):
+        if quantity > 0 and (not prod or not prod.active):
             raise ProductNotActiveAddToCartException(product_id, "add_to_cart")
 
         if order and order.partner_id.id == partner_id and order.state == "draft":
