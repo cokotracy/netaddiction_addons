@@ -314,11 +314,15 @@ class NetaddictionManifest(models.Model):
                 count = 40 - len(address)
                 riga += ' '*count
 
-                if delivery.sale_id.partner_id.mobile:
-                    mobile = delivery.sale_id.partner_id.mobile.replace(' ','')
+                if delivery.sale_id.partner_id.mobile or delivery.sale_id.partner_id.phone:
+                    mobile = delivery.sale_id.partner_id.mobile
+                    if not mobile:
+                        mobile = delivery.sale_id.partner_id.phone
+                    mobile = mobile.replace(' ','')
                     mobile = mobile.replace('+39','')
                     mobile = mobile[0:15]
                 else:
+
                     # ESTERO TEELFONO
                     if nation == 'IT':
                         mobile = ' '*15
@@ -434,16 +438,19 @@ class NetaddictionManifest(models.Model):
                     email_customer = delivery.sale_id.partner_id.email[0:50]
                 else:
                     email_customer = 'example_ex@exampleit.ad'
-                if nation == 'IT':
-                    riga += ' '* 50
-                else:
-                    riga += email_customer
-                    count = 50 - len(email_customer)
-                    riga += ' ' * count
+                
+                riga += email_customer
+                count = 50 - len(email_customer)
+                riga += ' ' * count
+
                 # ESTERO NUMERO TELEFONO CLIENTE
                 mobile = ''
-                if delivery.sale_id.partner_id.mobile:
-                    mobile = delivery.sale_id.partner_id.mobile.replace(' ','')
+                if delivery.sale_id.partner_id.mobile or delivery.sale_id.partner_id.phone:
+                    mobile = delivery.sale_id.partner_id.mobile
+                    if not mobile:
+                        mobile = delivery.sale_id.partner_id.phone
+                    mobile = mobile.replace(' ','')
+                    mobile = mobile.replace('+39','')
                     mobile = mobile[0:14]
                     mobile = mobile.replace('+', '').zfill(14)
                 riga += mobile
