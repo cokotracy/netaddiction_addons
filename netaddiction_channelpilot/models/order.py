@@ -77,8 +77,8 @@ class ChannelPilotOrder(models.Model):
         name = name if not cp_delivery.company else name + " C/O " + cp_delivery.company
         country_id_1 = self.env["res.country"].search([('code', '=', cp_delivery.countryIso2)])[0]
         country_id_2 = self.env["res.country"].search([('code', '=', cp_invoice.countryIso2)])[0]
-        shipping_dict = {'name': name, 'street': cp_delivery.streetTitle, 'phone': self._get_phone(cp_customer, cp_delivery), 'country_id': country_id_1.id, 'city': cp_delivery.city, 'zip': cp_delivery.zip, 'street2': cp_delivery.streetNumber, 'state_id': self._get_state(cp_delivery.state)}
-        billing_dict = {'name': name, 'street': cp_invoice.streetTitle, 'phone': self._get_phone(cp_customer, cp_invoice), 'country_id': country_id_2.id, 'city': cp_invoice.city, 'zip': cp_invoice.zip, 'street2': cp_invoice.streetNumber, 'state_id': self._get_state(cp_invoice.state)}
+        shipping_dict = {'name': name, 'street': cp_delivery.streetTitle, 'phone': self._get_phone(cp_customer, cp_delivery), 'country_id': country_id_1.id, 'city': cp_delivery.city, 'zip': cp_delivery.zip, 'street2': cp_delivery.streetNumber, 'state_id': self._get_state(cp_delivery)}
+        billing_dict = {'name': name, 'street': cp_invoice.streetTitle, 'phone': self._get_phone(cp_customer, cp_invoice), 'country_id': country_id_2.id, 'city': cp_invoice.city, 'zip': cp_invoice.zip, 'street2': cp_invoice.streetNumber, 'state_id': self._get_state(cp_invoice)}
         user_shipping = None
         user_billing = None
         if user:
