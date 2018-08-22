@@ -145,12 +145,23 @@ class ChannelPilotOrder(models.Model):
         else:
             return None
 
-    def _get_state(self, state):
-        if state:
-            res = self.env["res.better.zip"].search([("name", "=", state)])
-            if res:
-                return res[0].state_id.id
+    def _get_state(self, cp_address):
+
+        res = self.env["res.better.zip"].search([("city", "ilike", cp_address.city)])[0]
+        if not res:
+            res = self.env["res.better.zip"].search([("name", "=", cp_address.zip)])[0]
+        if res:
+            return res.state_id.id
+
         return None
+
+
+    # def _get_state(self, state):
+        # if state:
+        #     res = self.env["res.better.zip"].search([("name", "=", state)])
+        #     if res:
+        #         return res[0].state_id.id
+        # return None
 
     def _create_cp_order(self, order, user, user_shipping, user_billing, client):
         """Crea l'ordine sul backoffice."""
