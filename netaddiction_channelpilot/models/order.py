@@ -147,11 +147,11 @@ class ChannelPilotOrder(models.Model):
 
     def _get_state(self, cp_address):
 
-        res = self.env["res.better.zip"].search([("city", "ilike", cp_address.city)])[0]
+        res = self.env["res.better.zip"].search([("city", "ilike", cp_address.city)])
         if not res:
-            res = self.env["res.better.zip"].search([("name", "=", cp_address.zip)])[0]
+            res = self.env["res.better.zip"].search([("name", "=", cp_address.zip)])
         if res:
-            return res.state_id.id
+            return res[0].state_id.id
 
         return None
 
