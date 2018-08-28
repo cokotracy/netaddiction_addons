@@ -11,18 +11,20 @@ DOMAIN_AVAILABLE = [('active', '=', True), ('sale_ok', '=', True), ('visible', '
 # id fornitore : qty minima per feed
 SUPPLIERS = {
     # DBLine
-    # 38: 5,
+    38: 5,
     # Esprinet
     # 137: 5,
     # Terminal
-    # 57: 5
+    57: 5,
+    # Cosmic Group
+    80: 5
 }
 
 SUPPLIERS_AVAILABLE = [('product_id.channelpilot', '=', False), ('product_id.sale_ok', '=', True), ('product_id.channelpilot_blacklist', '=', False)]
 
 # SWITCH OFF
 OFF_DOMAIN = [('sale_ok', '=', False), ('channelpilot', '=', True)]
-SUPPLIERS_OFF = [('product_id.channelpilot', '=', True), ('product_id.sale_ok', '=', True)]
+SUPPLIERS_OFF = [('product_id.channelpilot', '=', True)]
 
 # FEED
 FEED_DOMAIN = [('channelpilot', '=', True)]
