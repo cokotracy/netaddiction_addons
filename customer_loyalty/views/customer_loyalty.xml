@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+        <menuitem 
+            id="customer_loyalty_base_menu" 
+            name="Customer Loyalty"
+            parent="base.menu_base_partner" 
+            sequence="7"
+            groups="base.group_sale_salesman_all_leads"/>
+
+        <record id="customer_loyalty_settings_form" model="ir.ui.view">
+            <field name="name">Customer Loyalty Settings</field>
+            <field name="model">customer.loyalty.settings</field>
+            <field name="arch" type="xml">
+                <form string="Settings" class="oe_form_configuration">
+                    <header>
+                        <button string="Save" type="object" name="execute" class="oe_highlight"/>
+                        <button string="Cancel" type="object" name="cancel" class="oe_link"/>
+                    </header>
+                    <div id="main">
+                        <group>
+                            <field name="revenues_percentage"/>
+                            <field name="points_money"/>
+                            <field name="conversion_points_money"/>
+                            <field name="order_state"/>
+                            <field name="delay_days"/>
+                        </group>
+                    </div>
+                    <footer></footer>
+                </form>
+            </field>
+        </record>
+
+        <record id="customer_loyalty_action" model="ir.actions.act_window">
+            <field name="name">Customer Loyalty Settings</field>
+            <field name="res_model">customer.loyalty.settings</field>
+            <field name="view_id" ref="customer_loyalty_settings_form"/>
+            <field name="view_mode">form</field>
+            <field name="target">inline</field>
+        </record>
+
+        <menuitem 
+            id="customer_loyalty_settings_menu" 
+            name="Settings"
+            parent="customer_loyalty_base_menu" 
+            action="customer_loyalty_action" 
+            sequence="99"
+            groups="base.group_sale_manager"/>
+
+        <record model="ir.actions.act_window" id="customer_loyalty_action_form">
+            <field name="name">Customer Loyalty List</field>
+            <field name="res_model">customer.loyalty</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">
+                    Empty loyalty.
+                </p>
+            </field>
+        </record>
+
+        <menuitem 
+            id="customer_loyalty_list_menu" 
+            name="Customer Loyalty List"
+            parent="customer_loyalty_base_menu" 
+            action="customer_loyalty_action_form" 
+            sequence="1"
+            groups="base.group_sale_salesman_all_leads"/>
+
+        <record model="ir.ui.view" id="custoemr_loyalty_tree">
+            <field name="name">view.customer_loyalty_tree</field>
+            <field name="model">customer.loyalty</field>
+            <field name="arch" type="xml">
+                <tree name="Customer Loyalty List" create="false" edit="false">
+                    <field name="partner_id"/>
+                    <field name="points"/>
+                    <field name="money"/>
+                </tree>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="custoemr_loyalty_form_view">
+            <field name="name">view.customer_loyalty_form</field>
+            <field name="model">customer.loyalty</field>
+            <field name="arch" type="xml">
+                <form string="Customer Loyalty">
+                    <sheet>
+                        <group>
+                            <field name="partner_id" readonly="1"/>
+                            <field name="points" readonly="1"/>
+                            <field name="money" readonly="1"/>
+                        </group>
+                        <group>
+                            <field name="logs" readonly="1" nolabel="1"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="custoemr_loyalty_log_tree">
+            <field name="name">view.customer_loyalty_log_tree</field>
+            <field name="model">customer.loyalty.log</field>
+            <field name="arch" type="xml">
+                <tree name="Customer Loyalty Log List" create="false" edit="false">
+                    <field name="date"/>
+                    <field name="author_id"/>
+                    <field name="what"/>
+                    <field name="value"/>
+                    <field name="loyalty_type"/>
+                </tree>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="partner_loyalty_form">
+            <field name="name">partner.loyalty.form</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="base.view_partner_form"/>
+            <field name="arch" type="xml">
+            <xpath expr="//div[@name='button_box']" position="inside" >
+                    <button  class="oe_stat_button" name="open_loyalty" type="object" icon="fa-ticket"> 
+                        <field name="loyalty_value"  widget="statinfo"/>
+                    </button>
+                </xpath>
+            </field>
+        </record>
+
+    </data>
+</openerp>

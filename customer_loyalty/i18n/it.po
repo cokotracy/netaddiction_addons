@@ -1,0 +1,277 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* customer_loyalty
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 9.0c\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2018-09-14 11:51+0000\n"
+"PO-Revision-Date: 2018-09-14 13:51+0200\n"
+"Last-Translator: <>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: \n"
+"Language: it\n"
+"X-Generator: Poedit 1.8.7.1\n"
+
+#. module: customer_loyalty
+#: model:ir.model.fields,field_description:customer_loyalty.field_customer_loyalty_settings_conversion_points_money
+msgid "1 Point is equal to: (your currency)"
+msgstr "1 punto equivale a: "
+
+#. module: customer_loyalty
+#: selection:customer.loyalty.log,what:0
+msgid "Add"
+msgstr "Aggiunto"
+
+#. module: customer_loyalty
+#: model:ir.ui.view,arch_db:customer_loyalty.customer_loyalty_settings_form
+msgid "Cancel"
+msgstr "Annulla"
+
+#. module: customer_loyalty
+#: model:ir.model.fields,help:customer_loyalty.field_customer_loyalty_settings_conversion_points_money
+msgid "Choose the value of one point."
+msgstr "Scegli il valore di un punto."
+
+#. module: customer_loyalty
+#: model:ir.model.fields,help:customer_loyalty.field_customer_loyalty_settings_points_money
+msgid "Choose whether to receive points or money."
+msgstr "Scegli se ricevere punto o soldi."
+
+#. module: customer_loyalty
+#: model:ir.model.fields,help:customer_loyalty.field_customer_loyalty_settings_order_state
+msgid "Choose which order status trigger revenue."
+msgstr "Scegli con quale stato dell'ordine deve essere accreditato il ricavo."
+
+#. module: customer_loyalty
+#: model:ir.model.fields,field_description:customer_loyalty.field_customer_loyalty_add_create_uid
+#: model:ir.model.fields,field_description:customer_loyalty.field_customer_loyalty_create_uid
+#: model:ir.model.fields,field_description:customer_loyalty.field_customer_loyalty_log_create_uid
+#: model:ir.model.fields,field_description:customer_loyalty.field_customer_loyalty_settings_create_uid
+#: model:ir.model.fields,field_description:customer_loyalty.field_customer_loyalty_sub_create_uid
+msgid "Created by"
+msgstr "Creato da"
+
+#. module: customer_loyalty
+#: model:ir.model.fields,field_description:customer_loyalty.field_customer_loyalty_add_create_date
+#: model:ir.model.fields,field_description:customer_loyalty.field_customer_loyalty_create_date
+#: model:ir.model.fields,field_description:customer_loyalty.field_customer_loyalty_log_create_date
+#: model:ir.model.fields,field_description:customer_loyalty.field_customer_loyalty_settings_create_date
+#: model:ir.model.fields,field_description:customer_loyalty.field_customer_loyalty_sub_create_date
+msgid "Created on"
+msgstr "Creato il"
+
+#. module: customer_loyalty
+#: model:ir.model.fields,field_description:customer_loyalty.field_customer_loyalty_add_partner_id
+#: model:ir.model.fields,field_description:customer_loyalty.field_customer_loyalty_partner_id
+#: model:ir.model.fields,field_description:customer_loyalty.field_customer_loyalty_sub_partner_id
+msgid "Customer"
+msgstr "Cliente"
+
+#. module: customer_loyalty
+#: model:ir.model.fields,field_description:customer_loyalty.field_customer_loyalty_log_customer_loyalty_id
+#: model:ir.ui.menu,name:customer_loyalty.customer_loyalty_base_menu
+#: model:ir.ui.view,arch_db:customer_loyalty.custoemr_loyalty_form_view
+msgid "Customer Loyalty"
+msgstr "Fidelizzazione cliente"
+
+#. module: customer_loyalty
+#: model:ir.actions.act_window,name:customer_loyalty.customer_loyalty_action_form
+#: model:ir.ui.menu,name:customer_loyalty.customer_loyalty_list_menu
+msgid "Customer Loyalty List"
+msgstr "Lista Fidelizzazioni"
+
+#. module: customer_loyalty
+#: model:ir.actions.act_window,name:customer_loyalty.customer_loyalty_action
+msgid "Customer Loyalty Settings"
+msgstr "Configurazione Fidelizzazione "
+
+#. module: customer_loyalty
+#: model:ir.model.fields,field_description:customer_loyalty.field_customer_loyalty_log_date
+msgid "Data"
+msgstr "Dati"
+
+#. module: customer_loyalty
+#: model:ir.model.fields,field_description:customer_loyalty.field_customer_loyalty_settings_delay_days
+msgid "Days of delay to add revenue"
+msgstr "Giorni di ritardo per accreditare il ricavo."
+
+#. module: customer_loyalty
+#: model:ir.model.fields,field_description:customer_loyalty.field_customer_loyalty_add_display_name
+#: model:ir.model.fields,field_description:customer_loyalty.field_customer_loyalty_display_name
+#: model:ir.model.fields,field_description:customer_loyalty.field_customer_loyalty_log_display_name
+#: model:ir.model.fields,field_description:customer_loyalty.field_customer_loyalty_settings_display_name
+#: model:ir.model.fields,field_description:customer_loyalty.field_customer_loyalty_sub_display_name
+msgid "Display Name"
+msgstr "Visualizza Nome"
+
+#. module: customer_loyalty
+#: model:ir.actions.act_window,help:customer_loyalty.customer_loyalty_action_form
+msgid "Empty loyalty."
+msgstr "Nessuna Fidelizzazione."
+
+#. module: customer_loyalty
+#: model:ir.model.fields,help:customer_loyalty.field_customer_loyalty_settings_revenues_percentage
+msgid "For each completed order the customer receives this percentage of revenue on the total order."
+msgstr "Per ogni ordine completato il cliente riceve questa percentuale di entrate sull'ordine totale."
+
+#. module: customer_loyalty
+#: model:ir.model.fields,field_description:customer_loyalty.field_customer_loyalty_logs
+msgid "History"
+msgstr "Storia"
+
+#. module: customer_loyalty
+#: model:ir.model.fields,field_description:customer_loyalty.field_customer_loyalty_add_id
+#: model:ir.model.fields,field_description:customer_loyalty.field_customer_loyalty_id
+#: model:ir.model.fields,field_description:customer_loyalty.field_customer_loyalty_log_id
+#: model:ir.model.fields,field_description:customer_loyalty.field_customer_loyalty_settings_id
+#: model:ir.model.fields,field_description:customer_loyalty.field_customer_loyalty_sub_id
+msgid "ID"
+msgstr "ID"
+
+#. module: customer_loyalty
+#: model:ir.model.fields,field_description:customer_loyalty.field_customer_loyalty___last_update
+#: model:ir.model.fields,field_description:customer_loyalty.field_customer_loyalty_add___last_update
+#: model:ir.model.fields,field_description:customer_loyalty.field_customer_loyalty_log___last_update
+#: model:ir.model.fields,field_description:customer_loyalty.field_customer_loyalty_settings___last_update
+#: model:ir.model.fields,field_description:customer_loyalty.field_customer_loyalty_sub___last_update
+msgid "Last Modified on"
+msgstr "Data di ultima modifica"
+
+#. module: customer_loyalty
+#: model:ir.model.fields,field_description:customer_loyalty.field_customer_loyalty_add_write_uid
+#: model:ir.model.fields,field_description:customer_loyalty.field_customer_loyalty_log_write_uid
+#: model:ir.model.fields,field_description:customer_loyalty.field_customer_loyalty_settings_write_uid
+#: model:ir.model.fields,field_description:customer_loyalty.field_customer_loyalty_sub_write_uid
+#: model:ir.model.fields,field_description:customer_loyalty.field_customer_loyalty_write_uid
+msgid "Last Updated by"
+msgstr "Ultima modifica di"
+
+#. module: customer_loyalty
+#: model:ir.model.fields,field_description:customer_loyalty.field_customer_loyalty_add_write_date
+#: model:ir.model.fields,field_description:customer_loyalty.field_customer_loyalty_log_write_date
+#: model:ir.model.fields,field_description:customer_loyalty.field_customer_loyalty_settings_write_date
+#: model:ir.model.fields,field_description:customer_loyalty.field_customer_loyalty_sub_write_date
+#: model:ir.model.fields,field_description:customer_loyalty.field_customer_loyalty_write_date
+msgid "Last Updated on"
+msgstr "Ultima modifica il"
+
+#. module: customer_loyalty
+#: model:ir.ui.view,arch_db:customer_loyalty.partner_loyalty_form
+msgid "Loyalty"
+msgstr "Loyalty"
+
+#. module: customer_loyalty
+#: model:ir.model.fields,field_description:customer_loyalty.field_res_partner_loyalty_value
+msgid "Loyalty Value"
+msgstr "Valore Fidelizzazione"
+
+#. module: customer_loyalty
+#: selection:customer.loyalty.add,loyalty_type:0
+#: selection:customer.loyalty.log,loyalty_type:0
+#: selection:customer.loyalty.settings,points_money:0
+#: selection:customer.loyalty.sub,loyalty_type:0
+msgid "Money"
+msgstr "Soldi"
+
+#. module: customer_loyalty
+#: model:ir.model.fields,field_description:customer_loyalty.field_customer_loyalty_money
+msgid "Money value"
+msgstr "Valore in soldi"
+
+#. module: customer_loyalty
+#: model:ir.model.fields,field_description:customer_loyalty.field_customer_loyalty_settings_order_state
+msgid "Order state"
+msgstr "Stato Ordine"
+
+#. module: customer_loyalty
+#: model:ir.model,name:customer_loyalty.model_res_partner
+msgid "Partner"
+msgstr "Partner"
+
+#. module: customer_loyalty
+#: model:ir.model.fields,field_description:customer_loyalty.field_customer_loyalty_settings_revenues_percentage
+msgid "Percentage of revenue"
+msgstr "Percentuale di ricavo"
+
+#. module: customer_loyalty
+#: selection:customer.loyalty.add,loyalty_type:0
+#: selection:customer.loyalty.log,loyalty_type:0
+#: selection:customer.loyalty.settings,points_money:0
+#: selection:customer.loyalty.sub,loyalty_type:0
+msgid "Points"
+msgstr "Punti"
+
+#. module: customer_loyalty
+#: model:ir.model.fields,field_description:customer_loyalty.field_customer_loyalty_settings_points_money
+msgid "Points or Money revenues"
+msgstr "Punti o Soldi"
+
+#. module: customer_loyalty
+#: model:ir.model.fields,field_description:customer_loyalty.field_customer_loyalty_points
+msgid "Points value"
+msgstr "Valore in punti"
+
+#. module: customer_loyalty
+#: model:ir.ui.view,arch_db:customer_loyalty.customer_loyalty_settings_form
+msgid "Save"
+msgstr "Salva"
+
+#. module: customer_loyalty
+#: model:ir.ui.menu,name:customer_loyalty.customer_loyalty_settings_menu
+#: model:ir.ui.view,arch_db:customer_loyalty.customer_loyalty_settings_form
+msgid "Settings"
+msgstr "Configurazione"
+
+#. module: customer_loyalty
+#: selection:customer.loyalty.log,what:0
+msgid "Sub"
+msgstr "Rimosso"
+
+#. module: customer_loyalty
+#: model:ir.model.fields,field_description:customer_loyalty.field_customer_loyalty_add_loyalty_type
+#: model:ir.model.fields,field_description:customer_loyalty.field_customer_loyalty_log_loyalty_type
+#: model:ir.model.fields,field_description:customer_loyalty.field_customer_loyalty_sub_loyalty_type
+msgid "Type"
+msgstr "Tipo"
+
+#. module: customer_loyalty
+#: model:ir.model.fields,field_description:customer_loyalty.field_customer_loyalty_add_value
+#: model:ir.model.fields,field_description:customer_loyalty.field_customer_loyalty_log_value
+#: model:ir.model.fields,field_description:customer_loyalty.field_customer_loyalty_sub_value
+msgid "Value"
+msgstr "Valore"
+
+#. module: customer_loyalty
+#: model:ir.model.fields,field_description:customer_loyalty.field_customer_loyalty_log_what
+msgid "What"
+msgstr "Azione"
+
+#. module: customer_loyalty
+#: model:ir.model,name:customer_loyalty.model_customer_loyalty
+msgid "customer.loyalty"
+msgstr "customer.loyalty"
+
+#. module: customer_loyalty
+#: model:ir.model,name:customer_loyalty.model_customer_loyalty_add
+msgid "customer.loyalty.add"
+msgstr "customer.loyalty.add"
+
+#. module: customer_loyalty
+#: model:ir.model,name:customer_loyalty.model_customer_loyalty_log
+msgid "customer.loyalty.log"
+msgstr "customer.loyalty.log"
+
+#. module: customer_loyalty
+#: model:ir.model,name:customer_loyalty.model_customer_loyalty_settings
+msgid "customer.loyalty.settings"
+msgstr "customer.loyalty.settings"
+
+#. module: customer_loyalty
+#: model:ir.model,name:customer_loyalty.model_customer_loyalty_sub
+msgid "customer.loyalty.sub"
+msgstr "customer.loyalty.sub"
