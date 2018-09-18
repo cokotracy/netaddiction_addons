@@ -23,6 +23,9 @@ class CustomerLoyaltyConfig(models.TransientModel):
         help="Choose which order status trigger revenue.")
 
     delay_days = fields.Integer(string="Days of delay to add revenue")
+    welcome_points = fields.Float(string="Welcome Points")
+    text_welcome = fields.Char(string="Text Welcome Points")
+    text_fe = fields.Char(string="Name")
 
     @api.model
     def get_default_revenues_percentage(self, fields):
@@ -113,3 +116,57 @@ class CustomerLoyaltyConfig(models.TransientModel):
             return True
 
         return self.env['ir.values'].create({'name': 'delay_days', 'value': int(res.delay_days), 'model': 'customer.loyalty.settings'})
+
+    @api.model
+    def get_default_welcome_points(self, fields):
+        value = self.env['ir.values'].search([("name", "=", "welcome_points"), ("model", "=", "customer.loyalty.settings")])
+        if not value:
+            return {'welcome_points': 0.00}
+
+        return {'welcome_points': float(value.value)}
+
+    @api.model
+    def set_default_welcome_points(self, values):
+        res = self.browse(values[0])
+        values = self.env['ir.values'].search([("name", "=", "welcome_points"), ("model", "=", "customer.loyalty.settings")])
+        if values:
+            values.value = float(res.welcome_points)
+            return True
+
+        return self.env['ir.values'].create({'name': 'welcome_points', 'value': float(res.welcome_points), 'model': 'customer.loyalty.settings'})
+
+    @api.model
+    def get_default_text_welcome(self, fields):
+        value = self.env['ir.values'].search([("name", "=", "text_welcome"), ("model", "=", "customer.loyalty.settings")])
+        if not value:
+            return {'text_welcome': ''}
+
+        return {'text_welcome': value.value}
+
+    @api.model
+    def set_default_text_welcome(self, values):
+        res = self.browse(values[0])
+        values = self.env['ir.values'].search([("name", "=", "text_welcome"), ("model", "=", "customer.loyalty.settings")])
+        if values:
+            values.value = res.text_welcome
+            return True
+
+        return self.env['ir.values'].create({'name': 'text_welcome', 'value': res.text_welcome, 'model': 'customer.loyalty.settings'})
+
+    @api.model
+    def get_default_text_fe(self, fields):
+        value = self.env['ir.values'].search([("name", "=", "text_fe"), ("model", "=", "customer.loyalty.settings")])
+        if not value:
+            return {'text_fe': ''}
+
+        return {'text_fe': value.value}
+
+    @api.model
+    def set_default_text_fe(self, values):
+        res = self.browse(values[0])
+        values = self.env['ir.values'].search([("name", "=", "text_fe"), ("model", "=", "customer.loyalty.settings")])
+        if values:
+            values.value = res.text_fe
+            return True
+
+        return self.env['ir.values'].create({'name': 'text_fe', 'value': res.text_fe, 'model': 'customer.loyalty.settings'})

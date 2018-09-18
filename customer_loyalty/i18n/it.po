@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 9.0c\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-09-14 11:51+0000\n"
-"PO-Revision-Date: 2018-09-14 13:51+0200\n"
+"POT-Creation-Date: 2018-09-18 15:07+0000\n"
+"PO-Revision-Date: 2018-09-18 17:08+0200\n"
 "Last-Translator: <>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -26,6 +26,17 @@ msgstr "1 punto equivale a: "
 #: selection:customer.loyalty.log,what:0
 msgid "Add"
 msgstr "Aggiunto"
+
+#. module: customer_loyalty
+#: model:ir.ui.view,arch_db:customer_loyalty.custoemr_loyalty_form_view
+#: model:ir.ui.view,arch_db:customer_loyalty.customer_loyalty_add_form_view
+msgid "Add Value"
+msgstr "Aggiungi Valore"
+
+#. module: customer_loyalty
+#: model:ir.model.fields,field_description:customer_loyalty.field_customer_loyalty_add_value
+msgid "Adding Value"
+msgstr "Valore da Aggiungere"
 
 #. module: customer_loyalty
 #: model:ir.ui.view,arch_db:customer_loyalty.customer_loyalty_settings_form
@@ -80,6 +91,11 @@ msgid "Customer Loyalty"
 msgstr "Fidelizzazione cliente"
 
 #. module: customer_loyalty
+#: model:ir.ui.view,arch_db:customer_loyalty.customer_loyalty_add_form_view
+msgid "Customer Loyalty Add"
+msgstr "Customer Loyalty Add"
+
+#. module: customer_loyalty
 #: model:ir.actions.act_window,name:customer_loyalty.customer_loyalty_action_form
 #: model:ir.ui.menu,name:customer_loyalty.customer_loyalty_list_menu
 msgid "Customer Loyalty List"
@@ -89,6 +105,11 @@ msgstr "Lista Fidelizzazioni"
 #: model:ir.actions.act_window,name:customer_loyalty.customer_loyalty_action
 msgid "Customer Loyalty Settings"
 msgstr "Configurazione Fidelizzazione "
+
+#. module: customer_loyalty
+#: model:ir.ui.view,arch_db:customer_loyalty.customer_loyalty_subform_view
+msgid "Customer Loyalty Sub"
+msgstr "Customer Loyalty Sub"
 
 #. module: customer_loyalty
 #: model:ir.model.fields,field_description:customer_loyalty.field_customer_loyalty_log_date
@@ -115,6 +136,13 @@ msgid "Empty loyalty."
 msgstr "Nessuna Fidelizzazione."
 
 #. module: customer_loyalty
+#: code:addons/customer_loyalty/models/customer_loyalty.py:233
+#: code:addons/customer_loyalty/models/customer_loyalty.py:237
+#, python-format
+msgid "Entered value is greater than the existing one"
+msgstr "Il valore inserito è maggiore di quello presente."
+
+#. module: customer_loyalty
 #: model:ir.model.fields,help:customer_loyalty.field_customer_loyalty_settings_revenues_percentage
 msgid "For each completed order the customer receives this percentage of revenue on the total order."
 msgstr "Per ogni ordine completato il cliente riceve questa percentuale di entrate sull'ordine totale."
@@ -132,6 +160,17 @@ msgstr "Storia"
 #: model:ir.model.fields,field_description:customer_loyalty.field_customer_loyalty_sub_id
 msgid "ID"
 msgstr "ID"
+
+#. module: customer_loyalty
+#: model:ir.model.fields,field_description:customer_loyalty.field_customer_loyalty_log_internal_note
+msgid "Internal Note"
+msgstr "Nota interna"
+
+#. module: customer_loyalty
+#: model:ir.model.fields,field_description:customer_loyalty.field_customer_loyalty_add_internal_note
+#: model:ir.model.fields,field_description:customer_loyalty.field_customer_loyalty_sub_internal_note
+msgid "Internal note"
+msgstr "Internal note"
 
 #. module: customer_loyalty
 #: model:ir.model.fields,field_description:customer_loyalty.field_customer_loyalty___last_update
@@ -161,9 +200,9 @@ msgid "Last Updated on"
 msgstr "Ultima modifica il"
 
 #. module: customer_loyalty
-#: model:ir.ui.view,arch_db:customer_loyalty.partner_loyalty_form
-msgid "Loyalty"
-msgstr "Loyalty"
+#: model:ir.model.fields,field_description:customer_loyalty.field_res_partner_loyalty_name
+msgid "Loyalty Name"
+msgstr "Nome Front End"
 
 #. module: customer_loyalty
 #: model:ir.model.fields,field_description:customer_loyalty.field_res_partner_loyalty_value
@@ -172,7 +211,6 @@ msgstr "Valore Fidelizzazione"
 
 #. module: customer_loyalty
 #: selection:customer.loyalty.add,loyalty_type:0
-#: selection:customer.loyalty.log,loyalty_type:0
 #: selection:customer.loyalty.settings,points_money:0
 #: selection:customer.loyalty.sub,loyalty_type:0
 msgid "Money"
@@ -182,6 +220,23 @@ msgstr "Soldi"
 #: model:ir.model.fields,field_description:customer_loyalty.field_customer_loyalty_money
 msgid "Money value"
 msgstr "Valore in soldi"
+
+#. module: customer_loyalty
+#: model:ir.model.fields,field_description:customer_loyalty.field_customer_loyalty_settings_text_fe
+msgid "Name"
+msgstr "Nome"
+
+#. module: customer_loyalty
+#: model:ir.model.fields,field_description:customer_loyalty.field_customer_loyalty_add_note
+#: model:ir.model.fields,field_description:customer_loyalty.field_customer_loyalty_log_note
+#: model:ir.model.fields,field_description:customer_loyalty.field_customer_loyalty_sub_note
+msgid "Note"
+msgstr "Nota"
+
+#. module: customer_loyalty
+#: model:ir.model.fields,field_description:customer_loyalty.field_customer_loyalty_log_order_id
+msgid "Order"
+msgstr "Ordine"
 
 #. module: customer_loyalty
 #: model:ir.model.fields,field_description:customer_loyalty.field_customer_loyalty_settings_order_state
@@ -200,7 +255,6 @@ msgstr "Percentuale di ricavo"
 
 #. module: customer_loyalty
 #: selection:customer.loyalty.add,loyalty_type:0
-#: selection:customer.loyalty.log,loyalty_type:0
 #: selection:customer.loyalty.settings,points_money:0
 #: selection:customer.loyalty.sub,loyalty_type:0
 msgid "Points"
@@ -215,6 +269,11 @@ msgstr "Punti o Soldi"
 #: model:ir.model.fields,field_description:customer_loyalty.field_customer_loyalty_points
 msgid "Points value"
 msgstr "Valore in punti"
+
+#. module: customer_loyalty
+#: model:ir.model.fields,field_description:customer_loyalty.field_customer_loyalty_sub_value
+msgid "Removing Value"
+msgstr "Valore da Sottrarre"
 
 #. module: customer_loyalty
 #: model:ir.ui.view,arch_db:customer_loyalty.customer_loyalty_settings_form
@@ -233,18 +292,48 @@ msgid "Sub"
 msgstr "Rimosso"
 
 #. module: customer_loyalty
+#: model:ir.ui.view,arch_db:customer_loyalty.custoemr_loyalty_form_view
+#: model:ir.ui.view,arch_db:customer_loyalty.customer_loyalty_subform_view
+msgid "Sub Value"
+msgstr "Sottrai Valore"
+
+#. module: customer_loyalty
+#: model:ir.model.fields,field_description:customer_loyalty.field_customer_loyalty_settings_text_welcome
+msgid "Text Welcome Points"
+msgstr "Testo di benvenuto"
+
+#. module: customer_loyalty
+#: code:addons/customer_loyalty/models/customer_loyalty.py:203
+#: code:addons/customer_loyalty/models/customer_loyalty.py:240
+#, python-format
+msgid "There is a problem with loyalty for this customer. Contact Administrator."
+msgstr "C'è un problema con la raccolta punti del cliente. Contatta l'amministratore."
+
+#. module: customer_loyalty
 #: model:ir.model.fields,field_description:customer_loyalty.field_customer_loyalty_add_loyalty_type
-#: model:ir.model.fields,field_description:customer_loyalty.field_customer_loyalty_log_loyalty_type
 #: model:ir.model.fields,field_description:customer_loyalty.field_customer_loyalty_sub_loyalty_type
 msgid "Type"
 msgstr "Tipo"
 
 #. module: customer_loyalty
-#: model:ir.model.fields,field_description:customer_loyalty.field_customer_loyalty_add_value
-#: model:ir.model.fields,field_description:customer_loyalty.field_customer_loyalty_log_value
-#: model:ir.model.fields,field_description:customer_loyalty.field_customer_loyalty_sub_value
-msgid "Value"
-msgstr "Valore"
+#: model:ir.model.fields,field_description:customer_loyalty.field_customer_loyalty_log_author_id
+msgid "User"
+msgstr "Utente"
+
+#. module: customer_loyalty
+#: model:ir.model.fields,field_description:customer_loyalty.field_customer_loyalty_log_money_value
+msgid "Value Money"
+msgstr "Valore in soldi"
+
+#. module: customer_loyalty
+#: model:ir.model.fields,field_description:customer_loyalty.field_customer_loyalty_log_points_value
+msgid "Value Points"
+msgstr "Valore in punti"
+
+#. module: customer_loyalty
+#: model:ir.model.fields,field_description:customer_loyalty.field_customer_loyalty_settings_welcome_points
+msgid "Welcome Points"
+msgstr "Punti/Soldi di benvenuto"
 
 #. module: customer_loyalty
 #: model:ir.model.fields,field_description:customer_loyalty.field_customer_loyalty_log_what

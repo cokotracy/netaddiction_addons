@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from openerp import models, fields, api
+from openerp import models, fields, api, _
 
 class CustomerLoyalty(models.Model):
 
@@ -10,6 +10,9 @@ class CustomerLoyalty(models.Model):
     - points: valore in punti
     - money: valore in denaro (equivalente ai punti secondo la configurazione)
     - logs: lista di log sulle operazione di aggiunta e rimozione punti/denaro
+
+    context:
+        write: {'skip_loyalty_log': True} => non logga le modifiche
     """
 
     _name = "customer.loyalty"
@@ -35,65 +38,111 @@ class CustomerLoyalty(models.Model):
         return res
 
     @api.model
+    def convert_points_money(self, value, to):
+        """
+        Converte il valore value in points o money
+        to: points/money valore in uscita dalla funzione, se money in entrata devi avere points e viceversa.
+        """
+        # valore di un point in money (sempre così da config)
+        equal = self.env['customer.loyalty.settings'].get_default_conversion_points_money('conversion_points_money')
+        e = equal['conversion_points_money']
+        if to == 'money':
+            return value * float(e)
+        else:
+            return value / float(e)
+
+    @api.model
     def create(self, values):
         # creo subito il rigo
         myself = super(CustomerLoyalty, self).create(values)
         # vado a creare il log di creazione
-        res = self.env['customer.loyalty.settings'].get_default_points_money('points_money')
-        val = myself.money
-        loyalty_type = 'money'
-        if res['points_money'] == 'points':
-            val = myself.points
-            loyalty_type = 'points'
+        text_welcome = self.env['customer.loyalty.settings'].get_default_text_welcome('text_welcome')
         attrs = {
             'customer_loyalty_id': myself.id,
-            'value': val,
-            'loyalty_type': loyalty_type,
+            'points_value': myself.points,
+            'money_value': myself.money,
             'date': fields.datetime.now(),
             'what': 'add',
-            'author_id': self.env.uid
+            'author_id': self.env.uid,
+            'note': text_welcome['text_welcome']
         }
         self.env['customer.loyalty.log'].create(attrs)
         return myself
 
     @api.multi
+    def add_value(self):
+        self.ensure_one()
+        return {
+            'type': 'ir.actions.act_window',
+            'res_model': 'customer.loyalty.add',
+            'view_mode': 'form',
+            'view_type': 'form',
+            'views': [(False, 'form')],
+            'context': {'default_partner_id': self.partner_id.id},
+            'target': 'new', }
+
+    @api.multi
+    def remove_value(self):
+        self.ensure_one()
+        return {
+            'type': 'ir.actions.act_window',
+            'res_model': 'customer.loyalty.sub',
+            'view_mode': 'form',
+            'view_type': 'form',
+            'views': [(False, 'form')],
+            'context': {'default_partner_id': self.partner_id.id},
+            'target': 'new', }
+
+    @api.multi
     def write(self, values):
+        """
+        context:
+            {'skip_loyalty_log': True} => non logga le modifiche
+
+            {'note': <text>} => <text> testo della nota
+            {'internal_note': <text>} => <text> testo della nota interna
+            {'order_id': <order_id>} => <order_id> id dell'ordine
+        """
         res = self.env['customer.loyalty.settings'].get_default_points_money('points_money')
-        equal = self.env['customer.loyalty.settings'].get_default_conversion_points_money('conversion_points_money')
+
         for s in self:
             this_value = s.money
             new_value = values.get('money', 0)
-            loyalty_type = 'money'
+            money_value = new_value - this_value
+            points_value = self.env['customer.loyalty'].convert_points_money(money_value, 'points')
+
             if res['points_money'] == 'points':
                 this_value = s.points
                 new_value = values.get('points', 0)
-                loyalty_type = 'points'
-            log_value = new_value - this_value
-            if log_value > 0:
+                points_value = new_value - this_value
+                money_value = self.env['customer.loyalty'].convert_points_money(points_value, 'money')
+
+            if (new_value - this_value) > 0:
                 what = 'add'
             else:
                 what = 'sub'
+
             # loggo il cambiamento
             if not self.env.context.get('skip_loyalty_log', False):
                 attrs = {
                     'customer_loyalty_id': s.id,
-                    'value': log_value,
-                    'loyalty_type': loyalty_type,
+                    'points_value': points_value,
+                    'money_value': money_value,
                     'date': fields.datetime.now(),
                     'what': what,
-                    'author_id': self.env.uid
+                    'author_id': self.env.uid,
+                    'note': self.env.context.get('note', ''),
+                    'internal_note': self.env.context.get('internal_note', ''),
+                    'order_id': self.env.context.get('order_id', False)
                 }
                 self.env['customer.loyalty.log'].create(attrs)
 
                 # converto il valore punti/soldi o viceversa ricordando che è sempre 1 punto che vale soldi
-                e = equal['conversion_points_money']
 
                 if res['points_money'] == 'points':
-                    convert_value = new_value * float(e)
-                    s.with_context({'skip_loyalty_log': True}).money = convert_value
+                    s.with_context({'skip_loyalty_log': True}).money = self.env['customer.loyalty'].convert_points_money(new_value, 'money')
                 else:
-                    convert_value = new_value / float(e)
-                    s.ith_context({'skip_loyalty_log': True}).points = convert_value
+                    s.with_context({'skip_loyalty_log': True}).points = self.env['customer.loyalty'].convert_points_money(new_value, 'points')
 
         return super(CustomerLoyalty, self).write(values)
 
@@ -108,15 +157,18 @@ class CustomerLoyaltyLog(models.Model):
     customer_loyalty_id = fields.Many2one(
         comodel_name="customer.loyalty",
         string="Customer Loyalty")
-    value = fields.Float(string="Value")
-    loyalty_type = fields.Selection(
-        selection=(('points', 'Points'), ('money', 'Money')),
-        string="Type")
+    points_value = fields.Float(string="Value Points")
+    money_value = fields.Float(string="Value Money")
     what = fields.Selection(
         selection=(('add', 'Add'), ('sub', 'Sub')),
         string="What")
     date = fields.Datetime(string="Data")
     author_id = fields.Many2one(comodel_name='res.users', string='User', required=True)
+    note = fields.Char(string="Note")
+    internal_note = fields.Char(string="Internal Note")
+    order_id = fields.Many2one(
+        comodel_name="sale.order",
+        string="Order")
 
 class CustomerLoyaltyAdd(models.TransientModel):
 
@@ -131,11 +183,25 @@ class CustomerLoyaltyAdd(models.TransientModel):
         comodel_name='res.partner',
         string="Customer",
         required=True)
-    value = fields.Float(string="Value")
-    # TODO: compute sul tipo settings
+    value = fields.Float(string="Adding Value")
     loyalty_type = fields.Selection(
         selection=(('points', 'Points'), ('money', 'Money')),
         string="Type")
+    note = fields.Char(string="Note")
+    internal_note = fields.Char(String="Internal Note")
+
+    @api.multi
+    def execute(self):
+        self.ensure_one()
+        loyalty = self.env['customer.loyalty'].search([('partner_id.id', '=', self.partner_id.id)])
+        if len(loyalty) == 1:
+            if self.loyalty_type == 'points':
+                loyalty.with_context({'note': self.note, 'internal_note': self.internal_note}).points = loyalty.points + self.value
+            else:
+                loyalty.with_context({'note': self.note, 'internal_note': self.internal_note}).money = loyalty.money + self.value
+        else:
+            raise Warning(_('There is a problem with loyalty for this customer. Contact Administrator.'))
+
 
 class CustomerLoyaltySub(models.TransientModel):
 
@@ -150,11 +216,28 @@ class CustomerLoyaltySub(models.TransientModel):
         comodel_name='res.partner',
         string="Customer",
         required=True)
-    value = fields.Float(string="Value")
-    # TODO: compute sul tipo settings
+    value = fields.Float(string="Removing Value")
     loyalty_type = fields.Selection(
         selection=(('points', 'Points'), ('money', 'Money')),
         string="Type")
+    note = fields.Char(string="Note")
+    internal_note = fields.Char(String="Internal Note")
+
+    @api.multi
+    def execute(self):
+        self.ensure_one()
+        loyalty = self.env['customer.loyalty'].search([('partner_id.id', '=', self.partner_id.id)])
+        if len(loyalty) == 1:
+            if self.loyalty_type == 'points':
+                if self.value > loyalty.points:
+                    raise Warning(_('Entered value is greater than the existing one'))
+                loyalty.with_context({'note': self.note, 'internal_note': self.internal_note}).points = loyalty.points - self.value
+            else:
+                if self.value > loyalty.money:
+                    raise Warning(_('Entered value is greater than the existing one'))
+                loyalty.with_context({'note': self.note, 'internal_note': self.internal_note}).money = loyalty.money - self.value
+        else:
+            raise Warning(_('There is a problem with loyalty for this customer. Contact Administrator.'))
 
 class PartnerLoyalty(models.Model):
     """
@@ -164,6 +247,7 @@ class PartnerLoyalty(models.Model):
     _inherit = "res.partner"
 
     loyalty_value = fields.Float(string="Loyalty Value", compute="_get_loyalty_value")
+    loyalty_name = fields.Char(string="Loyalty Name", compute="_get_loyalty_name")
 
     @api.one
     def _get_loyalty_value(self):
@@ -171,27 +255,43 @@ class PartnerLoyalty(models.Model):
         Se presente recupera il rigo con la fidelizzazione,
         altrimenti lo crea
         prende il valore e lo mostra
+
+        context: {'create_new_loyalty': True} => crea la loyalty base
         """
 
-        # se è un idirizzo non deve creare
+        # se è un indirizzo non deve creare
         if self.parent_id:
             self.loyalty_value = 0
             return True
 
         loyalty = self.env['customer.loyalty'].search([('partner_id.id', '=', self.id)])
-        if len(loyalty) == 0:
-            # non c'è alcuna fidelizzazione, la creo
-            attrs = {
-                'partner_id': self.id,
-                'points': 0,
-                'money': 0
-            }
-            res = self.env['customer.loyalty'].create(attrs)
-            loyalty = res
 
-        value = loyalty.money
         res = self.env['customer.loyalty.settings'].get_default_points_money('points_money')
         loyalty_type = res['points_money']
+
+        if self.env.context.get('create_new_loyalty', False):
+            if len(loyalty) == 0:
+                # non c'è alcuna fidelizzazione, la creo
+                welcome_points = self.env['customer.loyalty.settings'].get_default_welcome_points('welcome_points')
+
+                if loyalty_type == 'points':
+                    attrs = {
+                        'partner_id': self.id,
+                        'points': welcome_points['welcome_points'],
+                        'money': self.env['customer.loyalty'].convert_points_money(welcome_points['welcome_points'], 'money')
+                    }
+                else:
+                    attrs = {
+                        'partner_id': self.id,
+                        'points': self.env['customer.loyalty'].convert_points_money(welcome_points['welcome_points'], 'points'),
+                        'money': welcome_points['welcome_points']
+                    }
+
+                res = self.env['customer.loyalty'].create(attrs)
+                loyalty = res
+
+        value = loyalty.money
+
         if loyalty_type == 'points':
             value = loyalty.points
 
@@ -213,3 +313,8 @@ class PartnerLoyalty(models.Model):
             'context': {},
             'target': 'new',
         }
+
+    @api.one
+    def _get_loyalty_name(self):
+        res = self.env['customer.loyalty.settings'].get_default_text_fe('text_fe')['text_fe']
+        self.loyalty_name = res
