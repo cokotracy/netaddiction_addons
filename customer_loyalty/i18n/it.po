@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 9.0c\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-09-18 15:07+0000\n"
-"PO-Revision-Date: 2018-09-18 17:08+0200\n"
+"POT-Creation-Date: 2018-09-20 13:42+0000\n"
+"PO-Revision-Date: 2018-09-20 15:42+0200\n"
 "Last-Translator: <>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -136,8 +136,8 @@ msgid "Empty loyalty."
 msgstr "Nessuna Fidelizzazione."
 
 #. module: customer_loyalty
-#: code:addons/customer_loyalty/models/customer_loyalty.py:233
-#: code:addons/customer_loyalty/models/customer_loyalty.py:237
+#: code:addons/customer_loyalty/models/customer_loyalty.py:253
+#: code:addons/customer_loyalty/models/customer_loyalty.py:257
 #, python-format
 msgid "Entered value is greater than the existing one"
 msgstr "Il valore inserito è maggiore di quello presente."
@@ -303,8 +303,8 @@ msgid "Text Welcome Points"
 msgstr "Testo di benvenuto"
 
 #. module: customer_loyalty
-#: code:addons/customer_loyalty/models/customer_loyalty.py:203
-#: code:addons/customer_loyalty/models/customer_loyalty.py:240
+#: code:addons/customer_loyalty/models/customer_loyalty.py:223
+#: code:addons/customer_loyalty/models/customer_loyalty.py:260
 #, python-format
 msgid "There is a problem with loyalty for this customer. Contact Administrator."
 msgstr "C'è un problema con la raccolta punti del cliente. Contatta l'amministratore."
@@ -339,6 +339,12 @@ msgstr "Punti/Soldi di benvenuto"
 #: model:ir.model.fields,field_description:customer_loyalty.field_customer_loyalty_log_what
 msgid "What"
 msgstr "Azione"
+
+#. module: customer_loyalty
+#: code:addons/customer_loyalty/models/customer_loyalty.py:90
+#, python-format
+msgid "You can't delete object."
+msgstr "Non puoi cancellare l'oggetto."
 
 #. module: customer_loyalty
 #: model:ir.model,name:customer_loyalty.model_customer_loyalty

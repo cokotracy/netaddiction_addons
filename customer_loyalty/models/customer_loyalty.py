@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from openerp import models, fields, api, _
+from openerp.exceptions import UserError
 
 class CustomerLoyalty(models.Model):
 
@@ -13,6 +14,11 @@ class CustomerLoyalty(models.Model):
 
     context:
         write: {'skip_loyalty_log': True} => non logga le modifiche
+               {'note': <text>} => <text> testo della nota
+               {'internal_note': <text>} => <text> testo della nota interna
+               {'order_id': <order_id>} => <order_id> id dell'ordine
+
+        unlink: {'real_unlink': True} => cancella definitivamente la loyalty
     """
 
     _name = "customer.loyalty"
@@ -53,6 +59,10 @@ class CustomerLoyalty(models.Model):
 
     @api.model
     def create(self, values):
+        res = self.search([('partner_id', '=', int(values['partner_id']))])
+        if len(res) > 0:
+            # se è già presente ritorno false per non creare casini
+            return False
         # creo subito il rigo
         myself = super(CustomerLoyalty, self).create(values)
         # vado a creare il log di creazione
@@ -68,6 +78,20 @@ class CustomerLoyalty(models.Model):
         }
         self.env['customer.loyalty.log'].create(attrs)
         return myself
+
+    @api.one
+    def unlink(self):
+        """
+        tecnicamente non facciamo cancellare una loyalty dal backoffice,
+        semmai si usa un contesto
+
+        context:
+            {'real_unlink': True} => cancella definitivamente la loyalty
+        """
+        if self.env.context.get('real_unlink', False):
+            return super(CustomerLoyalty, self).unlink()
+
+        raise UserError(_("You can't delete object."))
 
     @api.multi
     def add_value(self):
@@ -200,7 +224,7 @@ class CustomerLoyaltyAdd(models.TransientModel):
             else:
                 loyalty.with_context({'note': self.note, 'internal_note': self.internal_note}).money = loyalty.money + self.value
         else:
-            raise Warning(_('There is a problem with loyalty for this customer. Contact Administrator.'))
+            raise UserError(_('There is a problem with loyalty for this customer. Contact Administrator.'))
 
 
 class CustomerLoyaltySub(models.TransientModel):
@@ -230,18 +254,21 @@ class CustomerLoyaltySub(models.TransientModel):
         if len(loyalty) == 1:
             if self.loyalty_type == 'points':
                 if self.value > loyalty.points:
-                    raise Warning(_('Entered value is greater than the existing one'))
+                    raise UserError(_('Entered value is greater than the existing one'))
                 loyalty.with_context({'note': self.note, 'internal_note': self.internal_note}).points = loyalty.points - self.value
             else:
                 if self.value > loyalty.money:
-                    raise Warning(_('Entered value is greater than the existing one'))
+                    raise UserError(_('Entered value is greater than the existing one'))
                 loyalty.with_context({'note': self.note, 'internal_note': self.internal_note}).money = loyalty.money - self.value
         else:
-            raise Warning(_('There is a problem with loyalty for this customer. Contact Administrator.'))
+            raise UserError(_('There is a problem with loyalty for this customer. Contact Administrator.'))
 
 class PartnerLoyalty(models.Model):
     """
     Aggiunge il campo raccolta punti/denaro al cliente
+
+    context:
+        _get_loyalty_value: {'create_new_loyalty': True} => crea la loyalty base
     """
 
     _inherit = "res.partner"
