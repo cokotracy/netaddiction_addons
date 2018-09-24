@@ -7,4 +7,5 @@ from . import (  # NOQA
     esprinet,
     promovideo,
     terminalvideo,
+    beegroup,
 )

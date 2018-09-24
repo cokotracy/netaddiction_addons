@@ -14,7 +14,6 @@ class Cron(models.Model):
     @api.model
     def run_import(self):
         autoimport = self.env['netaddiction_octopus.autoimport.product'].search([])
-
         # per ogni fornitore configurato mi prendo i prodotti octopus con quelle categorie di quel fornitore
         for auto in autoimport:
             results = self.env['netaddiction_octopus.product'].search([('supplier_id.id', '=', auto.supplier_id.partner_id.id), ('category_id.id', 'in', auto.category_ids.ids), ('is_new', '=', True)])

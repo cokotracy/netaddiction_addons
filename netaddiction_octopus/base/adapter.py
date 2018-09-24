@@ -76,7 +76,6 @@ class Adapter(object):
                     continue
 
                 field_key = ('[field] %s: %s' % (item['_file'], field), value)
-
                 if field_key in taxes:
                     chains.append(taxes[field_key])
 
