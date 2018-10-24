@@ -19,6 +19,7 @@ class ChannelPilotOrder(models.Model):
     @api.model
     def _get_channelpilot_orders(self):
         client = Client("https://seller.api.channelpilot.com/3_0?wsdl")
+        # DEBUG per scoprire nomi campi
         # for method in client.wsdl.services[0].ports[0].methods.values():
         #     print '%s(%s)' % (method.name, ', '.join('%s: %s' % (part.type, part.name) for part in method.soap.input.body.parts))
         cpAuth = client.factory.create(u'CPAuth')
@@ -31,7 +32,8 @@ class ChannelPilotOrder(models.Model):
             return
         cp_orders = []
         problems = []
-        self._send_cp_error_mail("  %s" % response, '[CHANNELPILOT -  DEBUG] getNewMarketplaceOrders result ')
+        # DEBUG MAIL
+        # self._send_cp_error_mail("  %s" % response, '[CHANNELPILOT -  DEBUG] getNewMarketplaceOrders result ')
         if "orders" not in response:
             # non ci sono ordini
             return
@@ -146,22 +148,20 @@ class ChannelPilotOrder(models.Model):
             return None
 
     def _get_state(self, cp_address):
-
-        res = self.env["res.better.zip"].search([("city", "ilike", cp_address.city)])
-        if not res:
-            res = self.env["res.better.zip"].search([("name", "=", cp_address.zip)])
+        # cerco prima il codice CAP
+        res = self.env["res.better.zip"].search([("name", "=", cp_address.zip)])
+        if res:
+            # cerco la localita precisa, se non la trovo ne assegno una con quel CAP
+            # (la provincia dovrebbe essere corretta ugualmente in questo modo)
+            temp = res.search([("city", "ilike", cp_address.city)])
+            res = temp if temp else res
+        else:
+            # se non trovo nulla col CAP provo col nome
+            res = self.env["res.better.zip"].search([("city", "ilike", cp_address.city)])
         if res:
             return res[0].state_id.id
 
         return None
-
-
-    # def _get_state(self, state):
-        # if state:
-        #     res = self.env["res.better.zip"].search([("name", "=", state)])
-        #     if res:
-        #         return res[0].state_id.id
-        # return None
 
     def _create_cp_order(self, order, user, user_shipping, user_billing, client):
         """Crea l'ordine sul backoffice."""
