@@ -242,7 +242,7 @@ class NetaddictionManifest(models.Model):
                 riga += 'P'
 
                 # ESTERO CODICE MITTENTE CAMPO 9
-                if nation == 'IT':
+                if nation in ['IT', 'SM']:
                     riga += 'NETA30'
                 else:
                     riga += '      '
@@ -324,7 +324,7 @@ class NetaddictionManifest(models.Model):
                 else:
 
                     # ESTERO TEELFONO
-                    if nation == 'IT':
+                    if nation in ['IT', 'SM']:
                         mobile = ' '*15
                     else:
                         mobile = '1'*15
@@ -368,7 +368,7 @@ class NetaddictionManifest(models.Model):
                 riga += '0'*15
 
                 # ESTERO CODICE SERVIZIO CAMPO 34
-                if nation == 'IT':
+                if nation in ['IT', 'SM']:
                     riga += 'EXT'
                 else:
                     riga += 'EUD'
@@ -399,7 +399,7 @@ class NetaddictionManifest(models.Model):
                 riga += 'TR'
 
                 # ESTERO CONTENUTO CAMPO 44
-                if nation == 'IT':
+                if nation in ['IT', 'SM']:
                     riga += 'Varie'
                     count = 30 - len('Varie')
                 else:
@@ -411,14 +411,14 @@ class NetaddictionManifest(models.Model):
                 riga += 'P'
 
                 # ESTERO NAZIONE MITTENTE CAMPO 46
-                if nation == 'IT':
+                if nation in ['IT', 'SM']:
                     riga += ' ' * 3
                 else:
                     riga += 'IT '
                 # FINE ESTERO
 
                 # ESTERO NAZIONE DESTINATARIO
-                if nation == 'IT':
+                if nation in ['IT', 'SM']:
                     riga += ' ' * 3
                 else:
                     riga += nation + ' '
@@ -457,7 +457,7 @@ class NetaddictionManifest(models.Model):
                 count = 14 - len(mobile)
                 riga += ' ' * count
                 riga += ' ' * 4
-                if nation == 'IT':
+                if nation in ['IT', 'SM']:
                     riga += ' ' * 2
                 else:
                     riga += 'C '
