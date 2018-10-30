@@ -33,6 +33,7 @@ class CustomerLoyalty(models.Model):
         comodel_name='customer.loyalty.log',
         inverse_name='customer_loyalty_id',
         string='History')
+    company_id = fields.Many2one('res.company', 'Società', default=1)
 
     @api.multi
     def name_get(self):
@@ -170,6 +171,27 @@ class CustomerLoyalty(models.Model):
 
         return super(CustomerLoyalty, self).write(values)
 
+    @api.model
+    def cron_loyalty_earned(self):
+        """
+        Questo cron assegna i punti/soldi degli ordini completati
+        """
+        state = self.env['customer.loyalty.settings'].get_default_order_state('order_state')['order_state']
+        # prendo gli ordini che sono in completato che non hanno assegnati i punti e che hanno i punti maggiori di zero (con questo elimino i vecchi ordini e quelli che non serve analizzare)
+        orders = self.env['sale.order'].search([('state', '=', state), ('loyalty_earned_assigned', '=', False), ('loyalty_earned', '>', 0)])
+        res = self.env['customer.loyalty.settings'].get_default_points_money('points_money')
+        loyalty_type = res['points_money']
+        for order in orders:
+            value = 0
+            loyalty = self.env['customer.loyalty'].search([('partner_id.id', '=', order.partner_id.id)])
+            if loyalty_type == 'points':
+                value = order.loyalty_earned
+                loyalty.with_context({'order_id': order.id}).points = loyalty.points + value
+            else:
+                value = self.env['customer.loyalty'].convert_points_money(order.loyalty_earned, 'money')
+                loyalty.with_context({'order_id': order.id}).money = loyalty.money + value
+            order.loyalty_earned_assigned = True
+
 class CustomerLoyaltyLog(models.Model):
 
     """
@@ -193,6 +215,7 @@ class CustomerLoyaltyLog(models.Model):
     order_id = fields.Many2one(
         comodel_name="sale.order",
         string="Order")
+    company_id = fields.Many2one('res.company', 'Società', default=1)
 
 class CustomerLoyaltyAdd(models.TransientModel):
 
@@ -345,3 +368,146 @@ class PartnerLoyalty(models.Model):
     def _get_loyalty_name(self):
         res = self.env['customer.loyalty.settings'].get_default_text_fe('text_fe')['text_fe']
         self.loyalty_name = res
+
+class LoyaltyOrders(models.Model):
+    """
+    Gestisce i punti negli ordini
+    """
+    _inherit = "sale.order"
+
+    loyalty_used = fields.Float(string="Loyaltay used", default=0)
+    loyalty_earned = fields.Float(string="Loyalty earned", default=0)
+    loyalty_earned_assigned = fields.Boolean(string="Loyalty Assigned", default=False)
+    loyalty_prev = fields.Float(string="Previous loyalty used", default=0)
+    loyalty_used_logged = fields.Boolean(string="Loyalty used Logged", default=False)
+
+    @api.constrains('loyalty_used')
+    @api.one
+    def _loyalty_used(self):
+        """
+        una volta assegnati i punti, questa funzione fa il calcolo ed applica lo sconto sul totale dell'ordine.
+        """
+        obj = self.env['customer.loyalty'].search([('partner_id', '=', self.partner_id.id)])
+        # controllo i punti
+        if len(obj) > 0:
+            if self.loyalty_used < 0:
+                self.loyalty_used = 0
+            res = self.env['customer.loyalty.settings'].get_default_points_money('points_money')
+            loyalty_type = res['points_money']
+            if loyalty_type == 'points':
+                if self.loyalty_used > obj.points:
+                    # azzero i punti e non lancio nessuna eccezione per evitare problemi
+                    self.loyalty_used = 0
+            else:
+                if self.loyalty_used > obj.money:
+                    # azzero i punti e non lancio nessuna eccezione per evitare problemi
+                    self.loyalty_used = 0
+
+            money = self.loyalty_used
+            if loyalty_type == 'points':
+                money = self.env['customer.loyalty'].convert_points_money(self.loyalty_used, 'money')
+            # uso la funzione così sono sicuro che prende il valore corretto del totale
+            self._amount_all()
+
+            # tolgo i punti dall'account utente
+            if self.loyalty_used > 0:
+                # devo sottrarre
+                if loyalty_type == 'points':
+                    obj.with_context({'skip_loyalty_log': True}).points = obj.points - self.loyalty_used
+                    obj.with_context({'skip_loyalty_log': True}).money = self.env['customer.loyalty'].convert_points_money(obj.points, 'money')
+                else:
+                    obj.with_context({'skip_loyalty_log': True}).money = obj.money - money
+                    obj.with_context({'skip_loyalty_log': True}).points = self.env['customer.loyalty'].convert_points_money(obj.money, 'points')
+            else:
+                # devo aggiungere
+                if loyalty_type == 'points':
+                    obj.with_context({'skip_loyalty_log': True}).points = obj.points + self.loyalty_prev
+                    obj.with_context({'skip_loyalty_log': True}).money = self.env['customer.loyalty'].convert_points_money(obj.points, 'money')
+                else:
+                    obj.with_context({'skip_loyalty_log': True}).money = obj.money + self.loyalty_prev
+                    obj.with_context({'skip_loyalty_log': True}).points = self.env['customer.loyalty'].convert_points_money(obj.money, 'points')
+
+            self.loyalty_prev = self.loyalty_used
+
+    @api.constrains('amount_total')
+    @api.one
+    def _change_amount_total(self):
+        """
+        Ogni volta che cambia amount total (il totale dell'ordine) ricalcola il suo valore se ci sono loyalty_used
+
+        context:
+            {'pass_amount_total': True} => serve per evitare il calcolo dei punti
+        """
+
+        if self.env.context.get('pass_amount_total', False):
+            return True
+        new_amount = self.amount_total
+        if self.loyalty_used > 0:
+            res = self.env['customer.loyalty.settings'].get_default_points_money('points_money')
+            loyalty_type = res['points_money']
+            money = self.loyalty_used
+            if loyalty_type == 'points':
+                money = self.env['customer.loyalty'].convert_points_money(self.loyalty_used, 'money')
+            # sarebbe il valore corretto ma nel nostro sistema legacy dobbiamo usare la prossiam riga if money > self.amount_total:
+            if money > self.simulate_total_amount():
+                # se i punti inseriti valogno più del totale dell'ordine non li faccio applicare
+                self.loyalty_used = 0
+                money = 0
+            new_amount = float(self.amount_total) - float(money)
+            self.with_context({'pass_amount_total': True}).amount_total = new_amount
+
+        # assegno i punti
+        percentage = self.env['customer.loyalty.settings'].get_default_revenues_percentage('revenues_percentage')['revenues_percentage']
+        if new_amount > 0:
+            money_value = (new_amount * percentage) / 100
+            points_value = self.env['customer.loyalty'].convert_points_money(money_value, 'points')
+            # metto il valore in punti
+            self.loyalty_earned = int(points_value)
+
+    @api.constrains('state')
+    @api.one
+    def _log_loyalty_used(self):
+        """
+        Logga l'uso dei punti
+        """
+        if self.state == 'sale' and not self.loyalty_used_logged:
+            self.loyalty_used_logged = True
+            loyalty = self.env['customer.loyalty'].search([('partner_id.id', '=', self.partner_id.id)])
+            if len(loyalty) == 1 and self.loyalty_used > 0:
+                res = self.env['customer.loyalty.settings'].get_default_points_money('points_money')
+                loyalty_type = res['points_money']
+                if loyalty_type == 'points':
+                    points_value = self.loyalty_used
+                    money_value = self.env['customer.loyalty'].convert_points_money(self.loyalty_used, 'money')
+                else:
+                    money_value = self.loyalty_used
+                    points_value = self.env['customer.loyalty'].convert_points_money(self.money_value, 'points')
+                attrs = {
+                    'customer_loyalty_id': loyalty.id,
+                    'points_value': (0 - points_value),
+                    'money_value': (0 - money_value),
+                    'date': fields.datetime.now(),
+                    'what': 'sub',
+                    'author_id': self.env.uid,
+                    'note': '',
+                    'internal_note': '',
+                    'order_id': self.id
+                }
+                self.env['customer.loyalty.log'].create(attrs)
+
+    @api.multi
+    def open_loyalty(self):
+        loyalty = self.env['customer.loyalty'].search([('partner_id.id', '=', self.partner_id.id)])
+        view_id = self.env.ref('customer_loyalty.custoemr_loyalty_form_view').id
+        return {
+            'name': 'Loyalty',
+            'view_type': 'form',
+            'view_mode': 'form',
+            'views': [(view_id, 'form')],
+            'res_model': 'customer.loyalty',
+            'res_id': loyalty.id,
+            'view_id': view_id,
+            'type': 'ir.actions.act_window',
+            'context': {},
+            'target': 'new',
+        }

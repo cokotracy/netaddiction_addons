@@ -14,5 +14,6 @@
     'depends': ['base', 'product', 'sale', 'purchase', 'mrp', 'account', 'stock'],
     'data': [
         'views/customer_loyalty.xml',
+        'data/cron.xml',
     ]
 }
