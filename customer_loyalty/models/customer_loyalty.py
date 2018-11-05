@@ -165,9 +165,9 @@ class CustomerLoyalty(models.Model):
                 # converto il valore punti/soldi o viceversa ricordando che è sempre 1 punto che vale soldi
 
                 if res['points_money'] == 'points':
-                    s.with_context({'skip_loyalty_log': True}).money = self.env['customer.loyalty'].convert_points_money(new_value, 'money')
+                    s.with_context({'skip_loyalty_log': True}).write({'money': self.env['customer.loyalty'].convert_points_money(new_value, 'money')})
                 else:
-                    s.with_context({'skip_loyalty_log': True}).points = self.env['customer.loyalty'].convert_points_money(new_value, 'points')
+                    s.with_context({'skip_loyalty_log': True}).write({'points': self.env['customer.loyalty'].convert_points_money(new_value, 'points')})
 
         return super(CustomerLoyalty, self).write(values)
 
@@ -186,10 +186,10 @@ class CustomerLoyalty(models.Model):
             loyalty = self.env['customer.loyalty'].search([('partner_id.id', '=', order.partner_id.id)])
             if loyalty_type == 'points':
                 value = order.loyalty_earned
-                loyalty.with_context({'order_id': order.id}).points = loyalty.points + value
+                loyalty.with_context({'order_id': order.id}).write({'points': loyalty.points + value})
             else:
                 value = self.env['customer.loyalty'].convert_points_money(order.loyalty_earned, 'money')
-                loyalty.with_context({'order_id': order.id}).money = loyalty.money + value
+                loyalty.with_context({'order_id': order.id}).write({'money': loyalty.money + value})
             order.loyalty_earned_assigned = True
 
 class CustomerLoyaltyLog(models.Model):
@@ -243,9 +243,9 @@ class CustomerLoyaltyAdd(models.TransientModel):
         loyalty = self.env['customer.loyalty'].search([('partner_id.id', '=', self.partner_id.id)])
         if len(loyalty) == 1:
             if self.loyalty_type == 'points':
-                loyalty.with_context({'note': self.note, 'internal_note': self.internal_note}).points = loyalty.points + self.value
+                loyalty.with_context({'note': self.note, 'internal_note': self.internal_note}).write({'points': loyalty.points + self.value}) 
             else:
-                loyalty.with_context({'note': self.note, 'internal_note': self.internal_note}).money = loyalty.money + self.value
+                loyalty.with_context({'note': self.note, 'internal_note': self.internal_note}).write({'money': loyalty.money + self.value})
         else:
             raise UserError(_('There is a problem with loyalty for this customer. Contact Administrator.'))
 
@@ -278,11 +278,11 @@ class CustomerLoyaltySub(models.TransientModel):
             if self.loyalty_type == 'points':
                 if self.value > loyalty.points:
                     raise UserError(_('Entered value is greater than the existing one'))
-                loyalty.with_context({'note': self.note, 'internal_note': self.internal_note}).points = loyalty.points - self.value
+                loyalty.with_context({'note': self.note, 'internal_note': self.internal_note}).write({'points': loyalty.points - self.value})
             else:
                 if self.value > loyalty.money:
                     raise UserError(_('Entered value is greater than the existing one'))
-                loyalty.with_context({'note': self.note, 'internal_note': self.internal_note}).money = loyalty.money - self.value
+                loyalty.with_context({'note': self.note, 'internal_note': self.internal_note}).write({'money': loyalty.money - self.value})
         else:
             raise UserError(_('There is a problem with loyalty for this customer. Contact Administrator.'))
 
@@ -337,8 +337,23 @@ class PartnerLoyalty(models.Model):
                         'money': welcome_points['welcome_points']
                     }
 
-                res = self.env['customer.loyalty'].create(attrs)
-                loyalty = res
+                cl = self.env['customer.loyalty'].create(attrs)      
+
+                loyalty = cl
+
+            # qua se ci sono gift converto il loro valore in punti e li azzero.
+            try:
+                # try perchè questo modulo non può dipendere direttamente da gift
+                if self.total_gift > 0:
+                    if loyalty_type == 'points':
+                        total = loyalty.points + int(self.env['customer.loyalty'].convert_points_money(self.total_gift, 'points'))
+                        loyalty.with_context({'note': 'Conversione Gift'}).write({'points': total})
+                    else:
+                        loyalty.with_context({'note': 'Conversione Gift'}).write({'money': loyalty.money + self.total_gift})
+                    for line in self.gift_ids:
+                        line.unlink()
+            except:
+                pass  
 
         value = loyalty.money
 
@@ -413,19 +428,19 @@ class LoyaltyOrders(models.Model):
             if self.loyalty_used > 0:
                 # devo sottrarre
                 if loyalty_type == 'points':
-                    obj.with_context({'skip_loyalty_log': True}).points = obj.points - self.loyalty_used
-                    obj.with_context({'skip_loyalty_log': True}).money = self.env['customer.loyalty'].convert_points_money(obj.points, 'money')
+                    obj.with_context({'skip_loyalty_log': True}).write({'points': obj.points - self.loyalty_used})
+                    obj.with_context({'skip_loyalty_log': True}).write({'money': self.env['customer.loyalty'].convert_points_money(obj.points, 'money')})
                 else:
-                    obj.with_context({'skip_loyalty_log': True}).money = obj.money - money
-                    obj.with_context({'skip_loyalty_log': True}).points = self.env['customer.loyalty'].convert_points_money(obj.money, 'points')
+                    obj.with_context({'skip_loyalty_log': True}).write({'money': obj.money - money})
+                    obj.with_context({'skip_loyalty_log': True}).write({'points': self.env['customer.loyalty'].convert_points_money(obj.money, 'points')})
             else:
                 # devo aggiungere
                 if loyalty_type == 'points':
-                    obj.with_context({'skip_loyalty_log': True}).points = obj.points + self.loyalty_prev
-                    obj.with_context({'skip_loyalty_log': True}).money = self.env['customer.loyalty'].convert_points_money(obj.points, 'money')
+                    obj.with_context({'skip_loyalty_log': True}).write({'points': obj.points + self.loyalty_prev})
+                    obj.with_context({'skip_loyalty_log': True}).write({'money': self.env['customer.loyalty'].convert_points_money(obj.points, 'money')})
                 else:
-                    obj.with_context({'skip_loyalty_log': True}).money = obj.money + self.loyalty_prev
-                    obj.with_context({'skip_loyalty_log': True}).points = self.env['customer.loyalty'].convert_points_money(obj.money, 'points')
+                    obj.with_context({'skip_loyalty_log': True}).write({'money': obj.money + self.loyalty_prev})
+                    obj.with_context({'skip_loyalty_log': True}).write({'points': self.env['customer.loyalty'].convert_points_money(obj.money, 'points')})
 
             self.loyalty_prev = self.loyalty_used
 
