@@ -76,7 +76,10 @@ class ChannelPilotOrder(models.Model):
         user = self.env["res.partner"].search([("email", "=", cp_customer.email)])
         user = user[0] if user else None
         name = cp_delivery.nameFull
-        name = name if not cp_delivery.company else name + " C/O " + cp_delivery.company
+        try:
+            name = name if not cp_delivery.company else name + " C/O " + cp_delivery.company
+        except:
+            name = name
         country_id_1 = self.env["res.country"].search([('code', '=', cp_delivery.countryIso2)])[0]
         country_id_2 = self.env["res.country"].search([('code', '=', cp_invoice.countryIso2)])[0]
         shipping_dict = {'name': name, 'street': cp_delivery.streetTitle, 'phone': self._get_phone(cp_customer, cp_delivery), 'country_id': country_id_1.id, 'city': cp_delivery.city, 'zip': cp_delivery.zip, 'street2': cp_delivery.streetNumber, 'state_id': self._get_state(cp_delivery)}
