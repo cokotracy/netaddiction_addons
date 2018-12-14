@@ -249,7 +249,7 @@ class ChannelPilotOrder(models.Model):
     @api.model
     def _notify_cp_deliveries_cron(self):
         # Cron per impostare a spedito gli ordini cp
-        orders = self.env["sale.order"].search([("from_channelpilot", "=", True), ("cp_delivered", "=", False), ("state", "=", "done")])
+        orders = self.env["sale.order"].search([("from_channelpilot", "=", True), ("cp_delivered", "=", False), ("state", "=", "done")], limit=99)
         if not orders:
             return []
 
