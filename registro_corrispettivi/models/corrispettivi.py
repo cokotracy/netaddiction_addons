@@ -129,10 +129,9 @@ class RegistroCorrispettivi(models.Model):
                             origin = False
                         if origin:
                             move = self.env['stock.move'].search([('procurement_id.sale_line_id.order_id.id', '=', origin), ('product_id', '=', line.product_id.id)])
-                            try:
-                                line = move[0]
-                            except:
-                                pass
+                            if len(move) > 0:
+                                line=move[0]
+                            
                     if not tax:
                         delivery_picks[date_done][line.product_id.taxes_id.name] = {}
                         delivery_picks[date_done][line.product_id.taxes_id.name]['value'] = line.procurement_id.sale_line_id.price_total
