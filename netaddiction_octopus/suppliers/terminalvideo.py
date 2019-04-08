@@ -77,6 +77,10 @@ class TerminalVideo(supplier.Supplier):
             'Taglia',
             'Genere T-Shirt',
             'Colore T-Shirt',
+            'Altezza',
+            'Larghezza',
+            'Profondita',
+            'Peso',
             CSVParser.EMPTY,
         ),
         'availability': (
@@ -111,14 +115,14 @@ class TerminalVideo(supplier.Supplier):
             ),
             'join': 'Cod. barre',
         },
-        {
-            'name': 'Libri',
-            'mapping': (
-                ('Libri/DBLibriFull.txt', _MAPPING['catalog']),
-                ('Stock/StocklistTotale.txt', _MAPPING['availability']),
-            ),
-            'join': 'Cod. barre',
-        },
+        #{
+        #    'name': 'Libri',
+        #    'mapping': (
+        #        ('Libri/DBLibriFull.txt', _MAPPING['catalog']),
+        #        ('Stock/StocklistTotale.txt', _MAPPING['availability']),
+        #    ),
+        #    'join': 'Cod. barre',
+        #},
     ]
 
     categories = 'Formato', 'Genere principale', 'Taglia', 'Genere T-Shirt', 'Colore T-Shirt', 'Iva'
