@@ -5,6 +5,7 @@ from . import (  # NOQA
     dbline,
     drako,
     esprinet,
+    gedistribuzione,
     promovideo,
     terminalvideo,
     beegroup,
