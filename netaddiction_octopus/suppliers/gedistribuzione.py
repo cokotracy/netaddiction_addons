@@ -36,7 +36,7 @@ class Gedistribuzione(supplier.Supplier):
 
     parser = CSVParser(
         skip_first=True,
-        delimiter=';')
+        delimiter=',')
 
     mapping = Adapter(
         barcode='barcode',
