@@ -42,8 +42,9 @@ class Gedistribuzione(supplier.Supplier):
         barcode='barcode',
         name='nome',
         description='descrizione',
+        price='prezzo_suggerito',
         supplier_code='codice_fornitore',
-        supplier_price='prezzo_suggerito',
+        supplier_price='prezzo_acquisto',
         supplier_quantity='qty')
 
     categories = 'tassa_vendita', 'categoria'
