@@ -95,9 +95,9 @@ class product_pricelist(models.Model):
             for line in self.ftp_user:
                 output.seek(0)
                 path = '/%s' % line.path
-                filename = 'Listino_Multiplayer_com.csv'
+                filename = 'Listino_Multiplayer_com_%s.csv' % datetime.date.today()
                 ftp.cwd(path)
-                ftp.sendcmd('DELE ' + filename)
+                # ftp.sendcmd('DELE ' + filename)
                 ftp.storbinary('STOR %s' % filename, output)
 
         data = base64.b64encode(output.getvalue()).decode()
