@@ -49,5 +49,11 @@ class Gedistribuzione(supplier.Supplier):
 
     categories = 'tassa_vendita', 'categoria'
 
+    def validate(self, item):
+        import datetime
+        assert item['qty'] > 0
+        assert item['prezzo_suggerito'] > 0
+        assert item['data_uscita'] >= datetime.date(2015, 1, 1).strftime('%d/%m/%Y')
+
     def group(self, item):
         return None
