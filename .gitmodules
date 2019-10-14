@@ -1,0 +1,4 @@
+[submodule "openforceit/utilities"]
+	path = openforceit/utilities
+	url = git@github.com:openforceit/utilities.git
+	branch = 12.0
