@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+        <record model="ir.ui.view" id="netaddiction_reconciliation_form">
+            <field name="name">netaddiction.reconciliation.form</field>
+            <field name="model">netaddiction.reconciliation.orders</field>
+            <field name="arch" type="xml">
+                <form string="show">
+                    <header>
+                        <button type="object" name="verify" string="Verifica" class="btn"/>
+                    </header>
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="date_start"/>
+                            </group>
+                            <group>
+                                <field name="date_finish"/>
+                            </group>
+                        </group>
+                        <group>
+                            <group>
+                                <field name="method"/>
+                                <field name="total_verified" readonly="1"/>
+                                <field name="file_download"/>
+                            </group>
+                            <group>
+                                <field name="file"/>
+                                <field name="total_not_verified" readonly="1"/>
+                            </group>
+                        </group>
+                        <notebook>
+                            <page string="Pagamenti Verificati" name="payment_verified">
+                                <label for="payment_verified" string="Pagamenti presenti sia sul file che sul sistema"/>
+                                <field name="payment_verified" readonly="1">
+                                    <tree>
+                                        <field name="payment_date"/>
+                                        <field name="journal_id"/>
+                                        <field name="order_id"/>
+                                        <field name="partner_id"/>
+                                        <field name="amount"/>
+                                        <field name="state"/>
+                                        <field name="paypal_transaction_id"/>
+                                        <field name="cc_last_four" string="CC"/>
+                                    </tree>
+                                </field>
+                                <label for="payment_verified_draft" string="Pagamenti Non Emessi (risultano sul file ma nel nostro sistema hanno uno stato non emesso)"/>
+                                <field name="payment_verified_draft" readonly="1">
+                                    <tree>
+                                        <field name="payment_date"/>
+                                        <field name="journal_id"/>
+                                        <field name="order_id"/>
+                                        <field name="partner_id"/>
+                                        <field name="amount"/>
+                                        <field name="state"/>
+                                        <field name="paypal_transaction_id"/>
+                                        <field name="cc_last_four" string="CC"/>
+                                    </tree>
+                                </field>
+                                <label for="payment_verified_not_amount" string="Pagamenti che hanno identificativo corretto ma prezzo diverso"/>
+                                <field name="payment_verified_not_amount" readonly="1">
+                                    <tree>
+                                        <field name="payment_date"/>
+                                        <field name="journal_id"/>
+                                        <field name="order_id"/>
+                                        <field name="partner_id"/>
+                                        <field name="amount"/>
+                                        <field name="state"/>
+                                        <field name="paypal_transaction_id"/>
+                                        <field name="cc_last_four" string="CC"/>
+                                    </tree>
+                                </field>
+                            </page>
+                            <page string="Pagamenti Non Verificati" name="payment_not_verified">
+                                <label for="payment_not_verified" string="Pagamenti presenti sul nostro sistema ma non trovati sul file caricato"/>
+                                <field name="payment_not_verified" readonly="1">
+                                    <tree>
+                                        <field name="payment_date"/>
+                                        <field name="journal_id"/>
+                                        <field name="order_id"/>
+                                        <field name="partner_id"/>
+                                        <field name="amount"/>
+                                        <field name="state"/>
+                                        <field name="paypal_transaction_id"/>
+                                        <field name="cc_last_four" string="CC"/>
+                                    </tree>
+                                </field>
+                            </page>
+                            <page string="Extra" name="extra">
+                                <label for="extra" string="Pagamenti presenti sul file che non hanno trovato un riscontro nel nostro sistema"/>
+                                <field name="extra" readonly="1" widget="html"/>
+                            </page>
+                        </notebook>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record model="ir.actions.act_window" id="netaddiction_reconciliation_action">
+            <field name="name">Verifica Paypal Bnl</field>
+            <field name="res_model">netaddiction.reconciliation.orders</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+        </record>
+
+        <menuitem id="menu_netaddiction_reconciliation"
+          name="Verifica Paypal Bnl"
+          sequence="51"
+          action="netaddiction_reconciliation_action"
+          parent="account.menu_finance_receivables"
+        />
+    </data>
+</openerp>

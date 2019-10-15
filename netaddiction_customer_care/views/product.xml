@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data noupdate="0">
+    	<record id="netaddiction_cc_product" model="ir.ui.view">
+            <field name="name">netaddiction.cc.product</field>
+            <field name="model">product.template</field>
+            <field name="priority" eval="30"/>
+            <field name="inherit_id" ref="sale.product_template_form_view_sale_order_button"/>
+            <field name="arch" type="xml">
+            	<button name="action_view_sales" position="replace">
+            		<button class="oe_stat_button" name="sale.action_view_sales" type="object" icon="fa-usd" groups="base.group_no_one,netaddiction_customer_care.netaddiction_cc_user">
+                        <field string="Ordini" name="sales_count" widget="statinfo"/>
+                    </button>
+            	</button>
+            </field>
+        </record>
+    </data>
+</openerp>

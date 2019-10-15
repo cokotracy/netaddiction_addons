@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+    	<record id="netaddiction_acl_base_procurement" model="ir.ui.view">
+            <field name="name">netaddiction.acl.base.procurement</field>
+            <field name="model">procurement.group</field>
+            <field name="inherit_id" ref="procurement.procurement_group_form_view"/>
+            <field name="arch" type="xml">
+                <xpath expr="//form" position="attributes">
+                    <attribute name="create">0</attribute>
+                    <attribute name="edit">0</attribute>
+                </xpath>
+                <button name="%(procurement.do_view_procurements)s" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </button>
+            </field>
+        </record>
+        <record id="netaddiction_acl_god_procurement" model="ir.ui.view">
+            <field name="name">netaddiction.acl.base.procurement.god</field>
+            <field name="model">procurement.group</field>
+            <field name="inherit_id" ref="netaddiction_acl_base_procurement"/>
+            <field name="groups_id" eval="[(4, ref('netaddiction_inventory_user_manager'))]"/>
+            <field name="arch" type="xml">
+                <xpath expr="//form" position="attributes">
+                    <attribute name="create">1</attribute>
+                    <attribute name="edit">1</attribute>
+                </xpath>
+                <button name="%(procurement.do_view_procurements)s" position="attributes">
+                    <attribute name="invisible">0</attribute>
+                </button>
+            </field>
+        </record>
+
+        <record id="netaddiction_acl_base_procurement_stock" model="ir.ui.view">
+            <field name="name">netaddiction.acl.base.procurement.stock</field>
+            <field name="model">procurement.group</field>
+            <field name="inherit_id" ref="stock.procurement_group_form_view_herited"/>
+            <field name="arch" type="xml">
+                <button name="%(stock.do_view_pickings)s" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </button>
+            </field>
+        </record>
+        <record id="netaddiction_acl_god_procurement_stock" model="ir.ui.view">
+            <field name="name">netaddiction.acl.base.procurement.stock.god</field>
+            <field name="model">procurement.group</field>
+            <field name="inherit_id" ref="netaddiction_acl_base_procurement_stock"/>
+            <field name="groups_id" eval="[(4, ref('netaddiction_inventory_user_manager'))]"/>
+            <field name="arch" type="xml">
+                 <button name="%(stock.do_view_pickings)s" position="attributes">
+                    <attribute name="invisible">0</attribute>
+                </button>
+            </field>
+        </record>
+
+        
+    </data>
+</openerp>

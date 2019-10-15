@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+
+
+<record id="view_netaddiction_CoD_Register"
+                model="ir.ui.view">
+            <field name="name">netaddiction CoD Register</field>
+            <field name="model">netaddiction.cod.register</field>
+      <field name="arch" type="xml">
+                <form string="Associazione nuova carta"
+                      class="oe_form_configuration">
+                    <sheet>
+                        <div>
+                            <button string="Registra"
+                                    type="object"
+                                    name="execute"
+                                    class="oe_highlight"
+                                    />
+                            
+                            <button string="Annulla"
+                                    type="object"
+                                    name="cancel"
+                                    class="oe_link" />
+                        </div>
+
+                        <group string="Registra contrassegni">
+                            <field name="csv_file" />
+
+<field name="return_text" readonly="1" />
+
+
+                        </group>
+
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_netaddiction_CoD_Register_menu"
+                model="ir.actions.act_window">
+            <field name="name">Registra Contrassegni</field>
+            <field name="res_model">netaddiction.cod.register</field>
+            <field name="view_mode">form</field>
+            <field name="target">inline</field>
+        </record>
+
+
+        <menuitem id="menu_netaddiction_sales_CoD_Register"
+          name="Registra Contrassegni"
+          parent="account.menu_finance_receivables"
+          sequence="50"
+          action= "action_netaddiction_CoD_Register_menu"
+        />
+
+
+
+    </data>
+</openerp>

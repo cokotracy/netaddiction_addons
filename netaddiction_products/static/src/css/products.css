@@ -1,0 +1,46 @@
+.netaddiction .o_image {
+    font-size: 0;
+}
+
+.netaddiction .oe_attachment {
+    float: left;
+    margin-right: 10px;
+}
+
+.netaddiction .oe_attachments {
+    border: 0 !important;
+}
+
+/* widget extra_data */
+.extra_data_table{
+    border:1px solid #ddd;
+    padding-left: 10px;
+    padding-right: 10px;
+    margin-top: 10px;
+}
+.extra_data_img{
+    height: 100px;
+    float:left;
+    margin-right: 10px;
+    margin-top: 10px
+}
+.extra_data_img:hover, .confirm_image:hover{
+    cursor: pointer;
+    opacity: 0.5;
+}
+.big_extra_data_img{
+    width:100%;
+}
+.video_flv{
+   color: #337ab7; 
+}
+.video_flv:hover{
+    cursor: pointer;
+    color: #22527b;
+}
+.btn-delete-img{
+    float: right;
+    background-color:#D9534F !important;
+    color:white;
+}
+/* fine widget extra_data*/

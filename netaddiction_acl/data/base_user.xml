@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+		<record id="netaddiction_base_group_user_access_move_contribution" model="ir.model.access">
+            <field name="name">Move Contribution</field>
+            <field name="model_id" search="[('model','=','netaddiction.move.contribution')]" model="ir.model"/>
+            <field name="group_id" ref="base.group_user"/>
+            <field name="perm_read" eval="1"/>
+            <field name="perm_create" eval="0"/>
+            <field name="perm_write" eval="0"/>
+            <field name="perm_unlink" eval="0"/>
+        </record>
+        <record id="netaddiction_base_group_user_access_extra_data" model="ir.model.access">
+            <field name="name">Extra Data</field>
+            <field name="model_id" search="[('model','=','netaddiction.extradata.key.value')]" model="ir.model"/>
+            <field name="group_id" ref="base.group_user"/>
+            <field name="perm_read" eval="1"/>
+            <field name="perm_create" eval="0"/>
+            <field name="perm_write" eval="0"/>
+            <field name="perm_unlink" eval="0"/>
+        </record>
+        <record id="netaddiction_base_group_user_access_bonus_offer_line" model="ir.model.access">
+            <field name="name">Bonus</field>
+            <field name="model_id" search="[('model','=','netaddiction.specialoffer.bonus_offer_line')]" model="ir.model"/>
+            <field name="group_id" ref="base.group_user"/>
+            <field name="perm_read" eval="1"/>
+            <field name="perm_create" eval="0"/>
+            <field name="perm_write" eval="0"/>
+            <field name="perm_unlink" eval="0"/>
+        </record>
+        <record id="netaddiction_base_group_user_access_offer_cart_line" model="ir.model.access">
+            <field name="name">Offer Cart</field>
+            <field name="model_id" search="[('model','=','netaddiction.specialoffer.offer_cart_line')]" model="ir.model"/>
+            <field name="group_id" ref="base.group_user"/>
+            <field name="perm_read" eval="1"/>
+            <field name="perm_create" eval="0"/>
+            <field name="perm_write" eval="0"/>
+            <field name="perm_unlink" eval="0"/>
+        </record>
+        <record id="netaddiction_base_group_user_access_offer_catalog_line" model="ir.model.access">
+            <field name="name">Offer Catalog</field>
+            <field name="model_id" search="[('model','=','netaddiction.specialoffer.offer_catalog_line')]" model="ir.model"/>
+            <field name="group_id" ref="base.group_user"/>
+            <field name="perm_read" eval="1"/>
+            <field name="perm_create" eval="0"/>
+            <field name="perm_write" eval="0"/>
+            <field name="perm_unlink" eval="0"/>
+        </record>
+        <record id="netaddiction_base_group_user_access_wh Locations" model="ir.model.access">
+            <field name="name">Wh Locations</field>
+            <field name="model_id" search="[('model','=','netaddiction.wh.locations')]" model="ir.model"/>
+            <field name="group_id" ref="base.group_user"/>
+            <field name="perm_read" eval="1"/>
+            <field name="perm_create" eval="0"/>
+            <field name="perm_write" eval="0"/>
+            <field name="perm_unlink" eval="0"/>
+        </record>
+        <record id="netaddiction_base_group_user_access_wh Locations_line" model="ir.model.access">
+            <field name="name">Wh Locations Line</field>
+            <field name="model_id" search="[('model','=','netaddiction.wh.locations.line')]" model="ir.model"/>
+            <field name="group_id" ref="base.group_user"/>
+            <field name="perm_read" eval="1"/>
+            <field name="perm_create" eval="0"/>
+            <field name="perm_write" eval="0"/>
+            <field name="perm_unlink" eval="0"/>
+        </record>
+        <record id="netaddiction_base_group_user_acces_mrp_bo" model="ir.model.access">
+            <field name="name">mrp bom</field>
+            <field name="model_id" search="[('model','=','mrp.bom')]" model="ir.model"/>
+            <field name="group_id" ref="base.group_user"/>
+            <field name="perm_read" eval="1"/>
+            <field name="perm_create" eval="0"/>
+            <field name="perm_write" eval="0"/>
+            <field name="perm_unlink" eval="0"/>
+        </record>
+        <record id="netaddiction_base_group_user_acces_gift" model="ir.model.access">
+            <field name="name">Gift</field>
+            <field name="model_id" search="[('model','=','netaddiction.gift')]" model="ir.model"/>
+            <field name="group_id" ref="base.group_user"/>
+            <field name="perm_read" eval="1"/>
+            <field name="perm_create" eval="0"/>
+            <field name="perm_write" eval="0"/>
+            <field name="perm_unlink" eval="0"/>
+        </record>
+        <record id="netaddiction_base_group_user_acces_ccdata" model="ir.model.access">
+            <field name="name">ccdata</field>
+            <field name="model_id" search="[('model','=','netaddiction.partner.ccdata')]" model="ir.model"/>
+            <field name="group_id" ref="base.group_user"/>
+            <field name="perm_read" eval="1"/>
+            <field name="perm_create" eval="0"/>
+            <field name="perm_write" eval="0"/>
+            <field name="perm_unlink" eval="0"/>
+        </record>
+
+
+        <record id="netaddiction_move_contribution_access_base" model="ir.model.access">
+            <field name="name">netaddiction.move.contribution</field>
+            <field name="model_id" search="[('model','=','netaddiction.move.contribution')]" model="ir.model"/>
+            <field name="group_id" ref="base.group_user"/>
+            <field name="perm_read" eval="1"/>
+            <field name="perm_create" eval="1"/>
+            <field name="perm_write" eval="1"/>
+            <field name="perm_unlink" eval="1"/>
+        </record>
+        <record id="netaddiction_order_contribution_access_base" model="ir.model.access">
+            <field name="name">netaddiction.move.contribution</field>
+            <field name="model_id" search="[('model','=','netaddiction.order.contribution')]" model="ir.model"/>
+            <field name="group_id" ref="base.group_user"/>
+            <field name="perm_read" eval="1"/>
+            <field name="perm_create" eval="1"/>
+            <field name="perm_write" eval="1"/>
+            <field name="perm_unlink" eval="1"/>
+        </record>
+        <record id="netaddiction_order_contribution_access_base" model="ir.model.access">
+            <field name="name">netaddiction.move.contribution</field>
+            <field name="model_id" search="[('model','=','netaddiction.order.contribution')]" model="ir.model"/>
+            <field name="group_id" ref="base.group_user"/>
+            <field name="perm_read" eval="1"/>
+            <field name="perm_create" eval="1"/>
+            <field name="perm_write" eval="1"/>
+            <field name="perm_unlink" eval="1"/>
+        </record>
+
+    </data>
+</openerp>

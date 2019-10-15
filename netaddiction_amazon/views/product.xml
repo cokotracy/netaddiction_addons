@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <record id="amazon_product_normal_form_view" model="ir.ui.view">
+            <field name="name">netaddiction.amazon.product.form</field>
+            <field name="model">product.product</field>
+            <field name="priority" eval="30"/>
+            <field name="inherit_id" ref="netaddiction_products.product_normal_form_view"/>
+            <field name="arch" type="xml">
+            <xpath expr="//div[@name='button_box']" position="inside">
+                  
+                   <button name="toggle_amazon" type="object" string="amazon"
+                                    class="oe_stat_button" icon="fa-amazon">
+                                <field name="on_amazon" widget="boolean_button"
+                                   />
+                            </button>
+                </xpath>
+
+
+
+            <xpath expr="//page[@name='vendor_netaddiction']" position='after'>  
+            <page string="amazon" name="amazon_netaddiction">
+
+                    
+                       
+
+
+
+                        <group  name="amazon_data" colspan="2" >
+                            <group name="loc_left" class="oe_left" col="2">
+                     
+                               <field name="amazon_id" attrs="{'readonly': 1}"/>
+            
+
+                             </group>
+
+                            <group name="loc_right" class="oe_right" col="2">
+    
+                               <field name="amazon_published_date" attrs="{'readonly': 1}"/>
+                               <field name="amazon_expiration_date" attrs="{'readonly': 1}"/>
+                               <field name="amazon_sold" attrs="{'readonly': 1}"/>
+
+                             
+                                
+                            </group>
+                            
+                         </group>
+                        
+             
+            </page>
+                </xpath> 
+
+
+            </field>
+            </record>
+
+
+    </data>
+</openerp>

@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+        <record model="ir.actions.act_window" id="netaddiction_sales_affiliate_base">
+            <field name="name">Affiliati</field>
+            <field name="res_model">netaddiction.partner.affiliate</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">Non ci sono Affiliati.
+                </p>
+            </field>
+        </record>
+
+
+        <menuitem id="menu_netaddiction_sales_affiliate"
+          name="Affiliati"
+          parent="base.menu_partner_form"
+          sequence="5"
+          action= "netaddiction_sales_affiliate_base"
+        />
+
+       
+
+        <record model="ir.ui.view" id="netaddiction_sales_affiliate_tree">
+            <field name="name">view.netaddiction_sales_affiliate_tree</field>
+            <field name="model">netaddiction.partner.affiliate</field>
+            <field name="arch" type="xml">
+                <tree name="Affiliate list">
+                    <field name="partner_id"/>
+                    <field name="control_code"/>
+                    <field name="commission_percent"/>
+                </tree>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="netaddiction_sales_affiliate_form">
+            <field name="name">view.netaddiction_sales_affiliate_form</field>
+            <field name="model">netaddiction.partner.affiliate</field>
+            <field name="arch" type="xml">
+                <form string="Affiliate Form">
+                    <sheet>
+                        <group string="Affiliate" name="affiliate" colspan="4">
+                            <group name="loc_left" class="oe_left" col="2">
+                                <field name="partner_id" domain="[('type','=','contact')]"/>
+                                <field name="control_code"/>
+                                <field name="active"/>
+                            </group>
+                            <group name="loc_right" class="oe_right" col="2">
+                                <field name="homepage"/>
+                                <field name="date_account_created"/>
+                                <field name="cookie_duration"/>
+                                <field name="exclude"/>
+                            </group>
+                        </group>
+                        <notebook>
+                        <page string="Commissioni" name="affiliate_commission">
+                        <group string="Commissioni" name="commission" colspan="1">
+                            <field name="commission_id"/>
+                        </group>
+                    </page>
+                        <page string="Ordini" name="affiliate_orders">
+                        <group name="orders" colspan="2">
+                            <group>
+                            <field name="tot"/>
+                            <field name="tot_completed"/>
+                            <field name="tot_problems"/>
+                            </group>
+                            <group>
+                            <field name="tot_cancelled"/>
+                            <field name="tot_gift_history" readonly="1"/>
+                        </group>
+                        </group>
+                        <field name="orders_history" readonly="1" mode="tree,kanban" >
+
+                                  <tree string="ordini" editable="bottom">
+                                     <field name="order_id" attrs="{'readonly': 1}"/>
+                                     <field name="affiliate_id" attrs="{'readonly': 1}"/>
+                                     <field name="commission" attrs="{'readonly': 1}"/>
+                                     <field name="assigned" attrs="{'readonly': 1}"/>
+                                     <field name="order_state" attrs="{'readonly': 1}"/>
+                                     <field name="order_date_done" attrs="{'readonly': 1}"/>
+
+                                 
+                                </tree>
+                              </field>
+                    </page>
+                    </notebook>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="netaddiction_view_customer_affiliate">
+            <field name="name">netaddiction.view.customer.affiliate</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="netaddiction_view_partner"/>
+            <field name="arch" type="xml">
+            <xpath expr="//div[@name='button_box']" position="inside" >
+                    <button  class="oe_inline oe_stat_button" name="new_customer_affiliate" 
+                        string="Affiliazione" type="object" icon="fa-user-plus" attrs="{'invisible': ['|','|',('parent_id', '!=', False),('affiliate_id', '!=',False ),('supplier', '=', True)]}"/> 
+                </xpath>
+            </field>
+        </record>
+
+
+        <record model="ir.actions.act_window" id="netaddiction_sales_affiliate_commission_base">
+            <field name="name">Commissioni Affiliati</field>
+            <field name="res_model">netaddiction.partner.affiliate.commission</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">Non ci sono Commissioni Affiliati.
+                </p>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="netaddiction_sales_affiliate_commission_tree">
+            <field name="name">view.netaddiction_sales_affiliate_commission_tree</field>
+            <field name="model">netaddiction.partner.affiliate.commission</field>
+            <field name="arch" type="xml">
+                <tree name="Affiliate list">
+
+                    <field name="expression_id"/> 
+<!--                     <field name="affiliate_id"/> -->
+                    <field name="commission_percent"/>
+
+                </tree>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="netaddiction_sales_affiliate_commission_form">
+            <field name="name">view.netaddiction_sales_affiliate_commission_form</field>
+            <field name="model">netaddiction.partner.affiliate.commission</field>
+            <field name="arch" type="xml">
+                <form string="Affiliate commission">
+                    <sheet>
+                        <group string="Commissioni" name="commission" colspan="4">
+                            <group name="loc_left" class="oe_left" col="2">
+                                <field name="commission_percent"/>
+                                <field name="expression_id"/> 
+                                <!-- <field name="category_id"/>
+                                <field name="attribute_id"/> -->
+                            </group>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+
+
+    </data>
+</openerp>
+
+
+
+

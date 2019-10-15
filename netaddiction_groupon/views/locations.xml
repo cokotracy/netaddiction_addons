@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+        <record id="product_normal_form_view_groupon_locations" model="ir.ui.view">
+            <field name="name">netaddiction.product.groupon.form.locations</field>
+            <field name="model">product.product</field>
+            <field name="priority" eval="30"/>
+            <field name="inherit_id" ref="netaddiction_warehouse.product_normal_form_view_locations"/>
+            <field name="arch" type="xml">
+                <group name="locations" position="after">
+                    <group name="groupon_locations" string="Allocazioni Groupon">
+                        <field name="groupon_wh_location_line_ids" readonly="1" nolabel="1">
+                            <tree>
+                                <field name="wh_location_id"/>
+                                <field name="qty"/>
+                            </tree>
+                        </field>
+                    </group>
+                </group>
+            </field>
+        </record>
+
+
+        <record id="view_groupon_reserve_product" model="ir.ui.view">
+            <field name="name">Groupon riserva prodotto</field>
+            <field name="model">groupon.reserve.product</field>
+            <field name="arch" type="xml">
+                <form string="Riserva prodotto" class="oe_form_configuration" edit="false">
+                    <sheet>
+                        <group string="Riserva Prodotti">
+                            <field name="product_id"/>
+                            <field name="qty_available" readonly="1"/>
+                            <field name="qty_to_reserve"/>
+                            <field name="groupon_price"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="view_groupon_reserve_product_tree" model="ir.ui.view">
+            <field name="name">Groupon riserva prodotto Tree</field>
+            <field name="model">groupon.reserve.product</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="product_id"/>
+                    <field name="qty_to_reserve"/>
+                    <field name="groupon_price"/>
+                    <field name="create_date"/>
+                    <field name="create_uid"/>
+                </tree>
+            </field>
+        </record>
+
+
+        <record id="view_groupon_return_product" model="ir.ui.view">
+            <field name="name">Groupon ritorno prodotto</field>
+            <field name="model">groupon.return.product</field>
+            <field name="arch" type="xml">
+                <form string="Ritorno prodotto" class="oe_form_configuration" edit="false">
+                    <sheet>
+                        <group string="Ritorno Prodotti">
+                            <field name="product_id"/>
+                            <field name="qty_groupon" readonly="1"/>
+                            <field name="qty_to_return"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="view_groupon_return_product_tree" model="ir.ui.view">
+            <field name="name">Groupon ritorno prodotto Tree</field>
+            <field name="model">groupon.return.product</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="product_id"/>
+                    <field name="qty_to_return"/>
+                    <field name="create_date"/>
+                    <field name="create_uid"/>
+                </tree>
+            </field>
+        </record>
+    </data>
+</openerp>

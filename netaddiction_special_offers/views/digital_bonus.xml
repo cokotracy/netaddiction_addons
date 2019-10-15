@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+
+
+
+        <record model="ir.actions.act_window" id="netaddiction_special_offers_digital_bonus_base">
+            <field name="name">Bonus Digitali</field>
+            <field name="res_model">netaddiction.specialoffer.digital_bonus</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">Non ci sono bonus digitali.
+                </p>
+            </field>
+        </record>
+
+
+
+        <record model="ir.actions.act_window" id="netaddiction_special_offers_digital_code">
+            <field name="name">Codice Digitale</field>
+            <field name="res_model">netaddiction.specialoffer.digital_code</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">No product line.
+                </p>
+            </field>
+        </record>
+
+
+
+
+        <menuitem id="submenu_netaddiction_special_offers_digital_bonus"
+          name="Bonus Digitali" parent="netaddiction_expressions.menu_netaddiction_offers"
+          action="netaddiction_special_offers_digital_bonus_base" sequence="5"/>
+
+        <record model="ir.ui.view" id="netaddiction_special_offers_digital_bonus_tree">
+            <field name="name">view.netaddiction_special_offers_digital_bonus_tree</field>
+            <field name="model">netaddiction.specialoffer.digital_bonus</field>
+            <field name="arch" type="xml">
+                <tree name="special_offers_digital_bonus list">
+                    <field name="name"/>
+                    <field name="products_ids"/>
+                </tree>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="netaddiction_special_offers_digital_bonus_form">
+            <field name="name">netaddiction_special_offers_digital_bonus_form</field>
+            <field name="model">netaddiction.specialoffer.digital_bonus</field>
+            <field name="arch" type="xml">
+                <form string="special_offers_digital_bonus Form">
+                    <sheet>
+                    <div class="oe_button_box" name="button_box">
+                            <button name="toggle_active" type="object" class="oe_stat_button" icon="fa-archive">
+                                <field name="active" widget="boolean_button" options="{&quot;terminology&quot;: &quot;archive&quot;}"/>
+                                </button>
+                            <button name="send_all_valid" type="object" class="oe_stat_button" icon="fa-star" string="spedisci validi"  attrs="{'invisible': ['|',('assign_codes','=',False)]}"/>
+                            <button name="send_all_possible" type="object" class="oe_stat_button" icon="fa-exclamation" string="forza spedizione" attrs="{'invisible': ['|',('assign_codes','=',False)]}"/>
+                               
+                            
+                        </div>
+                    <field name="image" widget="image" class="oe_avatar"/>
+                    <div class="oe_title">
+                        <h1><field name="name" placeholder="Titolo digital bonus..."/></h1>
+                        <button  class="oe_highlight" name="assign_old" 
+                                string="vecchi ordini" type="object" /> 
+                    </div>
+
+                    <br/>
+                    <br/>
+                     <group name="loc_left" class="oe_left" col="4">
+                    <field name="csv_file" />
+                    <button  class="oe_highlight" name="process_file" 
+                                string="carica file" type="object" />
+
+
+                    </group>
+                    <group name="loc_left" class="oe_left" col="2">
+                    <field name="company_id"/>
+                    <field name="qty_limit"/>
+                    <field name="qty_sold" readonly="1" />
+                    <field name="assign_codes"  />
+                    </group>
+                    <br/>
+                    <br/>
+                    <h1 >Testo Offerta</h1>
+                    <field name="text" placeholder="Testo offerta..." widget="html"/>
+
+                    <br/>
+                    <br/>
+
+                    <h1 >Testo Mail</h1>
+                    <field name="mail_text" placeholder="Testo mail..." widget="html"/>
+
+                    <br/>
+                    <br/>
+
+   
+                     <h1 >Lista Prodotti</h1>
+                     <br/>
+                     <field name="products_ids"/>
+
+                     <br/>
+                     <br/>
+                    <br/>
+
+                    <h1 >Lista Codici</h1>
+                    <br/>
+                     <field name="code_ids" mode="tree" attrs="{'invisible': ['|',('assign_codes','=',False)]}" >
+                        
+                                  <tree string="Codici" editable="bottom">
+                                    <field name="code" />
+                                     <field name="order_id" />
+                                     <field name="bonus_id" />
+                                    <field name="sent" />
+                                     <field name="sent_by" />
+                                     <field name="date_sent" />
+                                      <button  class="oe_highlight" name="send_code" 
+                                string="spedisci" type="object" attrs="{'invisible':['|',('order_id', '=', False),('sent', '=', True)]}" />
+
+                                   
+                                 
+                                </tree>
+                              </field>
+
+                        
+                     </sheet>
+                </form>
+            </field>
+        </record>
+
+  
+
+
+
+
+
+
+    </data>
+</openerp>
+
+
+

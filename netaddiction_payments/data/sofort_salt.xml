@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data noupdate="1">
+        <!--Crea la funzionalità ed il gruppo associato-->
+        <record id="sofort_key" model="ir.config_parameter">
+            <field name="key">sofort.key</field>
+            <field name="value">soFortepayl43vsf</field>
+        </record>
+        <record id="sofort_username" model="ir.values">
+            <field name="name">sofort_username</field>
+            <field name="model">netaddiction.sofort.settings</field>
+        </record>
+        <record id="sofort_apikey" model="ir.values">
+            <field name="name">sofort_apikey</field>
+            <field name="model">netaddiction.sofort.settings</field>
+        </record>
+        <record id="sofort_project" model="ir.values">
+            <field name="name">sofort_project</field>
+            <field name="model">netaddiction.sofort.settings</field>
+        </record>
+    </data>
+</openerp>

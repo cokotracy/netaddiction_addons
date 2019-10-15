@@ -1,0 +1,41 @@
+<openerp>
+    <data>
+        <record model="workflow" id="wkf_netaddiction_cc">
+            <field name="name">Netaddiction Customer Care Workflow</field>
+            <field name="osv">project.issue</field>
+            <field name="on_create">True</field>
+        </record>
+
+        <record model="workflow.activity" id="draft">
+            <field name="name">Nuovo</field>
+            <field name="wkf_id" ref="wkf_netaddiction_cc"/>
+            <field name="flow_start" eval="True"/>
+            <field name="kind">function</field>
+            <field name="action">action_draft()</field>
+        </record>
+        <record model="workflow.activity" id="working">
+            <field name="name">In Elaborazione</field>
+            <field name="wkf_id" ref="wkf_netaddiction_cc"/>
+            <field name="kind">function</field>
+            <field name="action">action_working()</field>
+        </record>
+        <record model="workflow.activity" id="close">
+            <field name="name">Chiuso</field>
+            <field name="wkf_id" ref="wkf_netaddiction_cc"/>
+            <field name="kind">function</field>
+            <field name="action">action_close()</field>
+        </record>
+
+        <record model="workflow.transition" id="netaddiction_cc_draft_to_working">
+            <field name="act_from" ref="draft"/>
+            <field name="act_to" ref="working"/>
+            <field name="signal">ticket_working</field>
+        </record>
+        <record model="workflow.transition" id="netaddiction_cc_working_to_close">
+            <field name="act_from" ref="working"/>
+            <field name="act_to" ref="close"/>
+            <field name="signal">ticket_close</field>
+        </record>
+
+    </data>
+</openerp>

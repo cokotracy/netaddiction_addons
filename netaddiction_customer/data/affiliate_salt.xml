@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data noupdate="0">
+        <!--Crea la funzionalità ed il gruppo associato-->
+        <record id="affiliate_salt" model="ir.config_parameter">
+            <field name="key">affiliate.salt</field>
+            <field name="value">Provaprova</field>
+        </record>
+        <record id="ir_cron_scheduler_affiliate_action" model="ir.cron">
+            <field name="name">Assegnazione gift ad affiliati</field>
+            <field name="user_id" ref="base.user_root"/>
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <field name="numbercall">-1</field>
+            <field eval="False" name="doall"/>
+            <field eval="'netaddiction.partner.affiliate.utilities'" name="model"/>
+            <field eval="'register_commissions'" name="function"/>
+            <field name="args" eval="'()'" />
+        </record>
+    </data>
+</openerp>

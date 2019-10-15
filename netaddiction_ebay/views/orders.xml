@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+    	<record model="ir.ui.view" id="netaddiction_b2b_view_order">
+            <field name="name">netaddiction.ebay.order</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale.view_order_form"/>
+            <field name="arch" type="xml">
+                <field name="pricelist_id" position="after">
+                	<field name="from_ebay" readonly="1" />
+                </field>
+              <notebook position="inside">   
+                    <page name="ebay" string="Ebay">
+                        <br/>
+                    <group name="Ebay">
+                      <field string="Ebay TransactionID" name="ebay_transaction_id" readonly="1"/> 
+                      <field string="Ebay Item ID" name="ebay_item_id" readonly="1"/> 
+                      <field string="Completato du Ebay" name="ebay_completed" readonly="1"/>   
+                      </group> 
+                    </page>
+                </notebook> 
+            </field>
+        </record>
+    </data>
+</openerp>

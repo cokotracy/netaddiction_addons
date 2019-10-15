@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+        <record model="ir.actions.act_window" id="netaddiction_expression_base">
+            <field name="name">Espressioni</field>
+            <field name="res_model">netaddiction.expressions.expression</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">Non ci sono Espressioni.
+                </p>
+            </field>
+        </record>
+
+        <record model="ir.actions.act_window" id="netaddiction_expression_condition_base">
+            <field name="name">Condizioni</field>
+            <field name="res_model">netaddiction.expressions.condition</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">Non ci sono Condizioni.
+                </p>
+            </field>
+        </record>
+
+        <menuitem id="menu_netaddiction_offers"
+          name="Offerte"
+          parent="base.menu_base_partner"
+          sequence="6"
+        />
+
+        <menuitem id="menu_netaddiction_expression"
+          name="Expression Menu"
+          parent="menu_netaddiction_offers"
+          sequence="1"
+        />
+
+        <menuitem id="submenu_netaddiction_expression"
+          name="Espressioni" parent="menu_netaddiction_expression"
+          action="netaddiction_expression_base"/>
+
+        <record model="ir.ui.view" id="netaddiction_expression_tree">
+            <field name="name">view.netaddiction_expression_tree</field>
+            <field name="model">netaddiction.expressions.expression</field>
+            <field name="arch" type="xml">
+                <tree name="Expression list">
+                    <field name="title"/>
+                    <field name="condition_ids"/>
+                </tree>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="netaddiction_expression_form">
+            <field name="name">view.netaddiction_expression_form</field>
+            <field name="model">netaddiction.expressions.expression</field>
+            <field name="arch" type="xml">
+                <form string="Expression Form">
+                    <sheet>
+                        <group string="Espressione" name="gift type" colspan="4">
+                            <group name="loc_left" class="oe_left" col="2">
+                                <field name="title"/>
+                            </group>
+                             <group name="loc_right" class="oe_right" col="2">
+                            <button  class="oe_highlight" name="find_products_view" 
+                        string=" vedi prodotti" type="object" /> 
+                            </group>
+                        </group>
+                        <group string="Condizioni" name="conditions" colspan="4">
+                            <group name="loc_left" class="oe_left" col="2">
+                               <field name="condition_ids"/> 
+                            </group>
+                         </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <menuitem id="submenu_netaddiction_expression_condition"
+          name="Condizioni" parent="menu_netaddiction_expression"
+          action="netaddiction_expression_condition_base"/>
+
+        <record model="ir.ui.view" id="netaddiction_expression_condition_tree">
+            <field name="name">view.netaddiction_expression_condition</field>
+            <field name="model">netaddiction.expressions.condition</field>
+            <field name="arch" type="xml">
+                <tree name="Condition list">
+                    <field name="expression_id"/>
+                    <field name="subject_type"/>
+                    <field name="operator"/>
+                    <field name="categ_id" attrs="{'invisible':[('subject_type', '!=', 'category')], 'required':[('subject_type', '=', 'category')]}"/>
+                    <field name="attrib_id" attrs="{'invisible':[('subject_type', '!=', 'attribute')],'required':[('subject_type', '=', 'attribute')]}" />
+<!--                     <field name="product_id" attrs="{'invisible':[('subject_type', '!=', 'product')],'required':[('subject_type', '=', 'product')]}" /> -->
+                    <field name="out_date" attrs="{'invisible':[('subject_type', '!=', 'out_date')]}" />
+                    <field name="value"/>
+                </tree>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="netaddiction_expression_condition_form">
+            <field name="name">view.netaddiction_expression_condition_form</field>
+            <field name="model">netaddiction.expressions.condition</field>
+            <field name="arch" type="xml">
+                <form string="Condition Form">
+                    <sheet>
+                        <group string="Condition" name="condition" colspan="1">
+                            <field name="subject_type" widget="radio"/>
+                            <field name="categ_id" attrs="{'invisible':[('subject_type', '!=', 'category')], 'required':[('subject_type', '=', 'category')]}"/>
+                            <field name="attrib_id" attrs="{'invisible':[('subject_type', '!=', 'attribute')],'required':[('subject_type', '=', 'attribute')]}" />
+                            <!-- <field name="product_id" attrs="{'invisible':[('subject_type', '!=', 'product')],'required':[('subject_type', '=', 'product')]}" /> -->
+                            <field name="operator" attrs="{'invisible':[('subject_type', '!=', 'out_date')]}" />
+                            <field name="out_date" attrs="{'invisible':[('subject_type', '!=', 'out_date')]}" />
+                            <field name="value" />
+                            
+                          
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+
+<!--         <record model="ir.ui.view" id="netaddiction_view_find_products_from_expression">
+            <field name="name">netaddiction.view.find_products_from_expression</field>
+            <field name="model">netaddiction.expressions.expression</field>
+            <field name="inherit_id" ref="netaddiction_view_partner"/>
+            <field name="arch" type="xml">
+            <xpath expr="//div[@name='button_box']" position="inside" >
+                    <button  class="oe_inline oe_stat_button" name="new_customer_gift" 
+                        string="prodotti" type="object" icon="fa-plus" /> 
+                </xpath>
+            </field>
+        </record>
+ -->
+    </data>
+</openerp>
+
+
+
+

@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+    	<record id="netaddiction_acl_res_partner_form" model="ir.ui.view">
+            <field name="name">netaddiction.acl.res.partner.form</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="base.view_partner_form"/>
+             <field name="arch" type="xml">
+            	<button name="toggle_active" position="replace">
+                    <button name="toggle_active" type="object" groups="netaddiction_acl.netaddiction_purchase_user_plus" class="oe_stat_button" icon="fa-archive">
+                        <field name="active" widget="boolean_button" options="{&quot;terminology&quot;: &quot;archive&quot;}"/>
+                    </button>
+                </button>
+            </field>
+        </record>
+        
+           
+
+        <!--QUA SOTTO METTO DELLE MERDA DI VISTE PER I FORNITORI , SE QUALCUNO HA POI VOGLIA DI SISTEMARE SOPRA BENE SENNO STICAZZI-->
+        <record model="ir.ui.view" id="netaddiction_another_view_for_partner">
+            <field name="name">netaddiction.another.view.for.partner</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="base.view_partner_form"/>
+            <field name="arch" type="xml">
+
+                <notebook position="attributes">
+                    <attribute name="attrs">{'invisible' : [('parent_id','!=',False)]}</attribute>
+                </notebook>
+
+                <page name="sales_purchases" position="replace">
+                    <page name="sales_purchases" string="Vendite e Acquisti" >
+                            <group name="container_row_2">
+                                <group string="Vendita" name="sale" groups="netaddiction_acl.netaddiction_sale_user">
+                                    <field name="customer"/>
+                                    <field name="user_id" context="{'default_groups_ref': ['base.group_partner_manager']}" invisible="1"/>
+                                </group>
+                                <group string="Acquisto" name="purchase" groups="netaddiction_acl.netaddiction_purchase_user">
+                                    <field name="supplier"/>
+                                </group>
+                                <group string="Misc" invisible="1">
+                                    <field name="ref"/>
+                                    <field name="company_id" groups="base.group_multi_company" options="{'no_create': True}"/>
+                                </group>
+                            </group>
+                    </page>
+                </page>
+
+            </field>
+        </record>
+
+        <record id="netaddiction_view_that_destroy_prev_view" model="ir.ui.view">
+            <field name="name">netaddiction.acl.res.partner.form.destroy.prev.view</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="netaddiction_customer.netaddiction_view_partner"/>
+             <field name="arch" type="xml">
+                <field name="rating" position="attributes">
+                    <attribute name="attrs">{'invisible' : [('supplier','=',True)]}</attribute>
+                </field>
+                <field name="mobile" position="attributes">
+                    <attribute name="attrs">{'invisible' : [('supplier','=',True)]}</attribute>
+                </field>
+
+               <!-- <field name="email" position="before">
+                    <field name="state_id" attrs="{'invisible' : [('supplier','=',False)]}"/>
+                    <field name="city" attrs="{'invisible' : [('supplier','=',False)]}"/>
+                    <field name="street" attrs="{'invisible' : [('supplier','=',False)]}"/>
+                    <field name="street2" attrs="{'invisible' : [('supplier','=',False)]}"/>
+                    <field name="zip" attrs="{'invisible' : [('supplier','=',False)]}"/>
+                    <field name="country_id" attrs="{'invisible' : [('supplier','=',False)]}"/>
+                </field>-->
+            </field>
+        </record>
+
+        <record id="netaddiction_banks_partner" model="ir.ui.view">
+            <field name="name">netaddiction.banks.partner</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="account.partner_view_buttons"/>
+            <field name="arch" type="xml">
+                <group name="banks" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </group>
+            </field>
+        </record>
+
+        <record id="netaddiction_wh_partner" model="ir.ui.view">
+            <field name="name">netaddiction.wh.partner</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="stock.view_partner_stock_form"/>
+            <field name="arch" type="xml">
+                <group name="warehouse" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </group>
+            </field>
+        </record>
+
+        <record id="netaddiction_acl_account_partner" model="ir.ui.view">
+            <field name="name">netaddiction.acl.account.partner</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="account.view_partner_property_form"/>
+            <field name="arch" type="xml">
+                <group name="acc_sale" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </group>
+                <group name="acc_purchase" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </group>
+                <group name="accounting_entries" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </group>
+            </field>
+        </record>
+
+
+
+    </data>
+</openerp>

@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+         <record model="ir.ui.view" id="netaddiction_view_order_payments">
+            <field name="name">netaddiction.sale.order.payments</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale.view_order_form"/>
+            <field name="arch" type="xml">
+
+
+
+
+              <xpath expr="//notebook/page"
+                    position="after">    
+                    <page string="Pagamenti">
+                        <br/>
+                      <field name="account_payment_ids" attrs="{'readonly': [('state', 'in', ('done','cancel','sale','partial_done','sent'))]}"/>     
+                    </page>
+                </xpath> 
+
+          </field>
+          </record>
+
+        <record model="ir.ui.view" id="netaddiction_view_account_payments">
+            <field name="name">netaddiction.account.payments</field>
+            <field name="model">account.payment</field>
+            <field name="inherit_id" ref="account.view_account_payment_form"/>
+            <field name="arch" type="xml">
+
+
+
+
+              <xpath expr="//field[@name='payment_date']"
+                    position="after">    
+                   
+                      <field name="order_id" attrs="{'readonly': [('state', '!=', 'draft')]}" string="Ordine"/>
+                      <field name="cc_selection" attrs="{'readonly': [('state', '!=', 'draft')]}" string="Seleziona Carta di credito" domain="[('customer_id','=',partner_id)]"/>
+
+
+
+            
+                </xpath> 
+
+              <xpath expr="//group"
+                    position="after">   
+
+                      <group string="Carte" name="cc" colspan="4">
+                            <group name="loc_left" class="oe_left" col="2">
+                      <field name="cc_token" attrs="{'readonly': 1}" string="Token cc"/>
+                      <field name="cc_last_four" attrs="{'readonly': 1}" string="Indizio cc"/>
+                      <field name="cc_month" attrs="{'readonly': 1}" string="Mese cc"/>
+                            </group>
+                <group name="loc_right" class="oe_right" col="2">
+                      <field name="cc_year" attrs="{'readonly': 1}" string="Anno cc"/>
+                      <field name="cc_name" attrs="{'readonly': 1}" string="Titolare cc"/>
+                      <field name="cc_type" attrs="{'readonly': 1}" string="Brand cc"/>
+                      <field name="cc_status" attrs="{'readonly': 1}" string="Stato cc"/>
+                            </group>
+                        </group> 
+
+                      <group string="Paypal" name="pp" colspan="4">
+                        <field name="paypal_transaction_id" attrs="{'readonly': 1}" string="ID transazione paypal"/>
+                            </group>
+                    <group string="Sofort" name="sofort" colspan="4">
+                        <field name="sofort_transaction_id" attrs="{'readonly': 1}" string="ID transazione sofort"/>
+                            </group>
+                </xpath> 
+          </field>
+          </record>
+
+
+
+          </data>
+</openerp>

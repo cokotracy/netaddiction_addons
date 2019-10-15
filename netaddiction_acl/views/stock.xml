@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+    	<record id="netaddiction_acl_base_stock_picking_form" model="ir.ui.view">
+            <field name="name">netaddiction.acl.base.stock.picking.form</field>
+            <field name="model">stock.picking</field>
+            <field name="inherit_id" ref="stock.view_picking_form"/>
+            <field name="arch" type="xml">
+            	<xpath expr="//form" position="attributes">
+            		<attribute name="create">false</attribute>
+            		<attribute name="edit">false</attribute>
+            	</xpath>
+
+            	<header position="replace">
+            		<header>
+	            		<field name="launch_pack_operations" invisible="1"/>
+	                    <field name="state" widget="statusbar" statusbar_visible="draft,confirmed,partially_available,assigned,done" statusbar_colors="{&quot;shipping_except&quot;:&quot;red&quot;,&quot;invoice_except&quot;:&quot;red&quot;,&quot;waiting_date&quot;:&quot;blue&quot;}"/>
+	                </header>
+            	</header>
+
+            </field>
+        </record>
+
+        <record id="netaddiction_acl_manager_stock_picking_form" model="ir.ui.view">
+            <field name="name">netaddiction.acl.manager.stock.picking.form</field>
+            <field name="model">stock.picking</field>
+            <field name="inherit_id" ref="netaddiction_acl_base_stock_picking_form"/>
+            <field name="groups_id" eval="[(4, ref('netaddiction_inventory_user_manager')),(4, ref('netaddiction_sale_customer_care'))]"/>
+            <field name="arch" type="xml">
+            	<xpath expr="//form" position="attributes">
+            		<attribute name="create">true</attribute>
+            		<attribute name="edit">true</attribute>
+            	</xpath>
+
+            	<field name="launch_pack_operations" position="before">
+            		<button name="action_confirm" states="draft" string="Conferma" type="object" class="oe_highlight" />
+                    <button name="action_assign" states="confirmed,waiting" string="Riserva" type="object" class="oe_highlight"/>
+                    <button name="force_assign" states="confirmed,waiting,partially_available" string="Forza Disponibilità" type="object" />
+                    <button name="do_new_transfer" states="draft,partially_available,assigned" string="Valida"  type="object" class="oe_highlight"/>
+                    <button name="action_cancel" states="assigned,confirmed,partially_available,draft,waiting,done" string="Annulla"  type="object"/>
+                    <button name="do_unreserve" string="Unreserve" type="object" attrs="{'invisible': [('quant_reserved_exist', '=', False)]}"/>
+            	</field>
+
+            </field>
+        </record>
+
+
+        <record id="netaddiction_acl_base_stock_move_form" model="ir.ui.view">
+            <field name="name">netaddiction.acl.base.stock.move.form</field>
+            <field name="model">stock.move</field>
+            <field name="inherit_id" ref="stock.view_move_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//form" position="attributes">
+                    <attribute name="create">false</attribute>
+                    <attribute name="edit">false</attribute>
+                </xpath>
+                <button name="%(stock.move_scrap)s" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </button>
+            </field>
+        </record>
+
+        <record id="netaddiction_acl_manager_stock_move_form" model="ir.ui.view">
+            <field name="name">netaddiction.acl.manager.stock.move.form</field>
+            <field name="model">stock.move</field>
+            <field name="inherit_id" ref="netaddiction_acl_base_stock_move_form"/>
+            <field name="groups_id" eval="[(4, ref('netaddiction_inventory_user_manager'))]"/>
+            <field name="arch" type="xml">
+                <xpath expr="//form" position="attributes">
+                    <attribute name="create">true</attribute>
+                    <attribute name="edit">true</attribute>
+                </xpath>
+
+                <button name="%(stock.move_scrap)s" position="attributes">
+                    <attribute name="invisible">0</attribute>
+                </button>
+            </field>
+        </record>
+
+        <record id="netaddiction_acl_base_stock_move_tree" model="ir.ui.view">
+            <field name="name">netaddiction.acl.base.stock.move.tree</field>
+            <field name="model">stock.move</field>
+            <field name="inherit_id" ref="stock.view_move_tree_receipt_picking"/>
+            <field name="arch" type="xml">
+                <tree position="attributes">
+                    <attribute name="create">false</attribute>
+                    <attribute name="edit">false</attribute>
+                </tree>
+            </field>
+        </record>
+
+        <record id="netaddiction_acl_manager_stock_move_tree" model="ir.ui.view">
+            <field name="name">netaddiction.acl.manager.stock.move.tree</field>
+            <field name="model">stock.move</field>
+            <field name="inherit_id" ref="netaddiction_acl_base_stock_move_tree"/>
+            <field name="groups_id" eval="[(4, ref('netaddiction_inventory_user_manager'))]"/>
+            <field name="arch" type="xml">
+                <tree position="attributes">
+                    <attribute name="create">true</attribute>
+                    <attribute name="edit">true</attribute>
+                </tree>
+            </field>
+        </record>
+    </data>
+</openerp>

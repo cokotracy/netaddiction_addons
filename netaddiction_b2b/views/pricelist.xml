@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+    	<record model="ir.ui.view" id="netaddiction_pricelist_b2b">
+            <field name="name">netaddiction.product.pricelist.b2b</field>
+            <field name="model">product.pricelist</field>
+            <field name="inherit_id" ref="product.product_pricelist_view"/>
+            <field name="arch" type="xml">
+                <field name="company_id" position="after">
+                    <field name="generate_csv_ftp"/>
+                </field>
+                <field name="item_ids" position="replace">
+                    <group>
+                        <group>
+                            <field name="expression" />
+                        </group>
+                        <group>
+                            <button type="object" name="populate_item_ids_from_expression" string="Aggiungi/Aggiorna Prodotti" class="btn btn-primary"/><br/>
+                            <button type="object" name="delete_all_items" string="Cancella tutto" style="margin-top:10px" class="btn btn-danger"/><b/>
+                            <button type="object" name="get_csv" string="CSV" style="margin-top:10px" class="btn btn-success"/>
+                        </group>
+                    </group>
+                    <group>
+                        <group>
+                            <field name="carrier_price"/>
+                        </group>
+                        <group>
+                            <field name="carrier_gratis"/>
+                        </group>
+                    </group>
+                    <field name="item_ids"  context="{'default_applied_on':'0_product_variant'}" />
+                    <br/><br/>
+                    <label for="ftp_user">FTP USER</label>
+                        <field name="ftp_user" nolabel="true">
+                            <tree>
+                                <field name="partner_id"/>
+                                <field name="path"/>
+                            </tree>
+                        </field>
+                </field>
+            </field>
+
+        </record>
+
+        <record model="ir.ui.view" id="netaddiction_pricelist_condition_tree">
+            <field name="name">netaddiction.product.pricelist.condition.tree</field>
+            <field name="model">pricelist.condition</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="expression" required="1"/>
+                    <field name="percentage_discount"/>
+                </tree>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="product.product_pricelist_item_tree_view">
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="pricelist_id"/>
+                    <field name="product_id"/>
+                    <field name="price" string="Prezzo"/>
+                    <field name="b2b_real_price"/>
+                    <button type="object" name="open_form_item" string="Modifica"/>
+                </tree>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="netaddiction_pricelist_product_b2b">
+            <field name="name">netaddiction.product.pricelist.product.b2b</field>
+            <field name="model">product.product</field>
+            <field name="inherit_id" ref="product.product_normal_form_view"/>
+            <field name="arch" type="xml">
+                <field name="attribute_value_ids" position="before">
+                    <field name="b2b_price"/>
+                </field>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="netaddiction_pricelist_items">
+            <field name="name">netaddiction.product.pricelist.items</field>
+            <field name="model">product.pricelist.item</field>
+            <field name="inherit_id" ref="product.product_pricelist_item_form_view"/>
+            <field name="arch" type="xml">
+                <form position="replace">
+                    <form>
+                        <h1><field name="name"/></h1>
+                        <group>
+                            <group>
+                                <field name="applied_on"/>
+                                <field name="product_id"/>
+                            </group>
+                        </group>
+                        <group>
+                            <group>
+                                <field name="typology"/>
+                                <field name="qty_lmit_b2b"/>
+                            </group>
+                            <group>
+                                <field name="percent_price"/>
+                            </group>
+                        </group>
+                    </form>
+                </form>
+            </field>
+        </record>
+    </data>
+</openerp>

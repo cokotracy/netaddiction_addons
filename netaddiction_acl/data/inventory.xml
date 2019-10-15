@@ -1,0 +1,345 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data noupdate="0">
+    	<!--Crea la funzionalità ed il gruppo associato-->
+        <record model="ir.module.category" id="netaddiction_inventory_group">
+            <field name="name">Netaddiction Magazzino</field>
+            <field name="description">Magazzinieri</field>
+            <field name="sequence">80</field>
+        </record>
+
+        <record id="netaddiction_inventory_sp" model="res.groups">
+            <field name="name">Spara pacchi</field>
+            <field name="category_id" ref="netaddiction_sale_optional_group"/>
+            <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+        </record>
+
+        <record id="netaddiction_inventory_user" model="res.groups">
+            <field name="name">Utente</field>
+            <field name="category_id" ref="netaddiction_inventory_group"/>
+            <field name="implied_ids" eval="[(4, ref('base.group_user')),(4, ref('netaddiction_products_data_entry_user_base')),(4, ref('netaddiction_purchase_user')),(4,ref('netaddiction_sale_user'))]"/>
+        </record>
+
+        <record id="netaddiction_inventory_user_plus" model="res.groups">
+            <field name="name">Utente Plus</field>
+            <field name="category_id" ref="netaddiction_inventory_group"/>
+            <field name="implied_ids" eval="[(4, ref('base.group_user')),(4,ref('netaddiction_inventory_user')),(4,ref('netaddiction_sale_user_plus')),(4,ref('stock.group_stock_user'))]"/>
+        </record>
+
+        <record id="netaddiction_inventory_user_manager" model="res.groups">
+            <field name="name">Utente Manager</field>
+            <field name="category_id" ref="netaddiction_inventory_group"/>
+            <field name="implied_ids" eval="[(4, ref('base.group_user')),(4,ref('netaddiction_inventory_user_plus'))]"/>
+        </record>
+
+        
+
+        
+
+        <!--MENU-->
+        <record id="netaddiction_warehouse.netaddiction_autopreparation" model="ir.ui.menu">
+            <field name="groups_id" eval="[(4, ref('netaddiction_inventory_user_plus'))]"/>
+        </record>
+
+        <record id="stock.menu_stock_inventory_control" model="ir.ui.menu">
+            <field name="groups_id" eval="[(4, ref('netaddiction_inventory_user')),(4, ref('netaddiction_products_data_entry_user_base'))]"/>
+        </record>
+
+        <record id="stock.menu_action_inventory_form" model="ir.ui.menu">
+            <field name="groups_id" eval="[(4, ref('stock.group_stock_manager'))]"/>
+        </record>
+        <record id="stock.menu_action_inventory_form" model="ir.ui.menu">
+            <field name="groups_id" eval="[(4, ref('netaddiction_inventory_user_plus'))]"/>
+        </record>
+
+        <record id="stock.menu_stock_root" model="ir.ui.menu">
+            <field name="groups_id" eval="[(4, ref('netaddiction_inventory_user')),(4, ref('netaddiction_inventory_sp'))]"/>
+        </record>
+
+        <record id="stock.menu_product_variant_config_stock" model="ir.ui.menu">
+            <field name="groups_id" eval="[(4, ref('netaddiction_inventory_user'))]"/>
+        </record>
+        <record id="netaddiction_warehouse.menu_netaddiction_variant_products" model="ir.ui.menu">
+            <field name="groups_id" eval="[(4, ref('netaddiction_inventory_user'))]"/>
+        </record>
+        <record id="netaddiction_warehouse.menu_netaddiction_warehouse" model="ir.ui.menu">
+            <field name="groups_id" eval="[(4, ref('netaddiction_inventory_user_plus'))]"/>
+        </record>
+        <record id="netaddiction_warehouse.netaddiction_warehouse_controllo_pickup" model="ir.ui.menu">
+            <field name="groups_id" eval="[(4, ref('netaddiction_inventory_user_plus'))]"/>
+        </record>
+        <record id="netaddiction_warehouse.netaddiction_warehouse_carico" model="ir.ui.menu">
+            <field name="groups_id" eval="[(4, ref('netaddiction_inventory_user_plus'))]"/>
+        </record>
+        <record id="stock.menu_stock_warehouse_mgmt" model="ir.ui.menu">
+            <field name="groups_id" eval="[(4, ref('netaddiction_inventory_user')),(4,ref('netaddiction_inventory_sp'))]"/>
+        </record>
+
+        
+        <record id="netaddiction_warehouse.netaddiction_warehouse_manifest" model="ir.ui.menu">
+            <field name="groups_id" eval="[(4, ref('netaddiction_inventory_user_plus'))]"/>
+        </record>
+        <record id="stock_picking_wave.menu_action_picking_wave" model="ir.ui.menu">
+            <field name="groups_id" eval="[(4, ref('netaddiction_inventory_user_plus'))]"/>
+        </record>
+        <record id="netaddiction_warehouse.netaddiction_warehouse_spara_pacchi" model="ir.ui.menu">
+            <field name="groups_id" eval="[(4, ref('netaddiction_inventory_user_plus')),(4,ref('netaddiction_inventory_sp'))]"/>
+        </record>
+        <record id="stock.menu_warehouse_report" model="ir.ui.menu">
+            <field name="groups_id" eval="[(4, ref('netaddiction_inventory_user'))]"/>
+        </record>
+        <record id="stock.menu_action_move_form2" model="ir.ui.menu">
+            <field name="groups_id" eval="[(4, ref('netaddiction_inventory_user'))]"/>
+        </record>
+
+        <record id="stock.menu_quants" model="ir.ui.menu">
+            <field name="groups_id" eval="[(4, ref('netaddiction_inventory_user'))]"/>
+        </record>
+        <record id="stock_account.menu_action_wizard_valuation_history" model="ir.ui.menu">
+            <field name="groups_id" eval="[(4, ref('netaddiction_inventory_user'))]"/>
+        </record>
+        <record id="stock.menu_report_stock_line_date" model="ir.ui.menu">
+            <field name="groups_id" eval="[(4, ref('netaddiction_inventory_user'))]"/>
+        </record>
+        <record id="stock.menu_stock_procurement_action" model="ir.ui.menu">
+            <field name="groups_id" eval="[(4, ref('netaddiction_inventory_user_manager'))]"/>
+        </record>
+        <record id="netaddiction_warehouse.menu_netaddiction_wh_locations" model="ir.ui.menu">
+            <field name="groups_id" eval="[(4, ref('netaddiction_inventory_user_manager'))]"/>
+        </record>
+        <record id="stock.menu_stock_sched" model="ir.ui.menu">
+            <field name="groups_id" eval="[(4, ref('netaddiction_inventory_user_manager'))]"/>
+        </record>
+        <record id="stock.menu_reordering_rules_config" model="ir.ui.menu">
+            <field name="groups_id" eval="[(4, ref('netaddiction_inventory_user_manager'))]"/>
+        </record>
+        <record id="stock.menu_stock_proc_schedulers" model="ir.ui.menu">
+            <field name="groups_id" eval="[(4, ref('netaddiction_inventory_user_manager'))]"/>
+        </record>
+        
+
+        <record id="netaddiction_spara_stock_picking" model="ir.model.access">
+            <field name="name">stock picking</field>
+            <field name="model_id" search="[('model','=','stock.picking')]" model="ir.model"/>
+            <field name="group_id" ref="netaddiction_inventory_sp"/>
+            <field name="perm_read" eval="1"/>
+            <field name="perm_create" eval="1"/>
+            <field name="perm_write" eval="1"/>
+            <field name="perm_unlink" eval="1"/>
+        </record>
+
+        <!--Modelli-->
+        <record id="netaddiction_inventory_sp_carrier" model="ir.model.access">
+            <field name="name">carrier</field>
+            <field name="model_id" search="[('model','=','delivery.carrier')]" model="ir.model"/>
+            <field name="group_id" ref="netaddiction_inventory_sp"/>
+            <field name="perm_read" eval="1"/>
+            <field name="perm_create" eval="0"/>
+            <field name="perm_write" eval="0"/>
+            <field name="perm_unlink" eval="0"/>
+        </record>
+        <record id="netaddiction_inventory_sp_manifest" model="ir.model.access">
+            <field name="name">manifest</field>
+            <field name="model_id" search="[('model','=','netaddiction.manifest')]" model="ir.model"/>
+            <field name="group_id" ref="netaddiction_inventory_sp"/>
+            <field name="perm_read" eval="1"/>
+            <field name="perm_create" eval="0"/>
+            <field name="perm_write" eval="1"/>
+            <field name="perm_unlink" eval="0"/>
+        </record>
+        <!--Utente-->
+        <record id="netaddiction_inventory_user_acces_stock_picking_wave" model="ir.model.access">
+            <field name="name">Stock Picking Wave</field>
+            <field name="model_id" search="[('model','=','stock.picking.wave')]" model="ir.model"/>
+            <field name="group_id" ref="netaddiction_inventory_user"/>
+            <field name="perm_read" eval="1"/>
+            <field name="perm_create" eval="0"/>
+            <field name="perm_write" eval="0"/>
+            <field name="perm_unlink" eval="0"/>
+        </record>
+        <record id="netaddiction_inventory_user_acces_stock_quant" model="ir.model.access">
+            <field name="name">Stock Quant</field>
+            <field name="model_id" search="[('model','=','stock.quant')]" model="ir.model"/>
+            <field name="group_id" ref="netaddiction_inventory_user"/>
+            <field name="perm_read" eval="1"/>
+            <field name="perm_create" eval="0"/>
+            <field name="perm_write" eval="0"/>
+            <field name="perm_unlink" eval="0"/>
+        </record>
+        <record id="netaddiction_inventory_user_acces_stock_lines_date" model="ir.model.access">
+            <field name="name">Stock lines date</field>
+            <field name="model_id" search="[('model','=','report.stock.lines.date')]" model="ir.model"/>
+            <field name="group_id" ref="netaddiction_inventory_user"/>
+            <field name="perm_read" eval="1"/>
+            <field name="perm_create" eval="0"/>
+            <field name="perm_write" eval="0"/>
+            <field name="perm_unlink" eval="0"/>
+        </record>
+        <record id="netaddiction_inventory_user_acces_stock_history" model="ir.model.access">
+            <field name="name">stock.history</field>
+            <field name="model_id" search="[('model','=','stock.history')]" model="ir.model"/>
+            <field name="group_id" ref="netaddiction_inventory_user"/>
+            <field name="perm_read" eval="1"/>
+            <field name="perm_create" eval="0"/>
+            <field name="perm_write" eval="0"/>
+            <field name="perm_unlink" eval="0"/>
+        </record>
+
+        <!--Utente Plus-->
+        <record id="netaddiction_inventory_user_acces_account_partial_reconcile" model="ir.model.access">
+            <field name="name">account.partial.reconcile</field>
+            <field name="model_id" search="[('model','=','account.partial.reconcile')]" model="ir.model"/>
+            <field name="group_id" ref="netaddiction_inventory_user_plus"/>
+            <field name="perm_read" eval="1"/>
+            <field name="perm_create" eval="0"/>
+            <field name="perm_write" eval="0"/>
+            <field name="perm_unlink" eval="0"/>
+        </record>
+        <record id="netaddiction_inventory_user_acces_account_account_type" model="ir.model.access">
+            <field name="name">account.account.type</field>
+            <field name="model_id" search="[('model','=','account.account.type')]" model="ir.model"/>
+            <field name="group_id" ref="netaddiction_inventory_user_plus"/>
+            <field name="perm_read" eval="1"/>
+            <field name="perm_create" eval="0"/>
+            <field name="perm_write" eval="0"/>
+            <field name="perm_unlink" eval="0"/>
+        </record>
+        <record id="netaddiction_inventory_user_acces_account_analytic_line" model="ir.model.access">
+            <field name="name">account.analytic.line</field>
+            <field name="model_id" search="[('model','=','account.analytic.line')]" model="ir.model"/>
+            <field name="group_id" ref="netaddiction_inventory_user_plus"/>
+            <field name="perm_read" eval="1"/>
+            <field name="perm_create" eval="0"/>
+            <field name="perm_write" eval="0"/>
+            <field name="perm_unlink" eval="0"/>
+        </record>
+
+        <record id="netaddiction_inventory_user_plus_acces_stock_picking" model="ir.model.access">
+            <field name="name">Stock Picking </field>
+            <field name="model_id" search="[('model','=','stock.picking')]" model="ir.model"/>
+            <field name="group_id" ref="netaddiction_inventory_user_plus"/>
+            <field name="perm_read" eval="1"/>
+            <field name="perm_create" eval="1"/>
+            <field name="perm_write" eval="1"/>
+            <field name="perm_unlink" eval="0"/>
+        </record>
+        <record id="netaddiction_inventory_user_plus_acces_stock_picking_wave" model="ir.model.access">
+            <field name="name">Stock Picking Wave</field>
+            <field name="model_id" search="[('model','=','stock.picking.wave')]" model="ir.model"/>
+            <field name="group_id" ref="netaddiction_inventory_user_plus"/>
+            <field name="perm_read" eval="1"/>
+            <field name="perm_create" eval="1"/>
+            <field name="perm_write" eval="1"/>
+            <field name="perm_unlink" eval="0"/>
+        </record>
+        <record id="netaddiction_inventory_user_plus_acces_manifest" model="ir.model.access">
+            <field name="name">Manifest</field>
+            <field name="model_id" search="[('model','=','netaddiction.manifest')]" model="ir.model"/>
+            <field name="group_id" ref="netaddiction_inventory_user_plus"/>
+            <field name="perm_read" eval="1"/>
+            <field name="perm_create" eval="1"/>
+            <field name="perm_write" eval="1"/>
+            <field name="perm_unlink" eval="0"/>
+        </record>
+
+        <record id="netaddiction_inventory_user_plus_acces_stock_move" model="ir.model.access">
+            <field name="name">Stock Move</field>
+            <field name="model_id" search="[('model','=','stock.move')]" model="ir.model"/>
+            <field name="group_id" ref="netaddiction_inventory_user_plus"/>
+            <field name="perm_read" eval="1"/>
+            <field name="perm_create" eval="1"/>
+            <field name="perm_write" eval="1"/>
+            <field name="perm_unlink" eval="1"/>
+        </record>
+        <record id="netaddiction_inventory_user_plus_acces_account_move" model="ir.model.access">
+            <field name="name">account Move</field>
+            <field name="model_id" search="[('model','=','account.move')]" model="ir.model"/>
+            <field name="group_id" ref="netaddiction_inventory_user_plus"/>
+            <field name="perm_read" eval="1"/>
+            <field name="perm_create" eval="1"/>
+            <field name="perm_write" eval="1"/>
+            <field name="perm_unlink" eval="0"/>
+        </record>
+        <record id="netaddiction_inventory_user_plus_acces_account_move_line" model="ir.model.access">
+            <field name="name">account Move line</field>
+            <field name="model_id" search="[('model','=','account.move.line')]" model="ir.model"/>
+            <field name="group_id" ref="netaddiction_inventory_user_plus"/>
+            <field name="perm_read" eval="1"/>
+            <field name="perm_create" eval="1"/>
+            <field name="perm_write" eval="1"/>
+            <field name="perm_unlink" eval="0"/>
+        </record>
+
+        <record id="netaddiction_inventory_user_plus_acces_account_invoice" model="ir.model.access">
+            <field name="name">account invoice</field>
+            <field name="model_id" search="[('model','=','account.invoice')]" model="ir.model"/>
+            <field name="group_id" ref="netaddiction_inventory_user_plus"/>
+            <field name="perm_read" eval="1"/>
+            <field name="perm_create" eval="1"/>
+            <field name="perm_write" eval="1"/>
+            <field name="perm_unlink" eval="0"/>
+        </record>
+
+        <record id="netaddiction_inventory_user_plus_acces_wh_locations" model="ir.model.access">
+            <field name="name">wh locations</field>
+            <field name="model_id" search="[('model','=','netaddiction.wh.locations')]" model="ir.model"/>
+            <field name="group_id" ref="netaddiction_inventory_user_plus"/>
+            <field name="perm_read" eval="1"/>
+            <field name="perm_create" eval="1"/>
+            <field name="perm_write" eval="1"/>
+            <field name="perm_unlink" eval="1"/>
+        </record>
+        <record id="netaddiction_inventory_user_plus_acces_wh_locations_line" model="ir.model.access">
+            <field name="name">wh locations line</field>
+            <field name="model_id" search="[('model','=','netaddiction.wh.locations.line')]" model="ir.model"/>
+            <field name="group_id" ref="netaddiction_inventory_user_plus"/>
+            <field name="perm_read" eval="1"/>
+            <field name="perm_create" eval="1"/>
+            <field name="perm_write" eval="1"/>
+            <field name="perm_unlink" eval="1"/>
+        </record>
+
+        <record id="netaddiction_inventory_user_plus_manifest_settings" model="ir.model.access">
+            <field name="name">netaddiction manifest settings</field>
+            <field name="model_id" search="[('model','=','netaddiction.manifest.settings')]" model="ir.model"/>
+            <field name="group_id" ref="netaddiction_inventory_user_plus"/>
+            <field name="perm_read" eval="1"/>
+            <field name="perm_create" eval="0"/>
+            <field name="perm_write" eval="0"/>
+            <field name="perm_unlink" eval="0"/>
+        </record>
+        <record id="netaddiction_inventory_user_plus_invoice_tax" model="ir.model.access">
+            <field name="name">account.invoice.tax</field>
+            <field name="model_id" search="[('model','=','account.invoice.tax')]" model="ir.model"/>
+            <field name="group_id" ref="netaddiction_inventory_user_plus"/>
+            <field name="perm_read" eval="1"/>
+            <field name="perm_create" eval="1"/>
+            <field name="perm_write" eval="1"/>
+            <field name="perm_unlink" eval="0"/>
+        </record>
+        <record id="netaddiction_inventory_user_plus_account_invoice" model="ir.model.access">
+            <field name="name">account.invoice</field>
+            <field name="model_id" search="[('model','=','account.invoice.line')]" model="ir.model"/>
+            <field name="group_id" ref="netaddiction_inventory_user_plus"/>
+            <field name="perm_read" eval="1"/>
+            <field name="perm_create" eval="1"/>
+            <field name="perm_write" eval="1"/>
+            <field name="perm_unlink" eval="1"/>
+        </record>
+        <record id="netaddiction_inventory_user_plus_bonus_line" model="ir.model.access">
+            <field name="name">bonus.line</field>
+            <field name="model_id" search="[('model','=','netaddiction.specialoffer.product_with_bonus_offer_line')]" model="ir.model"/>
+            <field name="group_id" ref="netaddiction_inventory_user_plus"/>
+            <field name="perm_read" eval="1"/>
+            <field name="perm_create" eval="1"/>
+            <field name="perm_write" eval="1"/>
+            <field name="perm_unlink" eval="0"/>
+        </record>
+
+         
+
+
+        
+        
+    </data>
+</openerp>

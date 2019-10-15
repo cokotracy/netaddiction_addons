@@ -1,0 +1,26 @@
+<openerp>
+    <data>
+    	<template id="top_menu">
+	    	<div id="top_menu">
+	    		<a t-attf-href="{{top_back_url}}" id="back">
+	    			<img class="top_img" src="/netaddiction_warehouse/static/src/img/_back.png"/>
+	    		</a>
+	    		<b class="top_title"><t t-esc="top_title" /></b>
+	    		<a href="#" id="menu">
+	    			<img class="top_img top_menu" src="/netaddiction_warehouse/static/src/img/_menu.png"/>
+	    		</a>
+	    	</div>
+	    </template>
+
+	    <template id="slide_menu">
+	    	<div id="slide_menu">
+	    		<div class="link_menu"><a href="#"><t t-esc="user.name"/></a></div>
+	    		<div class="link_menu"><a href="/">LOG OUT</a></div>
+	    		<div class="link_menu"><a href="/inventory/app">HOME</a></div>
+	    		<div class="link_menu"><a href="/inventory/app/allocation">ALLOCAZIONE</a></div>
+	    		<div class="link_menu"><a href="/inventory/app/search/from_product">CERCA</a></div>
+	    		<div class="link_menu"><a href="/inventory/app/pick_up">PICK UP</a></div>
+	    	</div>
+	    </template>
+    </data>
+</openerp>

@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+
+        <record model="ir.actions.act_window" id="netaddiction_guaranteed_minimum_base">
+            <field name="name">Minimo Garantito</field>
+            <field name="res_model">netaddiction.guaranteed.minimum</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">Non ci sono Minimi garantiti.
+                </p>
+            </field>
+        </record>
+
+        <menuitem id="menu_netaddiction_minimum_base"
+          name="Minimo garantito"
+          sequence="99"
+          action="netaddiction_guaranteed_minimum_base"
+          parent="stock.menu_stock_inventory_control"
+        />
+
+        <record id="netaddiction_minimum_orders" model="ir.ui.view">
+            <field name="name">netaddiction.minimum.orders</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale.view_order_form"/>
+            <field name="arch" type="xml">
+                <field name="name" position="after">
+                    <field name="is_guaranteed_minimum" invisible="1"/>
+                    <field name="is_guaranteed_minimum_refund" invisible="1"/>
+                    <button name="guaranteed_minimum_restore" class="btn" type="object" string="Rimborsa" attrs="{'invisible':['|',('is_guaranteed_minimum', '=', False),('is_guaranteed_minimum_refund','=',True)]}"/>
+                </field>
+            </field>
+        </record> 
+
+        <record model="ir.ui.view" id="netaddiction_minimum_form">
+            <field name="name">view.netaddiction.guaranteed.minimum</field>
+            <field name="model">netaddiction.guaranteed.minimum</field>
+            <field name="arch" type="xml">
+                <form string="show">
+                    <header>
+                        <button name="convalidate_change_price" class="btn-primary" type="object" string="Convalida" attr="{'invisible':[('state','=','done')]}"/> 
+                        <field name="state" widget="statusbar" readonly="1"/>
+                    </header>
+                    <sheet>
+                        <div class="oe_title">
+                            <label for="name"/>
+                            <h1>
+                                <field name="name" required="1"/>
+                            </h1>
+                        </div>
+                        <group>
+                            <group>
+                                <field name="created_user_id" required="1"/>
+                                <field name="company_id" readonly="1"/>
+                                <field name="new_product_price" readonly="1"/>
+                            </group>
+                            <group>
+                                <field name="date_change" required="1"/>
+                                <field name="product_id" readonly="1"/>
+                            </group>
+                        </group>
+                        <group>
+                            <field name="order_line_ids">
+                                <tree>
+                                    <field name="product_id"/>
+                                    <field name="order_id"/>
+                                    <field name="product_uom_qty"/>
+                                    <field name="price_unit"/>
+                                </tree>
+                            </field>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="netaddiction_minimum_tree">
+            <field name="name">view.netaddiction.guaranteed.minimum.tree</field>
+            <field name="model">netaddiction.guaranteed.minimum</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="name"/>
+                    <field name="date_change"/>
+                    <field name="state"/>
+                </tree>
+            </field>
+        </record>
+    </data>
+</openerp>

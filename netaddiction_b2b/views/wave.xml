@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+    	<record model="ir.ui.view" id="netaddiction_b2b_add_button_manifest">
+            <field name="name">netaddiction.b2b.addbutton.manifest</field>
+            <field name="model">stock.picking.wave</field>
+            <field name="inherit_id" ref="stock_picking_wave.view_picking_wave_form"/>
+            <field name="arch" type="xml">
+                <field name="state" position="before">
+                    <button name="put_in_manifest" states="done" string="Metti nel Manifest B2B" type="object" class="oe_highlight"/>
+                </field>        
+            </field>
+        </record>
+    </data>
+</openerp>

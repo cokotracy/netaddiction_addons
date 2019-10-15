@@ -1,0 +1,608 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+
+
+        <record id="netaddiction_offer_line_catalog_inactive" model="ir.actions.act_window">
+            <field name="name">offerte prodotto spente</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">netaddiction.specialoffer.offer_catalog_line</field>
+            <field name="context">{'search_default_offer_catalog_id': [active_id], 'default_offer_catalog_id': active_id}</field>
+            <field name="domain">[('active','=',False),('offer_catalog_id', '=', active_id)]</field>
+
+              <field name="help" type="html">
+              <p class="oe_view_nocontent_create">
+                Clicca per definire un nuovo prodotto.
+              </p><p>
+                È necessario definire un prodotto per tutto ciò che si vende, che si tratti di
+                un prodotto fisico, un materiale di consumo o di un servizio che offrite ai
+                clienti.
+              </p>
+            </field>
+        </record>
+
+
+        <record id="netaddiction_offer_line_cart_inactive" model="ir.actions.act_window">
+            <field name="name">offerte carrello spente</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">netaddiction.specialoffer.offer_cart_line</field>
+            <field name="context">{'search_default_offer_cart_id': [active_id], 'default_offer_cart_id': active_id}</field>
+            <field name="domain">[('active','=',False),('offer_cart_id', '=', active_id)]</field>
+
+              <field name="help" type="html">
+              <p class="oe_view_nocontent_create">
+                Clicca per definire un nuovo prodotto.
+              </p><p>
+                È necessario definire un prodotto per tutto ciò che si vende, che si tratti di
+                un prodotto fisico, un materiale di consumo o di un servizio che offrite ai
+                clienti.
+              </p>
+            </field>
+        </record>
+
+
+        <record id="netaddiction_offer_line_voucher_inactive" model="ir.actions.act_window">
+            <field name="name">offerte voucher spente</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">netaddiction.specialoffer.offer_voucher_line</field>
+            <field name="context">{'search_default_offer_voucher_id': [active_id], 'default_offer_voucher_id': active_id}</field>
+            <field name="domain">[('active','=',False),('offer_voucher_id', '=', active_id)]</field>
+
+              <field name="help" type="html">
+              <p class="oe_view_nocontent_create">
+                Clicca per definire un nuovo prodotto.
+              </p><p>
+                È necessario definire un prodotto per tutto ciò che si vende, che si tratti di
+                un prodotto fisico, un materiale di consumo o di un servizio che offrite ai
+                clienti.
+              </p>
+            </field>
+        </record>
+
+        <record model="ir.actions.act_window" id="netaddiction_special_offers_catalog_base">
+            <field name="name">Offerte Catalogo</field>
+            <field name="res_model">netaddiction.specialoffer.catalog</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">Non ci sono offerte sul catalogo.
+                </p>
+            </field>
+        </record>
+
+        <record model="ir.actions.act_window" id="netaddiction_special_offers_cart_base">
+            <field name="name">Offerte Carrello</field>
+            <field name="res_model">netaddiction.specialoffer.cart</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">Non ci sono offerte sul carrello.
+                </p>
+            </field>
+        </record>
+
+
+        <record model="ir.actions.act_window" id="netaddiction_special_offers_bonus_base">
+            <field name="name">Offerte Bonus</field>
+            <field name="res_model">netaddiction.specialoffer.bonus</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">Non ci sono offerte bonus.
+                </p>
+            </field>
+        </record>
+
+        <record model="ir.actions.act_window" id="netaddiction_special_offers_catalog_line">
+            <field name="name">Offer catalog Line</field>
+            <field name="res_model">netaddiction.specialoffer.offer_catalog_line</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">No product line.
+                </p>
+            </field>
+        </record>
+
+
+        <record model="ir.actions.act_window" id="netaddiction_special_offers_voucher_base">
+            <field name="name">Offerte Voucher</field>
+            <field name="res_model">netaddiction.specialoffer.voucher</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">Non ci sono offerte voucher.
+                </p>
+            </field>
+        </record>
+
+        <record model="ir.actions.act_window" id="netaddiction_special_offers_voucher_line">
+            <field name="name">Offer catalog Line</field>
+            <field name="res_model">netaddiction.specialoffer.offer_catalog_line</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">No product line.
+                </p>
+            </field>
+        </record>
+
+        <menuitem id="submenu_netaddiction_special_offers_catalog"
+          name="Offerte Catalogo" parent="netaddiction_expressions.menu_netaddiction_offers"
+          action="netaddiction_special_offers_catalog_base" sequence="1"/>
+
+        <record model="ir.ui.view" id="netaddiction_special_offers_catalog_tree">
+            <field name="name">view.netaddiction_special_offers_catalog_tree</field>
+            <field name="model">netaddiction.specialoffer.catalog</field>
+            <field name="arch" type="xml">
+                <tree name="special_offers_catalog list">
+                    <field name="name"/>
+                    <field name="author_id"/>
+                    <field name="date_start"/>
+                    <field name="date_end"/>
+                </tree>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="netaddiction_special_offers_catalog_form">
+            <field name="name">view.netaddiction_special_offers_catalog_form</field>
+            <field name="model">netaddiction.specialoffer.catalog</field>
+            <field name="arch" type="xml">
+                <form string="special_offers_catalog Form">
+                    <sheet>
+                    <div class="oe_button_box" name="button_box">
+                            <button name="toggle_active" type="object" class="oe_stat_button" icon="fa-archive" attrs="{'invisible':[('active', '=', False)]}">
+                                <field name="active" widget="boolean_button" options="{&quot;terminology&quot;: &quot;archive&quot;}"/>
+                            </button>
+                            <button name="turn_on" type="object" class="oe_stat_button" icon="fa-archive" attrs="{'invisible':[('active', '=', True)]} " string="Riattiva"/>
+
+                        </div>
+
+                    <div class="oe_title">
+                        <h1><field name="name" placeholder="Titolo offerta catalogo..."/></h1>
+                    </div>
+                        <group string="Offerta" name="so_cat" colspan="4">
+                            <group name="loc_left" class="oe_left" col="2">
+                                <field name="author_id"/>
+                                <field name="company_id"/>
+                                <field name="priority"/>
+                                <field name="id"  attrs="{'invisible': True}"/>
+                             
+                            
+                            </group>
+                             <group name="loc_right" class="oe_right" col="2">
+                                <field name="date_start" widget="datetime"/>
+                                <field name="date_end"/>
+                                <field name="qty_selled"  attrs="{'readonly': 1}"/>
+                                
+                            </group>
+                        </group>
+                        <div >
+                        <group  name="conditions" colspan="2" string= "opzioni offerta" >
+                            <group name="loc_left" class="oe_left" col="2">
+                                <field name="qty_max_buyable"/>
+                                <field name="qty_limit"/>
+                                <field name="qty_min"/>
+                                <field name="one_day" />
+                                <field name="offer_type" widget="radio"/>
+                                <field name="fixed_price" attrs="{'invisible':[('offer_type', '!=', 1)]}"/>
+                                <field name="percent_discount" attrs="{'invisible':[('offer_type', '!=', 2)]}" />
+                                <field name="percent_rounded_down" attrs="{'invisible':[('offer_type', '!=', 2)]}" />
+                                <field name="qty_limit_is_available"/>
+                                <button  class="oe_highlight" name="modify_products" 
+                                string="applica ai prodotti" type="object" /> 
+
+                                
+                            </group>
+                            
+                         </group>
+                        <group  name="conditions" colspan="2" string= "espressione" >
+                            <group name="loc_left" class="oe_left" col="2">
+                                                               <field name="expression_id"/> 
+                            </group>
+                            <group name="loc_left" class="oe_right" col="3">
+                               <button  class="oe_highlight" name="populate_products_from_expression" 
+                                string="inserisci espressione" type="object" /> 
+                               <button  class="oe_highlight" name="remove_products" 
+                                string="rimuovi prodotti" type="object" /> 
+
+                        </group>
+                            
+                         </group>
+                     </div>
+                  
+
+
+   
+                     <h1 >Lista Prodotti</h1>
+                     <field name="products_list" mode="tree" >
+                        
+                                  <tree string="Sales Order Lines" editable="bottom">
+                                    <field name="product_id" />
+                                    <field name="product_qty_available_now"/>
+                                     <field name="qty_max_buyable" />
+                                      <field name="qty_limit" />
+                                       <field name="qty_min" />
+                                        <field name="offer_type"/>
+                                        <field name="fixed_price" attrs="{'invisible':[('offer_type', '!=', 1)]}"/>
+                                        <field name="product_offer_price_fake" />
+                                <field name="med_inventory_value_intax"/>
+                                    <field name="percent_discount" attrs="{'invisible':[('offer_type', '!=', 2)]}" />
+                                    <field name="qty_selled" attrs="{'readonly': 1}" />
+                                    <field name="priority" attrs="{'readonly': 1}"/>
+                                    <field name="active" />
+                                 
+                                </tree>
+                              </field>
+
+                    <group>
+                        <group>
+                            <button name="get_pid_list" type="object" string="Genere Lista Id Prodotti"/>
+                        </group>
+                        <group>
+                            <field name="pid_list"/>
+                        </group>
+                    </group>
+
+                     </sheet>
+                </form>
+            </field>
+        </record>
+
+        <menuitem id="submenu_netaddiction_special_offers_cart"
+          name="Offerte Carrello" parent="netaddiction_expressions.menu_netaddiction_offers"
+          action="netaddiction_special_offers_cart_base" sequence="2"/>
+
+        <record model="ir.ui.view" id="netaddiction_special_offers_cart_tree">
+            <field name="name">view.netaddiction_special_offers_cart</field>
+            <field name="model">netaddiction.specialoffer.cart</field>
+            <field name="arch" type="xml">
+                 <tree name="special_offers_catalog list">
+                    <field name="name"/>
+                    <field name="author_id"/>
+                    <field name="date_start"/>
+                    <field name="date_end"/>
+                </tree>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="netaddiction_special_offers_cart_form">
+            <field name="name">view.netaddiction_special_offers_cart_form</field>
+            <field name="model">netaddiction.specialoffer.cart</field>
+            <field name="arch" type="xml">
+                <form string="Condition Form">
+                    <sheet>
+                    <div class="oe_button_box" name="button_box">
+                            <button name="toggle_active" type="object" class="oe_stat_button" icon="fa-archive" attrs="{'invisible':[('active', '=', False)]}">
+                                <field name="active" widget="boolean_button" options="{&quot;terminology&quot;: &quot;archive&quot;}"/>
+                            </button>
+                            <button name="turn_on" type="object" class="oe_stat_button" icon="fa-archive" attrs="{'invisible':[('active', '=', True)]}" string="Riattiva"/>
+
+
+                    </div>
+                   <div class="oe_title">
+                        <h1><field name="name" placeholder="Titolo offerta carrello..."/></h1>
+                    </div>
+                        <group string="Offerta" name="so_cat" colspan="4">
+                            <group name="loc_left" class="oe_left" col="2">
+                                <field name="author_id"/>
+                                <field name="company_id"/>
+                                <field name="priority"/>
+                                <field name="id"  attrs="{'invisible': True}"/>
+                             
+                            
+                            </group>
+                             <group name="loc_right" class="oe_right" col="2">
+                                <field name="date_start" widget="datetime"/>
+                                <field name="date_end"/>
+                                <field name="qty_selled"  attrs="{'readonly': 1}"/>
+                                
+                            </group>
+                        </group>
+                        <group string="Opzioni Offerta" name="so_cat" colspan="4">
+                        
+                            <group name="loc_left" class="oe_left" col="2">
+
+                                <field name="qty_max_buyable"/>
+                                <field name="qty_limit"/>
+                                <field name="offer_type" widget="radio"/>
+                                <field name="n" attrs="{'invisible':['|',('offer_type', '=', 1),('offer_type', '=', 4)]}"/>
+                                <field name="m" attrs="{'invisible':[('offer_type', '!=', 2)]}" />
+                                <field name="n_price" attrs="{'invisible':[('offer_type', '!=', 3)]}" />
+                                <field name="bundle_price" attrs="{'invisible':[('offer_type', '!=', 1)]}" />
+                                <field name="qty_limit_is_available"/>
+
+                            
+                            </group>
+                         
+                        </group>
+
+                        <group  name="conditions" colspan="2" string= "Espressione" >
+                            <group name="loc_left" class="oe_left" col="2">
+                                <field name="expression_id"/> 
+                               <button  class="oe_highlight" name="populate_products_from_expression" 
+                                string="inserisci espressione" type="object" /> 
+                               <button  class="oe_highlight" name="remove_products" 
+                                string="rimuovi prodotti" type="object" /> 
+                        </group>
+                    </group>
+<!--                     <button name="%(netaddiction_offer_line_cart_inactive)d" type="action"
+                        string="prodotti spenti" class="oe_highlight"/> -->
+                            
+
+                   <h1 >Lista Prodotti</h1>
+                    <field name="products_list" mode="tree" >
+                        
+                                  <tree string="Sales Order Lines" editable="bottom">
+                                    <field name="product_id" />
+                                    <field name="product_qty_available_now"/>
+                                     <field name="qty_max_buyable" />
+                                      <field name="qty_limit" />
+                                        <field name="offer_type"/>
+                                    <field name="qty_selled" attrs="{'readonly': 1}" />
+                                    <field name="priority" attrs="{'readonly': 1}"/>
+                                    <field name="active" />
+                                 
+                                </tree>
+                    </field>
+                  
+                  <group>
+                        <group>
+                            <button name="get_pid_list" type="object" string="Genere Lista Id Prodotti"/>
+                        </group>
+                        <group>
+                            <field name="pid_list"/>
+                        </group>
+                    </group>
+                      
+                       
+                       
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+
+
+<!-- ahahahah -->
+
+        <menuitem id="submenu_netaddiction_special_offers_bonus"
+          name="Bonus Fisici" parent="netaddiction_expressions.menu_netaddiction_offers"
+          action="netaddiction_special_offers_bonus_base" sequence="4"/>
+
+        <record model="ir.ui.view" id="netaddiction_special_offers_bonus_tree">
+            <field name="name">view.netaddiction_special_offers_bonus</field>
+            <field name="model">netaddiction.specialoffer.bonus</field>
+            <field name="arch" type="xml">
+                 <tree name="special_offers_bonus list">
+                    <field name="name"/>
+                    <field name="author_id"/>
+                    <field name="only_one"/>
+
+                </tree>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="netaddiction_special_offers_bonus_form">
+            <field name="name">view.netaddiction_special_offers_bonus_form</field>
+            <field name="model">netaddiction.specialoffer.bonus</field>
+            <field name="arch" type="xml">
+                <form string="Condition Form">
+                    <sheet>
+                    <div class="oe_button_box" name="button_box">
+                            <button name="toggle_active" type="object" class="oe_stat_button" icon="fa-archive">
+                                <field name="active" widget="boolean_button" options="{&quot;terminology&quot;: &quot;archive&quot;}"/>
+                            </button>
+
+                    </div>
+                   <div class="oe_title">
+                        <h1><field name="name" placeholder="Titolo offerta Bonus..."/></h1>
+                        <button  class="oe_highlight" name="apply_to_previous_orders" 
+                                string="vecchi ordini" type="object" /> 
+                    </div>
+                        <group string="Offerta" name="so_cat" colspan="4">
+                            <group name="loc_left" class="oe_left" col="2">
+                                <field name="author_id"/>
+                                <field name="company_id"/>
+                                <field name="only_one"/>
+
+                               
+                                <field name="id"  attrs="{'invisible': True}"/>
+                             
+                            
+                            </group>
+
+                        </group>
+                        
+                        <field name="text" placeholder="Testo offerta...." widget="html"/>
+
+                    <h1 >Lista Prodotti principali</h1>
+                    <field name="products_with_bonus_list" mode="tree" >
+                        
+                                  <tree string="prodotti principali" editable="bottom">
+                                    <field name="product_id" />
+                                     
+                                    <field name="active" />
+                                 
+                                </tree>
+                    </field>
+                   <h1 >Lista Prodotti Bonus</h1>
+                    <field name="bonus_products_list" mode="tree" >
+                        
+                                  <tree string="prodotti con bonus" editable="bottom">
+                                    <field name="product_id" />
+                                     
+                                    <field name="active" />
+                                 
+                                </tree>
+                    </field>
+                  
+                 
+                      
+                       
+                       
+                    </sheet>
+                </form>
+            </field>
+        </record>
+<!--  -->
+
+    <menuitem id="submenu_netaddiction_special_offers_voucher"
+          name="Offerte Voucher" parent="netaddiction_expressions.menu_netaddiction_offers"
+          action="netaddiction_special_offers_voucher_base" sequence="3"/>
+
+        <record model="ir.ui.view" id="netaddiction_special_offers_voucher_tree">
+            <field name="name">view.netaddiction_special_offers_voucher_tree</field>
+            <field name="model">netaddiction.specialoffer.voucher</field>
+            <field name="arch" type="xml">
+                <tree name="special_offers_voucher list">
+                    <field name="name"/>
+                    <field name="author_id"/>
+                    <field name="date_start"/>
+                    <field name="date_end"/>
+                </tree>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="netaddiction_special_offers_voucher_form">
+            <field name="name">view.netaddiction_special_offers_voucher_form</field>
+            <field name="model">netaddiction.specialoffer.voucher</field>
+            <field name="arch" type="xml">
+                <form string="special_offers_voucher Form">
+                    <sheet>
+                    <div class="oe_button_box" name="button_box">
+                            <button name="toggle_active" type="object" class="oe_stat_button" icon="fa-archive">
+                                <field name="active" widget="boolean_button" options="{&quot;terminology&quot;: &quot;archive&quot;}"/>
+                            </button>
+                        </div>
+
+                    <div class="oe_title">
+                        <h1><field name="name" placeholder="Titolo offerta Voucher..."/></h1>
+                    </div>
+                        <group string="Offerta" name="so_cat" colspan="4">
+                            <group name="loc_left" class="oe_left" col="2">
+                                <field name="author_id"/>
+                                <field name="company_id"/>
+                                <field name="code"/>
+                                <field name="one_for_customer"/>
+                                <field name="id"  attrs="{'invisible': True}"/>
+                             
+                            
+                            </group>
+                             <group name="loc_right" class="oe_right" col="2">
+                                <field name="date_start" widget="datetime"/>
+                                <field name="date_end"/>
+                                <field name="qty_selled"  attrs="{'readonly': 1}"/>
+                                <field name="one_user" />
+                                <field name="associated_user" domain="[('type','=','contact')]" attrs="{'invisible':[('one_user', '=', False)]}" />
+                                
+                            </group>
+                        </group>
+                        <div >
+                        <group  name="conditions" colspan="2" string= "opzioni offerta" >
+                            <group name="loc_left" class="oe_left" col="2">
+                                <field name="qty_limit"/>
+                                <field name="offer_type" widget="radio"/>
+                                <field name="fixed_discount" attrs="{'invisible':[('offer_type', '!=', 1)]}"/>
+                                <field name="percent_discount" attrs="{'invisible':[('offer_type', '!=', 2)]}" />
+<!--                                 <button  class="oe_highlight" name="modify_products" 
+                                string="applica ai prodotti" type="object" />  -->
+
+                                
+                            </group>
+                            
+                         </group>
+                        <group  name="conditions" colspan="2" string= "espressione" >
+                            <group name="loc_left" class="oe_left" col="2">
+                                                               <field name="expression_id"/> 
+                               <button  class="oe_highlight" name="populate_products_from_expression" 
+                                string="inserisci espressione" type="object" /> 
+                               <button  class="oe_highlight" name="remove_products" 
+                                string="rimuovi prodotti" type="object" /> 
+                        </group>
+                            
+                         </group>
+                     </div>
+                  
+<!--                     <button name="%(netaddiction_offer_line_voucher_inactive)d" type="action"
+                        string="prodotti spenti" class="oe_highlight"
+                        > 
+                        
+                    </button>-->
+   
+                     <h1 >Lista Prodotti</h1>
+                     <field name="products_list" mode="tree" >
+                        
+                                  <tree string="Sales Order Lines" editable="bottom">
+                                    <field name="product_id" />
+                                    <field name="active" />
+                                 
+                                </tree>
+                              </field>
+
+                        
+                     </sheet>
+                </form>
+            </field>
+        </record>
+
+        <!-- hhshs -->
+
+
+       <record model="ir.ui.view" id="netaddiction_special_offers_catalog_line_tree" >
+            <field name="name">netaddiction_special_offers_catalog_line_tree</field>
+            <field name="model">netaddiction.specialoffer.offer_catalog_line</field>
+            <field name="arch" type="xml">
+                <tree name="special_offers_catalog list" editable="bottom">
+
+
+
+                       <field name="product_id" />
+                        <field name="offer_catalog_id"/>
+                                     <field name="qty_max_buyable" />
+                                      <field name="qty_limit" />
+                                       <field name="qty_min" />
+                                        <field name="offer_type"/>
+                                        <field name="fixed_price" attrs="{'invisible':[('offer_type', '!=', 1)]}"/>
+
+                                    <field name="percent_discount" attrs="{'invisible':[('offer_type', '!=', 2)]}" />
+                                    <field name="qty_selled" attrs="{'readonly': 1}" />
+                                    <field name="priority" attrs="{'readonly': 1}"/>
+                                    <field name="active" />
+                </tree>
+            </field>
+        </record>
+
+
+       <record model="ir.ui.view" id="netaddiction_special_offers_cart_line_tree" >
+            <field name="name">netaddiction_special_offers_cart_line_tree</field>
+            <field name="model">netaddiction.specialoffer.offer_cart_line</field>
+            <field name="arch" type="xml">
+                <tree name="special_offers_cart list" editable="bottom">
+
+
+
+                       <field name="product_id" />
+                        <field name="offer_cart_id"/>
+                                     <field name="qty_max_buyable" />
+                                      <field name="qty_limit" />
+                                        <field name="offer_type"/>
+                                    <field name="qty_selled" attrs="{'readonly': 1}" />
+                                    <field name="priority" attrs="{'readonly': 1}"/>
+                                    <field name="active" />
+                </tree>
+            </field>
+        </record>
+
+
+
+
+
+
+
+
+    </data>
+</openerp>
+
+
+

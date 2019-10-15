@@ -1,0 +1,19 @@
+<openerp>
+    <data>
+    	<template id="allocation">
+            <t t-call="netaddiction_warehouse.header_top"/>
+                <t t-call="netaddiction_warehouse.top_menu">
+                    <t t-set="top_title" t-value="'ALLOCA'"/>
+                </t>
+                <t t-call="netaddiction_warehouse.slide_menu"/>
+                <div id="content">
+		            <form id="barcode-form">
+                        <label for="barcode" id="label_barcode">BARCODE PRODOTTO</label>
+                        <input type="text" name="barcode" id="barcode" autocomplete="off" data-function="get_new_allocation"/>
+                        <input type="submit"  value="CERCA"/>
+                    </form>
+                    <div id="result"></div>
+		        </div>
+        </template>
+    </data>
+</openerp>

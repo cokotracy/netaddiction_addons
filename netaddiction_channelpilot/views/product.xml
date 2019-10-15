@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <record id="cp_product_normal_form_view" model="ir.ui.view">
+            <field name="name">netaddiction.cp.product.form</field>
+            <field name="model">product.product</field>
+            <field name="priority" eval="30"/>
+            <field name="inherit_id" ref="netaddiction_products.product_normal_form_view"/>
+            <field name="arch" type="xml">
+              <xpath expr="//div[@name='button_box']" position="inside">
+                    <button name="toggle_cp" type="object" string="CP" class="oe_stat_button" icon="fa-cloud-upload">
+                      <field name="channelpilot" widget="boolean_button"/>
+                    </button>
+
+                    <button name="toggle_cp_blacklist" type="object" string="CP Black" class="oe_stat_button" icon="fa-minus">
+                      <field name="channelpilot_blacklist" widget="boolean_button"/>
+                    </button>
+              </xpath>
+            </field>
+        </record>
+    </data>
+</openerp>

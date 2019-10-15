@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+
+        <template id="netaddiction_account_assets_backend" name="netaddiction_account_assets_backend" inherit_id="web.assets_backend">
+            <xpath expr="." position="inside">
+                <script type="text/javascript" src="/netaddiction_account/static/src/js/vatregister.js"/>
+            </xpath>
+        </template>
+
+        <record id="open_vat_register" model="ir.actions.client">
+            <field name="name">Registro Corrispettivi</field>
+            <field name="tag">netaddiction_warehouse.vatregister</field>
+        </record>
+
+        <menuitem action="open_vat_register" id="netaddiction_menu_registro_corrispettivi" parent="account.menu_finance_receivables" sequence="10" name="Registro Corrispettivi"/>
+
+    </data>
+</openerp>

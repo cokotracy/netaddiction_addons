@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+        <record model="ir.ui.view" id="groupon_manifest">
+            <field name="name">netaddiction.groupon.manifest.form</field>
+            <field name="model">netaddiction.manifest</field>
+            <field name="inherit_id" ref="netaddiction_warehouse.netaddiction_warehouse_manifest_form"/>
+            <field name="groups_id" eval="[(4, ref('base.group_system'))]"/>
+            <field name="arch" type="xml">
+                <button name="create_manifest" position="after">
+                    <button name="create_manifest_groupon" class="btn-primary" type="object" string="Crea Manifest Groupon" />
+                </button>
+            </field>
+        </record>
+    </data>
+</openerp>

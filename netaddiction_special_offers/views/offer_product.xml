@@ -1,0 +1,304 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <record id="offer_product_normal_form_view" model="ir.ui.view">
+            <field name="name">netaddiction.offer_product.product.form</field>
+            <field name="model">product.product</field>
+            <field name="priority" eval="30"/>
+            <field name="inherit_id" ref="netaddiction_products.product_normal_form_view"/>
+            <field name="arch" type="xml">
+            <xpath expr="//page[@name='vendor_netaddiction']" position='after'>  
+            <page string="Offerte" name="offers_netaddiction">
+
+                    
+                       
+
+
+
+                        <group  name="conditions" colspan="2" >
+                            <group name="loc_left" class="oe_left" col="2">
+                                <!-- <field name="fake_price"/>  -->
+                               <field name="offer_price"/>
+                             
+                                
+                            </group>
+                            
+                         </group>
+                        
+             
+
+                     <h1 >Lista Offerte</h1>
+                     <br/>
+                      <h2>Offerte Catalogo</h2>
+                                <field name="offer_catalog_lines" mode="tree,kanban" >
+                             
+                                  <tree string="Offer Catalog Line" editable="bottom">
+                                       <field name="offer_catalog_id" attrs="{'readonly': 1}"/>
+                                     <field name="qty_max_buyable" attrs="{'readonly': 1}"/>
+                                      <field name="qty_limit" attrs="{'readonly': 1}"/>
+                                       <field name="qty_min" attrs="{'readonly': 1}"/>
+                                        <field name="offer_type" attrs="{'readonly': 1}" />
+                                        <field name="fixed_price" attrs="{'invisible':[('offer_type', '!=', 1)]}"/>
+                                       <field name="percent_discount" attrs="{'invisible':[('offer_type', '!=', 2)]}" />
+                                <field name="qty_selled" attrs="{'readonly': 1}"/>
+                                <field name="priority" attrs="{'readonly': 1}"/>
+                                 
+                                </tree>
+                              </field>
+                              <br/>
+                              <br/>
+                              <br/>
+                             <h2>Offerte Carrello</h2>
+                            <field name="offer_cart_lines" mode="tree,kanban" >
+
+                                  <tree string="Offer Cart Line" editable="bottom">
+                                       <field name="offer_cart_id" attrs="{'readonly': 1}"/>
+                                     <field name="qty_max_buyable" attrs="{'readonly': 1}"/>
+                                      <field name="qty_limit" attrs="{'readonly': 1}"/>
+                                      
+                                        <field name="offer_type" attrs="{'readonly': 1}" />
+                                        
+                                <field name="qty_selled" attrs="{'readonly': 1}"/>
+                                <field name="priority" attrs="{'readonly': 1}"/>
+                                 
+                                </tree>
+                              </field>
+                         </page> 
+                        <page string="Bonus">
+                          <br/>
+                          <br/>
+                          <h2>Offerte in cui il prodotto è Bonus</h2>
+                          <br/>
+                       <field name="offer_bonus_lines" mode="tree,kanban" >
+
+                                  <tree string="Offer Bonus Line" editable="bottom">
+                                     
+                                     <field name="bonus_offer_id" attrs="{'readonly': 1}"/>
+                                     
+                                </tree>
+                              </field>
+                              <br/>
+                              <br/>
+                          <h2>Offerte in cui il prodotto ha dei Bonus</h2>
+                          <br/>
+                         <field name="offer_with_bonus_lines" mode="tree,kanban" >
+
+                                  <tree string="Offer with Bonus Line" editable="bottom">
+                                     
+                                     <field name="bonus_offer_id" attrs="{'readonly': 1}"/>
+                                     
+                                </tree>
+                              </field>
+
+                    </page>
+                    <page string="Codici">
+                      <br/>
+                             <h2>Codici</h2>
+                      <field name="code_ids" mode="tree,kanban" >
+
+                                  <tree string="Codici" editable="bottom">
+                                     <field name="name" attrs="{'readonly': 1}"/>
+
+                                     
+                                 
+                                </tree>
+                              </field>
+                    </page>
+                </xpath> 
+
+
+            </field>
+            </record>
+
+
+<record model="ir.ui.view" id="netaddiction_view_order_line">
+            <field name="name">netaddiction.sale.order.line</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale.view_order_form"/>
+            <field name="arch" type="xml">
+<!--                 <xpath expr="//notebook/page/field[@name='order_line']/tree/field[@name='name']"
+                   position="replace">  
+
+                </xpath>  -->
+
+                <xpath expr="//notebook/page/field[@name='order_line']/tree/field[@name='price_subtotal']"
+                    position="before">    
+                   <!--  <field name="offer_price_unit" string="Prz.Off"/>   -->  
+                    <field name="offer_type" />    
+                    <field name="fixed_price" /> 
+                    <field name="percent_discount" string="% sconto"/> 
+                    <field name="offer_name" />    
+                    <field name="offer_author_id" /> 
+                    <field name="offer_voucher_history" attrs="{'invisible': True}"/>
+   
+                </xpath> 
+
+                <xpath expr="//notebook/page/field[@name='order_line']/tree/field[@name='price_subtotal']"
+                    position="after">    
+                    <field name="price_total"  />   
+                    <field name="negate_offer"  />    
+                </xpath> 
+
+
+          </field>
+        </record>
+        
+         <record model="ir.ui.view" id="netaddiction_view_order_cart_offers">
+            <field name="name">netaddiction.sale.order.cartoffers</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale.view_order_form"/>
+            <field name="arch" type="xml">
+
+
+
+
+              <xpath expr="//notebook/page"
+                    position="after">    
+                    <page string="Offerte">
+                                                    <br/>
+                             <h2>Offerte Carrello</h2>
+                      <field name="offers_cart" mode="tree,kanban" >
+
+                                  <tree string="Offer Cart Line" editable="bottom">
+                                     <field name="product_id" attrs="{'readonly': 1}"/>
+                                     <field name="offer_type" attrs="{'readonly': 1}"/>
+                                     <field name="qty" attrs="{'readonly': 1}"/>
+                                     <field name="offer_name" attrs="{'readonly': 1}" />
+                                    <field name="offer_author_id" attrs="{'readonly': 1}"/>
+                                    <field name="n" attrs="{'readonly': 1}"/>
+                                    <field name="m" attrs="{'readonly': 1}"/>
+                                    <field name="bundle_price" attrs="{'readonly': 1}"/>
+                                    <field name="n_price" attrs="{'readonly': 1}"/>
+                                 
+                                </tree>
+                              </field>
+                              <br/>
+                              <br/>
+                             <h2>Offerte Voucher</h2>
+
+                               <field name="offers_voucher" mode="tree,kanban" >
+
+                                  <tree string="Offer Voucher Line" editable="bottom">
+                                     <field name="product_id" attrs="{'readonly': 1}"/>
+                                     <field name="offer_type" attrs="{'readonly': 1}"/>
+                                     <field name="qty" attrs="{'readonly': 1}"/>
+                                     <field name="offer_name" attrs="{'readonly': 1}" />
+                                    <field name="offer_author_id" attrs="{'readonly': 1}"/>
+
+                                    <field name="fixed_discount" attrs="{'readonly': 1}"/>
+                                    <field name="percent_discount" attrs="{'readonly': 1}"/>
+                                 
+                                </tree>
+                              </field>
+                              <br/>
+                              <br/>
+                              <h2>Spedizioni gratis</h2>
+                              <field name="free_ship_prod" mode="tree,kanban" />
+
+                    </page>
+                    <page string="Codici">
+
+                                                    <br/>
+                             <h2>Codici</h2>
+                      <field name="code_ids" mode="tree,kanban" >
+
+                                  <tree string="Codici" editable="bottom">
+                                     <field name="code" attrs="{'readonly': 1}"/>
+                                     <field name="bonus_id" attrs="{'readonly': 1}"/>
+                                    <field name="sent" attrs="{'readonly': 1}"/>
+                                     <field name="sent_by" attrs="{'readonly': 1}"/>
+                                     <field name="date_sent" attrs="{'readonly': 1}"/>
+                                     
+                                 
+                                </tree>
+                              </field>
+                    </page>
+                </xpath> 
+
+              </field>
+        </record>
+
+               <record model="ir.ui.view" id="netaddiction_order_specialoffer_cart_history_tree" >
+            <field name="name">netaddiction.order.specialoffer.cart.history_tree</field>
+            <field name="model">netaddiction.order.specialoffer.cart.history</field>
+            <field name="arch" type="xml">
+                <tree name="special_offers_cart list" editable="bottom">
+
+
+
+                       <field name="product_id" attrs="{'readonly': 1}"/>
+                                     <field name="offer_type" attrs="{'readonly': 1}"/>
+                                     <field name="qty" attrs="{'readonly': 1}"/>
+                                     <field name="offer_name" attrs="{'readonly': 1}" />
+                                    <field name="offer_author_id" attrs="{'readonly': 1}"/>
+                                    <field name="n" attrs="{'readonly': 1}"/>
+                                    <field name="m" attrs="{'readonly': 1}"/>
+                                    <field name="bundle_price" attrs="{'readonly': 1}"/>
+                                    <field name="n_price" attrs="{'readonly': 1}"/>
+                </tree>
+            </field>
+        </record>
+
+
+        <record model="ir.ui.view" id="netaddiction_order_specialoffer_voucher_history_tree" >
+            <field name="name">netaddiction.order.specialoffer.voucher.history_tree</field>
+            <field name="model">netaddiction.order.specialoffer.voucher.history</field>
+            <field name="arch" type="xml">
+                <tree name="special_offers_voucher list" editable="bottom">
+
+
+
+                       <field name="product_id" attrs="{'readonly': 1}"/>
+                                       <field name="product_id" attrs="{'readonly': 1}"/>
+                                     <field name="offer_type" attrs="{'readonly': 1}"/>
+                                     <field name="qty" attrs="{'readonly': 1}"/>
+                                     <field name="offer_name" attrs="{'readonly': 1}" />
+                                    <field name="offer_author_id" attrs="{'readonly': 1}"/>
+
+                                    <field name="fixed_discount" attrs="{'readonly': 1}"/>
+                                    <field name="percent_discount" attrs="{'readonly': 1}"/>
+                </tree>
+            </field>
+        </record>
+
+
+
+
+
+  <record model="ir.ui.view" id="netaddiction_view_order_test">
+            <field name="name">netaddiction.sale.order.test</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale.view_order_form"/>
+            <field name="arch" type="xml">
+
+              <xpath expr="//field[@name='name']"
+                    position="after">  
+                    <group>  
+                    <button  class="oe_highlight" name="extract_cart_offers" 
+                                string="Applica Offerte Carrello" type="object" states="draft"/>
+                    <button  class="oe_highlight" name="reset_cart" 
+                                string="Reset Offerte Carrello" type="object" states="draft"/>    
+                    </group>          
+                </xpath> 
+
+
+                <xpath expr="//notebook"
+                    position="before"> 
+                    <group class="oe_left" col="2">
+                          <group> 
+                            <field name="voucher_string" attrs="{'readonly': [('state', 'in', ('done','cancel','sale','partial_done','sent','problem'))]}"/>
+                        </group>
+                     <group> 
+                            <button  class="oe_highlight" name="apply_voucher_backend" 
+                                string="Applica Voucher" type="object" states="draft" />
+                            <button  class="oe_highlight" name="reset_voucher" 
+                                string="Reset Voucher" type="object" states="draft" />
+                      </group>
+                    </group>
+
+                </xpath>  
+
+              </field>
+        </record>
+    </data>
+</openerp>

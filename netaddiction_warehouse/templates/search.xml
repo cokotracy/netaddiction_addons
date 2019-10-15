@@ -1,0 +1,39 @@
+<openerp>
+    <data>
+        <template id="search_from_product">
+            <t t-call="netaddiction_warehouse.header_top"/>
+                <t t-call="netaddiction_warehouse.top_menu">
+                    <t t-set="top_title" t-value="'CERCA X PRODOTTO'"/>
+                </t>
+                <t t-call="netaddiction_warehouse.slide_menu"/>
+                <div id="content">
+                    <form id="barcode-form">
+                        <label for="barcode" id="label_barcode">BARCODE PRODOTTO</label>
+                        <input type="text" name="barcode" id="barcode" autocomplete="off" data-function="get_allocation"/>
+                        <input type="submit" value="CERCA"/>
+                    </form>
+                    <div id="result"></div>
+                </div>
+                <div id="bottom_footer"><a t-attf-href="/inventory/app/search/from_shelf" id="bottom_sub"><input type="submit" value="SCAFFALE"/></a></div>
+            
+        </template>
+
+
+        <template id="search_from_shelf">
+            <t t-call="netaddiction_warehouse.header_top"/>
+                <t t-call="netaddiction_warehouse.top_menu">
+                    <t t-set="top_title" t-value="'CERCA X SCAFFALE'"/>
+                </t>
+                <t t-call="netaddiction_warehouse.slide_menu"/>
+                <div id="content">
+                    <form id="barcode-form">
+                        <label for="barcode" id="label_barcode">BARCODE SCAFFALE</label>
+                        <input type="text" name="barcode" id="barcode" autocomplete="off" data-function="get_products"/>
+                        <input type="submit"  value="CERCA"/>
+                    </form>
+                    <div id="result"></div>
+                </div>
+                <div id="bottom_footer"><a t-attf-href="/inventory/app/search/from_product" id="bottom_sub"><input type="submit" value="PRODOTTO"/></a></div>
+        </template>
+    </data>
+</openerp>

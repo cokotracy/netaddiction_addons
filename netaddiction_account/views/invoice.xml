@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+    	<record model="ir.ui.view" id="netaddiction_invoice">
+            <field name="name">netaddiction.invoice</field>
+            <field name="model">account.invoice</field>
+            <field name="inherit_id" ref="account.invoice_form"/>
+            <field name="arch" type="xml">
+                <button name="action_invoice_sent" position="replace">
+                    <button name="complete_invoice_administration" type="object" string="Inviata" attrs="{'invisible':[('sent','=',True)]}" class="oe_highlight" groups="base.group_user"/>
+                </button>
+            	<field name="date_invoice" position="before">
+                    <field name="is_customer_invoice" attr="{'invisible':[('journal_id', '=', 1)]}" string="Fattura Cliente"/>
+            	</field>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="netaddiction_invoice_form">
+            <field name="name">netaddiction.invoice.form</field>
+            <field name="model">account.invoice</field>
+            <field name="inherit_id" ref="account.invoice_supplier_form"/>
+            <field name="arch" type="xml">
+                <field name="partner_id" position="replace">
+                    <field name="partner_id" context="{'search_default_supplier':1, 'default_supplier':1, 'default_customer':0,'default_parent_id' : False}" domain="[('supplier','=',True),('parent_id','=',False)]"/>
+                </field>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="netaddiction_purchase_account_invoice">
+            <field name="name">netaddiction.puchase.account.invoice</field>
+            <field name="model">account.invoice</field>
+            <field name="inherit_id" ref="purchase.view_invoice_supplier_purchase_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='purchase_id']" position="after">
+                    <field name="choose_wave_id" />
+                    <field name="create_credit_note"/>
+                </xpath>
+            </field>
+        </record>
+
+        <!--Search-->
+        <record model="ir.ui.view" id="netaddiction_invoice_customer_search">
+            <field name="name">netaddiction.invoice.customer.search</field>
+            <field name="model">account.invoice</field>
+            <field name="inherit_id" ref="account.view_account_invoice_filter"/>
+            <field name="arch" type="xml">
+                 <filter name="refunds" position="after">
+                    <filter name="real_invoice" string="Fatture" domain="[('is_customer_invoice','=',1),('type','in',['out_invoice','in_invoice'])]"/>
+                    <filter name="invoice_ric" string="Ricevute" domain="[('is_customer_invoice','!=',1),('type','in',['out_invoice','in_invoice'])]"/>
+                  
+                 </filter>
+                 <filter name="invoices" position="replace"/>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="netaddiction_invoice_search">
+            <field name="name">netaddiction.invoice.search</field>
+            <field name="model">account.invoice</field>
+            <field name="inherit_id" ref="account.view_account_invoice_filter"/>
+            <field name="arch" type="xml">
+                <search position="replace">
+                    <search>
+                        <filter name="out_invoice" string="Clienti" domain="[('type','=','out_invoice')]"/>
+                        <filter name="out_refund" string="Note di Credito Clienti" domain="[('type','=','out_refund')]"/>
+                        <filter name="in_invoice" string="Fornitori" domain="[('type','=','in_invoice')]"/>
+                        <filter name="in_refund" string="Note di Credito Fornitori" domain="[('type','=','out_refund')]"/>
+                        <separator/>
+                        <filter name="draft" string="Bozze" domain="[('state','=','draft')]"/>
+                        <filter name="open" string="Aperte" domain="[('state','=','open')]"/>
+                        <filter name="paid" string="Pagate" domain="[('state','=','paid')]"/>
+                        <filter name="cancel" string="Annullate" domain="[('state','=','cancel')]"/>
+                        <group expand="0" string="Group By">
+                            <filter name="group_by_partner_id" string="Partner" context="{'group_by':'partner_id'}"/>
+                            <filter name="status" string="Stato" context="{'group_by':'state'}"/>
+                            <separator/>
+                        </group>
+                        <field name="partner_id" operator="child_of"/>
+                        <field name="date" string="Period"/>
+                    </search>
+                </search>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="netaddiction_invoice_pivot">
+            <field name="name">netaddiction.invoice.pivot</field>
+            <field name="model">account.invoice</field>
+            <field name="inherit_id" ref="account.view_invoice_pivot"/>
+            <field name="arch" type="xml">
+                <pivot position="replace">
+                    <pivot string="Invoices" display_quantity="true">
+                        <field name="date_invoice" interval="month" type="row"/>
+                        <field name="amount_total_signed" type="measure"/>
+                        <field name="amount_tax" type="measure"/>
+                    </pivot>
+                </pivot>
+            </field>
+        </record>
+
+
+        <record model="ir.ui.view" id="netaddiction_search_payments">
+            <field name="name">netaddiction.search.payments</field>
+            <field name="model">account.payment</field>
+            <field name="inherit_id" ref="account.view_account_payment_search"/>
+            <field name="arch" type="xml">
+                <search position="replace">
+                    <search>
+                        <field name="name" filter_domain="['|', ('name','ilike',self), ('communication','ilike',self)]" string="Description"/>
+                        <separator/>
+                        <field name="partner_id"/>
+                        <field name="journal_id"/>
+                        <field name="company_id" groups="base.group_multi_company"/>
+                        <filter string="Debiti" domain="[('payment_type','=','outbound')]"/>
+                        <filter string="Crediti" domain="[('payment_type','=','inbound')]"/>
+                        <filter string="Trasferimenti" domain="[('payment_type','=','transfer')]"/>
+                        <separator/>
+                        <filter string="Ordini Completati" domain="[('order_id.state', '=', 'done')]"/>
+                        <separator/>
+                        <filter string="BRT" domain="[('order_id.carrier_id','=',2)]"/>
+                        <filter string="SDA" domain="[('order_id.carrier_id','=',3)]"/>
+                        <separator/>
+                        <filter string="Bozza" domain="[('state','=','draft')]" name="state_draft"/>
+                        <filter string="Emesso" domain="[('state','=','posted')]" name="state_posted"/>
+                        <filter string="Inviato" domain="[('state','=','sent')]" name="state_sent"/>
+                        <filter string="Riconciliato" domain="[('state','=','reconciled')]"/>
+                        <separator/>
+                        <filter string="Partner" domain="[]" context="{'group_by': 'partner_id'}"/>
+                        <filter string="Journal" domain="[]" context="{'group_by': 'journal_id'}"/>
+                        <filter string="Payment Method" domain="[]" context="{'group_by': 'payment_method_id'}"/>
+                        <filter string="State" domain="[]" context="{'group_by': 'state'}"/>
+                        <filter string="Currency" domain="[]" context="{'group_by': 'currency_id'}" groups="base.group_multi_currency"/>
+                        <filter string="Company" domain="[]" context="{'group_by': 'company_id'}" groups="base.group_multi_company"/>
+                    </search>
+                </search>
+            </field>
+        </record>
+    </data>
+</openerp>

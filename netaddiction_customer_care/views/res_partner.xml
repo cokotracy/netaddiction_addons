@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data> 
+        <record model="ir.ui.view" id="netaddiction_view_customer_issue">
+            <field name="name">netaddiction.view.customer.issue</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="base.view_partner_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//div[@name='button_box']" position="inside" >
+                   <button  class="oe_inline oe_stat_button" name="new_customer_issue" 
+                        string="Crea Problematica" type="object" icon="fa-plus" 
+                        attrs="{'invisible' : [('supplier','=',True)]}"/> 
+                </xpath>
+            </field>
+        </record>
+    </data>
+</openerp>

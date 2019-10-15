@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<openerp>
+
+<data>
+
+<template id="assets_backend" name="netaddiction_css_doozy assets" inherit_id="web.assets_backend">
+
+<xpath expr="." position="inside">
+
+<link rel="stylesheet" href="/netaddiction_doozy/static/src/css/netaddiction_Style.css"/>
+<script type="text/javascript" src="/netaddiction_doozy/static/src/js/net_fields.js"></script>
+
+</xpath>
+
+</template>
+
+</data>
+
+</openerp>

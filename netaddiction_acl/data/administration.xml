@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data noupdate="0">
+        <record model="ir.module.category" id="netaddiction_administration_group">
+            <field name="name">Netaddiction Amministrazione</field>
+            <field name="description">Quelli che controllano le cose e fanno i conti</field>
+            <field name="sequence">80</field>
+        </record>
+
+        <record id="netaddiction_administration_user_manager" model="res.groups">
+            <field name="name">Utente Manager</field>
+            <field name="category_id" ref="netaddiction_administration_group"/>
+            <field name="implied_ids" eval="[(4, ref('base.group_user')),(4, ref('netaddiction_sale_user_plus')),(4, ref('netaddiction_purchase_user')),
+                (4, ref('netaddiction_inventory_user')),(4, ref('account.group_account_user'))]"/>
+        </record>
+
+        <record id="netaddiction_administration_contribution" model="res.groups">
+            <field name="name">Gestisci i Contributi</field>
+            <field name="category_id" ref="netaddiction_sale_optional_group"/>
+        </record>
+
+        <record id="base.menu_sale_report" model="ir.ui.menu">
+            <field name="groups_id" eval="[(4, ref('netaddiction_administration_user_manager'))]"/>
+        </record>
+        <record id="base.purchase_report" model="ir.ui.menu">
+            <field name="groups_id" eval="[(4, ref('netaddiction_administration_user_manager'))]"/>
+        </record>
+
+        <record id="account.menu_finance_receivables" model="ir.ui.menu">
+            <field name="groups_id" eval="[(4, ref('netaddiction_administration_user_manager'))]"/>
+        </record>
+        <record id="account.menu_finance_payables" model="ir.ui.menu">
+            <field name="groups_id" eval="[(4, ref('netaddiction_administration_user_manager'))]"/>
+        </record>
+        <record id="sale.menu_sale_invoicing" model="ir.ui.menu">
+            <field name="groups_id" eval="[(4, ref('netaddiction_administration_user_manager'))]"/>
+        </record>
+        <record id="netaddiction_account.menu_netaddiction_reconciliation" model="ir.ui.menu">
+            <field name="groups_id" eval="[(4, ref('netaddiction_administration_user_manager'))]"/>
+        </record>
+
+        <record id="account.menu_finance" model="ir.ui.menu">
+            <field name="groups_id" eval="[(4, ref('netaddiction_administration_user_manager')),(4, ref('netaddiction_administration_contribution'))]"/>
+        </record>
+
+        <record id="netaddiction_contribution_access" model="ir.model.access">
+            <field name="name">Contributi</field>
+            <field name="model_id" search="[('model','=','netaddiction.contribution')]" model="ir.model"/>
+            <field name="group_id" ref="netaddiction_administration_contribution"/>
+            <field name="perm_read" eval="1"/>
+            <field name="perm_create" eval="1"/>
+            <field name="perm_write" eval="1"/>
+            <field name="perm_unlink" eval="1"/>
+        </record>
+
+        <record id="netaddiction_reconciliation_access" model="ir.model.access">
+            <field name="name">Reconciliation orders</field>
+            <field name="model_id" search="[('model','=','netaddiction.reconciliation.orders')]" model="ir.model"/>
+            <field name="group_id" ref="netaddiction_administration_user_manager"/>
+            <field name="perm_read" eval="1"/>
+            <field name="perm_create" eval="1"/>
+            <field name="perm_write" eval="1"/>
+            <field name="perm_unlink" eval="0"/>
+        </record>
+
+        <!--AGGIUNGE FUNZIONALITA PLUS PER GLI ACQUISTI MA ELIMINA ALCUNI MENU INDISCRETI-->
+        <record id="netaddiction_administration_access_order" model="ir.model.access">
+            <field name="name">Purchase Order</field>
+            <field name="model_id" search="[('model','=','purchase.order')]" model="ir.model"/>
+            <field name="group_id" ref="netaddiction_administration_user_manager"/>
+            <field name="perm_read" eval="1"/>
+            <field name="perm_create" eval="1"/>
+            <field name="perm_write" eval="1"/>
+            <field name="perm_unlink" eval="0"/>
+        </record>
+        <record id="netaddiction_administration_access_order_line" model="ir.model.access">
+            <field name="name">Purchase Order Line</field>
+            <field name="model_id" search="[('model','=','purchase.order.line')]" model="ir.model"/>
+            <field name="group_id" ref="netaddiction_administration_user_manager"/>
+            <field name="perm_read" eval="1"/>
+            <field name="perm_create" eval="1"/>
+            <field name="perm_write" eval="1"/>
+            <field name="perm_unlink" eval="0"/>
+        </record>
+        <record id="netaddiction_administration_access_picking" model="ir.model.access">
+            <field name="name">Stock Picking</field>
+            <field name="model_id" search="[('model','=','stock.picking')]" model="ir.model"/>
+            <field name="group_id" ref="netaddiction_administration_user_manager"/>
+            <field name="perm_read" eval="1"/>
+            <field name="perm_create" eval="1"/>
+            <field name="perm_write" eval="1"/>
+            <field name="perm_unlink" eval="0"/>
+        </record>
+        <record id="netaddiction_administration_access_move" model="ir.model.access">
+            <field name="name">Stock Move</field>
+            <field name="model_id" search="[('model','=','stock.move')]" model="ir.model"/>
+            <field name="group_id" ref="netaddiction_administration_user_manager"/>
+            <field name="perm_read" eval="1"/>
+            <field name="perm_create" eval="1"/>
+            <field name="perm_write" eval="1"/>
+            <field name="perm_unlink" eval="0"/>
+        </record>
+        <record id="netaddiction_administration_access_invoice" model="ir.model.access">
+            <field name="name">Account Invoice</field>
+            <field name="model_id" search="[('model','=','account.invoice')]" model="ir.model"/>
+            <field name="group_id" ref="netaddiction_administration_user_manager"/>
+            <field name="perm_read" eval="1"/>
+            <field name="perm_create" eval="0"/>
+            <field name="perm_write" eval="0"/>
+            <field name="perm_unlink" eval="0"/>
+        </record>
+        <record id="netaddiction_administration_access_invoice_tax" model="ir.model.access">
+            <field name="name">Account Invoice Tax</field>
+            <field name="model_id" search="[('model','=','account.invoice.tax')]" model="ir.model"/>
+            <field name="group_id" ref="netaddiction_administration_user_manager"/>
+            <field name="perm_read" eval="1"/>
+            <field name="perm_create" eval="0"/>
+            <field name="perm_write" eval="0"/>
+            <field name="perm_unlink" eval="0"/>
+        </record>
+        <record id="netaddiction_administration_access_partner" model="ir.model.access">
+            <field name="name">Res Partner</field>
+            <field name="model_id" search="[('model','=','res.partner')]" model="ir.model"/>
+            <field name="group_id" ref="netaddiction_administration_user_manager"/>
+            <field name="perm_read" eval="1"/>
+            <field name="perm_create" eval="1"/>
+            <field name="perm_write" eval="1"/>
+            <field name="perm_unlink" eval="0"/>
+        </record>
+        <record id="netaddiction_administration_access_oper_settings" model="ir.model.access">
+            <field name="name">Operations settings</field>
+            <field name="model_id" search="[('model','=','netaddiction.warehouse.operations.settings')]" model="ir.model"/>
+            <field name="group_id" ref="netaddiction_administration_user_manager"/>
+            <field name="perm_read" eval="1"/>
+            <field name="perm_create" eval="0"/>
+            <field name="perm_write" eval="0"/>
+            <field name="perm_unlink" eval="0"/>
+        </record>
+        <record id="netaddiction_administration_access_wave" model="ir.model.access">
+            <field name="name">Stock Picking Wave</field>
+            <field name="model_id" search="[('model','=','stock.picking.wave')]" model="ir.model"/>
+            <field name="group_id" ref="netaddiction_administration_user_manager"/>
+            <field name="perm_read" eval="1"/>
+            <field name="perm_create" eval="1"/>
+            <field name="perm_write" eval="1"/>
+            <field name="perm_unlink" eval="0"/>
+        </record>
+    </data>
+</openerp>

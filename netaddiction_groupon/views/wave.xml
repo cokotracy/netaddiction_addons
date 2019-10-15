@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+        <record id="view_groupon_wave_tree" model="ir.ui.view">
+            <field name="name">Groupon Wave Tree</field>
+            <field name="model">groupon.pickup.wave</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="name"/>
+                    <field name="create_date"/>
+                    <field name="create_uid"/>
+                    <field name="state"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="view_groupon_wave_form" model="ir.ui.view">
+            <field name="name">Groupon Wave Form</field>
+            <field name="model">groupon.pickup.wave</field>
+            <field name="arch" type="xml">
+                <form string="Lista Prelievo" class="oe_form_configuration">
+                    <header>
+                        <button string="Chiudi" type="object" name="close" attrs="{'invisible': [('state', '!=', 'draft')]}"/>
+                        <button string="LDV" type="object" name="get_ldv" attrs="{'invisible': [('state', '=', 'draft')]}"/>
+                        <button string="Tracking File" type="object" name="generate_tracking" attrs="{'invisible': [('state', '=', 'draft')]}"/>
+                        <field name="state" widget="statusbar" statusbar_visible="draft,done"/>
+                    </header>
+                    <sheet>
+                        <group string="Lista Prelievo">
+                            <field name="name"/>
+                            <field name="create_date" readonly="1"/>
+                            <field name="create_uid" readonly="1"/>
+                            <field name="tracking_file" readonly="1"/>
+                        </group>
+                        <group string="Ordini">
+                            <field name="order_ids" nolabel="1"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+        
+    </data>
+</openerp>

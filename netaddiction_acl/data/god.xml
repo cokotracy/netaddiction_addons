@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data noupdate="0">
+    	<record model="ir.module.category" id="netaddiction_god_group">
+            <field name="name">Netaddiction Admin</field>
+            <field name="description">Dio</field>
+            <field name="sequence">80</field>
+        </record>
+
+        <record id="netaddiction_god" model="res.groups">
+            <field name="name">Dio</field>
+            <field name="category_id" ref="netaddiction_god_group"/>
+            <field name="implied_ids" eval="[(4, ref('base.group_system')),
+            	(4, ref('netaddiction_products_data_entry_user_manager')),
+                (4, ref('netaddiction_inventory_user_manager')),(4,ref('netaddiction_purchase_user_manager')),
+                (4,ref('netaddiction_sale_user_manager'))]"/>
+        </record>
+
+        <record id="netaddiction_warehouse.netaddiction_manifest_settings_menu" model="ir.ui.menu">
+            <field name="groups_id" eval="[(4, ref('netaddiction_god'))]"/>
+        </record>
+        <record id="stock.menu_stock_general_settings" model="ir.ui.menu">
+            <field name="groups_id" eval="[(4, ref('netaddiction_god'))]"/>
+        </record>
+        <record id="base.menu_sale_config" model="ir.ui.menu">
+            <field name="groups_id" eval="[(4,ref('netaddiction_god'))]"/>
+        </record>
+
+        
+
+        <record id="netaddiction_god_manifest_settings" model="ir.model.access">
+            <field name="name">netaddiction manifest settings</field>
+            <field name="model_id" search="[('model','=','netaddiction.manifest.settings')]" model="ir.model"/>
+            <field name="group_id" ref="netaddiction_god"/>
+            <field name="perm_read" eval="1"/>
+            <field name="perm_create" eval="1"/>
+            <field name="perm_write" eval="1"/>
+            <field name="perm_unlink" eval="1"/>
+        </record>
+        <record id="netaddiction_god_warehouse_operations_settings" model="ir.model.access">
+            <field name="name">operations settings</field>
+            <field name="model_id" search="[('model','=','netaddiction.warehouse.operations.settings')]" model="ir.model"/>
+            <field name="group_id" ref="netaddiction_god"/>
+            <field name="perm_read" eval="1"/>
+            <field name="perm_create" eval="1"/>
+            <field name="perm_write" eval="1"/>
+            <field name="perm_unlink" eval="1"/>
+        </record>
+    </data>
+</openerp>

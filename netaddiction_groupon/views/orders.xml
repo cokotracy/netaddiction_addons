@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+        
+
+<record model="ir.ui.view" id="netaddiction_groupon_order_tree">
+            <field name="name">view.netaddiction_groupon_order_tree</field>
+            <field name="model">netaddiction.groupon.sale.order</field>
+            <field name="arch" type="xml">
+                <tree name="groupon_order list">
+                    <field name="name"/>
+                    <field name="product_id"/>
+                    <field name="partner_shipping_id"/>
+                    <field name="groupon_number"/>
+                    <field name="groupon_order_date"/>
+                    <field name="groupon_cost"/>
+                    <field name="groupon_sell_price"/>
+                    <field name="state"/>
+                </tree>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="netaddiction_special_offers_catalog_form">
+            <field name="name">view.netaddiction_groupon_order_form</field>
+            <field name="model">netaddiction.groupon.sale.order</field>
+            <field name="arch" type="xml">
+                <form string="groupon_order Form">
+                     <header>
+                        <button string="Chiudi" type="object" name="close" attrs="{'invisible': [('state', '!=', 'draft')]}"/>
+                        <button string="Crea Spedizione" type="object" name="button_create_shipping" attrs="{'invisible': [('state', '!=', 'problem')]}"/>
+                        <field name="state" widget="statusbar" statusbar_visible="draft,problem,sent,cancel"/>
+                    </header>
+                    <sheet>
+                   
+                        <h1><field name="name"/></h1>
+                        <group name="so_cat" colspan="4">
+                            <group name="loc_left" class="oe_left" col="2">
+                                <field name="partner_shipping_id"/>
+                                <field name="partner_invoice_id"/>
+                                <field name="product_id"/>
+                                <field name="quantity"/>
+                                <field name="wave_id"/>
+                             
+                            
+                            </group>
+                             <group name="groupon" class="oe_right" col="2">
+                                <field name="groupon_order_date" widget="datetime"/>
+                                <field name="groupon_number"/>
+                                <field name="groupon_cost"/>
+                                <field name="groupon_sell_price"/>
+                                
+                            </group>
+                        </group>
+                        <group string="Spedizioni" name="shipping_ids">
+                            <field name="picking_ids" nolabel="1" readonly="1">
+                                <tree>
+                                    <field name="name"/>
+                                    <field name="min_date"/>
+                                    <field name="picking_type_id"/>
+                                    <field name="state"/>
+                                    <field name="carrier_id"/>
+                                    <field name="delivery_barcode"/>
+                                </tree>
+                            </field>
+                        </group>
+                       
+                     </sheet>
+                </form>
+            </field>
+        </record>
+
+
+<record id="view_netaddiction_Groupon_Register"
+                model="ir.ui.view">
+            <field name="name">netaddiction Groupon Register</field>
+            <field name="model">netaddiction.groupon.register</field>
+      <field name="arch" type="xml">
+                <form string="Inserisci file"
+                      class="oe_form_configuration">
+                    <sheet>
+
+                        <group string="Registra Ordini">
+                            <field name="csv_file" />
+
+                        </group>
+                        
+
+
+                        <group>
+                            <button string="Registra"
+                                    type="object"
+                                    name="execute"
+                                    class="oe_highlight"
+                                    />
+                        </group>
+
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+    </data>
+</openerp>

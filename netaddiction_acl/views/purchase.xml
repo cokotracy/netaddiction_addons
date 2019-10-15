@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+    	
+        <record id="netaddiction_acl_base_purchase_order_form" model="ir.ui.view">
+            <field name="name">netaddiction.acl.base.purchase.order.form</field>
+            <field name="model">purchase.order</field>
+            <field name="inherit_id" ref="purchase.purchase_order_form"/>
+            <field name="groups_id" eval="[(4, ref('netaddiction_purchase_user'))]"/>
+            <field name="arch" type="xml">
+                <header position="replace">
+                    <header>
+                        <field name="state" widget="statusbar" statusbar_visible="draft,sent,purchase,done" readonly="1"/>
+                    </header>
+                </header>
+                <button name="action_view_picking" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </button>
+                <button name="action_view_invoice" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </button>
+            </field>
+        </record>
+
+        <record id="netaddiction_acl_purchase_order_form" model="ir.ui.view">
+            <field name="name">netaddiction.acl.purchase.order.form</field>
+            <field name="model">purchase.order</field>
+            <field name="inherit_id" ref="netaddiction_acl_base_purchase_order_form"/>
+            <field name="groups_id" eval="[(4, ref('netaddiction_purchase_user_plus'))]"/>
+            <field name="arch" type="xml">
+                <field name="state" position="before">
+                    <button name="action_rfq_send" states="draft" string="Invia RFQ per Email" type="object" context="{'send_rfq':True}" class="oe_highlight"/>
+                    <button name="action_rfq_send" states="sent" string="Re-Invia RFQ per Email" type="object" context="{'send_rfq':True}"/>
+                    
+                    <button name="button_confirm" type="object" states="draft" string="Conferma Ordine" id="draft_confirm"/>
+                    <button name="button_confirm" type="object" states="sent" string="Conferma Ordine" class="oe_highlight" id="bid_confirm"/>
+                    <button name="button_approve" type="object" states="to approve" string="Approva Ordine" class="oe_highlight" groups="purchase.group_purchase_manager"/>
+                    <button name="action_rfq_send" states="purchase" string="Invia PO per Email" type="object" context="{'send_rfq':False}"/>
+                    
+                    <button name="button_draft" states="cancel" string="Metti in Bozza" type="object"/>
+                    <button name="button_cancel" states="draft,to approve,sent,purchase" string="Cancella" type="object"/>
+                </field>
+
+                <button name="action_view_picking" position="attributes">
+                    <attribute name="invisible">0</attribute>
+                </button>
+                <button name="action_view_invoice" position="attributes">
+                    <attribute name="invisible">0</attribute>
+                </button>
+
+                
+            </field>
+
+        </record>
+    </data>
+</openerp>

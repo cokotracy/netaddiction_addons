@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+    	<record id="netaddiction_order_line_purchase_price" model="ir.ui.view">
+            <field name="name">netaddiction.order.line.purchase.price</field>
+            <field name="model">sale.order</field>
+            <field name="priority" eval="30"/>
+            <field name="inherit_id" ref="sale.view_order_form"/>
+            <field name="arch" type="xml">
+    			 <xpath expr="//notebook/page/field[@name='order_line']/tree/field[@name='purchase_price']" position="replace">
+    			 	<field name="purchase_price_real"/>
+                    <field name="margin_new"/>
+    			 </xpath>
+                 <field name="margin" position="replace">
+                    <field name="margin_new"/>
+                </field>
+            </field>
+        </record>
+
+        <record id="netaddiction_order_tree" model="ir.ui.view">
+            <field name="name">netaddiction.order.tree</field>
+            <field name="model">sale.order</field>
+            <field name="priority" eval="30"/>
+            <field name="inherit_id" ref="sale.view_order_tree"/>
+            <field name="arch" type="xml">
+                <field name="user_id" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </field>
+                <field name="amount_total" position="after">
+                    <field name="margin_new"/>
+                    <field name="payment_method_id"/>
+                </field>
+                <field name="state" position="replace">
+                    <field name="state"/>
+                    <field name="is_b2b"/>
+                </field>
+
+                
+            </field>
+        </record>
+    </data>
+</openerp>

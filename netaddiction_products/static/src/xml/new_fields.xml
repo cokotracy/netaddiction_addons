@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<templates id="netaddiction_new_fields_templates" xml:space="preserve">
+    <t t-name="ExtraDataField">
+        <div class="oe_fextra_data_field">
+            <t t-if="! widget.get('effective_readonly')">
+                <input type="text"></input>
+            </t>
+            <t t-if="widget.get('effective_readonly')">
+                <t t-call="ExtraDataField_Table"/>
+            </t>
+        </div>
+    </t>
+    
+    <t t-name="ExtraDataField_Table">
+        <button type="button" class="btn btn-sm btn-primary oe_button get_extra_data">
+            <span>Recupera Extra Dati</span>
+        </button>
+        <div class="extra_data_table">
+            <table cellpadding="0" cellspacing="0" class="oe_form_group ">
+                <tbody>
+                    <t t-foreach="result" t-as="row">
+                        <tr class="oe_form_group_row">
+                            <td class="oe_form_group_cell oe_form_group_cell_label" colspan="1" width="1%">
+                                <label class="oe_form_label oe_align_right">
+                                    <t t-esc="row.key"/>
+                                </label>
+                            </td>
+
+                            <td class="oe_form_group_cell" colspan="1" width="99%">
+                                <t t-if="row.key == 'images'">
+                                    <div class="list_image">
+                                        <t t-foreach="row.value2" t-as="img">
+                                            <img t-attf-src="{{img}}" class="extra_data_img"/>
+                                        </t>
+                                    </div>
+                                </t>
+                                <t t-if="row.key != 'images'">
+                                    <t t-if="row.key == 'url_multiplayer_it'">
+                                        <b><a t-attf-href="{{row.value}}" target="_blank">Vai</a></b>
+                                    </t>
+                                    <t t-if="row.key != 'url_multiplayer_it'">
+                                        <t t-if="row.key == 'video_flv'">
+                                            <b><a t-attf-href="{{row.url_value}}" target="_blank">Vedi</a></b>
+                                        </t>
+
+                                        <t t-if="row.key != 'video_flv'">
+                                            <t t-if="row.key == 'file_url'">
+                                                <b><a t-attf-href="{{row.value}}" target="_blank">Vedi</a></b>
+                                            </t>
+                                            <t t-if="row.key != 'file_url'">
+                                                <t t-if="row.key == 'poster'">
+                                                    <img t-attf-src="{{row.value}}" class="extra_data_img"/>
+                                                </t>
+                                                <t t-if="row.key != 'poster'">
+                                                    <span><t t-esc="row.value"/></span>
+                                                </t>
+                                            </t>
+                                        </t>
+                                    </t>
+                                </t>
+                            </td>
+                        </tr>
+                    </t>
+                </tbody>
+            </table>
+        </div>
+    </t>
+
+    <t t-name="dialog_new_images">
+        <div class="modal-body">
+            <t t-foreach="imgs" t-as="img">
+                <img t-attf-src="{{img}}" class="big_extra_data_img confirm_image"/><br/><br/>
+            </t>
+        </div>
+    </t>
+
+    <t t-name="dialog_error_extra_data">
+        <div class="modal-body">
+            <t t-if="text">
+                <span><t t-esc="text"/></span>
+            </t>
+            <t t-if="img">
+                <img t-attf-src="{{img}}" class="big_extra_data_img"/>
+            </t>
+        </div>
+    </t>
+
+</templates>

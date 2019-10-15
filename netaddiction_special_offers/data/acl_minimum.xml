@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data noupdate="0">
+        <record model="ir.module.category" id="netaddiction_optional_minimum_group">
+            <field name="name">Netaddiction Minimi Garantiti</field>
+            <field name="sequence">21</field>
+        </record>
+
+        <record id="netaddiction_minimum_manager" model="res.groups">
+            <field name="name">Si Occupa dei minimi Garantiti</field>
+            <field name="category_id" ref="netaddiction_optional_minimum_group"/>
+            <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+        </record>
+
+        <record id="menu_netaddiction_minimum_base" model="ir.ui.menu">
+            <field name="groups_id" eval="[(4, ref('netaddiction_minimum_manager'))]"/>
+        </record>
+
+        <record id="netaddiction_minimum_access" model="ir.model.access">
+            <field name="name">Netaddiction Minimum</field>
+            <field name="model_id" search="[('model','=','netaddiction.guaranteed.minimum')]" model="ir.model"/>
+            <field name="group_id" ref="netaddiction_minimum_manager"/>
+            <field name="perm_read" eval="1"/>
+            <field name="perm_create" eval="1"/>
+            <field name="perm_write" eval="1"/>
+            <field name="perm_unlink" eval="1"/>
+        </record>
+    </data>
+</openerp>

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+    	<record model="ir.ui.view" id="netaddiction_delivery_view_order">
+            <field name="name">netaddiction.delivery.sale.order</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale.view_order_form"/>
+            <field name="arch" type="xml">
+            	<field name="pricelist_id" position="before">
+                    <field name="payment_method_id"  attrs="{'readonly': [('state', 'in', ('done','cancel','sale','partial_done','sent','problem'))]}"/>
+                    <field name="payment_method_name" attrs="{'invisible':True}" />
+                    <field name="pay_pal_tran_id"  attrs="{'invisible': ['|',('state', 'in', ('done','cancel','sale','partial_done','sent','problem')),('payment_method_name', '!=', 'Paypal')]}"/>
+                    <field name="cc_selection"  attrs="{'invisible': ['|',('state', 'in', ('done','cancel','sale','partial_done','sent','problem')),('payment_method_name', '!=', 'Carta di credito')]}"/>
+                    <field name="sofort_tran_id"  attrs="{'invisible': ['|',('state', 'in', ('done','cancel','sale','partial_done','sent','problem')),('payment_method_name', '!=', 'Sofort')]}"/>
+
+            	</field>
+
+            </field>
+        </record>
+
+
+    </data>
+</openerp>

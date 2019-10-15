@@ -1,0 +1,110 @@
+/***********
+BUTTON COLOR
+************/
+
+button.net_orange{
+    background-color:#E87E04;
+    border-color:#E87E04;
+    color:black;
+}
+button.net_orange:hover{
+    background-color:#F5AB35 ;
+    border-color:#F5AB35;
+}
+
+button.net_green{
+	background-color:#26A65B;
+    border-color:#26A65B;
+    color:black;
+}
+button.net_green:hover{
+    background-color:#2ECC71 ;
+    border-color:#2ECC71;
+}
+
+button.net_red{
+    background-color:#CF000F;
+    border-color:#CF000F;
+    color:black;
+}
+button.net_red:hover{
+    background-color:#EF4836 ;
+    border-color:#EF4836;
+}
+
+button.net_blue{
+    background-color:rgb(83, 130, 185);
+    border-color:rgb(83, 130, 185);
+    color:black;
+}
+button.net_blue:hover{
+    background-color:rgb(114, 159, 207) ;
+    border-color:rgb(114, 159, 207);
+}
+
+/*********
+FORM VIEW
+*********/
+.o_statusbar_buttons button{
+	height:28px !important;
+	margin-top: 1px !important;
+}
+
+
+/**************
+SHEET MOD GRAFICHE
+**************/
+.oe_form_sheet{
+    max-width: 100% !important;
+    border: 0 !important;
+}
+
+.oe_form_sheetbg{
+    padding: 0 !important;
+}
+
+
+.oe_title{
+    width: 52% !important;
+}
+
+/*net2many*/
+.net_search_div{
+    padding-right: 0 !important;
+}
+.net_search{
+    float:right !important;
+    width:30%;
+}
+.button_search, .add_button{
+    padding-top: 5px;
+    float:right;
+}
+.net_add_button{
+    padding:4px 10px;
+}
+.autocomplete{
+    display:none;
+    border: 1px solid #ccc;
+    background: white;
+    position:absolute;
+}
+.net_choose_one,.net_choose_search{
+    border-bottom:1px solid #ccc;
+    padding: 2px 4px;
+}
+.net_choose_search{
+    color:#337AB7;
+}
+.net_choose_one:hover, .autocomplete_hovered{
+    background-color: #EEEEEE; 
+}
+.autocomplete_results,.net_choose_one{
+    float:left;
+}
+.net_choose_one{
+    width:100%;
+}
+.autocomplete_go_product{
+    float:right;
+}

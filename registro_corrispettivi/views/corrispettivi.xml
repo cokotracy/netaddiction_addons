@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+        <record id="open_registro_Corrispettivi" model="ir.actions.act_window">
+            <field name="name">Corrispettivi</field>
+            <field name="res_model">registro.corrispettivi</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <menuitem id="parent_corrispettivi" sequence="0" name="Registro Corrispettivi" parent="account.menu_finance" groups="account.group_account_user"/>
+
+        <menuitem action="open_registro_Corrispettivi" id="menu_corrispettivi" parent="registro_corrispettivi.parent_corrispettivi" sequence="0" name="Corrispettivi" groups="account.group_account_user"/>
+    </data>
+</openerp>

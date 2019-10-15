@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+	<data noupdate="1">
+        <delete model="ir.ui.menu" id="purchase.menu_procurement_partner_contact_form" />
+        <delete model="ir.ui.menu" id="purchase.menu_product_pricelist_action2_purchase" />
+
+        <delete model="ir.values" search="[('name','=','base.action_partner_mass_mail'),('model','=','res.partner')]"/>
+        <delete model="ir.values" search="[('name','=','Due Payments'),('model','=','res.partner')]"/>
+        <delete model="ir.values" search="[('name','=','action_move_line_select_by_partner'),('model','=','res.partner')]"/>
+
+        <delete model="ir.values" search="[('name','=','Delivery Slip'),('model','=','stock.picking')]"/>
+        <delete model="ir.values" search="[('name','=','Picking Operations'),('model','=','stock.picking')]"/>
+
+        <delete model="ir.values" search="[('name','=','Duplicates'),('model','=','account.invoice')]"/>
+        <delete model="ir.values" search="[('name','=','action_account_payment_from_invoices'),('model','=','account.invoice')]"/>
+        <delete model="ir.values" search="[('name','=','action_account_invoice_confirm'),('model','=','account.invoice')]"/>
+        
+        <delete model="ir.values" search="[('name','=','action_product_price_list'),('model','=','product.product')]"/>
+        <delete model="ir.values" search="[('name','=','Products Labels'),('model','=','product.product')]"/>
+
+        <delete model="ir.ui.view" search="[('name','=','res.partner.task.buttons'),('model','=','res.partner')]"/>
+
+    </data>
+</openerp>
