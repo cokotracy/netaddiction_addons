@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+        <record model="ir.actions.act_window" id="netaddiction_wh_locations_base">
+            <field name="name">Allocazioni Magazzino</field>
+            <field name="res_model">netaddiction.wh.locations</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">Non ci sono Allocazioni.
+                </p>
+            </field>
+        </record>
+
+        <menuitem id="menu_netaddiction_wh_locations"
+          name="Allocazioni Magazzino"
+          parent="stock.menu_stock_root"
+          sequence="12"
+        />
+
+        <menuitem id="submenu_netaddiction_wh_locations"
+          name="Allocazioni" parent="menu_netaddiction_wh_locations"
+          action="netaddiction_wh_locations_base"/>
+
+        <record model="ir.ui.view" id="netaddiction_wh_locations_tree">
+            <field name="name">view.netaddiction_wh_locations</field>
+            <field name="model">netaddiction.wh.locations</field>
+            <field name="arch" type="xml">
+                <tree name="Bonus list">
+                    <field name="name"/>
+                    <field name="barcode"/>
+                    <field name="company_id"/>
+                    <field name="stock_location_id"/>
+                </tree>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="netaddiction_wh_locations_form">
+            <field name="name">view.netaddiction_wh_locations</field>
+            <field name="model">netaddiction.wh.locations</field>
+            <field name="arch" type="xml">
+                <form string="Location">
+                    <sheet>
+                        <group string="Allocazione Interna" name="location" colspan="4">
+                            <group name="loc_left" class="oe_left" col="2">
+                                <field name="name"/>
+                                <field name="barcode"/>
+                            </group>
+                            <group name="loc_r" class="oe_right" col="2">
+                                <field name="company_id"/>
+                                <field name="stock_location_id"/>
+                            </group>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="netaddiction_wh_locations_line_tree">
+            <field name="name">view.netaddiction_wh_locations_line</field>
+            <field name="model">netaddiction.wh.locations.line</field>
+            <field name="arch" type="xml">
+                <tree name="Locations list" editable="top">
+                    <field name="wh_location_id"/>
+                    <field name="qty"/>
+                </tree>
+            </field>
+        </record>
+
+        
+
+        <record id="product_normal_form_view_locations" model="ir.ui.view">
+            <field name="name">netaddiction.product.product.form.locations</field>
+            <field name="model">product.product</field>
+            <field name="priority" eval="30"/>
+            <field name="inherit_id" ref="product.product_normal_form_view"/>
+            <field name="arch" type="xml">
+                <page  name="inventory_netaddiction" position="inside">
+                    <group name="locations" string="Allocazioni" >
+                        <field name="product_wh_location_line_ids" nolabel="1" readonly="1"/>
+                    </group>
+                </page>
+            </field>
+        </record>
+    </data>
+</openerp>

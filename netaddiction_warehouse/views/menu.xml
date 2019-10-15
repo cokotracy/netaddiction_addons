@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data noupdate="0">
+        <record model="ir.actions.act_url" id="netaddiction_warehouse_link">
+            <field name="name">Inventory App</field>
+            <field name="url">/inventory/app</field>
+            <field name="target">self</field>
+        </record>
+
+        <menuitem id="menu_netaddiction_warehouse"
+          name="Inventory App"
+          sequence="90"
+          action="netaddiction_warehouse_link"
+          groups="stock.group_stock_manager"
+        />
+        
+        <menuitem id="menu_netaddiction_variant_products"
+          name="Varianti Prodotto"
+          sequence="90"
+          parent="stock.menu_stock_inventory_control"
+          action="product.product_normal_action_sell"
+          groups="stock.group_stock_manager"
+        />
+
+        <record model="ir.ui.menu"  id="stock.stock_picking_type_menu">
+            <field name="sequence">9999</field>
+        </record>
+    </data>
+</openerp>

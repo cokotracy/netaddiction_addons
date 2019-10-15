@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<templates id="netaddiction_inventory" xml:space="preserve">
+ 	<t t-name="Error">
+        <div class="error_msg"><t t-esc="error"/></div>
+    </t>
+
+    <t t-name="block_allocation">
+    	<div class="block">
+            <div class="block_title">
+            	<t t-esc="shelf.product"/> - <t t-esc="shelf.barcode"/>
+            </div>
+            <div class="block_content">
+                <p t-foreach="shelf.allocations" t-as="all">
+                    <t t-esc="all.shelf"/> - <b class="b_qty"><t t-esc="all.qty"/></b>
+                </p>
+            </div>
+        </div> 
+    </t>
+
+    <t t-name="block_allocation_shelf">
+        <div class="block">
+            <div class="block_title">
+                <t t-esc="allocations.shelf"/> - <t t-esc="allocations.barcode"/>
+            </div>
+            <div class="block_content">
+                <p t-foreach="allocations.products" t-as="pid">
+                    <t t-esc="pid.product_name"/> - <t t-esc="pid.barcode"/> - <b class="b_qty"><t t-esc="pid.qty"/></b>
+                </p>
+            </div>
+        </div> 
+    </t>
+</templates>

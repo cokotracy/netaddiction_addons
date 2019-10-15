@@ -1,0 +1,65 @@
+.choose{
+    background-color: #285f8f !important;
+    padding-left: 5px !important;
+    padding-right: 5px !important;
+}
+
+.complete{
+    background-color: #449d44 !important;
+    padding-left: 5px !important;
+    padding-right: 5px !important;
+}
+
+#search_in_order{
+     width: 100%;
+    border: none;
+    margin-left: 15px;
+}
+
+#search_in_order:focus{
+    outline: none;
+    border:none;
+}
+
+/**CARICO**/
+.choose_form td{
+    padding:5px;
+}
+
+.choose_form input, .choose_form select{
+    width: 100%;
+}
+
+/*RESO FORNITORE*/
+#select_supplier_reverse{
+    width: 80%;
+    margin: 0 auto;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+    
+#scrapped_wh,#normal_wh{
+    padding:0;
+    border-top: 1px solid #afafb6;
+}
+
+#scrapped_wh{
+    border-right:1px solid #afafb6;
+}
+
+#scrapped_wh_link,#normal_wh_link{
+    display:block;
+    height:100%;
+    text-align:center;
+    line-height: 29px;
+}
+
+.active_reverse{
+    background-color: white;
+}
+
+/*inventory_reports*/
+#thead div{
+    float:left;
+    border:1px solid;
+}

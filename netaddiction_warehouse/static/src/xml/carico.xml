@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<templates id="netaddiction_warehouse_carico" xml:space="preserve">
+	<t t-name="carico_choose">
+		<div class="oe-control-panel">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-md-6 oe-cp-title">
+                        <ol class="oe-view-title breadcrumb"><li class="active">Carico da Fornitore</li></ol>
+                    </div>
+                    <div class="oe-cp-search-view col-md-6">
+                        
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6 oe-button-column">
+                        <div class="oe-cp-buttons">
+                            <div class="oe_list_buttons">
+                                <button id="gotoCarico" class="btn btn-primary btn-sm o_list_button_import" type="button">
+                                    Carica
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="oe-view-manager oe_view_manager_current">
+        	<div class="oe-view-manager-view-form">
+        		<div class="oe_form_container">
+        			<div class="oe_form_sheetbg">
+        				<div class="oe_form_sheet oe_form_sheet_width">
+
+        					<div class="oe_title" style="margin-bottom:20px"><b>Scegli un fornitore</b></div>
+
+        					<table border="0" cellpadding="0" cellspacing="0" class="oe_form_group choose_form">
+	        					<tbody>
+	        						<tr class="oe_form_group_row supplier_tr_row">
+	        							<td  colspan="1" width="50%">
+	        								<b>Fornitore</b>
+	        							</td>
+	        							<td  colspan="1" width="50%">
+	        								<select id="c_supplier">
+	        									<option value="" selected="selected"></option>
+	        									<t t-foreach="suppliers" t-as="supplier">
+	        										<option t-attf-value="{{supplier.id}}"><t t-esc="supplier.name"/></option>
+	        									</t>
+	        								</select>
+	        							</td>
+	        						</tr>
+	        						
+	        						<tr class="oe_form_group_row">
+	        							<td  colspan="1" width="50%">
+	        								<b>Numero Documento</b>
+	        							</td>
+	        							<td  colspan="1" width="50%">
+	        								<input type="text" id="document_number"/>
+	        							</td>
+	        						</tr>
+	        						
+	        					</tbody>
+	        				</table>
+        				</div>
+        			</div>
+        		</div>
+        	</div>
+        </div>
+        
+	</t>
+
+	<t t-name="carico_choose2">
+							<table border="0" cellpadding="0" cellspacing="0" class="oe_form_group choose_form">
+	        					<tbody>
+	        						<tr class="oe_form_group_row supplier_tr_row">
+	        							<td  colspan="1" width="50%">
+	        								<b>Fornitore</b>
+	        							</td>
+	        							<td  colspan="1" width="50%">
+	        								<select id="c_supplier">
+	        									<option value="" selected="selected"></option>
+	        									<t t-foreach="suppliers" t-as="supplier">
+	        										<option t-attf-value="{{supplier.id}}"><t t-esc="supplier.name"/></option>
+	        									</t>
+	        								</select>
+	        							</td>
+	        						</tr>
+	        						
+	        						<tr class="oe_form_group_row">
+	        							<td  colspan="1" width="50%">
+	        								<b>Numero Documento</b>
+	        							</td>
+	        							<td  colspan="1" width="50%">
+	        								<input type="text" id="document_number"/>
+	        							</td>
+	        						</tr>
+	        						
+	        					</tbody>
+	        				</table>
+	</t>
+
+	<t t-name="carico_go">
+		<div class="oe-control-panel">
+            <div class="container-fluid">
+				<div class="row">
+		            <div class="col-md-6 oe-cp-title">
+		                <ol class="oe-view-title breadcrumb">
+		                    <li>
+		                        <a id="carico_home">Carico da Fornitore</a>
+		                    </li>
+		                    <li class="active"><t t-esc="widget.supplier_name"/> - <t t-esc="widget.document_number"/></li>
+		                </ol>
+		                </div>
+		                <div class="oe-cp-search-view col-md-6">
+		                    <div class="oe_searchview form-control input-sm">
+		                    <div class="oe_searchview_search fa fa-lg fa-search" title="Cerca ancora"></div>
+		                    <div class="oe_searchview_facets">
+		                        <input type="text" id="search" name="search" placeholder="Barcode Prodotto" autofocus="on" autocomplete="off"/>
+		                    </div>
+		                </div>
+		            </div>
+		        </div>
+		        <div class="row">
+                    <div class="col-md-6 oe-button-column">
+                        <div class="oe-cp-buttons">
+                            <div class="oe_list_buttons">
+                                <b>Numero Prodotti: </b><span id="number_prod">0</span><br/>
+                                <b>Numero Totali: </b><span id="number_tot">0</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <input type="number" id="qta" value="1" min="1"/>
+                        <button id="close_wave" class="btn btn-sm btn-primary o_list_button_import" type="button" style="float:right">
+                        	Chiudi Carico
+                        </button>
+                    </div>
+                </div>
+		    </div>
+		</div>
+		<div class="oe-view-manager oe_view_manager_current">
+            <div class="oe_list o_list_view oe_view open_wave_list">
+               	<table class="oe_list_content" id="purchase_in_product_list">
+		            <thead>
+		                <tr class="oe_list_header_columns">
+		                	<th style="width:150px">
+		                        Qty Ordinata
+		                    </th>
+		                    <th style="width:150px">
+		                        Qty Caricata
+		                    </th>
+		                    <th>
+		                        Nome
+		                    </th>
+		                    <th>
+		                        Prezzi di carico
+		                    </th>
+		                </tr>
+		            </thead>
+		            <tfoot>
+		                <tr>
+
+		                </tr>
+		            </tfoot>
+		            <tbody>
+
+		            </tbody>
+        		</table>
+            </div>
+        </div>
+	</t>
+</templates>
