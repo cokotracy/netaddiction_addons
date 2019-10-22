@@ -11,7 +11,6 @@
         'product',
         'sale_management',
         'stock',
-        'mrp',
     ],
     'data': [
         'views/expression_views.xml',
