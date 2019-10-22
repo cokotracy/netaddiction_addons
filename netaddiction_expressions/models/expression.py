@@ -77,11 +77,11 @@ class ExpressionCondition(models.Model):
     out_date = fields.Date()
 
     subject_type = fields.Selection([
-        ('category','Category'),
-        ('attribute','Attribute'),
-        ('available','In Stock'),
-        ('preorder','In Reservation'),
-        ('out_date','Out Date')
+        ('category', 'Category'),
+        ('attribute', 'Attribute'),
+        ('available', 'In Stock'),
+        ('preorder', 'In Reservation'),
+        ('out_date', 'Out Date')
         ],
         required=True
     )
