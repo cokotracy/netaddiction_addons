@@ -2,7 +2,7 @@
 # License LGPL-3.0 or later (https://www.gnu.org/licenses/lgpl).
 
 from odoo import models, fields, api
-import datetime
+from datetime import datetime
 
 
 class ExpressionExpression(models.Model):
@@ -113,17 +113,15 @@ class ExpressionCondition(models.Model):
     @api.multi
     def _get_domain_preorder(self):
         self.ensure_one()
-        today = datetime.datetime.now().strftime('%Y-%m-%d')
+        today = datetime.today()
         if self.value:
             to_search = 'out_date'
             operator = '>'
             val = today
         else:
-            to_search = 'id'
-            operator = 'not in'
-            products = self.env['product.product'].search([
-                '|', ('out_date', '>', today), ('out_date', '=', False)])
-            val = products.ids
+            to_search = 'out_date'
+            operator = '<='
+            val = today
         return (to_search, operator, val)
 
     @api.multi
@@ -132,12 +130,6 @@ class ExpressionCondition(models.Model):
         to_search = 'out_date'
         operator = self.operator
         val = self.out_date
-        if operator == '<' or operator == '<=':
-            products = self.env['product.product'].search([
-                '|', ('out_date', '>', val), ('out_date', '=', False)])
-            to_search = 'id'
-            operator = 'not in'
-            val = products.ids
         return (to_search, operator, val)
 
     @api.multi
