@@ -9,3 +9,12 @@ class ProductTemplate(models.Model):
     _inherit = 'product.template'
 
     out_date = fields.Date()
+
+
+class SupplierInfo(models.Model):
+
+    _inherit = 'product.supplierinfo'
+
+    avail_qty = fields.Float(
+        string='Available Qty'
+    )

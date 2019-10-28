@@ -9,6 +9,8 @@
     'license': 'LGPL-3',
     'depends': [
         'product',
+        'stock',
+        'purchase',
     ],
     'data': [
         'views/product_views.xml',
