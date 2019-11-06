@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <record id="res_config_settings_hours_bank_view_form" model="ir.ui.view">
+        <field name="name">res.config.settings.form.hr.timesheet.hours.bank.view</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="sale.res_config_settings_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[@id='sale_ebay']" position="before">
+                <h2>Pricelist - CSV - FTP</h2>
+                <div class="row mt16 o_settings_container" id="setup">
+                    <div class="col-xs-12 col-md-6 o_setting_box">
+                        <div class="o_setting_right_pane">
+                            <label for="pricelist_csv_ftp_host"/>
+                            <field name="pricelist_csv_ftp_host"/>
+                        </div>
+                    </div>
+                    <div class="col-xs-12 col-md-6 o_setting_box">
+                        <div class="o_setting_right_pane">
+                            <label for="pricelist_csv_ftp_user"/>
+                            <field name="pricelist_csv_ftp_user"/>
+                        </div>
+                    </div>
+                    <div class="col-xs-12 col-md-6 o_setting_box">
+                        <div class="o_setting_right_pane">
+                            <label for="pricelist_csv_ftp_password"/>
+                            <field name="pricelist_csv_ftp_password"/>
+                        </div>
+                    </div>
+                </div>
+                <h2>Netaddiction Pricelist</h2>
+                <div class="row mt16 o_settings_container" id="setup">
+                    <div class="col-xs-12 col-md-6 o_setting_box">
+                        <div class="o_setting_right_pane">
+                            <label for="public_pricelist_id"/>
+                            <field name="public_pricelist_id" widget="selection" />
+                        </div>
+                    </div>
+                </div>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

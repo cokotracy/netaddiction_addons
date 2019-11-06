@@ -22,12 +22,18 @@ class ExpressionExpression(models.Model):
     )
 
     @api.multi
-    def show_products(self):
+    def get_domain(self):
         self.ensure_one()
         domain = []
         # Get domain from every condition
         for condition in self.condition_ids:
             domain.append(condition.get_domain())
+        return domain
+
+    @api.multi
+    def show_products(self):
+        self.ensure_one()
+        domain = self.get_domains()
         # Show products filtered by domain
         action = self.env.ref('stock.stock_product_normal_action').read()[0]
         action['domain'] = domain
