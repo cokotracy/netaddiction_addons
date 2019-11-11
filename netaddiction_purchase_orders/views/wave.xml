@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+		<record model="ir.ui.view" id="netaddiction_add_wave_ddt">
+            <field name="name">netaddiction.add.wave.ddt</field>
+            <field name="model">stock.picking.wave</field>
+            <field name="inherit_id" ref="stock_picking_wave.view_picking_wave_form"/>
+            <field name="arch" type="xml">
+            	<field name="user_id" position="after">
+            		<field name="file_ddt"/>
+            	</field>
+            </field>
+        </record>
+    </data>
+</openerp>
