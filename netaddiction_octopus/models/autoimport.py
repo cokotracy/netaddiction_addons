@@ -17,7 +17,7 @@ class AutoImportProduct(models.Model):
         required=True
     )
 
-'''
+
 class Cron(models.Model):
 
     _name = 'netaddiction_octopus.cron.autoimport'
@@ -64,4 +64,3 @@ class Cron(models.Model):
                         'da octopus',
                     }
                     self.env['mail.message'].create(attr)
-'''
