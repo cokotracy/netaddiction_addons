@@ -1,4 +1,4 @@
-from openerp import api, models, fields
+from odoo import api, models, fields
 
 from ..base.registry import registry
 

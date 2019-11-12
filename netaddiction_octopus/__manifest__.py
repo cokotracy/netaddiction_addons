@@ -21,7 +21,7 @@
         'views/octopus_supplier.xml',
         'views/octopus_product.xml',
         'views/octopus_tax.xml',
-        # 'views/autoimport.xml'
+        'views/octopus_autoimport.xml',
         'security/ir.model.access.csv',
     ],
     'installable': True,

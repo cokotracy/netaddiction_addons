@@ -2,8 +2,8 @@
 import logging
 from base64 import b64encode
 from operator import xor
-from openerp import api, fields, models
-from openerp.addons.decimal_precision import get_precision
+from odoo import api, fields, models
+from odoo.addons.decimal_precision import get_precision
 from ..base.downloaders import HTTPDownloader
 import requests, json
 
