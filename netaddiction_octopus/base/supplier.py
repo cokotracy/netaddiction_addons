@@ -61,9 +61,7 @@ class SupplierBase():
         return new_class
 
 
-class Supplier():
-
-    __metaclass__ = SupplierBase
+class Supplier(SupplierBase):
 
     def __init__(self, partner):
         self.partner = partner
