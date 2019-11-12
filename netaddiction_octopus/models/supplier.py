@@ -6,15 +6,35 @@ from ..base.registry import registry
 
 
 class Supplier(models.Model):
+
     _name = 'netaddiction_octopus.supplier'
     _inherits = {'res.partner': 'partner_id'}
     _order = 'order'
 
-    handler = fields.Selection([(handler, handler) for handler in registry.suppliers], string='Handler')
-    order = fields.Integer('Ordine')
-    can_add = fields.Boolean('Può aggiungere', default=False)
-    category_ids = fields.One2many('netaddiction_octopus.category', 'supplier_id')
-    tax_ids = fields.One2many('netaddiction_octopus.tax', 'supplier_id')
+    handler = fields.Selection(
+        '_get_handler_selection',
+        string='Handler'
+    )
+
+    order = fields.Integer(
+        string='Ordine'
+    )
+
+    can_add = fields.Boolean(
+        string='Può aggiungere',
+        default=False
+    )
+
+    category_ids = fields.One2many(
+        'netaddiction_octopus.category',
+        'supplier_id',
+        string='Categories'
+    )
+
+    # tax_ids = fields.One2many('netaddiction_octopus.tax', 'supplier_id')
+
+    def _get_handler_selection(self):
+        return [(handler, handler) for handler in registry.suppliers]
 
     @api.multi
     def manage_categories(self):
@@ -40,6 +60,7 @@ class Supplier(models.Model):
             },
         }
 
+    '''
     @api.multi
     def manage_taxes(self):
         self.ensure_one()
@@ -63,3 +84,4 @@ class Supplier(models.Model):
                 'company_id': self.partner_id.company_id.id,
             },
         }
+    '''

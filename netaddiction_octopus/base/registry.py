@@ -1,11 +1,12 @@
 from importlib import import_module
 
 
-class Registry(object):
+class Registry():
+
     def __init__(self):
         self.suppliers = {}
 
-    def discover(self, location='openerp.addons.netaddiction_octopus.suppliers'):
+    def discover(self, location='odoo.addons.netaddiction_octopus.suppliers'):
         import_module(location)
 
     def register(self, supplier):

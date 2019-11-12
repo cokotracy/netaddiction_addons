@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<openerp>
-    <data>
-        <menuitem id="octopus_menu" name="Octopus" parent="base.menu_custom" groups="base.group_no_one"/>
-    </data>
-</openerp>
+<odoo>
+<data>
+
+    <menuitem id="octopus_menu" name="Octopus" parent="purchase.menu_purchase_config" />
+
+</data>
+</odoo>

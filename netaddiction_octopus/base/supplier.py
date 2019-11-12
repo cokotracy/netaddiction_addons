@@ -5,7 +5,8 @@ from .parsers import Parser
 from .registry import registry
 
 
-class RequiredValue(object):
+class RequiredValue():
+
     def __init__(self, child_of=None):
         self.child_of = child_of
 
@@ -13,12 +14,14 @@ class RequiredValue(object):
         return self.child_of is None or isinstance(value, self.child_of)
 
 
-class DefaultValue(object):
+class DefaultValue():
+
     def __init__(self, default):
         self.default = default
 
 
-class SupplierBase(type):
+class SupplierBase():
+
     attrs = {
         'files': list,
         'categories': DefaultValue(()),
@@ -30,7 +33,7 @@ class SupplierBase(type):
     }
 
     def __new__(cls, name, bases, attrs):
-        super_new = super(SupplierBase, cls).__new__
+        super_new = super().__new__
 
         parents = [b for b in bases if isinstance(b, SupplierBase)]
 
@@ -58,7 +61,8 @@ class SupplierBase(type):
         return new_class
 
 
-class Supplier(object):
+class Supplier():
+
     __metaclass__ = SupplierBase
 
     def __init__(self, partner):

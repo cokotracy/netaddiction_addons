@@ -7,7 +7,8 @@ import re
 _logger = logging.getLogger(__name__)
 
 
-class Adapter(object):
+class Adapter():
+
     FIELD_PATTERN = r'\[([a-z]+)\] (.*)'
 
     def __init__(self, **fields):

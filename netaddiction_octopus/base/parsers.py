@@ -2,18 +2,20 @@ import csv
 import logging
 import re
 
-from StringIO import StringIO
+from io import StringIO
 
 
 _logger = logging.getLogger(__name__)
 
 
-class Parser(object):
+class Parser():
+
     def parse(self):
         raise NotImplementedError()
 
 
 class CSVParser(Parser):
+
     EMPTY = '__empty__'
 
     class UndefinedField(object):
@@ -61,6 +63,7 @@ class CSVParser(Parser):
 
 
 class RegexParser(Parser):
+
     def __init__(self, pattern):
         self.pattern = re.compile(pattern)
 

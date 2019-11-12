@@ -1,10 +1,10 @@
-import urllib2
+import urllib
 
 from tempfile import TemporaryFile
 from ftplib import FTP
 
 
-class Downloader(object):
+class Downloader():
     def __init__(self, silently_encode=True):
         self.silently_encode = silently_encode
 
@@ -17,7 +17,7 @@ class Downloader(object):
 
 class FTPDownloader(Downloader):
     def __init__(self, hostname, username, password, *args, **kwargs):
-        super(FTPDownloader, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.hostname = hostname
         self.username = username
         self.password = password
@@ -52,7 +52,7 @@ class FTPDownloader(Downloader):
 
 class HTTPDownloader(Downloader):
     def __init__(self, body=None, headers={}, *args, **kwargs):
-        super(HTTPDownloader, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.body = body
         self.headers = headers
 
