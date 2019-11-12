@@ -20,7 +20,7 @@
         'views/octopus_category.xml',
         'views/octopus_supplier.xml',
         # 'views/octopus_product.xml',
-        # 'views/octopus_tax.xml',
+        'views/octopus_tax.xml',
         # 'views/autoimport.xml'
         'security/ir.model.access.csv',
     ],

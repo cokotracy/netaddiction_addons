@@ -12,7 +12,7 @@
                 <field name="handler"/>
                 <field name="can_add"/>
                 <button name="manage_categories" type="object" string="Gestione categorie"/>
-                <!-- <button name="manage_taxes" type="object" string="Gestione tasse"/> -->
+                <button name="manage_taxes" type="object" string="Gestione tasse"/>
                 <field name="active"/>
             </tree>
         </field>

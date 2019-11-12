@@ -31,7 +31,7 @@ class Supplier(models.Model):
         string='Categories'
     )
 
-    # tax_ids = fields.One2many('netaddiction_octopus.tax', 'supplier_id')
+    tax_ids = fields.One2many('netaddiction_octopus.tax', 'supplier_id')
 
     def _get_handler_selection(self):
         return [(handler, handler) for handler in registry.suppliers]
@@ -60,7 +60,6 @@ class Supplier(models.Model):
             },
         }
 
-    '''
     @api.multi
     def manage_taxes(self):
         self.ensure_one()
@@ -84,4 +83,3 @@ class Supplier(models.Model):
                 'company_id': self.partner_id.company_id.id,
             },
         }
-    '''
