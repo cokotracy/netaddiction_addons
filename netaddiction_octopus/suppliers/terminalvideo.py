@@ -25,7 +25,7 @@ DISCOUNTS = {
 }
 
 
-class TerminalVideo(supplier.Supplier):
+class CustomSupplier(supplier.Supplier):
     _MAPPING = {
         'catalog': (
             'Tipo record',

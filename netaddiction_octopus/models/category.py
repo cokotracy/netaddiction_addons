@@ -1,6 +1,5 @@
 from odoo import api, models, fields
-from ..base.registry import registry
-
+from ..base import registry
 
 class Category(models.Model):
 
@@ -58,12 +57,11 @@ class Category(models.Model):
         supplier = self.env['netaddiction_octopus.supplier'].search(
             [('id', '=', self.env.context['active_id'])])
         options = []
-        for handler in registry:
-            if handler.__name__ != supplier.handler:
-                continue
-            for f in handler.files:
-                options.append(('[file] %s' % f['name'], f['name']))
-                for field in handler.categories:
-                    label = '%s: %s' % (f['name'], field)
-                    options.append(('[field] %s' % label, label))
+        imported_module = registry.custom_supplier_module(supplier.handler)
+        handler = imported_module.CustomSupplier()
+        for f in handler.files:
+            options.append(('[file] %s' % f['name'], f['name']))
+            for field in handler.categories:
+                label = '%s: %s' % (f['name'], field)
+                options.append(('[field] %s' % label, label))
         return options

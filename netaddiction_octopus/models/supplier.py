@@ -11,15 +11,6 @@ class Supplier(models.Model):
     _inherits = {'res.partner': 'partner_id'}
     _order = 'order'
 
-    handler = fields.Selection(
-        '_get_handler_selection',
-        string='Handler'
-    )
-
-    order = fields.Integer(
-        string='Ordine'
-    )
-
     can_add = fields.Boolean(
         string='Può aggiungere',
         default=False
@@ -31,10 +22,26 @@ class Supplier(models.Model):
         string='Categories'
     )
 
-    tax_ids = fields.One2many('netaddiction_octopus.tax', 'supplier_id')
+    handler = fields.Selection([
+        ('adl', 'adl'),
+        ('beegroup', 'beegroup'),
+        ('cidiverte', 'cidiverte'),
+        ('cosmicgroup', 'cosmicgroup'),
+        ('dbline', 'dbline'),
+        ('drako', 'drako'),
+        ('esprinet', 'esprinet'),
+        ('gedistribuzione', 'gedistribuzione'),
+        ('promovideo', 'promovideo'),
+        ('terminalvideo', 'terminalvideo'),
+        ],
+        string='Handler'
+    )
 
-    def _get_handler_selection(self):
-        return [(handler, handler) for handler in registry.suppliers]
+    order = fields.Integer(
+        string='Ordine'
+    )
+
+    tax_ids = fields.One2many('netaddiction_octopus.tax', 'supplier_id')
 
     @api.multi
     def manage_categories(self):

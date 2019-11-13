@@ -4,7 +4,7 @@ from ..base.downloaders import FTPDownloader
 from ..base.parsers import CSVParser
 
 
-class Cidiverte(supplier.Supplier):
+class CustomSupplier(supplier.Supplier):
     files = [
         {
             'name': 'Main',

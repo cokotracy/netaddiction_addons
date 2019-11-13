@@ -10,7 +10,7 @@ VAT = 22
 DISCOUNT = 35
 
 
-class CosmicGroup(supplier.Supplier):
+class CustomSupplier(supplier.Supplier):
     files = [
         {
             'name': 'Main',

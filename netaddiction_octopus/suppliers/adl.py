@@ -4,7 +4,7 @@ from ..base.downloaders import HTTPDownloader
 from ..base.parsers import CSVParser
 
 
-class Adl(supplier.Supplier):
+class CustomSupplier(supplier.Supplier):
     files = [
         {
             'name': 'Main',

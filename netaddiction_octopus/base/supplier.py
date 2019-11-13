@@ -61,10 +61,13 @@ class SupplierBase():
         return new_class
 
 
-class Supplier(SupplierBase):
+class Supplier():
 
-    def __init__(self, partner):
-        self.partner = partner
+    # def __init__(self, partner):
+    #     self.partner = partner
+
+    files = []
+    categories = ()
 
     def retrieve(self, files):
         data = []

@@ -5,7 +5,7 @@ from ..base.downloaders import FTPDownloader
 from ..base.parsers import CSVParser
 
 
-class Gedistribuzione(supplier.Supplier):
+class CustomSupplier(supplier.Supplier):
 
     files = [
         {

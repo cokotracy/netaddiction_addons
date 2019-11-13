@@ -4,7 +4,7 @@ from ..base.downloaders import FTPDownloader
 from ..base.parsers import CSVParser
 
 
-class PromoVideo(supplier.Supplier):
+class CustomSupplier(supplier.Supplier):
     files = [
         {
             'name': 'Main',
