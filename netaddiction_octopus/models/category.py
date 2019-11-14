@@ -1,6 +1,7 @@
 from odoo import api, models, fields
 from ..base import registry
 
+
 class Category(models.Model):
 
     _name = 'netaddiction_octopus.category'

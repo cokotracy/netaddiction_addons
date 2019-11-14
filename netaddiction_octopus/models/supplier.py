@@ -2,8 +2,6 @@
 
 from odoo import api, models, fields
 
-from ..base.registry import registry
-
 
 class Supplier(models.Model):
 
@@ -41,12 +39,15 @@ class Supplier(models.Model):
         string='Ordine'
     )
 
-    tax_ids = fields.One2many('netaddiction_octopus.tax', 'supplier_id')
+    tax_ids = fields.One2many(
+        'netaddiction_octopus.tax',
+        'supplier_id',
+        string='Taxes'
+    )
 
     @api.multi
     def manage_categories(self):
         self.ensure_one()
-
         return {
             'name': 'Gestione categorie %s' % self.handler,
             'view_type': 'form',
@@ -70,7 +71,6 @@ class Supplier(models.Model):
     @api.multi
     def manage_taxes(self):
         self.ensure_one()
-
         return {
             'name': 'Gestione tasse %s' % self.handler,
             'view_type': 'form',

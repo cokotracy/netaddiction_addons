@@ -1,5 +1,4 @@
 from odoo import api, models, fields
-
 from ..base import registry
 
 
