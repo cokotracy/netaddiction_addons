@@ -5,7 +5,7 @@ import logging
 import datetime
 from collections import defaultdict
 from odoo import api, models
-# from ..base.registry import registry
+from ..base import registry
 
 
 _logger = logging.getLogger(__name__)
@@ -46,7 +46,8 @@ class Cron(models.Model):
         for supplier in suppliers.values():
             _logger.info(' | %s (#%d)' % (supplier.name, supplier.id))
             datas = {}
-            handler = registry[supplier.handler](supplier.partner_id)
+            handler_class = registry.handler_class(supplier.handler)
+            handler = handler_class(supplier.partner_id)
             blacklist = blacklist_model.search(
                 [('supplier_id', '=', supplier.partner_id.id)]
                 ).mapped('supplier_code')
@@ -66,7 +67,7 @@ class Cron(models.Model):
             # Downloading datas
             try:
                 items = handler.pull()
-            except Exception:
+            except Exception as e:
                 _logger.warning(str(e))
             else:
                 downloaded_products = len(items)
@@ -101,7 +102,7 @@ class Cron(models.Model):
                             data = handler.mapping.map(
                                 na_product_model, handler, item,
                                 categories, taxes)
-                        except Exception:
+                        except Exception as e:
                             _logger.warning(e)
                             rejected_products += 1
                             continue
@@ -114,7 +115,7 @@ class Cron(models.Model):
                             if barcode_model.check_encoding(data['barcode'],
                                                             'upca'):
                                 data['barcode'] = '0' + data['barcode']
-                        datas[data['supplexceptier_code']] = data
+                        datas[data['supplier_code']] = data
                 # Checing for invalid groups
                 groups = defaultdict(list)
                 for data in datas.values():
@@ -158,8 +159,8 @@ class Cron(models.Model):
             for product in products:
                 supplier = suppliers[product.supplier_id.id]
                 try:
-                    product.save(can_add=supplier.can_add)
-                except Exception:
+                    product.deferred_save(can_add=supplier.can_add)
+                except Exception as e:
                     _logger.error(
                         'Salvaggio del prodotto non riuscito (%s)' % e)
         # Products without barcode
@@ -170,8 +171,8 @@ class Cron(models.Model):
             )
         for product in products:
             try:
-                product.update()
-            except Exception:
+                product.deferred_update()
+            except Exception as e:
                 _logger.error('Salvaggio del prodotto non riuscito (%s)' % e)
 
     def kill(self, suppliers):

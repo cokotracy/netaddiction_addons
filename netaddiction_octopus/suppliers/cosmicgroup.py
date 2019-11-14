@@ -11,6 +11,7 @@ DISCOUNT = 35
 
 
 class CustomSupplier(supplier.Supplier):
+
     files = [
         {
             'name': 'Main',
@@ -41,7 +42,8 @@ class CustomSupplier(supplier.Supplier):
     mapping = Adapter(
         name='titolo',
         supplier_code='codice',
-        supplier_price=lambda self, item: float(item['prezzo'].strip()) / (1 + VAT / 100.0) * (1 - DISCOUNT / 100.0),
+        supplier_price=lambda self, item: float(item['prezzo'].strip()) / (
+            1 + VAT / 100.0) * (1 - DISCOUNT / 100.0),
         supplier_quantity='quantita')
 
     def validate(self, item):

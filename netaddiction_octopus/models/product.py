@@ -137,8 +137,9 @@ class Product(models.Model):
             'supplier_code': self.supplier_code,
         })
         self.unlink()
+    '''
 
-    def save(self, can_add=False, commit=True):
+    def deferred_save(self, can_add=False, commit=True):
         if self.barcode is None:
             supplierinfo = self.env['product.supplierinfo'].search([
                 ('name', '=', self.supplier_id.id),
@@ -162,6 +163,7 @@ class Product(models.Model):
             if can_add:
                 self.is_new = True
 
+    '''
     def add(self, commit=True, active=True):
         image = None
         template_id = None
@@ -235,8 +237,9 @@ class Product(models.Model):
         })
         if commit:
             self.env.cr.commit()
+    '''
 
-    def update(self, supplierinfo=None, commit=True):
+    def deferred_update(self, supplierinfo=None, commit=True):
         if supplierinfo is None:
             supplierinfo = self.env['product.supplierinfo'].search([
                 ('name', '=', self.supplier_id.id),
@@ -279,6 +282,7 @@ class Product(models.Model):
                     self.env.cr.commit()
                 break
 
+    '''
     @api.multi
     def search_image_qwant(self):
         # cerca tramite barcode un'immagine sul motore di ricerca QWANT,
