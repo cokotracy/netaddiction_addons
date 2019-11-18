@@ -18,7 +18,7 @@
         # 'sale',
         # 'purchase',
         # 'mrp',
-        # 'account',
+        'account',
         # 'netaddiction_warehouse',
         # 'netaddiction_acl',
         ],

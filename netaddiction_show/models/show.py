@@ -155,12 +155,12 @@ class Show(models.Model):
                     'stock_value': value * float(line[3])
                 }
                 self.env['netaddiction.sell.quant'].create(attr)
+    '''
 
     @api.multi
     def create_csv(self):
         self.ensure_one()
-        tax_inc = self.env['account.tax'].search(
-            [('description', '=', '22v INC')]).id
+        tax_inc = self.env.ref('l10n_it.1_22v INC').id
         products = {}
         for pid in self.show_quant_ids:
             if pid.product_id.id in products:
@@ -179,7 +179,7 @@ class Show(models.Model):
                     'iva': tr
                 }
 
-        output = io.BytesIO()
+        output = io.StringIO()
         writer = csv.writer(output)
 
         for pid in products:
@@ -194,9 +194,10 @@ class Show(models.Model):
                 product['iva']]
             writer.writerow(csvdata)
 
-        self.export_file = base64.b64encode(output.getvalue()).decode()
+        self.export_file = output.getvalue()
         output.close()
 
+    '''
     @api.one
     def _get_exit_value(self):
         value = 0
