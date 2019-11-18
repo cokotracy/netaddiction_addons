@@ -2,19 +2,21 @@
 # License LGPL-3.0 or later (https://www.gnu.org/licenses/lgpl).
 
 {
-    'name': 'Netaddiction Expressions',
-    'version': '12.0.1.0.1',
-    'category': 'Product',
+    'name': 'Netaddiction B2B',
+    'version': '12.0.1.0.0',
+    'category': 'Sale',
     'author': 'Openforce',
     'license': 'LGPL-3',
     'depends': [
-        'product',
         'sale_management',
-        'stock',
+        'netaddiction_expressions',
+        'netaddiction_products',
     ],
     'data': [
-        'views/expression_views.xml',
+        'views/config_views.xml',
         'views/product_views.xml',
+        'views/pricelist_views.xml',
         'security/ir.model.access.csv',
+        'data/cron.xml',
     ],
 }
