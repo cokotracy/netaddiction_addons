@@ -33,7 +33,7 @@ class ChannelPilotOrder(models.Model):
         cp_orders = []
         problems = []
         # DEBUG MAIL
-        # self._send_cp_error_mail("  %s" % response, '[CHANNELPILOT -  DEBUG] getNewMarketplaceOrders result ')
+        self._send_cp_error_mail("  %s" % response, '[CHANNELPILOT -  DEBUG] getNewMarketplaceOrders result ')
         if "orders" not in response:
             # non ci sono ordini
             return
@@ -240,7 +240,7 @@ class ChannelPilotOrder(models.Model):
             'body_html': body,
             'email_from': "shopping@multiplayer.com",
             # TODO 'email_to': "ecommerce-servizio@netaddiction.it",
-            'email_to': "andrea.bozzi@netaddiction.it, andrea.alunni@netaddiction.it, matteo.piciucchi@netaddiction.it",
+            'email_to': "paola.coccia@netaddiction.it, andrea.alunni@netaddiction.it, matteo.serafini@netaddiction.it",
         }
 
         email = self.env['mail.mail'].create(values)
