@@ -1,48 +1,100 @@
-# -*- coding: utf-8 -*-
-from openerp import models, fields, api
+# Copyright 2019 Openforce Srls Unipersonale (www.openforce.it)
+# License LGPL-3.0 or later (https://www.gnu.org/licenses/lgpl).
+
+from odoo import models, fields, api
 import datetime
 import io
 import csv
 import base64
-from openerp.exceptions import Warning
+from odoo.exceptions import Warning
+
 
 class Show(models.Model):
+
     _name = "netaddiction.show"
 
-    name = fields.Char(string="Nome Fiera")
+    name = fields.Char(
+        string="Nome Fiera"
+    )
+
     show_quant_ids = fields.One2many(
         comodel_name='netaddiction.show.quant',
         inverse_name='name',
-        string='Prodotti Partiti')
+        string='Prodotti Partiti'
+    )
+
     show_return_ids = fields.One2many(
         comodel_name='netaddiction.return.quants',
         inverse_name='name',
-        string='Prodotti Rientrati')
+        string='Prodotti Rientrati'
+    )
+
     show_sell_ids = fields.One2many(
         comodel_name='netaddiction.sell.quant',
         inverse_name='name',
-        string='Prodotti Venduti')
+        string='Prodotti Venduti'
+    )
+
     show_difference_ids = fields.One2many(
         comodel_name='netaddiction.difference.quant',
         inverse_name='name',
-        string='Differenze')
-    date_start = fields.Date(string="Data inizio")
-    date_finish = fields.Date(string="Data fine")
-    state = fields.Selection(string="Stato", selection=[('draft', 'Nuova'), ('open', 'Aperta'), ('close', 'Chiusa')], default="draft")
+        string='Differenze'
+    )
+
+    date_start = fields.Date(
+        string="Data inizio"
+    )
+
+    date_finish = fields.Date(
+        string="Data fine"
+    )
+
+    state = fields.Selection(
+        string="Stato",
+        selection=[
+            ('draft', 'Nuova'),
+            ('open', 'Aperta'),
+            ('close', 'Chiusa')],
+        default="draft")
 
     exit_value = fields.Float(string="Valore acquistato uscito",
-        help="Valore totale dei prodotti partiti per la fiera calcolato con i prezzi di carico secondo FIFO nel momento di creazione",
-        compute="_get_exit_value")
+        help='Valore totale dei prodotti partiti per la fiera calcolato '
+        'con i prezzi di carico secondo FIFO nel momento di creazione',
+        # compute="_get_exit_value"
+    )
+
     exit_sell_value = fields.Float(string="Valore ipotetico venduto uscito",
-        help="Valore ipotetico di vendita dei prodotti partiti per la fiera calcolato con i prezzi al pubblico nel momento di creazione",
-        compute="_get_sell_value")
-    export_file = fields.Binary(string="Csv", attachment=True)
-    import_file = fields.Binary(string="Csv Ritorno Fiera", attachment=True)
-    report_file = fields.Binary(string="Csv Ritorno Fiera", attachment=True)
+        help='Valore ipotetico di vendita dei prodotti partiti per la fiera '
+        'calcolato con i prezzi al pubblico nel momento di creazione',
+        # compute="_get_sell_value"
+    )
 
-    sale_stock_value = fields.Float(string="Valore acquistato venduto", compute="_get_sale_stock_value")
-    sale_sell_value = fields.Float(string="Valore venduto", compute="_get_sale_sell_value")
+    export_file = fields.Binary(
+        string="Csv",
+        attachment=True
+    )
 
+    import_file = fields.Binary(
+        string="Csv Ritorno Fiera",
+        attachment=True
+    )
+
+    report_file = fields.Binary(
+        string="Csv Ritorno Fiera",
+        attachment=True
+    )
+
+    sale_stock_value = fields.Float(
+        string="Valore acquistato venduto",
+        # compute="_get_sale_stock_value"
+    )
+
+    sale_sell_value = fields.Float(
+        string="Valore venduto",
+        # compute="_get_sale_sell_value"
+    )
+
+    '''
     @api.one
     def close_show(self):
         self.state = 'close'
@@ -72,12 +124,20 @@ class Show(models.Model):
             if barcode == 'Barcode':
                 continue
 
-            barcodes = [barcode, barcode[1:], '0' + barcode, barcode.lower(), barcode.upper(), barcode.capitalize()]
+            barcodes = [
+                barcode,
+                barcode[1:],
+                '0' + barcode,
+                barcode.lower(),
+                barcode.upper(),
+                barcode.capitalize()]
 
-            product = self.env['product.product'].search([('barcode', 'in', barcodes)])
+            product = self.env['product.product'].search(
+                [('barcode', 'in', barcodes)])
             if product:
                 value = 0
-                res = self.env['netaddiction.show.quant'].search([('product_id', '=', product.id), ('name', '=', self.id)])
+                res = self.env['netaddiction.show.quant'].search(
+                    [('product_id', '=', product.id), ('name', '=', self.id)])
                 if res:
                     q = 0
                     tot = 0
@@ -99,7 +159,8 @@ class Show(models.Model):
     @api.multi
     def create_csv(self):
         self.ensure_one()
-        tax_inc = self.env['account.tax'].search([('description', '=', '22v INC')]).id
+        tax_inc = self.env['account.tax'].search(
+            [('description', '=', '22v INC')]).id
         products = {}
         for pid in self.show_quant_ids:
             if pid.product_id.id in products:
@@ -123,7 +184,14 @@ class Show(models.Model):
 
         for pid in products:
             product = products[pid]
-            csvdata = [product['name'].encode("utf8"), product['barcode'], product['price'], product['qty'], product['unit_value'], 'Multiplayer.com', product['iva']]
+            csvdata = [
+                product['name'].encode("utf8"),
+                product['barcode'],
+                product['price'],
+                product['qty'],
+                product['unit_value'],
+                'Multiplayer.com',
+                product['iva']]
             writer.writerow(csvdata)
 
         self.export_file = base64.b64encode(output.getvalue()).decode()
@@ -148,17 +216,22 @@ class Show(models.Model):
         show_id = int(show_id)
         this_show = self.browse(show_id)
 
-        location = self.env['netaddiction.wh.locations.line'].browse(int(location_id))
-        stock_show = self.env.ref('netaddiction_show.netaddiction_stock_show').id
-        picking_type_show = self.env.ref('netaddiction_show.netaddiction_type_out_show').id
+        location = self.env['netaddiction.wh.locations.line'].browse(
+            int(location_id))
+        stock_show = self.env.ref(
+            'netaddiction_show.netaddiction_stock_show').id
+        picking_type_show = self.env.ref(
+            'netaddiction_show.netaddiction_type_out_show').id
         wh_stock = self.env.ref('stock.stock_location_stock').id
 
         if int(qta) <= 0:
-            return 'Dai, serio, mi stai prendendo per i fondelli. Come pretendi di spostare una quantità negativa?'
+            return 'Dai, serio, mi stai prendendo per i fondelli. ' \
+                'Come pretendi di spostare una quantità negativa?'
         if int(qta) > int(location.product_id.qty_available_now):
             return 'Non puoi scaricare più prodotti di quelli disponibili'
         if int(qta) > int(location.qty):
-            return 'Non puoi scaricare più prodotti di quelli che contiene lo scaffale'
+            return'Non puoi scaricare più prodotti di quelli '\
+                'che contiene lo scaffale'
 
         # per prima cosa decremento la quantità sulla locazione
         diff = location.qty - int(qta)
@@ -171,7 +244,8 @@ class Show(models.Model):
             'priority': '1',
             'location_id': wh_stock,
             'location_dest_id': stock_show,
-            'move_lines': [(0, 0, {'product_id': location.product_id.id, 'product_uom_qty': int(qta),
+            'move_lines': [(0, 0, {'product_id': location.product_id.id,
+                                   'product_uom_qty': int(qta),
                 'state': 'draft',
                 'product_uom': location.product_id.uom_id.id,
                 'name': 'WH/Stock > Magazzino Fiera',
@@ -287,10 +361,24 @@ class Show(models.Model):
 
         output = io.BytesIO()
         writer = csv.writer(output)
-        csvdata = ['Nome', 'Partita', 'Valore Partita', 'Venduta', 'Fatturato Venduta', 'Valore Venduta', 'Ritornata']
+        csvdata = [
+            'Nome',
+            'Partita',
+            'Valore Partita',
+            'Venduta',
+            'Fatturato Venduta',
+            'Valore Venduta',
+            'Ritornata']
         writer.writerow(csvdata)
         for product in report:
-            csvdata = [product.display_name.encode('utf8'), report[product]['gone'], report[product]['value_gone'], report[product]['sell'], report[product]['value_sell'], report[product]['value_sell_stock'], report[product]['returned']]
+            csvdata = [
+                product.display_name.encode('utf8'),
+                report[product]['gone'],
+                report[product]['value_gone'],
+                report[product]['sell'],
+                report[product]['value_sell'],
+                report[product]['value_sell_stock'],
+                report[product]['returned']]
             writer.writerow(csvdata)
         self.report_file = base64.b64encode(output.getvalue()).decode()
         output.close()
@@ -300,113 +388,232 @@ class Show(models.Model):
         result = {
             'qta': 0
         }
-        product = self.env['product.product'].search([('barcode', 'in', barcodes)])
+        product = self.env['product.product'].search(
+            [('barcode', 'in', barcodes)])
         if product:
-            quants = self.env['netaddiction.show.quant'].search([('product_id', '=', product.id)])
+            quants = self.env['netaddiction.show.quant'].search(
+                [('product_id', '=', product.id)])
             qta = 0
             for q in quants:
                 qta += q.qty
             result['qta'] = qta
 
         return result
+    '''
 
 
 class DiffQuant(models.Model):
+
     _name = "netaddiction.difference.quant"
 
     name = fields.Many2one(
         comodel_name="netaddiction.show",
-        string="Fiera")
+        string="Fiera"
+    )
+    
     product_id = fields.Many2one(
         comodel_name="product.product",
-        string="Prodotto")
-    date_move = fields.Date(string="Data Creazione")
-    diff = fields.Integer(string="Differenza")
-    gone = fields.Integer(string="Partita")
-    sell = fields.Integer(string="Venduta")
-    returned = fields.Integer(string="Ritornata")
+        string="Prodotto"
+    )
+    
+    date_move = fields.Date(
+        string="Data Creazione"
+    )
+
+    diff = fields.Integer(
+        string="Differenza"
+    )
+
+    gone = fields.Integer(
+        string="Partita"
+    )
+
+    sell = fields.Integer(
+        string="Venduta"
+    )
+
+    returned = fields.Integer(
+        string="Ritornata"
+    )
+
 
 class ShowQuant(models.Model):
+
     _name = "netaddiction.show.quant"
 
     name = fields.Many2one(
         comodel_name="netaddiction.show",
-        string="Fiera")
+        string="Fiera"
+    )
+
     product_id = fields.Many2one(
         comodel_name="product.product",
-        string="Prodotto")
-    date_move = fields.Date(string="Data spostamento")
-    qty = fields.Integer(string="Quantità")
-    stock_value = fields.Float(string="Valore acquistato")
-    public_price = fields.Float(string="Prezzo al pubblico")
-    quant_ids = fields.Many2many(string="Rigo Magazzino", comodel_name="stock.quant")
-    pick_id = fields.Many2one(string="Picking", comodel_name="stock.picking")
+        string="Prodotto"
+    )
+
+    date_move = fields.Date(
+        string="Data spostamento"
+    )
+
+    qty = fields.Integer(
+        string="Quantità"
+    )
+
+    stock_value = fields.Float(
+        string="Valore acquistato"
+    )
+
+    public_price = fields.Float(
+        string="Prezzo al pubblico"
+    )
+
+    quant_ids = fields.Many2many(
+        string="Rigo Magazzino",
+        comodel_name="stock.quant"
+    )
+
+    pick_id = fields.Many2one(
+        string="Picking",
+        comodel_name="stock.picking"
+    )
+
 
 class SellQuant(models.Model):
+
     _name = "netaddiction.sell.quant"
 
     name = fields.Many2one(
         comodel_name="netaddiction.show",
         string="Fiera")
+
     product_id = fields.Many2one(
         comodel_name="product.product",
         string="Prodotto")
-    date_move = fields.Date(string="Data Creazione")
-    qty = fields.Integer(string="Quantità")
-    public_price = fields.Float(string="Prezzo al pubblico Totale")
-    stock_value = fields.Float(string="Valore acquistato")
+
+    date_move = fields.Date(
+        string="Data Creazione"
+    )
+
+    qty = fields.Integer(
+        string="Quantità"
+    )
+
+    public_price = fields.Float(
+        string="Prezzo al pubblico Totale"
+    )
+
+    stock_value = fields.Float(
+        string="Valore acquistato"
+    )
+
 
 class ReturnQuant(models.Model):
+
     _name = "netaddiction.return.quants"
 
     name = fields.Many2one(
         comodel_name="netaddiction.show",
-        string="Fiera")
+        string="Fiera"
+    )
+
     product_id = fields.Many2one(
         comodel_name="product.product",
-        string="Prodotto")
-    date_move = fields.Date(string="Data Rientro")
-    qty = fields.Integer(string="Quantità")
+        string="Prodotto"
+    )
+
+    date_move = fields.Date(
+        string="Data Rientro"
+    )
+
+    qty = fields.Integer(
+        string="Quantità"
+    )
+
 
 class ProductsMovement(models.TransientModel):
 
     _name = "netaddiction.show.returned.move"
 
-    barcode = fields.Char(string="Barcode")
-    product_id = fields.Many2one(string="Prodotto", comodel_name="product.product")
-    qty_available = fields.Integer(string="Qtà in fiera")
-    show_id = fields.Many2one(string="Fiera", comodel_name="netaddiction.show")
-    qty_to_move = fields.Integer(string="Quantità da riallocare")
-    barcode_allocation = fields.Char(string="Barcode Scaffale")
-    new_allocation = fields.Many2one(string="Dove Allocare", comodel_name="netaddiction.wh.locations")
-    message = fields.Char(string="Messaggio")
+    barcode = fields.Char(
+        string="Barcode"
+    )
 
+    product_id = fields.Many2one(
+        string="Prodotto",
+        comodel_name="product.product"
+    )
+
+    qty_available = fields.Integer(
+        string="Qtà in fiera"
+    )
+
+    show_id = fields.Many2one(
+        string="Fiera",
+        comodel_name="netaddiction.show"
+    )
+
+    qty_to_move = fields.Integer(
+        string="Quantità da riallocare"
+    )
+
+    barcode_allocation = fields.Char(
+        string="Barcode Scaffale"
+    )
+
+    # new_allocation = fields.Many2one(
+    #     string="Dove Allocare",
+    #     comodel_name="netaddiction.wh.locations"
+    # )
+
+    message = fields.Char(
+        string="Messaggio"
+    )
+
+    '''
     @api.onchange('barcode_allocation')
     def change_alloc(self):
-        loc = self.env['netaddiction.wh.locations'].search([('barcode', '=', self.barcode_allocation), ('company_id', '=', self.env.user.company_id.id)])
+        loc = self.env['netaddiction.wh.locations'].search([
+            ('barcode', '=', self.barcode_allocation),
+            ('company_id', '=', self.env.user.company_id.id)])
         if loc:
             self.new_allocation = loc.id
 
     @api.onchange('barcode')
     def search_product(self):
-        loc = self.env['netaddiction.wh.locations'].search([('barcode', '=', '0000000001'), ('company_id', '=', self.env.user.company_id.id)])
+        loc = self.env['netaddiction.wh.locations'].search([
+            ('barcode', '=', '0000000001'),
+            ('company_id', '=', self.env.user.company_id.id)])
         if self.barcode:
-            barcodes = [str(self.barcode), '0' + str(self.barcode), str(self.barcode).upper(), str(self.barcode).lower(), str(self.barcode).capitalize(), str(self.barcode)[1:]]
-            product = self.env['product.product'].sudo().search([('barcode', 'in', barcodes)])
+            barcodes = [
+                str(self.barcode),
+                '0' + str(self.barcode),
+                str(self.barcode).upper(),
+                str(self.barcode).lower(),
+                str(self.barcode).capitalize(),
+                str(self.barcode)[1:]]
+            product = self.env['product.product'].sudo().search(
+                [('barcode', 'in', barcodes)])
             if product:
                 self.product_id = product[0].id
 
                 if self.show_id:
-                    result = self.env['netaddiction.show.quant'].search([('name', '=', self.show_id.id), ('product_id', '=', product[0].id)])
+                    result = self.env['netaddiction.show.quant'].search([
+                        ('name', '=', self.show_id.id),
+                        ('product_id', '=', product[0].id)])
                     if result:
                         qta = 0
                         for res in result:
                             qta += res.qty
-                        sell = self.env['netaddiction.sell.quant'].search([('name', '=', self.show_id.id), ('product_id', '=', product[0].id)])
+                        sell = self.env['netaddiction.sell.quant'].search([
+                            ('name', '=', self.show_id.id),
+                            ('product_id', '=', product[0].id)])
                         if sell:
                             for s in sell:
                                 qta -= s.qty
-                        returned = self. env['netaddiction.return.quants'].search([('name', '=', self.show_id.id), ('product_id', '=', product[0].id)])
+                        returned = self.env[
+                            'netaddiction.return.quants'].search([
+                                ('name', '=', self.show_id.id),
+                                ('product_id', '=', product[0].id)])
                         if returned:
                             for s in returned:
                                 qta -= s.qty
@@ -418,25 +625,34 @@ class ProductsMovement(models.TransientModel):
 
                     al = ''
                     for line in product.product_wh_location_line_ids:
-                        al += '%s - %s \n' % (line.qty, line.wh_location_id.name)
+                        al += '%s - %s \n' % (line.qty,
+                                              line.wh_location_id.name)
                     self.message = al
 
     @api.one
     def execute(self):
         if self.qty_to_move <= 0:
-            raise Warning('Seriamente vuoi spostare una quantità negativa o uguale a zero?')
+            raise Warning('Seriamente vuoi spostare una quantità '
+                          'negativa o uguale a zero?')
         if self.qty_to_move > self. qty_available:
-            raise Warning('Ma come ti viene in mente di caricare una qunatità maggiore di quella disponibile in Magazzino Fiere?!')
+            raise Warning(
+                'Ma come ti viene in mente di caricare una quantità '
+                'maggiore di quella disponibile in Magazzino Fiere?!')
         if not self.show_id:
             raise Warning('Devi inserire una Fiera')
-        product = self.env['netaddiction.show.quant'].search([('name', '=', self.show_id.id), ('product_id', '=', self.product_id.id)])
+        product = self.env['netaddiction.show.quant'].search([
+            ('name', '=', self.show_id.id),
+            ('product_id', '=', self.product_id.id)])
         if len(product) == 0:
-            raise Warning('Il prodotto che stai cercando di caricare non fa parte della fiera selezionata')
+            raise Warning('Il prodotto che stai cercando di caricare '
+                          'non fa parte della fiera selezionata')
         if not self.new_allocation:
             raise Warning('Devi selezionare un ripiano dove allocare')
 
-        stock_show = self.env.ref('netaddiction_show.netaddiction_stock_show').id
-        picking_type_show = self.env.ref('netaddiction_show.netaddiction_type_in_show').id
+        stock_show = self.env.ref(
+            'netaddiction_show.netaddiction_stock_show').id
+        picking_type_show = self.env.ref(
+            'netaddiction_show.netaddiction_type_in_show').id
         wh_stock = self.env.ref('stock.stock_location_stock').id
         attr = {
             'picking_type_id': picking_type_show,
@@ -444,7 +660,8 @@ class ProductsMovement(models.TransientModel):
             'priority': '1',
             'location_id': stock_show,
             'location_dest_id': wh_stock,
-            'move_lines': [(0, 0, {'product_id': self.product_id.id, 'product_uom_qty': int(self.qty_to_move),
+            'move_lines': [(0, 0, {'product_id': self.product_id.id,
+                                   'product_uom_qty': int(self.qty_to_move),
                 'state': 'draft',
                 'product_uom': self.product_id.uom_id.id,
                 'name': 'Magazzino Fiera > WH/Stock',
@@ -457,7 +674,8 @@ class ProductsMovement(models.TransientModel):
             line.sudo().write({'qty_done': line.product_qty})
         pick.sudo().do_transfer()
 
-        self.env['netaddiction.wh.locations.line'].sudo().allocate(self.product_id.id, self.qty_to_move, self.new_allocation.id)
+        self.env['netaddiction.wh.locations.line'].sudo().allocate(
+            self.product_id.id, self.qty_to_move, self.new_allocation.id)
 
         not_sell = {
             'name': self.show_id.id,
@@ -473,3 +691,4 @@ class ProductsMovement(models.TransientModel):
         self.qty_to_move = False
         self.barcode_allocation = False
         self.message = 'Prodotto Riallocato Correttamente'
+    '''

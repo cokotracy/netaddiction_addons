@@ -13,7 +13,8 @@
     'version': '12.0.1.0.0',
     'depends': [
         # 'base',
-        # 'product',
+        'product',
+        'stock',
         # 'sale',
         # 'purchase',
         # 'mrp',
