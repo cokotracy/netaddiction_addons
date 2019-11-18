@@ -24,8 +24,8 @@
         ],
     'data': [
         # 'data/data_show.xml',
-        # 'views/menu.xml',
-        # 'views/show.xml',
+        'views/menu.xml',
+        'views/show.xml',
         # 'data/acl.xml',
         # 'templates/assets.xml',
         # 'templates/show_app.xml'
