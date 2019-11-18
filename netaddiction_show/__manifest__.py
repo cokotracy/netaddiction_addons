@@ -28,6 +28,7 @@
         'views/show.xml',
         # 'data/acl.xml',
         # 'templates/assets.xml',
-        # 'templates/show_app.xml'
+        # 'templates/show_app.xml',
+        'security/ir.model.access.csv',
         ],
 }
