@@ -1,11 +1,13 @@
-# -*- coding: utf-8 -*-
+# Copyright 2019 Openforce Srls Unipersonale (www.openforce.it)
+# License LGPL-3.0 or later (https://www.gnu.org/licenses/lgpl).
+
 import logging
 import werkzeug.utils
 
-from openerp import http
-from openerp.http import request
-from openerp.http import Response
-from openerp.http import JsonRequest
+from odoo import http
+from odoo.http import request
+from odoo.http import Response
+from odoo.http import JsonRequest
 
 _logger = logging.getLogger(__name__)
 
