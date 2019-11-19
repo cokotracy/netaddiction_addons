@@ -94,11 +94,12 @@ class Show(models.Model):
         # compute="_get_sale_sell_value"
     )
 
-    '''
-    @api.one
+    @api.multi
     def close_show(self):
-        self.state = 'close'
+        for record in self:
+            record.state = 'close'
 
+    '''
     @api.one
     def _get_sale_stock_value(self):
         value = 0
@@ -112,12 +113,16 @@ class Show(models.Model):
         for line in self.show_sell_ids:
             value += float(line.public_price)
         self.sale_sell_value = value
+    '''
 
     @api.multi
     def import_csv(self):
-        csv_file = base64.b64decode(self.import_file)
-        csv_bytes = io.BytesIO(csv_file)
+        csv_file = base64.b64decode(self.import_file).decode('utf-8')
+        csv_bytes = io.StringIO(csv_file)
         spamreader = csv.reader(csv_bytes)
+        product_model = self.env['product.product']
+        show_quant_model = self.env['netaddiction.show.quant']
+        sell_quant_model = self.env['netaddiction.sell.quant']
 
         for line in spamreader:
             barcode = line[0]
@@ -132,11 +137,11 @@ class Show(models.Model):
                 barcode.upper(),
                 barcode.capitalize()]
 
-            product = self.env['product.product'].search(
+            product = product_model.search(
                 [('barcode', 'in', barcodes)])
             if product:
                 value = 0
-                res = self.env['netaddiction.show.quant'].search(
+                res = show_quant_model.search(
                     [('product_id', '=', product.id), ('name', '=', self.id)])
                 if res:
                     q = 0
@@ -154,8 +159,7 @@ class Show(models.Model):
                     'public_price': line[4],
                     'stock_value': value * float(line[3])
                 }
-                self.env['netaddiction.sell.quant'].create(attr)
-    '''
+                sell_quant_model.create(attr)
 
     @api.multi
     def create_csv(self):
