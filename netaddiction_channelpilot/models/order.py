@@ -44,6 +44,7 @@ class ChannelPilotOrder(models.Model):
                 cp_order = self._create_cp_order(order, user, user_shipping, user_billing, client)
                 cp_orders.append(cp_order)
             except Exception as e:
+                print("Problemi nel creare l'ordine %s - Ecco l'eccezione  %s  ****  %s " % (order, traceback.format_exc(), ''.join(traceback.format_stack())))
                 problems.append("Problemi nel creare l'ordine %s - Ecco l'eccezione  %s  ****  %s " % (order, traceback.format_exc(), ''.join(traceback.format_stack())))
         print(problems)
         if problems:
