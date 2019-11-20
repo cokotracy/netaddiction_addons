@@ -47,8 +47,8 @@ class ChannelPilotOrder(models.Model):
                 print("Problemi nel creare l'ordine %s - Ecco l'eccezione  %s  ****  %s " % (order, traceback.format_exc(), ''.join(traceback.format_stack())))
                 problems.append("Problemi nel creare l'ordine %s - Ecco l'eccezione  %s  ****  %s " % (order, traceback.format_exc(), ''.join(traceback.format_stack())))
         print(problems)
-        if problems:
-            self._send_cp_error_mail(" [CHANNELPILOT -  IMPORT ORDERS] return da getNewMarketplaceOrders: %s - Questi gli ordini problematici: %s" % (response, problems), '[CHANNELPILOT -  IMPORT ORDERS] problemi nella conversione di alcuni')
+        #if problems:
+        #    self._send_cp_error_mail(" [CHANNELPILOT -  IMPORT ORDERS] return da getNewMarketplaceOrders: %s - Questi gli ordini problematici: %s" % (response, problems), '[CHANNELPILOT -  IMPORT ORDERS] problemi nella conversione di alcuni')
 
         if cp_orders:
             order_array = client.factory.create(u'CPOrderArray')
