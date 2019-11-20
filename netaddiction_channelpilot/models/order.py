@@ -77,7 +77,7 @@ class ChannelPilotOrder(models.Model):
         """
         user = self.env["res.partner"].search([("email", "=", cp_customer.email)])
         user = user[0] if user else None
-        name = cp_delivery.nameFull
+        name = cp_delivery.nameFull or 'Utente Amazon Prime'
         try:
             name = name if not cp_delivery.company else name + " C/O " + cp_delivery.company
         except:
