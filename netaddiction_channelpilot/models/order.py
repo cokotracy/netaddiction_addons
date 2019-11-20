@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import random
 from suds.client import Client
 from openerp import api, fields, models
 from ..settings import MERCHANT_ID, SHOP_TOKEN
@@ -32,14 +33,13 @@ class ChannelPilotOrder(models.Model):
             return
         cp_orders = []
         problems = []
+        prime_orders = []
         # DEBUG MAIL
         self._send_cp_error_mail("  %s" % response, '[CHANNELPILOT -  DEBUG] getNewMarketplaceOrders result ')
         if "orders" not in response:
             # non ci sono ordini
             return
         for order in response.orders:
-            print(order.addressDelivery.nameFull)
-            print(order.addressDelivery.streetTitle)
             if order.addressDelivery.nameFull and order.addressDelivery.streetTitle:
                 # JUICE
                 try:
@@ -47,11 +47,19 @@ class ChannelPilotOrder(models.Model):
                     cp_order = self._create_cp_order(order, user, user_shipping, user_billing, client)
                     cp_orders.append(cp_order)
                 except Exception as e:
-                    print("Problemi nel creare l'ordine %s - Ecco l'eccezione  %s  ****  %s " % (order, traceback.format_exc(), ''.join(traceback.format_stack())))
                     problems.append("Problemi nel creare l'ordine %s - Ecco l'eccezione  %s  ****  %s " % (order, traceback.format_exc(), ''.join(traceback.format_stack())))
-        print(problems)
-        #if problems:
-        #    self._send_cp_error_mail(" [CHANNELPILOT -  IMPORT ORDERS] return da getNewMarketplaceOrders: %s - Questi gli ordini problematici: %s" % (response, problems), '[CHANNELPILOT -  IMPORT ORDERS] problemi nella conversione di alcuni')
+            else:
+                prime_orders.append(order)
+        if problems:
+            self._send_cp_error_mail(" [CHANNELPILOT -  IMPORT ORDERS] return da getNewMarketplaceOrders: %s - Questi gli ordini problematici: %s" % (response, problems), '[CHANNELPILOT -  IMPORT ORDERS] problemi nella conversione di alcuni')
+
+        if prime_orders:
+            for prime_order in prime_orders:
+                prime_order.orderHeader.orderId = random.randint(12345678, 87654321)
+            print(prime_orders)
+            # order_array = client.factory.create(u'CPOrderArray')
+            # order_array.item = prime_orders
+            # response_imported = client.service.setImportedOrders(cpAuth, order_array, False)
 
         if cp_orders:
             order_array = client.factory.create(u'CPOrderArray')
