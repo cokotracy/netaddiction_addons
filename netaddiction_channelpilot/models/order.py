@@ -57,10 +57,10 @@ class ChannelPilotOrder(models.Model):
             for prime_order in prime_orders:
                 prime_order.orderHeader.orderId = random.randint(12345678, 87654321)
             self._send_cp_error_mail(
-                " [CHANNELPILOT -  IMPORT ORDERS] return da getNewMarketplaceOrders: %s - Questi gli ordini prime: %s" % (response, prime_orders), '[CHANNELPILOT -  IMPORT ORDERS] ordini prime non importati')
-            # order_array = client.factory.create(u'CPOrderArray')
-            # order_array.item = prime_orders
-            # response_imported = client.service.setImportedOrders(cpAuth, order_array, False)
+                " [CHANNELPILOT -  IMPORT ORDERS] return da getNewMarketplaceOrders - Questi sono gli ordini prime: %s" % prime_orders, '[CHANNELPILOT -  IMPORT ORDERS] ordini prime non importati')
+            order_array = client.factory.create(u'CPOrderArray')
+            order_array.item = prime_orders
+            response_imported = client.service.setImportedOrders(cpAuth, order_array, False)
 
         if cp_orders:
             order_array = client.factory.create(u'CPOrderArray')
