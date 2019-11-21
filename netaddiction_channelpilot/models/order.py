@@ -249,16 +249,16 @@ class ChannelPilotOrder(models.Model):
 
     def _send_cp_error_mail(self, body, subject):
         """Utility invio mail errore channelpilot."""
-        values = {
-            'subject': subject,
-            'body_html': body,
-            'email_from': "shopping@multiplayer.com",
-            # TODO 'email_to': "ecommerce-servizio@netaddiction.it",
-            'email_to': "paola.coccia@netaddiction.it, andrea.alunni@netaddiction.it, matteo.serafini@netaddiction.it",
-        }
-
-        email = self.env['mail.mail'].create(values)
-        email.send()
+        # values = {
+        #     'subject': subject,
+        #     'body_html': body,
+        #     'email_from': "shopping@multiplayer.com",
+        #     # TODO 'email_to': "ecommerce-servizio@netaddiction.it",
+        #     'email_to': "paola.coccia@netaddiction.it, andrea.alunni@netaddiction.it, matteo.serafini@netaddiction.it",
+        # }
+        # email = self.env['mail.mail'].create(values)
+        # email.send()
+        return 
 
     @api.model
     def _notify_cp_deliveries_cron(self):
