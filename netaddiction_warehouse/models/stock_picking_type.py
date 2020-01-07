@@ -406,7 +406,7 @@ class StockPicking(models.Model):
         if self.carrier_id.id == brt:
             url = 'http://as777.brt.it/vas/sped_det_show.hsm?referer=sped_numspe_par.htm&ChiSono=%s' % self.delivery_barcode
         else:
-            url = 'https://www.mysda.it/SDAServiziEsterniWeb2/faces/SDAElencoSpedizioni.jsp?user=NETA20&idritiro=%s' % self.delivery_barcode
+            url = 'https://www.mysda.it/SDAServiziEsterniWeb2/faces/SDAElencoSpedizioni.jsp?user=net323452&idritiro=%s' % self.delivery_barcode
 
         client_action = {'type': 'ir.actions.act_url',
                          'name': "Shipment Tracking Page",
