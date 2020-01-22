@@ -4,4 +4,3 @@ access_netaddiction_difference_quant_user,netaddiction_show.netaddiction.differe
 access_netaddiction_show_quant_user,netaddiction_show.netaddiction.show.quant,model_netaddiction_show_quant,base.group_user,1,1,1,1
 access_netaddiction_sell_quant_user,netaddiction_show.netaddiction.sell.quant,model_netaddiction_sell_quant,base.group_user,1,1,1,1
 access_netaddiction_return_quants_user,netaddiction_show.netaddiction.return.quants,model_netaddiction_return_quants,base.group_user,1,1,1,1
-access_netaddiction_show_returned_move_user,netaddiction_show.netaddiction.show.returned.move,model_netaddiction_show_returned_move,base.group_user,1,1,1,1
