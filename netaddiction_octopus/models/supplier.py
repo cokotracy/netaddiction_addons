@@ -4,8 +4,8 @@ from odoo import api, models, fields
 
 
 class Supplier(models.Model):
-
     _name = 'netaddiction_octopus.supplier'
+    _description = 'Octopus Supplier'
     _inherits = {'res.partner': 'partner_id'}
     _order = 'order'
 

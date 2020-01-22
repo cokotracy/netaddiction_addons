@@ -12,7 +12,6 @@ _logger = logging.getLogger(__name__)
 
 
 class Template(models.Model):
-
     _inherit = 'product.template'
 
     octopus_group = fields.Char(
@@ -22,8 +21,8 @@ class Template(models.Model):
 
 
 class Product(models.Model):
-
     _name = 'netaddiction_octopus.product'
+    _description = 'Octopus Product'
 
     attribute_ids = fields.Many2many(
        'product.attribute.value',

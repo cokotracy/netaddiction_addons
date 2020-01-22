@@ -3,8 +3,8 @@ from ..base import registry
 
 
 class Tax(models.Model):
-
     _name = 'netaddiction_octopus.tax'
+    _description = "Octopus Tax"
     _order = 'field'
 
     code = fields.Char(

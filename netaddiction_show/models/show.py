@@ -10,8 +10,8 @@ from odoo.exceptions import Warning
 
 
 class Show(models.Model):
-
     _name = "netaddiction.show"
+    _description = "Netaddiction Show"
 
     name = fields.Char(
         string="Nome Fiera"
@@ -408,8 +408,8 @@ class Show(models.Model):
 
 
 class DiffQuant(models.Model):
-
     _name = "netaddiction.difference.quant"
+    _description = "Netaddiction Difference Quant"
 
     name = fields.Many2one(
         comodel_name="netaddiction.show",
@@ -443,8 +443,8 @@ class DiffQuant(models.Model):
 
 
 class ShowQuant(models.Model):
-
     _name = "netaddiction.show.quant"
+    _description = "Netaddiction Show Quant"
 
     name = fields.Many2one(
         comodel_name="netaddiction.show",
@@ -484,8 +484,8 @@ class ShowQuant(models.Model):
 
 
 class SellQuant(models.Model):
-
     _name = "netaddiction.sell.quant"
+    _description = "Netaddiction Sell Quant"
 
     name = fields.Many2one(
         comodel_name="netaddiction.show",
@@ -513,8 +513,8 @@ class SellQuant(models.Model):
 
 
 class ReturnQuant(models.Model):
-
     _name = "netaddiction.return.quants"
+    _description = "Netaddiction Return Quants"
 
     name = fields.Many2one(
         comodel_name="netaddiction.show",
@@ -536,8 +536,8 @@ class ReturnQuant(models.Model):
 
 
 class ProductsMovement(models.TransientModel):
-
     _name = "netaddiction.show.returned.move"
+    _description = "Netaddiction Show Returned Move"
 
     barcode = fields.Char(
         string="Barcode"

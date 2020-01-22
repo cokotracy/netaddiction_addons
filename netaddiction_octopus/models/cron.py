@@ -12,8 +12,8 @@ _logger = logging.getLogger(__name__)
 
 
 class Cron(models.Model):
-
     _name = 'netaddiction_octopus.cron'
+    _description = "Octopus Cron"
 
     @api.model
     def run(self):

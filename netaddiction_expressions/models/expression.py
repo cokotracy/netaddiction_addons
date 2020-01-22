@@ -6,8 +6,8 @@ from datetime import datetime
 
 
 class ExpressionExpression(models.Model):
-
     _name = 'netaddiction.expressions.expression'
+    _description = "Netaddiction Expressions Expression"
     _rec_name = 'title'
 
     condition_ids = fields.One2many(
@@ -41,9 +41,8 @@ class ExpressionExpression(models.Model):
 
 
 class ExpressionCondition(models.Model):
-
     _name = 'netaddiction.expressions.condition'
-    _descritpion = 'Conditions to search for every expression'
+    _description = 'Conditions to search for every expression'
 
     attrib_id = fields.Many2one(
         'product.attribute.value',
