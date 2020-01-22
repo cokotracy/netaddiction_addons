@@ -75,12 +75,12 @@ class Show(models.Model):
     )
 
     import_file = fields.Binary(
-        string="Csv Ritorno Fiera",
+        string="Csv Ritorno Fiera (import)",
         attachment=True
     )
 
     report_file = fields.Binary(
-        string="Csv Ritorno Fiera",
+        string="Csv Ritorno Fiera (report)",
         attachment=True
     )
 
