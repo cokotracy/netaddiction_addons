@@ -75,7 +75,7 @@ class Product(models.Model):
 
     price = fields.Float(
        string='Prezzo',
-       digits_compute=get_precision('Product Price')
+       digits=get_precision('Product Price')
     )
 
     purchase_tax_id = fields.Many2one(
@@ -100,7 +100,7 @@ class Product(models.Model):
 
     supplier_price = fields.Float(
        'Prezzo fornitore',
-       digits_compute=get_precision('Product Price')
+       digits=get_precision('Product Price')
     )
 
     supplier_quantity = fields.Float(
