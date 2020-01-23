@@ -5,7 +5,7 @@
     'author': "OpenForce",
     'website': "http://www.openforce.it",
     'category': 'Purchase',
-    'version': '12.0.1.0.0',
+    'version': '12.0.1.1.0',
     'depends': [
         # 'base',
         'product',
