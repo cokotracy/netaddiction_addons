@@ -18,7 +18,7 @@ class ProductProduct(models.Model):
 
     final_price = fields.Float(
         string="Pricelist Price",
-        digits_compute=dp.get_precision('Product Price')
+        digits=dp.get_precision('Product Price')
     )
 
     qty_available_now = fields.Integer(

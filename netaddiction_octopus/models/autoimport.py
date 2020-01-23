@@ -3,8 +3,8 @@
 from odoo import api, models, fields
 
 class AutoImportProduct(models.Model):
-
     _name = 'netaddiction_octopus.autoimport.product'
+    _description = 'Octopus Autoimport Product'
 
     category_ids = fields.Many2many(
         'product.category',
@@ -19,8 +19,8 @@ class AutoImportProduct(models.Model):
 
 
 class Cron(models.Model):
-
     _name = 'netaddiction_octopus.cron.autoimport'
+    _description = 'Octopus Cron Autoimport'
 
     @api.model
     def run_import(self):

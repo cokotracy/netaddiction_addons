@@ -4,8 +4,8 @@ from odoo import models, api, fields
 
 
 class DoPurchaseProducts(models.TransientModel):
-
     _name = "do.purchase.product"
+    _description = "Do Purchase Product"
 
     product_id = fields.Many2one(string="Prodotto", comodel_name="product.product")
     qty = fields.Integer(string="Quantità", default=1)
@@ -30,7 +30,6 @@ class DoPurchaseProducts(models.TransientModel):
 
 
 class ProductProduct(models.Model):
-
     _inherit = "product.product"
 
     @api.multi

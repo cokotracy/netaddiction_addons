@@ -12,7 +12,6 @@ _logger = logging.getLogger(__name__)
 
 
 class Template(models.Model):
-
     _inherit = 'product.template'
 
     octopus_group = fields.Char(
@@ -22,8 +21,8 @@ class Template(models.Model):
 
 
 class Product(models.Model):
-
     _name = 'netaddiction_octopus.product'
+    _description = 'Octopus Product'
 
     attribute_ids = fields.Many2many(
        'product.attribute.value',
@@ -76,7 +75,7 @@ class Product(models.Model):
 
     price = fields.Float(
        string='Prezzo',
-       digits_compute=get_precision('Product Price')
+       digits=get_precision('Product Price')
     )
 
     purchase_tax_id = fields.Many2one(
@@ -101,7 +100,7 @@ class Product(models.Model):
 
     supplier_price = fields.Float(
        'Prezzo fornitore',
-       digits_compute=get_precision('Product Price')
+       digits=get_precision('Product Price')
     )
 
     supplier_quantity = fields.Float(

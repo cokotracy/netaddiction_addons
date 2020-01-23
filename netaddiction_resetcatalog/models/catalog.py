@@ -9,8 +9,8 @@ _logger = logging.getLogger(__name__)
 
 
 class ResetCatalog(models.Model):
-
     _name = 'netaddiction.reset.catalog'
+    _description = 'Netaddiction Reset Catalog'
 
     def _deactive_products_no_available(self):
         # Deactive every product with no quantities and type product

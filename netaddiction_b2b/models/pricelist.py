@@ -12,8 +12,8 @@ from odoo.exceptions import UserError
 
 
 class PricelistFTPUser(models.Model):
-
     _name = 'netaddiction_pricelist_ftp_user'
+    _description = 'Netaddiction Pricelist FTP User'
 
     partner_id = fields.Many2one(
         'res.partner',
@@ -26,8 +26,8 @@ class PricelistFTPUser(models.Model):
 
 
 class ProductPricelistCondition(models.Model):
-
     _name = 'pricelist.condition'
+    _description = 'Pricelist Condition'
 
     expression = fields.Many2one(
         'netaddiction.expressions.expression',
@@ -48,7 +48,6 @@ class ProductPricelistCondition(models.Model):
 
 
 class ProductPricelist(models.Model):
-
     _inherit = 'product.pricelist'
 
     expression = fields.Many2many(
@@ -281,7 +280,6 @@ class ProductPricelist(models.Model):
 
 
 class ProductPriceItems(models.Model):
-
     _inherit = 'product.pricelist.item'
 
     b2b_real_price = fields.Float(

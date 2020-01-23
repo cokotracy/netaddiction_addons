@@ -9,8 +9,8 @@ from openerp import api, models
 
 
 class Cron(models.Model):
-
     _name = 'netaddiction.generate_and_send_monday_report'
+    _description = "Generate And Send Monday Report"
 
     @api.model
     def run(self):
