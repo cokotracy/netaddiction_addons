@@ -1,0 +1,13 @@
+codicefiscale
+pyxb==1.2.6
+pudb
+ipdb
+pysftp
+numpy
+boto3
+paramiko
+PyYAML==3.13
+asn1crypto
+iso8601
+unidecode
+unicodecsv
