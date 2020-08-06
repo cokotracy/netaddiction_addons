@@ -1,0 +1,26 @@
+#navbar-main ul {
+    display: block;
+    float: left;
+   & li {
+        float: left;
+    }
+}
+
+.header-row1 .nav-header-row1 {
+    list-style: none;
+    color: #fff;
+    font-size: 12px;
+    float: right;
+    margin: 10px 0 15px 0;
+    padding-left: 0;
+    width: 100%;
+    text-align: right;
+}
+.logo {
+    background-image: url(../img/logo-complete-long.png);
+    background-repeat: no-repeat;
+    background-position: center left;
+    background-size: contain;
+    height: 29px;
+    margin-top: 1px;
+}

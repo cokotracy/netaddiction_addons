@@ -1,0 +1,199 @@
+<odoo>
+    <template id="assets_frontend" inherit_id="web.assets_frontend" name="OAuth Providers Assets">
+            <xpath expr="//link[last()]" position="after">
+                <link rel="stylesheet" type="text/scss" href="/netaddiction_website/static/src/scss/main.scss"/>
+            </xpath>
+        </template>
+	<template id="base_template" inherit_id="web.frontend_layout">
+
+    <xpath expr="//header" position="replace">
+            <div class="navbar navbar-default nav-main" style="background: black;">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="container container-header">
+                                <div class="header-row1">
+                                    <i class="hidden-lg hidden-md fa fa-bars" id="open-offcanvans"></i>
+                                    <span class="spaziatore-header col-md-12 hidden-sm hidden-xs h18px"></span>
+                                    <ul class="hidden-lg d-none hidden-md nav-header-row1" style="">
+                                        
+                                        <span class="dyn-user-authenticated">
+                                            <li class="hidden-sm hidden-xs"><a href="/account/lista-desideri/" class="white"><i class="fa fa-heart pull-left"></i><span class="pull-left"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Wishlist</font></font></span></a></li>
+                                            <li class="hidden-sm hidden-xs"><a href="/account/ordini/" class="white"><i class="fa fa-question-circle pull-left"></i><span class="pull-left"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Track your order</font></font></span></a></li>
+                                        </span>
+                                        <li class="li-shopping-cart"><a href="/carrello/" class="white"><i class="fa fa-shopping-cart"></i></a></li>
+                                        <li class="shipping-free d-none"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">FREE shipping from € 49.00</font></font></li>
+                                    </ul>
+                                    <a href="/"><div class="col-extralg-3 col-lg-3 col-md-3 col-sm-3 col-xs-3 logo"></div></a>
+                                    <div class="col-extralg-6 col-lg-6 col-md-6 col-sm-12 col-xs-12 row-search">
+                                        <form id="search-form" class="navbar-form" action="/ricerca/" data-autocomplete-action="/ricerca/autocomplete/">
+                                            <div class="form-group">
+                                                <div class="input-group">
+                                                    <input class="form-control search-input ui-autocomplete-input" name="s" id="search" placeholder="Research" autocomplete="off" autofocus="" type="text" value=""/>
+                                                    <button style="background: #ffb800;" type="button" class="btn btn-default">
+                                                    <span class="fa fa-search"></span>
+                                            </button>
+                                                </div>
+                                            </div>
+                                        <ul class="ui-autocomplete ui-front ui-menu ui-widget ui-widget-content" id="ui-id-1" tabindex="0" style="display: none;"></ul></form>
+                                    </div>
+                                    <div class="col-extralg-3 col-lg-3 col-md-3 hidden-sm hidden-xs p0">
+                                        <div class="col-lg-9 col-md-9 text-right">
+                                            <span class="orange-1 username"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Hi </font><span class="dyn-user-anonymous" style="display: inline;"><font style="vertical-align: inherit;">, </font></span><span class="dyn-user-anonymous" style="display: inline;"><a href="/login/"><font style="vertical-align: inherit;">Log in</font></a></span></font><span class="dyn-user-authenticated dyn-user-name"></span><span class="dyn-user-anonymous" style="display: inline;"><font style="vertical-align: inherit;"></font><a href="/login/"><font style="vertical-align: inherit;"></font></a></span></span><br/>
+                                            <ul class="nav container-dropdown">
+                                                <li class="dropdown dropdown-profile">
+                                                    <span class="dyn-user-authenticated">
+                                                        <a class="dropdown-toggle white" data-toggle="dropdown" data-hover="dropdown" data-delay="500" data-close-others="false"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">
+                                                            My account </font></font><span class="caret orange-1"></span>
+                                                        </a>
+                                                        <ul class="dropdown-menu dropdown-profilo bullet pull-center">
+                                                            <li><a href="/account/"><i class="fa fa-user"></i><font style="vertical-align: inherit;"><font style="vertical-align: inherit;"> My account</font></font></a></li>
+                                                            <li><a href="/account/ordini/"><i class="fa fa-gift"></i><font style="vertical-align: inherit;"><font style="vertical-align: inherit;"> My orders</font></font></a></li>
+                                                            <li><a href="/account/lista-desideri/"><i class="fa fa-heart pull-left"></i><font style="vertical-align: inherit;"><font style="vertical-align: inherit;"> Wishlist</font></font></a></li>
+                                                            <li role="separator" class="divider"></li>
+                                                            <li><a href="/logout/"><i class="fa fa-sign-out"></i><font style="vertical-align: inherit;"><font style="vertical-align: inherit;"> Logout / Disconnect</font></font></a></li>
+                                                        </ul>
+                                                    </span>
+                                                    <span class="dyn-user-anonymous" style="display: inline;">
+                                                        <a class="dropdown-toggle white" data-toggle="dropdown" data-hover="dropdown" data-delay="500" data-close-others="false" aria-expanded="false"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">
+                                                            My account </font></font><span class="caret orange-1"></span>
+                                                        </a>
+                                                        <ul class="dropdown-menu dropdown-profilo bullet pull-center">
+                                                            <li><a href="/login/"><i class="fa fa-sign-in"/><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Login </font></font><br/><span class="text-muted"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Login with your username and password!</font></font></span></a></li>
+                                                            <li><a href="/registrazione/"><i class="fa fa-user"/><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Register </font></font><br/><span class="text-muted"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">to make purchases </font></font><br/><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">and access Multiplayer.com services</font></font></span></a></li>
+                                                        </ul>
+                                                    </span>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                        <div class="col-lg-2 col-md-2 shopping-cart p0r">
+                                            <a href="/carrello/">
+                                                <i class="fa fa-shopping-cart fa-3x">
+                                                    <span class="dyn-cart-count badge"></span>
+                                                </i>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+    </xpath>
+	<xpath expr="//main" position="replace"> 
+        <div class="col-12 col-lg-10 ml-5">
+        <div class="" id="promo_banner">
+        
+            <a href="https://t.me/multiplayershop" class="text-center">
+            
+                <img style="width:100%;" src="/netaddiction_website/static/src/img/mcombm-telegramshipping-1440x120.jpg" class="img-responsive m15t" data-src="/media/images/banner/2019/11/14/mcombm-telegramshipping-1440x120.jpg" data-src_mobile="/media/images/banner/2019/11/14/mcombm-telegramshipping-1440x120_mBKItkb.jpg"/>
+            
+            </a>
+        
+        </div>
+		<nav class="navbar navbar-expand-lg navbar-light bg-light">
+          <!-- <a class="navbar-brand" href="#">Navbar</a>
+          <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button> -->
+
+          <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mr-auto">
+              <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                  Choose By category
+                </a>
+                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                  <a class="dropdown-item" href="#">Action</a>
+                  <a class="dropdown-item" href="#">Another action</a>
+                  <div class="dropdown-divider"></div>
+                  <a class="dropdown-item" href="#">Something else here</a>
+                </div>
+              </li>
+              <li class="nav-item active">
+                <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="#">Link</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link disabled" href="#">Disabled</a>
+              </li>
+            </ul>
+          </div>
+        </nav>
+
+        <div id="carouselExampleControls" class="carousel slide" data-ride="carousel">
+          <div class="carousel-inner">
+            <div class="carousel-item active">
+              <img class="d-block w-100" src="/netaddiction_website/static/src/img/Artwork_1440x300.png" alt="First slide"/>
+            </div>
+            <div class="carousel-item">
+              <img class="d-block w-100" src="/netaddiction_website/static/src/img/FUnko_pop.jpg" alt="Second slide"/>
+            </div>
+            <div class="carousel-item">
+              <img class="d-block w-100" src="/netaddiction_website/static/src/img/Artwork_1440x300.jpg" alt="Third slide"/>
+            </div>
+            <div class="carousel-item">
+              <img class="d-block w-100" src="/netaddiction_website/static/src/img/sabbia_2.jpg" alt="Forth slide"/>
+            </div>
+          </div>
+          <a class="carousel-control-prev" href="#carouselExampleControls" role="button" data-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="sr-only">Previous</span>
+          </a>
+          <a class="carousel-control-next" href="#carouselExampleControls" role="button" data-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="sr-only">Next</span>
+          </a>
+        </div>
+    </div>
+    </xpath> 
+
+    <xpath expr="//footer" position="replace">
+        <footer>
+     <div class="footer" id="footer">
+        <div class="container">
+            <div class="clearfix"><br/></div>
+            <div class="row">
+                <div class="col-extralg-4 col-lg-3 col-md-3 col-sm-3 col-xs-12 text-center">
+                    <a href="/account/" class="orange">Gestione Account e Ordini</a> - <a href="/affiliazioni/" class="orange">Affiliazioni</a>
+                </div>
+                <div class="col-extralg-4 col-lg-3 col-md-3 col-sm-3 col-xs-12 text-center">
+                    <a href="/privacy/" class="orange">Informativa sulla Privacy</a>
+                </div>
+                <div class="col-extralg-4 col-lg-3 col-md-3 col-sm-3 col-xs-12 text-center">
+                    <a href="/static/pdf/Condizioni-Generali-Multiplayer-Netaddiction.pdf" class="orange" target="_blank">Termini e condizioni di vendita</a>
+                </div>
+                <div class="col-extralg-4 col-lg-3 col-md-3 col-sm-3 col-xs-12 text-center">
+                    <a href="/costi-metodi-spedizione/" class="orange">Costi e metodi di spedizione</a>
+                </div>
+            </div>
+            <div class="clearfix"><br/></div>
+            <div class="row text-center">
+                <p class="text-center footer-contatti"><strong>Hai bisogno di aiuto per il tuo ordine? Contattaci via mail/telefono!</strong><br/><em>(Servizio di assistenza clienti attivo dalle 9:30 alle 16 dal Lunedì al Venerdì)</em></p>
+                <div class="footer-contatti-feedaty" id="zoorate_widget_a2491953d7205563"></div>
+            </div>
+            <div class="row">
+                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 colonna1">
+                    <p class="text-center">
+                        <strong>Contatta l'assistenza clienti:</strong><br/>
+<!--                         <span class="txt20px">usando l'apposito <a href="/contatti/"><strong>modulo</strong></a></span><br> -->
+                        Scrivi a <a href="mailto:shopping@multiplayer.com"><strong class="mail">shopping@multiplayer.com</strong></a>
+                    </p>
+                </div>
+                
+            </div>
+        </div>
+    </div>      
+    <div class="footer-bottom">
+        <div class="container">
+            <p class="text-center txt12px">
+                <strong>Multiplayer.com: il miglior sito di Vendita Videogiochi Libri e DVD Online</strong><br/>Multiplayer.com è un marchio di proprietà di NetAddiction S.r.l.<br/>P. IVA 01206540559 - Via Arnaldo Maria Angelini, 12 - 05100 - Terni (TR) - Italy - TEL: 0744 2462990
+            </p>
+            <div class="clearfix"><br/></div>
+        </div>
+    </div>
+</footer>
+    </xpath>
+</template>
+</odoo>
