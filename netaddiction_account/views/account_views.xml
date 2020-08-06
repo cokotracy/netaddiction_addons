@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <record model="ir.ui.view" id="netaddiction_account_invoice_form">
+        <field name="name">netaddiction.account.invoice.form</field>
+        <field name="model">account.invoice</field>
+        <field name="inherit_id" ref="account.invoice_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='sequence_number_next']" position="after">
+                <field name="customer_number_identifier" class="oe_inline"/>
+            </xpath>
+            <field name="date_invoice" position="before">
+                <field name="is_customer_invoice" string="Fattura Cliente"/>
+            </field>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="netaddiction_purchase_account_invoice_form">
+        <field name="name">netaddiction.puchase.account.invoice.form</field>
+        <field name="model">account.invoice</field>
+        <field name="inherit_id" ref="account.invoice_supplier_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='reference']" position="after">
+                <field name="create_credit_note"/>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

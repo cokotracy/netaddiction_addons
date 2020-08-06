@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <record model="ir.ui.view" id="netaddiction_pricelist_b2b">
+        <field name="name">netaddiction.product.pricelist.b2b</field>
+        <field name="model">product.pricelist</field>
+        <field name="inherit_id" ref="product.product_pricelist_view"/>
+        <field name="arch" type="xml">
+            <field name="company_id" position="after">
+                <field name="generate_csv_ftp"/>
+            </field>
+            <xpath expr="//field[@name='item_ids']/.." position="before">
+                <div>
+                    <separator string="Expressions" />
+                    <group>
+                        <field name="expression" nolabel="1"/>
+                    </group>
+                    <div>
+                        <button type="object" name="populate_item_ids_from_expression"
+                                string="Aggiungi/Aggiorna Prodotti"
+                                class="btn btn-primary oe_inline"
+                                style="margin-right:10px" />
+                        <button type="object" name="delete_all_items"
+                                string="Cancella tutto"
+                                class="btn btn-danger oe_inline"
+                                style="margin-right:10px" />
+                        <button type="object" name="get_csv" string="Create and Show CSV"
+                                class="btn btn-success oe_inline"
+                                style="margin-right:10px" />
+                        <label for="last_attachment_id" string="Last CSV" class="oe_inline" />
+                        <field name="last_attachment_id" class="oe_inline" readonly="1" />
+                    </div>
+                </div>
+            </xpath>
+            <xpath expr="//field[@name='item_ids']/.." position="after">
+                <div>
+                    <separator string="FTP Users" />
+                    <field name="ftp_user" nolabel="1">
+                        <tree>
+                            <field name="partner_id"/>
+                            <field name="path"/>
+                        </tree>
+                    </field>
+                </div>
+            </xpath>
+            <xpath expr="//field[@name='item_ids']/tree/field[@name='min_quantity']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//field[@name='item_ids']/tree/field[@name='date_start']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//field[@name='item_ids']/tree/field[@name='date_end']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//field[@name='item_ids']/tree/field[@name='price']" position="after">
+                <field name="b2b_real_price"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="netaddiction_pricelist_condition_tree">
+        <field name="name">netaddiction.product.pricelist.condition.tree</field>
+        <field name="model">pricelist.condition</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="expression" required="1"/>
+                <field name="percentage_discount"/>
+            </tree>
+        </field>
+    </record>
+
+</odoo>
