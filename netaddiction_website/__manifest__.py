@@ -5,7 +5,9 @@
         'website',
     ],
     'data': [
-    	'views/base_template.xml'
+    	'views/base_template.xml',
+        'views/header.xml',
+        'views/footer.xml',
     ],
 	'installable': True,
     'application': True,

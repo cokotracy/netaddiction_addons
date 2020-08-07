@@ -1,0 +1,204 @@
+<odoo>
+    <template id="netaddiction_website.header_template">
+        <div class="navbar navbar-default nav-main" style="background: black;">
+            <div class="container-fluid row">
+                <div class="col-12">
+                    <div class="container container-header row">
+                        <div class="row header-row1" style="width: 100%;">
+                            <i class="hidden-lg hidden-md fa fa-bars" id="open-offcanvans"></i>
+                            <span class="spaziatore-header col-md-12 hidden-sm hidden-xs h18px"></span>
+                            <ul class="hidden-lg d-none hidden-md nav-header-row1" style="">
+                                <span class="dyn-user-authenticated">
+                                    <li class="hidden-sm hidden-xs">
+                                        <a href="/account/lista-desideri/" class="white">
+                                            <i class="fa fa-heart pull-left"></i>
+                                            <span class="pull-left">
+                                                <font style="vertical-align: inherit;">
+                                                    <font style="vertical-align: inherit;">Wishlist
+                                                    </font>
+                                                </font>
+                                            </span>
+                                        </a>
+                                    </li>
+                                    <li class="hidden-sm hidden-xs">
+                                        <a href="/account/ordini/" class="white">
+                                            <i class="fa fa-question-circle pull-left"></i>
+                                            <span class="pull-left">
+                                                <font style="vertical-align: inherit;">
+                                                    <font style="vertical-align: inherit;">Track your order
+                                                    </font>
+                                                </font>
+                                            </span>
+                                        </a>
+                                    </li>
+                                </span>
+                                <li class="li-shopping-cart" >
+                                    <a href="/carrello/" class="white">
+                                        <i class="fa fa-shopping-cart" style="color:white;"></i>
+                                    </a>
+                                </li>
+                                 <li class="shipping-free d-none">
+                                    <font style="vertical-align: inherit;">
+                                        <font style="vertical-align: inherit;">FREE shipping from € 49.00
+                                        </font>
+                                    </font>
+                                </li>
+                            </ul>
+                            <a href="/" class="col-3">
+                                <div class="col-12 logo"></div>
+                            </a>
+                            <div class="col-6 row-search">
+                                <form id="search-form" class="navbar-form" action="/ricerca/" data-autocomplete-action="/ricerca/autocomplete/">
+                                    <div class="form-group">
+                                        <div class="input-group">
+                                            <input class="form-control search-input ui-autocomplete-input" name="s" id="search" placeholder="Research" autocomplete="off" autofocus="" type="text" value=""/>
+                                            <button style="background: #ffb800;" type="button" class="btn btn-default">
+                                                <span class="fa fa-search"></span>
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <ul class="ui-autocomplete ui-front ui-menu ui-widget ui-widget-content" id="ui-id-1" tabindex="0" style="display: none;"></ul>
+                                </form>
+                            </div>
+                            <div class="col-3 p0">
+                                <div class="row">
+                                    <div class="col-lg-9 col-md-9 text-right">
+                                        <span class="orange-1 username">
+                                            <font style="vertical-align: inherit;">
+                                                <font style="vertical-align: inherit;">Hi </font>
+                                                <span class="dyn-user-anonymous" style="display: inline;"><font style="vertical-align: inherit;">, </font>
+                                                </span>
+                                                <span class="dyn-user-anonymous" style="display: inline;">
+                                                    <a href="/login/">
+                                                        <font style="vertical-align: inherit;">Log in</font>
+                                                    </a>
+                                                </span>
+                                            </font>
+                                            <span class="dyn-user-authenticated dyn-user-name"></span>
+                                            <span class="dyn-user-anonymous" style="display: inline;">
+                                                <font style="vertical-align: inherit;"></font>
+                                                <a href="/login/">
+                                                    <font style="vertical-align: inherit;"></font>
+                                                </a>
+                                            </span>
+                                        </span>
+                                        <br/>
+                                        <ul class="nav container-dropdown float-right">
+                                            <li class="dropdown dropdown-profile">
+                                                <span class="dyn-user-authenticated d-none">
+                                                    <a class="dropdown-toggle white" data-toggle="dropdown" data-hover="dropdown" data-delay="500" data-close-others="false">
+                                                        <font style="vertical-align: inherit;">
+                                                            <font style="vertical-align: inherit;">
+                                                                My account 
+                                                            </font>
+                                                        </font>
+                                                        <span class="caret orange-1"></span>
+                                                    </a>
+                                                    <ul class="dropdown-menu dropdown-profilo bullet pull-center">
+                                                        <li>
+                                                            <a href="/account/">
+                                                                <i class="fa fa-user"></i>
+                                                                <font style="vertical-align: inherit;">
+                                                                    <font style="vertical-align: inherit;"> My account
+                                                                    </font>
+                                                                </font>
+                                                            </a>
+                                                        </li>
+                                                        <li>
+                                                            <a href="/account/ordini/">
+                                                                <i class="fa fa-gift"></i>
+                                                                <font style="vertical-align: inherit;">
+                                                                    <font style="vertical-align: inherit;"> My orders
+                                                                    </font>
+                                                                </font>
+                                                            </a>
+                                                        </li>
+                                                        <li>
+                                                            <a href="/account/lista-desideri/">
+                                                                <i class="fa fa-heart pull-left"></i>
+                                                                <font style="vertical-align: inherit;">
+                                                                    <font style="vertical-align: inherit;"> Wishlist
+                                                                    </font>
+                                                                </font>
+                                                            </a>
+                                                        </li>
+                                                        <li role="separator" class="divider"></li>
+                                                        <li>
+                                                            <a href="/logout/">
+                                                                <i class="fa fa-sign-out"></i>
+                                                                <font style="vertical-align: inherit;">
+                                                                    <font style="vertical-align: inherit;"> Logout / Disconnect
+                                                                    </font>
+                                                                </font>
+                                                            </a>
+                                                        </li>
+                                                    </ul>
+                                                </span>
+                                                <span class="dyn-user-anonymous" style="display: inline; color:white;">
+                                                    <a class="dropdown-toggle white" data-toggle="dropdown" data-hover="dropdown" data-delay="500" data-close-others="false" aria-expanded="false">
+                                                        <font style="vertical-align: inherit;">
+                                                            <font style="vertical-align: inherit;">
+                                                                My account 
+                                                            </font>
+                                                        </font>
+                                                        <span class="caret orange-1"></span>
+                                                    </a>
+                                                    <ul class="dropdown-menu dropdown-profilo bullet pull-center">
+                                                        <li>
+                                                            <a href="/login/">
+                                                                <i class="fa fa-sign-in"/>
+                                                                <font style="vertical-align: inherit;">
+                                                                    <font style="vertical-align: inherit;">Login 
+                                                                    </font>
+                                                                </font>
+                                                                <br/>
+                                                                <span class="text-muted">
+                                                                    <font style="vertical-align: inherit;">
+                                                                        <font style="vertical-align: inherit;">Login with your username and password!
+                                                                        </font>
+                                                                    </font>
+                                                                </span>
+                                                            </a>
+                                                        </li>
+                                                        <li>
+                                                            <a href="/registrazione/">
+                                                                <i class="fa fa-user"/>
+                                                                <font style="vertical-align: inherit;">
+                                                                    <font style="vertical-align: inherit;">Register 
+                                                                    </font>
+                                                                </font>
+                                                                <br/>
+                                                                <span class="text-muted">
+                                                                    <font style="vertical-align: inherit;">
+                                                                        <font style="vertical-align: inherit;">to make purchases 
+                                                                        </font>
+                                                                    </font>
+                                                                    <br/>
+                                                                    <font style="vertical-align: inherit;">
+                                                                        <font style="vertical-align: inherit;">and access Multiplayer.com services
+                                                                        </font>
+                                                                    </font>
+                                                                </span>
+                                                            </a>
+                                                        </li>
+                                                    </ul>
+                                                </span>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                    <div class="col-lg-2 col-md-2 shopping-cart p0r">
+                                        <a href="/carrello/">
+                                            <i class="fa fa-shopping-cart fa-3x">
+                                                <span class="dyn-cart-count badge"></span>
+                                            </i>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </template>
+</odoo>
