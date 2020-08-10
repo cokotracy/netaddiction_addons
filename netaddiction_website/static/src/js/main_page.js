@@ -1,13 +1,17 @@
-odoo.define('netaddiction_website.main_page', function (require) {
+odoo.define('netaddiction_website.mainPage', function (require) {
 	var publicWidget = require('web.public.widget');
 
 
-	publicWidget.registry.mainPage = publicWidget.extend({
+	var mainPage = publicWidget.extend({,
+		selector: '.main_page'
 		init: function () {
 			debugger
 		},
 		start: function () {
 			debugger;
 		},
-	})
+	});
+	return {
+    mainPage: mainPage,
+};
 });

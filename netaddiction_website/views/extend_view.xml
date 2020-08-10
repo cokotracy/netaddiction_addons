@@ -1,0 +1,7 @@
+<odoo>
+	<!-- <template id="extend_view" inheirt_id="netaddiction_website.base_template">
+		<xpath expr="//div[@id='wrapwrap']/main/div[2]" position="attributes"> 
+        	<attribute name="class" add="d-none" separator=" "/>
+   	    </xpath>
+	</template> -->
+</odoo>
