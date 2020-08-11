@@ -47,20 +47,11 @@
                             <a href="/" class="col-3">
                                 <div class="col-12 logo"></div>
                             </a>
-                            <div class="col-6 row-search">
-                                <form id="search-form" class="navbar-form" action="/ricerca/" data-autocomplete-action="/ricerca/autocomplete/">
-                                    <div class="form-group">
-                                        <div class="input-group">
-                                            <input class="form-control search-input ui-autocomplete-input" name="s" id="search" placeholder="Research" autocomplete="off" autofocus="" type="text" value=""/>
-                                            <button style="background: #ffb800;" type="button" class="btn btn-default">
-                                                <span class="fa fa-search"></span>
-                                            </button>
-                                        </div>
-                                    </div>
-                                    <ul class="ui-autocomplete ui-front ui-menu ui-widget ui-widget-content" id="ui-id-1" tabindex="0" style="display: none;"></ul>
-                                </form>
+                            <div class="col-12 col-md-6 row-search">
+                                <t t-call="website_sale.s_products_searchbar_input"/>
                             </div>
-                            <div class="col-3 p0">
+
+                            <div class="col-3 d-none d-md-block p0">
                                 <div class="row">
                                     <div class="col-lg-9 col-md-9 text-right">
                                         <span class="orange-1 username">
@@ -69,7 +60,7 @@
                                                 <span class="dyn-user-anonymous" style="display: inline;"><font style="vertical-align: inherit;">, </font>
                                                 </span>
                                                 <span class="dyn-user-anonymous" style="display: inline;">
-                                                    <a href="/login/">
+                                                    <a href="/web/login/">
                                                         <font style="vertical-align: inherit;">Log in</font>
                                                     </a>
                                                 </span>
@@ -77,7 +68,7 @@
                                             <span class="dyn-user-authenticated dyn-user-name"></span>
                                             <span class="dyn-user-anonymous" style="display: inline;">
                                                 <font style="vertical-align: inherit;"></font>
-                                                <a href="/login/">
+                                                <a href="/web/login/">
                                                     <font style="vertical-align: inherit;"></font>
                                                 </a>
                                             </span>
@@ -145,7 +136,7 @@
                                                     </a>
                                                     <ul class="dropdown-menu dropdown-profilo bullet pull-center">
                                                         <li>
-                                                            <a href="/login/">
+                                                            <a href="/web/login/">
                                                                 <i class="fa fa-sign-in"/>
                                                                 <font style="vertical-align: inherit;">
                                                                     <font style="vertical-align: inherit;">Login 

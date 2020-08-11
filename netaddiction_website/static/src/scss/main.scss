@@ -34,6 +34,30 @@
     color: #fff;
 }
 
-.cover-normale-home {
-    padding-top: 20px;
+.main_page div div {
+    padding-top: 10px;
+}
+.menu-categorie:hover {
+    .dropdown-menu {
+        display: block;
+    }
+}
+.navbar li:hover {
+    background: #D3D3D3;
+}
+
+#footer {
+    background: #fafafa;
+    border-top: 1px solid #EFEFEF;
+    margin-top: 30px;
+}
+.header-row1 .nav-header-row1 {
+    list-style: none;
+    color: #fff;
+    font-size: 12px;
+    float: right;
+    margin: 10px 0 15px 0;
+    padding-left: 0;
+    width: 100%;
+    text-align: right;
 }
