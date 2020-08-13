@@ -5,10 +5,10 @@
                 <div class="col-12">
                     <div class="container container-header row">
                         <div class="row header-row1" style="width: 100%;">
-                            <i class="hidden-lg hidden-md fa fa-bars" id="open-offcanvans"></i>
+                            <i class="d-md-none fa fa-bars" id="open-offcanvans" style="color: white;"></i>
                             <span class="spaziatore-header col-md-12 hidden-sm hidden-xs h18px"></span>
-                            <ul class="hidden-lg d-none hidden-md nav-header-row1" style="">
-                                <span class="dyn-user-authenticated">
+                            <ul class="hidden-lg d-md-none hidden-md nav-header-row1" style="">
+                                <!-- <span class="dyn-user-authenticated">
                                     <li class="hidden-sm hidden-xs">
                                         <a href="/account/lista-desideri/" class="white">
                                             <i class="fa fa-heart pull-left"></i>
@@ -31,20 +31,20 @@
                                             </span>
                                         </a>
                                     </li>
-                                </span>
+                                </span> -->
                                 <li class="li-shopping-cart" >
                                     <a href="/carrello/" class="white">
                                         <i class="fa fa-shopping-cart" style="color:white;"></i>
                                     </a>
                                 </li>
-                                 <li class="shipping-free d-none">
+                                 <li class="shipping-free d-md-none">
                                     <font style="vertical-align: inherit;">
                                         <font style="vertical-align: inherit;">FREE shipping from € 49.00
                                         </font>
                                     </font>
                                 </li>
                             </ul>
-                            <a href="/" class="col-3">
+                            <a href="/" class="col-6 col-md-3">
                                 <div class="col-12 logo"></div>
                             </a>
                             <div class="col-12 col-md-6 row-search">

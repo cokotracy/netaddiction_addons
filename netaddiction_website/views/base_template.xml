@@ -4,7 +4,7 @@
             <link rel="stylesheet" type="text/scss" href="/netaddiction_website/static/src/scss/main.scss"/>
         </xpath>
         <xpath expr="." position="inside">
-            <script type="text/javascript" src="/netaddiction_website/static/src/js/main.js"></script>
+            <script type="text/javascript" src="/netaddiction_website/static/src/js/main_page.js"></script>
         </xpath>
     </template>
 
@@ -15,18 +15,20 @@
         <xpath expr="//div[@id='wrapwrap']/header/nav/div/a" position="attributes">
             <attribute name="class" separator=" " add="d-none"/>
         </xpath>
-        <xpath expr="//div[@id='wrapwrap']/header/nav/div/a" position="before">
-            <div class="dropdown">
-                <button class="btn  dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                 Choose By<strong> Category</strong>
-                </button>
+        <xpath expr="//div[@id='wrapwrap']/header/nav/div/div[last()]/ul/li" position="before">
+            <li>
+                <div class="dropdown">
+                    <button class="btn  dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Choose By<strong> Category</strong>
+                    </button>
 
-                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                    <a class="dropdown-item" href="#">Action</a>
-                    <a class="dropdown-item" href="#">Another action</a>
-                    <a class="dropdown-item" href="#">Something else here</a>
-            </div>
-        </div>
+                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                        <a class="dropdown-item" href="#">Action</a>
+                        <a class="dropdown-item" href="#">Another action</a>
+                        <a class="dropdown-item" href="#">Something else here</a>
+                    </div>
+                </div>
+            </li>
         </xpath>
         <xpath expr="//div[@id='wrapwrap']/header/nav/div/div/ul" position="attributes">
             <attribute name="class" separator=" " remove="ml-auto"/>
@@ -68,11 +70,20 @@
                             <span class="sr-only">Next</span>
                         </a>
                     </div>
-                    <t t-call="website_sale.s_products_recently_viewed">
-                       <!--  <xpath expr="." position="inside">
-                            Hello this is 
-                        </xpath> -->
-                    </t>
+                    <!-- <i class="fa fa-arrow-left"/> -->
+                    <div class="">
+                        <h2 class="titolo_riga">
+                            I Più venduti
+                        </h2>
+                    </div>
+                    <div class="s_products_mostly_sold">
+                        <t t-call="website_sale.s_products_recently_viewed">
+                           <!--  <xpath expr="." position="inside">
+                                Hello this is 
+                            </xpath> -->
+                        </t>
+                    </div>
+                    <!-- <i class="float-right fa fa-arrow-right"/> -->
                     <div class="row cover-normale-home m-auto pull-left">
                         <div class="row img-main riga-immagini-home">
                             <div class="img-row col-4 column-img width-1-3 text-center m30b item-same-height-box">
@@ -116,10 +127,10 @@
             </div>
         </xpath>
     </template>
-    <!-- <template id="products_recently_viewed" inherit_id="website.homepage">
-        <xpath expr="//div[@id='main_page']/div/section/div" position="inside">
+    <!-- <template id="products_recently_viewed" inherit_id="website_sale.s_products_recently_viewed">
+        <xpath expr="//section/container" position="inside">
             <div>
-                hello all
+                Hello all
             </div>
         </xpath>
     </template> -->
