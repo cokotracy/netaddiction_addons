@@ -5,13 +5,16 @@ odoo.define('netaddiction_website.mainPage', function (require) {
 	publicWidget.registry.productsMostlySold = publicWidget.registry.productsRecentlyViewedSnippet.extend({
 		selector: '.s_products_mostly_sold',
 		start: function () {
-			this._fetch();
+			this._fetch().then(this._render.bind(this));
 		},
-		_fetch: function () {
-			return this._rpc({
+		_fetch: async function () {
+			var self =this;
+			debugger;
+			return await this._rpc({
             route: '/netaddiction_website/mostly_sold',
-        }).then(function(abc) {
-        	var products = res['products'];
+        }).then(function(res) {
+        	debugger;
+        	// var products = res['products'];
             return res;
         });
 		}

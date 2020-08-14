@@ -3,12 +3,14 @@
 	'depends': [
 		'base',
         'website',
+        'sale',
+        'website_sale'
     ],
     'data': [
     	'views/base_template.xml',
         'views/header.xml',
         'views/footer.xml',
-        'views/extend_view.xml',
+        'views/products.xml',
     ],
 	'installable': True,
     'application': True,
