@@ -57,12 +57,7 @@
     text-align: right;
 }
 
-:not('.s_wsale_products_recently_viewed') {
-    .titolo_riga {
-        display: none;
-    }
-}
-.s_wsale_products_recently_viewed {
+.s_products_mostly_sold .s_wsale_products_recently_viewed {
     padding-top: 0 !important;
    & .carousel , .slider, .container {
         padding-top: 0;
@@ -70,6 +65,12 @@
 
     & h3 {
         display: none;
+    }
+}
+#wsale_products_categories_collapse ul li{
+    border: 1px solid #efefef;
+    a {
+        color: #444;
     }
 }
 

@@ -1,12 +1,17 @@
 <odoo>
 	<template id="products" inherit_id="website_sale.products" name="">
-		<xpath expr="//div[@id='products_grid_before'][last()]" position="inside">
-			<p>
-				<label for="amount">Price range:</label>
-				<input type="text" id="amount" style="border:0; color:#f6931f; font-weight:bold;"/>
-			</p>
+		<xpath expr="//div[@id='products_grid_before']" position="inside">
 
-			<div id="slider-range"></div>
+			<h4>Sort By</h4>
+			<!-- <t t-call="website_sale.sort"/> -->
+			<div>
+				<p>
+					<label for="amount" class="pt-2">Price range:</label>
+					<input type="range" id="amount"/>
+				</p>
+
+				<div id="slider-range"></div>
+			</div>
 		</xpath>
 	</template>
 </odoo>

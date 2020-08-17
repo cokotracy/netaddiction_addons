@@ -76,13 +76,12 @@
                             I Più venduti
                         </h2>
                     </div>
+                    <!-- Mostly sold products -->
                     <div class="s_products_mostly_sold">
-                        <t t-call="website_sale.s_products_recently_viewed">
-                           <!--  <xpath expr="." position="inside">
-                                Hello this is 
-                            </xpath> -->
-                        </t>
+                        <t t-call="website_sale.s_products_recently_viewed"/>
                     </div>
+                    <!-- Recently viewed products -->
+                    <t t-call="website_sale.s_products_recently_viewed"/>
                     <!-- <i class="float-right fa fa-arrow-right"/> -->
                     <div class="row cover-normale-home m-auto pull-left">
                         <div class="row img-main riga-immagini-home">
