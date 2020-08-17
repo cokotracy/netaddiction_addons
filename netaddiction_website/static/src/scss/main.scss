@@ -33,6 +33,12 @@
 }
 .navbar li:hover {
     background: #D3D3D3;
+
+}
+.navbar li:hover {
+    .dropdown-menu {
+        display: block;
+    }
 }
 
 #footer {

@@ -8,7 +8,7 @@
         </xpath>
     </template>
 
-    <template id="base_template" inherit_id="website.layout">
+    <template id="main_template" inherit_id="website.layout">
         <xpath expr="//div[@id='wrapwrap']/header/nav" position="before">
            <t t-call="netaddiction_website.header_template"/>
         </xpath>
@@ -127,13 +127,6 @@
             </div>
         </xpath>
     </template>
-    <!-- <template id="products_recently_viewed" inherit_id="website_sale.s_products_recently_viewed">
-        <xpath expr="//section/container" position="inside">
-            <div>
-                Hello all
-            </div>
-        </xpath>
-    </template> -->
 </odoo>
 
     
