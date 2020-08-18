@@ -1,9 +1,19 @@
 {
-	'name': 'Offshore App',
+	'name': 'Netaddiction Website Enhancement',
+    'summary': """
+        Netaddiction Website Enhancement
+    """,
+    'author': "OpenForce",
+    'category': 'Custom Development',
+    'version': '1.0',
+    'description': """
+        This module will enhance the website features
+        - Layout similar to multiplayer.com
+        - Product Filter options
+        - Product Order by options
+        - Product Filter by range slider
+    """,
 	'depends': [
-		'base',
-        'website',
-        'sale',
         'website_sale'
     ],
     'data': [
@@ -13,6 +23,5 @@
         'views/products.xml',
     ],
 	'installable': True,
-    'application': True,
-    'auto_install': True,
+    'application': False,
 }
