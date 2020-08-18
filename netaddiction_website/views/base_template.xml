@@ -2,6 +2,7 @@
     <template id="assets_frontend" inherit_id="web.assets_frontend" name="">
         <xpath expr="//link[last()]" position="after">
             <link rel="stylesheet" type="text/scss" href="/netaddiction_website/static/src/scss/main.scss"/>
+            <link rel="stylesheet" type="text/scss" href="/netaddiction_website/static/src/scss/shop_page.scss"/>
         </xpath>
         <xpath expr="." position="inside">
             <script type="text/javascript" src="/netaddiction_website/static/src/js/main_page.js"></script>
