@@ -67,10 +67,32 @@
         display: none;
     }
 }
-#wsale_products_categories_collapse ul li{
-    border: 1px solid #efefef;
-    a {
-        color: #444;
+#products_grid_before {
+
+    h4 {
+        color: #FF6600;    
+        font-weight: 400;
+        padding-right: 15px;
+        padding-left: 15px;
+        border: 1px solid #efefef;
+        margin-bottom: 0;
+        padding-top: 5px;
+    }
+    ul {
+        padding: 0;
+        margin-bottom: 0;
+        li{
+            border: 1px solid #efefef;
+            list-style: none;
+            padding: 5px;
+            a {
+                color: #444;
+                padding: 5px 15px;
+            }
+            i {
+                padding-right: 5px;
+            }
+        }
     }
 }
 

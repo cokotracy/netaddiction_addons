@@ -1,23 +1,89 @@
 <odoo>
 	<template id="products" inherit_id="website_sale.products" name="">
+		<xpath expr="//div[@id='wrap']/div[2]/div" position="attributes">
+			<attribute name="class" add="d-none" separator=" "/>
+		</xpath>
 		<xpath expr="//div[@id='products_grid_before']" position="inside">
-			<h4>Filter by Price</h4>
-			<!-- <t t-call="website_sale.sort"/> -->
-			<div class="product_price_range_slider" style="height:100px;">
-				<!-- <p>
-					<label for="amount">Price range:</label>
-					<input type="text" id="amount" readonly="1" style="border:0; color:#b9cd6d; font-weight:bold;"/>
-				</p>
-				
-				<div id="slider-range"></div> -->
-				<p>Price Range: <strong class="rangeValues badge"></strong></p>
-				<section class="range-slider mb16">
-					<input id="slide1" value="1" min="1" max="10000" step="1" type="range"/>
-					<input id="slide2" value="10000" min="1" max="10000" step="1" type="range"/>
-				</section>
-				<a t-att-href="keep('/shop')" class="price_filter btn btn-primary btn-sm mt16 mb16 w-100">Apply Price Filter</a>
-			</div>
-			<hr/>
+
+			<aside style="border: solid 1px #efefef">
+				<h4>Filter by Price</h4>
+				<!-- <t t-call="website_sale.sort"/> -->
+				<div class="product_price_range_slider" style="height:100px;">
+					<!-- <p>
+						<label for="amount">Price range:</label>
+						<input type="text" id="amount" readonly="1" style="border:0; color:#b9cd6d; font-weight:bold;"/>
+					</p>
+					
+					<div id="slider-range"></div> -->
+					<p>Price Range: <strong class="rangeValues badge"></strong></p>
+					<section class="range-slider mb16">
+						<input id="slide1" value="1" min="1" max="10000" step="1" type="range"/>
+						<input id="slide2" value="10000" min="1" max="10000" step="1" type="range"/>
+					</section>
+					<a t-att-href="keep('/shop')" class="price_filter btn btn-primary btn-sm mt16 mb16 w-100">Apply Price Filter</a>
+				</div>
+				<hr/>
+				<h4>Filter By</h4>
+				<ul>
+					<li>
+						<a href="/shop">
+							<i class="fa fa-database"></i>
+							Entire Catelog
+						</a>
+					</li>
+					<li>
+						<a href="/shop/immediate_available">
+							<i class="fa fa-check-circle-o"></i>
+							Immediate Available
+						</a>
+					</li>
+					<li>
+						<a href="#">
+							<i class="fa fa-smile-o"></i>
+							On Sale
+						</a>
+					</li>
+					<li>
+						<a href="#">
+							<i class="fa fa-calendar"></i>
+							Latest Release
+						</a>
+					</li>
+				</ul>
+				<h4>Sort By</h4>
+				<ul>
+					<li>
+						<a href="#">
+							<i class="fa fa-star"></i>
+							Relevance
+						</a>
+					</li>
+					<li>
+						<a href="/shop?order=list_price+asc">
+							<i class="fa fa-sort-amount-asc"></i>
+							Increasing Price
+						</a>
+					</li>
+					<li>
+						<a href="/shop?order=list_price+desc">
+							<i class="fa fa-sort-amount-desc"></i>
+							Decreasing Price
+						</a>
+					</li>
+					<li>
+						<a href="/shop?order=name+asc">
+							<i class="fa fa-star"></i>
+							Name: A to Z
+						</a>
+					</li>
+					<li>
+						<a href="/shop?order=name+desc">
+							<i class="fa fa-star"></i>
+							Name: Z to A
+						</a>
+					</li>
+				</ul>
+			</aside>
 		</xpath>
 	</template>
 </odoo>
