@@ -181,9 +181,17 @@
                         </div>
                     </div>
                 </div>
-                <t t-call="netaddiction_website.netaddiction_image_thumbnail_view"/>
+                <div class="netaddiction_snippet">
+                    <t t-call="netaddiction_website.netaddiction_image_thumbnail_view"/>
+                </div>
                 <div class="oe_structure"/>
             </div>
+        </xpath>
+    </template>
+
+    <template id="netaddiction_recently_viewed_products_product" inherit_id="netaddiction_website.netaddiction_home_page" active="True" customize_show="True" name="Recently Viewed Products">
+        <xpath expr="//t[@t-call='netaddiction_website.netaddiction_image_thumbnail_view']" position="before">
+            <t t-call="website_sale.s_products_recently_viewed"/>
         </xpath>
     </template>
 
