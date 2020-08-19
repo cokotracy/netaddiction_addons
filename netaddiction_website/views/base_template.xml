@@ -92,5 +92,57 @@
         <xpath expr="//ul[@id='top_menu']//li[last()]" position="replace"/>
     </template>
 
+    <template id="netaddiction_footer_custom" inherit_id="website.layout" name="Footer">
+        <xpath expr="//div[@id='footer']" position="replace">
+            <div id="footer" class="oe_structure oe_structure_solo" t-ignore="true" t-if="not no_footer">
+                <section class="s_text_block pt16 pb8">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-lg-3 text-center">
+                                <a href="/account/">Gestione Account e Ordini</a> - <a href="/affiliazioni/" class="orange">Affiliazioni</a>
+                            </div>
+                            <div class="col-lg-3 text-center">
+                                <a href="/privacy/">Informativa sulla Privacy</a>
+                            </div>
+                            <div class="col-lg-3 text-center">
+                                <a href="/static/pdf/Condizioni-Generali-Multiplayer-Netaddiction.pdf" target="_blank">Termini e condizioni di vendita</a>
+                            </div>
+                            <div class="col-lg-3 text-right">
+                                <a href="/costi-metodi-spedizione/">Costi e metodi di spedizione</a>
+                            </div>
+                        </div>
+                        <div class="clearfix"><br/></div>
+                        <div class="row">
+                            <div class="col-12 text-center">
+                                <p><strong>Hai bisogno di aiuto per il tuo ordine? Contattaci via mail/telefono!</strong>
+                                    <br/>
+                                    <em>(Servizio di assistenza clienti attivo dalle 9:30 alle 16 dal Lunedì al Venerdì)</em>
+                                </p>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-12">
+                                <p class="text-center">
+                                    <strong>Contatta l'assistenza clienti:</strong><br/>
+                                    Scrivi a <a href="mailto:shopping@multiplayer.com"><strong class="mail">shopping@multiplayer.com</strong></a>
+                                </p>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-12">
+                                <p class="text-center">
+                                    <strong>Multiplayer.com: il miglior sito di Vendita Videogiochi Libri e DVD Online</strong><br/>
+                                    Multiplayer.com è un marchio di proprietà di NetAddiction S.r.l.<br/>
+                                    P. IVA 01206540559 - Via Arnaldo Maria Angelini, 12 - 05100 - Terni (TR) - Italy - TEL: 0744 2462990
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </xpath>
+    </template>
+
+
 </odoo>
 
