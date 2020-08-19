@@ -55,7 +55,7 @@
                             <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#top_netaddiction_menu_collapse">
                                 <span class="navbar-toggler-icon"/>
                             </button>
-                            <ul class="nav navbar-nav ml-auto text-right" id="top_menu">
+                            <ul class="nav navbar-nav ml-auto text-right mr-2" id="top_menu">
                                 <li class="nav-item dropdown" t-ignore="true" t-if="not user_id._is_public()">
                                     <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">
                                         <b>
@@ -84,6 +84,13 @@
                     </div>
                 </div>
             </nav>
+        </xpath>
+        <xpath expr="//div[@id='wrapwrap']/main/t[@t-raw='0']" position="before">
+            <div class="container">
+                <a href="https://t.me/multiplayershop" class="text-center">
+                    <img class="img-responsive mt16 w-100" src="/netaddiction_website/static/src/img/mcombm-telegramshipping-1440x120.jpg"/>
+                </a>
+            </div>
         </xpath>
     </template>
 
