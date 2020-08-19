@@ -1,5 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
+
+    <template id="_assets_primary_variables" inherit_id="website._assets_primary_variables" priority="1">
+        <xpath expr="//link[last()]" position="after">
+            <link rel="stylesheet" type="text/scss" href="/netaddiction_website/static/src/scss/primary_variables.scss"/>
+        </xpath>
+    </template>
+
+    <template id="_assets_frontend_helpers" inherit_id="website._assets_frontend_helpers" priority="1">
+        <xpath expr="//link" position="before">
+            <link rel="stylesheet" type="text/scss" href="/netaddiction_website/static/src/scss/bootstrap_overridden.scss"/>
+        </xpath>
+    </template>
+
     <template id="assets_frontend" inherit_id="web.assets_frontend" name="">
         <xpath expr="//link[last()]" position="after">
             <link rel="stylesheet" type="text/scss" href="/netaddiction_website/static/src/scss/main.scss"/>
@@ -35,14 +48,14 @@
         <xpath expr="//ul[@id='top_menu']/li[@t-if='website.user_id != user_id']/a" position="replace"/>
 
         <xpath expr="//div[@id='wrapwrap']/header/nav" position="before">
-            <nav class="navbar navbar-expand-md navbar-dark bg-dark" id="preheader">
+            <nav class="navbar navbar-expand-md" id="preheader">
                 <div class="container">
                     <t t-set="website_sale_order" t-value="website.sale_get_order()" />
                     <a href="/" class="navbar-brand logo">
                         <span t-field="website.logo" t-options="{'widget': 'image'}" role="img" t-att-aria-label="'Logo of %s' % website.name" t-att-title="website.name" />
                     </a>
-                    <span class="o_wsale_my_cart d-md-none" style="margin-right: 1rem;">
-                        <a href="/shop/cart">
+                    <span class="d-md-none" style="margin-right: 1rem;">
+                        <a class="o_wsale_my_cart" href="/shop/cart">
                             <i class="fa fa-shopping-cart fa-2x"></i>
                             <sup t-attf-class="my_cart_quantity badge badge-primary" t-esc="website_sale_order and website_sale_order.cart_quantity or ''" t-att-data-order-id="website_sale_order and website_sale_order.id or ''"/>
                         </a>
@@ -114,7 +127,7 @@
                             <div class="col-lg-3 text-center">
                                 <a href="/static/pdf/Condizioni-Generali-Multiplayer-Netaddiction.pdf" target="_blank">Termini e condizioni di vendita</a>
                             </div>
-                            <div class="col-lg-3 text-right">
+                            <div class="col-lg-3 text-center">
                                 <a href="/costi-metodi-spedizione/">Costi e metodi di spedizione</a>
                             </div>
                         </div>
@@ -185,6 +198,14 @@
                     <t t-call="netaddiction_website.netaddiction_image_thumbnail_view"/>
                 </div>
                 <div class="oe_structure"/>
+            </div>
+        </xpath>
+    </template>
+
+    <template id="netaddiction_products_mostly_sold" inherit_id="netaddiction_website.netaddiction_home_page" active="True" customize_show="True" name="Mostly Sold Products">
+        <xpath expr="//t[@t-call='netaddiction_website.netaddiction_image_thumbnail_view']" position="before">
+            <div class="s_products_mostly_sold">
+                <t t-call="website_sale.s_products_recently_viewed"/>
             </div>
         </xpath>
     </template>
