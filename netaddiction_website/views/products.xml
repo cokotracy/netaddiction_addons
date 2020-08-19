@@ -46,36 +46,13 @@
 				</ul>
 				<h4>Sort By</h4>
 				<ul>
-					<li>
-						<a href="#">
-							<i class="fa fa-star"></i>
-							Relevance
-						</a>
-					</li>
-					<li>
-						<a t-att-href="keep('/shop?order=list_price+asc')">
-							<i class="fa fa-sort-amount-asc"></i>
-							Increasing Price
-						</a>
-					</li>
-					<li>
-						<a t-att-href="keep('/shop?order=list_price+desc')">
-							<i class="fa fa-sort-amount-desc"></i>
-							Decreasing Price
-						</a>
-					</li>
-					<li>
-						<a t-att-href="keep('/shop?order=name+asc')">
-							<i class="fa fa-star"></i>
-							Name: A to Z
-						</a>
-					</li>
-					<li>
-						<a t-att-href="keep('/shop?order=name+desc')">
-							<i class="fa fa-star"></i>
-							Name: Z to A
-						</a>
-					</li>
+					<t t-foreach="website_sale_sortable" t-as="sortby">
+						<li>
+	                        <a role="menuitem" rel="noindex,nofollow" t-att-href="keep('/shop', order=sortby[1])" class="dropdown-item">
+	                            <span t-raw="sortby[0]"/>
+	                        </a>
+                    	</li>
+                    </t>
 				</ul>
 			</aside>
 		</xpath>
