@@ -32,7 +32,7 @@
 						</a>
 					</li>
 					<li>
-						<a href="/shop/immediate_available">
+						<a href="/shop?filter=immediate_available">
 							<i class="fa fa-check-circle-o"></i>
 							Immediate Available
 						</a>
