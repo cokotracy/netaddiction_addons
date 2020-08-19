@@ -2,8 +2,19 @@
 #top_netaddiction_searchbar {
     form.s_wsale_products_searchbar_input {
         margin-bottom: 0px !important;
+        .oe_search_box {
+            border-top-left-radius: 50rem !important;
+            border-bottom-left-radius: 50rem !important;
+            border-right: 0 !important;
+        }
+        .oe_search_button {
+            border-top-right-radius: 50rem !important;
+            border-bottom-right-radius: 50rem !important;
+            border-left: 0 !important;
+        }
     }
 }
+
 .orange-1 {
     color: #ffc120;
 }
