@@ -150,7 +150,7 @@
         </xpath>
     </template>
 
-    <template id="netaddiction_home_page" inherit_id="website.homepage">
+    <template id="netaddiction_home_page" inherit_id="website.homepage" name="Netaddiction Home Page">
         <xpath expr="//div[@id='wrap']" position="replace">
             <div id="wrap">
                 <div class="oe_structure"/>
@@ -181,9 +181,62 @@
                         </div>
                     </div>
                 </div>
+                <t t-call="netaddiction_website.netaddiction_image_thumbnail_view"/>
                 <div class="oe_structure"/>
             </div>
         </xpath>
+    </template>
+
+    <template id="netaddiction_image_thumbnail_view" name="Netaddiction Thumbnail View">
+        <div class="container mt16 mb16">
+            <div class="row">
+                <div class="col-lg-4 mb8">
+                    <div class="card">
+                        <a href="https://multiplayer.com/ricerca/?categoria=Figures%7C%2A&amp;sort=novita&amp;s=">
+                            <img class="card-img-top" src="/netaddiction_website/static/src/img/Artwork_720x600_1_hKult81.jpg"/>
+                        </a>
+                    </div>
+                </div>
+                <div class="col-lg-4 mb8">
+                    <div class="card">
+                        <a href="https://multiplayer.com/prodotti/ultime-uscite/?categoria=Modellismo+e+Model+Kit%7C%2A&amp;s=">
+                            <img class="card-img-top" src="/netaddiction_website/static/src/img/preview-full-models-ultime.jpg"/>
+                        </a>
+                    </div>
+                </div>
+                <div class="col-lg-4 mb8">
+                    <div class="card">
+                        <a href="https://multiplayer.com/prodotti/ultime-uscite/?categoria=Figures%7C%2A&amp;s=">
+                            <img class="card-img-top" src="/netaddiction_website/static/src/img/preview-full-figure-ultime.jpg"/>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="clearfix d-none d-sm-block"><br/></div>
+            <div class="row">
+                <div class="col-lg-4 mb8">
+                    <div class="card">
+                        <a href="https://multiplayer.com/ricerca/?s=&amp;attributo=Marca%7CMultiplayer+Edizioni">
+                            <img class="card-img-top" src="/netaddiction_website/static/src/img/edizioni-260117.jpg"/>
+                        </a>
+                    </div>
+                </div>
+                <div class="col-lg-4 mb8">
+                    <div class="card">
+                        <a href="https://multiplayer.com/prodotti/selezione/multiplayer-things.html">
+                            <img class="card-img-top" src="/netaddiction_website/static/src/img/robot-260117.jpg"/>
+                        </a>
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="card">
+                        <a href="https://multiplayer.com/ricerca/?categoria=Giochi%7C%2A&amp;s=&amp;attributo=Marca%7CNintendo">
+                            <img class="card-img-top" src="/netaddiction_website/static/src/img/plush-260117_1.jpg"/>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
     </template>
 </odoo>
 
