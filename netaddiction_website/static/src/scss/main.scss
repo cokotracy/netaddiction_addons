@@ -129,12 +129,18 @@ footer {
     }
     .product_price_range_slider {
         p {
-            padding-left: 15px;
             padding-top: 5px;
         }
         input {
             width: 70%;
             margin-left: 40px;
+        }
+        .o_price_filter {
+            border-top: 1px solid #ddd;
+            margin-top: 40px;
+            padding-top: 5px;
+            color: #333;
+            font-size: 12px;
         }
     }
     ul {
