@@ -10,7 +10,7 @@
     <template id="website_stock_item_button" inherit_id="website_sale.products_item" name="Product Stock">
         <xpath expr="//div[hasclass('oe_product_image')]" position="before">
             <div align="right" class="p-1" t-if="product.type == 'product'">
-                <t t-if="product.qty_available > 0">
+                <t t-if="product.sudo().qty_available > 0">
                     <a role="button" class="btn btn-sm btn-primary text-white" title="This product is in stock.">In Stock</a>
                 </t>
                 <t t-else="">
