@@ -152,7 +152,7 @@ class WebsiteSale(WebsiteSale):
 
         #custom code start
         if post.get('filter'):
-            domains.append(('is_published', '=', True))
+            domains.append(('qty_available', '>=', 1))
         if post.get('price_max') and post.get('price_min'):
             domains.append(('list_price', '>=', int(post.get('price_min'))))
             domains.append(('list_price', '<=', int(post.get('price_max'))))
