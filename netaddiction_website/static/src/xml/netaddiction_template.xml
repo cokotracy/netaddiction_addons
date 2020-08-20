@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates id="template" xml:space="preserve">
+
+    <!-- Best Sellers Viewed Products Carousel -->
+    <t t-name="netaddiction_website.bestSellerViewed">
+        <div t-att-id="uniqueId" class="carousel slide o_not_editable" data-ride="carousel">
+            <div class="carousel-inner">
+                <t t-foreach="productsGroups" t-as="products">
+                    <div t-attf-class="carousel-item #{!products_index and 'active' or ''}">
+                        <div class="row">
+                            <t t-foreach="products" t-as="product">
+                                <div t-attf-class="o_carousel_product_card_wrap col-md-#{12 / productFrame}">
+                                    <div class="o_carousel_product_card card h-100">
+                                        <a class="o_carousel_product_img_link text-decoration-none" t-att-href="product.website_url">
+                                            <img class="o_carousel_product_card_img_top card-img-top" t-attf-src="/web/image/product.product/#{product.id}#{productFrame == 1 ? '/image_256' : '/image_512'}" t-att-alt="product.display_name"/>
+                                            <div class="o_carousel_product_card_body card-body">
+                                                <div class="o_currency_symbole d-block font-weight-bold" t-raw="product.price"/>
+                                                <!-- <span class="o_currency_price_decimal" t-raw="product.price"/> -->
+                                                <h6 class="card-title mb-0" t-raw="product.display_name"/>
+                                                <t t-if="product.rating" t-raw="product.rating"/>
+                                            </div>
+                                        </a>
+                                    </div>
+                                </div>
+                            </t>
+                        </div>
+                    </div>
+                </t>
+            </div>
+            <t t-if='productsGroups.length > 1'>
+                <a class="o_carousel_product_control carousel-control-prev" t-att-href="'#' + uniqueId" role="button" data-slide="prev">
+                    <span class="carousel-control-prev-icon"></span>
+                    <span class="sr-only">Previous</span>
+                </a>
+                <a class="o_carousel_product_control carousel-control-next" t-att-href="'#' + uniqueId" role="button" data-slide="next">
+                    <span class="carousel-control-next-icon"></span>
+                    <span class="sr-only">Next</span>
+                </a>
+            </t>
+        </div>
+    </t>
+</templates>

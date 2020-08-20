@@ -1,15 +1,26 @@
 .o_header_affix, #top {
     box-shadow: 0 2px 3px rgba(0, 0, 0, .2);
 }
-footer {
+// TODO: use variable
+h1, h2, h3, h4, h5, h6 {
+    font-family: "Open Sans","Helvetica Neue",Helvetica,Arial,sans-serif;
+}
+h1, h2, h3 {
+    color: #FF6600;
+}
+footer, body {
     font-family: "Open Sans","Helvetica Neue",Helvetica,Arial,sans-serif;
     font-size: 12px;
     color: #444444 !important;
+}
+footer {
     a {
         font-weight: bold;
+        color: #FF6600;
     }
     a:hover {
         text-decoration: underline;
+        color: #FF6600;
     }
 }
 
@@ -49,9 +60,23 @@ footer {
     }
 }
 .netaddiction_snippet {
+    .o_best_seller_slider {
+        .o_carousel_product_card {
+            border: none;
+            .o_currency_symbole {
+                color: #FF6600;
+                line-height: 27px;
+                .oe_currency_value {
+                    font-size: 27px;
+                    font-weight: 700;
+                }
+            }
+        }
+    }
     .s_wsale_products_recently_viewed {
         h3 {
             text-align: left !important;
+            margin-bottom: 0px !important;
         }
     }
 }

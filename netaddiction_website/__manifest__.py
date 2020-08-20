@@ -22,6 +22,7 @@
         'views/footer.xml',
         'views/products.xml',
     ],
+    'qweb': ['static/src/xml/*.xml'],
 	'installable': True,
     'application': False,
 }

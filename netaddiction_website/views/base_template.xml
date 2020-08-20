@@ -20,6 +20,7 @@
         </xpath>
         <xpath expr="." position="inside">
             <script type="text/javascript" src="/netaddiction_website/static/src/js/main_page.js"></script>
+            <script type="text/javascript" src="/netaddiction_website/static/src/js/best_seller_widget.js"></script>
         </xpath>
     </template>
 
@@ -118,10 +119,10 @@
                 <section class="s_text_block pt16 pb8">
                     <div class="container">
                         <div class="row">
-                            <div class="col-lg-3 text-center">
-                                <a href="/account/">Gestione Account e Ordini</a> - <a href="/affiliazioni/" class="orange">Affiliazioni</a>
+                            <div class="col-lg-4 text-center">
+                                <a href="/account/">Gestione Account e Ordini</a> - <a href="/affiliazioni/">Affiliazioni</a>
                             </div>
-                            <div class="col-lg-3 text-center">
+                            <div class="col-lg-2 text-center">
                                 <a href="/privacy/">Informativa sulla Privacy</a>
                             </div>
                             <div class="col-lg-3 text-center">
@@ -195,6 +196,13 @@
                     </div>
                 </div>
                 <div class="netaddiction_snippet">
+                    <div class="o_best_seller pt24 pb24 o_not_editable">
+                        <div class="container">
+                            <h3 class="text-left">Best Sellers</h3>
+                            <hr/>
+                            <div class="o_best_seller_slider"/>
+                        </div>
+                    </div>
                     <t t-call="netaddiction_website.netaddiction_image_thumbnail_view"/>
                 </div>
                 <div class="oe_structure"/>
@@ -202,13 +210,13 @@
         </xpath>
     </template>
 
-    <template id="netaddiction_products_mostly_sold" inherit_id="netaddiction_website.netaddiction_home_page" active="True" customize_show="True" name="Mostly Sold Products">
+    <!-- <template id="netaddiction_products_mostly_sold" inherit_id="netaddiction_website.netaddiction_home_page" active="True" customize_show="True" name="Mostly Sold Products">
         <xpath expr="//t[@t-call='netaddiction_website.netaddiction_image_thumbnail_view']" position="before">
             <div class="s_products_mostly_sold">
                 <t t-call="website_sale.s_products_recently_viewed"/>
             </div>
         </xpath>
-    </template>
+    </template> -->
 
     <template id="netaddiction_recently_viewed_products_product" inherit_id="netaddiction_website.netaddiction_home_page" active="True" customize_show="True" name="Recently Viewed Products">
         <xpath expr="//t[@t-call='netaddiction_website.netaddiction_image_thumbnail_view']" position="before">
@@ -266,6 +274,12 @@
                 </div>
             </div>
         </div>
+    </template>
+
+    <template id="netaddiction_s_products_recently_viewed" inherit_id="website_sale.s_products_recently_viewed" name="Products Recently Viewed">
+        <xpath expr="//div[hasclass('slider')]" position="before">
+            <hr/>
+        </xpath>
     </template>
 </odoo>
 

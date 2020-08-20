@@ -1,4 +1,3 @@
-
 from werkzeug.exceptions import NotFound
 
 from odoo.addons.website_sale.controllers.main import WebsiteSale, TableCompute
@@ -16,11 +15,31 @@ class WebsiteSale(WebsiteSale):
         return self._get_products_mostly_sold()
 
     def _get_products_mostly_sold(self):
+        """
+        Returns list of recently viewed products according to current user
+        """
+        FieldMonetary = request.env['ir.qweb.field.monetary']
+        monetary_options = {
+            'display_currency': request.website.get_current_pricelist().currency_id,
+        }
+        rating = request.website.viewref('website_sale.product_comment').active
         res = {'products': []}
-        products = request.env['product.template'].search([])
-        for product in products:
+        for product in request.env['product.product'].search([('net_sales_count', '>=', 0)], order="net_sales_count desc", limit=10):
+            combination_info = product._get_combination_info_variant()
             res_product = product.read(['id', 'name', 'website_url'])[0]
+            res_product.update(combination_info)
+            res_product['list_price'] = FieldMonetary.value_to_html(res_product['list_price'], monetary_options)
+            # price_formate = FieldMonetary.value_to_html(res_product['price'], monetary_options)
+            # res_product['price_decimal'] = u'.' + str(res_product['price']).split('.')[1]
+            # res_product['price_integer'] = price_formate.replace(res_product['price_decimal'], '')
+            res_product['price'] = FieldMonetary.value_to_html(res_product['price'], monetary_options)
+            if rating:
+                res_product['rating'] = request.env["ir.ui.view"].render_template('website_rating.rating_widget_stars_static', values={
+                    'rating_avg': product.rating_avg,
+                    'rating_count': product.rating_count,
+                })
             res['products'].append(res_product)
+
         return res
 
     @http.route()
