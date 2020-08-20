@@ -1,11 +1,12 @@
-from odoo.addons.website_sale.controllers.main import WebsiteSale, TableCompute
 
+from werkzeug.exceptions import NotFound
+
+from odoo.addons.website_sale.controllers.main import WebsiteSale, TableCompute
 from odoo import http
 from odoo.http import request
+from odoo.addons.http_routing.models.ir_http import slug
 from odoo.osv import expression
-
 from odoo.addons.website.controllers.main import QueryURL
-
 
 
 class WebsiteSale(WebsiteSale):
@@ -22,8 +23,7 @@ class WebsiteSale(WebsiteSale):
             res['products'].append(res_product)
         return res
 
-    @http.route([], type='http', website=True)
-    
+    @http.route()
     def shop(self, page=0, category=None, search='', ppg=False, **post):
         add_qty = int(post.get('add_qty', 1))
         Category = request.env['product.public.category']
@@ -50,10 +50,12 @@ class WebsiteSale(WebsiteSale):
         attributes_ids = {v[0] for v in attrib_values}
         attrib_set = {v[1] for v in attrib_values}
 
+        #custom code start
         #pass **post to fetch domain value
         domain = self._get_search_domain(search, category, attrib_values, **post)
-        price_min = post.get('price_min')
-        price_max = post.get('price_max')
+        #return price_min and price_max to display in slider
+        price_min = post.get('price_min', 1)
+        price_max = post.get('price_max', 10000)
 
         keep = QueryURL('/shop', category=category and int(category), search=search, attrib=attrib_list, order=post.get('order'))
 
