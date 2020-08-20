@@ -52,6 +52,8 @@ class WebsiteSale(WebsiteSale):
 
         #pass **post to fetch domain value
         domain = self._get_search_domain(search, category, attrib_values, **post)
+        price_min = post.get('price_min')
+        price_max = post.get('price_max')
 
         keep = QueryURL('/shop', category=category and int(category), search=search, attrib=attrib_list, order=post.get('order'))
 
@@ -117,10 +119,12 @@ class WebsiteSale(WebsiteSale):
             'keep': keep,
             'search_categories_ids': search_categories.ids,
             'layout_mode': layout_mode,
+            'price_min': price_min,
+            'price_max': price_max,
         }
         if category:
             values['main_object'] = category
-        return request.render("website_sale.products", values)
+        return request.render("netaddiction_website.products", values)
 
     def _get_search_domain(self, search, category, attrib_values, **post):
         domains = super(WebsiteSale,self)._get_search_domain(search, category, attrib_values)

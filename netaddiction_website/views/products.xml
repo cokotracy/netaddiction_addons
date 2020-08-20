@@ -4,15 +4,13 @@
 			<attribute name="class" add="d-none" separator=" "/>
 		</xpath>
 		<xpath expr="//div[@id='products_grid_before']" position="inside">
-
 			<aside style="border: solid 1px #efefef">
 				<h4>Filter by Price</h4>
-				<!-- <t t-call="website_sale.sort"/> -->
 				<div class="product_price_range_slider" style="height:100px;">
 					<p>Price Range: <strong class="rangeValues badge"></strong></p>
 					<section class="range-slider mb16">
-						<input id="slide1" value="1" min="1" max="10000" step="1" type="range"/>
-						<input id="slide2" value="100000" min="1" max="100000" step="1" type="range"/>
+						<input id="slide1" t-att-value="price_min or 1" min="1" max="10000" step="1" type="range"/>
+						<input id="slide2" t-att-value="price_max or 10000" min="1" max="10000" step="1" type="range"/>
 					</section>
 					<a t-att-href="keep('/shop')" class="price_filter btn btn-primary btn-sm mt16 mb16 w-100">Apply Price Filter</a>
 				</div>

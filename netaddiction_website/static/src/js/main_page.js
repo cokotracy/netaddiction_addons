@@ -25,13 +25,6 @@ odoo.define('netaddiction_website.productsMostlySold', function (require) {
             'input input': '_onPriceRangeChange',
             'click .price_filter': '_onClickApplyFilter',
         },
-        init: function () {
-            const params = new URLSearchParams(window.location.search);
-            let price_min = params.get('price_min') ? params.get('price_min') : 1;
-            let price_max = params.get('price_max') ? params.get('price_max') : 100000;
-            $('#slide1').val(price_min);
-            $('#slide2').val(price_max);
-        },
         start: function() {
             this._super.apply(this, arguments);
             this._updatePriceRange();
