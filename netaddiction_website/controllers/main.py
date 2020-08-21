@@ -1,4 +1,5 @@
 from werkzeug.exceptions import NotFound
+from datetime import timedelta, datetime
 
 from odoo.addons.website_sale.controllers.main import WebsiteSale, TableCompute
 from odoo import http
@@ -159,4 +160,21 @@ class WebsiteSale(WebsiteSale):
             domains.append(('list_price', '<=', int(post.get('price_max'))))
         return domains
 
+    @http.route()
+    def product(self, product, category='', search='', **kwargs):
+        if not product.can_access_from_current_website():
+            raise NotFound()
+        return request.render("netaddiction_website.product", self._prepare_product_values(product, category, search, **kwargs))
 
+
+    def _prepare_product_values(self, product, category, search, **kwargs):
+        values = super(WebsiteSale, self)._prepare_product_values(product, category, search, **kwargs)
+
+        #custom code starts
+        #get current date and add with estimate date addon for the product
+        est_date_addon = product.read(['est_date_addon'])[0]['est_date_addon']
+        current_date = str(datetime.now().date()).replace('-','/')
+        date = datetime.strptime(current_date, "%Y/%m/%d")
+        estimate_date = datetime.strftime((date + timedelta(days=est_date_addon)), "%Y/%m/%d")
+        values.update({'estimate_date': estimate_date})
+        return values

@@ -59,4 +59,13 @@
 			</aside>
 		</xpath>
 	</template>
+	<template id="product" inherit_id="website_sale.product">
+		<xpath expr="//div[@id='product_details']" position="inside">
+			<div>
+				<span class="strong" style="color: #FF6600">Estimated delivery date is</span>
+				<strong><span class="text-success" t-raw="estimate_date"/></strong>
+			</div>
+		</xpath>
+	</template>
+
 </odoo>

@@ -17,3 +17,7 @@ class ProductProduct(models.Model):
                 continue
             product.net_sales_count = product.sales_count
 
+class ProductTemplate(models.Model):
+	_inherit = 'product.template'
+
+	est_date_addon = fields.Integer('Estimate date Addon',default= 5)
