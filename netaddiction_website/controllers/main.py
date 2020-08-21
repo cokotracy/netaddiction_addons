@@ -17,7 +17,7 @@ class WebsiteSale(WebsiteSale):
 
     def _get_products_mostly_sold(self):
         """
-        Returns list of recently viewed products according to current user
+        Returns list of best seller products
         """
         FieldMonetary = request.env['ir.qweb.field.monetary']
         monetary_options = {
@@ -156,7 +156,7 @@ class WebsiteSale(WebsiteSale):
             values['main_object'] = category
         return request.render("netaddiction_website.products", values)
 
-    def _get_search_domain(self, search, category, attrib_values, **post):
+    def _get_search_domain(self, search, category, attrib_values, search_in_description=True, **post):
         domains = super(WebsiteSale,self)._get_search_domain(search, category, attrib_values)
 
         #custom code start
