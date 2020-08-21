@@ -31,10 +31,9 @@ class WebsiteSale(WebsiteSale):
             res_product = product.read(['id', 'name', 'website_url'])[0]
             res_product.update(combination_info)
             res_product['list_price'] = FieldMonetary.value_to_html(res_product['list_price'], monetary_options)
-            # price_formate = FieldMonetary.value_to_html(res_product['price'], monetary_options)
-            # res_product['price_decimal'] = u'.' + str(res_product['price']).split('.')[1]
-            # res_product['price_integer'] = price_formate.replace(res_product['price_decimal'], '')
-            res_product['price'] = FieldMonetary.value_to_html(res_product['price'], monetary_options)
+            price_formate = FieldMonetary.value_to_html(res_product['price'], monetary_options).split('.')
+            decimal = u'</span><span class="o_netaddiction_decimal">.' + price_formate[1]
+            res_product['price'] = price_formate[0] + decimal
             if rating:
                 res_product['rating'] = request.env["ir.ui.view"].render_template('website_rating.rating_widget_stars_static', values={
                     'rating_avg': product.rating_avg,

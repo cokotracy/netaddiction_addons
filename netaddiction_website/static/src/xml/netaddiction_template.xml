@@ -15,8 +15,7 @@
                                             <img class="o_carousel_product_card_img_top card-img-top" t-attf-src="/web/image/product.product/#{product.id}#{productFrame == 1 ? '/image_256' : '/image_512'}" t-att-alt="product.display_name"/>
                                             <div class="o_carousel_product_card_body card-body">
                                                 <div class="o_currency_symbole d-block font-weight-bold" t-raw="product.price"/>
-                                                <!-- <span class="o_currency_price_decimal" t-raw="product.price"/> -->
-                                                <h6 class="card-title mb-0" t-raw="product.display_name"/>
+                                                <h6 class="card-title mb-0 mt4" t-raw="product.display_name"/>
                                                 <t t-if="product.rating" t-raw="product.rating"/>
                                             </div>
                                         </a>
