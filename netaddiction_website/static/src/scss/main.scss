@@ -60,15 +60,20 @@ footer {
     }
 }
 .netaddiction_snippet {
-    .o_best_seller_slider {
+    .o_best_seller_slider, .s_wsale_products_recently_viewed {
         .o_carousel_product_card {
             border: none;
-            .o_currency_symbole {
-                color: #FF6600;
-                line-height: 27px;
-                .oe_currency_value {
-                    font-size: 27px;
-                    font-weight: 700;
+            .o_carousel_product_card_body {
+                .o_currency_symbole {
+                    color: #FF6600;
+                    line-height: 27px;
+                    .oe_currency_value {
+                        font-size: 27px;
+                        font-weight: 700;
+                    }
+                }
+                .js_add_cart {
+                    color: #ffc120;
                 }
             }
         }

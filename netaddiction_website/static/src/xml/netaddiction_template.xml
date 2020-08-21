@@ -39,4 +39,21 @@
             </t>
         </div>
     </t>
+
+    <t t-extend="website_sale.productsRecentlyViewed">
+        <t t-jquery=".o_carousel_product_card_body" t-operation="replace">
+            <div class="o_carousel_product_card_body card-body">
+                <span class="d-flex align-items-center">
+                    <div class="o_currency_symbole d-block font-weight-bold" t-raw="product.price"/>
+                    <button type="button" role="button" class="btn btn-link js_add_cart ml-auto" title="Add to Cart">
+                        <i class="fa fa-fw fa-shopping-cart fa-2x"/>
+                    </button>
+                </span>
+                <h6 class="card-title mb-0" t-raw="product.display_name"/>
+                <t t-if="product.rating" t-raw="product.rating"/>
+            </div>
+        </t>
+        <t t-jquery=".o_carousel_product_card_footer" t-operation="replace"/>
+    </t>
+
 </templates>
