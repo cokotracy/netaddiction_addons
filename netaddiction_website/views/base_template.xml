@@ -29,6 +29,26 @@
 
     </template> -->
 
+    <!--TODO: check other way for better render category menuitem
+        OR
+         Create 'Mega Menu' manuel and update menu using web_editor
+    -->
+    <template id="netaddictionCategoryHeader" inherit_id="website.layout" name="Header Category">
+        <xpath expr="//header//ul[@id='top_menu']/li" position="before">
+            <t t-set="website_product_category" t-value="website.website_product_category()" />
+            <li t-attf-class="nav-item dropdown #{'' if website_product_category else 'd-none'}" t-ignore="true">
+                <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">
+                    <span>Choose by <b>Category</b></span>
+                </a>
+                <div class="dropdown-menu" role="menu">
+                    <t t-foreach="website_product_category" t-as="product_category">
+                        <a t-attf-href="/shop/category/#{product_category.id}" role="menuitem" class="dropdown-item"><t t-esc="product_category.name"/></a>
+                    </t>
+                </div>
+            </li>
+            <li class="nav-item divider"/>
+        </xpath>
+    </template>
 
     <!-- PREHEADER - Add Logo, Searchbar, Login -->
     <template id="netaddictionPreheader" inherit_id="website.layout" name="preHeader">
