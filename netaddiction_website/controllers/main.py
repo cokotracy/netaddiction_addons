@@ -45,7 +45,7 @@ class WebsiteSale(WebsiteSale):
 
     def _get_products_recently_viewed(self):
         result = super(WebsiteSale, self)._get_products_recently_viewed()
-        for product in result.get('products'):
+        for product in result.get('products', []):
             price_formate = product['price'].split('.')
             decimal = u'</span><span class="o_netaddiction_decimal">.' + price_formate[1]
             product['price'] = price_formate[0] + decimal
