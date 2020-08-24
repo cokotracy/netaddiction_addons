@@ -1,73 +1,85 @@
 <odoo>
-	<template id="products" inherit_id="website_sale.products" name="">
-		<xpath expr="//div[@id='wrap']/div[2]/div" position="attributes">
-			<attribute name="class" add="d-none" separator=" "/>
-		</xpath>
-		<xpath expr="//div[@id='products_grid_before']" position="inside">
-			<aside style="border: solid 1px #efefef">
-				<h4>Filter by Price</h4>
-				<div class="product_price_range_slider" style="height:100px;">
-					<p class="text-center">Price Range: <strong class="rangeValues badge"></strong></p>
-						<section class="range-slider mb16">
-							<input id="slide1" t-att-value="price_min" min="1" max="10000" step="1" type="range"/>
-							<input id="slide2" t-att-value="price_max" min="1" max="10000" step="1" type="range"/>
-						</section>
-					<div class="text-center o_price_filter">
-						<a t-att-href="keep('/shop')" class="price_filter btn btn-primary btn-sm mt-2 w-100 ">Apply Filter</a>
-					</div>
-				</div>
-				<hr/>
-				<h4>Filter By</h4>
-				<ul>
-					<li>
-						<a t-att-href="keep('/shop')">
-							<i class="fa fa-database"></i>
-							Entire Catelog
-						</a>
-					</li>
-					<li>
-						<a t-att-href="keep('/shop?filter=immediate_available')">
-							<i class="fa fa-check-circle-o"></i>
-							Immediate Available
-						</a>
-					</li>
-					<li>
-						<a href="#">
-							<i class="fa fa-smile-o"></i>
-							On Sale
-						</a>
-					</li>
-					<li>
-						<a href="#">
-							<i class="fa fa-calendar"></i>
-							Latest Release
-						</a>
-					</li>
-				</ul>
-				<h4>Sort By</h4>
-				<ul>
-					<t t-foreach="website_sale_sortable" t-as="sortby">
-						<li>
-	                        <a role="menuitem" rel="noindex,nofollow" t-att-href="keep('/shop', order=sortby[1])" class="dropdown-item">
-	                            <span t-raw="sortby[0]"/>
-	                        </a>
-                    	</li>
+    <template id="products" inherit_id="website_sale.products" name="">
+        <xpath expr="//div[@id='wrap']/div[2]/div" position="attributes">
+            <attribute name="class" add="d-none" separator=" "/>
+        </xpath>
+        <xpath expr="//div[@id='products_grid_before']" position="inside">
+            <aside style="border: solid 1px #efefef">
+                <h4>Filter by Price</h4>
+                <div class="product_price_range_slider" style="height:100px;">
+                    <p class="text-center">Price Range: <strong class="rangeValues badge"></strong></p>
+                        <section class="range-slider mb16">
+                            <input id="slide1" t-att-value="price_min" min="1" max="10000" step="1" type="range"/>
+                            <input id="slide2" t-att-value="price_max" min="1" max="10000" step="1" type="range"/>
+                        </section>
+                    <div class="text-center o_price_filter">
+                        <a t-att-href="keep('/shop')" class="price_filter btn btn-primary btn-sm mt-2 w-100 ">Apply Filter</a>
+                    </div>
+                </div>
+                <hr/>
+                <h4>Filter By</h4>
+                <ul>
+                    <li>
+                        <a t-att-href="keep('/shop')">
+                            <i class="fa fa-database"></i>
+                            Entire Catelog
+                        </a>
+                    </li>
+                    <li>
+                        <a t-att-href="keep('/shop?filter=immediate_available')">
+                            <i class="fa fa-check-circle-o"></i>
+                            Immediate Available
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#">
+                            <i class="fa fa-smile-o"></i>
+                            On Sale
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#">
+                            <i class="fa fa-calendar"></i>
+                            Latest Release
+                        </a>
+                    </li>
+                </ul>
+                <h4>Sort By</h4>
+                <ul>
+                    <t t-foreach="website_sale_sortable" t-as="sortby">
+                        <li>
+                            <a role="menuitem" rel="noindex,nofollow" t-att-href="keep('/shop', order=sortby[1])" class="dropdown-item">
+                                <span t-raw="sortby[0]"/>
+                            </a>
+                        </li>
                     </t>
-				</ul>
-			</aside>
-		</xpath>
-	</template>
-	<template id="product" inherit_id="website_sale.product">
-		<xpath expr="//a[@id='add_to_cart']" position="before">
-			<div>
-				<span class="strong" style="color: #FF6600">Estimated delivery date is</span>
-				<strong><span class="text-success" t-raw="estimate_date"/></strong>
-			</div>
-		</xpath>
-	</template>
+                </ul>
+            </aside>
+        </xpath>
+    </template>
+    <template id="product" inherit_id="website_sale.product">
+        <xpath expr="//a[@id='add_to_cart']" position="before">
+            <div>
+                <span class="strong" style="color: #FF6600">Estimated delivery date is</span>
+                <strong><span class="text-success" t-raw="estimate_date"/></strong>
+            </div>
+        </xpath>
+    </template>
 
-	<record id="website_sale.products_categories" model="ir.ui.view">
+    <record id="website_sale.products_categories" model="ir.ui.view">
         <field name="active" eval="True"/>
-	</record>
+    </record>
+
+    <template id="netaddiction_products_item" inherit_id="website_sale.products_item" name="Netaddiction Products Item">
+        <xpath expr="//div[hasclass('product_price')]" position="replace">
+            <t t-set="netaddiction_combination_info" t-value="product._get_netaddiction_combination_info(website, combination_info)"/>
+            <div class="product_price" itemprop="offers" itemscope="itemscope" itemtype="http://schema.org/Offer">
+                <div class="o_currency_symbole font-weight-bold" t-if="netaddiction_combination_info['netaddiction_price']" t-raw="netaddiction_combination_info['netaddiction_price']"/>
+                <span t-if="combination_info['has_discounted_price']" class="o_has_discounted_price">Instead of
+                    <del t-attf-class="mr-2" style="white-space: nowrap;" t-esc="combination_info['list_price']" t-options="{'widget': 'monetary', 'display_currency': website.currency_id}" />
+                </span>
+            </div>
+        </xpath>
+    </template>
 
 </odoo>

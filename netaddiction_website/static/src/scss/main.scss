@@ -86,6 +86,21 @@ footer {
         }
     }
 }
+.product_price {
+    .o_currency_symbole {
+        color: #FF6600;
+        line-height: 27px;
+        .oe_currency_value {
+            vertical-align: -0.32em;
+            font-size: 27px;
+            font-weight: 700;
+        }
+    }
+    .o_has_discounted_price {
+        color: #999;
+        font-size: 12px !important;
+    }
+}
 #netaddictionCarousel {
     .carousel-control-prev, .carousel-control-next {
         width: 5%;
