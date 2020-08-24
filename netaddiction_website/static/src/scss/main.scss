@@ -86,7 +86,7 @@ footer {
         }
     }
 }
-.product_price {
+.product_price, .oe_price_h4 {
     .o_currency_symbole {
         color: #FF6600;
         line-height: 27px;
@@ -95,6 +95,10 @@ footer {
             font-size: 27px;
             font-weight: 700;
         }
+    }
+    .o_product_details_page > .oe_currency_value {
+        line-height: 40px;
+        font-size: 40px;
     }
     .o_has_discounted_price {
         color: #999;
