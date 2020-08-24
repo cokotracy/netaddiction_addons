@@ -162,9 +162,16 @@ footer {
         p {
             padding-top: 5px;
         }
+        #slide2 {
+            top: -26px;
+        }
         input {
             width: 70%;
-            margin-left: 40px;
+            top: 0;
+            position: relative;
+        }
+        section {
+            float: none;
         }
         .o_price_filter {
             border-top: 1px solid #ddd;

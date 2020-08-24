@@ -8,12 +8,10 @@
 				<h4>Filter by Price</h4>
 				<div class="product_price_range_slider" style="height:100px;">
 					<p class="text-center">Price Range: <strong class="rangeValues badge"></strong></p>
-					<div>
 						<section class="range-slider mb16">
 							<input id="slide1" t-att-value="price_min" min="1" max="10000" step="1" type="range"/>
 							<input id="slide2" t-att-value="price_max" min="1" max="10000" step="1" type="range"/>
 						</section>
-					</div>
 					<div class="text-center o_price_filter">
 						<a t-att-href="keep('/shop')" class="price_filter btn btn-primary btn-sm mt-2 w-100 ">Apply Filter</a>
 					</div>
@@ -67,5 +65,9 @@
 			</div>
 		</xpath>
 	</template>
+
+	<record id="website_sale.products_categories" model="ir.ui.view">
+        <field name="active" eval="True"/>
+	</record>
 
 </odoo>
