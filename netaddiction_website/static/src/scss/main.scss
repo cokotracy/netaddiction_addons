@@ -117,15 +117,25 @@ footer {
         display: block;
     }
 }
-#wsale_products_categories_collapse i:hover {
-
-    .dropdown-menu {
+#wsale_products_categories_collapse {
+    .dropdown:hover {
+        .dropdown-menu {
 
             display: block !important;
+        }
     }
-}
-#wsale_products_categories_collapse ul li a {
-    float: left;
+    ul li {
+        a {
+            float: left;
+        }
+        i {
+            text-align: center;
+            color: #FFC11E;
+            z-index: 0;
+            border-left: 1px solid #efefef;
+            font-size: 18px;
+        }
+    }
 }
 
 .orange-1 {

@@ -95,9 +95,9 @@
     </record> -->
     <template id="categories_recursive" inherit_id="website_sale.option_collapse_categories_recursive">
         <xpath expr="//a" position="after">
+            <div class="dropdown">
             <i class="fa fa-caret-down float-right"/>
             <span t-raw="len(c.product_tmpl_ids)" t-attf-class="float-right" style="font-weight: bold;"/>
-            <div class="dropdown">
                 <div class="d-none dropdown-menu">
                     <t t-foreach="c.product_tmpl_ids" t-as="tmpl">
                         <t t-set="product_tmpl" t-value="request.env['product.template'].sudo().search([('id','=',tmpl.id)])"/>
