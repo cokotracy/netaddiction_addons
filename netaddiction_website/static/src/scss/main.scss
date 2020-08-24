@@ -112,6 +112,22 @@ footer {
     }
 }
 
+.category-dropdown:hover {
+    ul {
+        display: block;
+    }
+}
+#wsale_products_categories_collapse i:hover {
+
+    .dropdown-menu {
+
+            display: block !important;
+    }
+}
+#wsale_products_categories_collapse ul li a {
+    float: left;
+}
+
 .orange-1 {
     color: #ffc120;
 }
