@@ -67,7 +67,7 @@
     </template>
 
     <template id="netaddiction_products_item" inherit_id="website_sale.products_item" name="Netaddiction Products Item">
-        <xpath expr="//div[hasclass('product_price')]" position="replace">
+        <xpath expr="//div[hasclass('o_wsale_product_information_text')]" position="replace">
             <t t-set="netaddiction_combination_info" t-value="product._get_netaddiction_combination_info(website, combination_info)"/>
             <div class="product_price" itemprop="offers" itemscope="itemscope" itemtype="http://schema.org/Offer">
                 <div class="o_currency_symbole font-weight-bold" t-if="netaddiction_combination_info['netaddiction_price']" t-raw="netaddiction_combination_info['netaddiction_price']"/>
@@ -75,6 +75,10 @@
                     <del t-attf-class="mr-2" style="white-space: nowrap;" t-esc="combination_info['list_price']" t-options="{'widget': 'monetary', 'display_currency': website.currency_id}" />
                 </span>
             </div>
+            <h6 class="o_wsale_products_item_title mt4">
+                <a itemprop="name" t-att-href="product_href" t-att-content="product.name" t-field="product.name" />
+                <a role="button" t-if="not product.website_published" t-att-href="product_href" class="btn btn-sm btn-danger" title="This product is unpublished.">Unpublished</a>
+            </h6>
         </xpath>
     </template>
 
