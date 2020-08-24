@@ -6,10 +6,8 @@
         <field name="inherit_id" ref="product.product_template_only_form_view"/>
         <field name="arch" type="xml">
             <xpath expr="//page[@name='general_information']" position="inside">
-                <group name="product_mode">
-                    <group string="Delivery Date Addon">
-                        <field name="est_date_addon"/>
-                    </group>
+                <group string="Delivery Date Addon">
+                    <field name="est_date_addon"/>
                 </group>
             </xpath>
         </field>
