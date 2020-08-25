@@ -104,12 +104,18 @@ footer {
     }
 }
 #netaddictionCarousel {
-    .carousel-control-prev, .carousel-control-next {
-        width: 5%;
-        opacity: 1;
+    .o_carousel_product_control  {
+        width: 2rem;
+        top: 40%;
+        bottom: 48%;
+        background-color: #515151;
     }
 }
-
+.o_carousel_product_control {
+    top: 45%;
+    bottom: 45%;
+    background-color: #515151;
+}
 .category-dropdown:hover {
     ul {
         display: block;
