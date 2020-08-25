@@ -220,9 +220,10 @@
                         <div class="container">
                             <h3 class="text-left">Best Sellers</h3>
                             <hr/>
-                            <div class="o_best_seller_slider"/>
+                            <div class="slider o_best_seller_slider o_not_editable"/>
                         </div>
                     </div>
+                    <t t-call="website_sale.s_products_recently_viewed"/>
                     <t t-call="netaddiction_website.netaddiction_image_thumbnail_view"/>
                 </div>
                 <div class="oe_structure"/>
@@ -238,11 +239,11 @@
         </xpath>
     </template> -->
 
-    <template id="netaddiction_recently_viewed_products_product" inherit_id="netaddiction_website.netaddiction_home_page" active="True" customize_show="True" name="Recently Viewed Products">
+    <!-- <template id="netaddiction_recently_viewed_products_product" inherit_id="netaddiction_website.netaddiction_home_page">
         <xpath expr="//t[@t-call='netaddiction_website.netaddiction_image_thumbnail_view']" position="before">
             <t t-call="website_sale.s_products_recently_viewed"/>
         </xpath>
-    </template>
+    </template> -->
 
     <template id="netaddiction_image_thumbnail_view" name="Netaddiction Thumbnail View">
         <div class="container mt16 mb16">

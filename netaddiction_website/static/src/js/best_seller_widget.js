@@ -104,4 +104,10 @@ publicWidget.registry.BestSeller = publicWidget.registry.productsRecentlyViewedS
         this.$el.find('.o_best_seller_slider').html(carousel);
     },
 });
+
+publicWidget.registry.productsRecentlyViewedSnippet.include({
+    xmlDependencies: (publicWidget.registry.productsRecentlyViewedSnippet.prototype.xmlDependencies || []).concat(
+        ['/netaddiction_website/static/src/xml/netaddiction_template.xml']
+    ),
+});
 });
