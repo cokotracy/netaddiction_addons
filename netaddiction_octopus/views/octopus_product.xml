@@ -6,7 +6,7 @@
         <field name="name">octopus.product.list</field>
         <field name="model">netaddiction_octopus.product</field>
         <field name="arch" type="xml">
-            <tree create="false" edit="false" delete="false" fonts="bold:is_new==True">
+            <tree create="false" edit="false" delete="false" >
                 <field name="supplier_id"/>
                 <field name="supplier_code"/>
                 <field name="name"/>
