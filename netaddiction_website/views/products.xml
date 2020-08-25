@@ -93,7 +93,7 @@
             </h4>
         </xpath>
     </template>
-
+    
     <record id="website_sale.products_categories" model="ir.ui.view">
         <field name='active' eval="True"/>
     </record>
@@ -101,19 +101,23 @@
         <field name='active' eval="True"/>
     </record>
 
-    <template id="categories_recursive" inherit_id="website_sale.option_collapse_categories_recursive">
+    <template id="categories_recursive" inherit_id="website_sale.categories_recursive">
         <xpath expr="//a" position="after">
-            <div class="dropdown d-inline">
-                <button class="btn dropdown-toggle float-right" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></button>
-                <span t-raw="len(c.product_tmpl_ids)" t-attf-class="float-right" style="font-weight: bold;"/>
-                <div class="dropdown-menu"  aria-labelledby="dropdownMenuButton">
+            <div class="product_category_details">
+                <t t-if="not c.child_id">
+                <span t-raw="len(c.child_id) or len(c.product_tmpl_ids)" t-attf-class="float-right" style="font-weight: bold;"/>
+                <button class="btn fa fa-chevron-down float-right" type="img" data-target="" aria-controls="collapseExample" style="color: #FF6600;"/>
+                <ul class="d-none category_ul nav">
                     <t t-foreach="c.product_tmpl_ids" t-as="tmpl">
                         <t t-set="product_tmpl" t-value="request.env['product.template'].sudo().search([('id','=',tmpl.id)])"/>
-                        <a class="dropdown-item" t-att-href="product_tmpl.read(['website_url'])[0]['website_url']">
+                        <li class="nav-item w-100 text-truncate">
+                        <a class="" t-att-href="product_tmpl.read(['website_url'])[0]['website_url']">
                             <span t-raw="product_tmpl.read(['name'])[0]['name']"/>
                         </a>
+                    </li>
                     </t>
-                </div>
+                </ul>
+                </t>
             </div>
         </xpath>
     </template>

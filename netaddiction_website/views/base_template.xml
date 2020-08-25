@@ -21,6 +21,7 @@
         <xpath expr="." position="inside">
             <script type="text/javascript" src="/netaddiction_website/static/src/js/main_page.js"></script>
             <script type="text/javascript" src="/netaddiction_website/static/src/js/best_seller_widget.js"></script>
+            <script type="text/javascript" src="/netaddiction_website/static/src/js/product_category_details.js"></script>
         </xpath>
     </template>
 

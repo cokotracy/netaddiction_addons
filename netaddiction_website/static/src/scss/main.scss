@@ -116,32 +116,8 @@ footer {
     }
 }
 #wsale_products_categories_collapse {
-    ul  {
-
-        li:first-child  a{
-            width: 100%;
-        }
-        li {
-
-            a {
-                float: left;
-                padding: 0;
-            }
-            button {
-                color: #FFC11E;
-                z-index: 0;
-                font-size: 15px;
-                margin-top: -5px;
-                right: -6px;
-                top: 0px;
-                /*line-height: 32px;*/
-                text-align: center;
-                border: 1px solid #efefef;
-                margin-left: 5px;
-                position: relative;
-
-            }
-        }
+    .fa-chevron-down, span {
+        margin-top: -30px;
     }
 }
 
@@ -150,6 +126,9 @@ footer {
 }
 .white {
     color: #fff;
+}
+.nav-pills .nav-link.active, .nav-pills .show > .nav-link  {
+    background: white;
 }
 .header-row1 > .shopping-cart  {
     border-left: 1px solid #999;
