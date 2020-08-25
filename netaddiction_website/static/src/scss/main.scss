@@ -131,12 +131,16 @@ footer {
     }
 
         li a {
-            font-size: 16px;
+            font-size: 17px;
         }
         li ul
         {
             width: 102%;
             margin-left: 0;
+            margin-bottom: -5px;
+            li:last-child {
+                border-bottom: none;
+            }
 
             li a {
                 margin-left: 15px;

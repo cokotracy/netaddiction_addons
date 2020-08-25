@@ -11,14 +11,13 @@ publicWidget.registry.ProductCategoryDetails = publicWidget.Widget.extend({
         },
 
         start: function () {
-           if (this.$el.find('.fa-chevron-down').length) {
-            this.$el.find('li ul').addClass('d-none');
-           }
+            if (this.$el.find('.fa-chevron-down').length) {
+                this.$el.find('li ul').addClass('d-none');
+            }
         },
         
-        _onClick: function () {
-            debugger;
-            this.$el.find('li ul').toggleClass('d-none');
+        _onClick: function (e) {
+            $(e.target).parent().find('.nav-hierarchy').toggleClass('d-none');
         }
     
 });

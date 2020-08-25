@@ -104,7 +104,7 @@
     <template id="categories_recursive" inherit_id="website_sale.categories_recursive">
         <xpath expr="//a" position="after">
                 <t t-if="c.child_id">
-                        <button class="btn fa fa-chevron-down float-right ml-2" type="img" data-target="" aria-controls="collapseExample" style="color: #FF6600;"/>
+                    <button class="btn fa fa-chevron-down float-right ml-2" type="img" data-target="" style="color: #FF6600;"/>
                 </t>
                 <span t-raw="len(c.child_id) or len(c.product_tmpl_ids)" t-attf-class="float-right badge" style="font-weight: bold; background-color: #f9f9f9;"/>
         </xpath>
