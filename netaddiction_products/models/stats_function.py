@@ -1,12 +1,11 @@
 # -*- coding: utf-8 -*-
-from odoo import models, api
+from odoo import models
 
 
 class ProductsStats(models.Model):
 
     _inherit = 'product.product'
 
-    @api.multi
     def get_shipped_in_interval_date(self, date_start, date_finish, supplier=False, count_refund=False):
         # ritorna la quantità, il numero degli ordini spediti[righe spedizione movimentate] nell'intervallo di tempo
         # supplier è opzionale [id del fornitore], se passato i valori sono corrispondenti solo ed esclusivamente a quel fornitore
@@ -39,7 +38,6 @@ class ProductsStats(models.Model):
 
         return moves
 
-    @api.multi
     def get_sale_in_interval_date(self, date_start, date_finish, supplier=False, count_refund=False, order_states=['done', 'partial_done', 'sale', 'problem']):
         # ritorna la quantità, il valore, il numero degli ordini[numero linee ordine] venduti nell'intervallo di tempo
         # in result: product_uom_qty = quantità, price_total = valore, product_id_count = numero_ordini, product_id = (id prod, name prod)
@@ -69,7 +67,6 @@ class ProductsStats(models.Model):
 
         return result
 
-    @api.multi
     def get_refund_in_interval_date(self, date_start, date_finish, supplier=False):
         # ritorna la quantità di resi
         customer_stock = self.env.ref('stock.stock_location_customers').id
