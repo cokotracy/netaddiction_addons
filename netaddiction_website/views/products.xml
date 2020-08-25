@@ -97,9 +97,6 @@
     <record id="website_sale.products_categories" model="ir.ui.view">
         <field name='active' eval="True"/>
     </record>
-    <record id="website_sale.option_collapse_products_categories" model="ir.ui.view">
-        <field name='active' eval="True"/>
-    </record>
 
     <template id="categories_recursive" inherit_id="website_sale.categories_recursive">
         <xpath expr="//a" position="after">
