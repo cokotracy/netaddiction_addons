@@ -27,7 +27,6 @@ class ProductProduct(models.Model):
         string="Quantità Disponibile",
         help="Quantità Disponibile Adesso (qty in possesso - qty in uscita)")
 
-    @api.multi
     def _get_qty_available_now(self):
         for product in self:
             product.qty_available_now = \
