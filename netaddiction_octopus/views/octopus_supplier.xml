@@ -6,7 +6,7 @@
         <field name="name">octopus.supplier.list</field>
         <field name="model">netaddiction_octopus.supplier</field>
         <field name="arch" type="xml">
-            <tree editable="top" colors="gray:active==False">
+            <tree editable="top" >
                 <field name="order" widget="handle"/>
                 <field name="partner_id" string="Fornitore" domain="[('parent_id', '=', False)]"/>
                 <field name="handler"/>
