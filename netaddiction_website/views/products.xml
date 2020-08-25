@@ -103,22 +103,10 @@
 
     <template id="categories_recursive" inherit_id="website_sale.categories_recursive">
         <xpath expr="//a" position="after">
-            <div class="product_category_details">
-                <t t-if="not c.child_id">
-                    <button class="btn fa fa-chevron-down float-right ml-2" type="img" data-target="" aria-controls="collapseExample" style="color: #FF6600;"/>
-                    <span t-raw="len(c.child_id) or len(c.product_tmpl_ids)" t-attf-class="float-right badge" style="font-weight: bold; background-color: #f9f9f9;"/>
-                    <ul class="d-none category_ul nav">
-                        <t t-foreach="c.product_tmpl_ids" t-as="tmpl">
-                            <t t-set="product_tmpl" t-value="request.env['product.template'].sudo().search([('id','=',tmpl.id)])"/>
-                            <li class="nav-item w-100 text-truncate">
-                            <a class="" t-att-href="product_tmpl.read(['website_url'])[0]['website_url']">
-                                <span t-raw="product_tmpl.read(['name'])[0]['name']"/>
-                            </a>
-                        </li>
-                        </t>
-                    </ul>
+                <t t-if="c.child_id">
+                        <button class="btn fa fa-chevron-down float-right ml-2" type="img" data-target="" aria-controls="collapseExample" style="color: #FF6600;"/>
                 </t>
-            </div>
+                <span t-raw="len(c.child_id) or len(c.product_tmpl_ids)" t-attf-class="float-right badge" style="font-weight: bold; background-color: #f9f9f9;"/>
         </xpath>
     </template>
 </odoo>

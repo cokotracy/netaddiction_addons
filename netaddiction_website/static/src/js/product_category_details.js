@@ -5,14 +5,21 @@ var publicWidget = require('web.public.widget');
 
 
 publicWidget.registry.ProductCategoryDetails = publicWidget.Widget.extend({
-    selector: '.product_category_details',
+    selector: '#wsale_products_categories_collapse',
     events: {
             'click .fa-chevron-down': '_onClick',
         },
+
+        start: function () {
+           if (this.$el.find('.fa-chevron-down').length) {
+            this.$el.find('li ul').addClass('d-none');
+           }
+        },
         
-    _onClick: function () {
-        this.$el.find('ul').toggleClass('d-none');
-    }
+        _onClick: function () {
+            debugger;
+            this.$el.find('li ul').toggleClass('d-none');
+        }
     
 });
 });

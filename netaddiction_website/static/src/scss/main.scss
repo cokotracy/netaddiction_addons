@@ -123,14 +123,21 @@ footer {
     span {
         margin-top: -20px;
     }
-    .product_category_details {
 
-        ul
+        li a {
+            font-size: 16px;
+        }
+        li ul
         {
             width: 102%;
             margin-left: 0;
+
+            li a {
+                margin-left: 15px;
+                font-weight: normal;
+                font-size: 13px;
+            }
         }
-    }
 }
 #products_grid_before #wsale_products_categories_collapse ul li {
     padding-left: 0 !important;
