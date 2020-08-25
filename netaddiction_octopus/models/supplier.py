@@ -49,8 +49,6 @@ class Supplier(models.Model):
         self.ensure_one()
         return {
             'name': 'Gestione categorie %s' % self.handler,
-            'view_type': 'form',
-            'view_mode': 'list',
             'view_id': False,
             'res_model': 'netaddiction_octopus.category',
             'type': 'ir.actions.act_window',
@@ -71,8 +69,6 @@ class Supplier(models.Model):
         self.ensure_one()
         return {
             'name': 'Gestione tasse %s' % self.handler,
-            'view_type': 'form',
-            'view_mode': 'list',
             'view_id': False,
             'res_model': 'netaddiction_octopus.tax',
             'type': 'ir.actions.act_window',

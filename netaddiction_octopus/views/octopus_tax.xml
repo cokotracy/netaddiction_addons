@@ -36,7 +36,7 @@
         <record id="tax_action" model="ir.actions.act_window">
             <field name="name">Categorie</field>
             <field name="res_model">netaddiction_octopus.tax</field>
-            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
             <field name="view_id" ref="tax_view_list"/>
         </record>
 

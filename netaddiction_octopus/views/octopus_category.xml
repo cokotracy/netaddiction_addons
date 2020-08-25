@@ -38,7 +38,7 @@
     <record id="category_action" model="ir.actions.act_window">
         <field name="name">Categorie</field>
         <field name="res_model">netaddiction_octopus.category</field>
-        <field name="view_type">form</field>
+        <field name="view_mode">form</field>
         <field name="view_id" ref="category_view_list"/>
     </record>
 

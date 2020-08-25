@@ -46,7 +46,7 @@
     <record id="supplier_action" model="ir.actions.act_window">
         <field name="name">Fornitori</field>
         <field name="res_model">netaddiction_octopus.supplier</field>
-        <field name="view_type">form</field>
+        <field name="view_mode">form</field>
         <field name="view_id" ref="supplier_view_list"/>
         <field name="search_view_id" ref="supplier_view_search"/>
         <field name="context">{"search_default_handler": 1, "active_test": False}</field>

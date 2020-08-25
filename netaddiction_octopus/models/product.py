@@ -117,8 +117,6 @@ class Product(models.Model):
         product = self.add(active=False)
         return {
             'name': 'Importazione prodotti Octopus',
-            'view_type': 'form',
-            'view_mode': 'form',
             'view_id': False,
             'res_model': 'product.product',
             'type': 'ir.actions.act_window',
