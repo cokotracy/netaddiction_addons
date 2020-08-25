@@ -3,7 +3,6 @@ import logging
 from base64 import b64encode
 from operator import xor
 from odoo import api, fields, models
-from odoo.addons.decimal_precision import get_precision
 from ..base.downloaders import HTTPDownloader
 import requests, json
 
@@ -75,7 +74,7 @@ class Product(models.Model):
 
     price = fields.Float(
        string='Prezzo',
-       digits=get_precision('Product Price')
+       digits='Product Price'
     )
 
     purchase_tax_id = fields.Many2one(
@@ -100,7 +99,7 @@ class Product(models.Model):
 
     supplier_price = fields.Float(
        'Prezzo fornitore',
-       digits=get_precision('Product Price')
+       digits='Product Price'
     )
 
     supplier_quantity = fields.Float(
@@ -266,7 +265,7 @@ class Product(models.Model):
             'price': 'supplier_price',
         }
         context = {}
-        # Aggiorna *supplierinfo* 
+        # Aggiorna *supplierinfo*
         # solo se i campi in *update_mapping* sono cambiati
         for supplierinfo_field, self_field in update_mapping.items():
             if getattr(supplierinfo,

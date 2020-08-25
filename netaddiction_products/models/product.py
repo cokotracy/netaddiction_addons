@@ -2,7 +2,6 @@
 # License LGPL-3.0 or later (https://www.gnu.org/licenses/lgpl).
 
 from odoo import fields, models
-from odoo.addons import decimal_precision as dp
 
 
 class ProductTemplate(models.Model):
@@ -18,7 +17,7 @@ class ProductProduct(models.Model):
 
     final_price = fields.Float(
         string="Pricelist Price",
-        digits=dp.get_precision('Product Price')
+        digits='Product Price'
     )
 
     qty_available_now = fields.Integer(
