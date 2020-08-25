@@ -60,9 +60,7 @@
             <attribute name="class" separator=" " add="d-none"/>
         </xpath>
 
-        <xpath expr="//header//ul[@id='top_menu']/t[@t-set='website_sale_order']" position="replace">
-            <t t-set="website_sale_order" t-value="0" />
-        </xpath>
+        <xpath expr="//header//ul[@id='top_menu']/li[contains(@t-attf-class, 'o_wsale_my_cart')]" position="replace"/>
 
         <xpath expr="//div[@id='top_menu_collapse']/ul" position="attributes">
             <attribute name="class" separator=" " remove="ml-auto"/>
@@ -83,14 +81,16 @@
                         </a>
                     </span>
                     <div class="row w-100">
-                        <span id="top_netaddiction_searchbar" class="col-12 col-sm-12 col-md-7 pr-0">
-                            <t t-call="website_sale.s_products_searchbar_input"/>
-                        </span>
-                        <div class="collapse navbar-collapse col-md-5 d-sm-none" id="top_netaddiction_menu_collapse">
+                        <div class="col-md-7 pr-0">
+                            <span id="top_netaddiction_searchbar">
+                                <t t-call="website_sale.s_products_searchbar_input"/>
+                            </span>
+                        </div>
+                        <div class="col-md-5 collapse navbar-collapse p-0 d-sm-none">
                             <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#top_netaddiction_menu_collapse" aria-haspopup="true" aria-expanded="true">
                                 <span class="navbar-toggler-icon"/>
                             </button>
-                            <ul class="nav navbar-nav ml-auto text-right mr-2" id="top_menu">
+                            <ul class="nav navbar-nav ml-auto text-right" id="top_menu">
                                 <li class="nav-item dropdown" t-ignore="true" t-if="not user_id._is_public()">
                                     <a href="#" class="nav-link dropdown-toggle" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
                                         <b>
@@ -111,7 +111,7 @@
                                 <li t-attf-class="nav-item o_wsale_my_cart">
                                     <a href="/shop/cart" class="nav-link">
                                         <i class="fa fa-shopping-cart"></i>
-                                        My Cart<sup t-attf-class="my_cart_quantity badge badge-primary" t-esc="website_sale_order and website_sale_order.cart_quantity or ''" t-att-data-order-id="website_sale_order and website_sale_order.id or ''"/>
+                                        My Cart<sup t-attf-class="my_cart_quantity o_animate_blink badge badge-primary" t-esc="website_sale_order and website_sale_order.cart_quantity or ''" t-att-data-order-id="website_sale_order and website_sale_order.id or ''"/>
                                     </a>
                                 </li>
                             </ul>
