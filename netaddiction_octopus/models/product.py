@@ -2,7 +2,7 @@
 import logging
 from base64 import b64encode
 from operator import xor
-from odoo import api, fields, models
+from odoo import fields, models
 from ..base.downloaders import HTTPDownloader
 import requests, json
 
@@ -107,7 +107,6 @@ class Product(models.Model):
     )
 
     '''
-    @api.multi
     def import_product(self):
         self.ensure_one()
         self.is_new = False
@@ -127,7 +126,6 @@ class Product(models.Model):
             'res_id': product.id,
         }
 
-    @api.multi
     def blacklist_product(self):
         self.ensure_one()
         self.env['netaddiction_octopus.blacklist'].create({

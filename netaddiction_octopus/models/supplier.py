@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from odoo import api, models, fields
+from odoo import models, fields
 
 
 class Supplier(models.Model):
@@ -45,7 +45,6 @@ class Supplier(models.Model):
         string='Taxes'
     )
 
-    @api.multi
     def manage_categories(self):
         self.ensure_one()
         return {
@@ -68,7 +67,6 @@ class Supplier(models.Model):
             },
         }
 
-    @api.multi
     def manage_taxes(self):
         self.ensure_one()
         return {
