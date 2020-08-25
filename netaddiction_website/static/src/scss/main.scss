@@ -116,11 +116,28 @@ footer {
     }
 }
 #wsale_products_categories_collapse {
-    .fa-chevron-down, span {
+    .fa-chevron-down {
         margin-top: -30px;
+        border-left: 1px solid #efefef;
+    }
+    span {
+        margin-top: -20px;
+    }
+    .product_category_details {
+
+        ul
+        {
+            width: 102%;
+            margin-left: 0;
+        }
     }
 }
-
+#products_grid_before #wsale_products_categories_collapse ul li {
+    padding-left: 0 !important;
+}
+.product_category_details ul li span{
+    padding-left: 15px !important;
+}
 .orange-1 {
     color: #ffc120;
 }
