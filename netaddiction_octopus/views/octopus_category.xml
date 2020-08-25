@@ -6,7 +6,7 @@
         <field name="name">octopus.category.list</field>
         <field name="model">netaddiction_octopus.category</field>
         <field name="arch" type="xml">
-            <tree editable="top" colors="#900:type=='trash';#090:type=='category'">
+            <tree editable="top" >
                 <field name="field"/>
                 <field name="code"/>
                 <field name="type"/>
