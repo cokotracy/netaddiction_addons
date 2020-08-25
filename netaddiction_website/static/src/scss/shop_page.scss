@@ -85,3 +85,6 @@
   section.range-slider {
     @include range-slider(255px, 0px, 67px, #F1EFEF, #413F41, left);
   }
+  #o_shop_collapse_category li.nav-item i {
+    font-size: 23px;
+  }

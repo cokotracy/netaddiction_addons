@@ -98,12 +98,13 @@
         <field name='active' eval="True"/>
     </record>
 
-    <template id="categories_recursive" inherit_id="website_sale.categories_recursive">
-        <xpath expr="//a" position="after">
-                <t t-if="c.child_id">
-                    <button class="btn fa fa-chevron-down float-right ml-2" type="img" data-target="" style="color: #FF6600;"/>
-                </t>
-                <span t-raw="len(c.child_id) or len(c.product_tmpl_ids)" t-attf-class="float-right badge" style="font-weight: bold; background-color: #f9f9f9;"/>
+    <template id="option_collapse_categories_recursive_product_counts" inherit_id="website_sale.option_collapse_categories_recursive">
+        <xpath expr="//li[hasclass('nav-item')]//a" position="after">
+            <span class="badge badge-primary"><t t-esc="len(c.product_tmpl_ids)"/></span>
+        </xpath>
+        <xpath expr="//li[hasclass('nav-item')]//i" position="attributes">
+            <attribute name="t-attf-class">text-primary mt8 pull-right fa #{'fa-caret-up' if c.id in category.parents_and_self.ids else 'fa-caret-down'}</attribute>
         </xpath>
     </template>
+
 </odoo>
