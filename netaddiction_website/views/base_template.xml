@@ -143,16 +143,16 @@
                     <div class="container">
                         <div class="row">
                             <div class="col-lg-4 text-center">
-                                <a href="/account/">Gestione Account e Ordini</a> - <a href="/affiliazioni/">Affiliazioni</a>
+                                <a href="#">Gestione Account e Ordini</a> - <a href="#">Affiliazioni</a>
                             </div>
                             <div class="col-lg-2 text-center">
-                                <a href="/privacy/">Informativa sulla Privacy</a>
+                                <a href="#">Informativa sulla Privacy</a>
                             </div>
                             <div class="col-lg-3 text-center">
-                                <a href="/static/pdf/Condizioni-Generali-Multiplayer-Netaddiction.pdf" target="_blank">Termini e condizioni di vendita</a>
+                                <a href="#" target="_blank">Termini e condizioni di vendita</a>
                             </div>
                             <div class="col-lg-3 text-center">
-                                <a href="/costi-metodi-spedizione/">Costi e metodi di spedizione</a>
+                                <a href="#">Costi e metodi di spedizione</a>
                             </div>
                         </div>
                         <div class="clearfix"><br/></div>

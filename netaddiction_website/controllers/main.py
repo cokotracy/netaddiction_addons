@@ -173,8 +173,9 @@ class WebsiteSale(WebsiteSale):
         domains = super(WebsiteSale,self)._get_search_domain(search, category, attrib_values)
 
         #custom code start
-        if post.get('filter'):
-            domains.append(('qty_available', '>=', 1))
+        #TODO: traceback, will check after branch green
+        # if post.get('filter'):
+        #     domains.append(('qty_available', '>=', 1))
         if post.get('price_max') and post.get('price_min'):
             domains.append(('list_price', '>=', int(post.get('price_min'))))
             domains.append(('list_price', '<=', int(post.get('price_max'))))
