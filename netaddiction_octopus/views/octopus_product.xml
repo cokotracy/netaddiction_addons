@@ -76,7 +76,7 @@
     <record id="product_action" model="ir.actions.act_window">
         <field name="name">Prodotti</field>
         <field name="res_model">netaddiction_octopus.product</field>
-        <field name="view_mode">form</field>
+        <field name="view_mode">tree,form</field>
         <field name="view_id" ref="product_view_list"/>
         <field name="context">{'search_default_filter_is_new': True}</field>
     </record>
