@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+<data>
+
+    <record id="autoimport_view_list" model="ir.ui.view">
+        <field name="name">octopus.category.list</field>
+        <field name="model">netaddiction_octopus.autoimport.product</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="supplier_id"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="autoimport_view_form" model="ir.ui.view">
+        <field name="name">octopus.category.form</field>
+        <field name="model">netaddiction_octopus.autoimport.product</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <field name="supplier_id"/>
+                    </group>
+
+                    <field name="category_ids"/>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="autoimport_action" model="ir.actions.act_window">
+        <field name="name">Auto Import</field>
+        <field name="res_model">netaddiction_octopus.autoimport.product</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <menuitem id="auto_import" name="Auto Import" parent="octopus_menu"
+              groups="base.group_no_one" action="autoimport_action"/>
+
+</data>
+</odoo>
