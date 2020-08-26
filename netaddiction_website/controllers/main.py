@@ -31,9 +31,13 @@ class WebsiteSale(WebsiteSale):
             res_product = product.read(['id', 'name', 'website_url'])[0]
             res_product.update(combination_info)
             res_product['list_price'] = FieldMonetary.value_to_html(res_product['list_price'], monetary_options)
-            price_formate = FieldMonetary.value_to_html(res_product['price'], monetary_options).split('.')
-            decimal = u'</span><span class="o_netaddiction_decimal">.' + price_formate[1]
-            res_product['price'] = price_formate[0] + decimal
+            price = FieldMonetary.value_to_html(res_product['price'], monetary_options)
+            price_formate = price.split('.')
+            if (len(price_formate) >= 2):
+                decimal = u'</span><span class="o_netaddiction_decimal">.' + price_formate[1]
+                res_product['price'] = price_formate[0] + decimal
+            else:
+                res_product['price'] = price
             if rating:
                 res_product['rating'] = request.env["ir.ui.view"].render_template('website_rating.rating_widget_stars_static', values={
                     'rating_avg': product.rating_avg,
@@ -47,8 +51,9 @@ class WebsiteSale(WebsiteSale):
         result = super(WebsiteSale, self)._get_products_recently_viewed()
         for product in result.get('products', []):
             price_formate = product['price'].split('.')
-            decimal = u'</span><span class="o_netaddiction_decimal">.' + price_formate[1]
-            product['price'] = price_formate[0] + decimal
+            if (len(price_formate) >=2):
+                decimal = u'</span><span class="o_netaddiction_decimal">.' + price_formate[1]
+                product['price'] = price_formate[0] + decimal
         return result
 
     @http.route()
