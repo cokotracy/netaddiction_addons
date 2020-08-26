@@ -94,7 +94,7 @@ class Product(models.Model):
     supplier_id = fields.Many2one(
         'res.partner',
         string='Fornitore',
-        domain=[('supplier', '=', True)]
+        # domain=[('supplier', '=', True)]  TODO: Evaluate how to restore this
     )
 
     supplier_price = fields.Float(

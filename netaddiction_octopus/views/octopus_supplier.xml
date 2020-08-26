@@ -25,7 +25,7 @@
             <form>
                 <sheet>
                     <group>
-                        <field name="partner_id" string="Fornitore" domain="[('supplier', '=', True)]"/>
+                        <field name="partner_id" string="Fornitore" /> <!-- domain="[('supplier', '=', True)]"  TODO: Evaluate how to restore this--> />
                         <field name="handler"/>
                     </group>
                 </sheet>
