@@ -22,6 +22,7 @@
         'views/footer.xml',
         'views/products.xml',
         'views/product_template_views.xml',
+        'views/snippets.xml'
     ],
     'qweb': ['static/src/xml/*.xml'],
 	'installable': True,

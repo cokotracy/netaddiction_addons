@@ -22,6 +22,8 @@
             <script type="text/javascript" src="/netaddiction_website/static/src/js/main_page.js"></script>
             <script type="text/javascript" src="/netaddiction_website/static/src/js/best_seller_widget.js"></script>
             <script type="text/javascript" src="/netaddiction_website/static/src/js/product_category_details.js"></script>
+            <script type="text/javascript" src="/netaddiction_website/static/src/js/s_select_brand_category.js"></script>
+            <script type="text/javascript" src="/netaddiction_website/static/src/js/snippets_options.js"></script>
         </xpath>
     </template>
 

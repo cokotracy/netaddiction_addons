@@ -56,6 +56,14 @@ class WebsiteSale(WebsiteSale):
                 product['price'] = price_formate[0] + decimal
         return result
 
+    @http.route('/netaddiction_website/get_products_by_category', type="json", auth='public', website=True)
+    def get_products_by_category(self,id):
+        domains = [request.website.sale_product_domain()]
+        domains.append([('categ_id', '=', id)])
+        Product = request.env['product.template'].with_context(bin_size=True)
+        search_product= Product.search(domains)
+
+
     @http.route()
     def shop(self, page=0, category=None, search='', ppg=False, **post):
         add_qty = int(post.get('add_qty', 1))
