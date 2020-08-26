@@ -1,6 +1,7 @@
 {
     'name': "NetAddiction Octopus",
-    'summary': "Importa e tiene aggiornati i prodotti prendendo le informazioni dai fornitori",
+    'summary': "Importa e tiene aggiornati i prodotti prendendo le"
+               " informazioni dai fornitori",
     'description': """""",
     'author': "NetAddiction",
     'website': "http://www.netaddiction.it",

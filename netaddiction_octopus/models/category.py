@@ -7,7 +7,6 @@ class Category(models.Model):
     _description = 'Octopus Category'
     _order = 'field, type desc'
 
-
     attribute_id = fields.Many2one(
         'product.attribute.value',
         string='Attributo'

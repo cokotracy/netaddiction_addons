@@ -32,13 +32,16 @@ class CSVParser(Parser):
     def parse(self, source, mapping, group_by=None):
         source = StringIO(source)
         output = {}
-        reader = csv.DictReader(source, mapping,
+        reader = csv.DictReader(
+            source,
+            mapping,
             delimiter=self.delimiter,
             quotechar=self.enclosure,
             escapechar=self.escape,
             lineterminator=self.linebreak,
             restkey=self.UndefinedField.KEY,
-            restval=self.UndefinedField)
+            restval=self.UndefinedField
+        )
         if self.skip_first:
             next(reader)
         corrupted_items = 0

@@ -2,6 +2,7 @@
 
 from odoo import api, models, fields
 
+
 class AutoImportProduct(models.Model):
     _name = 'netaddiction_octopus.autoimport.product'
     _description = 'Octopus Autoimport Product'
@@ -26,7 +27,7 @@ class Cron(models.Model):
     def run_import(self):
         autoimport = self.env[
             'netaddiction_octopus.autoimport.product'].search([])
-        # per ogni fornitore configurato mi prendo i prodotti octopus 
+        # per ogni fornitore configurato mi prendo i prodotti octopus
         # con quelle categorie di quel fornitore
         for auto in autoimport:
             results = self.env['netaddiction_octopus.product'].search([

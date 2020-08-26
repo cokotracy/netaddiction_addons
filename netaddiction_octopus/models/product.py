@@ -1,10 +1,14 @@
 # -*- coding: utf-8 -*-
 import logging
 from base64 import b64encode
+
+import json
+import requests
+
 from operator import xor
 from odoo import fields, models
+
 from ..base.downloaders import HTTPDownloader
-import requests, json
 
 
 _logger = logging.getLogger(__name__)
@@ -34,21 +38,21 @@ class Product(models.Model):
     )
 
     category_id = fields.Many2one(
-       'product.category',
+        'product.category',
         string='Categoria'
     )
 
     company_id = fields.Many2one(
-       'res.company',
-       string='Società'
+        'res.company',
+        string='Società'
     )
 
     date = fields.Date(
-       string='Data'
+        string='Data'
     )
 
     description = fields.Text(
-       string='Descrizione'
+        string='Descrizione'
     )
 
     group_key = fields.Char(
@@ -60,7 +64,7 @@ class Product(models.Model):
     )
 
     image = fields.Char(
-       string='Immagine'
+        string='Immagine'
     )
 
     is_new = fields.Boolean(
@@ -69,22 +73,22 @@ class Product(models.Model):
     )
 
     name = fields.Char(
-       string='Nome'
+        string='Nome'
     )
 
     price = fields.Float(
-       string='Prezzo',
-       digits='Product Price'
+        string='Prezzo',
+        digits='Product Price'
     )
 
     purchase_tax_id = fields.Many2one(
-       'account.tax',
-       string='Tassa di acquisto'
+        'account.tax',
+        string='Tassa di acquisto'
     )
 
     sale_tax_id = fields.Many2one(
-       'account.tax',
-       string='Tassa di vendita'
+        'account.tax',
+        string='Tassa di vendita'
     )
 
     supplier_code = fields.Char(
@@ -98,12 +102,12 @@ class Product(models.Model):
     )
 
     supplier_price = fields.Float(
-       'Prezzo fornitore',
-       digits='Product Price'
+        'Prezzo fornitore',
+        digits='Product Price'
     )
 
     supplier_quantity = fields.Float(
-       string='Quantità fornitore'
+        string='Quantità fornitore'
     )
 
     '''
@@ -275,4 +279,3 @@ class Product(models.Model):
                 if commit:
                     self.env.cr.commit()
                 break
-

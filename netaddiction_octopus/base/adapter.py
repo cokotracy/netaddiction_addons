@@ -43,7 +43,9 @@ class Adapter():
                 if field_key in categories:
                     chains.append(categories[field_key])
                 else:
-                    _logger.warning('Categoria non gestita: %s' % str(field_key))
+                    _logger.warning(
+                        'Categoria non gestita: %s' % str(field_key)
+                    )
 
             file_key = ('[file] %s' % item['_file'], None)
 
@@ -54,7 +56,9 @@ class Adapter():
                 if chain['type'] == 'trash':
                     return None
                 elif chain['type'] == 'attribute':
-                    mapping['attribute_ids'].append((4, chain['attribute_id'].id, None))
+                    mapping['attribute_ids'].append(
+                        (4, chain['attribute_id'].id, None)
+                    )
                 elif chain['type'] == 'category':
                     if mapping['category_id'] is None:
                         mapping['category_id'] = chain['category_id'].id
@@ -90,7 +94,10 @@ class Adapter():
                 mapping['purchase_tax_id'] = chains[0]['purchase_tax_id'].id
 
                 if len(chains) > 1:
-                    _logger.warning('Prodotto con più di una coppia di tasse: %s (%s)' % (item, chains))
+                    _logger.warning(
+                        'Prodotto con più di una coppia di tasse: %s (%s)'
+                        % (item, chains)
+                    )
 
             if not mapping['sale_tax_id'] or not mapping['purchase_tax_id']:
                 _logger.warning('Prodotto senza tasse: %s' % item)
@@ -110,7 +117,9 @@ class Adapter():
 
         for field, match in self.fields.items():
             if field not in valid_fields:
-                raise AttributeError("Unknown field '%s' in '%s'" % (field, model.__name__))
+                raise AttributeError(
+                    "Unknown field '%s' in '%s'" % (field, model.__name__)
+                )
 
             if match in item:
                 mapping[field] = item[match]
