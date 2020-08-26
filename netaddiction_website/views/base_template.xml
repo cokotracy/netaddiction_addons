@@ -90,7 +90,7 @@
                             <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#top_netaddiction_menu_collapse" aria-haspopup="true" aria-expanded="true">
                                 <span class="navbar-toggler-icon"/>
                             </button>
-                            <ul class="nav navbar-nav ml-auto text-right" id="top_menu">
+                            <ul class="nav navbar-nav ml-auto text-right" id="top_menu_preHeader">
                                 <li class="nav-item dropdown" t-ignore="true" t-if="not user_id._is_public()">
                                     <a href="#" class="nav-link dropdown-toggle" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
                                         <b>
