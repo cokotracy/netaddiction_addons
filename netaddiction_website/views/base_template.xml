@@ -186,49 +186,47 @@
     </template>
 
     <template id="netaddiction_home_page" inherit_id="website.homepage" name="Netaddiction Home Page">
-        <xpath expr="//div[@id='wrap']" position="replace">
-            <div id="wrap">
-                <div class="oe_structure"/>
-                <div class="container mt16 mb16">
-                    <div id="netaddictionCarousel" class="carousel slide" data-ride="carousel">
-                        <div class="carousel-inner">
-                            <div class="carousel-item active">
-                                <img class="d-block w-100" src="/netaddiction_website/static/src/img/Artwork_1440x300.png" alt="First slide"/>
-                            </div>
-                            <div class="carousel-item">
-                                <img class="d-block w-100" src="/netaddiction_website/static/src/img/FUnko_pop.jpg" alt="Second slide"/>
-                            </div>
-                            <div class="carousel-item">
-                                <img class="d-block w-100" src="/netaddiction_website/static/src/img/Artwork_1440x300.jpg" alt="Third slide"/>
-                            </div>
-                            <div class="carousel-item">
-                                <img class="d-block w-100" src="/netaddiction_website/static/src/img/sabbia_2.jpg" alt="Forth slide"/>
-                            </div>
+        <xpath expr="//div[@id='wrap']" position="inside">
+            <div class="oe_structure"/>
+            <div class="container mt16 mb16">
+                <div id="netaddictionCarousel" class="carousel slide" data-ride="carousel">
+                    <div class="carousel-inner">
+                        <div class="carousel-item active">
+                            <img class="d-block w-100" src="/netaddiction_website/static/src/img/Artwork_1440x300.png" alt="First slide"/>
                         </div>
-                        <!-- Controls -->
-                        <a class="o_carousel_product_control carousel-control-prev" href="#netaddictionCarousel" role="button" data-slide="prev">
-                            <span class="carousel-control-prev-icon"></span>
-                            <span class="sr-only">Previous</span>
-                        </a>
-                        <a class="o_carousel_product_control carousel-control-next" href="#netaddictionCarousel" role="button" data-slide="next">
-                            <span class="carousel-control-next-icon"></span>
-                            <span class="sr-only">Next</span>
-                        </a>
-                    </div>
-                </div>
-                <div class="netaddiction_snippet">
-                    <div class="o_best_seller pt24 pb24 o_not_editable">
-                        <div class="container">
-                            <h3 class="text-left">Best Sellers</h3>
-                            <hr/>
-                            <div class="slider o_best_seller_slider o_not_editable"/>
+                        <div class="carousel-item">
+                            <img class="d-block w-100" src="/netaddiction_website/static/src/img/FUnko_pop.jpg" alt="Second slide"/>
+                        </div>
+                        <div class="carousel-item">
+                            <img class="d-block w-100" src="/netaddiction_website/static/src/img/Artwork_1440x300.jpg" alt="Third slide"/>
+                        </div>
+                        <div class="carousel-item">
+                            <img class="d-block w-100" src="/netaddiction_website/static/src/img/sabbia_2.jpg" alt="Forth slide"/>
                         </div>
                     </div>
-                    <t t-call="website_sale.s_products_recently_viewed"/>
-                    <t t-call="netaddiction_website.netaddiction_image_thumbnail_view"/>
+                    <!-- Controls -->
+                    <a class="o_carousel_product_control carousel-control-prev" href="#netaddictionCarousel" role="button" data-slide="prev">
+                        <span class="carousel-control-prev-icon"></span>
+                        <span class="sr-only">Previous</span>
+                    </a>
+                    <a class="o_carousel_product_control carousel-control-next" href="#netaddictionCarousel" role="button" data-slide="next">
+                        <span class="carousel-control-next-icon"></span>
+                        <span class="sr-only">Next</span>
+                    </a>
                 </div>
-                <div class="oe_structure"/>
             </div>
+            <div class="netaddiction_snippet">
+                <div class="o_best_seller pt24 pb24 o_not_editable">
+                    <div class="container">
+                        <h3 class="text-left">Best Sellers</h3>
+                        <hr/>
+                        <div class="slider o_best_seller_slider o_not_editable"/>
+                    </div>
+                </div>
+                <t t-call="website_sale.s_products_recently_viewed"/>
+                <t t-call="netaddiction_website.netaddiction_image_thumbnail_view"/>
+            </div>
+            <div class="oe_structure"/>
         </xpath>
     </template>
 
