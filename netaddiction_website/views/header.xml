@@ -87,7 +87,7 @@
                                                     </a>
                                                     <ul class="dropdown-menu dropdown-profilo bullet pull-center">
                                                         <li>
-                                                            <a href="/account/">
+                                                            <a href="#">
                                                                 <i class="fa fa-user"></i>
                                                                 <font style="vertical-align: inherit;">
                                                                     <font style="vertical-align: inherit;"> My account
@@ -96,7 +96,7 @@
                                                             </a>
                                                         </li>
                                                         <li>
-                                                            <a href="/account/ordini/">
+                                                            <a href="#">
                                                                 <i class="fa fa-gift"></i>
                                                                 <font style="vertical-align: inherit;">
                                                                     <font style="vertical-align: inherit;"> My orders
@@ -105,7 +105,7 @@
                                                             </a>
                                                         </li>
                                                         <li>
-                                                            <a href="/account/lista-desideri/">
+                                                            <a href="#">
                                                                 <i class="fa fa-heart pull-left"></i>
                                                                 <font style="vertical-align: inherit;">
                                                                     <font style="vertical-align: inherit;"> Wishlist
@@ -115,7 +115,7 @@
                                                         </li>
                                                         <li role="separator" class="divider"></li>
                                                         <li>
-                                                            <a href="/logout/">
+                                                            <a href="#">
                                                                 <i class="fa fa-sign-out"></i>
                                                                 <font style="vertical-align: inherit;">
                                                                     <font style="vertical-align: inherit;"> Logout / Disconnect

@@ -56,6 +56,14 @@ class WebsiteSale(WebsiteSale):
                 product['price'] = price_formate[0] + decimal
         return result
 
+    @http.route('/netaddiction_website/get_products_by_category', type="json", auth='public', website=True)
+    def get_products_by_category(self,id):
+        domains = [request.website.sale_product_domain()]
+        domains.append([('categ_id', '=', id)])
+        Product = request.env['product.template'].with_context(bin_size=True)
+        search_product= Product.search(domains)
+
+
     @http.route()
     def shop(self, page=0, category=None, search='', ppg=False, **post):
         add_qty = int(post.get('add_qty', 1))
@@ -165,8 +173,9 @@ class WebsiteSale(WebsiteSale):
         domains = super(WebsiteSale,self)._get_search_domain(search, category, attrib_values)
 
         #custom code start
-        if post.get('filter'):
-            domains.append(('qty_available', '>=', 1))
+        #TODO: traceback, will check after branch green
+        # if post.get('filter'):
+        #     domains.append(('qty_available', '>=', 1))
         if post.get('price_max') and post.get('price_min'):
             domains.append(('list_price', '>=', int(post.get('price_min'))))
             domains.append(('list_price', '<=', int(post.get('price_max'))))

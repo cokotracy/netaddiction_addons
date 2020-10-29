@@ -1,0 +1,38 @@
+<odoo>
+	<!-- <template id="assets_frontend" inherit_id="web.assets_frontend" name="">
+        <xpath expr="." position="inside">
+           
+        </xpath>
+    </template> -->
+
+	<template id="external_snippets" inherit_id="website.snippets">
+		<xpath expr="//div[@id='snippet_feature']/div[hasclass('o_panel_body')]" position="inside">
+			<t t-snippet="netaddiction_website.s_select_brand_category" string="Brand Selection" t-thumbnail="/netaddiction_website/static/src/img/s_thumbnail.png"/>
+		</xpath>
+	</template>
+
+	<template id="s_select_brand_category" name="Select Brand">
+		<section class="s_select_brand_category">
+			<div class="container">
+	            <h2>Categories</h2>
+	            <div class="row s_col_no_bgcolor s_nb_column_fixed js_get_categories"
+	                data-loading="true"
+	                data-template="website_blog.s_latest_posts_list_template"/>
+	        </div>
+	</section>
+	</template>
+
+	<template id="s_select_brand_category_options" inherit_id="website.snippet_options">
+		<xpath expr="//div[@data-js='background']" position="before">
+			<div data-js="selectBrandCategory" data-selector=".s_select_brand_category" data-target=".js_get_categories" data-no-check="true">
+				<we-collapse-area>
+                <we-toggler><i class="fa fa-folder-open"/> Choose a category</we-toggler>
+                <we-collapse data-no-preview="true">
+                    <we-button data-filter-by-category-id="0"/>
+                    <!-- Category list will be generated in j -->
+                </we-collapse>
+            </we-collapse-area>
+			</div>
+		</xpath>
+	</template>
+</odoo>
