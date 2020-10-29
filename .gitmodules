@@ -2,3 +2,8 @@
 	path = b_OCA/l10n-italy
 	url = git@github.com:OCA/l10n-italy.git
 	branch = 13.0
+
+[submodule "b_OCA/partner-contact"]
+	path = b_OCA/partner-contact
+	url = git@github.com:OCA/partner-contact.git
+	branch = 13.0
