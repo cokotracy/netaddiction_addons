@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+<data>
+
+    <record model="ir.ui.view" id="netaddiction_suppliers_add_property_email">
+        <field name="name">netaddiction.supplier.add.property.email</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form"/>
+        <field name="arch" type="xml">
+            <div name="button_box" position="inside">
+                <button type="object" name="download_report" string="Report" class="oe_stat_button" icon="fa-arrow-circle-down" attrs="{'invisible':[('customer', '>', 0)]}"/>
+            </div>
+            <notebook position="inside">
+                <page name="comunication" string="Comunicazioni/Ruoli" attrs="{'invisible' : [('supplier', '=', 0)]}">
+                    <group string="Invio Report" attrs="{'invisible': [('parent_id', '!=', False)]}">
+                        <field name="send_report" />
+                    </group>
+                    <group string="Ricezione Report" attrs="{'invisible': ['|', ('parent_id','=',False), ('supplier', '=', 0)]}">
+                        <group>
+                            <field name="send_contact_purchase_orders"  string="Purchase Orders Report" />
+                            <field name="send_contact_refund" string="Refund Report" />
+                        </group>
+                        <group>
+                            <field name="send_contact_report" string="Monday Report" />
+                        </group>
+                    </group>
+                </page>
+            </notebook>
+        </field>
+    </record>
+
+</data>
+</odoo>
