@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data noupdate="1">
+        <record model="stock.location" id="netaddiction_stock_show">
+            <field name="name">Magazzino Fiere</field>
+            <field name="usage">transit</field>
+            <field name="active">1</field>
+        </record>
+
+        <record model="ir.sequence" id="netaddiction_sequence_out_show">
+            <field name="name">Fiere in uscita</field>
+            <field name="prefix">SHOW/OUT/</field>
+            <field name="padding">5</field>
+            <field name="number_increment">1</field>
+            <field name="number_next_actual">1</field>
+        </record>
+        <record model="ir.sequence" id="netaddiction_sequence_in_show">
+            <field name="name">Fiere in entrata</field>
+            <field name="prefix">SHOW/IN/</field>
+            <field name="padding">5</field>
+            <field name="number_increment">1</field>
+            <field name="number_next_actual">1</field>
+        </record>
+
+        <record model="stock.picking.type" id="netaddiction_type_out_show">
+            <field name="name">Fiere in uscita</field>
+            <field name="sequence_id" ref="netaddiction_sequence_out_show"/>
+            <field name="code">outgoing</field>
+            <field name="default_location_src_id" ref="stock.stock_location_stock"/>
+            <field name="default_location_dest_id" ref="netaddiction_stock_show"/>
+        </record>
+        <record model="stock.picking.type" id="netaddiction_type_in_show">
+            <field name="name">Fiere in entrata</field>
+            <field name="sequence_id" ref="netaddiction_sequence_in_show"/>
+            <field name="code">incoming</field>
+            <field name="default_location_dest_id" ref="stock.stock_location_stock"/>
+            <field name="default_location_src_id" ref="netaddiction_stock_show"/>
+        </record>
+    </data>
+</openerp>
