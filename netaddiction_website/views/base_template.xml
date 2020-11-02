@@ -22,6 +22,8 @@
             <script type="text/javascript" src="/netaddiction_website/static/src/js/main_page.js"></script>
             <script type="text/javascript" src="/netaddiction_website/static/src/js/best_seller_widget.js"></script>
             <script type="text/javascript" src="/netaddiction_website/static/src/js/product_category_details.js"></script>
+            <script type="text/javascript" src="/netaddiction_website/static/src/js/s_select_brand_category.js"></script>
+            <script type="text/javascript" src="/netaddiction_website/static/src/js/snippets_options.js"></script>
         </xpath>
     </template>
 
@@ -90,7 +92,7 @@
                             <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#top_netaddiction_menu_collapse" aria-haspopup="true" aria-expanded="true">
                                 <span class="navbar-toggler-icon"/>
                             </button>
-                            <ul class="nav navbar-nav ml-auto text-right" id="top_menu">
+                            <ul class="nav navbar-nav ml-auto text-right" id="top_menu_preHeader">
                                 <li class="nav-item dropdown" t-ignore="true" t-if="not user_id._is_public()">
                                     <a href="#" class="nav-link dropdown-toggle" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
                                         <b>
@@ -141,16 +143,16 @@
                     <div class="container">
                         <div class="row">
                             <div class="col-lg-4 text-center">
-                                <a href="/account/">Gestione Account e Ordini</a> - <a href="/affiliazioni/">Affiliazioni</a>
+                                <a href="#">Gestione Account e Ordini</a> - <a href="#">Affiliazioni</a>
                             </div>
                             <div class="col-lg-2 text-center">
-                                <a href="/privacy/">Informativa sulla Privacy</a>
+                                <a href="#">Informativa sulla Privacy</a>
                             </div>
                             <div class="col-lg-3 text-center">
-                                <a href="/static/pdf/Condizioni-Generali-Multiplayer-Netaddiction.pdf" target="_blank">Termini e condizioni di vendita</a>
+                                <a href="#" target="_blank">Termini e condizioni di vendita</a>
                             </div>
                             <div class="col-lg-3 text-center">
-                                <a href="/costi-metodi-spedizione/">Costi e metodi di spedizione</a>
+                                <a href="#">Costi e metodi di spedizione</a>
                             </div>
                         </div>
                         <div class="clearfix"><br/></div>
