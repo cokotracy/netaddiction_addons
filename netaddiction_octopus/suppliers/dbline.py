@@ -99,7 +99,11 @@ class DbLine(supplier.Supplier):
             'SPLI',
             'TSH',
             'TOO',
-            'TTL'
+            'TTL',
+            'LEGO',
+            'PS5',
+            'GTAV',
+            'XBX',
         )
 
         assert len([category for category in categories if item['codice_fornitore'].startswith(category)]) > 0
