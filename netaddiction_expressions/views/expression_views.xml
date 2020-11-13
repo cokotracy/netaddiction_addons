@@ -3,7 +3,7 @@
 
     <menuitem id="menu_netaddiction_offers"
                 name="Offers"
-                parent="sale.product_menu_catalog"
+                parent="sale.sale_menu_root"
                 sequence="90"
                 />
 
