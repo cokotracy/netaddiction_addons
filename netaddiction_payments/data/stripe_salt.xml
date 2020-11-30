@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data noupdate="1">
+        <!--Crea la funzionalità ed il gruppo associato-->
+        <record id="stripe_public_key" model="ir.values">
+            <field name="name">stripe_public_key</field>
+            <field name="model">netaddiction.stripe.settings</field>
+        </record>
+        <record id="stripe_private_key" model="ir.values">
+            <field name="name">stripe_private_key</field>
+            <field name="model">netaddiction.stripe.settings</field>
+        </record>
+    </data>
+</openerp>

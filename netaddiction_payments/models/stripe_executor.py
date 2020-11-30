@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 import stripe
 import payment_exception
+import cypher
+
 from openerp import models, fields, api
 from openerp.exceptions import ValidationError
 from float_compare import isclose
@@ -21,10 +23,22 @@ class StripeExecutor(models.TransientModel):
     CardExist = CardExist
 
     def get_stripe_public_key(self):
-        return self.env["ir.config_parameter"].search([("key", "=", "stripe.public.key")]).value
+        encripted_pub_key = self.env["ir.values"].search(
+            [("name", "=", "stripe_public_key")]).value
+
+        key = self.env["ir.config_parameter"].search(
+            [("key", "=", "stripe.key")]).value
+
+        return cypher.decrypt(key, encripted_pub_key)
 
     def get_stripe_secret_key(self):
-        return self.env["ir.config_parameter"].search([("key", "=", "stripe.secret.key")]).value
+        encripted_priv_key = self.env["ir.values"].search(
+            [("name", "=", "stripe_private_key")]).value
+
+        key = self.env["ir.config_parameter"].search(
+            [("key", "=", "stripe.key")]).value
+
+        return cypher.decrypt(key, encripted_priv_key)
 
     def get_customer_or_create(self, name, email):
         stripe.api_key = self.get_stripe_secret_key()
