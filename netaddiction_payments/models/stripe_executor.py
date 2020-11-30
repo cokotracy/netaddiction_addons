@@ -306,17 +306,17 @@ class StripeExecutor(models.TransientModel):
     def _send_3ds_auth_mail(self, mail_to, order_id, order_name, payment_intent_id):
         template = self._get_template_email()
 
-        link = 'https://staging2.multiplayer.com/account/ordini/%s/3ds-authentication/?payment_intent_id=%s' % (
+        link = 'https://multiplayer.com/account/ordini/%s/3ds-authentication/?payment_intent_id=%s' % (
             order_id, payment_intent_id)
         message = '''
-        <span style="font-size: 16px;">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse vitae fringilla sapien, nec iaculis neque.</span> <br><br>
+        <span style="font-size: 16px;">Gentile cliente, per finalizzare l'ordine deve autorizzare il pagamento. Cliccando sul link verrai indirizzato su https://multiplayer.com per completare l'acquisto.</span> <br><br>
         <a href="%s" style="display: block; padding: 20px; text-align: center; background-color: #295F8F; font-size: 24px; font-weight: bold; color: #fff; border-radius: 5px">Autorizza il pagamento dell'ordine</a>
         ''' % link
 
         body = template.replace('[TAG_BODY]', message)
 
         mail = {
-            'subject': '[%s] Multiplayer.com - Richiesta Autorizzazione 3DS' % (order_name),
+            'subject': 'Multiplayer.com - Richiesta Autorizzazione 3DS',
             'email_from': self._get_email_from(),
             'reply_to': self._get_email_from(),
             'email_to': mail_to,
