@@ -10,7 +10,7 @@ from float_compare import isclose
 
 class CardExist(Exception):
     def __init__(self, msg='Questa carta di credito è già associata al tuo account', *args, **kwargs):
-        super(Exception, self).__init__(msg, *args, **kwargs)
+        super(CardExist, self).__init__(msg, *args, **kwargs)
 
 
 class StripeExecutor(models.TransientModel):
@@ -19,8 +19,6 @@ class StripeExecutor(models.TransientModel):
     pagamenti con Stripe
     """
     _name = "netaddiction.stripe.executor"
-
-    CardExist = CardExist
 
     def get_stripe_public_key(self):
         encripted_pub_key = self.env["ir.values"].search(
@@ -62,7 +60,7 @@ class StripeExecutor(models.TransientModel):
         token_card = self.env["netaddiction.partner.ccdata"].search(
             [("token", "=", token)])
         if token_card:
-            raise self.CardExist
+            raise CardExist
         else:
             last_four = 'XXXXXXXXXXXX{}'.format(last_four)
             return self.env["netaddiction.partner.ccdata"].create({'token': token, 'month': exp_month, 'year': exp_year, 'name': card_holder, 'last_four': last_four, 'customer_id': partner_id, 'ctype': brand})
