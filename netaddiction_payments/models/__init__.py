@@ -1,2 +1,17 @@
 # -*- coding: utf-8 -*-
-import account_payment, paypal_configuration, paypal_executor, positivity_executor, positivity_configuration, partner, cod_register, sale, payment_exception, zeropayment_executor, cash_executor, sofort_configuration, sofort_executor, gift_invoice
+import account_payment
+import paypal_configuration
+import paypal_executor
+import positivity_executor
+import positivity_configuration
+import stripe_configuration
+import stripe_executor
+import partner
+import cod_register
+import sale
+import payment_exception
+import zeropayment_executor
+import cash_executor
+import sofort_configuration
+import sofort_executor
+import gift_invoice
