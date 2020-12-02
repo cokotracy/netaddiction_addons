@@ -62,22 +62,12 @@
                parent="stock.menu_stock_inventory_control"
                action="netaddiction_warehouse_assets_inventory_reports_suppliers" sequence="70"/>
 
-    <menuitem id="netaddiction_shipping_time_setting_menu"
-              name="Configura Orari Spedizioni"
-              parent="stock.menu_stock_config_settings"
-              action="netaddiction_shipping_time_settings_action"/>
-
     <menuitem id="menu_netaddiction_variant_products"
               name="Varianti Prodotto"
               sequence="90"
               parent="stock.menu_stock_inventory_control"
               action="product.product_normal_action_sell"
               groups="stock.group_stock_manager"/>
-
-    <menuitem id="netaddiction_manifest_settings_menu"
-              name="Configura Manifest"
-              parent="netaddiction_warehouse_manifest"
-              action="netaddiction_manifest_settings_action"/>
 
     <menuitem id="submenu_netaddiction_wh_locations"
               name="Allocazioni"

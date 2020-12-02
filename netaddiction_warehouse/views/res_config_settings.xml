@@ -1,99 +1,76 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <odoo>
 
-    <!-- CONFIGURAZIONE MANIFEST -->
-    <record id="netaddiction_manifest_settings" model="ir.ui.view">
-        <field name="name">Configura Manifest</field>
+    <record id="stock_res_config_settings_view_form_inherit" model="ir.ui.view">
+        <field name="name">stock.res.config.settings.view.form.inherit</field>
         <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="stock.res_config_settings_view_form"/>
         <field name="arch" type="xml">
-            <form string="Manifest" class="oe_form_configuration">
-                <header>
-                    <button string="Save"
-                            type="object"
-                            name="execute"
-                            class="oe_highlight"/>
-                    or
-                    <button string="Cancel"
-                            type="object"
-                            name="cancel"
-                            class="oe_link"/>
-                </header>
-                <group string="Generali">
-                    <div>
-                        <label for="contrassegno_id"/>
-                        <field name="contrassegno_id"/>
-                    </div>
-                </group>
-                <group string="Bartolini">
-                    <label for="id" string="Bartolini"/>
-                    <div>
-                        <div>
-                            <label for="bartolini_prefix_file1"/>
-                            <field name="bartolini_prefix_file1"/>
+            <xpath expr="//div[@data-key='stock']" position="inside">
+                <h2>Configurazione Manifest</h2>
+                <div class="row mt16 o_settings_container" id="netaddiction_manifest_settings">
+                    <div class="col-12 col-lg-6 o_setting_box" id="general">
+                        <div class="o_setting_left_pane"/>
+                        <div class="o_setting_right_pane">
+                            <span class="o_form_label">Dati generali</span>
+                            <div class="content-group">
+                                <div class="row mt16">
+                                    <label for="contrassegno_id" class="col-lg-4 o_light_label"/>
+                                    <field name="contrassegno_id" class="oe_inline"/>
+                                </div>
+                            </div>
                         </div>
-                        <div>
-                            <label for="bartolini_prefix_file2"/>
-                            <field name="bartolini_prefix_file2"/>
-                        </div>
-
                     </div>
-                </group>
-
-            </form>
+                    <div class="col-12 col-lg-6 o_setting_box" id="bartolini">
+                        <div class="o_setting_left_pane"/>
+                        <div class="o_setting_right_pane">
+                            <span class="o_form_label">Bartolini</span>
+                            <div class="content-group">
+                                <div class="row mt16">
+                                    <label for="bartolini_prefix_file1" class="col-lg-4 o_light_label"/>
+                                    <field name="bartolini_prefix_file1" class="oe_inline"/>
+                                </div>
+                                <div class="row mt16">
+                                    <label for="bartolini_prefix_file2" class="col-lg-4 o_light_label"/>
+                                    <field name="bartolini_prefix_file2" class="oe_inline"/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <h2>Tempi di Spedizione</h2>
+                <div class="row mt16 o_settings_container" id="netaddiction_delivery_times">
+                    <div class="col-12 col-lg-6 o_setting_box" id="hour_availability">
+                        <div class="o_setting_left_pane"/>
+                        <div class="o_setting_right_pane">
+                            <span class="o_form_label">Disponibilità Oraria</span>
+                            <div class="content-group">
+                                <div class="row mt16">
+                                    <label for="hour_available" class="col-lg-4 o_light_label"/>
+                                    <field name="hour_available" class="oe_inline"/>
+                                </div>
+                                <div class="row mt16">
+                                    <label for="hour_not_available" class="col-lg-4 o_light_label"/>
+                                    <field name="hour_not_available" class="oe_inline"/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-lg-6 o_setting_box" id="shipping_days">
+                        <div class="o_setting_left_pane"/>
+                        <div class="o_setting_right_pane">
+                            <span class="o_form_label">Giorni di Spedizione</span>
+                            <div class="content-group">
+                                <div class="row mt16">
+                                    <label for="shipping_days" class="col-lg-4 o_light_label"/>
+                                    <field name="shipping_days" class="oe_inline"/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </xpath>
         </field>
-    </record>
-
-    <record id="netaddiction_manifest_settings_action" model="ir.actions.act_window">
-        <field name="name">Configura Manifest</field>
-        <field name="res_model">res.config.settings</field>
-        <field name="view_id" ref="netaddiction_manifest_settings"/>
-        <field name="view_mode">form</field>
-        <field name="target">inline</field>
-    </record>
-
-    <!-- CONFIGURAZIONE TEMPI SPEDIZIONE -->
-    <record id="netaddiction_shipping_time_setting" model="ir.ui.view">
-        <field name="name">Configura Orari Spedizioni</field>
-        <field name="model">res.config.settings</field>
-        <field name="arch" type="xml">
-            <form string="Orari Spedizioni" class="oe_form_configuration">
-                <header>
-                    <button string="Save"
-                            type="object"
-                            name="execute"
-                            class="oe_highlight"/>
-                    or
-                    <button string="Cancel"
-                            type="object"
-                            name="cancel"
-                            class="oe_link"/>
-                </header>
-                <group>
-                    <div>
-                        <div>
-                            <label for="hour_available"/>
-                            <field name="hour_available"/>
-                        </div>
-                        <div>
-                            <label for="hour_not_available"/>
-                            <field name="hour_not_available"/>
-                        </div>
-                        <div>
-                            <label for="shipping_days"/>
-                            <field name="shipping_days"/>
-                        </div>
-                    </div>
-                </group>
-            </form>
-        </field>
-    </record>
-
-    <record id="netaddiction_shipping_time_settings_action" model="ir.actions.act_window">
-        <field name="name">Configura Orari Spedizioni</field>
-        <field name="res_model">res.config.settings</field>
-        <field name="view_id" ref="netaddiction_shipping_time_setting"/>
-        <field name="view_mode">form</field>
-        <field name="target">inline</field>
     </record>
 
 </odoo>
