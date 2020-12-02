@@ -134,7 +134,7 @@ odoo.define('netaddiction_warehouse.reso_cliente', function (require) {
             for (var s in scraped_lines){
                 var new_line = [0,0,{
                     'product_id' : parseInt(scraped_lines[s]['pid']),
-                    'product_qty' : parseInt(scraped_lines[s]['qta']),
+                    'product_uom_qty' : parseInt(scraped_lines[s]['qta']),
                     'location_id' : parseInt(self.operations.reverse_scrape.default_location_src_id),
                     'location_dest_id' : parseInt(self.operations.reverse_scrape.default_location_dest_id),
                     'product_uom_id' : 1
@@ -163,7 +163,7 @@ odoo.define('netaddiction_warehouse.reso_cliente', function (require) {
             for (var s in resale_lines){
                 var new_line = [0,0,{
                     'product_id' : parseInt(resale_lines[s]['pid']),
-                    'product_qty' : parseInt(resale_lines[s]['qta']),
+                    'product_uom_qty' : parseInt(resale_lines[s]['qta']),
                     'location_id' : parseInt(self.operations.reverse_resale.default_location_src_id),
                     'location_dest_id' : parseInt(self.operations.reverse_resale.default_location_dest_id),
                     'product_uom_id' : 1

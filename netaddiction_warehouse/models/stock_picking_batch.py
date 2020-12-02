@@ -71,10 +71,10 @@ class StockPickingBatch(models.Model):
             pids = []
 
             for pick in batch.picking_ids:
-                for operation in pick.move_line_ids:
-                    if operation.qty_done > 0:
-                        products.append(operation.id)
-                        pids.append(operation.product_id.id)
+                for move_line in pick.move_line_ids:
+                    if move_line.qty_done > 0:
+                        products.append(move_line.id)
+                        pids.append(move_line.product_id.id)
 
             batch.update({
                 'product_list': [(6, 0, products)],
@@ -100,10 +100,10 @@ class StockPickingBatch(models.Model):
             is_scraped = picks.picking_type_id.id == scrape_id
 
             for line in picks.move_line_ids:
-                if is_scraped is False:
+                if not is_scraped:
                     qtys[line.product_id.barcode]['product_qty'] += line.product_qty
-                    qtys[line.product_id.barcode]['remaining_qty'] += line.remaining_qty
                     qtys[line.product_id.barcode]['qty_done'] += line.qty_done
+                    qtys[line.product_id.barcode]['remaining_qty'] += line.qty_done - line.product_qty
                     qty_scraped = 0
                 else:
                     qty_scraped = line.product_qty

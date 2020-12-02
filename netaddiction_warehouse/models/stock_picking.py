@@ -550,7 +550,7 @@ class StockPicking(models.Model):
         picking = self.create(attr)
         picking.action_assign()
         for line in picking.move_line_ids:
-            line.write({'qty_done': line.product_qty})
+            line.write({'qty_done': line.product_uom_qty})
 
         picking.action_confirm()
 
@@ -562,7 +562,7 @@ class StockPicking(models.Model):
         if resale:
             for line in picking.move_line_ids:
                 self.env['netaddiction.wh.locations.line'].allocate(
-                    line.product_id.id, int(line.product_qty), resi.id
+                    line.product_id.id, int(line.product_uom_qty), resi.id
                 )
 
     def create_supplier_reverse(self, products, supplier, operations):
@@ -589,7 +589,7 @@ class StockPicking(models.Model):
         for prod in products['scraped']:
             line = (0, 0, {
                 'product_id': int(prod['pid']),
-                'product_qty': int(prod['qta']),
+                'product_uom_qty': int(prod['qta']),
                 'location_id': int(scraped_wh),
                 'location_dest_id': int(supp_wh),
                 'product_uom_id': 1
@@ -601,7 +601,7 @@ class StockPicking(models.Model):
         for prod in products['commercial']:
             line = (0, 0, {
                 'product_id': int(prod['pid']),
-                'product_qty': int(prod['qta']),
+                'product_uom_qty': int(prod['qta']),
                 'location_id': int(wh),
                 'location_dest_id': int(supp_wh),
                 'product_uom_id': 1
