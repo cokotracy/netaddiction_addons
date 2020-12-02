@@ -201,7 +201,11 @@ odoo.define('netaddiction_warehouse.inventory_reports', function (require) {
             self.suppliers_results[value] = {};
             self.suppliers_results[value]['pids'] = [];
             self.suppliers_results[value]['products'] = {};
-            var filter = [['company_id','=',self.company_id],['location_id','=',self.wh],['history_ids.picking_id.partner_id.id','=',value]];
+            var filter = [
+                ['company_id','=',self.company_id],['location_id','=',self.wh],
+                // FIXME: history_ids non esiste più
+                // ['history_ids.picking_id.partner_id.id','=',value]
+            ];
             new Model('stock.quant').query(['inventory_value','qty']).filter(filter).group_by('product_id').then(function(results){
                 var total_inventory = 0;
                 $.each(results,function(i,v){

@@ -25,9 +25,10 @@ class StockInventory(models.Model):
                             'picking_ids.move_lines.quant_ids'
                         ):
                             if pick_quant.product_id.id == move.product_id.id:
-                                # TODO: history_ids non esiste più
-                                for history in pick_quant.history_ids:
-                                    quant.history_ids += history
+                                # FIXME: history_ids non esiste più
+                                # for history in pick_quant.history_ids:
+                                #     quant.history_ids += history
+                                pass
                     # se non ho l'ordine, trovo per quel prodotto, le quants
                     # con in_date (data d'ingresso) minore della sua data
                     # nell'history di queste quant controllo quante ne mancano
@@ -41,8 +42,9 @@ class StockInventory(models.Model):
                             order='date desc'
                         )
                         if old_moves:
-                            # TODO: history_ids non esiste più
-                            quant.history_ids = [(4, old_moves[0].id, False)]
+                            # FIXME: history_ids non esiste più
+                            # quant.history_ids = [(4, old_moves[0].id, False)]
+                            pass
         return True
 
     def _action_done(self):

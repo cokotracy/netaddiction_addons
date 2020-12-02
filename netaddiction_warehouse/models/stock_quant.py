@@ -16,10 +16,10 @@ class StockQuant(models.Model):
         pick_type_in = self.env.ref('stock.picking_type_in')
         sup = False
 
-        # TODO: history_ids non esiste più
-        for history in self.history_ids:
-            if history.picking_type_id == pick_type_in:
-                sup = history.picking_partner_id
+        # FIXME: history_ids non esiste più
+        # for history in self.history_ids:
+        #     if history.picking_type_id == pick_type_in:
+        #         sup = history.picking_partner_id
 
         return sup
 
@@ -168,9 +168,11 @@ class StockQuant(models.Model):
         quants = self.search(
             [('company_id', '=', self.env.user.company_id.id),
              ('location_id', '=', wh.id),
-             # TODO: history_ids non esiste più
-             ('history_ids.picking_id.partner_id.id', '=', int(supplier_id)),
-             ('reservation_id', '=', False)]
+             # FIXME: history_ids non esiste più
+             # ('history_ids.picking_id.partner_id.id', '=', int(supplier_id)),
+             # FIXME: reservation_id non esiste più
+             # ('reservation_id', '=', False)
+            ]
         )
         quant_data = {}
         for quant in quants:
@@ -199,9 +201,11 @@ class StockQuant(models.Model):
         quants = self.search(
             [('company_id', '=', self.env.user.company_id.id),
              ('location_id', '=', wh),
-             # TODO: history_ids non esiste più
-             ('history_ids.picking_id.partner_id.id', '=', int(supplier_id)),
-             ('reservation_id', '=', False)]
+             # FIXME: history_ids non esiste più
+             # ('history_ids.picking_id.partner_id.id', '=', int(supplier_id)),
+             # FIXME: reservation_id non esiste più
+             # ('reservation_id', '=', False)
+             ]
         )
         quant_data = {}
         for quant in quants:
