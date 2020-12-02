@@ -1,4 +1,4 @@
-openerp.netaddiction_warehouse = function(instance, local) {
+odoo.netaddiction_warehouse = function(instance, local) {
     
 	var _t = instance.web._t,
         _lt = instance.web._lt;
@@ -48,9 +48,9 @@ openerp.netaddiction_warehouse = function(instance, local) {
     local.controllo_pickup = instance.Widget.extend({
     	start: function() {
     		self = this;
-         	return new instance.web.Model('stock.picking.wave').query(['display_name','id','picking_ids']).filter([['state','=','in_progress'],['in_exit','=',false],['reverse_supplier','=',false]]).all().then(function(filtered){
+         	return new instance.web.Model('stock.picking.batch').query(['display_name','id','picking_ids']).filter([['state','=','in_progress'],['in_exit','=',false],['reverse_supplier','=',false]]).all().then(function(filtered){
                 /**cerco ordini con queste picking**/
-                new instance.web.Model('stock.picking.wave').query(['display_name','id','picking_ids']).filter([['picking_ids.sale_id.is_b2b','=',true],['state','=','in_progress'],['in_exit','=',false],['reverse_supplier','=',false]]).all().then(function(b2b){
+                new instance.web.Model('stock.picking.batch').query(['display_name','id','picking_ids']).filter([['picking_ids.sale_id.is_b2b','=',true],['state','=','in_progress'],['in_exit','=',false],['reverse_supplier','=',false]]).all().then(function(b2b){
                     $.each(filtered,function(i,v){
                         $.each(b2b,function(k,b){
                             if(b.id == v.id){
@@ -67,19 +67,19 @@ openerp.netaddiction_warehouse = function(instance, local) {
     });
 
     local.OpenB2B = instance.Widget.extend({
-        template: 'open_wave_b2b',
+        template: 'open_batch_b2b',
         events: {
             "change #search" : "doSearchBarcode",
             "click #complete_b2b": "doCloseB2B"
         },
-        init: function(parent,wave_id,wave_name){
+        init: function(parent,batch_id,batch_name){
             this._super(parent);
-            this.wave_id = wave_id;
-            this.wave_name = wave_name;
+            this.batch_id = batch_id;
+            this.batch_name = batch_name;
             this.results = {};
             $('#search').val('');
             $('#search').focus();
-            new instance.web.Model('stock.pack.operation').query(['product_id','qty_done']).filter([['picking_id.wave_id','=',parseInt(wave_id)]]).all().then(function(results){
+            new instance.web.Model('stock.move.line').query(['product_id','qty_done']).filter([['picking_id.batch_id','=',parseInt(batch_id)]]).all().then(function(results){
                 var all_results = {};
                 $.each(results,function(i,v){
                     if(v.product_id[0] in all_results){
@@ -90,12 +90,12 @@ openerp.netaddiction_warehouse = function(instance, local) {
                         all_results[v.product_id[0]]['product'] = v.product_id;
                     }
                 });
-                $('.open_wave_list').append(QWeb.render('b2b_list',{results:all_results}));
+                $('.open_batch_list').append(QWeb.render('b2b_list',{results:all_results}));
             });
         },
         doCloseB2B: function(e){
             var self = this;
-            new instance.web.Model('stock.picking.wave').call('close_b2b_wave',[this.wave_id,this.wave_id]).then(function(res){
+            new instance.web.Model('stock.picking.batch').call('close_b2b_batch',[this.batch_id,this.batch_id]).then(function(res){
                 data = {
                     'ids': [res['invoice']],
                     'model': 'account.invoice',
@@ -182,7 +182,7 @@ openerp.netaddiction_warehouse = function(instance, local) {
     });
 
     local.openList = instance.Widget.extend({
-    	template: 'open_wave',
+    	template: 'open_batch',
         events: {
             "click #control_homepage" : "doReturnParent",
             "change #search" : "doSearchBarcode",
@@ -195,14 +195,14 @@ openerp.netaddiction_warehouse = function(instance, local) {
             'change .explode_barcode' : "SearchProduct",
             'click .open_under': 'OpenUnder'
         },
-    	init: function(parent,wave_id,wave_name){
+    	init: function(parent,batch_id,batch_name){
     		this._super(parent);
-    		this.wave_id = wave_id;
-    		this.wave_name = wave_name;
+    		this.batch_id = batch_id;
+    		this.batch_name = batch_name;
             this_list = this;
             $('#search').val('');
             $('#search').focus();
-            //get_products_residual(wave_id)
+            //get_products_residual(batch_id)
     	},
         doReturnParent : function(e){
             var home = this;
@@ -231,9 +231,9 @@ openerp.netaddiction_warehouse = function(instance, local) {
 
             barcode = barcode.toUpperCase();
             barcode_list.push(barcode);
-            $('.open_wave_list').children().remove();
-            new instance.web.Model('stock.picking').query(['id','wave_id','pack_operation_product_ids','display_name','sale_id','partner_id']).filter([
-                ['pack_operation_product_ids.product_id.barcode','in',barcode_list],['wave_id','=',parseInt(this_list.wave_id)],
+            $('.open_batch_list').children().remove();
+            new instance.web.Model('stock.picking').query(['id','batch_id','move_line_ids','display_name','sale_id','partner_id']).filter([
+                ['move_line_ids.product_id.barcode','in',barcode_list],['batch_id','=',parseInt(this_list.batch_id)],
                 ['state','not in',['draft','cancel','done']]]).all().then(function(filtered){
                     if (filtered.length == 0){
                         $('.picking_list').remove();
@@ -246,13 +246,13 @@ openerp.netaddiction_warehouse = function(instance, local) {
                         var products_array = {};
                         for (var key in filtered){
                             products_array[filtered[key].id] = {}
-                            for(var i in filtered[key].pack_operation_product_ids){
-                                ids.push(filtered[key].pack_operation_product_ids[i]);
+                            for(var i in filtered[key].move_line_ids){
+                                ids.push(filtered[key].move_line_ids[i]);
                                 count_products[filtered[key].id] = 0;
                                 count_all[filtered[key].id] = 0;
                             }
                         }
-                        new instance.web.Model('stock.pack.operation').query(['qty_done','product_id','picking_id', 'product_qty']).filter([['id','in',ids]]).all().then(function(result){
+                        new instance.web.Model('stock.move.line').query(['qty_done','product_id','picking_id', 'product_qty']).filter([['id','in',ids]]).all().then(function(result){
                             
                             for(var k in result){
                                 var inte = parseInt(result[k].picking_id[0]);
@@ -263,7 +263,7 @@ openerp.netaddiction_warehouse = function(instance, local) {
                                 arr['qty'] = result[k].product_qty;
                                 products_array[inte][result[k].product_id[0]] = arr;
                             }
-                            $('.open_wave_list').append(QWeb.render('open_wave_order_list',{'orders' : filtered, 'count_products' : count_products, 'count_all' : count_all, 'explodes': products_array}));
+                            $('.open_batch_list').append(QWeb.render('open_batch_order_list',{'orders' : filtered, 'count_products' : count_products, 'count_all' : count_all, 'explodes': products_array}));
                             $('#validateAll').show();
                         });
                     }
@@ -387,8 +387,8 @@ openerp.netaddiction_warehouse = function(instance, local) {
             var picking_order = $(e.currentTarget).closest('tr').find('.picking_order').text();
             var sale_order = $(e.currentTarget).closest('tr').find('.sale_order').text();
             var order_name = sale_order + ' | ' + picking_order;
-            new instance.web.Model('stock.pack.operation').query(['qty_done','product_id','picking_id']).filter([['picking_id','=',parseInt(id)]]).all().then(function(result){
-                var new_order = new local.singleOrder(this_list,id,this_list.wave_name,order_name,result);
+            new instance.web.Model('stock.move.line').query(['qty_done','product_id','picking_id']).filter([['picking_id','=',parseInt(id)]]).all().then(function(result){
+                var new_order = new local.singleOrder(this_list,id,this_list.batch_name,order_name,result);
                 this_list.do_hide();
                 new_order.appendTo(home.parent.$el);
             });
@@ -475,7 +475,7 @@ openerp.netaddiction_warehouse = function(instance, local) {
     local.singleOrder = instance.Widget.extend({
         template : 'single_order',
         events : {
-            "click #control_wave" : "returnWave",
+            "click #control_batch" : "returnWave",
             "click #control_homepage" : "returnHome",
             "click .product" : "GoToProduct",
             "change #search_in_order" : "SearchProduct",
@@ -483,10 +483,10 @@ openerp.netaddiction_warehouse = function(instance, local) {
             "click #validate_order" : "ValidateOrder",
             
         },
-        init : function(parent,id,wave_name,order_name,products){
+        init : function(parent,id,batch_name,order_name,products){
             this._super(parent);
             this.order_id = id;
-            this.wave_name = wave_name;
+            this.batch_name = batch_name;
             this.order_name = order_name;
             this.products = products;
             this_order = this;
@@ -600,23 +600,23 @@ openerp.netaddiction_warehouse = function(instance, local) {
     local.homepage = instance.Widget.extend({
     	template: 'control_pick_up_homepage',
     	events: {
-    		"click .wave_tr" : "doOpenWave",
+    		"click .batch_tr" : "doOpenWave",
             },
-    	init: function(parent,waves){
+    	init: function(parent,batchs){
     		this._super(parent);
-            this.waves = waves;
+            this.batchs = batchs;
             this.parent = parent;
             var home = this;
     	},
     	doOpenWave : function(e){
             var home = this;
     		var id = $(e.currentTarget).attr('data-id');
-    		var wave_name = $(e.currentTarget).find('.wave_name').text();
+    		var batch_name = $(e.currentTarget).find('.batch_name').text();
             var b2b = $(e.currentTarget).attr('data-b2b');
             if(b2b){
-                var open = new local.OpenB2B(home,id,wave_name);
+                var open = new local.OpenB2B(home,id,batch_name);
             }else{
-                var open = new local.openList(home,id,wave_name);
+                var open = new local.openList(home,id,batch_name);
             }
             home.do_hide();
             open.appendTo(home.parent.$el)
@@ -717,7 +717,7 @@ openerp.netaddiction_warehouse = function(instance, local) {
             var modal_content = e.currentTarget.closest('.modal-content');
             var supplier_id = $(modal_content).find('#c_supplier').val();
             var document_number = $(modal_content).find('#document_number').val();
-            wave = $(modal_content).find('#waves_supplier').val();
+            batch = $(modal_content).find('#batchs_supplier').val();
             
             this_choose.dial.close();
             message = '';
@@ -728,11 +728,11 @@ openerp.netaddiction_warehouse = function(instance, local) {
                 message = message + "<li><b>Numero Documento</b> mancante</li>";
             }
             
-            if(wave!=undefined){
+            if(batch!=undefined){
 
-                document_number = $('#waves_supplier option:selected').text();
+                document_number = $('#batchs_supplier option:selected').text();
                 return new instance.web.Model('res.partner').query(['id','name']).filter([['id','=',parseInt(supplier_id)]]).first().then(function(sup){
-                    nuovo = new local.carico_go(this_carico,supplier_id,sup.name,document_number,wave);
+                    nuovo = new local.carico_go(this_carico,supplier_id,sup.name,document_number,batch);
 
                     this_choose.destroy();
                     nuovo.appendTo(this_carico.$el);
@@ -755,9 +755,9 @@ openerp.netaddiction_warehouse = function(instance, local) {
                         ids.push(pord[i].picking_ids);
                     }
 
-                    new instance.web.Model('stock.picking.wave').call('create_purchase_list',[document_number,ids]).then(function(result){
-                        wave = result.id
-                        nuovo = new local.carico_go(this_carico,supplier_id,sup.name,document_number,wave);
+                    new instance.web.Model('stock.picking.batch').call('create_purchase_list',[document_number,ids]).then(function(result){
+                        batch = result.id
+                        nuovo = new local.carico_go(this_carico,supplier_id,sup.name,document_number,batch);
                         this_choose.destroy();
                         nuovo.appendTo(this_carico.$el);
                     })
@@ -767,12 +767,12 @@ openerp.netaddiction_warehouse = function(instance, local) {
         },
         SearchWave : function(e){
             var sup_id = $(e.currentTarget).val()
-            $('.wave_row').remove();
-            return new instance.web.Model('stock.picking.wave').query(['id','name']).filter([['in_exit','=',true],['state','=','in_progress'],['picking_ids.partner_id','=',parseInt(sup_id)]]).all().then(function(waves){
-                if( waves.length>0){
-                    html = '<tr class="oe_form_group_row wave_row"><td><b>Lista Aperta</b></td><td><select id="waves_supplier">';
-                    for (i in waves){
-                        html = html + '<option value="'+waves[i].id+'" selected="selected">'+waves[i].name+'</option>';
+            $('.batch_row').remove();
+            return new instance.web.Model('stock.picking.batch').query(['id','name']).filter([['in_exit','=',true],['state','=','in_progress'],['picking_ids.partner_id','=',parseInt(sup_id)]]).all().then(function(batchs){
+                if( batchs.length>0){
+                    html = '<tr class="oe_form_group_row batch_row"><td><b>Lista Aperta</b></td><td><select id="batchs_supplier">';
+                    for (i in batchs){
+                        html = html + '<option value="'+batchs[i].id+'" selected="selected">'+batchs[i].name+'</option>';
                     }
                     html = html = html + '</td></tr>';
                     $('.supplier_tr_row').after(html)
@@ -785,19 +785,19 @@ openerp.netaddiction_warehouse = function(instance, local) {
         template : "carico_go",
         events : {
             "change #search" : "doBarcode",
-            "click #close_wave" : "Validate"
+            "click #close_batch" : "Validate"
         },
-        init : function(parent,supplier_id,supplier_name,document_number,wave){
+        init : function(parent,supplier_id,supplier_name,document_number,batch){
             this_cgo = this;
             this_cgo._super(parent);
             this_cgo.supplier_id = parseInt(supplier_id);
             this_cgo.document_number = document_number;
-            this_cgo.wave = parseFloat(wave);
+            this_cgo.batch = parseFloat(batch);
             this_cgo.supplier_name = supplier_name;
             this_cgo.products = {};
             this_cgo.products_ordered = {};
             this_cgo.pid = {}
-            new instance.web.Model('stock.picking.wave').query(['id','name','picking_ids']).filter([['id','=',this_cgo.wave]]).first().then(function(result){
+            new instance.web.Model('stock.picking.batch').query(['id','name','picking_ids']).filter([['id','=',this_cgo.batch]]).first().then(function(result){
                 
                 if(result != null){
                     this_cgo.document_number = result.name
@@ -806,7 +806,7 @@ openerp.netaddiction_warehouse = function(instance, local) {
                     for (p in result.picking_ids){
                         ids.push(result.picking_ids[p]);
                     }
-                    new instance.web.Model('stock.pack.operation').query(['id','product_id','product_qty','qty_done']).filter([['qty_done','>',0],['picking_id','in',ids]]).all().then(function(line){
+                    new instance.web.Model('stock.move.line').query(['id','product_id','product_qty','qty_done']).filter([['qty_done','>',0],['picking_id','in',ids]]).all().then(function(line){
                         var pqty = 0;
                         
                         for (l in line){
@@ -852,7 +852,7 @@ openerp.netaddiction_warehouse = function(instance, local) {
             if (qta < 0){
                 return this_cgo.do_warn("QUANTITA NEGATIVA","La quantità caricata non può essere negativa");
             }
-            new instance.web.Model('stock.pack.operation').query(['id','product_id','product_qty','qty_done']).filter([['picking_id.wave_id','=',this_cgo.wave],['product_id.barcode','in',barcode_list]]).all().then(function(line){
+            new instance.web.Model('stock.move.line').query(['id','product_id','product_qty','qty_done']).filter([['picking_id.batch_id','=',this_cgo.batch],['product_id.barcode','in',barcode_list]]).all().then(function(line){
                 var results = []
                 var qty_residual = 0;
                 var pqty = 0;
@@ -873,7 +873,7 @@ openerp.netaddiction_warehouse = function(instance, local) {
                     return this_cgo.do_warn("QUANTITA MAGGIORE","Puoi caricari al massimo <b>"+qty_residual+"</b> pezzi del prodotto. Contatta il tuo responsabile per i rimanenti.");
                 }
 
-                new instance.web.Model('stock.pack.operation').call('complete_operation',[ids,qta])
+                new instance.web.Model('stock.move.line').call('complete_operation',[ids,qta])
                 
                 if (line[0].product_id[1] in this_cgo.products){
                     this_cgo.products[line[0].product_id[1]] = parseInt(this_cgo.products[line[0].product_id[1]]) + qta;
@@ -896,8 +896,8 @@ openerp.netaddiction_warehouse = function(instance, local) {
             this_cgo.do_notify("CARICO COMPLETO",'');
             $('.oe-cp-search-view').remove();
             $('#qta').remove();
-            $('#close_wave').remove();
-            new instance.web.Model('stock.picking.wave').call('close_and_validate',[this_cgo.wave]);
+            $('#close_batch').remove();
+            new instance.web.Model('stock.picking.batch').call('close_and_validate',[this_cgo.batch]);
             
        }
     });

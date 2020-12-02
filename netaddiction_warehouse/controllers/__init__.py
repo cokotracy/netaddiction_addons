@@ -1,2 +1,4 @@
-# -*- coding: utf-8 -*-
-import main
+# Copyright 2020 Openforce Srls Unipersonale (www.openforce.it)
+# License LGPL-3.0 or later (https://www.gnu.org/licenses/lgpl).
+
+from . import main

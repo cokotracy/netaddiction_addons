@@ -38,9 +38,9 @@ window.submitform = function(e){
 window.response_message = function(index){
     $('#result_shelfs').remove();
     var href = window.location.href;
-    var wave_id = href.substr(href.lastIndexOf('/') + 1);
-    wave_id = wave_id.replace(/\D/g,'');
-    odoo_function['set_pick_up'](wave_id,window.shelfs[index]['id'],$('#barcode').val(),window.shelfs[index]['qty']);
+    var batch_id = href.substr(href.lastIndexOf('/') + 1);
+    batch_id = batch_id.replace(/\D/g,'');
+    odoo_function['set_pick_up'](batch_id,window.shelfs[index]['id'],$('#barcode').val(),window.shelfs[index]['qty']);
     $('#barcode').val('');
     $('#barcode').focus();
 }
@@ -59,7 +59,7 @@ $(document).ready(function(){
         // do things with utils and Model
         var product = new Model('product.product');
         var allocations = new Model('netaddiction.wh.locations.line');
-        var wave = new Model('stock.picking.wave');
+        var batch = new Model('stock.picking.batch');
         var picking = new Model('stock.picking');
 
         odoo_function ={
@@ -257,11 +257,11 @@ $(document).ready(function(){
 
                                 if(products.length>1){
                                     var href = window.location.href;
-                                    var wave_id = href.substr(href.lastIndexOf('/') + 1);
-                                    wave_id = wave_id.replace(/\D/g,'');
+                                    var batch_id = href.substr(href.lastIndexOf('/') + 1);
+                                    batch_id = batch_id.replace(/\D/g,'');
                                     pid = $(products[0]).attr('data-pid');
-                                    filter = [['picking_id.wave_id','=',parseInt(wave_id)],['product_id','=',parseInt(pid)]]
-                                    new Model('stock.pack.operation').query().filter(filter).all().then(function(res){
+                                    filter = [['picking_id.batch_id','=',parseInt(batch_id)],['product_id','=',parseInt(pid)]]
+                                    new Model('stock.move.line').query().filter(filter).all().then(function(res){
                                         var qty_done = 0
                                         var qty_all = 0
                                         $(res).each(function(index,value){
@@ -306,11 +306,11 @@ $(document).ready(function(){
 
                                 if(products.length==1){
                                     var href = window.location.href;
-                                    var wave_id = href.substr(href.lastIndexOf('/') + 1);
-                                    wave_id = wave_id.replace(/\D/g,'');
+                                    var batch_id = href.substr(href.lastIndexOf('/') + 1);
+                                    batch_id = batch_id.replace(/\D/g,'');
                                     pid = $(products).attr('data-pid');
-                                    filter = [['picking_id.wave_id','=',parseInt(wave_id)],['product_id','=',parseInt(pid)]]
-                                    new Model('stock.pack.operation').query().filter(filter).all().then(function(res){
+                                    filter = [['picking_id.batch_id','=',parseInt(batch_id)],['product_id','=',parseInt(pid)]]
+                                    new Model('stock.move.line').query().filter(filter).all().then(function(res){
                                         var qty_done = 0
                                         var qty_all = 0
                                         $(res).each(function(index,value){
@@ -336,9 +336,9 @@ $(document).ready(function(){
                                     })
                                 }
                             },
-            'set_pick_up' : function set_pick_up(wave_id,shelf_id,barcode,qty_to_down){
+            'set_pick_up' : function set_pick_up(batch_id,shelf_id,barcode,qty_to_down){
 
-                                wave.call('wave_pick_ip',[barcode,shelf_id,wave_id,qty_to_down])
+                                batch.call('batch_pick_up',[barcode,shelf_id,batch_id,qty_to_down])
                                 $('.product_row').each(function(index,value){
                                     if($(value).attr('data-barcode') == barcode && $(value).attr('data-shelf-id')==shelf_id){
                                         var classe = 'done_msg'
@@ -389,8 +389,8 @@ $(document).ready(function(){
 
         $('#close_reverse').on('click', function(e) {
             var href = window.location.href;
-            var wave_id = href.substr(href.lastIndexOf('/') + 1);
-            new Model('stock.picking.wave').call('close_reverse',[wave_id]).then(function(e){
+            var batch_id = href.substr(href.lastIndexOf('/') + 1);
+            new Model('stock.picking.batch').call('close_reverse',[batch_id]).then(function(e){
                 $('#barcode-form').before('<div class="done_msg">LISTA CHIUSA</div>');
             })
         });

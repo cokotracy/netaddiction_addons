@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <record id="netaddiction_warehouse_operation_config_tree" model="ir.ui.view">
+        <field name="name">netaddiction.warehouse.operations.settings.tree</field>
+        <field name="model">netaddiction.warehouse.operations.settings</field>
+        <field name="groups_id" eval="[(4, ref('base.group_system'))]"/>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="company_id"/>
+                <field name="netaddiction_op_type"/>
+                <field name="operation"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="netaddiction_warehouse_operation_config_form" model="ir.ui.view">
+        <field name="name">netaddiction.warehouse.operations.settings.form</field>
+        <field name="model">netaddiction.warehouse.operations.settings</field>
+        <field name="groups_id" eval="[(4, ref('base.group_system'))]"/>
+        <field name="arch" type="xml">
+            <form string="settings_mail form">
+                <sheet>
+                    <group colspan="4">
+                        <field name="company_id"/>
+                    </group>
+                    <group colspan="4">
+                        <field name="netaddiction_op_type"/>
+                    </group>
+                    <group colspan="4">
+                        <field name="operation"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="netaddiction_warehouse_operation_config" model="ir.actions.act_window">
+        <field name="name">Configurazione Operazioni di Magazzino/Reso</field>
+        <field name="res_model">netaddiction.warehouse.operations.settings</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+</odoo>

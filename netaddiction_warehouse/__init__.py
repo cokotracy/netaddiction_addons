@@ -1,3 +1,7 @@
-# -*- coding: utf-8 -*-
-import models 
-import controllers
+# Copyright 2020 Openforce Srls Unipersonale (www.openforce.it)
+# License LGPL-3.0 or later (https://www.gnu.org/licenses/lgpl).
+
+from . import controllers
+from . import models
+from . import tools
+from . import wizards

@@ -1,72 +1,66 @@
-<openerp>
-    <data>
-    	<template id="pick_up_index">
-            <t t-call="netaddiction_warehouse.header_top"/>
-                <t t-call="netaddiction_warehouse.top_menu">
-                    <t t-set="top_title" t-value="'PICK UP'"/>
-                </t>
-                <t t-call="netaddiction_warehouse.slide_menu"/>
-                <div id="content">
-                    <div t-foreach="waves" t-as="wave" class="block" >
-                        
-                            <a t-attf-href="/inventory/app/pick_up/{{wave.id}}" class="wave_link">
-                                <div t-attf-class="block_content {{wave.state}}"><b><t t-esc="wave.display_name"/></b></div>
-                            </a>
-                        
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <template id="pick_up_index">
+        <t t-call="netaddiction_warehouse.header_top"/>
+        <t t-call="netaddiction_warehouse.top_menu">
+            <t t-set="top_title" t-value="'PICK UP'"/>
+        </t>
+        <t t-call="netaddiction_warehouse.slide_menu"/>
+        <div id="content">
+            <div t-foreach="batchs" t-as="batch" class="block" >
+
+                    <a t-attf-href="/inventory/app/pick_up/{{batch.id}}" class="batch_link">
+                        <div t-attf-class="block_content {{batch.state}}"><b><t t-esc="batch.display_name"/></b></div>
+                    </a>
+
+            </div>
+        </div>
+    </template>
+
+    <template id="pick_up_reverse_index">
+        <t t-call="netaddiction_warehouse.header_top"/>
+        <t t-call="netaddiction_warehouse.top_menu">
+            <t t-set="top_title" t-value="'PICK UP RESO'"/>
+        </t>
+        <t t-call="netaddiction_warehouse.slide_menu"/>
+        <div id="content">
+            <div t-foreach="batchs" t-as="batch" class="block" >
+                <a t-attf-href="/inventory/app/pick_up/{{batch.id}}" class="batch_link">
+                    <div t-attf-class="block_content {{batch.state}}"><b><t t-esc="batch.display_name"/></b></div>
+                </a>
+            </div>
+        </div>
+    </template>
+
+    <template id="batch">
+        <t t-call="netaddiction_warehouse.header_top"/>
+        <t t-call="netaddiction_warehouse.top_menu"/>
+        <t t-call="netaddiction_warehouse.slide_menu"/>
+        <div id="content">
+            <t t-if="is_reverse == True">
+                <button id="close_reverse">CHIUDI LISTA RESO</button>
+            </t>
+            <form id="barcode-form">
+                <label for="barcode" id="label_barcode">BARCODE PRODOTTO</label>
+                <input type="text" name="barcode" id="barcode" autocomplete="off" data-function="pick_up_barcode"/>
+                <input type="submit" value="CERCA"/>
+            </form>
+            <div id="result">
+                <div t-foreach="lists" t-as="l" class="block" >
+                    <div class="block_title">
+                        <t t-esc="l[0]"/>
                     </div>
-                </div>
-        </template>
-
-        <template id="pick_up_reverse_index">
-            <t t-call="netaddiction_warehouse.header_top"/>
-                <t t-call="netaddiction_warehouse.top_menu">
-                    <t t-set="top_title" t-value="'PICK UP RESO'"/>
-                </t>
-                <t t-call="netaddiction_warehouse.slide_menu"/>
-                <div id="content">
-                    <div t-foreach="waves" t-as="wave" class="block" >
-                        
-                            <a t-attf-href="/inventory/app/pick_up/{{wave.id}}" class="wave_link">
-                                <div t-attf-class="block_content {{wave.state}}"><b><t t-esc="wave.display_name"/></b></div>
-                            </a>
-                        
-                    </div>
-                </div>
-        </template>
-
-        <template id="wave">
-
-            <t t-call="netaddiction_warehouse.header_top"/>
-                <t t-call="netaddiction_warehouse.top_menu">
-                    
-                </t>
-                <t t-call="netaddiction_warehouse.slide_menu"/>
-                <div id="content">
-                    <t t-if="is_reverse == True">
-                        <button id="close_reverse">CHIUDI LISTA RESO</button>
-                    </t>
-                    <form id="barcode-form">
-                        <label for="barcode" id="label_barcode">BARCODE PRODOTTO</label>
-                        <input type="text" name="barcode" id="barcode" autocomplete="off" data-function="pick_up_barcode"/>
-                        <input type="submit" value="CERCA"/>
-                    </form>
-                    <div id="result">
-                        <div t-foreach="lists" t-as="l" class="block" >
-                            <div class="block_title">
-                                <t t-esc="l[0]"/>
+                    <div class="block_content">
+                        <t t-foreach="l[1]" t-as="prod">
+                            <div class="product_row" t-attf-data-barcode="{{prod['barcode']}}" t-attf-data-pid="{{prod['pid']}}" t-attf-data-shelf="{{l[0]}}" t-attf-data-shelf-id="{{prod['shelf_id']}}">
+                                <a href="#" class="open_image" t-attf-data-pid="{{prod['pid']}}"><b class="qty_for_shelf"><t t-esc="prod['qta']"/></b> x <span class="name_pid"><t t-esc="prod['name']"/></span></a>
                             </div>
-                            <div class="block_content">
-                                <t t-foreach="l[1]" t-as="prod">
-                                    <div class="product_row" t-attf-data-barcode="{{prod['barcode']}}" t-attf-data-pid="{{prod['pid']}}" t-attf-data-shelf="{{l[0]}}" t-attf-data-shelf-id="{{prod['shelf_id']}}">
-                                        <a href="#" class="open_image" t-attf-data-pid="{{prod['pid']}}"><b class="qty_for_shelf"><t t-esc="prod['qta']"/></b> x <span class="name_pid"><t t-esc="prod['name']"/></span></a>
-                                    </div>
-                                </t>
-                            </div>
-                        </div>
+                        </t>
                     </div>
                 </div>
-        </template>
+            </div>
+        </div>
+    </template>
 
-
-    </data>
-</openerp>
+</odoo>

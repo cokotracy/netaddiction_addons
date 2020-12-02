@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <record id="netaddiction_warehouse_products_movement" model="ir.actions.act_window">
+        <field name="name">Ricarica/Sposta Prodotto</field>
+        <field name="res_model">netaddiction.products.movement</field>
+        <field name="view_mode">form</field>
+        <field name="target">inline</field>
+        <field name="domain" eval=""/>
+    </record>
+
+    <record id="view_netaddiction_products_movement" model="ir.ui.view">
+        <field name="name">Muovi Prodotto</field>
+        <field name="model">netaddiction.products.movement</field>
+        <field name="arch" type="xml">
+            <form string="Muovi Prodotto" class="oe_form_configuration">
+                <sheet>
+                    <group>
+                        <field name="barcode"/>
+                        <field name="product_id"/>
+                        <field name="qty_available" readonly="1"/>
+                        <field name="allocation" readonly="1"/>
+
+                        <field name="qty_to_move"/>
+                        <field name="new_allocation"/>
+                        <field name="action"/>
+                    </group>
+                    <group>
+                    </group>
+                    <div>
+                        <button string="Vai"
+                                type="object"
+                                name="execute"
+                                class="oe_highlight"/>
+                    </div>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+</odoo>

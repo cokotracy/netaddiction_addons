@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+
+    	<record id="carrier_brt" model="delivery.carrier">
+            <field name="name">Corriere Espresso BRT</field>
+            <field name="delivery_type">fixed</field>
+            <field name="time_to_shipping">1</field>
+            <field name="fixed_price">4.90</field>
+            <field name="amount">99</field>
+    	</record>
+
+    	<record id="carrier_sda" model="delivery.carrier">
+            <field name="name">Corriere Espresso SDA</field>
+            <field name="delivery_type">fixed</field>
+            <field name="time_to_shipping">1</field>
+            <field name="fixed_price">4.90</field>
+            <field name="amount">99</field>
+    	</record>
+
+    	<record id="carrier_altro" model="delivery.carrier">
+            <field name="name">Altro</field>
+            <field name="delivery_type">fixed</field>
+            <field name="time_to_shipping">1</field>
+            <field name="fixed_price">0</field>
+    	</record>
+
+    	<record id="carrier_magazzino" model="delivery.carrier">
+            <field name="name">Ritiro c/o Magazzino</field>
+            <field name="delivery_type">fixed</field>
+            <field name="time_to_shipping">1</field>
+            <field name="fixed_price">0</field>
+    	</record>
+
+    </data>
+</odoo>

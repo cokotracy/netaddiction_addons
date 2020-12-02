@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <menuitem id="netaddiction_warehouse_suppliers_reverse_menu"
+              name="Reso a Fornitore"
+              parent="purchase.menu_purchase_products"
+              action="netaddiction_warehouse_suppliers_reverse"
+              sequence="70"/>
+
+    <menuitem id="netaddiction_warehouse_carico"
+              name="Carico da Fornitore"
+              parent="stock.menu_stock_warehouse_mgmt"
+              action="action_carico"/>
+
+    <menuitem id="netaddiction_warehouse_spara_pacchi"
+              name="Spara Pacchi"
+              parent="stock.menu_stock_warehouse_mgmt"
+              action="action_open_manifest_control"/>
+
+    <menuitem id="netaddiction_warehouse_controllo_pickup"
+              name="Controllo Pickup"
+              parent="stock.menu_stock_warehouse_mgmt"
+              action="action_controllo_pickup_2"/>
+
+    <menuitem id="netaddiction_autopreparation"
+              name="Autopreparazione"
+              parent="stock.menu_stock_warehouse_mgmt"
+              action="netaddiction_autopreparation_action"
+              sequence="1"/>
+
+    <menuitem id="netaddiction_warehouse_manifest"
+              name="Manifest"
+              parent="stock.menu_stock_warehouse_mgmt"
+              action="action_manifest"/>
+
+    <menuitem id="menu_netaddiction_products_movement"
+              name="Ricarica/Sposta Prodotto"
+              parent="stock.menu_stock_warehouse_mgmt"
+              sequence="99"
+              action="netaddiction_warehouse_products_movement"/>
+
+    <menuitem id="menu_netaddiction_wh_locations"
+              name="Allocazioni Magazzino"
+              parent="stock.menu_stock_root"
+              sequence="12"/>
+
+    <menuitem id="netaddiction_warehouse_operation_config_menu"
+              parent="stock.menu_warehouse_config"
+              name="Config. Resi"
+              sequence="90"
+              action="netaddiction_warehouse_operation_config"
+              groups="base.group_system"/>
+
+    <menuitem id="netaddiction_warehouse_inventory_reports_menu"
+              name="Inventario"
+              parent="stock.menu_warehouse_report"
+              action="netaddiction_warehouse_assets_inventory_reports"
+              sequence="70"/>
+
+     <menuitem id="products_problem"
+               name="Prodotti Problematici"
+               parent="stock.menu_stock_inventory_control"
+               action="netaddiction_warehouse_assets_inventory_reports_suppliers" sequence="70"/>
+
+    <menuitem id="netaddiction_shipping_time_setting_menu"
+              name="Configura Orari Spedizioni"
+              parent="stock.menu_stock_config_settings"
+              action="netaddiction_shipping_time_settings_action"/>
+
+    <menuitem id="menu_netaddiction_variant_products"
+              name="Varianti Prodotto"
+              sequence="90"
+              parent="stock.menu_stock_inventory_control"
+              action="product.product_normal_action_sell"
+              groups="stock.group_stock_manager"/>
+
+    <menuitem id="netaddiction_manifest_settings_menu"
+              name="Configura Manifest"
+              parent="netaddiction_warehouse_manifest"
+              action="netaddiction_manifest_settings_action"/>
+
+    <menuitem id="submenu_netaddiction_wh_locations"
+              name="Allocazioni"
+              parent="menu_netaddiction_wh_locations"
+              action="netaddiction_wh_locations_base"/>
+
+    <menuitem id="menu_netaddiction_warehouse"
+              name="Inventory App"
+              sequence="90"
+              action="netaddiction_warehouse_link"
+              groups="stock.group_stock_manager"/>
+
+    <record id="stock.stock_picking_type_menu" model="ir.ui.menu">
+        <field name="active" eval="False"/>
+    </record>
+
+</odoo>

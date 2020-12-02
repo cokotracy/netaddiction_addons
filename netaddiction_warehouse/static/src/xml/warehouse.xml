@@ -37,10 +37,10 @@
                         </tr>
                     </tfoot>
                     <tbody>
-                        <t t-foreach="widget.waves" t-as="wave">
-                            <tr t-attf-data-id="{{wave.id}}" class="wave_tr" t-attf-data-b2b="{{wave.is_b2b}}">
+                        <t t-foreach="widget.batchs" t-as="batch">
+                            <tr t-attf-data-id="{{batch.id}}" class="batch_tr" t-attf-data-b2b="{{batch.is_b2b}}">
                                 <td data-field="display_name">
-                                    <b class="wave_name"><t t-esc="wave.display_name"/> <t t-if="wave.is_b2b"> - <span style="color:red">B2B</span></t></b>
+                                    <b class="batch_name"><t t-esc="batch.display_name"/> <t t-if="batch.is_b2b"> - <span style="color:red">B2B</span></t></b>
                                 </td>
                             </tr>
                         </t>
@@ -50,7 +50,7 @@
         </div>
 	</t>
 
-    <t t-name="open_wave">
+    <t t-name="open_batch">
         <div class="oe-control-panel">
             <div class="container-fluid">
                 <div class="row">
@@ -59,7 +59,7 @@
                             <li>
                                 <a id="control_homepage">Liste Pickup da Controllare</a>
                             </li>
-                            <li class="active"><t t-esc="widget.wave_name"/></li>
+                            <li class="active"><t t-esc="widget.batch_name"/></li>
                         </ol>
                     </div>
                     <div class="oe-cp-search-view col-md-6">
@@ -85,13 +85,13 @@
             </div>
         </div>
         <div class="oe-view-manager oe_view_manager_current">
-            <div class="oe_list o_list_view oe_view open_wave_list">
+            <div class="oe_list o_list_view oe_view open_batch_list">
                 
             </div>
         </div>
     </t>
 
-    <t t-name="open_wave_b2b">
+    <t t-name="open_batch_b2b">
         <div class="oe-control-panel">
             <div class="container-fluid">
                 <div class="row">
@@ -100,7 +100,7 @@
                             <li>
                                 <a id="control_homepage">Liste Pickup da Controllare</a>
                             </li>
-                            <li class="active"><t t-esc="widget.wave_name"/></li>
+                            <li class="active"><t t-esc="widget.batch_name"/></li>
                         </ol>
                     </div>
                     <div class="oe-cp-search-view col-md-6">
@@ -126,7 +126,7 @@
             </div>
         </div>
         <div class="oe-view-manager oe_view_manager_current">
-            <div class="oe_list o_list_view oe_view open_wave_list">
+            <div class="oe_list o_list_view oe_view open_batch_list">
                
             </div>
         </div>
@@ -151,7 +151,7 @@
         </table>
     </t>
 
-    <t t-name="open_wave_order_list">
+    <t t-name="open_batch_order_list">
         <table class="oe_list_content">
             <thead>
                 <tr class="oe_list_header_columns">
@@ -238,7 +238,7 @@
                                 <a id="control_homepage">Liste Pickup da Controllare</a>
                             </li>
                             <li>
-                                <a id="control_wave"><t t-esc="widget.wave_name"/></a>
+                                <a id="control_batch"><t t-esc="widget.batch_name"/></a>
                             </li>
                             <li class="active"><t t-esc="widget.order_name"/></li>
                         </ol>
@@ -269,7 +269,7 @@
             </div>
         </div>
         <div class="oe-view-manager oe_view_manager_current">
-            <div class="oe_list o_list_view oe_view open_wave_list">
+            <div class="oe_list o_list_view oe_view open_batch_list">
                 <table class="oe_list_content" id="order_product_list">
             <thead>
                 <tr class="oe_list_header_columns">

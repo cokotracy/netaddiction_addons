@@ -1,0 +1,227 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <record id="netaddiction_search_stock_picking" model="ir.ui.view">
+        <field name="name">netaddiction.search_stock.picking</field>
+        <field name="model">stock.picking</field>
+        <field name="inherit_id" ref="stock.view_picking_internal_search"/>
+        <field name="arch" type="xml">
+            <!-- Hide search per picking name -->
+            <xpath expr="/search/field[@name='name']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+
+            <!-- Move search per partner name at the bottom -->
+            <xpath expr="/search/field[@name='partner_id']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="/search/group" position="after">
+                <field name="partner_id" filter_domain="[('partner_id', 'child_of', self)]"/>
+            </xpath>
+
+            <!-- Hide search per picking origin -->
+            <xpath expr="/search/field[@name='origin']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+
+            <!-- Move search per product name, barcode and ID at the bottom -->
+            <xpath expr="/search/field[@name='product_id']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="/search/group" position="after">
+                <field name="product_id" filter_domain="[('product_id.barcode', '=',self)]" string="Barcode Prodotto"/>
+                <field name="product_id" filter_domain="[('product_id.id', '=',self)]" string="Id Prodotto"/>
+                <field name="product_id" string="Nome Prodotto"/>
+            </xpath>
+
+            <!-- Hide search per picking origin -->
+            <xpath expr="/search/field[@name='picking_type_id']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+
+            <!-- Hide filter per own picking -->
+            <xpath expr="/search/filter[@name='my_transfers']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+
+            <!-- Hide filter per draft picking -->
+            <xpath expr="/search/filter[@name='draft']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+
+            <!-- Hide filter per done picking -->
+            <xpath expr="/search/filter[@name='done']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+
+            <!-- Hide filter per cancelled picking -->
+            <xpath expr="/search/filter[@name='cancel']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+
+            <!-- Hide filter per late picking -->
+            <xpath expr="/search/filter[@name='late']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+
+            <!-- Hide filter per backorders -->
+            <xpath expr="/search/filter[@name='backorder']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+
+            <!-- Hide filter per exception activities -->
+            <xpath expr="/search/filter[@name='activities_exception']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+
+            <!-- Add custom filters from v9.0 -->
+            <xpath expr="/search/filter[@name='waiting']" position="after">
+                <filter name="partial_done" string="Parzialmente Completati" domain="[('move_lines.procurement_id.sale_line_id.order_id.state', '=', 'partial_done')]" />
+                <filter name="sale" string="In Lavorazione" domain="[('move_lines.procurement_id.sale_line_id.order_id.state', '=', 'sale')]" />
+                <filter name="problem" string="Problema" domain="[('move_lines.procurement_id.sale_line_id.order_id.state', '=', 'problem')]" />
+                <separator/>
+                <filter name="today" string="Previsti Oggi" domain="[('scheduled_date', '&gt;=', context_today().strftime('%%Y-%%m-%%d 00:00:00')), ('scheduled_date', '&lt;=', context_today().strftime('%%Y-%%m-%%d 23:59:59'))]"/>
+                <filter name="today" string="In Ritardo" domain="[('scheduled_date', '&lt;', context_today().strftime('%%Y-%%m-%%d'))]"/>
+                <separator/>
+                <filter name="is_B2B" string="B2B" domain="[('is_b2b', '=', True)]" />
+                <filter name="not_B2B" string="Escludi B2B" domain="[('is_b2b', '=', False)]" />
+                <separator/>
+                <filter name="contrassegno" string="Contrassegno" domain="[('move_lines.procurement_id.sale_line_id.order_id.account_payment_ids.journal_id.id', '=', %(netaddiction_payments.contrassegno_journal)d)]" />
+                <filter name="cc" string="Carta di Credito" domain="[('move_lines.procurement_id.sale_line_id.order_id.account_payment_ids.journal_id.id', '=', %(netaddiction_payments.cc_journal)d)]" />
+                <filter name="pp" string="PayPal" domain="[('move_lines.procurement_id.sale_line_id.order_id.account_payment_ids.journal_id.id', '=', %(netaddiction_payments.paypal_journal)d)]" />
+                <filter name="sofort" string="Bonifico" domain="[('move_lines.procurement_id.sale_line_id.order_id.account_payment_ids.journal_id.id', '=', %(netaddiction_payments.sofort_journal)d)]" />
+                <filter name="zero" string="Zero" domain="[('move_lines.procurement_id.sale_line_id.order_id.account_payment_ids.journal_id.id', '=', %(netaddiction_payments.zeropay_journal)d)]" />
+                <separator/>
+                <filter name="payment_done" string="Pagato" domain="[('move_lines.procurement_id.sale_line_id.order_id.account_payment_ids.state', '=', 'posted')]" />
+                <filter name="payment_draft" string="Non Pagato" domain="[('move_lines.procurement_id.sale_line_id.order_id.account_payment_ids.state', '=', 'draft')]" />
+                <separator/>
+                <filter name="inbatch" string="In Lista" domain="[('batch_id', '!=', False)]"/>
+                <filter name="not_batch" string="Non in Lista" domain="[('batch_id', '=', False)]"/>
+                <separator/>
+            </xpath>
+            <xpath expr="/search/group" position="after">
+                <field name="batch_id"/>
+            </xpath>
+
+            <!-- Hide grouping per scheduled date -->
+            <xpath expr="/search/group/filter[@name='expected_date']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+
+            <!-- Hide grouping per origin doc -->
+            <xpath expr="/search/group/filter[@name='origin']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+
+            <!-- Add custom grouping from v9.0 -->
+            <xpath expr="/search/group/filter[@name='status']" position="after">
+                <filter name="groupby_order_date" string="Data Ordine" domain="[]" context="{'group_by': 'date'}"/>
+                <filter name="groupby_scheduled_date" string="Data Prevista" domain="[]" context="{'group_by': 'scheduled_date'}"/>
+            </xpath>
+
+            <!-- Add custom filters after grouping -->
+            <xpath expr="/search/group/filter[@name='picking_type']" position="after">
+                <filter name="batch" string="Lista" domain="[]" context="{'group_by':'batch_id'}"/>
+                <filter name="partner" string="Destinatario" domain="[]" context="{'group_by':'partner_id'}"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="netaddiction_tree_stock_picking" model="ir.ui.view">
+        <field name="name">netaddiction.tree.stock.picking</field>
+        <field name="model">stock.picking</field>
+        <field name="priority" eval="30"/>
+        <field name="inherit_id" ref="stock.vpicktree"/>
+        <field name="arch" type="xml">
+            <!-- FIXME res.partner's field 'rating' has not been migrated, so the tree attribute is commented -->
+            <!-- Edit tree attributes -->
+            <!--
+            <xpath expr="/tree" position="attributes">
+                <attribute name="decoration-danger">partner_rating == '0'</attribute>
+            </xpath>
+            -->
+
+            <!-- Hide locations -->
+            <xpath expr="/tree/field[@name='location_id']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="/tree/field[@name='location_dest_id']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+
+            <!-- Move origin -->
+            <xpath expr="/tree/field[@name='origin']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="/tree/field[@name='state']" position="before">
+                <field name="origin" optional="show"/>
+            </xpath>
+
+            <!-- Move backorder -->
+            <xpath expr="/tree/field[@name='backorder_id']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="/tree/field[@name='picking_type_id']" position="after">
+                <field name="backorder_id" optional="hide"/>
+            </xpath>
+
+            <!-- Hide priority -->
+            <xpath expr="/tree/field[@name='priority']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+
+            <!-- Add custom fields -->
+            <xpath expr="/tree/field[@name='partner_id']" position="after">
+                <!-- FIXME res.partner's field 'rating' has not been migrated, so the field is commented -->
+                <!-- <field name="partner_rating" optional="show"/> -->
+                <field name="scheduled_date" optional="show"/>
+                <field name="date_of_shipping_home" readonly="True" optional="show"/>
+                <field name="sale_id" attrs="{'invisible' : [('picking_type_id','!=', %(stock.picking_type_out)d)]}" optional="show"/>
+            </xpath>
+            <xpath expr="/tree/field[@name='state']" position="after">
+                <field name="sale_order_status" optional="show"/>
+                <field name="sale_order_payment_method" optional="show"/>
+            </xpath>
+            <xpath expr="/tree/field[@name='backorder_id']" position="after">
+                <field name="date_done" optional="hide"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="netaddiction_stock_picking_new_field" model="ir.ui.view">
+        <field name="name">netaddiction.stock.picking.new.field</field>
+        <field name="model">stock.picking</field>
+        <field name="inherit_id" ref="stock.view_picking_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="/form/sheet/group/group/field[@name='location_id']" position="after">
+                 <field name="total_import" readonly="True"/>
+                <field name="sale_order_payment_method"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="netaddiction_delivery_picking" model="ir.ui.view">
+        <field name="name">netaddiction.delivery.picking</field>
+        <field name="model">stock.picking</field>
+        <field name="inherit_id" ref="delivery.view_picking_withcarrier_out_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//group[@name='carrier_data']/field[@name='carrier_id']" position="after">
+                <field name="delivery_barcode" readonly="1"/>
+            </xpath>
+            <xpath expr="//group[@name='carrier_data']/div/field[@name='shipping_weight']/.." position="after">
+                <field name="manifest" readonly="1"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="netaddiction_autopreparation_action" model="ir.actions.act_window">
+        <field name="name">Autopreparazione</field>
+        <field name="res_model">stock.picking</field>
+        <field name="view_mode">tree,form</field>
+        <field name="domain" eval="[('picking_type_id', '=', ref('stock.picking_type_out')), ('batch_id', '=',False)]" />
+        <field name="help" type="html">
+            <p class="oe_view_nocontent_create">Non ci sono Spedizioni.</p>
+        </field>
+    </record>
+
+</odoo>

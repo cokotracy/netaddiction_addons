@@ -130,7 +130,7 @@ odoo.define('netaddiction_warehouse.reso_cliente', function (require) {
         },
         scrap : function(scraped_lines){
             var oid = this.active_order;
-            var pack_operation_product_ids = []
+            var move_line_ids = []
             for (var s in scraped_lines){
                 var new_line = [0,0,{
                     'product_id' : parseInt(scraped_lines[s]['pid']),
@@ -139,7 +139,7 @@ odoo.define('netaddiction_warehouse.reso_cliente', function (require) {
                     'location_dest_id' : parseInt(self.operations.reverse_scrape.default_location_dest_id),
                     'product_uom_id' : 1
                 }];
-                pack_operation_product_ids.push(new_line)
+                move_line_ids.push(new_line)
             }
             var attr = {
                 'partner_id' : parseInt(self.active_order.partner_id[0]),
@@ -148,7 +148,7 @@ odoo.define('netaddiction_warehouse.reso_cliente', function (require) {
                 'picking_type_id' : parseInt(self.operations.reverse_scrape.operation_type_id),
                 'location_id' : parseInt(self.operations.reverse_scrape.default_location_src_id),
                 'sale_id' : parseInt(self.active_order_id),
-                'pack_operation_product_ids' : pack_operation_product_ids,
+                'move_line_ids' : move_line_ids,
             }
             new Model('stock.picking').call('create_reverse',[attr,oid]).then(function(e){
 
@@ -159,7 +159,7 @@ odoo.define('netaddiction_warehouse.reso_cliente', function (require) {
         },
         resale : function(resale_lines){
             var oid = this.active_order;
-            var pack_operation_product_ids = []
+            var move_line_ids = []
             for (var s in resale_lines){
                 var new_line = [0,0,{
                     'product_id' : parseInt(resale_lines[s]['pid']),
@@ -168,7 +168,7 @@ odoo.define('netaddiction_warehouse.reso_cliente', function (require) {
                     'location_dest_id' : parseInt(self.operations.reverse_resale.default_location_dest_id),
                     'product_uom_id' : 1
                 }];
-                pack_operation_product_ids.push(new_line)
+                move_line_ids.push(new_line)
                 // new Model('netaddiction.wh.locations.line').call('allocate',[parseInt(resale_lines[s]['pid']),parseInt(resale_lines[s]['qta']),parseInt(self.location_reverse)]);
             }
             var attr = {
@@ -178,7 +178,7 @@ odoo.define('netaddiction_warehouse.reso_cliente', function (require) {
                 'picking_type_id' : parseInt(self.operations.reverse_resale.operation_type_id),
                 'location_id' : parseInt(self.operations.reverse_resale.default_location_src_id),
                 'sale_id' : parseInt(self.active_order_id),
-                'pack_operation_product_ids' : pack_operation_product_ids,
+                'move_line_ids' : move_line_ids,
                 'resale': 1
             }
 
