@@ -409,12 +409,12 @@ class StockPicking(models.Model):
                 total += res_c['total_included']
 
             # TODO: gestione gift?
-            if pick.sale_id.gift_discount > 0.0:
-                gift = self.env[
-                    "netaddiction.gift_invoice_helper"].compute_gift_value(
-                    self.sale_id.gift_discount, pick.sale_id.amount_total,
-                    total)
-                total -= gift
+            # if pick.sale_id.gift_discount > 0.0:
+            #     gift = self.env[
+            #         "netaddiction.gift_invoice_helper"].compute_gift_value(
+            #         self.sale_id.gift_discount, pick.sale_id.amount_total,
+            #         total)
+            #     total -= gift
 
             pick.total_import = total
 
