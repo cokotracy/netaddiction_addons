@@ -1,7 +1,7 @@
 # Copyright 2019 Openforce Srls Unipersonale (www.openforce.it)
 # License LGPL-3.0 or later (https://www.gnu.org/licenses/lgpl).
 
-from odoo import fields, models
+from odoo import api, fields, models
 
 
 class ProductTemplate(models.Model):
@@ -51,11 +51,54 @@ class ProductProduct(models.Model):
         digits='Product Price'
     )
 
+    special_price = fields.Float(
+        string="Prezzo offerta base",
+        digits='Product Price',
+        default=0
+    )
+
     qty_available_now = fields.Integer(
         compute="_get_qty_available_now",
         # search="_search_available_now",
         string="Quantità Disponibile",
         help="Quantità Disponibile Adesso (qty in possesso - qty in uscita)")
+
+    med_inventory_value = fields.Float(
+        string="Valore Medio Inventario Deivato",
+        default=0,
+        compute="_get_inventory_medium_value"
+    )
+
+    med_inventory_value_intax = fields.Float(
+        string="Valore Medio Inventario Ivato",
+        default=0,
+        compute="_get_inventory_medium_value"
+    )
+
+    def _get_inventory_medium_value(self):
+        for product in self:
+            stock = self.env.ref('stock.stock_location_stock').id
+            if product.qty_available > 0:
+                quants = self.env['stock.quant'].search(
+                    [
+                        ('product_id', '=', product.id),
+                        ('location_id', '=', stock),
+                        ('company_id', '=', self.env.user.company_id.id)
+                    ]
+                )
+                qta = 0
+                value = 0
+                for quant in quants:
+                    qta += quant.quantity
+                    value += 0 # quant.inventory_value
+                val = float(value) / float(qta)
+                result = product.supplier_taxes_id.compute_all(val)
+                product.med_inventory_value_intax = round(
+                    result['total_included'], 2)
+                product.med_inventory_value = round(
+                    result['total_excluded'], 2)
+            else:
+                product.med_inventory_value = 0
 
     def compute_default_code(self):
         for product in self:
