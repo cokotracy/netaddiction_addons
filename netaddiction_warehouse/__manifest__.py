@@ -40,6 +40,7 @@
         'views/actions_url.xml',
         'views/assets.xml',
         'views/delivery_carrier.xml',
+        'views/netaddiction_inventory_reports.xml',
         'views/netaddiction_manifest.xml',
         'views/netaddiction_products_movement.xml',
         'views/netaddiction_warehouse_operations_settings.xml',

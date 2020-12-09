@@ -16,10 +16,11 @@
         <field name="tag">netaddiction_warehouse.inventory_reports</field>
     </record>
 
-    <record id="netaddiction_warehouse_assets_inventory_reports_suppliers" model="ir.actions.client">
+    <!-- TODO don't migrate as is use standard backend views -->
+    <!--<record id="netaddiction_warehouse_assets_inventory_reports_suppliers" model="ir.actions.client">
         <field name="name">Problemi</field>
         <field name="tag">netaddiction_warehouse.inventory_reports</field>
-    </record>
+    </record>-->
 
     <record id="action_reso_cliente" model="ir.actions.client">
         <field name="name">Reso Cliente</field>

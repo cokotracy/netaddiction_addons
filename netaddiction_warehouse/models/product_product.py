@@ -31,6 +31,20 @@ class Product(models.Model):
         string='Allocazioni'
     )
 
+    def button_activate_product(self):
+        """
+        Button action copied from old javascript widget that set sale_ok
+        status
+        """
+        self.sale_ok = True
+
+    def button_deactivate_product(self):
+        """
+        Button action copied from old javascript widget that set sale_ok
+        status
+        """
+        self.sale_ok = False
+
     @api.model
     def problematic_product(self):
         results = self.search(
