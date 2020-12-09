@@ -3,27 +3,50 @@ odoo.define('netaddiction_warehouse.inventory_reports', function (require) {
 
     var core = require('web.core');
     var framework = require('web.framework');
-    var Model = require('web.DataModel');
     var session = require('web.session');
-    var web_client = require('web.web_client');
     var Widget = require('web.Widget');
-    var Dialog = require('web.Dialog');
-    var Notification = require('web.notification');
-    var Class = require('web.Class');
-    var Pager = require('web.Pager');
-    var ActionManager = require('web.ActionManager');
-
     var _t = core._t;
     var QWeb = core.qweb;
-    var common = require('web.form_common');
+    // var common = require('web.form_common');
+    var common = require('web.view_dialogs');
 
-    var InventoryReports = Widget.extend({
-        init: function(parent){
+    // New requirements
+    var AbstractAction = require('web.AbstractAction');
+
+    //unused things
+    /*var web_client = require('web.web_client');
+    var Dialog = require('web.Dialog');
+    var Notification = require('web.Notification');
+    var Class = require('web.Class');
+    var Pager = require('web.Pager');
+    var ActionManager = require('web.ActionManager');*/
+
+    //deprecated
+    //var Model = require('web.DataModel');
+
+
+    var InventoryReports = AbstractAction.extend({
+        init: function(parent, action, options){
             var self = this;
-            this._super(parent);
+            this._super.apply(this, arguments);
             self.company_id = parseInt(session.company_id);
-            new Model('stock.location').query().filter([['company_id','=',self.company_id],['active','=',true],['usage','=','internal'],['name','=','Stock']]).first().then(function(location){
-                self.wh = parseInt(location.id);
+
+            this._rpc({
+                model: 'stock.location',
+                method: 'search_read',
+                fields: [
+                    'id',
+                    'name'
+                ],
+                domain: [
+                    ['company_id','=',self.company_id],
+                    ['active','=',true],
+                    ['usage','=','internal'],
+                    ['name','=','Stock']
+                ],
+                limit: 1,
+            }).then(function (location) {
+               self.wh = parseInt(location.id);
             });
             self.offset = 0;
             self.limit = 100;
@@ -61,22 +84,50 @@ odoo.define('netaddiction_warehouse.inventory_reports', function (require) {
             var self = this;
             //self.get_inventory_values();
             var active_id = parseInt(session.active_id);
-            new Model('ir.model.data').query(['complete_name']).filter([['res_id','=',active_id],['model','=','ir.ui.menu']]).first().then(function(menu){
-                if(menu){
-                    if(menu.complete_name == 'netaddiction_warehouse.products_problem'){
-                        self.$el.html(QWeb.render("inventory_reports_base", {widget: self, is_problematic: true}));
+
+            this._rpc({
+                model: 'ir.model.data',
+                method: 'search_read',
+                fields: ['complete_name'],
+                domain: [
+                    ['res_id','=',active_id],
+                    ['model','=','ir.ui.menu']
+                ],
+                limit: 1,
+            }).then(function (menu) {
+                if (menu) {
+                    if (menu.complete_name == 'netaddiction_warehouse.products_problem') {
+                        self.$el.html(
+                            QWeb.render(
+                                "inventory_reports_base",
+                                {
+                                    widget: self,
+                                    is_problematic: true
+                                }
+                            )
+                        );
                         self.available_deactive = true;
                         self.get_products(false);
-                    }else{
+                    } else {
                         self.get_products(false);
-                        self.$el.html(QWeb.render("inventory_reports_base", {widget: self}));
+                        self.$el.html(
+                            QWeb.render(
+                                "inventory_reports_base",
+                                {widget: self}
+                            )
+                        );
                     }
-                }else{
+                } else {
                     self.get_products(false);
-                    self.$el.html(QWeb.render("inventory_reports_base", {widget: self}));
+                    self.$el.html(
+                        QWeb.render(
+                            "inventory_reports_base",
+                            {widget: self}
+                        )
+                    );
                 }
-                
             });
+
             self.construct_categories();
             self.construct_suppliers();
             self.construct_attributes();
@@ -113,7 +164,14 @@ odoo.define('netaddiction_warehouse.inventory_reports', function (require) {
             if(self.attribute_filter){
                 filter.push(self.attribute_filter)
             }
-            new Model('stock.quant').call('reports_inventario',[filter,rep]).then(function(id){
+            this._rpc({
+                model: 'stock.quant',
+                method: 'reports_inventario',
+                args: [
+                    filter,
+                    rep,
+                ],
+            }).then(function (id) {
                 var pop = new common.FormViewDialog(this, {
                     res_model: 'ir.attachment',
                     res_id:parseInt(id),
@@ -121,7 +179,7 @@ odoo.define('netaddiction_warehouse.inventory_reports', function (require) {
                     title: _t("Apri: Csv"),
                     readonly:true
                 }).open();
-            })
+            });
         },
         OpenProduct: function(e){
             e.preventDefault();
@@ -136,7 +194,9 @@ odoo.define('netaddiction_warehouse.inventory_reports', function (require) {
         },
         ChangeCategory: function(e){
             var self = this;
-            self.$el.find('#inventory_value').html(QWeb.render("InventoryValueLoading", {}));
+            self.$el.find('#inventory_value').html(
+                QWeb.render("InventoryValueLoading", {})
+            );
             
             self.offset = 0;
             var value = parseInt($('#categories').val());
@@ -153,7 +213,9 @@ odoo.define('netaddiction_warehouse.inventory_reports', function (require) {
         },
         ChangeSuppliers: function(e){
             var self = this;
-            self.$el.find('#inventory_value').html(QWeb.render("InventoryValueLoading", {}));
+            self.$el.find('#inventory_value').html(
+                QWeb.render("InventoryValueLoading", {})
+            );
 
             var value = parseInt($('#suppliers').val());
             self.supplier = value;
@@ -178,7 +240,9 @@ odoo.define('netaddiction_warehouse.inventory_reports', function (require) {
         },
         ChangeAttributes: function(e){
             var self = this;
-            self.$el.find('#inventory_value').html(QWeb.render("InventoryValueLoading", {}));
+            self.$el.find('#inventory_value').html(
+                QWeb.render("InventoryValueLoading", {})
+            );
 
             var value = parseInt($('#attributes').val());
             self.attribute = value;
@@ -206,7 +270,17 @@ odoo.define('netaddiction_warehouse.inventory_reports', function (require) {
                 // FIXME: history_ids non esiste più
                 // ['history_ids.picking_id.partner_id.id','=',value]
             ];
-            new Model('stock.quant').query(['inventory_value','qty']).filter(filter).group_by('product_id').then(function(results){
+
+            this._rpc({
+                model: 'stock.quant',
+                method: 'search_read',
+                fields: [
+                    'inventory_value',
+                    'qty'
+                ],
+                domain: filter,
+                group_by: ['product_id'],
+            }).then(function (results) {
                 var total_inventory = 0;
                 $.each(results,function(i,v){
                     total_inventory = total_inventory + v.attributes.aggregates.inventory_value;
@@ -248,7 +322,14 @@ odoo.define('netaddiction_warehouse.inventory_reports', function (require) {
             if(self.attribute_filter){
                 filter.push(self.attribute_filter)
             }
-            new Model('product.product').query(fields).filter(filter).all().then(function(results){
+
+            this._rpc({
+                model: 'product.product',
+                method: 'search_read',
+                fields: fields,
+                domain: filter,
+                groupBy: ['product_id'],
+            }).then(function (results) {
                 var value = 0;
                 $.each(results,function(i,v){
                     if(self.suppliers_pids){
@@ -257,15 +338,28 @@ odoo.define('netaddiction_warehouse.inventory_reports', function (require) {
                         value = value + (v.qty_available * v.med_inventory_value);
                     }
                 });
-                self.$el.find('#inventory_value').html(QWeb.render("InventoryValue", {value: value.toLocaleString()}));
-            })
+                self.$el.find('#inventory_value').html(
+                    QWeb.render(
+                        "InventoryValue",
+                        {value: value.toLocaleString()}
+                    )
+                );
+            });
         },
         activate_product: function(e){
             e.preventDefault();
             var self = this;
             var id = $(e.currentTarget).closest('tr').find('.open_product').attr('data-id');
             var row = $(e.currentTarget).closest('tr');
-            new Model('product.product').call("write", [[parseInt(id)], {'sale_ok': true}]).then(function(){
+
+            this._rpc({
+                model: 'product.product',
+                method: 'write',
+                args: [
+                    [parseInt(id)],
+                    {'sale_ok': true}
+                ],
+            }).then(function () {
                 row.remove();
             });
         },
@@ -274,7 +368,15 @@ odoo.define('netaddiction_warehouse.inventory_reports', function (require) {
             var self = this;
             var id = $(e.currentTarget).closest('tr').find('.open_product').attr('data-id');
             var row = $(e.currentTarget).closest('tr');
-            new Model('product.product').call("write", [[parseInt(id)], {'sale_ok': false}]).then(function(){
+
+            this._rpc({
+                model: 'product.product',
+                method: 'write',
+                args: [
+                    [parseInt(id)],
+                    {'sale_ok': false}
+                ],
+            }).then(function () {
                 row.remove();
             });
         },
@@ -307,10 +409,23 @@ odoo.define('netaddiction_warehouse.inventory_reports', function (require) {
             if(self.supplier_zero_negative_active){
                 var text = 'Prodotti Problematici - Qty <= 0, accesi, non in prenotazione, fornitore a zero';
                 $('.breadcrumb li').text(text);
-                new Model('product.product').call('problematic_product').then(function(results){
+
+                this._rpc({
+                    model: 'product.product',
+                    method: 'problematic_product',
+                    args: [],
+                }).then(function (results) {
                     self.all = parseInt(results.length);
                     var ids = results.splice(self.offset, self.limit);
-                    new Model('product.product').query(fields).filter([['id','in',ids]]).all().then(function(products){
+
+                    this._rpc({
+                        model: 'product.product',
+                        method: 'search_read',
+                        fields: fields,
+                        domain: [
+                            ['id','in',ids]
+                        ],
+                    }).then(function (products) {
                         var new_products = [];
                         $.each(products, function(i,product){
                             product['total_inventory'] = (product.med_inventory_value * product.qty_available).toLocaleString();
@@ -330,9 +445,18 @@ odoo.define('netaddiction_warehouse.inventory_reports', function (require) {
                         self.set_height();
                         self.set_pager();
                     });
+
                 });
             }else{
-                new Model('product.product').query(fields).filter(filter).offset(self.offset).limit(self.limit).order_by(self.order_by).all().then(function(products){
+                this._rpc({
+                    model: 'product.product',
+                    method: 'search_read',
+                    fields: fields,
+                    domain: filter,
+                    offset: self.offset,
+                    limit: self.limit,
+                    orderBy: self.order_by,
+                }).then(function (products) {
                     var new_products = [];
                     $.each(products, function(i,product){
                         product['total_inventory'] = (product.med_inventory_value * product.qty_available).toLocaleString();
@@ -352,7 +476,12 @@ odoo.define('netaddiction_warehouse.inventory_reports', function (require) {
                     self.set_height();
                     self.set_pager();
                 });
-                new Model('product.product').query(['id']).filter(filter).count().then(function(count){
+
+                this._rpc({
+                    model: 'product.product',
+                    method: 'search_count',
+                    args: [filter],
+                }).then(function (count) {
                     self.all = parseInt(count);
                 });
             }
@@ -377,20 +506,59 @@ odoo.define('netaddiction_warehouse.inventory_reports', function (require) {
         },
         construct_categories: function(){
             var self=this;
-            new Model('product.category').query([]).filter([['company_id','=',self.company_id]]).all().then(function(categories){
-                self.$el.find('#categories').html(QWeb.render("CategoriesSelect", {categories: categories}));
+            this._rpc({
+                model: 'product.category',
+                method: 'search_read',
+                domain: [
+                    ['company_id', '=', self.company_id]
+                ],
+            }).then(function (categories) {
+                self.$el.find('#categories').html(
+                    QWeb.render("CategoriesSelect", {categories: categories})
+                );
             });
         },
         construct_suppliers: function(){
             var self=this;
-            new Model('res.partner').query(['id','name']).filter([['supplier','=',true],['parent_id','=',false],['active','=',true],['company_id','=',self.company_id]]).order_by('name').all().then(function(suppliers){
-                self.$el.find('#suppliers').html(QWeb.render("SuppliersSelect", {suppliers: suppliers}));
+            this._rpc({
+                model: 'res.partner',
+                method: 'search_read',
+                fields: [
+                    'id',
+                    'name'
+                ],
+                domain: [
+                    ['purchase_order_count', '>', 0],
+                    ['parent_id','=',false],
+                    ['active','=',true],
+                    ['company_id','=',self.company_id]
+                ],
+            }).then(function (suppliers) {
+                self.$el.find('#suppliers').html(
+                    QWeb.render("SuppliersSelect", {suppliers: suppliers})
+                );
             });
         },
         construct_attributes: function(){
             var self=this;
-            new Model('product.attribute.value').query(['id','display_name']).filter([['company_id','=',self.company_id]]).order_by('attribute_id','name').all().then(function(attributes){
-                self.$el.find('#attributes').html(QWeb.render("AttributesSelect", {attributes: attributes}));
+            this._rpc({
+                model: 'product.attribute.value',
+                method: 'search_read',
+                fields:[
+                    'id',
+                    'display_name'
+                ],
+                domain: [
+                    ['company_id','=',self.company_id]
+                ],
+                orderBy: [
+                    'attribute_id',
+                    'name'
+                ],
+            }).then(function (attributes) {
+                self.$el.find('#attributes').html(
+                    QWeb.render("AttributesSelect", {attributes: attributes})
+                );
             });
         },
         set_pager: function(){
