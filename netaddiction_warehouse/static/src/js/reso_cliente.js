@@ -2,24 +2,27 @@ odoo.define('netaddiction_warehouse.reso_cliente', function (require) {
 "use strict";
 
     var core = require('web.core');
-    var framework = require('web.framework');
-    var Model = require('web.DataModel');
     var session = require('web.session');
-    var web_client = require('web.web_client');
     var Widget = require('web.Widget');
     var Dialog = require('web.Dialog');
-    var Notification = require('web.notification');
     var Class = require('web.Class');
-
     var _t = core._t;
+
+    // Unused things
+    /*var framework = require('web.framework');
     var qweb = core.qweb;
+    var web_client = require('web.web_client');
+    var Notification = require('web.Notification');*/
+
+    //deprecated
+    //var Model = require('web.DataModel');
 
     var Reverse = Class.extend({
         init : function(parent,action){
             self = this;
             self.active_order_id = action.context.active_id;
             self.operations = {};
-            new Model('netaddiction.warehouse.operations.settings').query([]).filter([['company_id','=',session.company_id]]).all().then(function(configs){
+            /*new Model('netaddiction.warehouse.operations.settings').query([]).filter([['company_id','=',session.company_id]]).all().then(function(configs){
                 var ids_conf = []
                 var config_conf = []
                 for (var i in configs){
@@ -59,7 +62,7 @@ odoo.define('netaddiction_warehouse.reso_cliente', function (require) {
                     });
                    
                 });
-            });
+            });*/
         },
         open_dialog : function(parent){
             var options ={
@@ -150,10 +153,10 @@ odoo.define('netaddiction_warehouse.reso_cliente', function (require) {
                 'sale_id' : parseInt(self.active_order_id),
                 'move_line_ids' : move_line_ids,
             }
-            new Model('stock.picking').call('create_reverse',[attr,oid]).then(function(e){
+            /*new Model('stock.picking').call('create_reverse',[attr,oid]).then(function(e){
 
                 location.reload();
-            });
+            });*/
             this.do_notify("RESO COMPLETATO","Il reso è stato completato");
             return this.getParent().close();
         },
@@ -183,10 +186,10 @@ odoo.define('netaddiction_warehouse.reso_cliente', function (require) {
             }
 
             
-            new Model('stock.picking').call('create_reverse',[attr,oid]).then(function(e){
+            /*new Model('stock.picking').call('create_reverse',[attr,oid]).then(function(e){
 
                 location.reload();
-            });
+            });*/
             this.do_notify("RESO COMPLETATO","Il reso è stato completato");
             return this.getParent().close();
         }

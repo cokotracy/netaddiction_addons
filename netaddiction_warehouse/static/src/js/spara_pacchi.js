@@ -2,25 +2,28 @@ odoo.define('netaddiction_warehouse.spara_pacchi', function (require) {
 "use strict";
 
     var core = require('web.core');
-    var framework = require('web.framework');
-    var Model = require('web.DataModel');
-    var session = require('web.session');
-    var web_client = require('web.web_client');
     var Widget = require('web.Widget');
     var Dialog = require('web.Dialog');
-    var Notification = require('web.notification');
-    var Class = require('web.Class');
-    var Pager = require('web.Pager');
-    var ActionManager = require('web.ActionManager');
-
+    var Notification = require('web.Notification');
     var _t = core._t;
     var qweb = core.qweb;
+
+    // unused things
+    // var framework = require('web.framework');
+    // var session = require('web.session');
+    // var web_client = require('web.web_client');
+    /*var Class = require('web.Class');
+    var Pager = require('web.Pager');
+    var ActionManager = require('web.ActionManager');
+*/
+    //deprecated
+    //var Model = require('web.DataModel');
 
     var spara_pacchi = Widget.extend({
         init : function(parent){
             var rev = this
             this._super(parent)
-            new Model('delivery.carrier').query(['id','name']).all().then(function(carriers){
+            /*new Model('delivery.carrier').query(['id','name']).all().then(function(carriers){
                 var options ={
                     title: "Spara Pacchi", 
                     subtitle: 'Scegli il Corriere',
@@ -32,7 +35,7 @@ odoo.define('netaddiction_warehouse.spara_pacchi', function (require) {
                     
                 var dial = new Dialog(this,options)
                 dial.open()
-            });
+            });*/
         },
         goNext : function(e){
             var carrier = $('#select_carrier').val();
@@ -74,7 +77,7 @@ odoo.define('netaddiction_warehouse.spara_pacchi', function (require) {
             this.date = yyyy+'-'+mm+'-'+dd;
             var obj = this;
             var filter = [['date','=',this.date],['carrier_id.id','=',this.carrier['id']]];
-            new Model('netaddiction.manifest').query().filter(filter).first().then(function(result){
+            /*new Model('netaddiction.manifest').query().filter(filter).first().then(function(result){
                 if (result == null){
                     var not = new Notification.Warning(this);
                     not.title = 'ERRORE';
@@ -84,7 +87,7 @@ odoo.define('netaddiction_warehouse.spara_pacchi', function (require) {
                 obj.manifest = result.id;
 
                 obj.table = new Table_Shipping(obj,result.id)
-            });
+            });*/
 
             
         },
@@ -126,7 +129,7 @@ odoo.define('netaddiction_warehouse.spara_pacchi', function (require) {
             var query = ['id','name','partner_id','delivery_read_manifest','delivery_barcode','manifest','origin'];
             var filter = [['delivery_barcode','=',barcode],['manifest.id','=',parseInt(manifest)]];
             
-            new Model('stock.picking').query(query).filter(filter).first().then(function(picking){
+            /*new Model('stock.picking').query(query).filter(filter).first().then(function(picking){
                 if (picking == null){
                     var not = new Notification.Warning(this);
                     not.title = 'ERRORE';
@@ -167,7 +170,7 @@ odoo.define('netaddiction_warehouse.spara_pacchi', function (require) {
                 });
 
                 $('#search').val('').focus();
-            });
+            });*/
         },
         
     });
@@ -181,7 +184,7 @@ odoo.define('netaddiction_warehouse.spara_pacchi', function (require) {
             var obj = this;
             var query = ['id','name','partner_id','delivery_read_manifest','delivery_barcode','manifest','origin'];
             var filter = [['manifest.id','=',parseInt(manifest)]];
-            new Model('stock.picking').query(query).filter(filter).all().then(function(result){
+            /*new Model('stock.picking').query(query).filter(filter).all().then(function(result){
                 var read = []
                 var not_read = []
 
@@ -198,7 +201,7 @@ odoo.define('netaddiction_warehouse.spara_pacchi', function (require) {
                 $('#residual_pick').text(not_read.length);
                 $('#number_pick').text(read.length);
                 obj.appendTo('#content_spara_pacchi');
-            });
+            });*/
         }
     });
 
