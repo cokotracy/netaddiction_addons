@@ -31,6 +31,20 @@ class Product(models.Model):
         string='Allocazioni'
     )
 
+    product_total_inventory = fields.Float(
+        string="Valore Totale",
+        compute='compute_product_total_inventory'
+    )
+
+    def compute_product_total_inventory(self):
+        for product in self:
+            total_inventory = product.med_inventory_value \
+                * product.qty_available
+            # TODO if some suppliers exists how change this total_inventory
+            #  value like old javascript functionalities?
+            # https://github.com/openforceit/netaddiction_addons/blob/9.0/netaddiction_warehouse/static/src/js/inventory_reports.js#L343
+            product.product_total_inventory = total_inventory
+
     def button_activate_product(self):
         """
         Button action copied from old javascript widget that set sale_ok

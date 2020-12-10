@@ -12,10 +12,9 @@
                 <field name="barcode"/>
                 <field name="qty_available"/>
                 <field name="qty_available_now"/>
-                <field name="price"/>
+                <field name="lst_price"/>
                 <field name="med_inventory_value"/>
-                <!-- Todo this field must be added inside model -->
-                <!--<field name="total_inventory"/>-->
+                <field name="product_total_inventory"/>
                 <button type="object" name="button_activate_product" string="Accendi"/>
                 <button type="object" name="button_deactivate_product" string="Spegni"/>
             </tree>
