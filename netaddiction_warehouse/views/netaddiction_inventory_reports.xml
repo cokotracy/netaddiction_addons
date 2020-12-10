@@ -27,6 +27,8 @@
         <field name="arch" type="xml">
             <search string="Prodotti Problematici">
                 <field name="name" string="Nome"/>
+                <field name="id" string="ID"/>
+                <field name="barcode" string="Codice a Barre"/>
                 <filter string="Accesi - Fornitore zero" name="supplier_zero_negative_active" domain="[('qty_available','&lt;=',0),('seller_ids.avail_qty','&lt;=',0),('sale_ok','=',True),'|',('out_date','&lt;=',context_today().strftime('%Y-%m-%d')),('out_date','=',False)]"/>
                 <filter string="Spenti - Fornitore positivo" name="supplier_available_deactive" domain="[('qty_available','&lt;=',0),('seller_ids.avail_qty','&gt;',0), ('sale_ok','=',False)]" />
                 <filter string="Magazzino - Spenti" name="available_deactive" domain="[('product_wh_location_line_ids','!=',False), ('sale_ok','=',False)]"/>
