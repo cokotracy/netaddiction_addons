@@ -87,7 +87,10 @@ class StockPicking(models.Model):
 
     def _get_sale_order_payment(self):
         for pick in self:
-            pick.sale_order_payment_method = pick.sale_id.payment_method_id
+            # Todo payment_method_id doesn't exist into sale.order check module
+            #  netaddiction_payments and ask to Francesca Bianchini or Andrea
+            #  Colangelo
+            pick.sale_order_payment_method = False # pick.sale_id.payment_method_id
 
     def _compute_date_of_shipping(self):
         for pick in self:
