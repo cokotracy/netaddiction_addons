@@ -219,10 +219,12 @@ class ProductPricelist(models.Model):
                 if (product.special_price > 0 and
                     product.special_price < real_price) \
                 else real_price
-            real_price = product.offer_price \
-                if (product.offer_price > 0 and
-                    product.offer_price < real_price) \
-                else real_price
+            # TODO offer_price field is inside module
+            #  netaddiction_special_offer version 9.0 ask to Andrea Colangelo
+            # real_price = product.offer_price \
+            #     if (product.offer_price > 0 and
+            #         product.offer_price < real_price) \
+            #     else real_price
             results[product_id] = (real_price, item.id)
         return results
 
