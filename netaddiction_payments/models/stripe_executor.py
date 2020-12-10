@@ -50,6 +50,15 @@ class StripeExecutor(models.TransientModel):
         else:
             return customer.data[0]["id"]
 
+    def update_customer_email(self, old_mail, new_mail):
+        stripe.api_key = self.get_stripe_secret_key()
+        customer = stripe.Customer.list(email=old_mail)
+        if customer:
+            stripe.Customer.modify(
+                customer.data[0]["id"],
+                email=new_mail,
+            )
+
     def get_payment_secret(self, p_id):
         stripe.api_key = self.get_stripe_secret_key()
         payment_intent = stripe.PaymentIntent.retrieve(p_id)
@@ -135,10 +144,12 @@ class StripeExecutor(models.TransientModel):
         except stripe.error.CardError as e:
             if e.code == 'authentication_required':
                 payment_intent_id = e.error.payment_intent['id']
-                # TODO Da ricontrollare
                 order.state = 'problem'
                 self._send_3ds_auth_mail(
                     partner_email, order.id, order.name, payment_intent_id)
+            if e.code == 'card_declined':
+                self._send_customer_mail(
+                    partner_email, e.message, order.id, order.name)
             raise payment_exception.PaymentException(
                 payment_exception.CREDITCARD, "%s" % e)
         except Exception as e:
@@ -317,6 +328,30 @@ class StripeExecutor(models.TransientModel):
 
         mail = {
             'subject': 'Multiplayer.com - Richiesta Autorizzazione 3DS',
+            'email_from': self._get_email_from(),
+            'reply_to': self._get_email_from(),
+            'email_to': mail_to,
+            'body_html': body,
+            'model': 'project.issue',
+        }
+
+        email = self.env['mail.mail'].create(mail)
+        email.send()
+
+    def _send_customer_mail(self, mail_to, error_message, order_id, order_name):
+        template = self._get_template_email()
+        text = 'la sua banca ha rifiutato il pagamento'
+        if error_message == 'Your card has insufficient funds.':
+            text = 'la sua banca ha rifiutato il pagamento, per la seguente motivazione: <b>Fondi Insufficenti</b>.<br><br>Si prega di ricaricare la sua carta. Se il problema persiste contatti l\'assistenza clienti.'
+        link = 'https://multiplayer.com/account/ordini/%s/' % (order_id)
+        message = '''
+        <span style="font-size: 16px;">Gentile cliente, in riferimento al suo ordine <a href='%s'><b>%s</b></a>, %s</span> <br><br>
+        ''' % (link, order_name, text)
+
+        body = template.replace('[TAG_BODY]', message)
+
+        mail = {
+            'subject': 'Multiplayer.com - Impossibile completare il suo ordine: %s' % order_name,
             'email_from': self._get_email_from(),
             'reply_to': self._get_email_from(),
             'email_to': mail_to,
