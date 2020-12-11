@@ -147,9 +147,10 @@ class StripeExecutor(models.TransientModel):
                 order.state = 'problem'
                 self._send_3ds_auth_mail(
                     partner_email, order.id, order.name, payment_intent_id)
-            if e.code == 'card_declined':
-                self._send_customer_mail(
-                    partner_email, e.message, order.id, order.name)
+            # TODO Risolvere: L'operazione richiesta non può essere completata per questioni di sicurezza. Si prega di contattare l'amministratore di sistema.
+            # if e.code == 'card_declined':
+            #     self._send_customer_mail(
+            #         partner_email, e.message, order.id, order.name)
             raise payment_exception.PaymentException(
                 payment_exception.CREDITCARD, "%s" % e)
         except Exception as e:
