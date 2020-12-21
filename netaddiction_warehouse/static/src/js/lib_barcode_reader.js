@@ -50,17 +50,20 @@ $(document).ready(function(){
 
     odoo.define('netaddiction_warehouse', function (require) {
         var utils = require('web.utils');
-        var Model = require('web.Model');
+        var rpc = require('web.rpc');
         var core = require('web.core');
 
         core.qweb.add_template("/netaddiction_warehouse/static/src/xml/search.xml");
         core.qweb.add_template("/netaddiction_warehouse/static/src/xml/allocation.xml");
         core.qweb.add_template("/netaddiction_warehouse/static/src/xml/pickup.xml");
         // do things with utils and Model
+        /*
+        TODO: Convertire in nuove chiamate di Odoo
         var product = new Model('product.product');
         var allocations = new Model('netaddiction.wh.locations.line');
         var batch = new Model('stock.picking.batch');
         var picking = new Model('stock.picking');
+        */
 
         odoo_function ={
         	'get_allocation': function get_allocation(barcode){
@@ -80,7 +83,11 @@ $(document).ready(function(){
 
                                 barcode = barcode.toUpperCase();
                                 barcode_list.push(barcode)
-					            product.call('get_json_allocation',[barcode_list]).then(function(result){
+                                rpc.query({
+                                    model: 'product.product',
+                                    method: 'get_json_allocation',
+                                    args: [barcode_list],
+                                }).then(function(result){
 					                if(result.result == 0){
                                         $('#result').html('');
                                         NotifyVibrate()
@@ -97,7 +104,11 @@ $(document).ready(function(){
 					            });
 					        },
             'get_products' : function get_products(barcode){
-                                allocations.call('get_json_products',[barcode]).then(function(result){
+                                rpc.query({
+                                    model: 'netaddiction.wh.locations.line',
+                                    method: 'get_json_products',
+                                    args: [barcode],
+                                }).then(function(result){
                                     if(result.result == 0){
                                         $('#result').html('');
                                         NotifyVibrate()
@@ -130,7 +141,11 @@ $(document).ready(function(){
 
                                 barcode = barcode.toUpperCase();
                                 barcode_list.push(barcode)
-                                product.call('get_json_allocation',[barcode_list]).then(function(result){
+                                rpc.query({
+                                    model: 'product.product',
+                                    method: 'get_json_allocation',
+                                    args: [barcode_list],
+                                }).then(function(result){
                                     if(result.result == 0){
                                         $('#result').html('');
                                         NotifyVibrate()
@@ -154,7 +169,11 @@ $(document).ready(function(){
                                 qty = $('#qty').val()
                                 pid = $('.prod_title').find('.block_title').attr('data-product');
                                 wh_line_id = $('#barcode').attr('wh_line_id');
-                                allocations.call('put_json_new_allocation',[barcode,qty,pid,wh_line_id]).then(function(result){
+                                rpc.query({
+                                    model: 'netaddiction.wh.locations.line',
+                                    method: 'put_json_new_allocation',
+                                    args: [barcode,qty,pid,wh_line_id],
+                                }).then(function(result){
                                     $('.done_msg').remove();
                                     $('.orange_msg').remove();
                                     if(result.result == 0){
@@ -255,6 +274,7 @@ $(document).ready(function(){
                                     return true;
                                 }
 
+                                /* TODO check migrazione */
                                 if(products.length>1){
                                     var href = window.location.href;
                                     var batch_id = href.substr(href.lastIndexOf('/') + 1);
@@ -310,7 +330,12 @@ $(document).ready(function(){
                                     batch_id = batch_id.replace(/\D/g,'');
                                     pid = $(products).attr('data-pid');
                                     filter = [['picking_id.batch_id','=',parseInt(batch_id)],['product_id','=',parseInt(pid)]]
-                                    new Model('stock.move.line').query().filter(filter).all().then(function(res){
+                                    rpc.query({
+                                        model: 'stock.move.line',
+                                        method: 'search_read',
+                                        fields: [],
+                                        domain: filter,
+                                    }).then(function(res){
                                         var qty_done = 0
                                         var qty_all = 0
                                         $(res).each(function(index,value){
@@ -337,8 +362,12 @@ $(document).ready(function(){
                                 }
                             },
             'set_pick_up' : function set_pick_up(batch_id,shelf_id,barcode,qty_to_down){
-
-                                batch.call('batch_pick_up',[barcode,shelf_id,batch_id,qty_to_down])
+                                rpc.query({
+                                    model: 'stock.picking.batch',
+                                    method: 'batch_pick_up',
+                                    args: [barcode, shelf_id, batch_id, qty_to_down],
+                                })
+                                // batch.call('batch_pick_up',[barcode,shelf_id,batch_id,qty_to_down])
                                 $('.product_row').each(function(index,value){
                                     if($(value).attr('data-barcode') == barcode && $(value).attr('data-shelf-id')==shelf_id){
                                         var classe = 'done_msg'

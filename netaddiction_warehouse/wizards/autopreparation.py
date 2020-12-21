@@ -11,7 +11,9 @@ class AutoPreparation(models.TransientModel):
         pickings = self.env['stock.picking'].browse(self.env.context.get('active_ids'))
         error_stock = []
         subtype = self.env.ref('netaddiction_warehouse.error_autopreparation')
-        exec_obj = self.env['netaddiction.positivity.executor']
+        # TODO: Da Migrare.
+        # Non trovo il modello base e non ho idea di cosa faccia
+        # exec_obj = self.env['netaddiction.positivity.executor']
         mail_obj = self.env['mail.message']
 
         for pick in pickings:
@@ -74,6 +76,9 @@ class AutoPreparation(models.TransientModel):
                 if payment.journal_id.id == cc_pay.id:
                     if payment.state != 'posted' \
                             and payment.cc_status != 'commit':
+                        pass
+                        '''
+                        TODO: Da migrare
                         try:
                             exec_obj.auth_and_check(
                                 payment.partner_id.id,
@@ -83,6 +88,7 @@ class AutoPreparation(models.TransientModel):
                         except Exception as e:
                             error_stock.append(pick.id)
                             note.append(str(e) or repr(e))
+                        '''
 
             if note:
                 mail_obj.create({
@@ -101,7 +107,7 @@ class AutoPreparation(models.TransientModel):
                 'type': 'ir.actions.act_window',
                 'res_model': "stock.picking",
                 'view_id': self.env.ref('stock.vpicktree').id,
-                'view_mode': 'tree,form',
+                'view_mode': 'tree',
                 'target': 'current',
                 'domain': [('id', 'in', error_stock)],
                 'context': {},

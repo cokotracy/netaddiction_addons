@@ -58,16 +58,7 @@ class StockPicking(models.Model):
     # )
 
     sale_order_status = fields.Selection(
-        [('draft', 'Nuovo'),
-         ('sent', 'Preventivo Inviato'),
-         ('sale', 'In Lavorazione'),
-         ('partial_done', 'Parzialmente Completato'),
-         ('problem', 'Problema'),
-         ('done', 'Completato'),
-         ('cancel', 'Annullato')],
-        compute='_get_sale_order_status',
-        readonly=True,
-        string="Stato Ordine",
+        related='sale_id.state',
     )
 
     sale_order_payment_method = fields.Many2one(
@@ -76,14 +67,13 @@ class StockPicking(models.Model):
         string="Metodo di pagamento",
     )
 
+    # TODO: Migrare
+    '''
     total_import = fields.Float(
         compute='_get_total_import',
         string="Importo",
     )
-
-    def _get_sale_order_status(self):
-        for pick in self:
-            pick.sale_order_status = pick.sale_id.state
+    '''
 
     def _get_sale_order_payment(self):
         for pick in self:
@@ -443,7 +433,7 @@ class StockPicking(models.Model):
         """
         per ogni stock picking eseguo
         """
-        wh_op_sett_obj = self.env['netaddiction.warehouse.operations.settings']
+        wh_location_line_model = self.env['netaddiction.wh.locations.line']
         qty = 0
         for pick in self:
             product_lines = [
@@ -454,7 +444,7 @@ class StockPicking(models.Model):
             test = int(qty_to_down)
 
             for line in product_lines:
-                shelf = wh_op_sett_obj.search(
+                shelf = wh_location_line_model.search(
                     [('product_id', '=', line.product_id.id),
                      ('wh_location_id', '=', int(shelf_id))]
                 )

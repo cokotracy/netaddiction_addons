@@ -3,6 +3,14 @@ from odoo.exceptions import ValidationError
 from ..tools.nawh_error import NAWHError
 
 
+class StockLocation(models.Model):
+
+    _inherit = 'stock.location'
+
+    def unlink(self):
+        return True
+
+
 class NetaddictionLocations(models.Model):
     _name = 'netaddiction.wh.locations'
     _description = "Netaddiction WH Locations"

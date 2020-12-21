@@ -76,9 +76,9 @@
 
             <!-- Add custom filters from v9.0 -->
             <xpath expr="/search/filter[@name='waiting']" position="after">
-                <filter name="partial_done" string="Parzialmente Completati" domain="[('move_lines.procurement_id.sale_line_id.order_id.state', '=', 'partial_done')]" />
-                <filter name="sale" string="In Lavorazione" domain="[('move_lines.procurement_id.sale_line_id.order_id.state', '=', 'sale')]" />
-                <filter name="problem" string="Problema" domain="[('move_lines.procurement_id.sale_line_id.order_id.state', '=', 'problem')]" />
+                <filter name="partial_done" string="Parzialmente Completati" domain="[('sale_order_status', '=', 'partial_done')]" />
+                <filter name="sale" string="In Lavorazione" domain="[('sale_order_status', '=', 'sale')]" />
+                <filter name="problem" string="Problema" domain="[('sale_order_status', '=', 'problem')]" />
                 <separator/>
                 <filter name="today" string="Previsti Oggi" domain="[('scheduled_date', '&gt;=', context_today().strftime('%%Y-%%m-%%d 00:00:00')), ('scheduled_date', '&lt;=', context_today().strftime('%%Y-%%m-%%d 23:59:59'))]"/>
                 <filter name="today" string="In Ritardo" domain="[('scheduled_date', '&lt;', context_today().strftime('%%Y-%%m-%%d'))]"/>
@@ -194,7 +194,7 @@
         <field name="inherit_id" ref="stock.view_picking_form"/>
         <field name="arch" type="xml">
             <xpath expr="/form/sheet/group/group/field[@name='location_id']" position="after">
-                 <field name="total_import" readonly="True"/>
+                 <!-- <field name="total_import" readonly="True"/> -->
                 <field name="sale_order_payment_method"/>
             </xpath>
         </field>
