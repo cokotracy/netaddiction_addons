@@ -13,10 +13,16 @@
 
     'website': "http://www.netaddiction.it",
     'category': 'Technical Settings',
-    'version': '13.0.1.1.0',
-    'depends': ['product', 'account'],
+    'version': '13.0.1.2.0',
+    'depends': [
+        'account',
+        'product',
+        'sale',
+    ],
     'data': [
         'data/account_journal.xml',
         'data/cash_on_delivery.xml',
+        'views/sale_order.xml',
+        'views/stock_picking.xml',
     ]
 }
