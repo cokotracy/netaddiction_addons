@@ -5,6 +5,7 @@
         <xpath expr="." position="inside">
             <link rel="stylesheet" href="/netaddiction_warehouse/static/src/css/backend_style.css" />
             <script type="text/javascript" src="/netaddiction_warehouse/static/src/js/widget.js"/>
+            <script type="text/javascript" src="/netaddiction_warehouse/static/src/js/supplier_load.js"/>
             <script type="text/javascript" src="/netaddiction_warehouse/static/src/js/reso_cliente.js"/>
             <script type="text/javascript" src="/netaddiction_warehouse/static/src/js/reso_fornitore.js"/>
         </xpath>

@@ -98,8 +98,9 @@
 	        				</table>
 	</t>
 
-	<t t-name="carico_go">
-		<div class="oe-control-panel">
+	<!-- TODO Old client view, the new one is written below -->
+<!--	<t t-name="carico_go">
+		<div class="o_control_panel">
             <div class="container-fluid">
 				<div class="row">
 		            <div class="col-md-6 oe-cp-title">
@@ -137,8 +138,8 @@
                 </div>
 		    </div>
 		</div>
-		<div class="oe-view-manager oe_view_manager_current">
-            <div class="oe_list o_list_view oe_view open_batch_list">
+		<div class="o_content">
+            <div class="o_list_view oe_view open_batch_list">
                	<table class="oe_list_content" id="purchase_in_product_list">
 		            <thead>
 		                <tr class="oe_list_header_columns">
@@ -165,6 +166,75 @@
 
 		            </tbody>
         		</table>
+            </div>
+        </div>
+	</t>-->
+
+	<t t-name="carico_go">
+		<div class="o_control_panel">
+			<div>
+				<ol class="breadcrumb" role="navigation">
+					<li class="breadcrumb-item">
+						<a id="carico_home">Carico da Fornitore</a>
+					</li>
+					<li class="breadcrumb-item active">
+						<t t-esc="widget.supplier_name"/> - <t t-esc="widget.document_number"/>
+					</li>
+				</ol>
+
+				<div class="o_cp_searchview" role="search">
+					<div class="o_searchview" role="search" aria-autocomplete="list">
+						<div class="o_searchview_input_container">
+							<input class="o_searchview_input" type="text" id="search" name="search" placeholder="Barcode Prodotto" autofocus="on" autocomplete="off"/>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-md-6">
+					<div class="o_cp_buttons">
+						<b>Numero Prodotti: </b><span id="number_prod">0</span><br/>
+						<b>Numero Totali: </b><span id="number_tot">0</span>
+					</div>
+				</div>
+				<div class="col-md-6" style="padding-left: 0;">
+					<input type="number" id="qta" value="1" min="1" style="width: auto; display: inline-block;"/>
+					<button id="close_batch" class="btn btn-sm btn-primary o_list_button_import" type="button" style="float:right">
+						Chiudi Carico
+					</button>
+				</div>
+			</div>
+		</div>
+		<div class="o_content">
+            <div class="o_list_view open_batch_list">
+				<div class="table-responsive">
+					<table class="o_list_table table table-sm table-hover table-striped" id="purchase_in_product_list">
+						<thead>
+							<tr class="oe_list_header_columns">
+								<th style="width:150px">
+									Qty Ordinata
+								</th>
+								<th style="width:150px">
+									Qty Caricata
+								</th>
+								<th>
+									Nome
+								</th>
+								<th>
+									Prezzi di carico
+								</th>
+							</tr>
+						</thead>
+						<tfoot>
+							<tr>
+
+							</tr>
+						</tfoot>
+						<tbody>
+
+						</tbody>
+					</table>
+				</div>
             </div>
         </div>
 	</t>
