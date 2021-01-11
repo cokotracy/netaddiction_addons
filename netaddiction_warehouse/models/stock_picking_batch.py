@@ -218,9 +218,9 @@ class StockPickingBatch(models.Model):
                     line.product_id.qty_limit = 0
 
             if validate:
-                if out.check_backorder(out):
+                if out._check_backorder():
                     wiz_id = self.env['stock.backorder.confirmation'].create(
-                        {'pick_id': out.id})
+                        {'pick_ids': [(4, out.id)]})
                     wiz_id.process()
                     backorder_pick = self.env['stock.picking'].search(
                         [('backorder_id', '=', out.id)])
