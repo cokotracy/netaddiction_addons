@@ -87,7 +87,7 @@ class StockPicking(models.Model):
 
     def _get_sale_order_payment(self):
         for pick in self:
-            # Todo payment_method_id doesn't exist into sale.order check module
+            # TODO payment_method_id doesn't exist into sale.order check module
             #  netaddiction_payments and ask to Francesca Bianchini or Andrea
             #  Colangelo
             pick.sale_order_payment_method = False # pick.sale_id.payment_method_id
@@ -388,13 +388,18 @@ class StockPicking(models.Model):
             total = 0.00
             pp_aj = self.env.ref('netaddiction_payments.paypal_journal')
             sf_aj = self.env.ref('netaddiction_payments.sofort_journal')
-            if pick.payment_id \
-                    and pick.payment_id.journal_id not in (pp_aj, sf_aj):
-                pick.total_import = pick.payment_id.amount
-                continue
 
-            for line in pick.group_id.procurement_ids:
-                total += line.sale_line_id.price_subtotal + line.sale_line_id.price_tax
+            # TODO AttributeError: 'stock.picking' object has no attribute
+            #  'payment_id' ask to Andrea Colangelo for more informations
+            # if pick.payment_id \
+            #         and pick.payment_id.journal_id not in (pp_aj, sf_aj):
+            #     pick.total_import = pick.payment_id.amount
+            #     continue
+
+            # TODO AttributeError: 'procurement.group' object has no attribute
+            #  'procurement_ids' ask to Andrea Colangelo for more informations
+            # for line in pick.group_id.procurement_ids:
+            #     total += line.sale_line_id.price_subtotal + line.sale_line_id.price_tax
 
             res = self.carrier_id.product_id.taxes_id.compute_all(
                 self.carrier_price)
