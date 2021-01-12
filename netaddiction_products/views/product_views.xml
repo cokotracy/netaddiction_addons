@@ -45,4 +45,17 @@
         </field>
     </record>
 
+    <record id="netaddiction_product_category_form" model="ir.ui.view">
+        <field name="name">netaddiction.product.category.form</field>
+        <field name="model">product.category</field>
+        <field name="inherit_id" ref="product.product_category_form_view" />
+        <field name="arch" type="xml">
+            <xpath expr="//group[@name='first']" position="after">
+                <group name="netaddiction_check" string="Checks">
+                    <field name="check_in_internal_mail" />
+                </group>
+            </xpath>
+        </field>
+    </record>
+
 </odoo>

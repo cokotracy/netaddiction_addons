@@ -14,5 +14,6 @@
     ],
     'data': [
         'views/product_views.xml',
+        'data/template_email.xml',
     ],
 }
