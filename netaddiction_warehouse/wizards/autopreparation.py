@@ -11,6 +11,8 @@ class AutoPreparation(models.TransientModel):
         pickings = self.env['stock.picking'].browse(self.env.context.get('active_ids'))
         error_stock = []
         subtype = self.env.ref('netaddiction_warehouse.error_autopreparation')
+        # TODO: Da Migrare.
+        # Non trovo il modello base e non ho idea di cosa faccia
         # exec_obj = self.env['netaddiction.positivity.executor']
         mail_obj = self.env['mail.message']
 

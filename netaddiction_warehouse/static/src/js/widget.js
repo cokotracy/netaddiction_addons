@@ -232,8 +232,8 @@ odoo.netaddiction_warehouse = function(instance, local) {
             barcode = barcode.toUpperCase();
             barcode_list.push(barcode);
             $('.open_batch_list').children().remove();
-            new instance.web.Model('stock.picking').query(['id','batch_id','move_line_ids','display_name','sale_id','partner_id']).filter([
-                ['move_line_ids.product_id.barcode','in',barcode_list],['batch_id','=',parseInt(this_list.batch_id)],
+            new instance.web.Model('stock.picking').query(['id','batch_id','move_line_ids_without_packages','display_name','sale_id','partner_id']).filter([
+                ['move_line_ids_without_packages.product_id.barcode','in',barcode_list],['batch_id','=',parseInt(this_list.batch_id)],
                 ['state','not in',['draft','cancel','done']]]).all().then(function(filtered){
                     if (filtered.length == 0){
                         $('.picking_list').remove();
@@ -246,8 +246,8 @@ odoo.netaddiction_warehouse = function(instance, local) {
                         var products_array = {};
                         for (var key in filtered){
                             products_array[filtered[key].id] = {}
-                            for(var i in filtered[key].move_line_ids){
-                                ids.push(filtered[key].move_line_ids[i]);
+                            for(var i in filtered[key].move_line_ids_without_packages){
+                                ids.push(filtered[key].move_line_ids_without_packages[i]);
                                 count_products[filtered[key].id] = 0;
                                 count_all[filtered[key].id] = 0;
                             }
