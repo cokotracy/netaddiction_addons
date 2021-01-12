@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record model="ir.ui.view" id="netaddiction_b2b_view_order">
+        <field name="name">netaddiction.2b.bsale.order</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_order_form"/>
+        <field name="arch" type="xml">
+            <field name="pricelist_id" position="after">
+                <field name="is_b2b" />
+            </field>
+        </field>
+    </record>
+</odoo>
