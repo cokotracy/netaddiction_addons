@@ -1,4 +1,4 @@
-# Copyright 2019 Openforce Srls Unipersonale (www.openforce.it)
+# Copyright 2019-TODAY Openforce Srls Unipersonale (www.openforce.it)
 # License LGPL-3.0 or later (https://www.gnu.org/licenses/lgpl).
 
 {
@@ -9,8 +9,9 @@
     'license': 'LGPL-3',
     'depends': [
         'sale',
+        'netaddiction_payments',
     ],
     'data': [
-        # 'views/sale_views.xml',
+        'data/template_email.xml',
     ],
 }
