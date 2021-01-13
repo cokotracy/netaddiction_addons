@@ -295,8 +295,9 @@ class StockPicking(models.Model):
                 height=50,
                 humanreadable=0
             )
-            barcode_base64 = base64.b64encode(barcode)
+            barcode_base64 = base64.b64encode(barcode).decode('utf-8')
             pick.barcode_image = 'data:image/png;base64,' + barcode_base64
+
 
     def action_cancel(self):
         cancel = []
