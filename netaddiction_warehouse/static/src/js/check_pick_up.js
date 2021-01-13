@@ -421,14 +421,14 @@ odoo.define('netaddiction_warehouse.check_pick_up', function (require) {
             }).then(function (pid) {
                 wash_and_focus_input($('.explode_barcode'));
                 var st = false;
-                if (pid != null) {
+                if (pid != null || pid.length !== 0) {
                     var wid = $(e.currentTarget).attr('data-id');
                     $('#table_' + wid + ' tr').each(function (inv, vl) {
-                        if (parseInt($(vl).attr('data-id')) == parseInt(pid.id)) {
+                        if (parseInt($(vl).attr('data-id')) == parseInt(pid[0].id)) {
                             var qty_done = parseInt($(vl).find('.qty_done').text());
                             var back_color = $(vl).css('background');
                             if (qty_done > 0) {
-                                color_tr($('#table_' + wid + ' .pid_' + pid.id));
+                                color_tr($('#table_' + wid + ' .pid_' + pid[0].id));
 
                                 setTimeout(function () {
                                     return_color_tr($(vl), back_color);
@@ -472,7 +472,7 @@ odoo.define('netaddiction_warehouse.check_pick_up', function (require) {
         doOpenOrder: function (e) {
             e.preventDefault();
             var id = $(e.currentTarget).attr('data-id');
-            this_list.do_action({
+            this.do_action({
                 type: 'ir.actions.act_window',
                 res_model: "sale.order",
                 res_id: parseInt(id),
@@ -484,7 +484,7 @@ odoo.define('netaddiction_warehouse.check_pick_up', function (require) {
         doOpenPick: function (e) {
             e.preventDefault();
             var id = $(e.currentTarget).attr('data-id');
-            this_list.do_action({
+            this.do_action({
                 type: 'ir.actions.act_window',
                 res_model: "stock.picking",
                 res_id: parseInt(id),
@@ -496,7 +496,7 @@ odoo.define('netaddiction_warehouse.check_pick_up', function (require) {
         doOpenPartner: function (e) {
             e.preventDefault();
             var id = $(e.currentTarget).attr('data-id');
-            this_list.do_action({
+            this.do_action({
                 type: 'ir.actions.act_window',
                 res_model: "res.partner",
                 res_id: parseInt(id),
@@ -505,8 +505,10 @@ odoo.define('netaddiction_warehouse.check_pick_up', function (require) {
                 context: {},
             });
         },
+        // TODO: This onclick handler seems to be useless, i don't find any element with class choose
         doGoToOrder: function (e) {
             e.preventDefault();
+            var self = this;
             var id = $(e.currentTarget).closest('tr').attr('data-id');
             var picking_order = $(e.currentTarget).closest('tr').find('.picking_order').text();
             var sale_order = $(e.currentTarget).closest('tr').find('.sale_order').text();
@@ -517,8 +519,8 @@ odoo.define('netaddiction_warehouse.check_pick_up', function (require) {
                 fields: ['qty_done', 'product_id', 'picking_id'],
                 domain: [['picking_id', '=', parseInt(id)]],
             }).then(function (result) {
-                var new_order = new singleOrder(this_list, id, this_list.batch_name, order_name, result);
-                this_list.do_hide();
+                var new_order = new singleOrder(self, id, self.batch_name, order_name, result);
+                self.do_hide();
                 new_order.appendTo(home.parent.$el);
             });
         },
@@ -532,6 +534,7 @@ odoo.define('netaddiction_warehouse.check_pick_up', function (require) {
                 method: 'do_validate_orders',
                 args: [id],
             }).then(function (result) {
+                let value;
                 if (result) {
                     pop.close();
                     value = $(e.currentTarget).closest('tr');
@@ -553,6 +556,7 @@ odoo.define('netaddiction_warehouse.check_pick_up', function (require) {
             });
         },
         ValidateOrderAll: function (e) {
+            var self = this;
             var trs = [];
             $('.nprod').each(function (index, value) {
                 if (parseInt($(value).text()) == 1) {
@@ -576,28 +580,30 @@ odoo.define('netaddiction_warehouse.check_pick_up', function (require) {
                                 $(value).find('button').hide();
                             }
                         });
-                        data = {
+                        let data = {
                             'ids': result['print'],
                             'model': 'stock.picking',
                         };
-                        this_list.do_action({
+                        let action = {
                             type: 'ir.actions.report',
+                            report_type: 'qweb-pdf',
                             report_name: 'netaddiction_warehouse.bolla_di_spedizione',
-                            datas: data,
-
-                        });
+                            data: data,
+                        };
+                        self.do_action(action);
                     })
                 } else {
-                    data = {
+                    let data = {
                         'ids': trs,
                         'model': 'stock.picking',
                     }
-                    this_list.do_action({
+                    let action = {
                         type: 'ir.actions.report',
+                        report_type: 'qweb-pdf',
                         report_name: 'netaddiction_warehouse.bolla_di_spedizione',
-                        datas: data,
-
-                    });
+                        data: data,
+                    };
+                    self.do_action(action);
                 }
 
                 $('#search').val('');
