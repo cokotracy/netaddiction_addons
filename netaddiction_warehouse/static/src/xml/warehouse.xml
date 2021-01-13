@@ -230,13 +230,14 @@
         <div class="o_control_panel">
 			<div>
 				<ol class="breadcrumb" role="navigation">
-					<li class="breadcrumb-item">
-						<a id="control_homepage">Liste Pickup da Controllare</a>
+					<li class="breadcrumb-item o_back_button">
+						<a href="#" id="control_homepage">Liste Pickup da Controllare</a>
 					</li>
 					<li class="breadcrumb-item active">
 						<t t-esc="widget.batch_name"/>
 					</li>
 				</ol>
+
 
 				<div class="o_cp_searchview" role="search">
 					<div class="o_searchview" role="search" aria-autocomplete="list">
@@ -266,7 +267,7 @@
         </div>
     </t>
 
-    <t t-name="b2b_list">
+    <!--<t t-name="b2b_list">
          <table class="oe_list_content">
             <thead>
                 <tr class="oe_list_header_columns">
@@ -283,6 +284,27 @@
                 </t>
             </tbody>
         </table>
+    </t>-->
+
+    <t t-name="b2b_list">
+        <div class="table-responsive">
+            <table class="o_list_table table table-sm table-hover table-striped">
+                <thead>
+                    <tr>
+                        <th>Prodotto</th>
+                        <th>Quantità</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <t t-foreach="results" t-as="product">
+                        <tr class="row_product" t-attf-data-id="{{results[product]['product'][0]}}">
+                            <td><b><t t-esc="results[product]['product'][1]"/></b></td>
+                            <td><b class="qty_done"><t t-esc="results[product]['qty_done']"/></b></td>
+                        </tr>
+                    </t>
+                </tbody>
+            </table>
+        </div>
     </t>
 
     <t t-name="open_batch_order_list">

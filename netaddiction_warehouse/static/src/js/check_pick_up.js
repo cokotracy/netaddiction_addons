@@ -137,7 +137,8 @@ odoo.define('netaddiction_warehouse.check_pick_up', function (require) {
         template: 'open_batch_b2b',
         events: {
             "change #search": "doSearchBarcode",
-            "click #complete_b2b": "doCloseB2B"
+            "click #complete_b2b": "doCloseB2B",
+            "click #control_homepage": "doReturnParent",
         },
         init: function (parent, batch_id, batch_name) {
             this._super(parent);
@@ -167,8 +168,16 @@ odoo.define('netaddiction_warehouse.check_pick_up', function (require) {
                         all_results[v.product_id[0]]['product'] = v.product_id;
                     }
                 });
-                $('.open_batch_list').append(QWeb.render('b2b_list', {results: all_results}));
+                $('.open_batch_list').append(Qweb.render('b2b_list', {results: all_results}));
             });
+        },
+        doReturnParent: function (e) {
+            var self = this;
+            e.preventDefault();
+            self.getParent().do_show();
+            self.destroy();
+            $('#search').val('');
+            $('#search').focus();
         },
         doCloseB2B: function (e) {
             var self = this;
@@ -180,16 +189,17 @@ odoo.define('netaddiction_warehouse.check_pick_up', function (require) {
                     this.batch_id
                 ],
             }).then(function (res) {
-                data = {
+                // TODO change report with a simple DDT from module l10n_it_ddt
+                /*let data = {
                     'ids': [res['invoice']],
                     'model': 'account.invoice',
                 };
                 self.do_action({
-                    type: 'ir.actions.report.xml',
+                    type: 'ir.actions.report',
                     report_name: 'netaddiction_b2b.bolla_di_spedizione_b2b',
                     datas: data,
 
-                });
+                });*/
             });
         },
         doSearchBarcode: function (e) {
@@ -221,13 +231,13 @@ odoo.define('netaddiction_warehouse.check_pick_up', function (require) {
                 ],
                 limit: 1,
             }).then(function (product) {
-                if (!product) {
+                if (!product || product.length === 0) {
                     return self.do_warn('BARCODE INESISTENTE');
                 } else {
                     var go = false;
                     $.each($(self.$el).find('.row_product'), function (i, v) {
                         var id = $(v).attr('data-id');
-                        if (parseInt(id) == parseInt(product.id)) {
+                        if (parseInt(id) == parseInt(product[0].id)) {
                             self.get_product(v);
                             go = true;
                         }
@@ -366,7 +376,7 @@ odoo.define('netaddiction_warehouse.check_pick_up', function (require) {
                             arr['qty'] = result[k].product_qty;
                             products_array[inte][result[k].product_id[0]] = arr;
                         }
-                        $('.open_batch_list').append(QWeb.render('open_batch_order_list', {
+                        $('.open_batch_list').append(Qweb.render('open_batch_order_list', {
                             'orders': filtered,
                             'count_products': count_products,
                             'count_all': count_all,
@@ -571,7 +581,7 @@ odoo.define('netaddiction_warehouse.check_pick_up', function (require) {
                             'model': 'stock.picking',
                         };
                         this_list.do_action({
-                            type: 'ir.actions.report.xml',
+                            type: 'ir.actions.report',
                             report_name: 'netaddiction_warehouse.bolla_di_spedizione',
                             datas: data,
 
@@ -583,7 +593,7 @@ odoo.define('netaddiction_warehouse.check_pick_up', function (require) {
                         'model': 'stock.picking',
                     }
                     this_list.do_action({
-                        type: 'ir.actions.report.xml',
+                        type: 'ir.actions.report',
                         report_name: 'netaddiction_warehouse.bolla_di_spedizione',
                         datas: data,
 
