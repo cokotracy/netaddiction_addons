@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
-
+from io import StringIO
+import base64
 from odoo import models, fields, api
 from collections import defaultdict
 from datetime import datetime,date,timedelta
@@ -198,6 +199,44 @@ class PurchaseOrder(models.Model):
                             (6, False, [prod.supplier_taxes_id.id])]
                     line_values.append((0,0,attr))
         return line_values
+
+    def action_rfq_send(self):
+        # Ignore standard return (the send mail wizard)
+        # but call `super` to keep the stack alive
+        super().action_rfq_send()
+        user = self.env.user
+        template = self.env.ref(
+            'netaddiction_purchase_orders.netaddiction_purchase')
+        template = template.sudo().with_context(lang=user.lang)
+        attachment_name = 'ord_tvideo.txt'
+        mail_model = self.env['mail.mail']
+        attachment_model = self.env['ir.attachment']
+        for purchase in self:
+            # `force_send` MUST BE ALWAYS False or attachments don't work
+            mail_id = template.send_mail(
+                purchase.id, force_send=False, raise_exception=True)
+            # If partner need terminalvideo report, generate attachment
+            if purchase.partner_id.\
+                    send_contact_purchase_orders_type == 'terminalvideo':
+                mail = mail_model.browse(mail_id)
+                file_content = '\r\n'.join(
+                    [f'{l.product_id.barcode};'
+                     f'{int(l.product_qty)};'
+                     f'{l.price_unit}'
+                     for l in purchase.order_line]
+                    )
+                file = StringIO()
+                file.write(file_content)
+                data_attach = {
+                    'type': 'binary',
+                    'name': attachment_name,
+                    'datas': base64.b64encode(file.getvalue().encode('ascii')),
+                    'description': attachment_name,
+                }
+                attachment = attachment_model.create(data_attach)
+                mail.attachment_ids = attachment
+        # Bypass standard return
+        return {}
 
 
 '''
