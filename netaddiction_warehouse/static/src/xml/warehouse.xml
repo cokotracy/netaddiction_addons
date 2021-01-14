@@ -2,18 +2,6 @@
 
 <templates id="netaddiction_warehouse_templates" xml:space="preserve">
     <t t-name="control_pick_up_homepage">
-		<!--<div class="oe-control-panel">
-            <div class="container-fluid">
-                <div class="row">
-                    <div class="col-md-6 oe-cp-title">
-                        <ol class="oe-view-title breadcrumb"><li class="active">Liste Pickup da Controllare</li></ol>
-                    </div>
-                    <div class="oe-cp-search-view col-md-6">
-                        
-                    </div>
-                </div>
-            </div>
-        </div>-->
         <div class="o_control_panel">
 			<div>
 				<ol class="breadcrumb" role="navigation">
@@ -21,14 +9,6 @@
                         Liste Pickup da Controllare
 					</li>
 				</ol>
-
-				<!--<div class="o_cp_searchview" role="search">
-					<div class="o_searchview" role="search" aria-autocomplete="list">
-						<div class="o_searchview_input_container">
-							<input class="o_searchview_input" type="text" id="search" name="search" placeholder="Barcode Prodotto" autofocus="on" autocomplete="off"/>
-						</div>
-					</div>
-				</div>-->
 			</div>
 		</div>
         <div class="o_content">
@@ -36,13 +16,6 @@
                 <div class="table-responsive">
                     <table class="o_list_table table table-sm table-hover table-striped">
                         <thead>
-                            <!--<tr>
-                                <th colspan="1">
-                                    <div class="oe_list_buttons"></div>
-                                    <div class="oe_list_sidebar"></div>
-                                    <div class="oe_list_pager"></div>
-                                </th>
-                            </tr>-->
                             <tr class="oe_list_header_columns">
                                 <th>
                                     Nome
@@ -67,83 +40,7 @@
                 </div>
             </div>
         </div>
-
-        <!--<div class="oe-view-manager oe_view_manager_current">
-            <div class="oe_list o_list_view oe_view">
-                <table class="oe_list_content">
-                    <thead>
-                        <tr>
-                            <th colspan="1">
-                                <div class="oe_list_buttons"></div>
-                                <div class="oe_list_sidebar"></div>
-                                <div class="oe_list_pager"></div>
-                            </th>
-                        </tr>
-                        <tr class="oe_list_header_columns">
-                            <th>
-                                Nome
-                            </th>
-                        </tr>
-                    </thead>
-                    <tfoot>
-                        <tr>
-
-                        </tr>
-                    </tfoot>
-                    <tbody>
-                        <t t-foreach="widget.batchs" t-as="batch">
-                            <tr t-attf-data-id="{{batch.id}}" class="batch_tr" t-attf-data-b2b="{{batch.is_b2b}}">
-                                <td data-field="display_name">
-                                    <b class="batch_name"><t t-esc="batch.display_name"/> <t t-if="batch.is_b2b"> - <span style="color:red">B2B</span></t></b>
-                                </td>
-                            </tr>
-                        </t>
-                    </tbody>
-                </table>
-            </div>
-        </div>-->
 	</t>
-
-    <!--<t t-name="open_batch">
-        <div class="oe-control-panel">
-            <div class="container-fluid">
-                <div class="row">
-                    <div class="col-md-6 oe-cp-title">
-                        <ol class="oe-view-title breadcrumb">
-                            <li>
-                                <a id="control_homepage">Liste Pickup da Controllare</a>
-                            </li>
-                            <li class="active"><t t-esc="widget.batch_name"/></li>
-                        </ol>
-                    </div>
-                    <div class="oe-cp-search-view col-md-6">
-                        <div class="oe_searchview form-control input-sm">
-                        <div class="oe_searchview_search fa fa-lg fa-search" title="Cerca ancora"></div>
-                        <div class="oe_searchview_facets">
-                            <input type="text" id="search" name="search" placeholder="Barcode Prodotto" autofocus="on"/>
-                        </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-6 oe-button-column">
-                        <div class="oe-cp-buttons">
-                            <div class="oe_list_buttons">
-                                <button id="validateAll" class="btn btn-sm btn-primary o_list_button_import" type="button" style="display:none">
-                                    Completa Tutti
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="oe-view-manager oe_view_manager_current">
-            <div class="oe_list o_list_view oe_view open_batch_list">
-                
-            </div>
-        </div>
-    </t>-->
 
     <t t-name="open_batch">
         <div class="o_control_panel">
@@ -184,47 +81,6 @@
             </div>
         </div>
     </t>
-
- <!--   <t t-name="open_batch_b2b">
-        <div class="oe-control-panel">
-            <div class="container-fluid">
-                <div class="row">
-                    <div class="col-md-6 oe-cp-title">
-                        <ol class="oe-view-title breadcrumb">
-                            <li>
-                                <a id="control_homepage">Liste Pickup da Controllare</a>
-                            </li>
-                            <li class="active"><t t-esc="widget.batch_name"/></li>
-                        </ol>
-                    </div>
-                    <div class="oe-cp-search-view col-md-6">
-                        <div class="oe_searchview form-control input-sm">
-                        <div class="oe_searchview_search fa fa-lg fa-search" title="Cerca ancora"></div>
-                        <div class="oe_searchview_facets">
-                            <input type="text" id="search" name="search" placeholder="Barcode Prodotto" autofocus="on"/>
-                        </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-6 oe-button-column">
-                        <div class="oe-cp-buttons">
-                            <div class="oe_list_buttons">
-                                <button id="complete_b2b" class="btn btn-sm btn-primary o_list_button_import" type="button" style="display:none">
-                                    Completa Lista
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="oe-view-manager oe_view_manager_current">
-            <div class="oe_list o_list_view oe_view open_batch_list">
-
-            </div>
-        </div>
-    </t>-->
 
     <t t-name="open_batch_b2b">
         <div class="o_control_panel">
@@ -267,25 +123,6 @@
         </div>
     </t>
 
-    <!--<t t-name="b2b_list">
-         <table class="oe_list_content">
-            <thead>
-                <tr class="oe_list_header_columns">
-                    <th>Prodotto</th>
-                    <th>Quantità</th>
-                </tr>
-            </thead>
-            <tbody>
-                <t t-foreach="results" t-as="product">
-                    <tr class="row_product" t-attf-data-id="{{results[product]['product'][0]}}">
-                        <td><b><t t-esc="results[product]['product'][1]"/></b></td>
-                        <td><b class="qty_done"><t t-esc="results[product]['qty_done']"/></b></td>
-                    </tr>
-                </t>
-            </tbody>
-        </table>
-    </t>-->
-
     <t t-name="b2b_list">
         <div class="table-responsive">
             <table class="o_list_table table table-sm table-hover table-striped">
@@ -306,83 +143,6 @@
             </table>
         </div>
     </t>
-
-<!--    <t t-name="open_batch_order_list">
-        <table class="oe_list_content">
-            <thead>
-                <tr class="oe_list_header_columns">
-                    <th>
-                        Ordine
-                    </th>
-                    <th>
-                        Consegna
-                    </th>
-                    <th>
-                        Cliente
-                    </th>
-                    <th>
-                        # Prodotti Pick
-                    </th>
-                    <th>
-                        # Prodotti Tot
-                    </th>
-                    <th>
-                        Azione
-                    </th>
-                </tr>
-            </thead>
-            <tfoot>
-                <tr>
-
-                </tr>
-            </tfoot>
-            <tbody>
-                <t t-foreach="orders" t-as="order">
-                    <tr t-attf-data-id="{{order.id}}" class="order_tr" >
-                        <td data-field="sale_order">
-                            <a t-attf-data-id="{{order.sale_id[0]}}" class="sale_order"><t t-esc="order.sale_id[1]"/></a>
-                        </td>
-                        <td data-field="wh">
-                            <a t-attf-data-id="{{order.id}}" class="picking_order"><t t-esc="order.display_name"/></a>
-                        </td>
-                        <td data-field="customer">
-                            <a t-attf-data-id="{{order.partner_id[0]}}" class="partner"><t t-esc="order.partner_id[1]"/></a>
-                        </td>
-                        <td data-field="products_row">
-                            <span class="nprod"><t t-esc="count_products[order.id]" /></span>
-                        </td>
-                        <td data-field="products_all">
-                            <span class="pallprod"><t t-esc="count_all[order.id]" /></span>
-                        </td>
-                        <td data-field="action">
-                            <t t-if="count_products[order.id] &gt; 1 and count_all[order.id] == count_products[order.id]">
-                                <span class="open_under" style="cursor:pointer">APRI</span>
-                                <button type="button" class="btn btn-sm oe_button btn btn-success complete" t-attf-id="complete_{{order.id}}" style="display:none">Completa</button>
-                            </t>
-                            <t t-if="count_products[order.id] == 1 and count_all[order.id] == 1">
-                                <button type="button" class="btn btn-sm oe_button btn btn-success complete">Completa</button>
-                            </t>
-                        </td>
-                    </tr>
-                    <t t-if="count_all[order.id] &gt; 1">
-                        <tr t-attf-id="under_tr_{{order.id}}" style=" display:none">
-                            <td colspan="6" style="text-align:center">
-                                <input type="text" class="explode_barcode" t-attf-data-id="{{order.id}}" style="width:100%"/>
-                                <table class="explode_table" t-attf-id="table_{{order.id}}" style="width:100%">
-                                    <t t-foreach="explodes[order.id]" t-as="pp">
-                                        <tr t-attf-data-id="{{explodes[order.id][pp]['product_id'][0]}}" t-attf-class="pid_{{explodes[order.id][pp]['product_id'][0]}} order_product_list">
-                                            <td><b class="qty_done"><t t-esc="explodes[order.id][pp]['qty']"/></b></td>
-                                            <td><t t-esc="explodes[order.id][pp]['product_id'][1]"/></td>
-                                        </tr>
-                                    </t>
-                                </table> 
-                            </td>
-                        </tr>
-                    </t>
-                </t>
-            </tbody>
-        </table>
-    </t>-->
 
     <t t-name="open_batch_order_list">
         <div class="table-responsive">
