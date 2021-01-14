@@ -505,7 +505,7 @@ odoo.define('netaddiction_warehouse.check_pick_up', function (require) {
                 context: {},
             });
         },
-        // TODO: This onclick handler seems to be useless, i don't find any element with class choose
+        // FIXME: This onclick handler seems to be useless, i don't find any element with class choose
         doGoToOrder: function (e) {
             e.preventDefault();
             var self = this;
@@ -612,6 +612,9 @@ odoo.define('netaddiction_warehouse.check_pick_up', function (require) {
         }
     });
 
+    // FIXME Check if this widget is needed or not, the only method that instantiate this widget it's doGoToOrder
+    //  from widget openList but there isn't any trigger inside the related template view.
+    //  If we need this widget it must be tested because the this_* reference are incorrect
     var singleOrder = Widget.extend({
         template: 'single_order',
         events: {
@@ -629,7 +632,7 @@ odoo.define('netaddiction_warehouse.check_pick_up', function (require) {
             this.batch_name = batch_name;
             this.order_name = order_name;
             this.products = products;
-            this_order = this;
+            var this_order = this;
         },
         returnWave: function (e) {
             e.preventDefault();
