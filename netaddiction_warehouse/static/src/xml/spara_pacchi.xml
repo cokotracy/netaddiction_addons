@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <templates id="netaddiction_warehouse_spara_pacchi" xml:space="preserve">
+
     <t t-name="dialog_content_spara_pacchi">
     	<select id="select_carrier">
 	        <option value="" selected="selected"></option>
@@ -10,49 +11,48 @@
 	    </select>
    	</t>
 
-   	<t t-name="top_block">
-      <div style="margin-top:200px;text-align:center;color:black;font-weight:bold;font-size:30px;display:none" id="message_box">
-          <span id="message_text"></span><br/>
-          <input type="password" id="psw_block"/>
-          <input type="button" id="sblocca" value="SBLOCCA" />
-      </div>
-
-   		<div class="oe-control-panel">
-            <div class="container-fluid">
-                <div class="row">
-                    <div class="col-md-6 oe-cp-title">
-                        <ol class="oe-view-title breadcrumb"><li class="active">Spara Pacchi <b><t t-esc="title"/></b></li></ol>
-                    </div>
-                    <div class="oe-cp-search-view col-md-6">
-                        <div class="oe_searchview form-control input-sm">
-                        <div class="oe_searchview_search fa fa-lg fa-search" title="Cerca ancora"></div>
-                        <div class="oe_searchview_facets">
-                            <input type="text" id="search" name="search" placeholder="Cerca per barcode pacco"/>
-                        </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-6 oe-button-column">
-                        <div class="oe-cp-buttons">
-                            <div class="oe_list_buttons">
-                                <span>Data: </span> - <span><t t-esc="widget.date"/></span>
-                                <span>Numero Pacchi: </span> <span id="number_pick">0</span>
-                                <span>Da Sparare: </span> <span id="residual_pick">0</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-6" id="right_pager">
-                        
-                    </div>
-                </div>
-            </div>
+    <t t-name="top_block">
+        <div style="margin-top:200px;text-align:center;color:black;font-weight:bold;font-size:30px;display:none" id="message_box">
+            <span id="message_text"></span><br/>
+            <input type="password" id="psw_block"/>
+            <input type="button" id="sblocca" value="SBLOCCA" />
         </div>
+
+        <div class="o_control_panel">
+			<div>
+				<ol class="breadcrumb" role="navigation">
+					<li class="breadcrumb-item active">
+						Spara Pacchi <b><t t-esc="title"/></b>
+					</li>
+				</ol>
+
+
+				<div class="o_cp_searchview" role="search">
+					<div class="o_searchview" role="search" aria-autocomplete="list">
+						<div class="o_searchview_input_container">
+							<input class="o_searchview_input" type="text" id="search" name="search" placeholder="Cerca per barcode pacco" autofocus="on" autocomplete="off"/>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-md-6">
+					<div class="o_cp_buttons">
+						<span><b>Data:</b></span> - <span><t t-esc="widget.date"/></span><br/>
+                        <span><b>Numero Pacchi:</b> </span> <span id="number_pick">0</span><br/>
+                        <span><b>Da Sparare:</b> </span> <span id="residual_pick">0</span><br/>
+					</div>
+				</div>
+				<div class="col-md-6" style="padding-left: 0;">
+
+				</div>
+			</div>
+		</div>
         <div id="content_error" style="padding:5px">
-          
+            <!-- Load content_error with JS -->
         </div>
         <div id="content_spara_pacchi">
-
+            <!-- Load content_spara_pacchi with JS -->
         </div>
    	</t>
 
@@ -65,64 +65,69 @@
    	</t>
 
     <t t-name="table">
-        <table class="oe_list_content" id="purchase_in_product_list">
-        <thead>
-            <tr class="oe_list_header_columns">
-                <th>
-                  Spedizione
-                </th>
-                <th>
-                  Ordine
-                </th>
-                <th>
-                  Barcode
-                </th>
-                <th>
-                  Cliente
-                </th>
-            </tr>
-        </thead>
-        <tfoot>
-            <tr>
-        </tr>
-        </tfoot>
-        <tbody>
-          <t t-foreach="widget.picks" t-as="pick">
-            <tr t-attf-data-id="{{pick.id}}"  class="pick_line">
-              <td>
-                <t t-esc="pick.name"/> 
-              </td>
-              <td>
-                <t t-esc="pick.origin"/> 
-              </td>
-              <td>
-                <t t-esc="pick.delivery_barcode"/> 
-              </td>
-              <td>
-                <t t-esc="pick.partner_id[1]"/> 
-              </td>
-            </tr>
-          </t>
-          <tr class="separator_line">
-            <td colspan="4" style="background:#F0EEEE"><b>Sparati</b></td>
-          </tr>
-          <t t-foreach="widget.read" t-as="r">
-            <tr t-attf-data-id="{{r.id}}"  class="pick_line">
-              <td>
-                <t t-esc="r.name"/> 
-              </td>
-              <td>
-                <t t-esc="r.origin"/> 
-              </td>
-              <td>
-                <t t-esc="r.delivery_barcode"/> 
-              </td>
-              <td>
-                <t t-esc="r.partner_id[1]"/> 
-              </td>
-            </tr>
-          </t>
-        </tbody>
-        </table>
+        <div class="table-responsive">
+            <table class="o_list_table table table-sm table-hover table-striped" id="purchase_in_product_list">
+                <thead>
+                    <tr>
+                        <th>
+                          Spedizione
+                        </th>
+                        <th>
+                          Ordine
+                        </th>
+                        <th>
+                          Barcode
+                        </th>
+                        <th>
+                          Cliente
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <t t-foreach="widget.picks" t-as="pick">
+                        <tr t-attf-data-id="{{pick.id}}" class="pick_line">
+                            <td>
+                                <t t-esc="pick.name"/>
+                            </td>
+                            <td>
+                                <t t-esc="pick.origin"/>
+                            </td>
+                            <td>
+                                <t t-esc="pick.delivery_barcode"/>
+                            </td>
+                            <td>
+                                <t t-esc="pick.partner_id[1]"/>
+                            </td>
+                        </tr>
+                    </t>
+                    <tr class="separator_line">
+                        <td colspan="4" style="background:#F0EEEE">
+                            <b>Sparati</b>
+                        </td>
+                    </tr>
+                    <t t-foreach="widget.read" t-as="r">
+                        <tr t-attf-data-id="{{r.id}}" class="pick_line">
+                            <td>
+                                <t t-esc="r.name"/>
+                            </td>
+                            <td>
+                                <t t-esc="r.origin"/>
+                            </td>
+                            <td>
+                                <t t-esc="r.delivery_barcode"/>
+                            </td>
+                            <td>
+                                <t t-esc="r.partner_id[1]"/>
+                            </td>
+                        </tr>
+                    </t>
+                    </tbody>
+                <tfoot>
+                    <tr>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
     </t>
+    
 </templates>
