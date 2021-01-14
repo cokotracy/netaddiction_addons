@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+<data noupdate="1">
+
+    <record id="refund_payment_cancel_sale" model="mail.template">
+        <field name="name">Internal - Sale - Refund Payment</field>
+        <field name="model_id" ref="sale.model_sale_order" />
+        <field name="email_from">shopping@multiplayer.com</field>
+        <field name="email_to">shopping@multiplayer.com, riccardo.ioni@netaddiction.it</field>
+        <field name="subject">SHOPPING - PAGAMENTO ANNULLATO RIMBORSO DA FARE ordine ${object.name}, ${object.order_line.mapped('product_id').mapped('categ_id').mapped('name')}</field>
+        <field name="body_html">
+            <![CDATA[
+                <p>
+                    ID transazione ${object.transaction_ids.mapped('display_name')}
+                </p>
+            ]]>
+        </field>
+    </record>
+
+</data>
+</odoo>

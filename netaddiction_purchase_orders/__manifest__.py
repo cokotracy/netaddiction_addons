@@ -18,8 +18,8 @@
     'data' : [
     #     'views/purchase_product_list.xml',
     #     'views/purchase_order_line.xml',
-    #     'views/res_partner.xml', FIXME View rotta, non caricabile. Da sistemare.
-        # 'data/cron.xml',
+        'views/res_partner.xml',
+        'data/template_email.xml',
     #     'views/wave.xml',
     #     'views/move.xml',
         'views/do_purchase_product.xml'

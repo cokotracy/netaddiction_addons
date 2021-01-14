@@ -24,6 +24,12 @@ class Suppliers(models.Model):
         string="Il contatto riceve gli ordini di acquisto"
     )
 
+    send_contact_purchase_orders_type = fields.Selection(
+        [('none', 'None'), ('terminalvideo', 'Terminalvideo')],
+        default='none',
+        string='Il contatto riceve l\'allegato negli ordini di acquisto'
+    )
+
     send_contact_refund = fields.Boolean(
         string="Il contatto riceve i resi"
     )
