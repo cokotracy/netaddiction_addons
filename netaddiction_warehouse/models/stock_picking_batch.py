@@ -152,7 +152,7 @@ class StockPickingBatch(models.Model):
     @api.model
     def batch_pick_up(self, product_barcode, shelf_id, batch_id, qty_to_down):
         batch_id = int(float(batch_id)) if batch_id else False
-        qty_to_down = int(float(qty_to_down)) if qty_to_down else False
+        qty_to_down = int(float(qty_to_down)) if qty_to_down else 0
         result = self.search([('id', '=', batch_id)])
         if len(result) == 0:
             return Error(
