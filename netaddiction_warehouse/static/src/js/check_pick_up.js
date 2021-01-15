@@ -421,7 +421,7 @@ odoo.define('netaddiction_warehouse.check_pick_up', function (require) {
             }).then(function (pid) {
                 wash_and_focus_input($('.explode_barcode'));
                 var st = false;
-                if (pid != null || pid.length !== 0) {
+                if (pid != null && pid.length !== 0) {
                     var wid = $(e.currentTarget).attr('data-id');
                     $('#table_' + wid + ' tr').each(function (inv, vl) {
                         if (parseInt($(vl).attr('data-id')) == parseInt(pid[0].id)) {
@@ -694,19 +694,19 @@ odoo.define('netaddiction_warehouse.check_pick_up', function (require) {
                 domain: [['barcode', 'in', barcode_list]],
                 limit: 1,
             }).then(function (pid) {
-                if (pid != null) {
+                if (pid != null && pid.length > 0) {
                     for (var p in this_order.products) {
-                        if (this_order.products[p].product_id[0] == pid.id) {
-                            var qty_done = parseInt($('.pid_' + pid.id).find('.qty_done').text());
+                        if (this_order.products[p].product_id[0] == pid[0].id) {
+                            var qty_done = parseInt($('.pid_' + pid[0].id).find('.qty_done').text());
                             if (qty_done > 0) {
-                                var back_color = $('.pid_' + pid.id).css('background');
-                                color_tr($('.pid_' + pid.id));
+                                var back_color = $('.pid_' + pid[0].id).css('background');
+                                color_tr($('.pid_' + pid[0].id));
                                 return setTimeout(function () {
-                                    return_color_tr($('.pid_' + pid.id), back_color);
+                                    return_color_tr($('.pid_' + pid[0].id), back_color);
                                     wash_and_focus_input($('#search_in_order'));
-                                    $('.pid_' + pid.id).find('.qty_done').text((qty_done - 1));
+                                    $('.pid_' + pid[0].id).find('.qty_done').text((qty_done - 1));
                                     if ((qty_done - 1) == 0) {
-                                        disable_tr($('.pid_' + pid.id));
+                                        disable_tr($('.pid_' + pid[0].id));
                                     }
 
                                     show_complete();

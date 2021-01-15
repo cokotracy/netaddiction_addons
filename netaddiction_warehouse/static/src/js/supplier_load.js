@@ -174,7 +174,8 @@ odoo.define('netaddiction_warehouse.supplier_load', function (require) {
                     ],
                     limit: 1,
                 }).then(function (sup) {
-                    var nuovo = new carico_go(this_choose.getParent().parent, supplier_id, sup.name, document_number, batch);
+                    let supplier_name = sup != null && sup.length > 0 ? sup[0].name : "";
+                    var nuovo = new carico_go(this_choose.getParent().parent, supplier_id, supplier_name, document_number, batch);
                     nuovo.appendTo('.o_content');
                     //this.destroy();
                     this_choose.close();
@@ -228,7 +229,8 @@ odoo.define('netaddiction_warehouse.supplier_load', function (require) {
                         ],
                     }).then(function (result) {
                         batch = result.id
-                        var nuovo = new carico_go(this_carico, supplier_id, sup.name, document_number, batch);
+                        let supplier_name = sup != null && sup.length > 0 ? sup[0].name : "";
+                        var nuovo = new carico_go(this_carico, supplier_id, supplier_name, document_number, batch);
                         this_choose.destroy();
                         nuovo.appendTo(this_carico.$el);
                     });
@@ -291,7 +293,7 @@ odoo.define('netaddiction_warehouse.supplier_load', function (require) {
                 domain: [['id', '=', this.batch]],
                 limit: 1,
             }).then(function (result) {
-                if (result != null) {
+                if (result != null && result.length > 0) {
                     this_cgo.document_number = result[0].name
                     var ids = []
                     for (let p in result[0].picking_ids) {

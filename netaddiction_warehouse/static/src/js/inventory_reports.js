@@ -46,7 +46,9 @@ odoo.define('netaddiction_warehouse.inventory_reports', function (require) {
                 ],
                 limit: 1,
             }).then(function (location) {
-               self.wh = parseInt(location.id);
+                if (location != null && location.length > 0) {
+                    self.wh = parseInt(location[0].id);
+                }
             });
             self.offset = 0;
             self.limit = 100;
@@ -95,8 +97,8 @@ odoo.define('netaddiction_warehouse.inventory_reports', function (require) {
                 ],
                 limit: 1,
             }).then(function (menu) {
-                if (menu) {
-                    if (menu.complete_name == 'netaddiction_warehouse.products_problem') {
+                if (menu && menu.length > 0) {
+                    if (menu[0].complete_name == 'netaddiction_warehouse.products_problem') {
                         self.$el.html(
                             QWeb.render(
                                 "inventory_reports_base",
