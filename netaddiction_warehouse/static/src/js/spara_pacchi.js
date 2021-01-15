@@ -170,7 +170,7 @@ odoo.define('netaddiction_warehouse.spara_pacchi', function (require) {
                     return self.do_warn(title, text);
                 }
                 self._rpc({
-                    model: 'stick.picking',
+                    model: 'stock.picking',
                     method: 'confirm_reading_manifest',
                     args: [picking[0].id],
                 }).then(function (e) {
@@ -199,7 +199,7 @@ odoo.define('netaddiction_warehouse.spara_pacchi', function (require) {
     var Table_Shipping = Widget.extend({
         template: 'table',
         init: function (parent, manifest) {
-            this._super();
+            this._super(parent);
             this.picks = [];
             this.read = [];
             var obj = this;
