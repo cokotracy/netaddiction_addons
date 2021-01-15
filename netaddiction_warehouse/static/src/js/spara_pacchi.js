@@ -10,24 +10,17 @@ odoo.define('netaddiction_warehouse.spara_pacchi', function (require) {
 
     var AbstractAction = require('web.AbstractAction');
 
-    // unused things
-    // var framework = require('web.framework');
-    // var session = require('web.session');
-    // var web_client = require('web.web_client');
-    /*var Class = require('web.Class');
-    var Pager = require('web.Pager');
-    var ActionManager = require('web.ActionManager');
-*/
-    //deprecated
-    //var Model = require('web.DataModel');
-
     var spara_pacchi = AbstractAction.extend({
         init: function (parent, action, options) {
             console.log("Reverse AbstractAction");
             this._super.apply(this, arguments);
-            var rev = this;
             this.action = action;
             this.parent = parent;
+            this.dialog;
+        },
+        start: function () {
+            this._super.apply(this, arguments);
+            var rev = this;
             this._rpc({
                 model: 'delivery.carrier',
                 method: 'search_read',
@@ -46,24 +39,25 @@ odoo.define('netaddiction_warehouse.spara_pacchi', function (require) {
                     }, {
                         text: "Avanti",
                         classes: "btn-success",
-                        click: rev.goNext
+                        click: function () {
+                            return rev.goNext();
+                        }
                     }]
                 }
-
-                var dial = new Dialog(this, options)
-                dial.open()
+                rev.dialog = new Dialog(this, options);
+                rev.dialog.open();
             });
         },
-        goNext: function (e) {
+        goNext: function () {
             var carrier = $('#select_carrier').val();
             var name = $('#select_carrier :selected').text();
             var carrier_selected = {
                 'id': carrier,
                 'name': name
             }
-            var carrier_manifest = new Carrier_Spara_Pacchi(null, carrier_selected);
+            var carrier_manifest = new Carrier_Spara_Pacchi(this, carrier_selected);
             carrier_manifest.appendTo('.o_content');
-            this.destroy();
+            this.dialog.close();
         }
     });
 
@@ -74,12 +68,12 @@ odoo.define('netaddiction_warehouse.spara_pacchi', function (require) {
             'click #sblocca': 'go_next'
         },
         init: function (parent, carrier) {
-            this._super.apply(this, arguments);
+            this._super(parent);
             this.carrier = carrier;
             this.manifest = 0;
-            this.buzz = new Audio("https://" + window.location.hostname + "/netaddiction_warehouse/static/src/beep-03.mp3");
-            this.more_buzz = new Audio("https://" + window.location.hostname + "/netaddiction_warehouse/static/src/beep-05.mp3");
-            this.ok_buzz = new Audio("https://" + window.location.hostname + "/netaddiction_warehouse/static/src/beep-02.mp3");
+            this.buzz = new Audio("/netaddiction_warehouse/static/src/beep-03.mp3");
+            this.more_buzz = new Audio("/netaddiction_warehouse/static/src/beep-05.mp3");
+            this.ok_buzz = new Audio("/netaddiction_warehouse/static/src/beep-02.mp3");
             this.table = null;
             var today = new Date();
             var dd = today.getDate();
@@ -118,11 +112,13 @@ odoo.define('netaddiction_warehouse.spara_pacchi', function (require) {
             var psw = $('#psw_block').val()
             if (psw == 'pippo123') {
                 $('#psw_block').val('')
-                $('.oe_client_action').css('background', 'white')
-                $('.oe_client_action').children().show()
+                $('.o_content').css('background', 'white')
+                $('.o_content').children().show()
                 $('#message_box').hide()
                 $('#search').val('').focus();
-                father.table.destroy();
+                if (father.table) {
+                    father.table.destroy();
+                }
                 father.table = new Table_Shipping(father, manifest);
             } else {
                 let title = 'ERRORE PSW';
@@ -132,8 +128,8 @@ odoo.define('netaddiction_warehouse.spara_pacchi', function (require) {
 
         },
         stopProcess: function (message) {
-            $('.oe_client_action').children().hide()
-            $('.oe_client_action').css('background', '#6C7A89')
+            $('.o_content').children().hide()
+            $('.o_content').css('background', '#6C7A89')
             $('#message_text').text(message)
             $('#message_box').show()
 
