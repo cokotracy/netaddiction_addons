@@ -32,7 +32,6 @@ odoo.define('netaddiction_warehouse.supplier_reverse', function (require) {
             console.log("Reverse AbstractAction");
             var self = this
             this._super.apply(this, arguments);
-            //TODO REMOVE LIMIT BECAUSE WE NEED ALL RECORDS
             this._rpc({
                 model: 'res.partner',
                 method: 'search_read',
@@ -41,12 +40,11 @@ odoo.define('netaddiction_warehouse.supplier_reverse', function (require) {
                     'name'
                 ],
                 domain: [
-                    ['purchase_order_count', '>', 0],
+                    ['supplier','=',true],
                     ['active', '=', true],
                     ['parent_id', '=', false],
                     ['company_id', '=', parseInt(session.company_id)]
                 ],
-                limit: 200,
             }).then(function (suppliers) {
                 var options = {
                     title: "Reso a Fornitore - ",
@@ -160,7 +158,7 @@ odoo.define('netaddiction_warehouse.supplier_reverse', function (require) {
                             'name'
                         ],
                         domain: [
-                            ['purchase_order_count', '>', 0],
+                            ['supplier','=',true],
                             ['active', '=', true],
                             ['parent_id', '=', false],
                         ],

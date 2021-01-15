@@ -530,7 +530,7 @@ odoo.define('netaddiction_warehouse.inventory_reports', function (require) {
                     'name'
                 ],
                 domain: [
-                    ['purchase_order_count', '>', 0],
+                    ['supplier','=',true],
                     ['parent_id','=',false],
                     ['active','=',true],
                     ['company_id','=',self.company_id]

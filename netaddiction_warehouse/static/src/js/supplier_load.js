@@ -89,13 +89,11 @@ odoo.define('netaddiction_warehouse.supplier_load', function (require) {
                     'name'
                 ],
                 domain: [
-                    //['supplier', '=', true],
+                    ['supplier', '=', true],
                     ['active', '=', true],
                     ['parent_id', '=', false],
                     ['company_id', '=', parseInt(session.company_id)]
                 ],
-                //TODO REMOVE THIS LIMIT
-                limit: 200,
             }).then(function (suppliers) {
                 var choose = new carico_choose(this_carico, suppliers);
                 choose.appendTo(this_carico.$el);
