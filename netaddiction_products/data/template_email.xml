@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+<data noupdate="1">
+
+    <record id="out_of_stock_product" model="mail.template">
+        <field name="name">Internal - Product - Out of stock</field>
+        <field name="model_id" ref="product.model_product_template" />
+        <field name="email_from">shopping@multiplayer.com</field>
+        <field name="email_to">andrea.alunni@netaddiction.it, riccardo.ioni@netaddiction.it</field>
+        <field name="subject">[SHOPPING] PRODOTTO ESAURITO [${object.categ_id.name}] ${object.name} id: ${object.id}</field>
+        <field name="body_html">
+            <![CDATA[
+                [SHOPPING] PRODOTTO ESAURITO 
+                [${object.categ_id.name}] 
+                ${object.name} 
+                id: ${object.id}
+            ]]>
+        </field>
+    </record>
+
+    <record id="product_on_or_off" model="mail.template">
+        <field name="name">Internal - Product - On/Off</field>
+        <field name="model_id" ref="product.model_product_template" />
+        <field name="email_from">shopping@multiplayer.com</field>
+        <field name="email_to">andrea.alunni@netaddiction.it, riccardo.ioni@netaddiction.it</field>
+        <field name="subject">
+            <![CDATA[
+                [SHOPPING] PRODOTTO ${'ACCESSO' if object.visible else 'SPENTO'} 
+                [${object.categ_id.name}] 
+                ${object.name} 
+                id: ${object.id}
+            ]]>
+        </field>
+        <field name="body_html">
+            <![CDATA[
+                [SHOPPING] PRODOTTO ${'ACCESSO' if object.visible else 'SPENTO'} 
+                [${object.categ_id.name}] 
+                ${object.name} 
+                id: ${object.id}
+            ]]>
+        </field>
+    </record>
+
+</data>
+</odoo>

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<odoo>
+    <data noupdate="1">
+        <record id="digital_bonus_mail_template" model="mail.template">
+            <field name="name">Digital Bonus Mail Template</field>
+            <field name="email_from">no-reply@multiplayer.com</field>
+            <field name="subject">BONUS DIGITALE PER PRODOTTO ${object.sale_order_line_id.product_id.name}</field>
+            <!--<field name="email_to">${object.sale_order_id.partner_id.email|safe}</field>-->
+            <field name="partner_to">${object.sale_order_id.partner_id.id}</field>
+            <field name="lang">${object.lang}</field>
+            <field name="model_id" ref="netaddiction_special_offers.model_sale_coupon_program_digital_bonus_code"/>
+            <field name="auto_delete" eval="False"/>
+            <field name="body_html">
+                <![CDATA[
+                <p>
+                    Il codice bonus è: <b>${object.code}</b> </br>
+                    ${object.digital_bonus_id.mail_body} </br>
+                    Grazie per aver acquistato su multiplayer.com!
+                </p>
+                ]]>
+            </field>
+        </record>
+    </data>
+</odoo>
