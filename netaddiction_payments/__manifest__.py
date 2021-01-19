@@ -13,7 +13,7 @@
 
     'website': "http://www.netaddiction.it",
     'category': 'Technical Settings',
-    'version': '13.0.1.2.0',
+    'version': '13.0.2.0.0',
     'depends': [
         'account',
         'product',
