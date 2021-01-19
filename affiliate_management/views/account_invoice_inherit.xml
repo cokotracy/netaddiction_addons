@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+              <record id="invoice_supplier_inherit_form" model="ir.ui.view">
+                  <field name="name">account.move.inherit.supplier.form</field>
+                  <field name="model">account.move</field>
+                  <field name="inherit_id" ref="account.view_move_form" />
+                  <field name="arch" type="xml">
+                    <xpath expr="//notebook/page[2]" position="after">
+                        <page string="Reports">
+                          <group>
+                            <field name="aff_visit_id" nolabel="1"/>
+                          </group>
+                        </page>
+                    </xpath>
+
+                  </field>
+              </record>
+
+
+    </data>
+</odoo>

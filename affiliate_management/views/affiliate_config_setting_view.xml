@@ -1,0 +1,246 @@
+<!-- <?xml version="1.0" encoding="utf-8"?> -->
+<odoo>
+        <record id="view_affiliate_config_form" model="ir.ui.view">
+            <field name="name">res.config.view</field>
+            <field name="model">res.config.settings</field>
+            <field name="inherit_id" ref="base.res_config_settings_view_form"/>
+            <field name="arch" type="xml">
+              <xpath expr="//div[hasclass('settings')]" position="inside">
+                <div class="app_settings_block" data-string="Affiliate Management" string="Affiliate Management" data-key="affiliate_management" groups="website.group_website_designer">
+                  <h2> Affiliate Management Configuration</h2>
+                      <div class="row mt16 o_settings_container" id="affiliate_management" title="Configure your Affiliate Management">
+                              <div class="col-xs-12 col-md-6 o_setting_box" id="affiliate_program">
+                                <div class="o_setting_right_pane">
+                                    <label string="Affiliate Program" for="affiliate_program_id"/>
+                                    <div class="text-muted">
+                                        Configure your Affiliate Program data
+                                    </div>
+                                    <div class="mt8" invisible="1">
+                                        <field name="affiliate_program_id"/>
+                                    </div>
+                                    <div class="content-group">
+                                        <button type="object" name="open_program" string="Configure" class="btn-link"/>
+                                    </div>
+                                </div>
+                              </div>
+
+                              <div class="col-12 col-lg-offset-6 col-lg-6 o_setting_box" id="ppc_setting">
+                                      <div class="o_setting_left_pane">
+                                          <field name="enable_ppc"/>
+                                      </div>
+                                      <div class="o_setting_right_pane">
+                                          <label for="enable_ppc"/>
+                                          <div class="text-muted">
+                                              Manage your PPC
+                                          </div>
+                                          <div class="content-group" attrs="{'invisible': [('enable_ppc', '=', False)]}">
+                                              <div class="row mt16">
+                                                  <label class="col-lg-4 o_light_label" string="PPC Maturity" for="ppc_maturity"/>
+                                                  <field class="col-lg-3" style="margin-right: 5px;" name="ppc_maturity"/>
+                                                  <field class="col-lg-4" name="ppc_maturity_period"/>
+                                              </div>
+                                              <div class="row mt16">
+                                                  <label class="col-lg-4 o_light_label" string="Unique PPC For Product" for="unique_ppc_traffic"/>
+                                                  <field class="col-lg-4" name="unique_ppc_traffic"/>
+                                              </div>
+                                          </div>
+                                      </div>
+                                  </div>
+
+                                  <div class="col-12 col-lg-offset-6 col-lg-6 o_setting_box" id="cookie_setting">
+                                          <div class="o_setting_right_pane">
+                                              <label string="Cookie Expiration" for="cookie_expire"/>
+                                              <div class="text-muted">
+                                                  Manage your Cookie expiry
+                                              </div>
+                                              <div class="content-group">
+                                                  <div class="row mt16">
+                                                      <label class="col-lg-2 o_light_label" string="Expiry" for="cookie_expire"/>
+                                                      <field class="col-lg-3" style="margin-right: 5px;" name="cookie_expire"/>
+                                                      <field class="col-lg-6" name="cookie_expire_period"/>
+                                                  </div>
+                                              </div>
+                                          </div>
+                                      </div>
+
+
+                                  <div class="col-12 col-lg-offset-6 col-lg-6 o_setting_box" id="auto_approve_setting">
+                                          <div class="o_setting_left_pane">
+                                              <field name="auto_approve_request"/>
+                                          </div>
+                                          <div class="o_setting_right_pane">
+                                              <label for="auto_approve_request"/>
+                                              <!-- <div class="text-muted">
+                                                  Manage your PPC
+                                              </div> -->
+                                          </div>
+                                      </div>
+
+                                      <div class="col-12 col-lg-offset-6 col-lg-6 o_setting_box" id="aff_product_setting">
+                                              <div class="o_setting_right_pane">
+                                                  <label string="Affiliate product (optional)" for="aff_product_id"/>
+                                                  <!-- <div class="text-muted">
+                                                      Manage your PPC
+                                                  </div> -->
+                                                  <div class="mt16">
+                                                     <label class="col-lg-2 o_light_label" string="Product" for="aff_product_id"/>
+                                                     <field name="aff_product_id"/>
+                                                  </div>
+                                              </div>
+                                          </div>
+
+
+                        </div>
+                        <h2> Payment Configuration</h2>
+                        <div class="row mt16 o_settings_container" id="affiliate_program_payment" title="Configure your Affiliate Program Payment">
+                                <div class="col-xs-12 col-md-6 o_setting_box" id="payment_day_setting">
+                                        <div class="o_setting_right_pane">
+                                            <label string="Payment Day" for="payment_day"/>
+                                            <!-- <div class="text-muted">
+                                                Manage your PPC
+                                            </div> -->
+                                            <div class="content-group">
+                                              <div class="row mt16">
+                                                  <label class="col-lg-2 o_light_label" string="Day" for="payment_day"/>
+                                                  <field class="col-lg-4" style="margin-right: 5px;" name="payment_day"/>
+                                                  <span class="col-lg-5">Day of Every Month</span>
+                                              </div>
+                                            </div>
+                                        </div>
+                                </div>
+                                <div class="col-xs-12 col-md-6 o_setting_box" id="payout_balance_setting">
+                                        <div class="o_setting_right_pane">
+                                            <label string="Minimum Payout Balance" for="minimum_amt"/>
+                                            <!-- <div class="text-muted">
+                                                Manage your PPC
+                                            </div> -->
+                                            <div class="content-group">
+                                              <div class="row mt16">
+                                                  <label class="col-lg-2 o_light_label" string="Balance" for="minimum_amt"/>
+                                                  <field class="col-lg-4" name="minimum_amt"/>
+                                                  <field class="col-lg-5" name="currency_id" readonly="1"/>
+                                              </div>
+                                            </div>
+                                        </div>
+                                </div>
+
+                          </div>
+                          <h2> Website Configuration</h2>
+                          <div class="row mt16 o_settings_container" id="affiliate_program_website" title="Configure your Affiliate Program Website">
+                                  <div class="col-12 col-lg-offset-6 col-lg-6 o_setting_box" id="signup_setting">
+                                          <div class="o_setting_left_pane">
+                                              <field name="enable_signup"/>
+                                          </div>
+                                          <div class="o_setting_right_pane">
+                                              <label for="enable_signup"/>
+                                              <!-- <div class="text-muted">
+                                                  Manage your PPC
+                                              </div> -->
+                                          </div>
+                                      </div>
+                              <div class="col-12 col-lg-offset-6 col-lg-6 o_setting_box" id="login_setting">
+                                      <div class="o_setting_left_pane">
+                                          <field name="enable_login"/>
+                                      </div>
+                                      <div class="o_setting_right_pane">
+                                          <label for="enable_login"/>
+                                          <!-- <div class="text-muted">
+                                              Manage your PPC
+                                          </div> -->
+                                      </div>
+                                  </div>
+
+                                  <div class="col-xs-12 col-md-6 o_setting_box" id="aff_banner_setting">
+                                    <div class="o_setting_right_pane">
+                                        <label string="Affiliate Banner" for="affiliate_banner_id"/>
+                                        <div class="text-muted">
+                                            Configure your Affiliate Banner
+                                        </div>
+                                        <div class="mt8" invisible="1">
+                                            <field name="affiliate_banner_id"/>
+                                        </div>
+                                        <div class="content-group">
+                                            <button type="object" name="open_banner" string="Configure" class="btn-link"/>
+                                        </div>
+                                    </div>
+                                  </div>
+
+                                  <div class="col-12 col-lg-offset-6 col-lg-6 o_setting_box" id="forget_pwd_setting">
+                                          <div class="o_setting_left_pane">
+                                              <field name="enable_forget_pwd"/>
+                                          </div>
+                                          <div class="o_setting_right_pane">
+                                              <label for="enable_forget_pwd"/>
+                                              <!-- <div class="text-muted">
+                                                  Manage your PPC
+                                              </div> -->
+                                          </div>
+                                      </div>
+
+
+                            </div>
+                            <h2> Email Configuration</h2>
+                            <div class="row mt16 o_settings_container" id="affiliate_program_email" title="Configure your Affiliate Program Email">
+
+                                        <div class="col-xs-12 col-md-6 o_setting_box" id="aff_request_mail_setting">
+                                          <div class="o_setting_right_pane">
+                                              <label string="Approved Request Mail" for="welcome_mail_template"/>
+                                              <div class="text-muted">
+                                                  Configure your Approved Request Mail
+                                              </div>
+                                              <div class="mt8">
+                                                  <field name="welcome_mail_template"/>
+                                              </div>
+                                          </div>
+                                        </div>
+
+                                        <div class="col-xs-12 col-md-6 o_setting_box" id="aff_invitation_mail_setting">
+                                          <div class="o_setting_right_pane">
+                                                <label string="Invitation Request Mail" for="Invitation_mail_template"/>
+                                              <div class="text-muted">
+                                                  Configure your Invitation Request Mail
+                                              </div>
+                                              <div class="mt8">
+                                                  <field name="Invitation_mail_template"/>
+                                              </div>
+                                          </div>
+                                        </div>
+
+                                        <div class="col-xs-12 col-md-6 o_setting_box" id="aff_reject_mail_setting">
+                                          <div class="o_setting_right_pane">
+                                              <label string="Reject Request Mail" for="reject_mail_template"/>
+                                              <div class="text-muted">
+                                                  Configure your Reject Request Mail
+                                              </div>
+                                              <div class="mt8">
+                                                  <field name="reject_mail_template"/>
+                                              </div>
+                                          </div>
+                                        </div>
+
+                              </div>
+
+
+
+                  </div>
+               <!-- </div> -->
+              </xpath>
+
+            </field>
+        </record>
+
+        <record id="affiliate_config_form_action" model="ir.actions.act_window">
+            <field name="name">Affiliate Program Config</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">res.config.settings</field>
+            <field name="view_mode">form</field>
+             <field name="view_id" ref="affiliate_management.view_affiliate_config_form"/>
+            <field name="target">inline</field>
+            <field name="context">{'module' : 'affiliate_management'}</field>
+        </record>
+
+
+        <menuitem id="setting_submenu_root" name="Settings" parent="configuration_submenu_root"
+            sequence="0" action="affiliate_config_form_action"
+            groups="base.group_system"/>
+</odoo>
