@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<templates id="netaddiction_inventory_allocation" xml:space="preserve">
+    <t t-name="block_new_allocation">
+        <div class="block prod_title">
+            <div class="block_title" style="border:none !important" t-attf-data-product="{{shelf.product_id}}">
+                <t t-esc="shelf.product"/> - <t t-esc="shelf.barcode"/>
+            </div>
+        </div>
+    	
+        <div t-foreach="shelf.allocations" t-as="all" class="block">
+            <a href="#" class="select_shelf" t-attf-onclick="select_shelf_to_move({{all.line_id}},this)">
+                <div class="block_content">
+                    <t t-esc="all.shelf"/> - <b class="b_qty"><t t-esc="all.qty"/></b>
+                </div>
+            </a>
+        </div> 
+    </t>
+
+    <t t-name="new_shelf_form">
+        <form id="barcode-form">
+            <label for="qty" id="label_qty">QUANTITA' DA SPOSTARE</label>
+            <input type="tel" name="qty" id="qty" t-attf-value="{{qty_max}}" />
+            <label for="barcode" id="label_barcode">BARCODE RIPIANO</label>
+            <input type="text" name="barcode" id="barcode" autocomplete="off" t-attf-data-function="{{data_function}}" t-attf-wh_line_id="{{wh_line_id}}"/>
+            <input type="button"  value="SPOSTA" t-attf-onclick="return submitform('');"/>
+        </form>
+    </t>
+
+    <t t-name="barcode_form">
+        <form id="barcode-form">
+            <label for="barcode" id="label_barcode"><t t-esc="title"/></label>
+            <input type="text" name="barcode" id="barcode" autocomplete="off" t-attf-data-function="{{data_function}}"/>
+            <input type="submit"  value="CERCA"/>
+        </form>
+    </t>
+</templates>

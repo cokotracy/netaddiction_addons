@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <record id="netaddiction_search_picking_batch" model="ir.ui.view">
+        <field name="name">netaddiction.search.picking.batch</field>
+        <field name="model">stock.picking.batch</field>
+        <field name="inherit_id" ref="stock_picking_batch.stock_picking_batch_filter"/>
+        <field name="arch" type="xml">
+            <xpath expr="/search/filter[@name='activities_overdue']" position="before">
+                <filter name="acquisti" string="Carico" domain="[('in_exit', '=', True)]"/>
+                <filter name="uscita" string="Clienti" domain="[('in_exit', '=', False)]"/>
+                <separator/>
+                <filter name="Today" string="Oggi" domain="[('date_done', '&gt;', (context_today()).strftime('%Y-%m-%d 00:00:00'))]"/>
+                <filter name="Yesterday" string="Ieri" domain="[('date_done', '&gt;', (context_today() - datetime.timedelta(days=1)).strftime('%Y-%m-%d 00:00:00'), ('date_done','&lt;', (context_today()).strftime('%Y-%m-%d 00:00:00')))]"/>
+                <field name="supplier"/>
+                <separator/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="netaddiction_picking_batch_form" model="ir.ui.view">
+        <field name="name">netaddiction.picking_batch_form</field>
+        <field name="model">stock.picking.batch</field>
+        <field name="inherit_id" ref="stock_picking_batch.stock_picking_batch_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="/form/sheet/group/group/field[@name='user_id']" position="before">
+                <field name="in_exit" invisible="1"/>
+                <field name="supplier" attrs="{'invisible':[('in_exit','=',False)]}"/>
+                <field name="date_done"/>
+            </xpath>
+            <xpath expr="/form/sheet/group/group/field[@name='user_id']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="/form/sheet/field[@name='picking_ids']" position="after">
+                <notebook>
+                    <page string="Prodotti" name="product">
+                        <field name="product_list_product">
+                            <tree>
+                                <field name="id"/>
+                                <field name="display_name"/>
+                                <field name="lst_price"/>
+                                <field name="qty_available"/>
+                                <field name="qty_available_now"/>
+                                <field name="virtual_available"/>
+                                <field name="barcode"/>
+                                <field name="sale_ok"/>
+                                <!-- FIXME: this field was defined in netaddiction_products v9.0, but hasn't been migrated
+                                <field name="visible"/>
+                                -->
+                                <button type="object" name="open_product_line" string="Modifica"/>
+                            </tree>
+                        </field>
+                    </page>
+                    <page string="Movimentazioni Effettuate" name="move">
+                        <field name="product_list">
+                            <tree>
+                                <field name="product_id"/>
+                                <field name="qty_done"/>
+                            </tree>
+                        </field>
+                    </page>
+                </notebook>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="netaddiction_picking_batch_tree" model="ir.ui.view">
+        <field name="name">netaddiction.picking_batch_tree</field>
+        <field name="model">stock.picking.batch</field>
+        <field name="inherit_id" ref="stock_picking_batch.stock_picking_batch_tree"/>
+        <field name="arch" type="xml">
+            <xpath expr="/tree/field[@name='user_id']" position="after">
+                <field name="supplier"/>
+                <field name="date_done"/>
+            </xpath>
+            <xpath expr="/tree/field[@name='user_id']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

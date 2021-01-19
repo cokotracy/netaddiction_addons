@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <record id="netaddiction_stock_move_search" model="ir.ui.view">
+        <field name="name">netaddiction.stock.move.search</field>
+        <field name="model">stock.move</field>
+        <field name="inherit_id" ref="stock.view_move_search"/>
+        <field name="arch" type="xml">
+            <xpath expr="/search/field[@name='partner_id']" position="after">
+                <separator/>
+                <filter name="out" string="Vendite" domain="[('picking_type_id.name','ilike','Ordini')]"/>
+                <filter name="in" string="Acquisti" domain="[('picking_type_id.name','ilike','Entrata')]"/>
+                <filter name="resi" string="Resi Clienti" domain="[('picking_id.name','ilike','RETURNED')]"/>
+                <filter name="resi_difettati" string="Resi Clienti Difettati" domain="[('picking_id.name','ilike','SCRAPPED')]"/>
+                <filter name="resi_fornitori" string="Resi Fornitori" domain="['|',('picking_id.name','ilike','RESODIFETTATI'),('picking_id.name','ilike','RESOFORNITORE')]"/>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

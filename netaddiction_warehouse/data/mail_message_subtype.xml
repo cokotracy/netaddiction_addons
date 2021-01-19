@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+
+    	<record id="error_autopreparation" model="mail.message.subtype">
+            <field name="name">Errori in Autopreparazione</field>
+            <field name="res_model">stock.picking</field>
+            <field name="internal">1</field>
+    	</record>
+
+    </data>
+</odoo>

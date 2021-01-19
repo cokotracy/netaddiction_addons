@@ -1,0 +1,6 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+netaddiction_manifest_user,Netaddiction Manifest User,model_netaddiction_manifest,base.group_user,1,1,1,1
+netaddiction_products_movement_user,Netaddiction Products Movement User,model_netaddiction_products_movement,base.group_user,1,1,1,1
+netaddiction_warehouse_operations_settings_user,Netaddiction WH Op Settings User,model_netaddiction_warehouse_operations_settings,base.group_user,1,1,1,1
+netaddiction_wh_locations_user,Netaddiction WH Locations User,model_netaddiction_wh_locations,base.group_user,1,1,1,1
+netaddiction_wh_locations_line_user,Netaddiction WH Locations Line User,model_netaddiction_wh_locations_line,base.group_user,1,1,1,1

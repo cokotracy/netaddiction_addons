@@ -16,6 +16,7 @@
         'views/config_views.xml',
         'views/product_views.xml',
         'views/pricelist_views.xml',
+        'views/orders.xml',
         'security/ir.model.access.csv',
         'data/cron.xml',
     ],
