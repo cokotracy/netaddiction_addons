@@ -58,16 +58,7 @@ class StockPicking(models.Model):
     # )
 
     sale_order_status = fields.Selection(
-        [('draft', 'Nuovo'),
-         ('sent', 'Preventivo Inviato'),
-         ('sale', 'In Lavorazione'),
-         ('partial_done', 'Parzialmente Completato'),
-         ('problem', 'Problema'),
-         ('done', 'Completato'),
-         ('cancel', 'Annullato')],
-        compute='_get_sale_order_status',
-        readonly=True,
-        string="Stato Ordine",
+        related='sale_id.state',
     )
 
     sale_order_payment_method = fields.Many2one(
@@ -76,18 +67,17 @@ class StockPicking(models.Model):
         string="Metodo di pagamento",
     )
 
+    # TODO: Migrare
+    '''
     total_import = fields.Float(
         compute='_get_total_import',
         string="Importo",
     )
-
-    def _get_sale_order_status(self):
-        for pick in self:
-            pick.sale_order_status = pick.sale_id.state
+    '''
 
     def _get_sale_order_payment(self):
         for pick in self:
-            # Todo payment_method_id doesn't exist into sale.order check module
+            # TODO payment_method_id doesn't exist into sale.order check module
             #  netaddiction_payments and ask to Francesca Bianchini or Andrea
             #  Colangelo
             pick.sale_order_payment_method = False # pick.sale_id.payment_method_id
@@ -305,8 +295,9 @@ class StockPicking(models.Model):
                 height=50,
                 humanreadable=0
             )
-            barcode_base64 = base64.b64encode(barcode)
+            barcode_base64 = base64.b64encode(barcode).decode('utf-8')
             pick.barcode_image = 'data:image/png;base64,' + barcode_base64
+
 
     def action_cancel(self):
         cancel = []
@@ -388,13 +379,18 @@ class StockPicking(models.Model):
             total = 0.00
             pp_aj = self.env.ref('netaddiction_payments.paypal_journal')
             sf_aj = self.env.ref('netaddiction_payments.sofort_journal')
-            if pick.payment_id \
-                    and pick.payment_id.journal_id not in (pp_aj, sf_aj):
-                pick.total_import = pick.payment_id.amount
-                continue
 
-            for line in pick.group_id.procurement_ids:
-                total += line.sale_line_id.price_subtotal + line.sale_line_id.price_tax
+            # TODO AttributeError: 'stock.picking' object has no attribute
+            #  'payment_id' ask to Andrea Colangelo for more informations
+            # if pick.payment_id \
+            #         and pick.payment_id.journal_id not in (pp_aj, sf_aj):
+            #     pick.total_import = pick.payment_id.amount
+            #     continue
+
+            # TODO AttributeError: 'procurement.group' object has no attribute
+            #  'procurement_ids' ask to Andrea Colangelo for more informations
+            # for line in pick.group_id.procurement_ids:
+            #     total += line.sale_line_id.price_subtotal + line.sale_line_id.price_tax
 
             res = self.carrier_id.product_id.taxes_id.compute_all(
                 self.carrier_price)
@@ -443,7 +439,7 @@ class StockPicking(models.Model):
         """
         per ogni stock picking eseguo
         """
-        wh_op_sett_obj = self.env['netaddiction.warehouse.operations.settings']
+        wh_location_line_model = self.env['netaddiction.wh.locations.line']
         qty = 0
         for pick in self:
             product_lines = [
@@ -454,7 +450,7 @@ class StockPicking(models.Model):
             test = int(qty_to_down)
 
             for line in product_lines:
-                shelf = wh_op_sett_obj.search(
+                shelf = wh_location_line_model.search(
                     [('product_id', '=', line.product_id.id),
                      ('wh_location_id', '=', int(shelf_id))]
                 )

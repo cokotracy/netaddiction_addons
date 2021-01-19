@@ -151,20 +151,22 @@ class StockPickingBatch(models.Model):
 
     @api.model
     def batch_pick_up(self, product_barcode, shelf_id, batch_id, qty_to_down):
-        result = self.search([('id', '=', int(batch_id))])
+        batch_id = int(float(batch_id)) if batch_id else False
+        qty_to_down = int(float(qty_to_down)) if qty_to_down else 0
+        result = self.search([('id', '=', batch_id)])
         if len(result) == 0:
             return Error(
                 "Problema nel recuperare la lista prodotti o barcode mancante"
             )
 
-        test = int(qty_to_down)
+        test = qty_to_down
 
         for res in result.picking_ids:
             if shelf_id == 'dif':
                 res.pick_up_scraped(product_barcode, qty_to_down)
             elif test > 0:
                 picked_qty = res.set_pick_up(product_barcode, shelf_id, test)
-                test -= int(picked_qty[0])
+                test -= int(picked_qty)
 
     ##############################
     # END INVENTORY APP FUNCTION #
@@ -218,9 +220,9 @@ class StockPickingBatch(models.Model):
                     line.product_id.qty_limit = 0
 
             if validate:
-                if out.check_backorder(out):
+                if out._check_backorder():
                     wiz_id = self.env['stock.backorder.confirmation'].create(
-                        {'pick_id': out.id})
+                        {'pick_ids': [(4, out.id)]})
                     wiz_id.process()
                     backorder_pick = self.env['stock.picking'].search(
                         [('backorder_id', '=', out.id)])

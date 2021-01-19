@@ -3,7 +3,7 @@
     <data>
 
         <template id="bolla_di_spedizione">
-            <t t-call="report.html_container">
+            <t t-call="web.html_container">
                 <style>
                     .container{
                         margin: 8px !important;
@@ -80,8 +80,9 @@
                                         </tr>
                                         <tr>
                                             <td colspan="2" align="center" valign="middle" style="color:#666666 !important; font-size:11px !important; font-weight:bold; line-height:13px; padding:5px 0px">
+                                                <!-- FIXME FAX KeyError for company_id -->
                                                 <span t-field="o.company_id.name"/> - <span t-field="o.company_id.street"/> - <span t-field="o.company_id.street2"/> - <span t-field="o.company_id.zip"/> - <span t-field="o.company_id.city"/> - <span t-field="o.company_id.state_id"/><br/>
-                                                P.IVA <span t-field="o.company_id.vat"/> - Fax. <span t-field="o.company_id.fax"/> - Mail. <span t-field="o.company_id.email"/>
+                                                P.IVA <span t-field="o.company_id.vat"/> <!-- - Fax. <span t-field="o.company_id.fax"/>--> - Mail. <span t-field="o.company_id.email"/>
                                             </td>
                                         </tr>
 
@@ -151,7 +152,8 @@
                                             </tr>
                                             <t t-set="subtotal" t-value="0"/>
                                             <t t-set="subtotal_tax" t-value="0"/>
-                                            <t t-foreach="o.group_id.procurement_ids" t-as="procurement">
+                                            <!-- FIXME AttributeError: 'procurement.group' object has no attribute 'procurement_ids' -->
+                                            <!--<t t-foreach="o.group_id.procurement_ids" t-as="procurement">
                                                 <t t-set="subtotal" t-value="subtotal + procurement.sale_line_id.price_subtotal"/>
                                                 <t t-set="subtotal_tax" t-value="subtotal_tax + procurement.sale_line_id.price_tax"/>
 
@@ -178,7 +180,7 @@
                                                         <t t-esc="procurement.sale_line_id.price_total"/>
                                                     </td>
                                                 </tr>
-                                            </t>
+                                            </t>-->
                                             <tr>
                                                 <td colspan="6" align="left" valign="top" style="padding-bottom:3px; border-bottom:1px solid black;">
                                                     <table  border="0" cellspacing="0" cellpadding="0">

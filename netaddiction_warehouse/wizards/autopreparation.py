@@ -11,22 +11,24 @@ class AutoPreparation(models.TransientModel):
         pickings = self.env['stock.picking'].browse(self.env.context.get('active_ids'))
         error_stock = []
         subtype = self.env.ref('netaddiction_warehouse.error_autopreparation')
-        exec_obj = self.env['netaddiction.positivity.executor']
+        # TODO: Da Migrare.
+        # Non trovo il modello base e non ho idea di cosa faccia
+        # exec_obj = self.env['netaddiction.positivity.executor']
         mail_obj = self.env['mail.message']
 
         for pick in pickings:
             note = []
-            pay = True
+            # pay = True
             # se non è disponibile
             if pick.state != 'assigned':
                 error_stock.append(pick.id)
                 note.append('Non è disponibile.')
-                pay = False
+                # pay = False
             # se ha già una lista
             if pick.batch_id:
                 error_stock.append(pick.id)
                 note.append('Ha già una lista associata.')
-                pay = False
+                # pay = False
             # se non è in lavorazione o in parzialmente completato
             if pick.sale_id.state not in ['sale', 'partial_done']:
                 error_stock.append(pick.id)
@@ -34,7 +36,7 @@ class AutoPreparation(models.TransientModel):
                     'L\'ordine non è in lavorazione o in'
                     ' parzialmente completato'
                 )
-                pay = False
+                # pay = False
 
             # FIXME: res.partner's 'rating' field has not been migrated
             # controllo indirizzo e valutazione cliente
@@ -49,7 +51,7 @@ class AutoPreparation(models.TransientModel):
                     or not shipping_address.city:
                 error_stock.append(pick.id)
                 note.append('Mancano dati nell\'indirizzo di spedizione')
-                pay = False
+                # pay = False
 
             if pick.verify_quantity():
                 error_stock.append(pick.id)
@@ -57,32 +59,33 @@ class AutoPreparation(models.TransientModel):
                     'Una spedizione dell\'ordine ha un prodotto con quantità'
                     ' maggiore di quella acquistata dal cliente'
                 )
-                pay = False
+                # pay = False
             # if stock.sale_id.customer_comment:
             #    error_stock.append(stock.id)
             #    note.append('Commento Cliente')
             #    pay = False
 
-            cc_pay = self.env.ref('netaddiction_payments.cc_journal')
-
-            if pay and pick.sale_order_payment_method.id == cc_pay.id:
-                payment = pick.payment_id
-                if not payment:
-                    error_stock.append(pick.id)
-                    note.append('Non c\'è il pagamento')
-                cc_pay = self.env.ref('netaddiction_payments.cc_journal')
-                if payment.journal_id.id == cc_pay.id:
-                    if payment.state != 'posted' \
-                            and payment.cc_status != 'commit':
-                        try:
-                            exec_obj.auth_and_check(
-                                payment.partner_id.id,
-                                payment.partner_id.email, payment.amount,
-                                payment.cc_token, pick.sale_id.id
-                            )
-                        except Exception as e:
-                            error_stock.append(pick.id)
-                            note.append(str(e) or repr(e))
+            # cc_pay = self.env.ref('netaddiction_payments.cc_journal')
+            # TODO this payment method is not used anymore? Maybe Andrea
+            #  Colangelo will be your hero here
+            # if pay and pick.sale_order_payment_method.id == cc_pay.id:
+            #     payment = pick.payment_id
+            #     if not payment:
+            #         error_stock.append(pick.id)
+            #         note.append('Non c\'è il pagamento')
+            #     cc_pay = self.env.ref('netaddiction_payments.cc_journal')
+            #     if payment.journal_id.id == cc_pay.id:
+            #         if payment.state != 'posted' \
+            #                 and payment.cc_status != 'commit':
+            #             try:
+            #                 exec_obj.auth_and_check(
+            #                     payment.partner_id.id,
+            #                     payment.partner_id.email, payment.amount,
+            #                     payment.cc_token, pick.sale_id.id
+            #                 )
+            #             except Exception as e:
+            #                 error_stock.append(pick.id)
+            #                 note.append(str(e) or repr(e))
 
             if note:
                 mail_obj.create({
@@ -101,7 +104,7 @@ class AutoPreparation(models.TransientModel):
                 'type': 'ir.actions.act_window',
                 'res_model': "stock.picking",
                 'view_id': self.env.ref('stock.vpicktree').id,
-                'view_mode': 'tree,form',
+                'view_mode': 'tree',
                 'target': 'current',
                 'domain': [('id', 'in', error_stock)],
                 'context': {},

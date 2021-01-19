@@ -1,4 +1,4 @@
-from odoo import models
+from odoo import models, api
 
 
 class StockMove(models.Model):
@@ -34,3 +34,23 @@ class StockMove(models.Model):
         # NB: we will safely call the ``super`` now to allow other methods
         # to act correctly
         return super()._action_cancel()
+
+    ##########
+    # CARICO #
+    ##########
+
+    @api.model
+    def complete_operation(self, ids, qta):
+        """
+        completa le righe dell'ordine di consegna in entrata per il carico
+        in base alla qta passata per il prodotto presente nelle righe (ids)
+        """
+        operations = self.search([('id', 'in', ids)])
+        to_remove = qta
+        for op in operations:
+            residual = int(op.product_uom_qty) - int(op.quantity_done)
+            if residual >= to_remove:
+                op.quantity_done += to_remove
+            elif residual < to_remove:
+                op.quantity_done += residual
+                to_remove -= residual
