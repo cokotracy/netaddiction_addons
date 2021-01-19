@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="0" >
+
+        <!-- <record model="ir.cron" id="affiliate_ppc_maturity_scheduler_call">
+            <field name="name">Automated ppc maturity Scheduler</field>
+            <field name="active" eval="True"/>
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <field name="numbercall">-1</field>
+            <field name="doall" eval="False"/>
+            <field name="model" eval="'affiliate.visit'"/>
+            <field name="function" eval="'process_ppc_maturity_scheduler_queue'"/>
+            <field name="args" eval="'()'"/>
+        </record> -->
+
+
+    <record id="affiliate_ppc_maturity_scheduler_call" model="ir.cron">
+        <field name="name">Automated ppc maturity Scheduler</field>
+        <field name="active" eval="True"/>
+        <field name="interval_number">1</field>
+        <field name="interval_type">days</field>
+        <field name="numbercall">-1</field>
+        <field name="model_id" ref="model_affiliate_visit"/>
+        <field name="state">code</field>
+        <field name="code">model.process_ppc_maturity_scheduler_queue()</field>
+        <field name="doall" eval="False"/>
+    </record>
+
+
+
+
+      <!-- generate invoice by crone according to settings day of date -->
+    <!-- <record model="ir.cron" id="affiliate_visit_scheduler_call">
+            <field name="name">Automated invoice Scheduler</field>
+            <field name="active" eval="True"/>
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <field name="numbercall">-1</field>
+            <field name="doall" eval="False"/>
+            <field name="model" eval="'affiliate.visit'"/>
+            <field name="function" eval="'process_scheduler_queue'"/>
+            <field name="args" eval="'()'"/>
+        </record> -->
+
+<record id="affiliate_visit_scheduler_call" model="ir.cron">
+        <field name="name">Automated invoice Scheduler</field>
+        <field name="active" eval="True"/>
+        <field name="interval_number">1</field>
+        <field name="interval_type">days</field>
+        <field name="numbercall">-1</field>
+        <field name="model_id" ref="model_affiliate_visit"/>
+        <field name="state">code</field>
+        <field name="code">model.process_scheduler_queue()</field>
+        <field name="doall" eval="False"/>
+    </record>
+
+
+        <record model="ir.actions.server" id="open_invoice_server_action">
+            <field name="name">Create Visits Invoice</field>
+            <field name="model_id" ref="model_affiliate_visit"/>
+            <field name="binding_model_id" ref="model_affiliate_visit" />
+            <field name="state">code</field>
+            <field name="code">
+                                if records:
+                                    action = records.create_invoice()
+            </field>
+        </record>
+
+
+        <!-- invoice server action -->
+        <!-- <record id="test_more_item" model="ir.values">
+            <field eval="'client_action_multi'" name="key2"/>
+            <field eval="'affiliate.visit'" name="model"/>
+            <field name="name">Test Item</field>
+            <field eval="'ir.actions.server,%d'%open_invoice_server_action" name="value"/>
+        </record> -->
+
+
+    </data>
+</odoo>
