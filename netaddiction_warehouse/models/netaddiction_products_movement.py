@@ -55,7 +55,7 @@ class ProductsMovement(models.TransientModel):
 
     def execute(self):
         self.ensure_one()
-        return getattr(self, 'execute_action_{}'.format(self.action))
+        return getattr(self, 'execute_action_{}'.format(self.action))()
 
     def execute_action_down(self):
         self.ensure_one()
