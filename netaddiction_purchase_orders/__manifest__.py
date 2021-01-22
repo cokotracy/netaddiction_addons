@@ -7,6 +7,7 @@
     'category': 'Purchase',
     'version': '13.0.1.1.0',
     'depends': [
+        'web',
         # 'base',
         'product',
         # 'sale',
@@ -16,16 +17,20 @@
         'netaddiction_products',
         ],
     'data' : [
+        'data/template_email.xml',
+        'views/assets.xml',
+        'views/actions_client.xml',
     #     'views/purchase_product_list.xml',
     #     'views/purchase_order_line.xml',
         'views/res_partner.xml',
-        'data/template_email.xml',
     #     'views/wave.xml',
     #     'views/move.xml',
-        'views/do_purchase_product.xml'
-    #     ],
-    # 'qweb':[
-    #     "static/src/xml/*.xml",
-        ],
+        'views/do_purchase_product.xml',
+        # Leave menus for last to upload every action and view beforehand
+        'views/menus.xml',
+    ],
+    'qweb':[
+         "static/src/xml/*.xml",
+    ],
     'application':True,
 }

@@ -1,32 +1,27 @@
 odoo.define('netaddiction_purchase_orders.backorder', function (require) {
 "use strict";
     var core = require('web.core');
-    var framework = require('web.framework');
-    var Model = require('web.DataModel');
     var session = require('web.session');
-    var web_client = require('web.web_client');
     var Widget = require('web.Widget');
     var Dialog = require('web.Dialog');
-    var Notification = require('web.notification');
-    var Class = require('web.Class');
-    var Pager = require('web.Pager');
-    var ActionManager = require('web.ActionManager');
+    var AbstractAction = require('web.AbstractAction');
+
+    // TODO Remove this unused require
+    // var framework = require('web.framework');
+    // var web_client = require('web.web_client');
+    // var Notification = require('web.notification');
+    // var Class = require('web.Class');
+    // var Pager = require('web.Pager');
+    // var ActionManager = require('web.ActionManager');
 
     var _t = core._t;
     var QWeb = core.qweb;
-    var common = require('web.form_common');
 
-    var Backorder = Widget.extend({
-        init: function(parent){
-            var self = this;
-            self._super(parent);
-            self.company_id = parseInt(session.company_id);
-            self.context = session.user_context;
-            self.picking_type = 1;
-            self.incoming_datas = {};
-            self.products = {};
-            self.cancelled = {};
-        },
+    // TODO Find the new web.form_common
+    //var common = require('web.form_common');
+    var dialogs = require('web.view_dialogs');
+
+    var Backorder = AbstractAction.extend({
         events: {
             'click .supplier_row': 'Open_Backorder',
             'click .open_product': 'OpenProduct',
@@ -39,7 +34,20 @@ odoo.define('netaddiction_purchase_orders.backorder', function (require) {
             'change #search' : 'Search',
             'click .oe-selection-focus': 'DefinitiveSearch'
         },
+        init: function (parent, action, options) {
+            this._super.apply(this, arguments);
+            var self = this;
+            self.action = action;
+            self.action_manager = parent;
+            self.company_id = parseInt(session.company_id);
+            self.context = session.user_context;
+            self.picking_type = 1;
+            self.incoming_datas = {};
+            self.products = {};
+            self.cancelled = {};
+        },
         start: function(){
+            this._super.apply(this, arguments);
             var self = this;
             self.$el.html(QWeb.render("backorder_top", {widget: self}));
             self.get_incoming_suppliers();
@@ -47,10 +55,20 @@ odoo.define('netaddiction_purchase_orders.backorder', function (require) {
         },
         get_incoming_suppliers: function(){
             var self = this;
-            new Model('stock.picking').query([]).filter([['picking_type_id','=',self.picking_type],['state','not in',['done', 'cancel']]]).order_by('partner_id').group_by('partner_id').then(function(results){
+            self._rpc({
+                model: 'stock.picking',
+                method: 'read_group',
+                fields: [],
+                domain: [
+                    ['picking_type_id','=',self.picking_type],
+                    ['state','not in',['done', 'cancel']]
+                ],
+                orderBy: [{name: 'partner_id', asc: true}],
+                groupBy: ['partner_id'],
+            }).then(function (results) {
                 var suppliers = [];
                 $.each(results,function(index,value){
-                    suppliers.push({'supplier':value.attributes.value[1], 'ships': value.attributes.length, 'supplier_id':value.attributes.value[0]});
+                    suppliers.push({'supplier':value.partner_id[1], 'ships': value.partner_id_count, 'supplier_id':value.partner_id[0]});
                 });
                 self.$el.find('#table').html(QWeb.render("supplier_table", {suppliers: suppliers}));
 
@@ -78,7 +96,11 @@ odoo.define('netaddiction_purchase_orders.backorder', function (require) {
         },
         get_incoming_qty_suppliers: function(e){
             var self = this;
-            new Model('stock.move').call('get_incoming_number_products_values').then(function(results){
+            this._rpc({
+                model: 'stock.move',
+                method: 'get_incoming_number_products_values',
+                args: [],
+            }).then(function (results) {
                 var tot = 0;
                 self.incoming_datas = results;
                 $.each(results, function(index,value){
@@ -105,16 +127,26 @@ odoo.define('netaddiction_purchase_orders.backorder', function (require) {
                 buttons: [{text: _t("Chiudi"), close: true, classes:"btn-primary close_dialog"}]
             }
                 
-            var dial = new Dialog(self,options);
-            dial.open();
-            self.get_products_supplier(supplier, dial);
+            var dial = new Dialog(self, options);
+            // Call method only when dialog is created and opened
+            dial.open().opened().then(function () {
+                self.get_products_supplier(supplier, dial);
+            });
+            
         },
         get_products_supplier: function(supplier, dial){
             var self = this;
             if(supplier in self.products){
                 dial.$el.html(QWeb.render("products_table", {products: self.products[supplier], supplier:supplier}));
             }else{
-                new Model('stock.move').call('get_incoming_products_supplier',[supplier, self.context]).then(function(results){
+                this._rpc({
+                    model: 'stock.move',
+                    method: 'get_incoming_products_supplier',
+                    args: [
+                        supplier, 
+                        self.context
+                    ],
+                }).then(function (results) {
                     if(results != 'Errore'){
                         self.products[supplier] = results;
                         dial.$el.html(QWeb.render("products_table", {products: results, supplier: supplier}));
@@ -122,12 +154,11 @@ odoo.define('netaddiction_purchase_orders.backorder', function (require) {
                     }
                 });
             }
-            
         },
         OpenProduct: function(e){
             e.preventDefault();
             var res_id = parseInt($(e.currentTarget).attr('data-id'));
-            var pop = new common.FormViewDialog(this, {
+            var pop = new dialogs.FormViewDialog(this, {
                 res_model: 'product.product',
                 res_id:res_id,
                 context: {},
@@ -138,7 +169,7 @@ odoo.define('netaddiction_purchase_orders.backorder', function (require) {
         OpenOrder: function(e){
             e.preventDefault();
             var res_id = parseInt($(e.currentTarget).attr('data-id'));
-            var pop = new common.FormViewDialog(this, {
+            var pop = new dialogs.FormViewDialog(this, {
                 res_model: 'sale.order',
                 res_id:res_id,
                 context: {},
@@ -149,7 +180,7 @@ odoo.define('netaddiction_purchase_orders.backorder', function (require) {
         OpenCustomer: function(e){
             e.preventDefault();
             var res_id = parseInt($(e.currentTarget).attr('data-id'));
-            var pop = new common.FormViewDialog(this, {
+            var pop = new dialogs.FormViewDialog(this, {
                 res_model: 'res.partner',
                 res_id:res_id,
                 context: {},
@@ -170,8 +201,13 @@ odoo.define('netaddiction_purchase_orders.backorder', function (require) {
                 'problem': 'Problema',
                 'pending': 'Pending'
             }
-            new Model('sale.order.line').query(fields).filter(filter).all().then(function(results){
-                if(results.length >0){
+            this._rpc({
+                model: 'sale.order.line',
+                method: 'search_read',
+                fields: fields,
+                domain: filter,
+            }).then(function (results) {
+                if(results.length > 0){
                     $.each(results,function(index,value){
                         value.price_total = value.price_total.toLocaleString();
                         value.price_unit = value.price_unit.toLocaleString();
@@ -186,8 +222,9 @@ odoo.define('netaddiction_purchase_orders.backorder', function (require) {
                     }
                         
                     var dial = new Dialog(self,options);
-                    dial.open();
-                    dial.$el.html(QWeb.render("order_line_table", {lines: results}));
+                    dial.open().opened().then(function () {
+                        dial.$el.html(QWeb.render("order_line_table", {lines: results}));
+                    });
                     self.setElement('body');
                 }else{
                      $('.o_notification_manager').css('z-index',999999);
@@ -231,7 +268,15 @@ odoo.define('netaddiction_purchase_orders.backorder', function (require) {
             if(qty > 0 && qty <=max){
                 $('.o_notification_manager').css('z-index',999999);
                 var datas = self.products[supplier][pid];
-                new Model('stock.move').call('app_cancel_backorder',[datas, qty, self.context]).then(function(results){
+                this._rpc({
+                    model: 'stock.move',
+                    method: 'app_cancel_backorder',
+                    args: [
+                        datas, 
+                        qty, 
+                        self.context
+                    ]
+                }).then(function (results) {
                     var old = $('#qta_'+supplier+'_'+pid).text();
                     if(old){
                         old = parseInt(old);
@@ -245,29 +290,50 @@ odoo.define('netaddiction_purchase_orders.backorder', function (require) {
                     self.products[supplier][pid]['qty'] = new_value;
                     self.do_notify('Quantità backorder aggiornata');
                     self.__parentedChildren[1].destroy();
-                    
-
-                    new Model('stock.move').call('log_change_backorder',[supplier, self.products[supplier][pid]['product_name'], self.products[supplier][pid]['supplier_code'], pid, old, new_value, self.context.uid, self.company_id]);
+                    self._rpc({
+                        model: 'stock.move',
+                        method: 'log_change_backorder',
+                        args: [
+                            supplier, 
+                            self.products[supplier][pid]['product_name'], 
+                            self.products[supplier][pid]['supplier_code'], 
+                            pid, 
+                            old, 
+                            new_value, 
+                            self.context.uid, 
+                            self.company_id
+                        ]
+                    });
                 });
             }
         },
         GetCancelled: function(e){
             var self = this
             var date = false;
-            new Model('stock.move').call('get_backorder_cancelled', [date, self.company_id]).then(function(results){
-                var options ={
-                    title: "Riepilogo Cancellati", 
-                    subtitle: ' ',
-                    size: 'large',
-                    dialogClass: '',
-                    buttons: [{text: _t("Chiudi"), close: true, classes:"btn-primary close_dialog"}]
-                }
+            // TODO the model netaddiction.log.line will be removed, adapt this code with the new one
+            alert("Funzionalità da completare!");
+            // this._rpc({
+            //     model: 'stock.move',
+            //     method: 'get_backorder_cancelled',
+            //     args: [
+            //         date, 
+            //         self.company_id
+            //     ]
+            // }).then(function (results) {
+            //     var options ={
+            //         title: "Riepilogo Cancellati", 
+            //         subtitle: ' ',
+            //         size: 'large',
+            //         dialogClass: '',
+            //         buttons: [{text: _t("Chiudi"), close: true, classes:"btn-primary close_dialog"}]
+            //     }
                     
-                var dial = new Dialog(self,options);
-                dial.open();
-                dial.$el.html(QWeb.render("cancelled_table", {results: results}));
-                self.setElement('body');
-            });
+            //     var dial = new Dialog(self,options);
+            //     dial.open().opened().then(()=>{
+            //         dial.$el.html(QWeb.render("cancelled_table", {results: results}));
+            //     });
+            //     self.setElement('body');
+            // });
         },
         Search: function(r){
             $('.supplier_row').each(function(i,v){
@@ -276,7 +342,11 @@ odoo.define('netaddiction_purchase_orders.backorder', function (require) {
             var self = this;
             var name = self.$el.find('#search').val();
             if(name != ''){
-                new Model('product.product').call('name_search', [name, [], 'ilike', 15]).then(function(results){
+                this._rpc({
+                    model: 'product.product',
+                    method: 'name_search',
+                    args: [name, [], 'ilike', 15],
+                }).then(function (results) {
                     var html = '';
                     $.each(results, function(index, value){
                         html = html + '<li data-id="'+value[0]+'">'+value[1]+'</li>';
@@ -303,20 +373,28 @@ odoo.define('netaddiction_purchase_orders.backorder', function (require) {
 
             var filter = [['picking_type_id', '=', 1], ['state', 'not in', ['done', 'cancel']], ['product_id', '=', parseInt(pid)]];
             var suppliers = [];
-            new Model('stock.move').query(['picking_partner_id']).filter(filter).all().then(function(results){
+            this._rpc({
+                model: 'stock.move',
+                method: 'search_read',
+                fields: ['picking_partner_id'],
+                domain: filter,
+            }).then(function(results) {
                 $.each(results, function(index,value){
                     $('.supplier_row').each(function(i,v){
                         if(parseInt($(v).attr('data-id')) == parseInt(value.picking_partner_id[0]) ){
                             $(this).css('background', 'red');
                         }
                     });
-                })
+                });
             });
         }
     });
 
-
+    // Add Action client widget to action registry
     core.action_registry.add("netaddiction_purchase_orders.backorder", Backorder);
+
+    // Return widgets  so they can ben extended
+    return Backorder;
 });
 
     
