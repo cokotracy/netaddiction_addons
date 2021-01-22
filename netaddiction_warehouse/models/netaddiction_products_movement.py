@@ -55,7 +55,7 @@ class ProductsMovement(models.TransientModel):
 
     def execute(self):
         self.ensure_one()
-        return getattr(self, 'execute_action_{}'.format(self.action))
+        return getattr(self, 'execute_action_{}'.format(self.action))()
 
     def execute_action_down(self):
         self.ensure_one()
@@ -141,19 +141,20 @@ class ProductsMovement(models.TransientModel):
                 'location_id': wh_stock.id,
                 'location_dest_id': scraped_stock.operation
                 .default_location_dest_id.id,
-                'move_lines': [
+                'move_line_ids_without_package': [
                     (0, 0, {
                         'product_id': self.product_id.id,
                         'product_uom_qty': self.qty_to_move,
+                        'qty_done': self.qty_to_move,
                         'state': 'draft',
-                        'product_uom': self.product_id.uom_id.id,
-                        'name': 'WH/Strock > Magazzino Difettati'
+                        'product_uom_id': self.product_id.uom_id.id,
+                        'location_id': self.env.ref('stock.stock_location_stock').id,
+                        'location_dest_id': self.env.ref('netaddiction_warehouse.netaddiction_stock_defeactive').id,
                     })
                 ],
             })
             pick.action_confirm()
-            pick.force_assign()
-            pick.do_transfer()
+            pick.button_validate()
             self.update_data_from_product()
         else:
             raise ValidationError(

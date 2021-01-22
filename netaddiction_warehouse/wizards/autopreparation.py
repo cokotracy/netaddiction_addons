@@ -100,14 +100,8 @@ class AutoPreparation(models.TransientModel):
                 pick.write({'batch_id': self.batch_id.id})
 
         if len(error_stock) > 0:
-            return {
-                'type': 'ir.actions.act_window',
-                'res_model': "stock.picking",
-                'view_id': self.env.ref('stock.vpicktree').id,
-                'view_mode': 'tree',
-                'target': 'current',
-                'domain': [('id', 'in', error_stock)],
-                'context': {},
-                'name': 'Spedizioni con Errori'
-            }
+            act = self.env.ref('stock.action_picking_tree_all').read()[0]
+            act['domain'] = [('id', 'in', error_stock)]
+            act['display_name'] = 'Spedizioni con errori'
+            return act
         return {}

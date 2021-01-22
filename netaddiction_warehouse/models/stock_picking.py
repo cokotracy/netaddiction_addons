@@ -273,7 +273,7 @@ class StockPicking(models.Model):
                 for line in pick.move_lines:
                     qty_pick += line.product_qty
 
-        return qty_pick >= qty_sale
+        return qty_pick > qty_sale
 
     def compute_b2b(self):
         for pick in self:

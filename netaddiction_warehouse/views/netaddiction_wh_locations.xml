@@ -20,12 +20,12 @@
         <field name="arch" type="xml">
             <form string="Location">
                 <sheet>
-                    <group string="Allocazione Interna" name="location" colspan="4">
-                        <group name="loc_left" class="oe_left" col="2">
+                    <group string="Allocazione Interna" name="location" >
+                        <group>
                             <field name="name"/>
                             <field name="barcode"/>
                         </group>
-                        <group name="loc_r" class="oe_right" col="2">
+                        <group>
                             <field name="company_id"/>
                             <field name="stock_location_id"/>
                         </group>
