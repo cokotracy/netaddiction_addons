@@ -15,6 +15,7 @@
 					<div class="o_searchview" role="search" aria-autocomplete="list">
 						<div class="o_searchview_input_container">
                             <input type="text" class="o_searchview_input" id="search" name="search" accesskey="Q" placeholder="Cerca..." role="searchbox" aria-haspopup="true"/>
+                            <div class="dropdown-menu o_searchview_autocomplete" role="menu"/>
 						</div>
 					</div>
 				</div>

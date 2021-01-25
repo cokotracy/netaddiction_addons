@@ -32,7 +32,7 @@ odoo.define('netaddiction_purchase_orders.backorder', function (require) {
             'click .save_cancel': 'delete_backorder',
             'click #cancelled': 'GetCancelled',
             'change #search' : 'Search',
-            'click .oe-selection-focus': 'DefinitiveSearch'
+            'click .o-selection-focus': 'DefinitiveSearch'
         },
         init: function (parent, action, options) {
             this._super.apply(this, arguments);
@@ -351,14 +351,14 @@ odoo.define('netaddiction_purchase_orders.backorder', function (require) {
                     $.each(results, function(index, value){
                         html = html + '<li data-id="'+value[0]+'">'+value[1]+'</li>';
                     });
-                    self.$el.find('.oe-autocomplete ul').html(html);
-                    self.$el.find('.oe-autocomplete').show();
+                    self.$el.find('.o_searchview_autocomplete').html(html);
+                    self.$el.find('.o_searchview_autocomplete').show();
 
-                    $('.oe-autocomplete li').hover(function(){
+                    $('.o_searchview_autocomplete li').hover(function(){
                         $(this).css('cursor', 'pointer');
-                        $(this).addClass('oe-selection-focus');
+                        $(this).addClass('o-selection-focus');
                     },function(){
-                        $(this).removeClass('oe-selection-focus')
+                        $(this).removeClass('o-selection-focus')
                     })
                 });
             }
@@ -367,8 +367,8 @@ odoo.define('netaddiction_purchase_orders.backorder', function (require) {
             var self = this;
             var pid = $(e.currentTarget).attr('data-id');
             var name = $(e.currentTarget).text();
-            $(e.currentTarget).closest('.oe-autocomplete ul').html('');
-            $('.oe-autocomplete').hide();
+            $(e.currentTarget).closest('.o_searchview_autocomplete').html('');
+            $('.o_searchview_autocomplete').hide();
             self.$el.find('#search').val(name);
 
             var filter = [['picking_type_id', '=', 1], ['state', 'not in', ['done', 'cancel']], ['product_id', '=', parseInt(pid)]];
