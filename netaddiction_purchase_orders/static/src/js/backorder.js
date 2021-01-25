@@ -2,23 +2,10 @@ odoo.define('netaddiction_purchase_orders.backorder', function (require) {
 "use strict";
     var core = require('web.core');
     var session = require('web.session');
-    var Widget = require('web.Widget');
     var Dialog = require('web.Dialog');
     var AbstractAction = require('web.AbstractAction');
-
-    // TODO Remove this unused require
-    // var framework = require('web.framework');
-    // var web_client = require('web.web_client');
-    // var Notification = require('web.notification');
-    // var Class = require('web.Class');
-    // var Pager = require('web.Pager');
-    // var ActionManager = require('web.ActionManager');
-
     var _t = core._t;
     var QWeb = core.qweb;
-
-    // TODO Find the new web.form_common
-    //var common = require('web.form_common');
     var dialogs = require('web.view_dialogs');
 
     var Backorder = AbstractAction.extend({
@@ -72,10 +59,11 @@ odoo.define('netaddiction_purchase_orders.backorder', function (require) {
                 });
                 self.$el.find('#table').html(QWeb.render("supplier_table", {suppliers: suppliers}));
 
-                self.set_height();
+                //self.set_height();
             });
         },
-        set_height: function(){
+        // TODO: this method can be removed?
+       /*  set_height: function(){
             var self = this;
             var h = self.$el.find('#backorder_top_block').outerHeight();
             var theadH = self.$el.find('#table thead').outerHeight();
@@ -93,7 +81,7 @@ odoo.define('netaddiction_purchase_orders.backorder', function (require) {
 
             var w = $('.oe_client_action').outerWidth();
             self.$el.find('#backorder_top_block').outerWidth(w);
-        },
+        }, */
         get_incoming_qty_suppliers: function(e){
             var self = this;
             this._rpc({
@@ -312,28 +300,28 @@ odoo.define('netaddiction_purchase_orders.backorder', function (require) {
             var date = false;
             // TODO the model netaddiction.log.line will be removed, adapt this code with the new one
             alert("Funzionalità da completare!");
-            // this._rpc({
-            //     model: 'stock.move',
-            //     method: 'get_backorder_cancelled',
-            //     args: [
-            //         date, 
-            //         self.company_id
-            //     ]
-            // }).then(function (results) {
-            //     var options ={
-            //         title: "Riepilogo Cancellati", 
-            //         subtitle: ' ',
-            //         size: 'large',
-            //         dialogClass: '',
-            //         buttons: [{text: _t("Chiudi"), close: true, classes:"btn-primary close_dialog"}]
-            //     }
+            /* this._rpc({
+                model: 'stock.move',
+                method: 'get_backorder_cancelled',
+                args: [
+                    date, 
+                    self.company_id
+                ]
+            }).then(function (results) {
+                var options ={
+                    title: "Riepilogo Cancellati", 
+                    subtitle: ' ',
+                    size: 'large',
+                    dialogClass: '',
+                    buttons: [{text: _t("Chiudi"), close: true, classes:"btn-primary close_dialog"}]
+                }
                     
-            //     var dial = new Dialog(self,options);
-            //     dial.open().opened().then(()=>{
-            //         dial.$el.html(QWeb.render("cancelled_table", {results: results}));
-            //     });
-            //     self.setElement('body');
-            // });
+                var dial = new Dialog(self,options);
+                dial.open().opened().then(()=>{
+                    dial.$el.html(QWeb.render("cancelled_table", {results: results}));
+                });
+                self.setElement('body');
+            }); */
         },
         Search: function(r){
             $('.supplier_row').each(function(i,v){
