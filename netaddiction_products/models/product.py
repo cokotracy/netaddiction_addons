@@ -250,22 +250,34 @@ class ProductProduct(models.Model):
                 ('id', 'in', ids)
             ]
         elif operator == '>=':
-            available = product_product_obj.search([('qty_available', '>=', 0)])
-            t = [item for item in available.ids if item not in ids]
+            available = product_product_obj.search(
+                [
+                    ('qty_available', '>=', 0),
+                    ('id', 'not in', ids)
+                ]
+            )
             domain = [
-                ('id', 'in', t)
+                ('id', 'in', available.ids)
             ]
         elif operator == '>':
-            available = product_product_obj.search([('qty_available', '>', 0)])
-            t = [item for item in available.ids if item not in ids]
+            available = product_product_obj.search(
+                [
+                    ('qty_available', '>', 0),
+                    ('id', 'not in', ids)
+                ]
+            )
             domain = [
-                ('id', 'in', t)
+                ('id', 'in', available.ids)
             ]
         elif  operator == '=':
-            available = product_product_obj.search([('qty_available', '=', 0)])
-            t = [item for item in available.ids if item not in ids]
+            available = product_product_obj.search(
+                [
+                    ('qty_available', '=', 0),
+                    ('id', 'not in', ids)
+                ]
+            )
             domain = [
-                ('id', 'in', t)
+                ('id', 'in', available.ids)
             ]
         else:
             domain = []
@@ -293,19 +305,23 @@ class ProductProduct(models.Model):
             ]
         elif operator == '>=' or operator == '>':
             available = product_product_obj.search(
-                [('qty_available', operator, value)]
+                [
+                    ('qty_available', operator, value),
+                    ('id', 'not in', ids)
+                ]
             )
-            t = [item for item in available.ids if item not in ids]
             domain = [
-                ('id', 'in', t)
+                ('id', 'in', available.ids)
             ]
         elif operator == '=':
             available = product_product_obj.search(
-                [('qty_available', '=', value)]
+                [
+                    ('qty_available', '=', value),
+                    ('id', 'not in', ids)
+                ]
             )
-            t = [item for item in available.ids if item not in ids]
             domain = [
-                ('id', 'in', t)
+                ('id', 'in', available.ids)
             ]
         else:
             domain = []
@@ -332,11 +348,13 @@ class ProductProduct(models.Model):
             ]
         elif operator == '>=' or operator == '>':
             available = product_product_obj.search(
-                [('qty_available', operator, value)]
+                [
+                    ('qty_available', operator, value),
+                    ('id', 'not in', ids)
+                ]
             )
-            t = [item for item in available.ids if item not in ids]
             domain = [
-                ('id', 'in', t)
+                ('id', 'in', available.ids)
             ]
         elif operator == '=':
             domain = [
