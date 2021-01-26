@@ -71,14 +71,6 @@
                 <div class="table-responsive">
                     <table class="o_list_table table table-sm table-hover table-striped">
                         <thead>
-                            <!-- TODO check if we can remove this table raw, is it necessary? -->
-                            <tr>
-                                <th colspan="10">
-                                    <div class="oe_list_buttons"></div>
-                                    <div class="oe_list_sidebar"></div>
-                                    <div class="oe_list_pager"></div>
-                                </th>
-                            </tr>
                             <tr class="oe_list_header_columns">
                                 <th width="1">
                                     <input class="oe_list_record_selector purchase_select_all" type="checkbox"/>
@@ -171,7 +163,7 @@
                                             <t t-foreach="product.seller_ids" t-as="sup">
                                                 <t t-if="sup.avail_qty == 0">
                                                     <option t-attf-value="{{sup.id}}" style="background-color:red !important;color:black">
-                                                        <t t-esc="sup.name"/> - <t t-esc="sup.price"/>€- Consegna: <t t-esc="sup.delay"/>gg 
+                                                        <t t-esc="sup.name"/> - <t t-esc="sup.price"/>€- Consegna: <t t-esc="sup.delay"/>gg
                                                     </option>
                                                 </t>
                                                 <t t-if="sup.avail_qty != 0">
@@ -263,5 +255,5 @@
             </span></span>
         </div>
     </t>
-  
+
 </templates>
