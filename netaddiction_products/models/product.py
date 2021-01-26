@@ -168,66 +168,182 @@ class ProductProduct(models.Model):
     # TODO this search attribute was removed, check if it's necessary
     def _search_available_now(self, operator, value):
         domain = []
-        ids = []
-        domain_for_zero = [('state', 'not in', ('done', 'cancel', 'draft')), ('company_id', '=', self.env.user.company_id.id)]
-        moves_out = self.env['stock.move'].read_group(domain=domain_for_zero, fields=['product_id', 'product_qty'], groupby='product_id')
+        stock_move_obj = self.env['stock.move']
+        product_product_obj = self.env['product.product']
+
+        domain_for_zero = [
+            ('state', 'not in', ('done', 'cancel', 'draft')),
+            ('company_id', '=', self.env.user.company_id.id)
+        ]
+        moves_out = stock_move_obj.read_group(
+            domain=domain_for_zero,
+            fields=['product_id', 'product_qty'],
+            groupby='product_id'
+        )
         product_ids = [prod['product_id'][0] for prod in moves_out]
-        products = self.env['product.product'].search([('id', 'in', product_ids)])
+        products = product_product_obj.search(
+            [('id', 'in', product_ids)]
+        )
+        # Get product ids from operator
+        ids = self._get_ids_from_operator(operator, products, value)
+        # Get proper domain based by value, operator and ids
+        if value == 0:
+            domain = self._get_domain_value_equal_to_zero(operator, ids)
+        elif value > 0:
+            domain = self._get_domain_value_greater_than_zero(
+                operator, ids, value)
+        elif value < 0:
+            domain = self._get_domain_value_less_than_zero(operator, ids, value)
+        return domain
+
+    def _get_ids_from_operator(self, operator, products, value):
+        """
+        Helper method used by _search_available_now() that return a
+        list of product.product ids by checking operator and value
+        Args:
+            operator (string): Operator used by search
+            products (product.product()): Products recordset
+            value (Integer): Value to search
+
+        Returns:
+            list: List of product.product ids
+        """
+        ids = []
         for prod in products:
             qty_available_now = prod.qty_available_now
             if operator == '<=' and qty_available_now <= value:
                 ids.append(prod.id)
-            if operator == '<' and qty_available_now < value:
+            elif operator == '<' and qty_available_now < value:
                 ids.append(prod.id)
-            if operator == '>=' and qty_available_now < value:
+            elif operator == '>=' and qty_available_now < value:
                 ids.append(prod.id)
-            if operator == '>' and qty_available_now <= value:
+            elif operator == '>' and qty_available_now <= value:
                 ids.append(prod.id)
-            if operator == '=' and value >= 0 and qty_available_now != value:
+            elif operator == '=' and value >= 0 and qty_available_now != value:
                 ids.append(prod.id)
-            if operator == '=' and value < 0 and qty_available_now == value:
+            elif operator == '=' and value < 0 and qty_available_now == value:
                 ids.append(prod.id)
+        return ids
 
-        # caso in cui value è zero
-        if value == 0 and operator == '<=':
-            domain = ['|', ('qty_available', '<=', 0), ('id', 'in', ids)]
-        if value == 0 and operator == '<':
-            domain = [('id', 'in', ids)]
-        if value == 0 and operator == '>=':
-            available = self.env['product.product'].search([('qty_available', '>=', 0)])
-            t = [item for item in available.ids if item not in ids]
-            domain = [('id', 'in', t)]
-        if value == 0 and operator == '>':
-            available = self.env['product.product'].search([('qty_available', '>', 0)])
-            t = [item for item in available.ids if item not in ids]
-            domain = [('id', 'in', t)]
-        if value == 0 and operator == '=':
-            available = self.env['product.product'].search([('qty_available', '=', 0)])
-            t = [item for item in available.ids if item not in ids]
-            domain = [('id', 'in', t)]
+    def _get_domain_value_equal_to_zero(self, operator, ids):
+        """
+        Helper method used by _search_available_now() that return a proper
+        domain by checking operator and ids records if search value == 0
 
-        # caso in cui value è > 0
-        if value > 0 and (operator == '<=' or operator == '<'):
-            domain = ['|', ('qty_available', operator, value), ('id', 'in', ids)]
-        if value > 0 and (operator == '>=' or operator == '>'):
-            available = self.env['product.product'].search([('qty_available', operator, value)])
-            t = [item for item in available.ids if item not in ids]
-            domain = [('id', 'in', t)]
-        if value > 0 and operator == '=':
-            available = self.env['product.product'].search([('qty_available', '=', value)])
-            t = [item for item in available.ids if item not in ids]
-            domain = [('id', 'in', t)]
+        Args:
+            operator (string): Operator used by search
+            ids (list): List of product.product ids
 
-        # caso in cui value è < 0
-        if value < 0 and (operator == '<=' or operator == '<'):
-            domain = [('id', 'in', ids)]
-        if value < 0 and (operator == '>=' or operator == '>'):
-            available = self.env['product.product'].search([('qty_available', operator, value)])
+        Returns:
+            Odoo domain : product.product() search domain
+        """
+        product_product_obj = self.env['product.product']
+        # Set the proper domain from operatore
+        if operator == '<=':
+            domain = [
+                '|',
+                ('qty_available', '<=', 0),
+                ('id', 'in', ids)
+            ]
+        elif operator == '<':
+            domain = [
+                ('id', 'in', ids)
+            ]
+        elif operator == '>=':
+            available = product_product_obj.search([('qty_available', '>=', 0)])
             t = [item for item in available.ids if item not in ids]
-            domain = [('id', 'in', t)]
-        if value < 0 and operator == '=':
-            domain = [('id', 'in', ids)]
+            domain = [
+                ('id', 'in', t)
+            ]
+        elif operator == '>':
+            available = product_product_obj.search([('qty_available', '>', 0)])
+            t = [item for item in available.ids if item not in ids]
+            domain = [
+                ('id', 'in', t)
+            ]
+        elif  operator == '=':
+            available = product_product_obj.search([('qty_available', '=', 0)])
+            t = [item for item in available.ids if item not in ids]
+            domain = [
+                ('id', 'in', t)
+            ]
+        else:
+            domain = []
+        return domain
 
+    def _get_domain_value_greater_than_zero(self, operator, ids, value):
+        """
+        Helper method used by _search_available_now() that return a proper
+        domain by checking operator and ids records if search value > 0
+
+        Args:
+            operator (string): Operator used by search
+            ids (list): List of product.product ids
+            value (Integer): Value to search
+
+        Returns:
+            Odoo domain : product.product() search domain
+        """
+        product_product_obj = self.env['product.product']
+        if operator == '<=' or operator == '<':
+            domain = [
+                '|',
+                ('qty_available', operator, value),
+                ('id', 'in', ids)
+            ]
+        elif operator == '>=' or operator == '>':
+            available = product_product_obj.search(
+                [('qty_available', operator, value)]
+            )
+            t = [item for item in available.ids if item not in ids]
+            domain = [
+                ('id', 'in', t)
+            ]
+        elif operator == '=':
+            available = product_product_obj.search(
+                [('qty_available', '=', value)]
+            )
+            t = [item for item in available.ids if item not in ids]
+            domain = [
+                ('id', 'in', t)
+            ]
+        else:
+            domain = []
+        return domain
+
+    def _get_domain_value_less_than_zero(self, operator, ids, value):
+        """
+        Helper method used by _search_available_now() that return a proper
+        domain by checking operator and ids records if search value < 0
+
+        Args:
+            operator (string): Operator used by search
+            ids (list): List of product.product ids
+            value (Integer): Value to search
+
+        Returns:
+            Odoo domain : product.product() search domain
+        """
+
+        product_product_obj = self.env['product.product']
+        if operator == '<=' or operator == '<':
+            domain = [
+                ('id', 'in', ids)
+            ]
+        elif operator == '>=' or operator == '>':
+            available = product_product_obj.search(
+                [('qty_available', operator, value)]
+            )
+            t = [item for item in available.ids if item not in ids]
+            domain = [
+                ('id', 'in', t)
+            ]
+        elif operator == '=':
+            domain = [
+                ('id', 'in', ids)
+            ]
+        else:
+            domain = []
         return domain
 
 
