@@ -68,11 +68,11 @@ class StockMove(models.Model):
 
     #     results = self.env['netaddiction.log.line'].search(
     #         [
-    #             ('create_date', '>=', ddate + ' 00:00:00'), 
-    #             ('create_date', '<=', ddate + ' 23:59:59'), 
-    #             ('model_name', '=', 'Cancellazione Backorder'), 
+    #             ('create_date', '>=', ddate + ' 00:00:00'),
+    #             ('create_date', '<=', ddate + ' 23:59:59'),
+    #             ('model_name', '=', 'Cancellazione Backorder'),
     #             ('company_id', '=', int(company_id))
-    #         ], 
+    #         ],
     #         order='field'
     #     )
     #     cancelled = {}
@@ -110,6 +110,9 @@ class StockMove(models.Model):
 
     @api.model
     def get_incoming_products_supplier(self, supplier, context):
+        lang_obj = self.env['res.lang']
+        # Get logged user language
+        user_lang = lang_obj.search([('code', '=', self.env.user.lang)])
         # ritorna un dict di prodotti per il fornitore supplier
         # qta, valore, ids stock.move corrispondenti
         if not supplier:
@@ -139,11 +142,11 @@ class StockMove(models.Model):
 
             datas[res.product_id.id]['qty'] += res.product_uom_qty
             datas[res.product_id.id]['value'] += res.purchase_line_id.price_unit * res.product_uom_qty
-            # FIXME this locale.setlocale() give an error 
-            #  locale.Error: unsupported locale setting
-            # locale.setlocale(locale.LC_ALL, 'it_IT.UTF8')
-            # datas[res.product_id.id]['value_locale'] = locale.format("%.2f", datas[res.product_id.id]['value'], grouping=True)
-            datas[res.product_id.id]['value_locale'] = datas[res.product_id.id]['value']
+            datas[res.product_id.id]['value_locale'] = user_lang.format(
+                '%.2f',
+                datas[res.product_id.id]['value'],
+                True
+            )
             datas[res.product_id.id]['ids'].append(res.id)
 
         return datas
