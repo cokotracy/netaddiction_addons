@@ -43,6 +43,7 @@ class Suppliers(models.Model):
             supplier.append({'id': res.id, 'name': res.name})
         return supplier
 
+
 '''
 
     # TODO: Porting if we need them

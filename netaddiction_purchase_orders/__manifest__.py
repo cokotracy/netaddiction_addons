@@ -16,7 +16,7 @@
         # 'account',
         'netaddiction_products',
         ],
-    'data' : [
+    'data': [
         'data/template_email.xml',
         'views/assets.xml',
         'views/actions_client.xml',
@@ -29,7 +29,7 @@
         # Leave menus for last to upload every action and view beforehand
         'views/menus.xml',
     ],
-    'qweb':[
+    'qweb': [
          "static/src/xml/*.xml",
     ],
     'application':True,

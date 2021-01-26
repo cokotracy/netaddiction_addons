@@ -193,7 +193,8 @@ class ProductProduct(models.Model):
             domain = self._get_domain_value_greater_than_zero(
                 operator, ids, value)
         elif value < 0:
-            domain = self._get_domain_value_less_than_zero(operator, ids, value)
+            domain = self._get_domain_value_less_than_zero(
+                operator, ids, value)
         return domain
 
     def _get_ids_from_operator(self, operator, products, value):
