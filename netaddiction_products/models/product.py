@@ -112,7 +112,7 @@ class ProductProduct(models.Model):
 
     qty_available_now = fields.Integer(
         compute="_get_qty_available_now",
-        # search="_search_available_now",
+        search="_search_available_now",
         string="Quantità Disponibile",
         help="Quantità Disponibile Adesso (qty in possesso - qty in uscita)")
 
@@ -164,6 +164,71 @@ class ProductProduct(models.Model):
         for product in self:
             product.qty_available_now = \
                 product.qty_available - product.outgoing_qty
+
+    # TODO this search attribute was removed, check if it's necessary
+    def _search_available_now(self, operator, value):
+        domain = []
+        ids = []
+        domain_for_zero = [('state', 'not in', ('done', 'cancel', 'draft')), ('company_id', '=', self.env.user.company_id.id)]
+        moves_out = self.env['stock.move'].read_group(domain=domain_for_zero, fields=['product_id', 'product_qty'], groupby='product_id')
+        product_ids = [prod['product_id'][0] for prod in moves_out]
+        products = self.env['product.product'].search([('id', 'in', product_ids)])
+        for prod in products:
+            qty_available_now = prod.qty_available_now
+            if operator == '<=' and qty_available_now <= value:
+                ids.append(prod.id)
+            if operator == '<' and qty_available_now < value:
+                ids.append(prod.id)
+            if operator == '>=' and qty_available_now < value:
+                ids.append(prod.id)
+            if operator == '>' and qty_available_now <= value:
+                ids.append(prod.id)
+            if operator == '=' and value >= 0 and qty_available_now != value:
+                ids.append(prod.id)
+            if operator == '=' and value < 0 and qty_available_now == value:
+                ids.append(prod.id)
+
+        # caso in cui value è zero
+        if value == 0 and operator == '<=':
+            domain = ['|', ('qty_available', '<=', 0), ('id', 'in', ids)]
+        if value == 0 and operator == '<':
+            domain = [('id', 'in', ids)]
+        if value == 0 and operator == '>=':
+            available = self.env['product.product'].search([('qty_available', '>=', 0)])
+            t = [item for item in available.ids if item not in ids]
+            domain = [('id', 'in', t)]
+        if value == 0 and operator == '>':
+            available = self.env['product.product'].search([('qty_available', '>', 0)])
+            t = [item for item in available.ids if item not in ids]
+            domain = [('id', 'in', t)]
+        if value == 0 and operator == '=':
+            available = self.env['product.product'].search([('qty_available', '=', 0)])
+            t = [item for item in available.ids if item not in ids]
+            domain = [('id', 'in', t)]
+
+        # caso in cui value è > 0
+        if value > 0 and (operator == '<=' or operator == '<'):
+            domain = ['|', ('qty_available', operator, value), ('id', 'in', ids)]
+        if value > 0 and (operator == '>=' or operator == '>'):
+            available = self.env['product.product'].search([('qty_available', operator, value)])
+            t = [item for item in available.ids if item not in ids]
+            domain = [('id', 'in', t)]
+        if value > 0 and operator == '=':
+            available = self.env['product.product'].search([('qty_available', '=', value)])
+            t = [item for item in available.ids if item not in ids]
+            domain = [('id', 'in', t)]
+
+        # caso in cui value è < 0
+        if value < 0 and (operator == '<=' or operator == '<'):
+            domain = [('id', 'in', ids)]
+        if value < 0 and (operator == '>=' or operator == '>'):
+            available = self.env['product.product'].search([('qty_available', operator, value)])
+            t = [item for item in available.ids if item not in ids]
+            domain = [('id', 'in', t)]
+        if value < 0 and operator == '=':
+            domain = [('id', 'in', ids)]
+
+        return domain
 
 
 class SupplierInfo(models.Model):
