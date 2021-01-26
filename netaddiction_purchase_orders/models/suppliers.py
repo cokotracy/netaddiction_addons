@@ -34,9 +34,6 @@ class Suppliers(models.Model):
         string="Il contatto riceve i resi"
     )
 
-    '''
-
-    # TODO: Porting if we need them
 
     @api.model
     def get_all_suppliers(self):
@@ -45,6 +42,10 @@ class Suppliers(models.Model):
         for res in result:
             supplier.append({'id': res.id, 'name': res.name})
         return supplier
+
+'''
+
+    # TODO: Porting if we need them
 
     def generate_monday_report(self):
         self.ensure_one()

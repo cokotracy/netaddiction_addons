@@ -6,10 +6,6 @@ from collections import defaultdict
 from datetime import datetime,date,timedelta
 
 
-'''
-
-# TODO: Porting if we need it
-
 class ProductProduct(models.Model):
 
     _inherit = "product.product"
@@ -45,7 +41,7 @@ class ProductProduct(models.Model):
                 visible = 0
 
             if prod.out_date:
-                if datetime.strptime(prod.out_date,'%Y-%m-%d') > datetime.now():
+                if prod.out_date > datetime.now().date():
                     visible = 0
 
             attr = {
@@ -91,7 +87,7 @@ class ProductProduct(models.Model):
                     visible = 0
                 
                 if prod.out_date:
-                    if datetime.strptime(prod.out_date,'%Y-%m-%d') > datetime.now():
+                    if prod.out_date > datetime.now():
                         visible = 0
 
                 attr = {
@@ -123,7 +119,7 @@ class ProductProduct(models.Model):
                 result.append(attr)
 
         return result
-'''
+
 
 
 class PurchaseOrder(models.Model):
@@ -195,7 +191,7 @@ class PurchaseOrder(models.Model):
                             days=int(delay)),
                         }
                     if prod.supplier_taxes_id:
-                        attrs['taxes_id'] = [
+                        attr['taxes_id'] = [
                             (6, False, [prod.supplier_taxes_id.id])]
                     line_values.append((0,0,attr))
         return line_values
@@ -239,10 +235,6 @@ class PurchaseOrder(models.Model):
         return {}
 
 
-'''
-
-# TODO: Porting if we need it
-
 class ProductCategory(models.Model):
 
     _inherit = "product.category"
@@ -254,4 +246,3 @@ class ProductCategory(models.Model):
         for res in result:
             categories.append({'id':res.id, 'name':res.name})
         return categories
-'''
