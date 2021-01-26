@@ -270,7 +270,7 @@ class ProductProduct(models.Model):
             domain = [
                 ('id', 'in', available.ids)
             ]
-        elif  operator == '=':
+        elif operator == '=':
             available = product_product_obj.search(
                 [
                     ('qty_available', '=', 0),
