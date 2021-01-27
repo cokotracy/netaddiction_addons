@@ -526,7 +526,7 @@ odoo.define('netaddiction_warehouse.check_pick_up', function (require) {
         },
         ValidateOrderTr: function (e) {
             var id = $(e.currentTarget).closest('tr').attr('data-id');
-            url = url_report + id;
+            var url = url_report + id;
             var pop = window.open(url, 'titolo', 'scrollbars=no,resizable=yes, width=1000,height=700,status=no,location=no,toolbar=no');
             pop.print();
             this._rpc({
@@ -725,7 +725,7 @@ odoo.define('netaddiction_warehouse.check_pick_up', function (require) {
             });
         },
         ValidateOrder: function (e) {
-            url = url_report + this_order.order_id
+            var url = url_report + this_order.order_id
             var pop = window.open(url, 'titolo', 'scrollbars=no,resizable=yes, width=1000,height=700,status=no,location=no,toolbar=no');
             pop.print()
             this._rcp({
