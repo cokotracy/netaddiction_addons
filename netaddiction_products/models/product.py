@@ -20,6 +20,10 @@ class ProductTemplate(models.Model):
         string="Data disponibilità"
     )
 
+    company_id = fields.Many2one(
+        default=lambda self: self.env.user.company_id
+    )
+
     out_date = fields.Date(
         string="Data di Uscita"
     )
