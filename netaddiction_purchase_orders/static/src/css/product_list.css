@@ -1,7 +1,6 @@
 #search{
 	width: 100%;
     border: none;
-    margin-left: 15px;
 }
 
 #search:focus{
@@ -28,4 +27,14 @@
 
 .qty_order{
 	width:70px;
+}
+
+.products_to_buy_filters {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.products_to_buy_filters>.row {
+    width: 100%;
 }

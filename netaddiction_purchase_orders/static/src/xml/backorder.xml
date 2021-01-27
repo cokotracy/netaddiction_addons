@@ -1,123 +1,136 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <templates id="template_backorder" xml:space="preserve">
-    <t t-name="backorder_top">
-        <div class="oe-control-panel" id="backorder_top_block" style="position:fixed;width:100%">
-            <div class="container-fluid">
-                <div class="row">
-                    <div class="col-md-6 oe-cp-title">
-                        <ol class="oe-view-title breadcrumb"><li class="active">Prodotti in Arrivo - Backorder</li></ol>
-                    </div>
-                    <div class="oe-cp-search-view col-md-6">
-                        <div class="oe_searchview form-control input-sm">
-                            <div class="oe_searchview_search fa fa-lg fa-search" title="Cerca ancora"></div>
-                            <div class="oe_searchview_facets"><input type="text" id="search"/></div>
-                            <div class="oe-autocomplete" style="display: none;">
-                                <ul>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-2 oe-button-column">
-                       Valore Totale: 
-                        <span id="backorder_value">
-                            
-                        </span>
-                    </div>
-                    <div class="col-md-10 oe-button-column">
-                        <button type="button" class="btn btn-primary" id="cancelled" style="float:right">Riepilogo</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div id="table">
 
+    <t t-name="backorder_top">
+        <div class="o_control_panel" id="backorder_top_block">
+			<div>
+				<ol class="breadcrumb" role="navigation">
+					<li class="breadcrumb-item active">
+						Prodotti in Arrivo - Backorder
+					</li>
+				</ol>
+
+				<div class="o_cp_searchview" role="search">
+					<div class="o_searchview" role="search" aria-autocomplete="list">
+						<div class="o_searchview_input_container">
+                            <input type="text" class="o_searchview_input" id="search" name="search" accesskey="Q" placeholder="Cerca..." role="searchbox" aria-haspopup="true"/>
+                            <div class="dropdown-menu o_searchview_autocomplete" role="menu"/>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-md-6">
+					<div class="o_cp_buttons">
+						Valore Totale:
+                        <span id="backorder_value">
+
+                        </span>
+					</div>
+				</div>
+				<div class="col-md-6" style="padding-left: 0;">
+                    <button type="button" class="btn btn-primary" id="cancelled" style="float:right">Riepilogo</button>
+				</div>
+			</div>
+		</div>
+        <div class="o_content">
+            <div id="table" class="o_list_view">
+            </div>
         </div>
     </t>
 
     <t t-name="supplier_table">
-        <table class="oe_list_content">
-            <thead >
-                <tr>
-                    <th id="th1">Fornitore</th>
-                    <th id="th2"># Spedizioni</th>
-                    <th id="th3">Qtà Prodotti</th>
-                    <th id="th4">Valore</th>
-                </tr>
-            </thead>
-            <tbody>
-                <t t-foreach="suppliers" t-as="supplier">
-                    <tr t-attf-data-id="{{supplier.supplier_id}}" class="supplier_row">
-                        <td style="width:25%" data-id="th1"><b><t t-esc="supplier.supplier"/></b></td>
-                        <td style="width:25%" data-id="th2"><t t-esc="supplier.ships"/></td>
-                        <td style="width:25%" data-id="th3" t-attf-id="products_{{supplier.supplier_id}}"></td>
-                        <td style="width:25%" data-id="th4" t-attf-id="values_{{supplier.supplier_id}}"></td>
+        <div class="table-responsive">
+            <table class="o_list_table table table-sm table-hover table-striped">
+                <thead>
+                    <tr>
+                        <th id="th1">Fornitore</th>
+                        <th id="th2"># Spedizioni</th>
+                        <th id="th3">Qtà Prodotti</th>
+                        <th id="th4">Valore</th>
                     </tr>
-                </t>
-            </tbody>
-            <tfoot><tr></tr></tfoot>
-        </table>
+                </thead>
+                <tbody>
+                    <t t-foreach="suppliers" t-as="supplier">
+                        <tr t-attf-data-id="{{supplier.supplier_id}}" class="supplier_row">
+                            <td style="width:25%" data-id="th1"><b><t t-esc="supplier.supplier"/></b></td>
+                            <td style="width:25%" data-id="th2"><t t-esc="supplier.ships"/></td>
+                            <td style="width:25%" data-id="th3" t-attf-id="products_{{supplier.supplier_id}}"></td>
+                            <td style="width:25%" data-id="th4" t-attf-id="values_{{supplier.supplier_id}}"></td>
+                        </tr>
+                    </t>
+                </tbody>
+                <tfoot>
+                    <tr></tr>
+                </tfoot>
+            </table>
+        </div>
     </t>
 
     <t t-name="products_table">
-        <table class="oe_list_content">
-            <thead >
-                <tr>
-                    <th id="th1">Prodotto</th>
-                    <th id="th4">Codice Fornitore</th>
-                    <th id="th2">Quantità Ord.</th>
-                    <th id="th5">Quantità Disp.</th>
-                    <th id="th3">Valore</th>
-                    <th id="th6"></th>
-                </tr>
-            </thead>
-            <tbody>
-                <t t-foreach="products" t-as="product">
+        <div class="table-responsive">
+            <table class="o_list_table table table-sm table-hover table-striped">
+                <thead >
                     <tr>
-                        <td><b><a href="#" class="open_product" t-attf-data-id="{{products[product].product_id}}"><t t-esc="products[product].product_name"/></a></b></td>
-                        <td><t t-esc="products[product].supplier_code"/></td>
-                        <td t-attf-id="qta_{{supplier}}_{{products[product].product_id}}"><t t-esc="products[product].qty"/></td>
-                        <td><t t-esc="products[product].qty_available"/></td>
-                        <td><b><t t-esc="products[product].value_locale"/></b></td>
-                        <td>
-                            <a href="#" class="fa fa-money open_sale" style="color:black" title="Apri vendite" t-attf-data-id="{{products[product].product_id}}"/>
-                            <a href="#" class="fa fa-trash cancel_backorder" style="color:black" title="cancella" t-attf-data-id="{{products[product].product_id}}" t-attf-data-supplier="{{supplier}}"/>
-                        </td>
+                        <th id="th1">Prodotto</th>
+                        <th id="th4">Codice Fornitore</th>
+                        <th id="th2">Quantità Ord.</th>
+                        <th id="th5">Quantità Disp.</th>
+                        <th id="th3">Valore</th>
+                        <th id="th6"></th>
                     </tr>
-                </t>
-            </tbody>
-            <tfoot><tr></tr></tfoot>
-        </table>
+                </thead>
+                <tbody>
+                    <t t-foreach="products" t-as="product">
+                        <tr>
+                            <td><b><a href="#" class="open_product" t-attf-data-id="{{products[product].product_id}}"><t t-esc="products[product].product_name"/></a></b></td>
+                            <td><t t-esc="products[product].supplier_code"/></td>
+                            <td t-attf-id="qta_{{supplier}}_{{products[product].product_id}}"><t t-esc="products[product].qty"/></td>
+                            <td><t t-esc="products[product].qty_available"/></td>
+                            <td><b><t t-esc="products[product].value_locale"/></b></td>
+                            <td>
+                                <a href="#" class="fa fa-money open_sale" style="color:black" title="Apri vendite" t-attf-data-id="{{products[product].product_id}}"/>
+                                <a href="#" class="fa fa-trash cancel_backorder" style="color:black" title="cancella" t-attf-data-id="{{products[product].product_id}}" t-attf-data-supplier="{{supplier}}"/>
+                            </td>
+                        </tr>
+                    </t>
+                </tbody>
+                <tfoot>
+                    <tr></tr>
+                </tfoot>
+            </table>
+        </div>
     </t>
 
     <t t-name="order_line_table">
-        <table class="oe_list_content">
-            <thead >
-                <tr>
-                    <th id="th1">Ordine</th>
-                    <th id="th2">Cliente</th>
-                    <th id="th3">Qtà</th>
-                    <th id="th4">Prezzo Unitario</th>
-                    <th id="th5">Totale</th>
-                    <th id="th6">Stato</th>
-                </tr>
-            </thead>
-            <tbody>
-                <t t-foreach="lines" t-as="line">
+        <div class="table-responsive">
+            <table class="o_list_table table table-sm table-hover table-striped">
+                <thead >
                     <tr>
-                        <td><b><a href="#" class="open_order" t-attf-data-id="{{line.order_id[0]}}"><t t-esc="line.order_id[1]"/></a></b></td>
-                        <td><a href="#" class="open_customer" t-attf-data-id="{{line.order_partner_id[0]}}"><t t-esc="line.order_partner_id[1]"/></a></td>
-                        <td><t t-esc="line.product_uom_qty"/></td>
-                        <td><t t-esc="line.price_unit"/></td>
-                        <td><t t-esc="line.price_total"/></td>
-                        <td><t t-esc="line.state"/></td>
+                        <th id="th1">Ordine</th>
+                        <th id="th2">Cliente</th>
+                        <th id="th3">Qtà</th>
+                        <th id="th4">Prezzo Unitario</th>
+                        <th id="th5">Totale</th>
+                        <th id="th6">Stato</th>
                     </tr>
-                </t>
-            </tbody>
-            <tfoot><tr></tr></tfoot>
-        </table>
+                </thead>
+                <tbody>
+                    <t t-foreach="lines" t-as="line">
+                        <tr>
+                            <td><b><a href="#" class="open_order" t-attf-data-id="{{line.order_id[0]}}"><t t-esc="line.order_id[1]"/></a></b></td>
+                            <td><a href="#" class="open_customer" t-attf-data-id="{{line.order_partner_id[0]}}"><t t-esc="line.order_partner_id[1]"/></a></td>
+                            <td><t t-esc="line.product_uom_qty"/></td>
+                            <td><t t-esc="line.price_unit"/></td>
+                            <td><t t-esc="line.price_total"/></td>
+                            <td><t t-esc="line.state"/></td>
+                        </tr>
+                    </t>
+                </tbody>
+                <tfoot><tr></tr></tfoot>
+            </table>
+        </div>
     </t>
 
     <t t-name="qty_form">
@@ -125,26 +138,28 @@
     </t>
 
     <t t-name="cancelled_table">
-        <table class="oe_list_content">
-            <thead >
-                <tr>
-                    <th id="th1">Fornitore</th>
-                    <th id="th2">Quantità</th>
-                    <th id="th3">Prodotto</th>
-                </tr>
-            </thead>
-            <tbody>
-                <t t-foreach="results" t-as="res">
-                    <t t-foreach="results[res]['products']" t-as="prod">
-                        <tr>
-                            <td><t t-esc="results[res]['supplier']"/></td>
-                            <td><t t-esc="results[res]['products'][prod]['qty']"/></td>
-                            <td><t t-esc="results[res]['products'][prod]['product_name']"/></td>
-                        </tr>
+        <div class="table-responsive">
+            <table class="o_list_table table table-sm table-hover table-striped">
+                <thead >
+                    <tr>
+                        <th id="th1">Fornitore</th>
+                        <th id="th2">Quantità</th>
+                        <th id="th3">Prodotto</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <t t-foreach="results" t-as="res">
+                        <t t-foreach="results[res]['products']" t-as="prod">
+                            <tr>
+                                <td><t t-esc="results[res]['supplier']"/></td>
+                                <td><t t-esc="results[res]['products'][prod]['qty']"/></td>
+                                <td><t t-esc="results[res]['products'][prod]['product_name']"/></td>
+                            </tr>
+                        </t>
                     </t>
-                </t>
-            </tbody>
-            <tfoot><tr></tr></tfoot>
-        </table>
+                </tbody>
+                <tfoot><tr></tr></tfoot>
+            </table>
+        </div>
     </t>
 </templates>

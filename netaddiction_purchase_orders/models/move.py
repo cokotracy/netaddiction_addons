@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from openerp import models, api
+from odoo import models, api
 import locale
 import datetime
 
@@ -60,28 +60,37 @@ class StockMove(models.Model):
         }
         self.env['netaddiction.log.line'].sudo().create(attr)
 
-    @api.model
-    def get_backorder_cancelled(self, ddate, company_id):
-        if not ddate:
-            ddate = datetime.date.today().strftime("%Y-%m-%d")
+    # TODO The model netaddiction.log.line doesn't exist, adapt this code with the audit log
+    # @api.model
+    # def get_backorder_cancelled(self, ddate, company_id):
+    #     if not ddate:
+    #         ddate = datetime.date.today().strftime("%Y-%m-%d")
 
-        results = self.env['netaddiction.log.line'].search([('create_date', '>=', ddate + ' 00:00:00'), ('create_date', '<=', ddate + ' 23:59:59'), ('model_name', '=', 'Cancellazione Backorder'), ('company_id', '=', int(company_id))], order='field')
-        cancelled = {}
-        for res in results:
-            qty = res.old_value_integer - res.new_value_integer
-            if int(res.field) not in cancelled:
-                cancelled[int(res.field)] = {}
-                supplier = self.env['res.partner'].browse(int(res.field))
-                cancelled[int(res.field)]['supplier'] = supplier.name
-                cancelled[int(res.field)]['products'] = {}
-            if res.object_id not in cancelled[int(res.field)]['products']:
-                cancelled[int(res.field)]['products'][res.object_id] = {}
-                cancelled[int(res.field)]['products'][res.object_id]['qty'] = 0
-                cancelled[int(res.field)]['products'][res.object_id]['product_name'] = res.object_name
+    #     results = self.env['netaddiction.log.line'].search(
+    #         [
+    #             ('create_date', '>=', ddate + ' 00:00:00'),
+    #             ('create_date', '<=', ddate + ' 23:59:59'),
+    #             ('model_name', '=', 'Cancellazione Backorder'),
+    #             ('company_id', '=', int(company_id))
+    #         ],
+    #         order='field'
+    #     )
+    #     cancelled = {}
+    #     for res in results:
+    #         qty = res.old_value_integer - res.new_value_integer
+    #         if int(res.field) not in cancelled:
+    #             cancelled[int(res.field)] = {}
+    #             supplier = self.env['res.partner'].browse(int(res.field))
+    #             cancelled[int(res.field)]['supplier'] = supplier.name
+    #             cancelled[int(res.field)]['products'] = {}
+    #         if res.object_id not in cancelled[int(res.field)]['products']:
+    #             cancelled[int(res.field)]['products'][res.object_id] = {}
+    #             cancelled[int(res.field)]['products'][res.object_id]['qty'] = 0
+    #             cancelled[int(res.field)]['products'][res.object_id]['product_name'] = res.object_name
 
-            cancelled[int(res.field)]['products'][res.object_id]['qty'] += qty
+    #         cancelled[int(res.field)]['products'][res.object_id]['qty'] += qty
 
-        return cancelled
+    #     return cancelled
 
     @api.model
     def get_incoming_number_products_values(self):
@@ -101,6 +110,9 @@ class StockMove(models.Model):
 
     @api.model
     def get_incoming_products_supplier(self, supplier, context):
+        lang_obj = self.env['res.lang']
+        # Get logged user language
+        user_lang = lang_obj.search([('code', '=', self.env.user.lang)])
         # ritorna un dict di prodotti per il fornitore supplier
         # qta, valore, ids stock.move corrispondenti
         if not supplier:
@@ -130,8 +142,11 @@ class StockMove(models.Model):
 
             datas[res.product_id.id]['qty'] += res.product_uom_qty
             datas[res.product_id.id]['value'] += res.purchase_line_id.price_unit * res.product_uom_qty
-            locale.setlocale(locale.LC_ALL, 'it_IT.UTF8')
-            datas[res.product_id.id]['value_locale'] = locale.format("%.2f", datas[res.product_id.id]['value'], grouping=True)
+            datas[res.product_id.id]['value_locale'] = user_lang.format(
+                '%.2f',
+                datas[res.product_id.id]['value'],
+                True
+            )
             datas[res.product_id.id]['ids'].append(res.id)
 
         return datas
