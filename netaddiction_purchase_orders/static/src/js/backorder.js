@@ -106,21 +106,21 @@ odoo.define('netaddiction_purchase_orders.backorder', function (require) {
             if(supplier in self.incoming_datas){
                 var sup_name = self.incoming_datas[supplier]['name'];
             }
-            
+
             var options ={
-                title: "Prodotti Backorder", 
+                title: "Prodotti Backorder",
                 subtitle: ' ' + sup_name,
                 size: 'large',
                 dialogClass: '',
                 buttons: [{text: _t("Chiudi"), close: true, classes:"btn-primary close_dialog"}]
             }
-                
+
             var dial = new Dialog(self, options);
             // Call method only when dialog is created and opened
             dial.open().opened().then(function () {
                 self.get_products_supplier(supplier, dial);
             });
-            
+
         },
         get_products_supplier: function(supplier, dial){
             var self = this;
@@ -131,7 +131,7 @@ odoo.define('netaddiction_purchase_orders.backorder', function (require) {
                     model: 'stock.move',
                     method: 'get_incoming_products_supplier',
                     args: [
-                        supplier, 
+                        supplier,
                         self.context
                     ],
                 }).then(function (results) {
@@ -202,13 +202,13 @@ odoo.define('netaddiction_purchase_orders.backorder', function (require) {
                         value.state = states[value.state];
                     });
                     var options ={
-                        title: "Vendite in processing", 
+                        title: "Vendite in processing",
                         subtitle: ' ' + results[0].product_id[1],
                         size: 'large',
                         dialogClass: '',
                         buttons: [{text: _t("Chiudi"), close: true, classes:"btn-primary close_dialog"}]
                     }
-                        
+
                     var dial = new Dialog(self,options);
                     dial.open().opened().then(function () {
                         dial.$el.html(QWeb.render("order_line_table", {lines: results}));
@@ -228,7 +228,7 @@ odoo.define('netaddiction_purchase_orders.backorder', function (require) {
             var datas = self.products[supplier][pid];
             var qty = self.products[supplier][pid]['qty'];
             var options ={
-                title: "Quantità da cancellare", 
+                title: "Quantità da cancellare",
                 subtitle: ' '+ datas.product_name,
                 size: 'medium',
                 dialogClass: '',
@@ -244,7 +244,7 @@ odoo.define('netaddiction_purchase_orders.backorder', function (require) {
             var pid = parseInt($('#qty_to_delete').attr('data-id'));
             var supplier = parseInt($('#qty_to_delete').attr('data-supplier'));
             var qty = parseInt($('#qty_to_delete').val());
-            var max = self.products[supplier][pid]['qty']; 
+            var max = self.products[supplier][pid]['qty'];
             if(qty > max){
                 $('.o_notification_manager').css('z-index',999999);
                 return self.do_warn('Non puoi superare la quantità massima ordinata di ' + max);
@@ -260,8 +260,8 @@ odoo.define('netaddiction_purchase_orders.backorder', function (require) {
                     model: 'stock.move',
                     method: 'app_cancel_backorder',
                     args: [
-                        datas, 
-                        qty, 
+                        datas,
+                        qty,
                         self.context
                     ]
                 }).then(function (results) {
@@ -282,13 +282,13 @@ odoo.define('netaddiction_purchase_orders.backorder', function (require) {
                         model: 'stock.move',
                         method: 'log_change_backorder',
                         args: [
-                            supplier, 
-                            self.products[supplier][pid]['product_name'], 
-                            self.products[supplier][pid]['supplier_code'], 
-                            pid, 
-                            old, 
-                            new_value, 
-                            self.context.uid, 
+                            supplier,
+                            self.products[supplier][pid]['product_name'],
+                            self.products[supplier][pid]['supplier_code'],
+                            pid,
+                            old,
+                            new_value,
+                            self.context.uid,
                             self.company_id
                         ]
                     });
@@ -299,23 +299,22 @@ odoo.define('netaddiction_purchase_orders.backorder', function (require) {
             var self = this
             var date = false;
             // TODO the model netaddiction.log.line will be removed, adapt this code with the new one
-            alert("Funzionalità da completare!");
             /* this._rpc({
                 model: 'stock.move',
                 method: 'get_backorder_cancelled',
                 args: [
-                    date, 
+                    date,
                     self.company_id
                 ]
             }).then(function (results) {
                 var options ={
-                    title: "Riepilogo Cancellati", 
+                    title: "Riepilogo Cancellati",
                     subtitle: ' ',
                     size: 'large',
                     dialogClass: '',
                     buttons: [{text: _t("Chiudi"), close: true, classes:"btn-primary close_dialog"}]
                 }
-                    
+
                 var dial = new Dialog(self,options);
                 dial.open().opened().then(()=>{
                     dial.$el.html(QWeb.render("cancelled_table", {results: results}));
@@ -385,4 +384,3 @@ odoo.define('netaddiction_purchase_orders.backorder', function (require) {
     return Backorder;
 });
 
-    

@@ -30,7 +30,8 @@
 					</div>
 				</div>
 				<div class="col-md-6" style="padding-left: 0;">
-                    <button type="button" class="btn btn-primary" id="cancelled" style="float:right">Riepilogo</button>
+                    <!-- TODO This function must be migrated with audit log or we must use netaddiction.log? -->
+                    <!-- <button type="button" class="btn btn-primary" id="cancelled" style="float:right">Riepilogo</button> -->
 				</div>
 			</div>
 		</div>
