@@ -10,6 +10,20 @@
                 <field name="out_date" />
                 <field name="out_date_approx_type" />
             </xpath>
+
+            <xpath expr="//page[@name='general_information']/group" position="after">
+                <group name="quantity_management" string="Quantity Management">
+                    <group>
+                        <field name="qty_available_now" />
+                        <field name="qty_sum_suppliers" />
+                    </group>
+                    <group>
+                        <field name="qty_single_order" />
+                        <field name="qty_limit" />
+                        <field name="limit_action" />
+                    </group>
+                </group>
+            </xpath>
         </field>
     </record>
 

@@ -121,8 +121,36 @@ class ProductProduct(models.Model):
     qty_available_now = fields.Integer(
         compute="_get_qty_available_now",
         search="_search_available_now",
-        string="Quantità Disponibile",
+        string="Quantità Disponibile Adesso",
         help="Quantità Disponibile Adesso (qty in possesso - qty in uscita)")
+
+    qty_sum_suppliers = fields.Integer(
+        string="Quantità dei fornitori",
+        compute="_get_qty_suppliers",
+        help="Somma delle quantità dei fornitori"
+    )
+
+    qty_single_order = fields.Integer(
+        string="Quantità massima ordinabile",
+        help="Quantità massima ordinabile per singolo ordine/cliente"
+    )
+
+    qty_limit = fields.Integer(
+        string="Quantità limite",
+        help="Imposta la quantità limite prodotto"
+             " (qty disponibile == qty_limit accade Azione)"
+        )
+
+    limit_action = fields.Selection(
+        selection= [
+           ('nothing','Nessuna Azione'),
+           ('no_purchasable','Non vendibile'),
+           ('deactive','Invisibile e non vendibile')
+        ],
+        string="Azione limite",
+        help="Se qty_limit impostata decide cosa fare al raggiungimento"
+             " di tale qty",
+    )
 
     med_inventory_value = fields.Float(
         string="Valore Medio Inventario Deivato",
@@ -173,6 +201,11 @@ class ProductProduct(models.Model):
             product.qty_available_now = \
                 product.qty_available - product.outgoing_qty
 
+    def _get_qty_suppliers(self):
+        for item in self:
+            item.qty_sum_suppliers = sum(
+                [int(sup.avail_qty) for sup in self.seller_ids]
+            )
     # TODO this search attribute was removed, check if it's necessary
     def _search_available_now(self, operator, value):
         domain = []
