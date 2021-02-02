@@ -20,6 +20,10 @@ class ProductTemplate(models.Model):
         string="Data disponibilità"
     )
 
+    type = fields.Selection(
+        default='product',
+    )
+
     company_id = fields.Many2one(
         default=lambda self: self.env.user.company_id
     )
