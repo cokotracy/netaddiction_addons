@@ -142,10 +142,10 @@ class ProductProduct(models.Model):
         )
 
     limit_action = fields.Selection(
-        selection= [
-           ('nothing','Nessuna Azione'),
-           ('no_purchasable','Non vendibile'),
-           ('deactive','Invisibile e non vendibile')
+        selection=[
+           ('nothing', 'Nessuna Azione'),
+           ('no_purchasable', 'Non vendibile'),
+           ('deactive', 'Invisibile e non vendibile')
         ],
         string="Azione limite",
         help="Se qty_limit impostata decide cosa fare al raggiungimento"
@@ -435,4 +435,3 @@ class SupplierInfo(models.Model):
 
             item.detax_margin = prod_price['total_excluded'] \
                 - sup_price['total_excluded']
-
