@@ -8,6 +8,7 @@
         <field name="arch" type="xml">
             <xpath expr="//field[@name='categ_id']" position="before">
                 <field name="out_date" />
+                <field name="out_date_approx_type" />
             </xpath>
         </field>
     </record>
@@ -19,6 +20,7 @@
         <field name="arch" type="xml">
             <xpath expr="//field[@name='categ_id']" position="before">
                 <field name="out_date" />
+                <field name="out_date_approx_type" />
             </xpath>
         </field>
     </record>
