@@ -414,3 +414,25 @@ class SupplierInfo(models.Model):
     avail_qty = fields.Float(
         string='Available Qty'
     )
+
+    detax_margin = fields.Float(
+        string="Margine iva esclusa",
+        compute="_calculate_margin_info"
+    )
+
+    def _calculate_margin_info(self):
+        for item in self:
+            prod = item.product_id
+            sup_price = prod.supplier_taxes_id.compute_all(item.price)
+            # FIXME The following line uses offer_price, which is a custom
+            # field from netaddiction.special_offers. Since we haven't migrated
+            # that module, this field is not available anymore. Nevertheless
+            # we should better evaluate this change, as our client may expect
+            # to find this margin information calculated the old way.
+            # sale_price = prod.offer_price or prod.list_price
+            sale_price = prod.list_price
+            prod_price = prod.taxes_id.compute_all(sale_price)
+
+            item.detax_margin = prod_price['total_excluded'] \
+                - sup_price['total_excluded']
+
