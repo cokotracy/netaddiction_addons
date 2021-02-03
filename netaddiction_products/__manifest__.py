@@ -3,7 +3,7 @@
 
 {
     'name': 'Netaddiction Products',
-    'version': '13.0.3.1.0',
+    'version': '13.0.3.2.0',
     'category': 'Product',
     'author': 'Openforce',
     'license': 'LGPL-3',
