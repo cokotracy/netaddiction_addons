@@ -6,8 +6,40 @@
         <field name="model">product.product</field>
         <field name="inherit_id" ref="product.product_normal_form_view" />
         <field name="arch" type="xml">
-            <xpath expr="//field[@name='tracking']" position="after">
+            <xpath expr="//field[@name='categ_id']" position="before">
                 <field name="out_date" />
+                <field name="out_date_approx_type" />
+            </xpath>
+
+            <xpath expr="//page[@name='general_information']/group" position="after">
+                <group name="quantity_management" string="Quantity Management">
+                    <group>
+                        <field name="qty_available_now" />
+                        <field name="qty_sum_suppliers" />
+                    </group>
+                    <group>
+                        <field name="qty_single_order" />
+                        <field name="qty_limit" />
+                        <field name="limit_action" />
+                    </group>
+                </group>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="netaddiction_product_supplier_detax_form" model="ir.ui.view">
+        <field name="name">netaddiction.product.supplier.detax.form</field>
+        <field name="model">product.template</field>
+        <field name="inherit_id" ref="purchase.view_product_supplier_inherit" />
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='seller_ids']" position="inside">
+                <tree>
+                    <field name="name" />
+                    <field name="min_qty" />
+                    <field name="avail_qty" />
+                    <field name="price" />
+                    <field name="detax_margin" />
+                </tree>
             </xpath>
         </field>
     </record>
@@ -17,8 +49,9 @@
         <field name="model">product.template</field>
         <field name="inherit_id" ref="product.product_template_only_form_view" />
         <field name="arch" type="xml">
-            <xpath expr="//field[@name='tracking']" position="after">
+            <xpath expr="//field[@name='categ_id']" position="before">
                 <field name="out_date" />
+                <field name="out_date_approx_type" />
             </xpath>
         </field>
     </record>
