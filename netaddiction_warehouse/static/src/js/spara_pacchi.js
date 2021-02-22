@@ -180,7 +180,7 @@ odoo.define('netaddiction_warehouse.spara_pacchi', function (require) {
 
                         more_buzz.play();
                         self.stopProcess(text)
-                        var error_html = picking[0].partner_id + ' ' + picking[0].delivery_barcode + ' ' + picking[0].origin + ' - ' + not.text + '<br/>'
+                        var error_html = picking[0].partner_id + ' ' + picking[0].delivery_barcode + ' ' + picking[0].origin + ' - ' + text + '<br/>'
                         $('#content_error').append(error_html)
                         return self.do_warn(title, text);
                     } else {
