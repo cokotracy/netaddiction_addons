@@ -21,6 +21,7 @@
         'stock',
         'stock_picking_batch',
         'web',
+        'web_onchange_enterkey',
     ],
     'data': [
         'security/ir.model.access.csv',
