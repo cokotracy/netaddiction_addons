@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <odoo>
 
+    <!-- FIXME: Changes will not be applied because import is disabled
+                The code is kept for possible future equal implementations
+    -->
+
     <record model="ir.ui.view" id="netaddiction_pricelist_b2b">
         <field name="name">netaddiction.product.pricelist.b2b</field>
         <field name="model">product.pricelist</field>
