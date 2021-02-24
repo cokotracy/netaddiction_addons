@@ -11,6 +11,9 @@ from odoo import api, fields, models, _
 from odoo.exceptions import UserError
 
 
+# TODO: Remove code after the last migration
+# (the last refactoring to remove useless code)
+
 class PricelistFTPUser(models.Model):
     _name = 'netaddiction_pricelist_ftp_user'
     _description = 'Netaddiction Pricelist FTP User'
@@ -24,6 +27,9 @@ class PricelistFTPUser(models.Model):
         string='FTP Path'
     )
 
+
+# TODO: Remove code after the last migration
+# (the last refactoring to remove useless code)
 
 class ProductPricelistCondition(models.Model):
     _name = 'pricelist.condition'
@@ -46,6 +52,8 @@ class ProductPricelistCondition(models.Model):
         default='discount',
     )
 
+# TODO: Remove code after the last migration
+# (the last refactoring to remove useless code)
 
 class ProductPricelist(models.Model):
     _inherit = 'product.pricelist'
@@ -279,12 +287,12 @@ class ProductPriceItems(models.Model):
         compute='_get_real_price',
         string='Real Price')
 
-    base = fields.Selection(selection_add=[
-        ('final_price', 'Prezzo di listino')
-        ],
-        string="Based On",
-        required=True
-    )
+    # base = fields.Selection(selection_add=[
+    #     ('final_price', 'Prezzo di listino')
+    #     ],
+    #     string="Based On",
+    #     required=True
+    # )
 
     purchase_price = fields.Float(
         compute='_get_purchase_price',
