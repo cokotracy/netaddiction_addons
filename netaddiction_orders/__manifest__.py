@@ -9,9 +9,15 @@
     'license': 'LGPL-3',
     'depends': [
         'sale',
+        'website',
+        'website_sale',
+        'payment',
         'netaddiction_payments',
     ],
     'data': [
         'data/template_email.xml',
+        'views/assets.xml',
+        'views/sale.xml',
+        'templates/payment.xml',
     ],
 }

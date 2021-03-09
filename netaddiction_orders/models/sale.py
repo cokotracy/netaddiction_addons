@@ -40,6 +40,217 @@ class SaleOrder(models.Model):
         # ('pending', 'Pendente'),
     ])
 
+    '''
+
+    Functions based on old logics.
+    We keep them, for now.
+
+    def _check_offers_catalog(self):
+        # Migrated from netaddiction_mail/models/sale v9.0
+        """controlla le offerte catalogo e aggiorna le quantità vendute.
+        returns True se qualche prodotto ha superato la qty_limit
+        per la sua offerta catalogo corrispondente
+        False altrimenti
+        """
+        self.ensure_one()
+        problems = False
+        if self.state != 'draft':
+            return problems
+        for line in self.order_line:
+            if line.offer_type and not line.negate_offer:
+                offer_line = line.product_id.offer_catalog_lines[0] \
+                    if len(line.product_id.offer_catalog_lines) > 0 \
+                    else None
+                if offer_line:
+                    offer_line.qty_selled += line.product_uom_qty
+                    offer_line.active = offer_line.qty_limit == 0 \
+                        or offer_line.qty_selled < offer_line.qty_limit
+                    if offer_line.qty_limit > 0 \
+                            and offer_line.qty_selled > offer_line.qty_limit:
+                        attr = {
+                            'subtype': "mt_comment",
+                            'res_id': self.id,
+                            'model': 'sale.order',
+                            'author_id': self.env.user.partner_id.id,
+                            'message_type': 'comment',
+                            'body': 'in problema perché superato il qty '
+                            'limit per offerta: %s, '
+                            'prodotto: %s, '
+                            'quantità ordinata: %s, '
+                            'quantità che era disponibile in offerta: %s' % (
+                                offer_line.offer_catalog_id.name,
+                                line.product_id.name,
+                                line.product_uom_qty,
+                                (offer_line.qty_limit - (offer_line.qty_selled)
+                                )),
+                            }
+                        self.env['mail.message'].create(attr)
+                        problems = True
+                else:
+                    attr = {
+                        'subtype': "mt_comment",
+                        'res_id': self.id,
+                        'body': 'in problema perché offerta scaduta, '
+                        'prodotto: %s' % (line.product_id.name),
+                        'model': 'sale.order',
+                        'author_id': self.env.user.partner_id.id,
+                        'message_type': 'comment',
+                    }
+                    self.env['mail.message'].create(attr)
+                    problems = True
+        return problems
+
+    def _check_offers_cart(self):
+        # Migrated from netaddiction_mail/models/sale v9.0
+        """controlla le offerte carrello e aggiorna le quantità vendute.
+        returns True se qualche prodotto ha superato la qty_limit
+        per la sua offerta carrello corrispondente
+        False altrimenti
+        """
+        self.ensure_one()
+        problems = False
+        if self.state != 'draft':
+            return problems
+        for och in self.offers_cart:
+            offer_line = och.offer_cart_line
+            if offer_line:
+                offer_line.qty_selled += och.qty
+                offer_line.active = offer_line.qty_limit == 0 \
+                    or offer_line.qty_selled < offer_line.qty_limit
+                if offer_line.qty_limit > 0 and \
+                        offer_line.qty_selled > offer_line.qty_limit:
+                    attr = {
+                        'subtype': "mt_comment",
+                        'res_id': self.id,
+                        'body': 'in problema perché superato '
+                        'il qty limit per offerta: %s, '
+                        'prodotto: %s, '
+                        'quantità ordinata: %s, '
+                        'quantità che era disponibile in offerta: %s' % (
+                            offer_line.offer_catalog_id.name,
+                            offer_line.order_line.product_id.name,
+                            offer_line.order_line.product_uom_qty,
+                            (offer_line.qty_limit - (
+                                offer_line.qty_selled -
+                                offer_line.order_line.product_uom_qty))),
+                        'model': 'sale.order',
+                        'author_id': self.env.user.partner_id.id,
+                        'message_type': 'comment',
+                    }
+                    self.env['mail.message'].create(attr)
+                    problems = True
+            else:
+                attr = {
+                    'subtype': "mt_comment",
+                    'res_id': self.id,
+                    'body': 'in problema perché offerta non trovata per '
+                    'offer cart history: %s, '
+                    'prodotto: %s, '
+                    'quantità ordinata: %s' % (
+                        och.id, och.product_id.name, och.qty),
+                    'model': 'sale.order',
+                    'author_id': self.env.user.partner_id.id,
+                    'message_type': 'comment',
+                }
+                self.env['mail.message'].create(attr)
+                problems = True
+        return problems
+
+    def _check_offers_voucher(self):
+        # Migrated from netaddiction_mail/models/sale v9.0
+        """controlla le offerte voucher e aggiorna le quantità vendute.
+        returns True se qualche prodotto ha superato la qty_limit
+        per la sua offerta carrello corrispondente
+        False altrimenti
+        """
+        self.ensure_one()
+        problems = False
+        if self.state != 'draft':
+            return problems
+        for ovh in self.offers_voucher:
+            offer = ovh.offer_id
+            if offer:
+                offer.qty_selled += ovh.qty
+                offer.active = offer.qty_limit == 0 or \
+                    offer.qty_selled < offer.qty_limit
+            if offer and offer.qty_limit > 0 and \
+                    offer.qty_selled > offer.qty_limit:
+                attr = {
+                    'subtype': "mt_comment",
+                    'res_id': self.id,
+                    'body': 'in problema perché superato il qty limit '
+                    'per offerta: %s, '
+                    'prodotto: %s, '
+                    'quantità ordinata: %s, '
+                    'quantità che era disponibile in offerta: %s' % (
+                        offer.name,
+                        ovh.order_line.product_id.name,
+                        ovh.order_line.product_uom_qty, (
+                            offer.qty_limit - (
+                                offer.qty_selled -
+                                ovh.order_line.product_uom_qty))),
+                    'model': 'sale.order',
+                    'author_id': self.env.user.partner_id.id,
+                    'message_type': 'comment',
+                }
+                self.env['mail.message'].create(attr)
+                problems = True
+        return problems
+
+    def _check_digital_bonus(self):
+        # Migrated from netaddiction_mail/models/sale v9.0
+        self.ensure_one()
+        if self.state != 'draft':
+            return
+        for line in self.order_line:
+            # per tutte le order line..
+            for bonus_offer in line.product_id.code_ids:
+                # per ogni offerta digitale del prodotto..
+                if not bonus_offer.assign_codes or (
+                        bonus_offer.qty_limit > 0
+                        and bonus_offer.qty_sold >= bonus_offer.qty_limit):
+                    # se l'offerta è esaurita o non ha codici
+                    # passo alla prossima
+                    continue
+                codes = self.env["netaddiction.specialoffer.digital_code"]\
+                    .search([("bonus_id", "=", bonus_offer.id),
+                             ("sent", "=", False),
+                             ("order_id", "=", None)])
+                if len(codes) > 0:
+                    # ci sono i codici, li assegno
+                    i = 0
+                    while i < line.product_uom_qty and i < len(codes):
+                        code = codes[i]
+                        code.order_id = self.id
+                        code.order_line_id = line.id
+                        i += 1
+                    bonus_offer.qty_sold += i
+                else:
+                    # non ci sono i codici loggo
+                    # (comunque potrebbero essere assegnati in seguito)
+                    attr = {
+                        'subtype': "mt_comment",
+                        'res_id': self.id,
+                        'body': 'non è stato assegnato nessun bonus '
+                        'digitale per il prodotto %s' % line.product_id.name,
+                        'model': 'sale.order',
+                        'author_id': self.env.user.partner_id.id,
+                        'message_type': 'comment',
+                    }
+                    self.env['mail.message'].create(attr)
+                    bonus_offer.qty_sold += line.product_uom_qty
+    '''
+
+    def action_problems(self):
+        # Migrated from netaddiction_mail/models/sale v9.0
+        # Set state to `problem`
+        for order in self:
+            # order._check_offers_catalog()
+            # order._check_offers_cart()
+            # order._check_offers_voucher()
+            # order._check_digital_bonus()
+            order.state = 'problem'
+
     def action_cancel(self):
         # Migrated from netaddiction_mail/models/sale v9.0
         # Send an internal mail for cancel order with paypal or sofort payment

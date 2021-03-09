@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <record model="ir.ui.view" id="netaddiction_orders_view_order_form">
+        <field name="name">netaddiction.orders.sale.order</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_order_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//header/button[@name='action_quotation_send']" position="before">
+                <button name="action_problems" string="Problema" type="object"
+                        states="sent,sale,processing,partial_done,draft"
+                        class=" btn btn-danger fa fa-exclamation-triangle"/>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>
