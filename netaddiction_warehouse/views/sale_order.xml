@@ -28,7 +28,7 @@
                                context="{'order_id': id}"
                                class="oe_inline"
                                options="{'no_create': True, 'no_open': True}"
-                               attrs="{'readonly':[('state','not in',('draft','sent'))]}"/>
+                               attrs="{'readonly':[('state','=','done')]}"/>
                     </div>
                     <div>
                         <!--
