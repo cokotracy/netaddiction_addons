@@ -33,7 +33,6 @@ class SaleOrder(models.Model):
         # ('draft', 'Nuovo'),
         # ('sent', 'Preventivo Inviato'),
         ('sale', 'In Lavorazione'),
-        ('partial_done', 'Parzialmente Completato'),
         ('problem', 'Problema'),
         # ('done', 'Completato'),
         # ('cancel', 'Annullato'),
