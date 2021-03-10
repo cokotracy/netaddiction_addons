@@ -269,3 +269,17 @@ class SaleOrder(models.Model):
                 template.send_mail(
                     sale.id, force_send=False, raise_exception=True)
         return super().action_cancel()
+
+    def action_confirm(self):
+        problem_orders = self.filtered(lambda o: o.state == 'problem')
+        res = super().action_confirm()
+        # keep state `problem` on orders with this state
+        if not self.env.context.get('confirm_problem_order', False):
+            problem_orders.state = 'problem'
+        return res
+
+    def action_confirm_problem(self):
+        ctx = self.env.context.copy()
+        ctx['confirm_problem_order'] = True
+        res = self.with_context(ctx).action_confirm()
+        return res

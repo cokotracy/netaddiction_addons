@@ -10,6 +10,9 @@
                 <button name="action_problems" string="Problema" type="object"
                         states="sent,sale,processing,partial_done,draft"
                         class=" btn btn-danger fa fa-exclamation-triangle"/>
+                <button name="action_cancel" string="Cancel" type="object" states="problem" />
+                <button name="action_confirm_problem" string="Confirm" type="object"
+                        states="problem" />
             </xpath>
         </field>
     </record>
