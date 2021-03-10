@@ -2,6 +2,7 @@ import datetime
 
 from collections import defaultdict
 from itertools import chain
+import pdb
 
 from odoo import fields, models
 from odoo.exceptions import ValidationError
@@ -131,7 +132,7 @@ class Orders(models.Model):
 
     def action_confirm(self):
         for order in self:
-            if order.state not in ('draft', 'pending'):
+            if order.state not in ('draft', 'pending', 'problem'):
                 # se lo stato non  è draft è già stata chiamata action confirm
                 continue
 
@@ -140,15 +141,16 @@ class Orders(models.Model):
                     "Devi inserire almeno un prodotto nell'ordine"
                 )
 
+            '''
+            TODO: Check if we need it, again
             if not self.env.context.get('no_check_limit_and_action', False):
                 if not order.parent_order:
                     order.order_line.check_limit_and_action()
+            '''
 
-            order.pre_action_confirm()
-            old_state = order.state
+        res = super().action_confirm()
 
-            super(Orders, order).action_confirm()
-
+        for order in self:
             if not order.picking_ids:
                 order.create_shipping()
                 order.set_delivery_price()
@@ -159,10 +161,7 @@ class Orders(models.Model):
                     if not order.parent_order:
                         line.product_id.do_action_quantity()
 
-            if old_state == 'problem':
-                order.state = 'problem'
-
-        return True
+        return res
 
     def _compute_picking_ids(self):
         for order in self:
