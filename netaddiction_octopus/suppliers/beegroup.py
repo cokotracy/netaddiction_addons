@@ -59,7 +59,8 @@ class CustomSupplier(supplier.Supplier):
         name='Descrizione',
         description='Note',
         supplier_code='Cod.',
-        supplier_price=lambda self, item: float(item['Listino 2'].replace(',', '.')),
+        supplier_price=lambda self, item:
+        float(item['Listino 2'].replace(',', '.')),
         supplier_quantity='Q.t\xc3\xa0 disponibile')
 
     categories = 'Iva', 'Tipologia'

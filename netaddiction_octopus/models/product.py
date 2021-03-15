@@ -23,7 +23,7 @@ class Template(models.Model):
     )
 
 
-class Product(models.Model):
+class NetaddictionOctopusProduct(models.Model):
     _name = 'netaddiction_octopus.product'
     _description = 'Octopus Product'
 
@@ -110,7 +110,14 @@ class Product(models.Model):
         string='Quantità fornitore'
     )
 
-    '''
+    def search_image_qwant(self):
+        # cerca tramite barcode un'immagine sul motore di ricerca QWANT,
+        # se la trova la mette in self.image
+        # TODO Openforce:
+        # Migrate `search_image_qwant`
+        _logger.warning('MIGRATE `search_image_qwant` OR DELETE IT')
+        return True
+
     def import_product(self):
         self.ensure_one()
         self.is_new = False
@@ -128,6 +135,7 @@ class Product(models.Model):
             'res_id': product.id,
         }
 
+    '''
     def blacklist_product(self):
         self.ensure_one()
         self.env['netaddiction_octopus.blacklist'].create({
@@ -144,7 +152,7 @@ class Product(models.Model):
                 ('product_code', '=', self.supplier_code),
             ])
             if supplierinfo:
-                return self.update(supplierinfo, commit=commit)
+                return self.deferred_update(supplierinfo, commit=commit)
         else:
             product = self.env['product.product'].search([
                 ('barcode', '=', self.barcode),
@@ -156,7 +164,7 @@ class Product(models.Model):
                     ('product_code', '=', self.supplier_code),
                 ])
                 if supplierinfo:
-                    return self.update(supplierinfo, commit=commit)
+                    return self.deferred_update(supplierinfo, commit=commit)
                 return self.chain(product, commit=commit)
             if can_add:
                 self.is_new = True
@@ -220,6 +228,7 @@ class Product(models.Model):
         if commit:
             self.env.cr.commit()
         return product
+    '''
 
     def chain(self, product, commit=True):
         context = {}
@@ -235,7 +244,6 @@ class Product(models.Model):
         })
         if commit:
             self.env.cr.commit()
-    '''
 
     def deferred_update(self, supplierinfo=None, commit=True):
         if supplierinfo is None:

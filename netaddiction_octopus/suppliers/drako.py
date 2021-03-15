@@ -45,9 +45,13 @@ class CustomSupplier(supplier.Supplier):
     mapping = Adapter(
         barcode='EAN',
         name='Nome',
-        description=lambda self, item: '<br><br>'.join([item['Descrizione'], item['Testo Prodotto']]) if item['Descrizione'] and item['Testo Prodotto'] else item['Testo Prodotto'],
+        description=lambda self, item:
+        '<br><br>'.join([item['Descrizione'], item['Testo Prodotto']])
+        if item['Descrizione'] and item['Testo Prodotto']
+        else item['Testo Prodotto'],
         image='Indirizzo Immagine',
         date=lambda self, item: item['Data_Dispo'] or None,
         supplier_code='ID_Articolo',
-        supplier_price=lambda self, item: float(item['Prezzo'].replace(',', '.')) if item['Prezzo'] else None,
+        supplier_price=lambda self, item:
+        float(item['Prezzo'].replace(',', '.')) if item['Prezzo'] else None,
         supplier_quantity='Dispo')

@@ -47,7 +47,7 @@ class CustomSupplier(supplier.Supplier):
         supplier_price='prezzo_acquisto',
         supplier_quantity='qty')
 
-    categories = 'tassa_vendita', 'categoria'
+    categories = ('tassa_vendita', 'categoria')
 
     def validate(self, item):
         import datetime

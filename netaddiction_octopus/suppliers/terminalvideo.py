@@ -125,7 +125,8 @@ class CustomSupplier(supplier.Supplier):
         #},
     ]
 
-    categories = 'Formato', 'Genere principale', 'Taglia', 'Genere T-Shirt', 'Colore T-Shirt', 'Iva'
+    categories = ('Formato', 'Genere principale',
+                  'Taglia', 'Genere T-Shirt', 'Colore T-Shirt', 'Iva')
 
     downloader = FTPDownloader(
         hostname='ftp.terminalvideo.com',
@@ -141,11 +142,17 @@ class CustomSupplier(supplier.Supplier):
         barcode='Cod. barre',
         name='Titolo',
         description='Trama',
-        price=lambda self, item: float(item['Pvc'].replace(',', '.')) if item['Pvc'] else None,
+        price=lambda self, item:
+        float(item['Pvc'].replace(',', '.')) if item['Pvc'] else None,
         image='Img Lrg Web',
-        date=lambda self, item: datetime.strptime(item['Data primo rilascio'], '%d/%m/%Y') if item['Data primo rilascio'] else None,
+        date=lambda self, item:
+        datetime.strptime(item['Data primo rilascio'], '%d/%m/%Y')
+        if item['Data primo rilascio'] else None,
         supplier_code='Cod. interno',
-        supplier_price=lambda self, item: float(item['Listino'].replace(',', '.')) / 100.0 * (100 - DISCOUNTS.get(item['Categoria sconto'], 0)) if item['Listino'] else None,
+        supplier_price=lambda self, item:
+        float(item['Listino'].replace(',', '.')) / 100.0 * (
+            100 - DISCOUNTS.get(item['Categoria sconto'], 0))
+        if item['Listino'] else None,
         supplier_quantity=lambda self, item: item['Q.ta in stock'] or 0)
 
     def validate(self, item):
@@ -189,10 +196,13 @@ class CustomSupplier(supplier.Supplier):
         # Book preorder
 
         if item['_file'] == 'Libri' and item['Data primo rilascio']:
-            assert datetime.strptime(item['Data primo rilascio'], '%d/%m/%Y') <= datetime.now()
+            assert datetime.strptime(
+                item['Data primo rilascio'], '%d/%m/%Y') <= datetime.now()
 
     def group(self, item):
-        group_name = item['Titolo'].rsplit('(', 1)[0].strip() if '(' in item['Titolo'] and item['Titolo'][-1] == ')' else item['Titolo']
+        group_name = item['Titolo'].rsplit('(', 1)[0].strip() \
+            if '(' in item['Titolo'] and item['Titolo'][-1] == ')' \
+            else item['Titolo']
 
         if item['_file'] == 'Merchandising':
             if '(' in item['Titolo'] and item['Titolo'][-1] == ')':
@@ -200,14 +210,17 @@ class CustomSupplier(supplier.Supplier):
                 extra = extra.replace('Tg. %s' % item['Taglia'], '')
                 extra = extra.replace(item['Genere T-Shirt'], '')
 
-                group_key = ''.join([item['_file'], item['Formato'], item['Genere principale'], group_name, extra])
+                group_key = ''.join([
+                    item['_file'], item['Formato'],
+                    item['Genere principale'], group_name, extra])
                 group_key = re.sub(r' +', ' ', group_key)
                 group_key = md5(group_key).hexdigest()
 
                 return group_key, group_name
 
         if item['_file'] == 'HomeVideo':
-            group_key = ''.join([item['_file'], item['Genere principale'], group_name])
+            group_key = ''.join(
+                [item['_file'], item['Genere principale'], group_name])
             group_key = re.sub(r' +', ' ', group_key)
             group_key = md5(group_key).hexdigest()
 
