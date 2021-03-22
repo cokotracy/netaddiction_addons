@@ -2,7 +2,6 @@ import datetime
 
 from collections import defaultdict
 from itertools import chain
-import pdb
 
 from odoo import fields, models
 from odoo.exceptions import ValidationError
