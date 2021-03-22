@@ -4,6 +4,7 @@
 from datetime import date, timedelta
 
 from odoo import api, fields, models
+from odoo.addons import decimal_precision as dp
 
 
 class ProductCategory(models.Model):
@@ -107,6 +108,18 @@ class ProductProduct(models.Model):
         store=True,
     )
 
+    detax_price = fields.Float(
+        string="Prezzo di vendita deivato",
+        compute="_get_visual_price",
+        digits_compute=dp.get_precision('Product Price'),
+    )
+
+    intax_price = fields.Float(
+        string="Prezzo di vendita Ivato",
+        compute="_get_visual_price",
+        digits_compute=dp.get_precision('Product Price'),
+        )
+
     final_price = fields.Float(
         string="Pricelist Price",
         digits='Product Price'
@@ -117,6 +130,11 @@ class ProductProduct(models.Model):
         digits='Product Price',
         default=0
     )
+
+    visible = fields.Boolean(
+        string="Visibile",
+        default=True,
+        )
 
     qty_available_now = fields.Integer(
         compute="_get_qty_available_now",
@@ -152,6 +170,23 @@ class ProductProduct(models.Model):
              " di tale qty",
     )
 
+    property_cost_method = fields.Selection([
+        ('standard', 'Standard Price'),
+        ('average', 'Average Price'),
+        ('real', 'Real Price')],
+        string="Metodo Determinazioni costi",
+        default="real",
+        required=True,
+    )
+
+    property_valuation = fields.Selection([
+        ('manual_periodic', 'Periodic (manual)'),
+        ('real_time', 'Perpetual (automated)')],
+        string="Valorizzazione Inventario",
+        default="real_time",
+        required=True,
+    )
+
     med_inventory_value = fields.Float(
         string="Valore Medio Inventario Deivato",
         default=0,
@@ -172,10 +207,11 @@ class ProductProduct(models.Model):
         return res
 
     def _get_inventory_medium_value(self):
+        stock = self.env.ref('stock.stock_location_stock').id
+        quant_model = self.env['stock.quant']
         for product in self:
-            stock = self.env.ref('stock.stock_location_stock').id
             if product.qty_available > 0:
-                quants = self.env['stock.quant'].search(
+                quants = quant_model.search(
                     [
                         ('product_id', '=', product.id),
                         ('location_id', '=', stock),
@@ -186,15 +222,19 @@ class ProductProduct(models.Model):
                 value = 0
                 for quant in quants:
                     qta += quant.quantity
-                    value += 0 # quant.inventory_value
-                val = float(value) / float(qta)
+                    value += 0.0  # quant.inventory_value
+                if qta:
+                    val = float(value) / float(qta)
+                else:
+                    val = 0.0
                 result = product.supplier_taxes_id.compute_all(val)
                 product.med_inventory_value_intax = round(
-                    result['total_included'], 2)
+                    result.get('total_included', 0.0), 2)
                 product.med_inventory_value = round(
-                    result['total_excluded'], 2)
+                    result.get('total_excluded', 0.0), 2)
             else:
-                product.med_inventory_value = 0
+                product.med_inventory_value_intax = 0.0
+                product.med_inventory_value = 0.0
 
     def _get_qty_available_now(self):
         for product in self:
@@ -405,6 +445,13 @@ class ProductProduct(models.Model):
         else:
             domain = []
         return domain
+
+    @api.depends('final_price', 'special_price')
+    def _get_visual_price(self):
+        for product in self:
+            result = product.taxes_id.compute_all(product.list_price)
+            product.detax_price = result.get('total_excluded', 0.0)
+            product.intax_price = result.get('total_included', 0.0)
 
 
 class SupplierInfo(models.Model):

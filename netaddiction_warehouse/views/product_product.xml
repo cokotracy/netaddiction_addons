@@ -1,38 +1,31 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <odoo>
 
-    <record id="product_normal_form_view_locations" model="ir.ui.view">
-        <field name="name">netaddiction.product.product.form.locations</field>
+    <record id="na_warehouse_product_product_normal_form_view" model="ir.ui.view">
+        <field name="name">netaddiction.warehouse.product.product.form</field>
         <field name="model">product.product</field>
         <field name="inherit_id" ref="product.product_normal_form_view"/>
         <field name="arch" type="xml">
-            <!--
-            FIXME: the 'inventory_netaddiction' page should be added by netaddiction_products module, but it hasn't been migrated yet
-            So we will not put the locations' group within that page, we'll simply put it into the last available page
-            -->
-            <!-- <xpath expr="/form/sheet/notebook/page[@name='inventory_netaddiction']" position="inside"> -->
-            <xpath expr="/form/sheet/notebook/page[last()]" position="inside">
+            <xpath expr="/form/sheet/notebook/page[@name='general_information']//group[@name='group_standard_price']/field[@name='company_id']"
+                   position="before">
+                <field name="days_available" readonly="True"/>
+                <field name="days_shipping" readonly="True"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="na_warehouse_locations_product_normal_form_view" model="ir.ui.view">
+        <field name="name">netaddiction.warehouse.locations.product.form</field>
+        <field name="model">product.product</field>
+        <field name="inherit_id" ref="netaddiction_products.netaddiction_product_product_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="/form/sheet/notebook/page[@name='inventory_netaddiction']/group[last()]"
+                   position="after">
                 <group name="locations" string="Allocazioni">
                     <field name="product_wh_location_line_ids" nolabel="1" readonly="1"/>
                 </group>
             </xpath>
         </field>
     </record>
-
-    <!--
-    FIXME: this record should inherit a view from netaddiction_products module, but it hasn't been migrated yet
-    <record id="delivery_product_normal_form_view" model="ir.ui.view">
-        <field name="name">netaddiction.delivery.normal.product.form</field>
-        <field name="model">product.product</field>
-        <field name="priority" eval="30"/>
-        <field name="inherit_id" ref="netaddiction_products.product_normal_form_view"/>
-        <field name="arch" type="xml">
-            <field name="available_date" position="after">
-                <field name="days_available" readonly="True"/>
-                <field name="days_shipping" readonly="True"/>
-            </field>
-        </field>
-    </record>
-    -->
 
 </odoo>
