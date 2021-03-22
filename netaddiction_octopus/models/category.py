@@ -2,7 +2,7 @@ from odoo import api, models, fields
 from ..base import registry
 
 
-class Category(models.Model):
+class NetaddictionOctopusCategory(models.Model):
     _name = 'netaddiction_octopus.category'
     _description = 'Octopus Category'
     _order = 'field, type desc'

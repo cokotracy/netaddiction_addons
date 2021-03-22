@@ -11,7 +11,7 @@ from ..base import registry
 _logger = logging.getLogger(__name__)
 
 
-class Cron(models.Model):
+class NetaddictionOctopusCron(models.Model):
     _name = 'netaddiction_octopus.cron'
     _description = "Octopus Cron"
 

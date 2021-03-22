@@ -2,8 +2,8 @@
 <odoo>
 <data>
 
-    <record id="category_view_list" model="ir.ui.view">
-        <field name="name">octopus.category.list</field>
+    <record id="octopus_category_tree" model="ir.ui.view">
+        <field name="name">octopus.category.tree</field>
         <field name="model">netaddiction_octopus.category</field>
         <field name="arch" type="xml">
             <tree editable="top" >
@@ -16,7 +16,7 @@
         </field>
     </record>
 
-    <record id="category_view_form" model="ir.ui.view">
+    <record id="octopus_category_form" model="ir.ui.view">
         <field name="name">octopus.category.form</field>
         <field name="model">netaddiction_octopus.category</field>
         <field name="arch" type="xml">
@@ -35,12 +35,18 @@
         </field>
     </record>
 
-    <record id="category_action" model="ir.actions.act_window">
+    <record id="octopus_category_action" model="ir.actions.act_window">
         <field name="name">Categorie</field>
         <field name="res_model">netaddiction_octopus.category</field>
-        <field name="view_mode">form</field>
-        <field name="view_id" ref="category_view_list"/>
+        <field name="view_mode">tree,form</field>
+        <field name="view_id" ref="octopus_category_tree"/>
     </record>
+
+    <menuitem id="octopus_category_menu"
+              name="Categories"
+              parent="octopus_menu"
+              action="octopus_category_action"
+              />
 
 </data>
 </odoo>

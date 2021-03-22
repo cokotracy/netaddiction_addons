@@ -52,7 +52,10 @@ class CustomSupplier(supplier.Supplier):
         name='titolo',
         description='descrizione',
         price='prezzo_bis',
-        date=lambda self, item: '20' + '-'.join(reversed(item['data_uscita'].split('/'))) if re.match(r'^\d{2}/\d{2}/\d{2}$', item['data_uscita']) else None,
+        date=lambda self, item:
+        '20' + '-'.join(reversed(item['data_uscita'].split('/')))
+        if re.match(r'^\d{2}/\d{2}/\d{2}$', item['data_uscita'])
+        else None,
         supplier_code='codice_fornitore',
         supplier_price='costo',
         supplier_quantity='quantita')
@@ -102,7 +105,9 @@ class CustomSupplier(supplier.Supplier):
             'TTL'
         )
 
-        assert len([category for category in categories if item['codice_fornitore'].startswith(category)]) > 0
+        assert len([category for category
+                    in categories
+                    if item['codice_fornitore'].startswith(category)]) > 0
 
     def group(self, item):
         return None

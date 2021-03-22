@@ -3,7 +3,7 @@
 from odoo import models, fields
 
 
-class Supplier(models.Model):
+class NetaddictionOctopusSupplier(models.Model):
     _name = 'netaddiction_octopus.supplier'
     _description = 'Octopus Supplier'
     _inherits = {'res.partner': 'partner_id'}
@@ -50,10 +50,11 @@ class Supplier(models.Model):
         return {
             'name': 'Gestione categorie %s' % self.handler,
             'view_id': False,
+            'view_mode': 'tree,form',
             'res_model': 'netaddiction_octopus.category',
             'type': 'ir.actions.act_window',
             'domain': [('supplier_id.id', '=', self.id)],
-            'target': 'new',
+            'target': 'current',
             'flags': {
                 'action_buttons': True,
                 'pager': True,
@@ -70,10 +71,11 @@ class Supplier(models.Model):
         return {
             'name': 'Gestione tasse %s' % self.handler,
             'view_id': False,
+            'view_mode': 'tree,form',
             'res_model': 'netaddiction_octopus.tax',
             'type': 'ir.actions.act_window',
             'domain': [('supplier_id.id', '=', self.id)],
-            'target': 'new',
+            'target': 'current',
             'flags': {
                 'action_buttons': True,
                 'pager': True,

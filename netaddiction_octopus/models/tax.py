@@ -2,7 +2,7 @@ from odoo import api, models, fields
 from ..base import registry
 
 
-class Tax(models.Model):
+class NetaddictionOctopusTax(models.Model):
     _name = 'netaddiction_octopus.tax'
     _description = "Octopus Tax"
     _order = 'field'
