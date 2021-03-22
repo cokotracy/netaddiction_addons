@@ -271,10 +271,10 @@ class SaleOrder(models.Model):
         return super().action_cancel()
 
     def action_confirm(self):
+        problem_orders = self.filtered(lambda o: o.state == 'problem')
         res = super().action_confirm()
         # keep state `problem` on orders with this state
         if not self.env.context.get('confirm_problem_order', False):
-            problem_orders = self.filtered(lambda o: o.state == 'problem')
             problem_orders.state = 'problem'
         return res
 
