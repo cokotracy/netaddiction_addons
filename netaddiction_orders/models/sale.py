@@ -279,7 +279,7 @@ class SaleOrder(models.Model):
         return res
 
     def action_confirm_problem(self):
-        ctx = self.env.context.copy()
+        ctx = dict(self.env.context or [])
         ctx['confirm_problem_order'] = True
         res = self.with_context(ctx).action_confirm()
         return res
