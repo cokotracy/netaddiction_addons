@@ -5,7 +5,7 @@ import csv
 from datetime import date
 from io import BytesIO
 
-from openerp import api, models
+from odoo import api, models
 
 
 class Cron(models.Model):
@@ -15,14 +15,14 @@ class Cron(models.Model):
     @api.model
     def run(self):
         """
-        Questo cron richiama le funzioni crete per res.partner
+        Questo cron richiama le funzioni create per res.partner
         per generare i file di report e slow moving del lunedì
         e manda la mail ad ogni fornitore.
         """
 
         suppliers = self.env['res.partner'].search([
             ('parent_id', '=', False),
-            ('supplier', '=', True),
+            ('supplier_rank', '!=', 0),
             ('active', '=', True),
             ('send_report', '=', True),
             ])
@@ -31,7 +31,7 @@ class Cron(models.Model):
 
             monday_report = sup.generate_monday_report()
 
-            #trova i contatti a cui inviare la roba
+            # trova i contatti a cui inviare la roba
             recipients = []
 
             for contact in sup.child_ids:

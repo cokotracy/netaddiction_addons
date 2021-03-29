@@ -37,139 +37,202 @@ class Suppliers(models.Model):
 
     @api.model
     def get_all_suppliers(self):
-        result = self.search([('supplier', '=', True), ('active', '=', True), ('parent_id', '=', False)])
+        result = self.search([
+            ('supplier', '=', True),
+            ('active', '=', True),
+            ('parent_id', '=', False)
+        ])
         supplier = []
         for res in result:
             supplier.append({'id': res.id, 'name': res.name})
         return supplier
 
-
-'''
-
-    # TODO: Porting if we need them
-
     def generate_monday_report(self):
         self.ensure_one()
-        if self.supplier and len(self.parent_id) == 0:
+        if self.supplier_rank and len(self.parent_id) == 0:
             products_preorder = self.get_products_in_preorder()
             # devo recuperare i prodotti spediti che non stanno più in stock
             date_start = date.today() - timedelta(days=7)
             today = date.today()
+            product_model = self.env['product.product']
 
             prods = []
             products = {}
-            shipped = self.get_products_shipped(date_start.strftime('%Y-%m-%d 00:00:00'), today.strftime('%Y-%m-%d 23:59:59'), count_refund=True)
-            for s in shipped:
-                prods.append(s['product_id'][0])
-                products[s['product_id'][0]] = {
-                    'object': self.env['product.product'].browse(s['product_id'][0]),
-                    'name': s['product_id'][1],
-                    'qty_week': s['product_uom_qty'],
+            shipped_products = self.get_products_shipped(
+                date_start.strftime('%Y-%m-%d 00:00:00'),
+                today.strftime('%Y-%m-%d 23:59:59'),
+                count_refund=True
+            )
+            for shipped in shipped_products:
+                prods.append(shipped['product_id'][0])
+                products[shipped['product_id'][0]] = {
+                    'object': product_model.browse(
+                        shipped['product_id'][0]
+                    ),
+                    'name': shipped['product_id'][1],
+                    'qty_week': shipped['product_uom_qty'],
                     'qty_mag': 0,
                     'qty_all': 0
                 }
-            p_a = self.env['product.product'].search([('id', 'in', prods)])
-            moves = p_a.get_shipped_in_interval_date('1999-01-01', today.strftime('%Y-%m-%d 23:59:59'), supplier=self.id, count_refund=True)
-            for m in moves:
-                if m['product_id'][0] in products:
-                    products[m['product_id'][0]]['qty_all'] = m['product_uom_qty']
+            p_a = product_model.search([
+                ('id', 'in', prods)
+            ])
+            moves = p_a.get_shipped_in_interval_date(
+                '1999-01-01',
+                today.strftime('%Y-%m-%d 23:59:59'),
+                supplier=self.id,
+                count_refund=True)
+            for move in moves:
+                if move['product_id'][0] in products:
+                    products[move['product_id'][0]]['qty_all'] = \
+                        move['product_uom_qty']
 
             products_stock = self.get_products_in_stock()
             pids_stock = []
-            for p in products_stock:
-                pids_stock.append(p['product_id'][0])
-            ps = self.env['product.product'].search([('id', 'in', pids_stock)])
-            stock_moves_all = ps.get_shipped_in_interval_date('1999-01-01', today.strftime('%Y-%m-%d 23:59:59'), supplier=self.id, count_refund=True)
-            stock_moves_week = ps.get_shipped_in_interval_date(date_start.strftime('%Y-%m-%d 00:00:00'), today.strftime('%Y-%m-%d 23:59:59'), supplier=self.id, count_refund=True)
-            for s in stock_moves_week:
-                if s['product_id'][0] not in products:
-                    products[s['product_id'][0]] = {
-                        'object': self.env['product.product'].browse(s['product_id'][0]),
-                        'name': s['product_id'][1],
-                        'qty_week': s['product_uom_qty'],
+            for stock in products_stock:
+                pids_stock.append(stock['product_id'][0])
+            ps = product_model.search([
+                ('id', 'in', pids_stock)
+            ])
+            stock_moves_all = ps.get_shipped_in_interval_date(
+                '1999-01-01',
+                today.strftime('%Y-%m-%d 23:59:59'),
+                supplier=self.id,
+                count_refund=True
+            )
+            stock_moves_week = ps.get_shipped_in_interval_date(
+                date_start.strftime('%Y-%m-%d 00:00:00'),
+                today.strftime('%Y-%m-%d 23:59:59'),
+                supplier=self.id,
+                count_refund=True
+            )
+            for stock_move in stock_moves_week:
+                if stock_move['product_id'][0] not in products:
+                    products[stock_move['product_id'][0]] = {
+                        'object': product_model.browse(
+                            stock_move['product_id'][0]
+                        ),
+                        'name': stock_move['product_id'][1],
+                        'qty_week': stock_move['product_uom_qty'],
                         'qty_mag': 0,
                         'qty_all': 0
                     }
-            for s in stock_moves_all:
-                if s['product_id'][0] in products:
-                    products[s['product_id'][0]]['qty_all'] = s['product_uom_qty']
+            for stock_move in stock_moves_all:
+                if stock_move['product_id'][0] in products:
+                    products[stock_move['product_id'][0]]['qty_all'] = \
+                        stock_move['product_uom_qty']
                 else:
-                    products[s['product_id'][0]] = {
-                        'object': self.env['product.product'].browse(s['product_id'][0]),
-                        'name': s['product_id'][1],
+                    products[stock_move['product_id'][0]] = {
+                        'object': product_model.browse(
+                            stock_move['product_id'][0]
+                        ),
+                        'name': stock_move['product_id'][1],
                         'qty_week': 0,
                         'qty_mag': 0,
-                        'qty_all': s['product_uom_qty']
+                        'qty_all': stock_move['product_uom_qty']
                     }
 
-            for s in products_stock:
-                if s['product_id'][0] in products:
-                    products[s['product_id'][0]]['qty_mag'] = s['qty']
+            for stock in products_stock:
+                if stock['product_id'][0] in products:
+                    products[stock['product_id'][0]]['qty_mag'] = \
+                        stock['quantity']
                 else:
-                    products[s['product_id'][0]] = {
-                        'object': self.env['product.product'].browse(s['product_id'][0]),
-                        'name': s['product_id'][1],
+                    products[stock['product_id'][0]] = {
+                        'object': product_model.browse(
+                            stock['product_id'][0]
+                        ),
+                        'name': stock['product_id'][1],
                         'qty_week': 0,
-                        'qty_mag': s['qty'],
+                        'qty_mag': stock['quantity'],
                         'qty_all': 0
                     }
 
-            sale = products_preorder.get_sale_in_interval_date(date_start.strftime('%Y-%m-%d 00:00:00'), today.strftime('%Y-%m-%d 23:59:59'), count_refund=True)
-            sale_all = products_preorder.get_sale_in_interval_date('1999-01-01', today.strftime('%Y-%m-%d 23:59:59'), count_refund=True)
+            sales = products_preorder.get_sale_in_interval_date(
+                date_start.strftime('%Y-%m-%d 00:00:00'),
+                today.strftime('%Y-%m-%d 23:59:59'),
+                count_refund=True
+            )
+            all_sales = products_preorder.get_sale_in_interval_date(
+                '1999-01-01',
+                today.strftime('%Y-%m-%d 23:59:59'),
+                count_refund=True
+            )
 
             preorders = {}
-            for s in sale:
-                preorders[s['product_id'][0]] = {
-                    'object': self.env['product.product'].browse(s['product_id'][0]),
-                    'name': s['product_id'][1],
-                    'qty_week': s['product_uom_qty'],
+            for sale in sales:
+                preorders[sale['product_id'][0]] = {
+                    'object': product_model.browse(
+                        sale['product_id'][0]
+                    ),
+                    'name': sale['product_id'][1],
+                    'qty_week': sale['product_uom_qty'],
                     'qty_mag': 0,
                     'qty_all': 0
                 }
-            for s in sale_all:
-                if s['product_id'][0] in preorders:
-                    preorders[s['product_id'][0]]['qty_all'] = s['product_uom_qty']
+            for sale in all_sales:
+                if sale['product_id'][0] in preorders:
+                    preorders[sale['product_id'][0]]['qty_all'] = \
+                        sale['product_uom_qty']
                 else:
-                    preorders[s['product_id'][0]] = {
-                        'object': self.env['product.product'].browse(s['product_id'][0]),
-                        'name': s['product_id'][1],
+                    preorders[sale['product_id'][0]] = {
+                        'object': product_model.browse(
+                            sale['product_id'][0]
+                        ),
+                        'name': sale['product_id'][1],
                         'qty_week': 0,
                         'qty_mag': 0,
-                        'qty_all': s['product_uom_qty']
+                        'qty_all': sale['product_uom_qty']
                     }
 
-            output = io.BytesIO()
+            output = io.StringIO()
             writer = csv.writer(output)
-            csvdata = ['PREORDER']
-            writer.writerow(csvdata)
-            csvdata = ['BARCODE', 'PRODOTTO', 'QTA SETTIMANA', 'QTA TOTALE', 'QTA MAGAZZINO']
+            csvdata_preorder = ['PREORDER']
+            writer.writerow(csvdata_preorder)
+            csvdata = [
+                'BARCODE',
+                'PRODOTTO',
+                'QTA SETTIMANA',
+                'QTA TOTALE',
+                'QTA MAGAZZINO'
+            ]
             writer.writerow(csvdata)
 
             for prod in preorders:
                 product = preorders[prod]
 
-                line = [product['object'].barcode, product['name'].encode('utf8'), int(product['qty_week']), int(product['qty_all']), int(product['qty_mag'])]
+                line = [
+                    product['object'].barcode,
+                    product['name'],
+                    int(product['qty_week']),
+                    int(product['qty_all']),
+                    int(product['qty_mag'])
+                ]
                 writer.writerow(line)
 
             writer.writerow([])
 
-            csvdata = ['SPEDITI']
-            writer.writerow(csvdata)
-            csvdata = ['BARCODE', 'PRODOTTO', 'QTA SETTIMANA', 'QTA TOTALE', 'QTA MAGAZZINO']
+            csvdata_shipped = ['SPEDITI']
+            writer.writerow(csvdata_shipped)
             writer.writerow(csvdata)
 
             for prod in products:
                 product = products[prod]
 
-                line = [product['object'].barcode, product['name'].encode('utf8'), int(product['qty_week']), int(product['qty_all']), int(product['qty_mag'])]
+                line = [
+                    product['object'].barcode,
+                    product['name'],
+                    int(product['qty_week']),
+                    int(product['qty_all']),
+                    int(product['qty_mag'])
+                ]
                 writer.writerow(line)
 
-        name = 'export_multiplayer_com_' + self.name + '_' + str(date.today()) + '.csv'
-
+        name = 'export_multiplayer_com_' + self.name + '_' + \
+               str(date.today()) + '.csv'
+        data_bytes = output.getvalue().encode("utf-8")
         attachment = {
             'name': name,
-            'datas_fname': name,
-            'datas': base64.b64encode(output.getvalue()).decode(),
+            'datas': base64.b64encode(data_bytes).decode(),
         }
 
         attachment_id = self.env['ir.attachment'].create(attachment)
@@ -180,35 +243,74 @@ class Suppliers(models.Model):
 
     # FUNZIONI STATS #
     def get_products_in_preorder(self):
-        # ritorna un queryset di prodotti di questo fornitore che sono in preordine
+        # ritorna un queryset di prodotti
+        # di questo fornitore che sono in preordine
         self.ensure_one()
         today = datetime.now()
-        products = self.env['product.product'].search([('seller_ids.name', '=', self.id), ('out_date', '>', today.strftime('%Y-%m-%d %H:%M:%S')), ('company_id', '=', self.env.user.company_id.id)])
+        products = self.env['product.product'].search([
+            ('seller_ids.name', '=', self.id),
+            ('out_date', '>', today.strftime('%Y-%m-%d %H:%M:%S')),
+            ('company_id', '=', self.env.user.company_id.id)
+        ])
         return products
 
     def get_products_in_stock(self):
         # ritorna  prodotti che sono sicuramente in magazzino di quel fornitore
         self.ensure_one()
-        # TODO: Trovare un metodo equivalente per cercae le stesse informazioni
-        # wh = self.env.ref('stock.stock_location_stock').id
-        # domain = [('location_id', '=', wh), ('partner_id', '=', self.id), ('company_id', '=', self.env.user.company_id.id)]
-        # quants = self.env['stock.quant'].read_group(domain=domain, fields=['product_id', 'qty', 'inventory_value'], groupby=['product_id'])
-        # return quants
-        return self.env['stock.quant']
+        wh = self.env.ref('stock.stock_location_stock').id
+        domain = [
+            ('location_id', '=', wh),
+            ('product_id.seller_ids.name', '=', self.id),
+            ('company_id', '=', self.env.user.company_id.id)
+        ]
+        quants = self.env['stock.quant'].read_group(
+            domain=domain,
+            fields=['product_id', 'quantity'],
+            groupby=['product_id']
+        )
+        return quants
 
-    def get_products_shipped(self, date_start, date_finish, count_refund=False):
+    def get_products_shipped(self, date_start, date_finish,
+                             count_refund=False):
         self.ensure_one()
         customer_stock = self.env.ref('stock.stock_location_customers').id
         stock = self.env.ref('stock.stock_location_stock').id
-        difettati = self.env['stock.location'].search([('name', 'ilike', 'Difettati')]).id
-        domain = [('date', '>=', date_start), ('date', '<=', date_finish), ('state', '=', 'done'), ('partner_id', '=', self.id),
-            ('company_id', '=', self.env.user.company_id.id), ('location_dest_id', '=', customer_stock), ('location_id', '=', stock)]
+        # TODO: se c'è più di una stock.location Difettati li prende tutti
+        defective = self.env['stock.location'].search([
+            ('name', 'ilike', 'Difettati')
+        ]).ids
+        domain = [
+            ('date', '>=', date_start),
+            ('date', '<=', date_finish),
+            ('state', '=', 'done'),
+            ('product_id.seller_ids.name', '=', self.id),
+            ('company_id', '=', self.env.user.company_id.id),
+            ('location_dest_id', '=', customer_stock),
+            ('location_id', '=', stock)
+        ]
 
-        moves = self.env['stock.move'].read_group(domain=domain, fields=['product_id', 'product_uom_qty'], groupby=['product_id'])
+        moves = self.env['stock.move'].read_group(
+            domain=domain,
+            fields=['product_id', 'product_uom_qty'],
+            groupby=['product_id']
+        )
         if count_refund:
-            domain = [('date', '>=', date_start), ('date', '<=', date_finish), ('state', '=', 'done'),
-            ('company_id', '=', self.env.user.company_id.id), ('partner_id', '=', self.id), ('location_id', '=', customer_stock), ('location_dest_id', 'in', [stock, difettati])]
-            refunds = self.env['stock.move'].read_group(domain=domain, fields=['product_id', 'product_uom_qty'], groupby=['product_id'])
+            location_dest = [stock]
+            location_dest.extend(defective)
+            domain = [
+                ('date', '>=', date_start),
+                ('date', '<=', date_finish),
+                ('state', '=', 'done'),
+                ('company_id', '=', self.env.user.company_id.id),
+                ('partner_id', '=', self.id),
+                ('location_id', '=', customer_stock),
+                ('location_dest_id', 'in', location_dest)
+            ]
+            refunds = self.env['stock.move'].read_group(
+                domain=domain,
+                fields=['product_id', 'product_uom_qty'],
+                groupby=['product_id']
+            )
             refs = {}
             for ref in refunds:
                 refs[ref['product_id'][0]] = {
@@ -217,17 +319,24 @@ class Suppliers(models.Model):
                 }
             for move in moves:
                 if move['product_id'][0] in refs.keys():
-                    move['product_uom_qty'] = move['product_uom_qty'] - refs[move['product_id'][0]]['qta']
-                    move['product_id_count'] = move['product_id_count'] - refs[move['product_id'][0]]['product_id_count']
+                    move['product_uom_qty'] = \
+                        move['product_uom_qty'] - \
+                        refs[move['product_id'][0]]['qta']
+                    move['product_id_count'] = \
+                        move['product_id_count'] - \
+                        refs[move['product_id'][0]]['product_id_count']
 
         return moves
-
-    #################
 
     def get_purchase_products(self):
         self.ensure_one()
 
-        purchase_lines = self.env['purchase.order.line'].read_group(domain = [('order_id.state','=','purchase'),('order_id.partner_id','=',self.id)], fields = ['product_id','product_qty'], groupby = ['product_id'])
+        purchase_lines = self.env['purchase.order.line'].read_group(
+            domain=[
+                ('order_id.state', '=', 'purchase'),
+                ('order_id.partner_id', '=', self.id)
+            ], fields=['product_id', 'product_qty'], groupby=['product_id']
+        )
 
         products = {}
 
@@ -239,7 +348,7 @@ class Suppliers(models.Model):
 
         return products
 
-    def download_report(self):
+    def button_download_report(self):
         new_attach = self.sudo().generate_monday_report()
         return {
             'type': 'ir.actions.act_window',
@@ -249,4 +358,3 @@ class Suppliers(models.Model):
             'res_id': new_attach[0].id,
             'target': 'current',
         }
-    '''

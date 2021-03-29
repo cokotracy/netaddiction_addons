@@ -13,6 +13,8 @@
                         <group>
                             <field name="send_contact_purchase_orders" string="Purchase Orders Report" />
                             <field name="send_contact_purchase_orders_type" string="Purchase Orders Report" />
+                            <field name="send_contact_report" attrs="{'invisible': [('parent_id', '=', False)]}"/>
+                            <field name="send_report" attrs="{'invisible': [('supplier_rank', '=', 0)]}"/>
                         </group>
                     </group>
                 </page>
@@ -22,8 +24,14 @@
                     <group>
                         <field name="send_contact_purchase_orders" string="Purchase Orders Report" />
                         <field name="send_contact_purchase_orders_type" string="Purchase Orders Report (Attachment)" />
+                        <field name="send_contact_report"/>
                     </group>
                 </group>
+            </xpath>
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <field name="supplier_rank" invisible="1"/>
+                <button name="button_download_report" type="object" icon="fa-arrow-circle-down"
+                        string="Report" attrs="{'invisible': [('supplier_rank', '=', 0)]}"/>
             </xpath>
         </field>
     </record>
