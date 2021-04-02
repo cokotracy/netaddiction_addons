@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+   <record model="ir.ui.view" id="netaddiction_account_partner_view_buttons">
+        <field name="name">netaddiction.account.partner.view.buttons</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="account.partner_view_buttons"/>
+        <field name="arch" type="xml">
+            <xpath expr="//button[@name='action_view_partner_invoices']/div/span[@class='o_stat_text']" position="replace">
+                <span class="o_stat_text">Invoices</span>
+            </xpath>
+            <xpath expr="//button[@name='action_view_partner_invoices']//field[@name='total_invoiced']" position="replace">
+                <!-- total_invoiced is a compute taking ages to get a value. We can't customize fields_view_get, hence we surrender on an empty replace to remove the field altogether -->
+            </xpath>
+        </field>
+    </record>
+
+</odoo>
