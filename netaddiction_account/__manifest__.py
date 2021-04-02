@@ -12,6 +12,7 @@
         'l10n_it_fiscalcode',
     ],
     'data': [
+         'views/res_partner.xml',
 #        'views/account_views.xml',
     ],
 }
