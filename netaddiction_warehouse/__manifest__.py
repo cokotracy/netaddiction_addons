@@ -63,7 +63,8 @@
         'static/src/xml/allocation.xml',
         'static/src/xml/carico.xml',
         'static/src/xml/content_reso.xml',
-        'static/src/xml/content_supplier_reverse.xml',
+        # TODO the action client reso fornitore has been removed
+        # 'static/src/xml/content_supplier_reverse.xml',
         'static/src/xml/controllo_pick_up.xml',
         'static/src/xml/inventory_reports.xml',
         'static/src/xml/pickup.xml',

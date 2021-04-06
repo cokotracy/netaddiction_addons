@@ -564,6 +564,7 @@ class StockPicking(models.Model):
                     line.product_id.id, int(line.product_uom_qty), resi.id
                 )
 
+    @api.model
     def create_supplier_reverse(self, products, supplier, operations):
         """
         crea i picking per il reso a fornitore.

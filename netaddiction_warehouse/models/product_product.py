@@ -428,3 +428,72 @@ class Product(models.Model):
             for t in v[i]:
                 result += v[i][t]
         return result
+
+    ################################
+    # END PICK UP / RESO FORNITORE #
+    ################################
+    # TODO the action client reso fornitore has been removed
+    # @api.model
+    # def get_product_from_supplier(self, supplier_id):
+    #     # TODO maybe manage this records with a search_read and compute inventory_value from javascript
+    #     # Get all the supplier info for selected supplier
+    #     seller_supplierinfo = self.env['product.supplierinfo'].search([
+    #         ('name', '=', int(supplier_id))
+    #     ])
+    #     # Get all the products that uses supplier info pricelists
+    #     seller_products = self.search([
+    #         ('company_id', '=', self.env.user.company_id.id),
+    #         ('seller_ids', 'in', seller_supplierinfo.ids),
+    #         ('qty_available', '>', 0),
+    #     ])
+    #     product_data = {}
+    #     for product in seller_products:
+    #         qty = product.qty_available
+    #         inventory_value = qty * product.standard_price
+    #         single_inventory = product.standard_price
+    #         if product.id in product_data:
+    #             product_data[product.id]['qty'] = qty
+    #             product_data[product.id]['inventory_value'] = inventory_value
+    #             product_data[product.id]['single_inventory'] = single_inventory
+    #         else:
+    #             product_data[product.id] = {
+    #                 'id': product.id,
+    #                 'name': product.display_name,
+    #                 'qty': qty,
+    #                 'inventory_value': inventory_value,
+    #                 'single_inventory': single_inventory
+    #             }
+    #     return product_data
+
+    # @api.model
+    # def get_scraped_product_from_supplier(self, supplier_id):
+    #     # TODO maybe manage this records with a search_read and compute inventory_value from javascript
+    #     # TODO How get scraped products from supplier?
+    #     # Get all the supplier info for selected supplier
+    #     seller_supplierinfo = self.env['product.supplierinfo'].search([
+    #         ('name', '=', int(supplier_id))
+    #     ])
+    #     # Get all the products that uses supplier info pricelists
+    #     seller_products = self.search([
+    #         ('company_id', '=', self.env.user.company_id.id),
+    #         ('seller_ids', 'in', seller_supplierinfo.ids),
+    #         ('qty_available', '>', 0),
+    #     ])
+    #     product_data = {}
+    #     for product in seller_products:
+    #         qty = product.qty_available
+    #         inventory_value = qty * product.standard_price
+    #         single_inventory = product.standard_price
+    #         if product.id in product_data:
+    #             product_data[product.id]['qty'] = qty
+    #             product_data[product.id]['inventory_value'] = inventory_value
+    #             product_data[product.id]['single_inventory'] = single_inventory
+    #         else:
+    #             product_data[product.id] = {
+    #                 'id': product.id,
+    #                 'name': product.display_name,
+    #                 'qty': qty,
+    #                 'inventory_value': inventory_value,
+    #                 'single_inventory': single_inventory
+    #             }
+    #     return product_data

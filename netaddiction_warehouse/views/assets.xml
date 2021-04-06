@@ -7,7 +7,8 @@
             <script type="text/javascript" src="/netaddiction_warehouse/static/src/js/check_pick_up.js"/>
             <script type="text/javascript" src="/netaddiction_warehouse/static/src/js/supplier_load.js"/>
             <script type="text/javascript" src="/netaddiction_warehouse/static/src/js/reso_cliente.js"/>
-            <script type="text/javascript" src="/netaddiction_warehouse/static/src/js/reso_fornitore.js"/>
+             <!-- TODO the action client reso fornitore has been removed -->
+            <!-- <script type="text/javascript" src="/netaddiction_warehouse/static/src/js/reso_fornitore.js"/> -->
         </xpath>
     </template>
 
