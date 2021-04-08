@@ -564,84 +564,85 @@ class StockPicking(models.Model):
                     line.product_id.id, int(line.product_uom_qty), resi.id
                 )
 
-    @api.model
-    def create_supplier_reverse(self, products, supplier, operations):
-        """
-        crea i picking per il reso a fornitore.
-        products è un oggetto passato dal client products
-            {scraped:array[id:qta],commercial:array[id:qta]}
-        supplier è l'id del fornitore a cui fare il reso.
-        """
-        supplier = self.env['res.partner'].search([('id', '=', int(supplier))])
+    # TODO the action client reso fornitore has been removed
+    # @api.model
+    # def create_supplier_reverse(self, products, supplier, operations):
+    #     """
+    #     crea i picking per il reso a fornitore.
+    #     products è un oggetto passato dal client products
+    #         {scraped:array[id:qta],commercial:array[id:qta]}
+    #     supplier è l'id del fornitore a cui fare il reso.
+    #     """
+    #     supplier = self.env['res.partner'].search([('id', '=', int(supplier))])
 
-        products = json.loads(products)
-        operations = json.loads(operations)
+    #     products = json.loads(products)
+    #     operations = json.loads(operations)
 
-        wh = operations['reverse_supplier']['default_location_src_id'][0]
-        supp_wh = operations['reverse_supplier']['default_location_dest_id'][0]
-        scraped_wh = operations['reverse_supplier_scraped']['default_location_src_id'][0]
+    #     wh = operations['reverse_supplier']['default_location_src_id'][0]
+    #     supp_wh = operations['reverse_supplier']['default_location_dest_id'][0]
+    #     scraped_wh = operations['reverse_supplier_scraped']['default_location_src_id'][0]
 
-        scrape_type = operations['reverse_supplier_scraped']['operation_type_id']
-        commercial_type = operations['reverse_supplier']['operation_type_id']
+    #     scrape_type = operations['reverse_supplier_scraped']['operation_type_id']
+    #     commercial_type = operations['reverse_supplier']['operation_type_id']
 
-        # prendo in esame i resi difettati
-        pack_operation_scrapeds = []
-        for prod in products['scraped']:
-            line = (0, 0, {
-                'product_id': int(prod['pid']),
-                'product_uom_qty': int(prod['qta']),
-                'location_id': int(scraped_wh),
-                'location_dest_id': int(supp_wh),
-                'product_uom_id': 1
-            })
-            pack_operation_scrapeds.append(line)
+    #     # prendo in esame i resi difettati
+    #     pack_operation_scrapeds = []
+    #     for prod in products['scraped']:
+    #         line = (0, 0, {
+    #             'product_id': int(prod['pid']),
+    #             'product_uom_qty': int(prod['qta']),
+    #             'location_id': int(scraped_wh),
+    #             'location_dest_id': int(supp_wh),
+    #             'product_uom_id': 1
+    #         })
+    #         pack_operation_scrapeds.append(line)
 
-        # prendo in esame i resi commerciali
-        pack_operation_commercial = []
-        for prod in products['commercial']:
-            line = (0, 0, {
-                'product_id': int(prod['pid']),
-                'product_uom_qty': int(prod['qta']),
-                'location_id': int(wh),
-                'location_dest_id': int(supp_wh),
-                'product_uom_id': 1
-            })
-            pack_operation_commercial.append(line)
+    #     # prendo in esame i resi commerciali
+    #     pack_operation_commercial = []
+    #     for prod in products['commercial']:
+    #         line = (0, 0, {
+    #             'product_id': int(prod['pid']),
+    #             'product_uom_qty': int(prod['qta']),
+    #             'location_id': int(wh),
+    #             'location_dest_id': int(supp_wh),
+    #             'product_uom_id': 1
+    #         })
+    #         pack_operation_commercial.append(line)
 
-        # preparo gli attributi per il picking
-        pick_scrape = {
-            'partner_id': int(supplier),
-            'origin': 'Reso a Fornitore Difettati %s' % supplier.name,
-            'location_dest_id': int(supp_wh),
-            'picking_type_id': scrape_type,
-            'location_id': int(scraped_wh),
-            'move_line_ids': pack_operation_scrapeds,
-        }
+    #     # preparo gli attributi per il picking
+    #     pick_scrape = {
+    #         'partner_id': int(supplier),
+    #         'origin': 'Reso a Fornitore Difettati %s' % supplier.name,
+    #         'location_dest_id': int(supp_wh),
+    #         'picking_type_id': scrape_type,
+    #         'location_id': int(scraped_wh),
+    #         'move_line_ids': pack_operation_scrapeds,
+    #     }
 
-        pick_commercial = {
-            'partner_id': int(supplier),
-            'origin': 'Reso a Fornitore Commerciali %s' % supplier.name,
-            'location_dest_id': int(supp_wh),
-            'picking_type_id': commercial_type,
-            'location_id': int(wh),
-            'move_line_ids': pack_operation_commercial,
-        }
+    #     pick_commercial = {
+    #         'partner_id': int(supplier),
+    #         'origin': 'Reso a Fornitore Commerciali %s' % supplier.name,
+    #         'location_dest_id': int(supp_wh),
+    #         'picking_type_id': commercial_type,
+    #         'location_id': int(wh),
+    #         'move_line_ids': pack_operation_commercial,
+    #     }
 
-        ids = []
-        if products['scraped']:
-            scrape_picking = self.create([pick_scrape])
-            scrape_picking.action_assign()
-            scrape_picking.action_confirm()
-            ids.append(scrape_picking.id)
-        if products['commercial'] > 0:
-            commercial_picking = self.create([pick_commercial])
-            commercial_picking.action_assign()
-            commercial_picking.action_confirm()
-            ids.append(commercial_picking.id)
+    #     ids = []
+    #     if products['scraped']:
+    #         scrape_picking = self.create([pick_scrape])
+    #         scrape_picking.action_assign()
+    #         scrape_picking.action_confirm()
+    #         ids.append(scrape_picking.id)
+    #     if products['commercial'] > 0:
+    #         commercial_picking = self.create([pick_commercial])
+    #         commercial_picking.action_assign()
+    #         commercial_picking.action_confirm()
+    #         ids.append(commercial_picking.id)
 
-        batch = self.env['stock.picking.batch'].create({
-            'name': 'Reso a Fornitore %s' % supplier.name,
-            'picking_ids': [(6, 0, ids)],
-            'reverse_supplier': True,
-        })
-        batch.write({'name': batch.name + ' - %s' % batch.id})
+    #     batch = self.env['stock.picking.batch'].create({
+    #         'name': 'Reso a Fornitore %s' % supplier.name,
+    #         'picking_ids': [(6, 0, ids)],
+    #         'reverse_supplier': True,
+    #     })
+    #     batch.write({'name': batch.name + ' - %s' % batch.id})
