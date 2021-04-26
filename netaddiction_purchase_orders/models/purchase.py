@@ -196,6 +196,7 @@ class PurchaseOrder(models.Model):
                     line_values.append((0,0,attr))
         return line_values
 
+"""
     def action_rfq_send(self):
         # Ignore standard return (the send mail wizard)
         # but call `super` to keep the stack alive
@@ -234,6 +235,7 @@ class PurchaseOrder(models.Model):
         # Bypass standard return
         return {}
 
+"""
 
 class ProductCategory(models.Model):
 
