@@ -270,14 +270,14 @@ class Product(models.Model):
             if sup.name.active and sup.avail_qty > 0:
                 # Se la priorità è più alta, prendo il fornitore e aggiorno
                 # i parametri
-                if sup.name.supplier_priority > priority:
+                if int(sup.name.supplier_priority) > int(priority):
                     supplier = sup
                     priority = sup.name.supplier_priority
                     price = sup.price
                     delay = sup.delay
                 # Se la priorità è la stessa ma il prezzo è inferiore, prendo
                 # il fornitore e aggiorno i parametri
-                elif sup.name.supplier_priority == priority \
+                elif int(sup.name.supplier_priority) == int(priority) \
                         and sup.price < price:
                     supplier = sup
                     priority = sup.name.supplier_priority
@@ -285,7 +285,7 @@ class Product(models.Model):
                     delay = sup.delay
                 # Se priorità e prezzo sono gli stessa ma il tempo di consegna
                 # è inferiore, prendo il fornitore e aggiorno i parametri
-                elif sup.name.supplier_priority == priority \
+                elif int(sup.name.supplier_priority) == int(priority) \
                         and sup.price == price \
                         and sup.delay < delay:
                     supplier = sup
@@ -295,7 +295,7 @@ class Product(models.Model):
 
                 # eventualmente ci fosse casino con il delay mi salvo sempre un
                 # fornitore di backup a priorità più alta
-                if sup.name.supplier_priority >= backup_priority\
+                if int(sup.name.supplier_priority) >= int(backup_priority) \
                         and sup.price <= backup_price:
                     backup_supplier = sup
                     backup_priority = sup.name.supplier_priority
