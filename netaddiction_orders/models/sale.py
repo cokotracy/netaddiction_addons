@@ -1,7 +1,17 @@
 # Copyright 2019-TODAY Openforce Srls Unipersonale (www.openforce.it)
 # License LGPL-3.0 or later (https://www.gnu.org/licenses/lgpl).
 
-from odoo import models, fields
+from odoo import api, models, fields
+
+
+class SaleOrderLine(models.Model):
+    _inherit = 'sale.order.line'
+
+    @api.onchange('product_uom', 'product_uom_qty')
+    def product_uom_change(self):
+        super().product_uom_change()
+        if getattr(self, '_origin', None):
+            self.price_unit = self._origin.read(["price_unit"])[0]["price_unit"]
 
 
 class SaleOrder(models.Model):
