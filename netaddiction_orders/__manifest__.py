@@ -17,6 +17,7 @@
     'data': [
         'data/template_email.xml',
         'views/assets.xml',
+        'views/partner.xml',
         'views/sale.xml',
         'templates/payment.xml',
     ],

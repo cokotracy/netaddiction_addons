@@ -133,13 +133,10 @@
         <field name="priority" eval="30"/>
         <field name="inherit_id" ref="stock.vpicktree"/>
         <field name="arch" type="xml">
-            <!-- FIXME res.partner's field 'rating' has not been migrated, so the tree attribute is commented -->
             <!-- Edit tree attributes -->
-            <!--
             <xpath expr="/tree" position="attributes">
                 <attribute name="decoration-danger">partner_rating == '0'</attribute>
             </xpath>
-            -->
 
             <!-- Hide locations -->
             <xpath expr="/tree/field[@name='location_id']" position="attributes">
@@ -172,8 +169,7 @@
 
             <!-- Add custom fields -->
             <xpath expr="/tree/field[@name='partner_id']" position="after">
-                <!-- FIXME res.partner's field 'rating' has not been migrated, so the field is commented -->
-                <!-- <field name="partner_rating" optional="show"/> -->
+                <field name="partner_rating" optional="show"/>
                 <field name="scheduled_date" optional="show"/>
                 <field name="date_of_shipping_home" readonly="True" optional="show"/>
                 <field name="sale_id" attrs="{'invisible' : [('picking_type_id','!=', %(stock.picking_type_out)d)]}" optional="show"/>
