@@ -51,11 +51,10 @@ class StockPicking(models.Model):
         string="Pezzi",
     )
 
-    # FIXME: res.partner's 'rating' field has not been migrated
-    # partner_rating = fields.Selection(
-    #     related='partner_id.rating',
-    #     store=False
-    # )
+    partner_rating = fields.Selection(
+        related='partner_id.rating',
+        store=False
+    )
 
     sale_order_status = fields.Selection(
         related='sale_id.state',
