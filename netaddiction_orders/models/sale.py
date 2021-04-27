@@ -7,6 +7,18 @@ from odoo import api, models, fields
 class SaleOrderLine(models.Model):
     _inherit = 'sale.order.line'
 
+    state = fields.Selection(selection_add=[
+        ('sale', 'In Lavorazione'),
+        ('problem', 'Problema'),
+    ])
+
+    @api.depends('product_id', 'order_id.state', 'qty_invoiced', 'qty_delivered')
+    def _compute_product_updatable(self):
+        super()._compute_product_updatable()
+        for line in self:
+            if line.state == 'problem' or line.order_id.state == 'problem':
+                line.product_updatable = True
+
     @api.onchange('product_uom', 'product_uom_qty')
     def product_uom_change(self):
         super().product_uom_change()
@@ -259,6 +271,7 @@ class SaleOrder(models.Model):
             # order._check_offers_voucher()
             # order._check_digital_bonus()
             order.state = 'problem'
+            order.order_line.state = 'problem'
 
     def action_cancel(self):
         # Migrated from netaddiction_mail/models/sale v9.0
