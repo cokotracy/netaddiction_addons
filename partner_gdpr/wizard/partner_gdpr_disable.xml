@@ -1,0 +1,54 @@
+<?xml version="1.0" ?>
+<odoo>
+
+    <record id="wizard_partner_gdpr_disable" model="ir.ui.view">
+        <field name="name">wizard.partner.gdpr.disable</field>
+        <field name="model">partner.gdpr.disable</field>
+        <field name="type">form</field>
+        <field name="arch" type="xml">
+            <form string="GDPR- Disable Partner">
+                <h1>
+                    <field name="partner_id" readonly="1"/>
+                </h1>
+                <h3 attrs="{'invisible': [('documents', '&lt;', 0)]}">
+                    <field name="documents" readonly="1"/> Documents
+                </h3>
+                <group attrs="{'invisible': [('documents', '&lt;', 1)]}">
+                    <field name="document_ids" nolabel="1">
+                        <tree>
+                            <field name="model" invisible="1"/>
+                            <field name="action_id" invisible="1"/>
+                            <field name="name"/>
+                            <field name="quantity"/>
+                            <button name="manage_documents" type="object" string=">>"/>
+                        </tree>
+                    </field>
+                </group>
+                <footer>
+                    <button class="btn-primary"
+                            type="object"
+                            name="check_documents"
+                            string="Check Documents"
+                            attrs="{'invisible': [('documents', '&gt;=', 0)]}"
+                            />
+                    <button class="btn-primary"
+                            type="object"
+                            name="disable_partner"
+                            string="Disable Partner" />
+                    <button class="btn-default"
+                            special="cancel"
+                            string="Cancel" />
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_partner_gdpr_disable" model="ir.actions.act_window">
+        <field name="name">action.partner.gdpr.disable</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">partner.gdpr.disable</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+</odoo>
