@@ -4,7 +4,7 @@
     'author': "NetAddiction",
     'website': "http://www.netaddiction.it",
     'category': 'Warehouse Management',
-    'version': '13.0.4.0.0',
+    'version': '13.0.4.3.0',
     'depends': [
         'base',
         'delivery',
