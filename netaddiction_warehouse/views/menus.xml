@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <odoo>
 
-    <menuitem id="netaddiction_warehouse_suppliers_reverse_menu"
+    <!-- TODO the action client reso fornitore has been removed -->
+    <!-- <menuitem id="netaddiction_warehouse_suppliers_reverse_menu"
               name="Reso a Fornitore"
               parent="purchase.menu_purchase_products"
               action="netaddiction_warehouse_suppliers_reverse"
-              sequence="70"/>
+              sequence="70"/> -->
 
     <menuitem id="netaddiction_warehouse_carico"
               name="Carico da Fornitore"

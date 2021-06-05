@@ -4,6 +4,7 @@ import io
 import locale
 
 from datetime import date, datetime
+from odoo.tools import float_is_zero
 
 from odoo import api, models
 
@@ -121,13 +122,13 @@ class StockQuant(models.Model):
         products = {}
         for quant in quants:
             if quant.product_id.id in products:
-                products[quant.product_id.id]['qty'] += int(quant.qty)
+                products[quant.product_id.id]['qty'] += int(quant.quantity)
                 products[quant.product_id.id]['inventory_value'] += round(quant.inventory_value, 2)
             else:
                 products[quant.product_id.id] = {
                     'name': quant.product_id.display_name,
                     'category': quant.product_id.categ_id.display_name,
-                    'qty': int(quant.qty),
+                    'qty': int(quant.quantity),
                     'inventory_value': round(quant.inventory_value, 2),
                 }
                 text = ''
@@ -162,66 +163,69 @@ class StockQuant(models.Model):
             'datas': data
         })
 
-    @api.model
-    def get_quant_from_supplier(self, supplier_id):
-        wh = self.env.ref('stock.stock_location_stock')
-        quants = self.search(
-            [('company_id', '=', self.env.user.company_id.id),
-             ('location_id', '=', wh.id),
-             # FIXME: history_ids non esiste più
-             # ('history_ids.picking_id.partner_id.id', '=', int(supplier_id)),
-             # FIXME: reservation_id non esiste più
-             # ('reservation_id', '=', False)
-            ]
-        )
-        quant_data = {}
-        for quant in quants:
-            if quant.product_id.id in quant_data:
-                quant_data[quant.product_id.id]['qty'] += quant.qty
-                quant_data[quant.product_id.id]['inventory_value'] += quant.inventory_value
-                quant_data[quant.product_id.id]['single_inventory'] = quant.inventory_value / quant.qty
-            else:
-                quant_data[quant.product_id.id] = {
-                    'id': quant.product_id.id,
-                    'name': quant.product_id.display_name,
-                    'qty': quant.qty,
-                    'inventory_value': quant.inventory_value,
-                    'single_inventory': quant.inventory_value / quant.qty
-                }
-        return quant_data
+    # TODO the action client reso fornitore has been removed
+    # TODO method moved and adapted into product_product.py logic
+    # @api.model
+    # def get_quant_from_supplier(self, supplier_id):
+    #     wh = self.env.ref('stock.stock_location_stock')
+    #     quants = self.search(
+    #         [('company_id', '=', self.env.user.company_id.id),
+    #          ('location_id', '=', wh.id),
+    #          # FIXME: history_ids non esiste più
+    #          # ('history_ids.picking_id.partner_id.id', '=', int(supplier_id)),
+    #          # FIXME: reservation_id non esiste più
+    #          # ('reservation_id', '=', False)
+    #         ]
+    #     )
+    #     quant_data = {}
+    #     for quant in quants:
+    #         if quant.product_id.id in quant_data:
+    #             quant_data[quant.product_id.id]['qty'] += quant.qty
+    #             quant_data[quant.product_id.id]['inventory_value'] += quant.inventory_value
+    #             quant_data[quant.product_id.id]['single_inventory'] = quant.inventory_value / quant.qty
+    #         else:
+    #             quant_data[quant.product_id.id] = {
+    #                 'id': quant.product_id.id,
+    #                 'name': quant.product_id.display_name,
+    #                 'qty': quant.qty,
+    #                 'inventory_value': quant.inventory_value,
+    #                 'single_inventory': quant.inventory_value / quant.qty
+    #             }
+    #     return quant_data
 
-    @api.model
-    def get_scraped_from_supplier(self, supplier_id):
-        wh_op_sett = self.env['netaddiction.warehouse.operations.settings']
-        scraped_stock = wh_op_sett.search(
-            [('netaddiction_op_type', '=', 'reverse_scrape'),
-             ('company_id', '=', self.env.user.company_id.id)]
-        )
-        wh = scraped_stock.operation.default_location_dest_id.id
-        quants = self.search(
-            [('company_id', '=', self.env.user.company_id.id),
-             ('location_id', '=', wh),
-             # FIXME: history_ids non esiste più
-             # ('history_ids.picking_id.partner_id.id', '=', int(supplier_id)),
-             # FIXME: reservation_id non esiste più
-             # ('reservation_id', '=', False)
-             ]
-        )
-        quant_data = {}
-        for quant in quants:
-            if quant.product_id.id in quant_data:
-                quant_data[quant.product_id.id]['qty'] += quant.qty
-                quant_data[quant.product_id.id]['inventory_value'] += quant.inventory_value
-                quant_data[quant.product_id.id]['single_inventory'] = quant.inventory_value / quant.qty
-            else:
-                quant_data[quant.product_id.id] = {
-                    'id': quant.product_id.id,
-                    'name': quant.product_id.display_name,
-                    'qty': quant.qty,
-                    'inventory_value': quant.inventory_value,
-                    'single_inventory': quant.inventory_value / quant.qty
-                }
-        return quant_data
+    # TODO method moved and adapted into product_product.py logic
+    # @api.model
+    # def get_scraped_from_supplier(self, supplier_id):
+    #     wh_op_sett = self.env['netaddiction.warehouse.operations.settings']
+    #     scraped_stock = wh_op_sett.search(
+    #         [('netaddiction_op_type', '=', 'reverse_scrape'),
+    #          ('company_id', '=', self.env.user.company_id.id)]
+    #     )
+    #     wh = scraped_stock.operation.default_location_dest_id.id
+    #     quants = self.search(
+    #         [('company_id', '=', self.env.user.company_id.id),
+    #          ('location_id', '=', wh),
+    #          # FIXME: history_ids non esiste più
+    #          # ('history_ids.picking_id.partner_id.id', '=', int(supplier_id)),
+    #          # FIXME: reservation_id non esiste più
+    #          # ('reservation_id', '=', False)
+    #          ]
+    #     )
+    #     quant_data = {}
+    #     for quant in quants:
+    #         if quant.product_id.id in quant_data:
+    #             quant_data[quant.product_id.id]['qty'] += quant.qty
+    #             quant_data[quant.product_id.id]['inventory_value'] += quant.inventory_value
+    #             quant_data[quant.product_id.id]['single_inventory'] = quant.inventory_value / quant.qty
+    #         else:
+    #             quant_data[quant.product_id.id] = {
+    #                 'id': quant.product_id.id,
+    #                 'name': quant.product_id.display_name,
+    #                 'qty': quant.qty,
+    #                 'inventory_value': quant.inventory_value,
+    #                 'single_inventory': quant.inventory_value / quant.qty
+    #             }
+    #     return quant_data
 
     # TODO: QUESTO METODO NON ESISTE PIÙ, ERA UN OVERRIDE DEL METODO STANDARD
     # TODO:     CHE ELIMINAVA UN CONTROLLO (a riga 247)

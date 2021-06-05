@@ -37,7 +37,7 @@
     margin-top: 10px;
     margin-bottom: 10px;
 }
-    
+
 #scrapped_wh,#normal_wh{
     padding:0;
     border-top: 1px solid #afafb6;
@@ -52,10 +52,11 @@
     height:100%;
     text-align:center;
     line-height: 29px;
+    cursor: pointer;
 }
 
 .active_reverse{
-    background-color: white;
+    background-color: #f0eeee;
 }
 
 /*inventory_reports*/
