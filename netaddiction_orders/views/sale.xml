@@ -14,6 +14,14 @@
                 <button name="action_confirm_problem" string="Confirm" type="object"
                         states="problem" />
             </xpath>
+
+            <xpath expr="//field[@name='order_line']//tree//field[@name='price_subtotal']" position="attributes">
+                <attribute name="groups" />
+            </xpath>
+
+            <xpath expr="//field[@name='order_line']//tree//field[@name='price_total']" position="attributes">
+                <attribute name="groups" />
+            </xpath>
         </field>
     </record>
 

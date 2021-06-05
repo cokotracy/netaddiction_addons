@@ -38,12 +38,11 @@ class AutoPreparation(models.TransientModel):
                 )
                 # pay = False
 
-            # FIXME: res.partner's 'rating' field has not been migrated
             # controllo indirizzo e valutazione cliente
-            # if pick.sale_id.partner_id.rating == 0:
-            #     error_stock.append(pick.id)
-            #     note.append('Rating cliente negativo')
-            #     pay = False
+            if pick.sale_id.partner_id.rating == 0:
+                error_stock.append(pick.id)
+                note.append('Rating cliente negativo')
+                pay = False
 
             shipping_address = pick.sale_id.partner_shipping_id
             if not shipping_address.street \

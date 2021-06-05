@@ -18,36 +18,6 @@
             <xpath expr="/form/sheet/group/group/field[@name='pricelist_id']" posiition="before">
                 <field name="delivery_option" required="True" attrs="{'readonly': [('state', 'in', ('done','cancel','sale','partial_done','sent','problem'))]}"/>
             </xpath>
-            <xpath expr="/form/sheet/group/group/field[@name='payment_term_id']" position="after">
-                <!-- NB: this is copied as is from `delivery` module v9.0 -->
-                <field name="id" invisible="1"/>
-                <label for="carrier_id"/>
-                <div name='carrier_selection'>
-                    <div>
-                        <field name="carrier_id"
-                               context="{'order_id': id}"
-                               class="oe_inline"
-                               options="{'no_create': True, 'no_open': True}"
-                               attrs="{'readonly':[('state','=','done')]}"/>
-                    </div>
-                    <div>
-                        <!--
-                        FIXME: this field does not exist anymore; defined in 'delivery' module in v9.0
-                        <field name="delivery_price"
-                               widget="monetary"
-                               class="oe_inline"
-                               options="{'currency_field': 'currency_id'}"
-                               nolabel="1"
-                               attrs="{'invisible': [('carrier_id','=', False)]}"/>
-                        -->
-                        <button name="delivery_set"
-                                string="Set price"
-                                type="object"
-                                class="oe_inline fa fa-arrow-right oe_link"
-                                attrs="{'invisible':['|',('carrier_id','=',False),('state','not in',('draft','sent'))]}"/>
-                    </div>
-                </div>
-            </xpath>
             <xpath expr="/form/sheet/notebook/page/field[@name='order_line']/tree/field[@name='qty_delivered']" position="after">
                 <field name="qty_reverse"/>
             </xpath>

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+<data>
+
+    <record id="gdpr_partner_open_sale_action" model="ir.actions.act_window">
+        <field name="name">gdpr.partner.open.sale.action</field>
+        <field name="target">current</field>
+        <field name="res_model">sale.order</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+</data>
+</odoo>

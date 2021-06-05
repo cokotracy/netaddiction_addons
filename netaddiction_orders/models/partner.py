@@ -1,7 +1,7 @@
 # Copyright 2019 Openforce Srls Unipersonale (www.openforce.it)
 # License LGPL-3.0 or later (https://www.gnu.org/licenses/lgpl).
 
-from odoo import api, models, _
+from odoo import api, fields, models, _
 from odoo.exceptions import UserError
 
 
@@ -22,6 +22,12 @@ class ResPartner(models.Model):
         'zip',
         'state_id',
         'country_id',
+    )
+
+    rating = fields.Selection(
+        [('0', 'Negativo'), ('1', 'Medio'), ('2', 'Positivo')],
+        string='Rating',
+        default="2"
     )
 
     def write(self, values):

@@ -5,7 +5,7 @@
         <field name="name">Ricarica/Sposta Prodotto</field>
         <field name="res_model">netaddiction.products.movement</field>
         <field name="view_mode">form</field>
-        <field name="target">inline</field>
+        <field name="target">new</field>
         <field name="domain" eval=""/>
     </record>
 
