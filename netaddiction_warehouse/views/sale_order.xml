@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+
+    <record id="netaddiction_delivery_view_order" model="ir.ui.view">
+        <field name="name">netaddiction.delivery.sale.order</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_order_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="/form/header/field[@name='state']" position="before">
+                <field name="is_reversible" invisible="1"/>
+                <button name="d(netaddiction_warehouse.action_reso_cliente)%" string="Reso" type="action" class="btn-primary" attrs="{'invisible': ['|',('state', 'not in', ('done','partial_done')),('is_reversible','=',False)]}" />
+            </xpath>
+            <xpath expr="/form/sheet/div/button[@name='action_view_invoice']" position="before">
+                <button type="object" name="open_reverse" class="oe_stat_button" attrs="{'invisible': [('count_reverse', '=', 0)]}" context="{'search_default_origin': name}" icon="fa-exchange">
+                    <field  string="# Resi" name="count_reverse" widget="statinfo"/>
+                </button>
+            </xpath>
+            <xpath expr="/form/sheet/group/group/field[@name='pricelist_id']" posiition="before">
+                <field name="delivery_option" required="True" attrs="{'readonly': [('state', 'in', ('done','cancel','sale','partial_done','sent','problem'))]}"/>
+            </xpath>
+            <xpath expr="/form/sheet/notebook/page/field[@name='order_line']/tree/field[@name='qty_delivered']" position="after">
+                <field name="qty_reverse"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="netaddiction_delivery_set" model="ir.ui.view">
+        <field name="name">netaddiction.delivery.set</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="delivery.view_order_form_with_carrier"/>
+        <field name="arch" type="xml">
+<!--        FIXME: this button does not exist anymore, what to do with it?
+            <button name="delivery_set" position="replace"/>
+-->
+            <!-- Empty xpath just to make sure the ``arch`` field is not empty, which would trigger an AssertionError -->
+            <xpath expr="//field[last()]" position="after">
+            </xpath>
+        </field>
+    </record>
+
+    <record id="netaddiction_order_tree_reverse" model="ir.ui.view">
+        <field name="name">netaddiction.order.tree.reverse</field>
+        <field name="model">sale.order</field>
+        <field name="priority" eval="30"/>
+        <field name="inherit_id" ref="sale.view_order_tree"/>
+        <field name="arch" type="xml">
+            <xpath expr="/tree/field[@name='state']" position="after">
+                <field name="count_reverse"/>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

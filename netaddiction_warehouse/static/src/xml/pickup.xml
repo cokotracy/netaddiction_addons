@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<templates id="netaddiction_inventory_pickup" xml:space="preserve">
+	<t t-name="shelfs_choice">
+		<div class="block" id="result_shelfs">
+	        <div class="block_title">
+	            Da quale ripiano vuoi scaricare il prodotto?
+	        </div>
+	        <div class="block_content">
+	            <p t-foreach="shelfs" t-as="shelf" >
+	                <a href="#" class="shelf_pick" t-attf-data-ids="{{shelf_index}}"><t t-esc="shelf['name']"/></a>
+	            </p>
+	        </div>
+	    </div>
+	</t>
+</templates>

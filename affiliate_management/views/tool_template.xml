@@ -1,0 +1,159 @@
+<odoo>
+  <data>
+
+    <template id="tool" name = "Tool">
+                  <t t-call="website.layout">
+                    <t t-if="user_id.partner_id.is_affiliate">
+                      <div class="oe_structure">
+                        <div class="container mt16">
+                                    <div class="navbar navbar-expand-md navbar-light bg-light">
+                                        <!-- <a class="navbar-brand" t-attf-href="/forum/#{slug(forum)}">
+                                            <span t-field="forum.name"/>
+                                        </a> -->
+                                        <!-- <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#oe-help-navbar-collapse">
+                                            <span class="navbar-toggler-icon"/>
+                                        </button> -->
+                                        <div>
+
+                                          <ul class="navbar-nav">
+                                                <li class="nav-item">
+                                                    <a class="nav-link" href="/affiliate/about" style="color:#00A09D;">
+                                                        <i class="fa fa-home fa-2x"></i>
+                                                      </a>
+                                                </li>
+                                                <li class="nav-item">
+                                                    <a class="nav-link" href="/affiliate/report" style="color:#00A09D;">
+                                                        Reports
+                                                      </a>
+                                                </li>
+                                                <li class="nav-item">
+                                                    <a class="nav-link" href="/affiliate/payment" style="color:#00A09D;">
+                                                        Payments
+                                                      </a>
+                                                </li>
+                                                <li class="nav-item">
+                                                    <a class="nav-link" href="/affiliate/tool" style="color:#005452;">
+                                                      Tools
+                                                      </a>
+                                                </li>
+                                              </ul>
+                                        </div>
+                                      </div>
+                                    </div>
+
+
+                            <div class="container mt16" style="padding-bottom:5%;">
+                        <h2 ><strong>Your Tools</strong></h2>
+                        <div class="container">
+
+                          <div class='row'>
+                              <div class="col-md-8" style="border: solid gainsboro;padding-bottom=2px;">
+                                <h4>
+                                    <a href="/tool/link_generator">-> Affiliate Link Generator</a>
+                                  </h4>
+                                  With our this tool, a link will be generated with key for the publisher just by entering a valid url and clicking on ‘Generate’  which he can showcase on his website.
+                                </div>
+                            </div>
+                            <br/>
+                            <div class='row'>
+                                <div class="col-md-8" style="border: solid gainsboro;">
+                                    <h4>
+                                      <a href="/tool/product_link">-> Generate Product Link</a>
+                                  </h4>
+                                  With our this tool,  the publisher can generate a unique product link by following below three simple steps. First Choose Your Product, Second Choose your Image and Last Copy Generated Code
+                                </div>
+                            </div>
+                        </div>
+                      </div>
+
+                      </div>
+                  </t>
+                </t>
+        </template>
+
+          <!-- # tool 1 view -->
+         <template id="link_generator" name="Link Generator">
+                  <t t-call="website.layout">
+                    <t t-if="user_id.partner_id.is_affiliate">
+                      <div class="oe_structure">
+                        <div class="container mt16">
+                                    <div class="navbar navbar-expand-md navbar-light bg-light">
+                                        <!-- <a class="navbar-brand" t-attf-href="/forum/#{slug(forum)}">
+                                            <span t-field="forum.name"/>
+                                        </a> -->
+                                        <!-- <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#oe-help-navbar-collapse">
+                                            <span class="navbar-toggler-icon"/>
+                                        </button> -->
+                                        <div>
+
+                                          <ul class="navbar-nav">
+                                                <li class="nav-item">
+                                                    <a class="nav-link" href="/affiliate/about" style="color:#00A09D;">
+                                                        <i class="fa fa-home fa-2x"></i>
+                                                      </a>
+                                                </li>
+                                                <li class="nav-item">
+                                                    <a class="nav-link" href="/affiliate/tool" style="color:#00A09D;">
+                                                        Tools
+                                                      </a>
+                                                </li>
+                                                <li class="nav-item">
+                                                    <a class="nav-link" href="tool/link_generator" style="color:#005452;">
+                                                        Affiliate Link Generator
+                                                      </a>
+                                                </li>
+                                              </ul>
+                                        </div>
+                                      </div>
+                                    </div>
+                            
+
+                            <div class="container mt16">
+                                     <h3 class="page-header">Affiliate Link Generator</h3>
+
+                                  <div class="container">
+                                    <form role="form" class="form-inline" t-attf-action="/tool/create_link" method="post">
+                                         <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                                          <input type="link" name="link" t-att-value="link" id="link" class="form-control" required="required" autofocus="autofocus" placeholder="eg. www.localhost:8069/shop/product/e-com10-apple-wireless-keyboard-16" style="width:550px"/>
+                                          <button type="submit" class="btn btn-primary">Generate</button>
+                                      </form>
+                                  </div>
+
+                                  <div style="padding :20px">
+
+                                    <p t-if="generate_link">
+                                      <h4>Text Link created below.</h4>
+
+
+                                        <t t-if="generate_link">
+                                               <strong> <t t-esc="generate_link"/></strong>
+                                        </t>
+                                         <div >
+                                                <button id="link_copy_button">copy</button>
+                                        </div>
+                                         <textarea class="form-control" rows="2" readonly="1" id="copy_link" style="display:none;" >
+                                            <t t-if="generate_link">
+                                                <t t-esc="generate_link"/>
+                                            </t>
+
+                                          </textarea>
+                                           <h5> Copy the generated link and paste it into your website</h5>
+
+                                     </p>
+
+                                      <p class="alert alert-danger" t-if="error">
+                                       <t t-esc="error"/>
+                                     </p>
+                                 </div>
+
+                            </div>
+
+
+                      </div>
+                    </t>
+                  </t>
+        </template>
+
+
+</data>
+</odoo>

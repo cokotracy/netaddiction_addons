@@ -1,0 +1,36 @@
+<odoo>
+
+<template id="my_account_link" name="Link to frontend portal" inherit_id="website.footer_custom">
+   <xpath expr="//div[@id='footer']/section/div/div/div/ul" position="inside">
+
+         <li><a href="/affiliate/">Affiliate</a></li>
+      <!--   <li>
+        	<span t-esc="user_id.partner_id.is_affiliate"></span>
+     	 </li>
+ -->
+     </xpath>
+</template>
+
+<template id="my_affiliate_link" name="Link to My Affiliate Account" inherit_id="website.layout">
+    <xpath expr="//a[@id='o_logout']" position="before">
+    <t t-if="user_id.partner_id.is_affiliate">
+    <!-- <li><a href="/affiliate/about" role="menuitem">My Affiliate</a></li> -->
+    <a class="dropdown-item" href="/affiliate/about" role="menuitem">My Affiliate</a>
+    </t>
+
+    </xpath>
+
+</template>
+
+<!-- <template id="1" name="1" inherit_id="portal.frontend_layout">
+    <xpath expr="//a[@id='o_logout']" position="before">
+    <t t-if="user_id.partner_id.is_affiliate"> -->
+    <!-- <li><a href="/affiliate/about" role="menuitem">My Affiliate</a></li> -->
+    <!-- <a class="dropdown-item" href="/affiliate/about" role="menuitem">My Affiliate</a>
+    </t>
+
+    </xpath>
+
+</template> -->
+
+  </odoo>

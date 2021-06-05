@@ -1,0 +1,96 @@
+<odoo>
+
+		<record model="ir.ui.view" id="affiliate_program_view_form">
+	      <field name="name">Affiliate Program Form</field>
+	      <field name="model">affiliate.program</field>
+	      <field name="type">form</field>
+	      <field name="priority" eval="1"/>
+	      <field name="arch" type="xml">
+	      	<form create="false">
+	      		<sheet >
+	      			<div class="oe_title">
+                        <h1>
+			              <field name="name" default_focus="1" placeholder="Name"/>
+			            </h1>
+                    </div>
+
+
+
+		      	<group col="2" string="Rate For PPC" invisible="context.get('hide_ppc')" >
+
+			      		<group>
+
+			      			<field name="ppc_type" readonly="1"/>
+
+			      			<field name="amount_ppc_fixed" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+			      		</group>
+		      	</group>
+		      	<field name="id" invisible="1"/>
+
+		      	<group>
+					      	<group col="2" string="Rate For PPS">
+					      			<field name="pps_type"/>
+					      			<field name="matrix_type" attrs="{'invisible': ['|',('pps_type', '=', 'a'),('pps_type', '=', False)]}"/>
+
+					      			<label for="amount" attrs="{'invisible': ['|','|',('matrix_type', '=', False),('pps_type','=',False),('pps_type','=','a')]}"/>
+					      			<div attrs="{'invisible': ['|','|',('matrix_type', '=', False),('pps_type','=',False),('pps_type','=','a')]}">
+										<field name="amount" class="oe_inline"/>&#x2063;
+						      			<span attrs="{'invisible': [('matrix_type','=','p')]}">
+		      								<field name="currency_id" readonly="1" class="oe_inline" />
+						      			</span>
+						      			<span attrs="{'invisible': [('matrix_type','=','f')]}">
+						      				<b>%</b>
+						      			</span>
+					      			</div>
+
+					      			<field name="advance_commision_id" string="Advance Computation" attrs="{'invisible': ['|',('pps_type', '=', 's'),('pps_type', '=', False)],'required':[('pps_type', '=', 'a')]}" />
+
+					      	</group>
+					</group>
+					<notebook>
+					 <page name="howitworks" string="How Does It Work?">
+                              <group>
+                                      <field name="work_title" />
+                                      <field name="work_text" />
+                              </group>
+                            </page>
+
+
+                            <page name="TandC" string="Terms And Condition">
+                              <group>
+                                  <field name="term_condition" string="Terms and Conditions"/>
+                              </group>
+                            </page>
+                          </notebook>
+	      		</sheet>
+	      	</form>
+	      </field>
+	  </record>
+ 		<record model="ir.ui.view" id="affiliate_program__view_tree">
+			<field name="name">affiliate.program.tree</field>
+			<field name="model">affiliate.program</field>
+			<field name ="arch" type="xml">
+				<tree create="false">
+
+					<field name="name"/>
+					<field name="ppc_type"/>
+					<field name="amount_ppc_fixed"/>
+					<field name="pps_type"/>
+					<field name="matrix_type"/>
+					<field name="amount"/>
+
+
+
+				</tree>
+			</field>
+	    </record>
+		<record id="affiliate_program_form_action" model="ir.actions.act_window">
+            <field name="name">Affiliate Program</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">affiliate.program</field>
+            <!-- <field name="view_type">form</field> -->
+            <field name="view_mode">tree,form</field>
+        </record>
+
+
+</odoo>

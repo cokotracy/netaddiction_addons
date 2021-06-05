@@ -1,0 +1,135 @@
+<odoo>
+  <data>
+    <template id="about" name="About Us">
+      <t t-call="website.layout">
+      	<t t-if="user_id.partner_id.is_affiliate">
+          <div class="oe_structure">
+            <div class="container mt16">
+            <div class="navbar navbar-expand-md navbar-light bg-light">
+              
+                <div>
+
+                  <ul class="navbar-nav">
+                        <li class="nav-item">
+                            <a class="nav-link" href="/affiliate/about" style="color:#005452;">
+                                <i class="fa fa-home fa-2x"></i>
+                              </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/affiliate/report" style="color:#00A09D;">
+                                Reports
+                              </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/affiliate/payment" style="color:#00A09D;">
+                                Payments
+                              </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/affiliate/tool" style="color:#00A09D;">
+                              Tools
+                              </a>
+                        </li>
+                      </ul>
+                </div>
+              </div>
+            </div>
+
+              </div>
+
+
+              <div class="oe_structure">
+                <div class="row justify-content-center" >
+                    <div class="col-md-5">
+                      <center>
+                        <div id="affiliate_code_inp">
+                             <form class="form-inline">
+                                <div class="form-group">
+                                  <label for="code">Your Referral Code :</label><br/>
+                                  <br/><input type="text" class="form-control" id="usr_aff_code" name="code" t-att-value="affiliate_key" readonly='1'/>
+                                </div>
+                                <br/><button type="copy" class="btn btn-success" id="cpy_cde" style="top:12px;">copy</button>
+                              </form>
+                              <br/>
+                               <div>
+                                <b>
+                                  <a  href="" id="url_anchor">=&gt;&#160;Click here to get Referral Link </a>
+                                </b>
+                              </div>
+                        </div>
+
+                        <div id="affiliate_url_inp" style="display:none;">
+                          <form class="form-inline">
+                            <div class="form-group">
+                              <label for="aff_link">Get Referral Link :</label><br/>
+                              <input type="link" class="form-control" id="usr_aff_url" name="aff_link" t-att-value="url" style="width: 120%;" readonly='1'/>
+                            </div>
+
+                            <button type="copy" class="btn btn-success" id="cpy_url" style="position: relative;top:10px;">copy</button>
+                          </form>
+                          <br/>
+                          <div>
+                            <b>
+                              <a  href="" id="code_anchor">=&gt;&#160;Click here to get Referral Code </a>
+                            </b>
+                          </div>
+                        </div>
+                      </center>
+                    </div>
+                    <div class="col-md-5">
+                      <strong>Pending Amount:</strong>
+                            <span><t t-esc="currency_id.symbol"/><t t-esc="pending_amt"/></span><br/>
+                              <div style="font-size: 12px;color: #23527c;">(* Report whose state is confirmed but not invoiced)</div>
+                              <strong>Approved Amount:</strong>
+                              <span><t t-esc="currency_id.symbol"/><t t-esc="approved_amt"/></span>
+                              <div style="font-size: 12px;color: #23527c;">(* Report whose state is invoiced but not paid)</div>
+                    </div>
+                </div>
+                <div class="row justify-content-center" >
+
+                        <div class="col-md-offset-2 col-md-8">
+                          <div style="padding:20px">
+                            <center>
+                              <h3>How Does it Work?</h3>
+                            </center>
+                            <t t-raw="how_it_works_title"/>
+                          </div>
+                            <div class=" col-md-8">
+                               <t t-raw="how_it_works_text"/>
+                            </div>
+                        </div>
+                </div>
+
+                <div class="row justify-content-center" style="text-align: left;">
+
+                          <div class="col-md-offset-3 col-md-4" style="padding:35px">
+                            <h3>Stats Management</h3>
+                            With our Affiliate Program, one will able to instantly see all the information related to his earnings from Pay Per Sale and Pay Per Click, which would be highly valuable in making decisions. Reports generated by our Stats Management saves time and gives a more clear picture of your Affiliate Program profit and loss and what to focus on in order to maximize your profit.
+                            <div style="text-align:left"><a href="/affiliate/report/" class="btn btn-default" style="background-color: #00A09D;color:white;">View Your Stats</a></div>
+                          </div>
+                          <img src="/affiliate_management/static/src/img/icon-stats-management.svg" class="col-lg-3" style="height: 180px;"/>
+
+
+                </div>
+
+                <div class="row justify-content-center" id="affilaite_tool" style="text-align: left;" >
+
+                        <img src="/affiliate_management/static/src/img/icon-affiliate-tools.svg" class="col-md-offset-3 col-lg-3" style="height: 180px;"/>
+
+
+                          <div class="col-md-4" style="padding:35px">
+                            <h3>Affiliate Tool</h3>
+                           Through our specially designed Affiliate Tools namely “Affiliate Link Generator” and “Product Link Generator” user can easliy manage his affiliate program.
+                            Through our tools, its easy to build  the affiliate product links and banners and earn money.
+                            <div style="text-align:left"><a href="/affiliate/tool/" class="btn btn-default" style="background-color: #00A09D;color:white;">View Tools</a></div>
+                          </div>
+
+                </div>
+              </div>
+					</t>
+      </t>
+  </template>
+</data>
+</odoo>
+
+<!--  -->

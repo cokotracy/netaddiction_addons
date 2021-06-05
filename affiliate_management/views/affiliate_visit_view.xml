@@ -1,0 +1,155 @@
+<odoo>
+	<data>
+		<record model="ir.ui.view" id="affiliate_visit_view_form">
+			<field name="name">affiliate.visit.form</field>
+			<field name="model">affiliate.visit</field>
+			<field name="arch" type="xml">
+				<form create='false'>
+					<header >
+						<field name="state" widget="statusbar" statusbar_visible="draft,cancel,confirm,invoice,paid"/>
+						<!-- attrs="{'invisible':['|',('state','=','draft'),'|',('state','=','hold'),('state','=','run')]}" -->
+						<!-- <button name="action_draft"  type="object" string="Draft"/> -->
+						<button name="action_confirm"  string="Confirm" type="object"
+							attrs="{'invisible':['|',('state','=','cancel'),'|',('state','=','confirm'),'|',('state','=','invoice'),'|',('state','=','paid')]}"
+							groups="base.group_system,affiliate_management.affiliate_security_manager_group"/>
+							<button name="action_cancel" type="object" string="Cancel"
+								attrs="{'invisible':['|',('state','=','invoice'),'|',('state','=','paid'),'|',('state','=','cancel')]}"
+								groups="base.group_system,affiliate_management.affiliate_security_manager_group"/>
+
+
+							<!-- <button name="action_invoice"  type="object" string="Create invoice"
+								attrs="{'invisible':['|',('state','=','draft'),'|',('state','=','cancel'),'|',('state','=','invoice'),'|',('state','=','paid')]}"/> -->
+							<button name="action_paid"  type="object" string="Paid"
+								attrs="{'invisible':['|',('state','=','draft'),'|',('state','=','cancel'),'|',('state','=','confirm'),'|',('state','=','paid')]}"
+								invisible="1"
+								groups="base.group_system,affiliate_management.affiliate_security_manager_group"/>
+						</header>
+					<sheet>
+
+
+							<label for="name"/>
+							<field name="name"  readonly="1"/>
+
+
+							<group col="4" >
+
+								<field name="affiliate_method" />
+								<field name="is_converted" attrs="{'invisible':[('affiliate_method','=','pps')]}"/>
+								<field name="affiliate_type"  />
+								<field name="type_id" />
+								<field name="type_name"/>
+
+								<field name="affiliate_key" />
+								<field name="affiliate_partner_id"  />
+								<field name="url"
+								attrs="{'invisible':[('affiliate_method','=','pps')]}"
+								groups="base.group_system,affiliate_management.affiliate_security_manager_group"/>
+								<field name="ip_address"   groups="base.group_system,affiliate_management.affiliate_security_manager_group"/>
+
+								<field name="convert_date" string="Date"/>
+								<field name="sales_order_line_id" string="Order" />
+								<field name="product_quantity" string="Product Quantity"/>
+
+								<field name="price_total" />
+								<field name="unit_price" />
+
+								<field name="commission_amt" />
+								<field name="affiliate_program_id"/>
+								<field name="amt_type" string="Commission Matrix"/>
+								<field name="act_invoice_id"/>
+
+							</group>
+
+
+	      			</sheet>
+				</form>
+			</field>
+	    </record>
+
+	    <record model="ir.ui.view" id="affiliate_visit__view_tree">
+			<field name="name">affiliate.visit.tree</field>
+			<field name="model">affiliate.visit</field>
+			<field name="arch" type="xml">
+				<tree create="false">
+					<!-- <field name="id"/> -->
+					<field name="name"/>
+					<field name="affiliate_method" />
+					<!-- <field name="affiliate_type" /> -->
+					<field name="is_converted" />
+					<!-- <field name="type_id" /> -->
+					<field name="affiliate_key" />
+					<field name="affiliate_partner_id" />
+					<field name="create_date" string="Date"/>
+					<field name="commission_amt" />
+					<field name="state" />
+
+
+				</tree>
+			</field>
+	    </record>
+
+	     <record id="webkul_employees_view_search" model="ir.ui.view">
+	  	      	<field name="name">affiliate.visit Search</field>
+	  	      	 <field name="model">affiliate.visit</field>
+	  	      	 <field name="arch" type="xml">
+	  	      	 	<search string="Search Employees">
+	  	      	 		<filter string="Not Invoiced" name="state" domain="[('state','!=','invoice')]"/>
+	  	      	 		 <group string="Group By">
+	  	      	 			<filter string="Method" name="affiliate_method" domain="[]" context="{'group_by':'affiliate_method'}"/>
+	  	      	 			<filter string="Type" name="affiliate_type" domain="[]" context="{'group_by':'affiliate_type'}"/>
+	  	      	 			<filter string="Converted" name="is_converted" domain="[]" context="{'group_by':'is_converted'}"/>
+	  	      	 			<filter string="Partner" name="affiliate_partner_id" domain="[]" context="{'group_by':'affiliate_partner_id'}"/>
+
+
+						</group>
+	  	      	 	</search>
+	  	      	 </field>
+      	</record>
+	  <record model="ir.actions.act_window" id="affiliate_pps_visit_action">
+			<field name="name">Order Report</field>
+			<field name="res_model">affiliate.visit</field>
+			<field name="view_mode">tree,form</field>
+			<!-- <field name="context">{"search_default_is_converted":1}</field> -->
+			<field name="domain">[('affiliate_method','=','pps')]</field>
+
+		</record>
+
+
+
+		<record model="ir.actions.act_window" id="affiliate_ppc_visit_action">
+			<field name="name">Traffic Report</field>
+			<field name="res_model">affiliate.visit</field>
+			<field name="view_mode">tree,form</field>
+			<field name="domain">[('affiliate_method','=','ppc')]</field>
+		</record>
+
+		<menuitem name="Reports"
+		  id="affiliate_report_visit_menu"
+		  parent="affiliate_manager_menu_base_root"
+			sequence='2'
+		/>
+		<menuitem name="Order Report"
+		  id="affiliate_order_report_visit_menu"
+		  groups='affiliate_management.affiliate_security_user_group'
+		  parent="affiliate_report_visit_menu"
+		  action="affiliate_pps_visit_action"
+		/>
+		<menuitem name="Traffic Report"
+		  id="affiliate_traffic_report_visit_menu"
+		  groups='affiliate_management.affiliate_security_user_group'
+		  parent="affiliate_report_visit_menu"
+		  action="affiliate_ppc_visit_action"
+		/>
+		<menuitem name="Invoicing"
+		  id="affiliate_invoicing_visit_menu"
+		  parent="affiliate_manager_menu_base_root"
+			sequence='3'
+		/>
+		<menuitem name="Invoice"
+		  id="affiliate_invoice_visit_menu"
+		  parent="affiliate_invoicing_visit_menu"
+		  action="account.action_move_out_invoice_type"
+			groups='affiliate_management.affiliate_security_user_group'
+		/>
+	</data>
+</odoo>

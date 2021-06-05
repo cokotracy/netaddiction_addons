@@ -1,0 +1,67 @@
+<odoo>
+	<data>
+		<record model="ir.ui.view" id="affiliate_generate_link_form">
+	      <field name="name">Affiliate tool Form</field>
+	      <field name="model">affiliate.tool</field>
+	      <field name="type">form</field>
+	      <field name="priority" eval="1"/>
+	      <field name="arch" type="xml">
+	      	<form create="false" edit="false">
+	      		<sheet>
+              <group>
+                  <field name='name' invisible='1'/>
+                  <field name='entity'/>
+                  <field name='aff_category_id' attrs="{'invisible': ['|',('entity', '=', 'product'),('entity', '=', False)],'required':[('entity', '=', 'category')]}" widget="selection"/>
+                  <field name='aff_product_id' attrs="{'invisible': ['|',('entity', '=', 'category'),('entity', '=', False)],'required':[('entity', '=', 'product')]}" widget="selection"/>
+                  <field name='link' readonly='1' attrs="{'invisible': ['|',('entity', '=', False),('aff_product_id','=',False),'|',('aff_category_id','=',False),('link','=',False)]}"/>
+									<field name='user_id' invisible='1'/>
+
+              </group>
+	      		</sheet>
+	      	</form>
+	      </field>
+	  </record>
+
+
+    <!-- <record model="ir.ui.view" id="affiliate_generate_link__view_tree">
+      <field name="name">affiliate.tool.tree</field>
+      <field name="model">affiliate.tool</field>
+      <field name="arch" type="xml">
+        <tree >
+
+          <field name='name'/>
+          <field name='entity'/>
+          <field name='aff_category_id'/>
+          <field name='aff_product_id'/>
+          <field name='link'/>
+
+
+
+        </tree>
+      </field>
+      </record> -->
+
+		<record id="affiliate_generate_link_action" model="ir.actions.act_window">
+            <field name="name">Affiliate Tool</field>
+            <field name="res_model">affiliate.tool</field>
+            <!-- <field name="view_type">form</field> -->
+            <field name="view_mode">form</field>
+            <!-- <field name="res_id"></field>
+            <field name="target">current</field> -->
+
+        </record>
+
+
+        <!-- <menuitem name="Tool"
+    		  id="affiliate_tool_menu"
+    		  parent="affiliate_manager_menu_base_root"
+    			sequence='3'
+    		/> -->
+        <!-- <menuitem name="Generate Link"
+    		  id="affiliate_generate_link_menu"
+    		  parent="affiliate_tool_menu"
+          action='affiliate_generate_link_action'
+          groups='affiliate_management.affiliate_security_user_group'
+    		/> -->
+	</data>
+</odoo>

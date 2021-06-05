@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright (c) 2019-Present Webkul Software Pvt. Ltd. (<https://webkul.com/>) -->
+<!-- See LICENSE file for full copyright and licensing details. -->
+<odoo>
+    <record id="inherit_affiliate_res_config_settings_view_form" model="ir.ui.view">
+            <field name="name">inherit.affiliate.res.config.settings.view.form</field>
+            <field name="model">res.config.settings</field>
+            <field name="priority" eval="20"/>
+            <field name="inherit_id" ref="affiliate_management.view_affiliate_config_form"/>
+            <field name="arch" type="xml">
+              <xpath expr="//div[@id='affiliate_management']" position="after">
+                <h2> Affiliate Coupon Enable</h2>
+                <div class="row mt16 o_settings_container" id="affiliate_coupon_settings">
+                    <div class="col-xs-12 col-md-6 o_setting_box" id="pps_coupon_setting">
+                      <div class="o_setting_right_pane">
+                          <label for="" string="Enable coupon for PPS"/>
+
+                          <div class="text-muted">
+                              <field name="enable_pps_coupon" required="1"/>
+                          </div>
+                      </div>
+                    </div>
+                    <div class="col-xs-12 col-md-6 o_setting_box" id="ppc_coupon_setting">
+                      <div class="o_setting_right_pane">
+                        <label for="" string="Enable coupon for PPC"/>
+
+                        <div class="text-muted">
+                            <field name="enable_ppc_coupon" required="1"/>
+                        </div>
+                      </div>
+                    </div>
+
+                  </div>
+                
+              </xpath>
+            </field>
+    </record>
+</odoo>
+<!-- <span>%%</span> -->

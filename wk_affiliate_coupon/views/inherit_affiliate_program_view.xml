@@ -1,0 +1,18 @@
+<odoo>
+  <record id="affiliate_program_view_coupon_form" model="ir.ui.view">
+          <field name="name">affiliate.program.view.coupon</field>
+          <field name="model">affiliate.program</field>
+          <field name="priority" eval="20"/>
+          <field name="inherit_id" ref="affiliate_management.affiliate_program_view_form"/>
+          <field name="arch" type="xml">
+            <xpath expr="//group" position="before">
+            <group>
+              <group col="2">
+                <field name="commission_type"/>
+  							<button type="object" name="open_coupon_program"  class="btn btn-primary" attrs="{'invisible': [('commission_type', '=', 'd')]}">Default Coupon Program </button>
+              </group>
+            </group>
+            </xpath>
+          </field>
+  </record>
+</odoo>

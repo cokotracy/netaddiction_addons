@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+
+        <record id="netaddiction_stock_defeactive" model="stock.location">
+            <field name="name">Magazzino Difettati</field>
+            <field name="location_id" eval="ref('stock.stock_location_locations')"/>
+            <field name="usage" eval="'internal'"/>
+            <field name="scrap_location">1</field>
+            <field name="active">1</field>
+    	</record>
+
+    	<record id="netaddiction_stock_suppliers_refund" model="stock.location">
+            <field name="name">Reso a Fornitori</field>
+            <field name="location_id" eval="ref('stock.stock_location_locations_virtual')"/>
+            <field name="usage" eval="'inventory'"/>
+            <field name="active">1</field>
+    	</record>
+
+    </data>
+</odoo>

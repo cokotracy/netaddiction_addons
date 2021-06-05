@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<templates id="netaddiction_reso" xml:space="preserve">
+    <t t-name="content_reso">
+    	<table class="oe_list_content" id="purchase_in_product_list">
+		    <thead>
+		        <tr class="oe_list_header_columns">
+		            <th >
+		                Prodotto
+		            </th>
+		            <th >
+		                Qty Spedita
+		            </th>
+		            <th style="width:100px">
+		                Qty Resa
+		            </th>
+		            <th style="width:110px">
+		            	Tipo
+		            </th>
+		        </tr>
+		    </thead>
+		    <tfoot>
+		        <tr>
+				</tr>
+		    </tfoot>
+		    <tbody>
+		    	<t t-foreach="widget.order_line" t-as="line">
+		    		<tr t-attf-data-id="{{line.id}}" t-attf-data-pid="{{line.product_id[0]}}" class="reverse_line">
+		    			<td>
+		    				<t t-esc="line.product_id[1]"/>
+		    			</td>
+		    			<td>
+		    				<t t-esc="line.qty_delivered"/>
+		    			</td>
+		    			<td>
+		    				<input type="number" class="qty_reverse" t-attf-value="0" style="width:100%" t-attf-max="{{line.qty_delivered}}" min="0"/>
+		    			</td>
+		    			<td>
+		    				<select class="reverse_type">
+		    					<option value="" disabled="disabled" selected="selected">Scegli Tipo</option>
+		    					<option value="scrapped">Difettato</option>
+		    					<option value="reverse">Rivendibile</option>
+		    				</select>
+		    			</td>
+		    		</tr>
+		    	</t>
+		    </tbody>
+        </table>
+    </t>
+</templates>

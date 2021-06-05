@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="inherit_view_partner_form" model="ir.ui.view">
+        <field name="name">inherit.view.partner.form</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//notebook/page[@name='sales_purchases']//group[@name='sale']/field[@name='user_id']" position="before">
+                <field name="customer"/>
+            </xpath>
+            <xpath expr="//notebook/page[@name='sales_purchases']//group[@name='purchase']" position="inside">
+                <field name="supplier"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="inherit_view_res_partner_filter" model="ir.ui.view">
+        <field name="name">inherit.view.res.partner.filter</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_res_partner_filter"/>
+        <field name="arch" type="xml">
+            <xpath expr="/search/filter[@name='inactive']" position="before">
+                <filter string="Customers" name="customers_filter" domain="[('customer', '=', True)]"/>
+                <filter string="Suppliers" name="suppliers_filter" domain="[('supplier', '=', True)]"/>
+                <separator/>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

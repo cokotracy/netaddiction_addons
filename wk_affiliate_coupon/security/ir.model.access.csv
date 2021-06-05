@@ -1,0 +1,3 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+
+affiliate_coupons_program_user,user_access_coupons_program,model_coupons_program,,1,1,1,1

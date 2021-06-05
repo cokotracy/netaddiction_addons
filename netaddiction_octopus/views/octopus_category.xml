@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+<data>
+
+    <record id="octopus_category_tree" model="ir.ui.view">
+        <field name="name">octopus.category.tree</field>
+        <field name="model">netaddiction_octopus.category</field>
+        <field name="arch" type="xml">
+            <tree editable="top" >
+                <field name="field"/>
+                <field name="code"/>
+                <field name="type"/>
+                <field name="category_id" attrs="{'invisible': [('type', '!=', 'category')]}"/>
+                <field name="attribute_id" attrs="{'invisible': [('type', '!=', 'attribute')]}"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="octopus_category_form" model="ir.ui.view">
+        <field name="name">octopus.category.form</field>
+        <field name="model">netaddiction_octopus.category</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <field name="supplier_id"/>
+                        <field name="field"/>
+                        <field name="code"/>
+                        <field name="type"/>
+                        <field name="category_id"/>
+                        <field name="attribute_id"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="octopus_category_action" model="ir.actions.act_window">
+        <field name="name">Categorie</field>
+        <field name="res_model">netaddiction_octopus.category</field>
+        <field name="view_mode">tree,form</field>
+        <field name="view_id" ref="octopus_category_tree"/>
+    </record>
+
+    <menuitem id="octopus_category_menu"
+              name="Categories"
+              parent="octopus_menu"
+              action="octopus_category_action"
+              />
+
+</data>
+</odoo>

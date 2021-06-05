@@ -1,0 +1,94 @@
+<odoo>
+<template id="affiliate_coupon_order" inherit_id="affiliate_management.affiliate_order">
+  <xpath expr="//div[@class='oe_structure']" position="replace">
+            <div class="oe_structure">
+              <div class="container mt16">
+                          <div class="navbar navbar-expand-md navbar-light bg-light">
+                              <div>
+                                <ul class="navbar-nav">
+                                      <li class="nav-item">
+                                          <a class="nav-link" href="/affiliate/about" style="color:#00A09D;">
+                                              <i class="fa fa-home fa-2x"></i>
+                                            </a>
+                                      </li>
+                                      <li class="nav-item">
+                                          <a class="nav-link" href="/affiliate/report" style="color:#00A09D;">
+                                              Reports
+                                            </a>
+                                      </li>
+                                      <li class="nav-item">
+                                          <a class="nav-link" href="/my/order" style="color:#005452;">
+                                              Order Earnings
+                                            </a>
+                                      </li>
+
+                                    </ul>
+                              </div>
+                            </div>
+                          </div>
+                      </div>
+
+              <div class="container mt16">
+
+                <h3 class="page-header">Your Order Earnings</h3>
+                    <t t-if="not traffic">
+                        <p>There are currently no earnings for your account.</p>
+                    </t>
+                    <t t-if="traffic">
+                        <table class="table table-hover o_my_status_table">
+                            <thead>
+                              <tr class="active">
+                                <th>Click To Check Details </th>
+                                <th>Commission Type</th>
+                                <th>Item Name</th>
+
+                            <t t-if="coupon">
+                              <th>Coupon Type</th>
+                              <th>Coupon Code</th>
+                              <th>Coupon  Amount</th>
+                            </t>
+                              <t t-if="not coupon">
+                                <th>Item Type</th>
+                                <th>Convert Date</th>
+                                <th>Commission Value</th>
+                              </t>
+                                <th>State</th>
+                              </tr>
+                            </thead>
+                            <t t-foreach="traffic" t-as="t">
+                                <tr>
+                                    <td>
+                                        <a t-attf-href="/my/order/{{t.id}}?{{keep_query()}}"><t t-esc="t.name"/></a>
+                                    </td>
+
+                                    <td>
+                                      <a t-attf-href="/shop/product/{{t.type_id}}?{{keep_query()}}"> <t t-esc="t.type_name"/></a>
+                                    </td>
+                                    <td><span t-field="t.commission_type"/></td>
+                                    <t t-if="coupon">
+                                      <td>
+                                          <span t-field="t.coupon_type"/>
+                                      </td>
+                                      <td><span t-field="t.coupon_code"/></td>
+                                      <td><span t-field="t.coupon_amount" t-options='{"widget": "monetary", "display_currency": t.currency_id}'/></td>
+                                    </t>
+                                    <t t-if="not coupon">
+                                      <td>
+                                          <span t-field="t.affiliate_type"/>
+                                      </td>
+                                      <td><span t-field="t.convert_date"/></td>
+                                      <td><span t-field="t.commission_amt" t-options='{"widget": "monetary", "display_currency": t.currency_id}'/></td>
+                                    </t>
+                                    <td><span t-field="t.state"/></td>
+                                </tr>
+                            </t>
+                        </table>
+                        <div t-if="pager" class="o_portal_pager text-center">
+                            <t t-call="website.pager"/>
+                        </div>
+                    </t>
+                  </div>
+                </xpath>
+        </template>
+
+</odoo>

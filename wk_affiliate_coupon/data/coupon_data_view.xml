@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+<record id="affiliate_coupons_program" model="coupons.program">
+  <field name="coupon_validity">10 </field>
+  <field name="coupon_name">Affiliate Coupon Program </field>
+  <field name="pps_discount_type">fixed_amount</field>
+  <field name="pps_fixed_amount">10.0</field>
+  <field name="ppc_discount_type">fixed_amount</field>
+  <field name="ppc_fixed_amount">10</field>
+</record>
+    
+</odoo>
