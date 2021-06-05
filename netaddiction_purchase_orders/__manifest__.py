@@ -18,6 +18,7 @@
         ],
     'data': [
         'data/template_email.xml',
+        'data/cron.xml',
         'views/assets.xml',
         'views/actions_client.xml',
     #     'views/purchase_product_list.xml',
