@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+
+    <record id="netaddiction_delivery_carrier" model="ir.ui.view">
+        <field name="name">netaddiction.delivery.carrier</field>
+        <field name="model">delivery.carrier</field>
+        <field name="inherit_id" ref="delivery.view_delivery_carrier_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="/form/sheet/group/group/div/field[@name='delivery_type']/.." position="after">
+                <field name="time_to_shipping"/>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

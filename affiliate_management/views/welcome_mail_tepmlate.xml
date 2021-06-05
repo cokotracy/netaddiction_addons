@@ -1,0 +1,33 @@
+<odoo>
+  <data>
+
+    <record id="welcome_affiliate_email" model="mail.template">
+          <field name="name">Affiliate welcome mail Connection</field>
+          <field name="model_id" ref="affiliate_management.model_affiliate_request"/>
+          <field name="email_from">${object.partner_id.company_id.email or ' '}</field>
+          <field name="email_to">${object.name|safe}</field>
+          <field name="subject"> Welcome on Affiliate Program</field>
+          <field name="body_html"><![CDATA[
+
+          <div style="padding:0px;width:600px;margin:auto;background: #FFFFFF repeat top /100%;color:#777777">
+          <p>Dear ${object.name},</p>
+              <p>
+                  Welcome to Affiliate Program, In order to get access to your Account please Log In .
+              </p>
+              <p>
+                   click on the following link for Log In:
+              </p>
+              <div style="text-align: center; margin-top: 16px;">
+                   <a href="affiliate" style="padding: 5px 10px; font-size: 12px; line-height: 18px; color: #FFFFFF; border-color:#875A7B; text-decoration: none; display: inline-block; margin-bottom: 0px; font-weight: 400; text-align: center; vertical-align: middle; cursor: pointer; white-space: nowrap; background-image: none; background-color: #875A7B; border: 1px solid #875A7B; border-radius:3px">For Log In to Affiliate Program</a>
+              </div>
+              <p>Best regards,</p>
+              <p>Admin</p>
+          </div>
+          ]]>
+          </field>
+
+      </record>
+
+  </data>
+</odoo>
+

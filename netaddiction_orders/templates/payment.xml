@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <template id="netaddition_order_payment" inherit_id="website_sale.payment">
+        <xpath expr="//div[hasclass('card')]" position="after">
+            <div class="form-group">
+                <h3>Note</h3>
+                <textarea class="form-control" id="note" name="note" rows="3"><t t-esc="note or ''"/></textarea>
+            </div>
+        </xpath>
+    </template>
+
+</odoo>

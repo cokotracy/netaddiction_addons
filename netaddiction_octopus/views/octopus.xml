@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+<data>
+
+    <menuitem id="octopus_root_menu" name="Octopus"/>
+
+    <menuitem id="octopus_menu" name="Octopus" parent="octopus_root_menu" />
+
+</data>
+</odoo>

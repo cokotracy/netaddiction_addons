@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+
+    <record id="netaddiction_warehouse_link" model="ir.actions.act_url">
+        <field name="name">Inventory App</field>
+        <field name="url">/inventory/app</field>
+        <field name="target">self</field>
+    </record>
+
+</odoo>

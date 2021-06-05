@@ -1,0 +1,40 @@
+#search{
+	width: 100%;
+    border: none;
+}
+
+#search:focus{
+    outline: none;
+    border:none;
+}
+
+.purchase_search_input{
+	margin-left: 15px !important;
+}
+
+.purchase_link_incoming{
+	color: green;
+	font-weight: bold;
+}
+.purchase_link_outgoing{
+	color: red;
+	font-weight: bold;
+}
+
+.supplier{
+	width:100%;
+}
+
+.qty_order{
+	width:70px;
+}
+
+.products_to_buy_filters {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.products_to_buy_filters>.row {
+    width: 100%;
+}

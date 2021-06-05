@@ -1,0 +1,159 @@
+<odoo>
+  <data>
+    <template id="affiliate_coupons_report" inherit_id="affiliate_management.report">
+      <xpath expr="//ul[@class='navbar-nav']/li[last()]" position="after">
+          <li class="nav-item">
+              <a class="nav-link" href="/affiliate/coupon" style="color:#00A09D;" onMouseOver="this.style.color='#1d5352'" onMouseOut="this.style.color='#00A09D'">
+                    Coupons
+              </a>
+          </li>
+      </xpath>
+
+    </template>
+
+    <template id="coupon_details" name="Coupon Details">
+          <t t-call="website.layout">
+            <div class="oe_structure">
+              <div class="container mt16">
+                          <div class="navbar navbar-expand-md navbar-light bg-light">
+                              <div>
+                                <ul class="navbar-nav">
+                                      <li class="nav-item">
+                                          <a class="nav-link" href="/affiliate/about" style="color:#00A09D;">
+                                              <i class="fa fa-home fa-2x"></i>
+                                            </a>
+                                      </li>
+                                      <li class="nav-item">
+                                          <a class="nav-link" href="/affiliate/report" style="color:#00A09D;">
+                                              Reports
+                                            </a>
+                                      </li>
+                                      <li class="nav-item">
+                                          <a class="nav-link" href="/my/order" style="color:#005452;">
+                                              Order Earnings
+                                            </a>
+                                      </li>
+                                      <li class="nav-item">
+                                          <a class="nav-link" href="/affiliate/coupon" style="color:#00A09D;" onMouseOver="this.style.color='#1d5352'" onMouseOut="this.style.color='#00A09D'">
+                                                Coupons
+                                          </a>
+                                      </li>
+
+                                    </ul>
+                              </div>
+                            </div>
+                          </div>
+                      </div>
+
+                <!-- add form here tree view -->
+
+            <t t-if="not details">
+              <div class="container mt16">
+                <h3 class="page-header">Your Coupons Details</h3>
+                    <t t-if="not coupon">
+                        <p>There are currently no coupons for your affiliate account.</p>
+                    </t>
+                    <t t-if="coupon">
+                        <table class="table table-hover o_my_status_table">
+                            <thead>
+                              <tr class="active">
+                                <th>Coupon Type</th>
+                                <th>Coupon Code</th>
+                                <th>Coupon  Amount</th>
+                                <th>Expiration Date</th>
+                                <th>State</th>
+                                <th>click more to check</th>
+
+                              </tr>
+                            </thead>
+                            <t t-foreach="coupon" t-as="t">
+                                <tr>
+                                    <td>
+                                          <span t-field="t.program_id.coupon_type"/>
+                                    </td>
+                                    <td>
+                                        <span t-field="t.code"/>
+                                    </td>
+                                    <td><span t-field="t.program_id.discount_fixed_amount" t-options='{"widget": "monetary", "display_currency": currency_id}'/></td>
+                                    <td><span t-field="t.expiration_date"/></td>
+
+                                    <td><span t-field="t.state"/></td>
+                                    <td>
+                                          <a t-attf-href="/affiliate/coupon/{{t.id}}?{{keep_query()}}">Check</a>
+                                      </td>
+                                </tr>
+                            </t>
+                        </table>
+                        <div t-if="pager" class="o_portal_pager text-center">
+                            <t t-call="website.pager"/>
+                        </div>
+                    </t>
+                  </div>
+                </t>
+                <t t-if="details">
+                  <br/>
+                  <br/>
+                <div class="container mt-16">
+                  <div class="panel-body">
+                        <div class="mb8">
+                          <strong>Coupon Type:</strong> <span t-field="coupon.program_id.coupon_type"/>
+                        </div>
+                        <div class="mb8">
+                          <strong>Coupon Code :</strong> <span t-field="coupon.code"/>
+                        </div>
+                        <div class="mb8">
+                          <strong>Coupon  Amount:</strong> <span t-field="coupon.program_id.discount_fixed_amount" t-options='{"widget": "monetary", "display_currency": currency_id}'/>
+                        </div>
+                        <div class="mb8">
+                          <strong>State:</strong> <span t-field="coupon.state"/>
+                        </div>
+                        <hr/>
+                  <table class="table table-hover o_my_status_table">
+                      <thead>
+                        <tr class="active">
+                          <th>Visit Name</th>
+                          <th>Visit Type</th>
+                          <th>Affiliate  User</th>
+                          <th>State</th>
+                          <th>Coupon Amount</th>
+                        </tr>
+                      </thead>
+                      <t t-foreach="coupon.program_id.aff_visit_id" t-as="t">
+                          <tr>
+                              <td>
+                                    <span t-field="t.name"/>
+                              </td>
+                              <td>
+                                  <span t-field="t.affiliate_method"/>
+                              </td>
+                              <td><span t-field="t.affiliate_partner_id.name"/></td>
+                              <td><span t-field="t.state"/></td>
+                              <td><span t-field="t.coupon_amount" t-options='{"widget": "monetary", "display_currency": currency_id}'/></td>
+                          </tr>
+                      </t>
+                  </table>
+                  <div class="mt-16" style="margin-left:68%">
+                    <strong>Total  Amount:</strong> <span t-field="coupon.program_id.discount_fixed_amount"  t-options='{"widget": "monetary", "display_currency": currency_id}'/>
+                  </div>
+                  <div t-if="pager" class="o_portal_pager text-center">
+                      <t t-call="website.pager"/>
+                  </div>
+                </div>
+              </div>
+
+                </t>
+
+
+
+
+
+
+
+
+
+
+          </t>
+        </template>
+
+  </data>
+</odoo>

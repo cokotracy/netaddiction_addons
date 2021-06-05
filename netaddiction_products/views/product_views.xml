@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <record id="netaddiction_product_product_tree" model="ir.ui.view">
+        <field name="name">netaddiction.product.product.tree</field>
+        <field name="model">product.product</field>
+        <field name="inherit_id" ref="product.product_product_tree_view" />
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='name']" position="before">
+                <field name="id" />
+            </xpath>
+            <xpath expr="//field[@name='name']" position="after">
+                <field name="barcode" />
+                <field name="visible"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="netaddiction_product_product_form" model="ir.ui.view">
+        <field name="name">product.product.form</field>
+        <field name="model">product.product</field>
+        <field name="inherit_id" ref="product.product_normal_form_view" />
+        <field name="arch" type="xml">
+            <xpath expr="/form/sheet/notebook/page[@name='general_information']//group[@name='group_general']/field[@name='categ_id']"
+                   position="before">
+                <field name="out_date" />
+                <field name="out_date_approx_type" />
+                <field name="final_price" required="True" string="Prezzo Listino"/>
+                <field name="special_price" string="Prezzo offerta base"/>
+                <field name="lst_price" readonly="True" string="Prezzo di Vendita"/>
+            </xpath>
+            <xpath expr="/form/sheet/notebook/page[@name='general_information']//group[@name='group_general']/field[@name='categ_id']"
+                   position="after">
+                <field name="med_inventory_value" readonly="True"/>
+                <field name="med_inventory_value_intax" readonly="True"/>
+            </xpath>
+            <xpath expr="/form/sheet/notebook/page[@name='general_information']//group[@name='group_standard_price']/field[@name='company_id']"
+                   position="after">
+                <field name="detax_price" readonly="True"/>
+                <field name="intax_price" readonly="True"/>
+            </xpath>
+            <xpath expr="//page[@name='general_information']/group" position="after">
+                <group name="quantity_management" string="Quantity Management">
+                    <group>
+                        <field name="qty_available_now" />
+                        <field name="qty_sum_suppliers" />
+                    </group>
+                    <group>
+                        <field name="qty_single_order" />
+                        <field name="qty_limit" />
+                        <field name="limit_action" />
+                    </group>
+                </group>
+            </xpath>
+            <xpath expr="//page[@name='general_information']" position="after">
+                <page string="Inventario" name="inventory_netaddiction">
+                    <group name="qtys"  col="4" >
+                        <label for="qty_available"/>
+                        <div>
+                            <field name="qty_available" class="oe_inline"/>
+                        </div>
+                        <field name="qty_available_now" class="oe_inline"/>
+                        <label for="incoming_qty"/>
+                        <div>
+                            <field name="incoming_qty" class="oe_inline"/>
+                        </div>
+                        <field name="outgoing_qty" class="oe_inline" />
+                        <field name="virtual_available" class="oe_inline" string="Quantità Prevista"/>
+                        <field name="qty_sum_suppliers" class="oe_inline"/>
+                    </group>
+                    <group string="Azioni quantità" col="4">
+                        <field name="qty_limit" class="oe_inline" />
+                        <field name="limit_action" class="oe_inline" />
+                        <field name="qty_single_order" class="oe_inline" />
+                    </group>
+                    <group string="Valorizzazione Inventario" col="4">
+                        <field name="property_cost_method" default="real" readonly="1"/>
+                        <field name="property_valuation" default="real_time" readonly="1"/>
+                    </group>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="netaddiction_product_supplier_detax_form" model="ir.ui.view">
+        <field name="name">netaddiction.product.supplier.detax.form</field>
+        <field name="model">product.template</field>
+        <field name="inherit_id" ref="purchase.view_product_supplier_inherit" />
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='seller_ids']" position="inside">
+                <tree>
+                    <field name="name" />
+                    <field name="min_qty" />
+                    <field name="avail_qty" />
+                    <field name="price" />
+                    <field name="detax_margin" />
+                </tree>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="netaddiction_product_template_form" model="ir.ui.view">
+        <field name="name">product.template.form</field>
+        <field name="model">product.template</field>
+        <field name="inherit_id" ref="product.product_template_only_form_view" />
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='categ_id']" position="before">
+                <field name="out_date" />
+                <field name="out_date_approx_type" />
+            </xpath>
+        </field>
+    </record>
+
+    <record id="netaddiction_product_supplierinfo_form" model="ir.ui.view">
+        <field name="name">product.supplierinfo.form</field>
+        <field name="model">product.supplierinfo</field>
+        <field name="inherit_id" ref="product.product_supplierinfo_form_view" />
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='product_code']" position="after">
+                <field name="avail_qty" />
+            </xpath>
+        </field>
+    </record>
+
+    <record id="netaddiction_product_supplierinfo_tree" model="ir.ui.view">
+        <field name="name">product.supplierinfo.tree</field>
+        <field name="model">product.supplierinfo</field>
+        <field name="inherit_id" ref="product.product_supplierinfo_tree_view" />
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='min_qty']" position="after">
+                <field name="avail_qty" />
+            </xpath>
+        </field>
+    </record>
+
+    <record id="netaddiction_product_category_form" model="ir.ui.view">
+        <field name="name">netaddiction.product.category.form</field>
+        <field name="model">product.category</field>
+        <field name="inherit_id" ref="product.product_category_form_view" />
+        <field name="arch" type="xml">
+            <xpath expr="//group[@name='first']" position="after">
+                <group name="netaddiction_check" string="Checks">
+                    <field name="check_in_internal_mail" />
+                </group>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

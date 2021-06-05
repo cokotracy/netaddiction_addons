@@ -1,0 +1,262 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <data>
+
+        <template id="bolla_di_spedizione">
+            <t t-call="web.html_container">
+                <style>
+                    .container{
+                        margin: 8px !important;
+                        padding: 0 !important;
+                    }
+                </style>
+                <t t-foreach="docs" t-as="o">
+                    <div class="page">
+                        <table  border="0" cellspacing="0" cellpadding="0" style="font-family:Arial, Helvetica, sans-serif; font-size:12px; font-weight:bold; line-height:14px; margin:0px; padding:0px; ">
+                            <tr>
+                                <td align="left" valign="top" style="font-family:Arial, Helvetica, sans-serif; font-size:12px; font-weight:bold; line-height:14px;">
+                                    <table  border="0" cellspacing="0" cellpadding="0" style="font-family:Arial, Helvetica, sans-serif; font-size:12px; font-weight:bold; line-height:14px; margin:0px; padding:0px; ">
+                                        <tr>
+                                            <td width="215" align="left" valign="middle"><span t-field="o.company_id.logo" t-field-options="{'widget': 'image', 'class': 'img-rounded'}" /></td>
+                                            <td width="333" rowspan="2" align="right" valign="top">
+                                                <table width="333" border="0" cellspacing="0" cellpadding="0">
+                                                    <tr>
+                                                        <td width="333" align="right" valign="middle" style="font-family:Arial, Helvetica, sans-serif; font-size:16px; font-weight:bold; line-height:18px;">
+                                                        <em style="font-size:12px">Ordine:</em> <span t-field="o.origin"/><br/>
+                                                        <em style="font-size:12px">Dest:</em> <span t-field="o.sale_id.partner_shipping_id.name"/></td>
+                                                    </tr>
+                                                </table>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td align="center" valign="middle" style="font-size:9px; font-family:Arial, Helvetica, sans-serif;font-weight:normal !important">Mail:<span t-field="o.company_id.email"/></td>
+                                        </tr>
+                                        <tr>
+                                            <td height="10" colspan="2" align="left" valign="middle"></td>
+                                        </tr>
+                                        <tr>
+                                            <td height="11" colspan="2" align="left" valign="middle" style="font-family:Arial, Helvetica, sans-serif; font-size:12px; font-weight:bold; line-height:14px;">
+                                                <table  border="0" cellspacing="0" cellpadding="0">
+                                                    <tbody>
+                                                        <tr>
+                                                            <td width="100" align="left" valign="top" style="font-family:Arial, Helvetica, sans-serif; font-size:16px; font-weight:bold; line-height:18px;"><br/>
+                                                                <strong>
+                                                                    <em style="font-size:12px">Pezzi:</em> <span t-field="o.number_of_pieces"/> <br/>
+                                                                    <em t-if="'SDA' in o.carrier_id.name" style="font-size:18px"><b>SDA</b></em>
+                                                                    <em t-if="'Magazzino' in o.carrier_id.name" style="font-size:18px"><b>MAGAZZINO</b></em>
+                                                                </strong>
+                                                            </td>
+                                                            <td width="448" align="right" valign="top">
+                                                                <table cellpadding="0" cellspacing="0" border="0">
+                                                                    <tbody>
+                                                                        <tr>
+                                                                            <td>
+                                                                                <img t-att-src="o.barcode_image" style="width:448px; height:50px" />
+                                                                                <center><span t-field="o.delivery_barcode"/></center>
+                                                                            </td>
+                                                                        </tr>
+                                                                    </tbody>
+                                                                </table>
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td height="30" colspan="2" align="left" valign="top"></td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td height="10" colspan="2" align="left" valign="top"></td>
+                                        </tr>
+
+                                        <tr>
+                                            <td width="215" height="21" align="left" valign="middle">
+                                                <span t-field="o.company_id.logo" t-field-options="{'widget': 'image', 'class': 'img-rounded'}" />
+                                            </td>
+                                            <td width="110" height="21" align="right" valign="top">
+
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="2" align="center" valign="middle" style="color:#666666 !important; font-size:11px !important; font-weight:bold; line-height:13px; padding:5px 0px">
+                                                <!-- FIXME FAX KeyError for company_id -->
+                                                <span t-field="o.company_id.name"/> - <span t-field="o.company_id.street"/> - <span t-field="o.company_id.street2"/> - <span t-field="o.company_id.zip"/> - <span t-field="o.company_id.city"/> - <span t-field="o.company_id.state_id"/><br/>
+                                                P.IVA <span t-field="o.company_id.vat"/> <!-- - Fax. <span t-field="o.company_id.fax"/>--> - Mail. <span t-field="o.company_id.email"/>
+                                            </td>
+                                        </tr>
+
+
+                                    </table>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td height="14"  align="center" valign="middle" style="background-color:black; font-size:11px; text-align:center; line-height:14px; color:white;">
+                                    <strong>DDT</strong> - Ordine: <strong><span t-field="o.origin"/></strong> - Data: <strong><span t-field="o.sale_id.create_date"/></strong> - Pagamento: <strong><span t-field="o.sale_id.payment_term_id"/></strong>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <table  border="0" cellspacing="0" cellpadding="0" style="padding-top:5px;">
+                                    <tbody><tr>
+                                        <td width="274" height="16" align="left" valign="middle" style="font-size:12px;"><em><strong>Cliente:</strong></em></td>
+                                        <td width="274" height="16" align="left" valign="middle" style="font-size:12px;"><em><strong>Indirizzo di Consegna:</strong></em></td>
+                                    </tr>
+                                    <tr>
+                                        <td width="274" align="left" valign="top">
+                                            <table width="270" border="0" cellspacing="0" cellpadding="0">
+                                                <tbody>
+                                                    <tr>
+                                                        <td width="205" align="left" valign="top" style="border-left:1px solid black; font-size:12px; padding-left:3px;font-weight:normal !important">
+                                                            <span t-field="o.sale_id.partner_id.name"/><br/>
+                                                            <span t-field="o.sale_id.partner_id.email"/><br/>
+                                                            <span t-field="o.sale_id.partner_id.mobile"/><br/>
+                                                            <span t-field="o.sale_id.partner_id.phone"/><br/>
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </td>
+                                        <td width="274" align="left" valign="top">
+                                            <table width="270" border="0" cellspacing="0" cellpadding="0">
+                                                <tbody>
+                                                    <tr>
+                                                        <td width="205" style="border-left:1px solid black; font-size:12px; padding-left:3px;font-weight:normal !important">
+                                                            <span t-field="o.sale_id.partner_shipping_id.name"/><br/>
+                                                            <span t-field="o.sale_id.partner_shipping_id.street"/>
+                                                            <span t-field="o.sale_id.partner_shipping_id.street2"/><br/>
+                                                            <span t-field="o.sale_id.partner_shipping_id.city"/>,
+                                                            <span t-field="o.sale_id.partner_shipping_id.zip"/><br/>
+                                                            <span t-field="o.sale_id.partner_shipping_id.country_id"/><br/>
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </td>
+                                    </tr>
+                                </tbody></table></td>
+                            </tr>
+                            <tr>
+                                <td height="5"></td>
+                            </tr>
+                            <tr>
+                                <td align="center" valign="middle">
+                                    <table width="100%" border="0" cellspacing="1" cellpadding="0">
+                                        <tbody>
+                                            <tr>
+                                                <td width="70" align="center" valign="middle" style="background-color:black; font-size:9px; text-align:center; line-height:12px; color:white;"><strong>Q.tà</strong></td>
+                                                <td width="90" align="center" valign="middle" style="background-color:black; font-size:9px; text-align:center; line-height:12px; color:white;"><strong>Cat.</strong></td>
+                                                <td align="center" valign="middle" style="background-color:black; font-size:9px; text-align:center; line-height:12px; color:white;"><strong>Titolo</strong></td>
+                                                <!-- FIXME In Odoo 13.0, picking hasn't prices.
+                                                     Hide all the prices references -->
+                                                <!-- <td width="45" align="center" valign="middle" style="background-color:black; font-size:9px; text-align:center; line-height:12px; color:white;"><strong>Prz. Unitario €</strong></td>
+                                                <td width="45" align="center" valign="middle" style="background-color:black; font-size:9px; text-align:center; line-height:12px; color:white;"><strong>Tot.€</strong></td> -->
+                                            </tr>
+                                            <!-- FIXME In Odoo 13.0, picking hasn't prices.
+                                                 Hide all the prices references -->
+                                            <!-- <t t-set="subtotal" t-value="0"/>
+                                            <t t-set="subtotal_tax" t-value="0"/> -->
+                                            <t t-foreach="o.move_line_ids_without_package" t-as="detail">
+                                                <tr>
+                                                    <td align="center" valign="middle" style="background-color:#FFFFFF; font-size:14px; line-height:14px; padding:3px 0px; border-bottom:3px solid black;">
+                                                        <strong>
+                                                            <span t-esc="int(float(detail.qty_done))" />
+                                                        </strong>
+                                                    </td>
+                                                    <td align="center" valign="middle" style="background-color:#000000; font-size:14px; line-height:14px; padding:5px 2px; border-bottom:3px solid black; color:#FFF">
+                                                        <strong style="color:#FFFFFF">
+                                                            <span t-esc="detail.product_id.categ_id.name" />
+                                                        </strong>
+                                                    </td>
+                                                    <td align="left" valign="middle" style="background-color:#FFFFFF; font-size:12px; line-height:12px; padding:5px; border-bottom:3px solid black;font-weight:normal !important">
+                                                        <span t-esc="detail.product_id.display_name" /><br/>
+                                                        <span style="font-size:11px; float:left; margin-top:5px; margin-right:20px;">SKU: <strong>
+                                                            <span t-esc="detail.product_id.id" />
+                                                        </strong></span>
+                                                        <span style="font-size:11px; float:left; margin-top:5px;">BARCODE: <strong>
+                                                            <span t-esc="detail.product_id.barcode" />
+                                                        </strong></span>
+                                                    </td>
+                                                    <!-- FIXME In Odoo 13.0, picking hasn't prices.
+                                                         Hide all the prices references -->
+                                                    <!-- <td align="left" valign="middle" style="background-color:#FFFFFF; font-size:12px; line-height:12px; padding:5px; border-bottom:3px solid black;font-weight:normal !important">
+                                                        PRICE UNIT HERE
+                                                    </td>
+                                                    <td align="left" valign="middle" style="background-color:#FFFFFF; font-size:12px; line-height:12px; padding:5px; border-bottom:3px solid black;font-weight:normal !important">
+                                                        PRICE TOTAL HERE
+                                                    </td> -->
+                                                </tr>
+                                            </t>
+                                            <tr>
+                                                <td colspan="6" align="left" valign="top" style="padding-bottom:3px; border-bottom:1px solid black;">
+                                                    <table  border="0" cellspacing="0" cellpadding="0">
+                                                        <tr>
+                                                            <td width="367" align="left" valign="top" style="padding:5px 2px 2px 2px;">
+                                                                <!-- TODO: Commenti-->
+                                                            </td>
+                                                            <!-- FIXME In Odoo 13.0, picking hasn't prices.
+                                                                 Hide all the prices references -->
+                                                            <!-- <td width="181" align="right" valign="top" style="font-size:12px; padding:5px 7px 2px 5px;">
+                                                                <table width="170" border="0" cellspacing="0" cellpadding="0">
+                                                                    <tr>
+                                                                        <td width="110" align="right" valign="middle" style="font-size:12px; line-height:14px;">
+                                                                            <strong>Imponibile:</strong>
+                                                                        </td>
+                                                                        <td width="60" align="right" valign="middle" style="font-size:12px; line-height:16px;">
+                                                                            <strong><t t-esc="subtotal"/></strong>
+                                                                        </td>
+                                                                    </tr>
+
+                                                                    <tr>
+                                                                        <td width="110" align="right" valign="middle" style="font-size:12px; line-height:14px;">
+                                                                            <strong><t t-esc="o.carrier_id.name"/>:</strong>
+                                                                        </td>
+                                                                        <td width="60" align="right" valign="middle" style="font-size:12px; line-height:16px;">
+                                                                            <strong><t t-esc="o.carrier_price"/></strong>
+                                                                        </td>
+                                                                    </tr>
+                                                                    <t t-set="carrier_tax" t-value="o.carrier_price"/>
+
+                                                                    <tr>
+                                                                        <td width="110" align="right" valign="middle" style="font-size:12px; line-height:14px;">
+                                                                            <strong>Tasse:</strong>
+                                                                        </td>
+                                                                        <td width="60" align="right" valign="middle" style="font-size:12px; line-height:16px;">
+                                                                            <t t-set="tax" t-value="subtotal_tax"/>
+                                                                            <strong><t t-esc="round(tax,2)"/></strong>
+                                                                        </td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td width="110" align="right" valign="middle" style="font-size:12px; line-height:14px;">
+                                                                            <strong>Totale:</strong>
+                                                                        </td>
+                                                                        <td width="60" align="right" valign="middle" style="font-size:12px; line-height:16px;">
+                                                                            <t t-set="total" t-value="tax + subtotal + o.carrier_price"/>
+                                                                            <strong><t t-esc="round(total,2)"/></strong>
+                                                                        </td>
+                                                                    </tr>
+
+                                                                </table>
+
+                                                            </td> -->
+                                                        </tr>
+
+                                                    </table>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td height="20" align="center" valign="middle" style="font-size:12px; line-height:20px;">
+                                    Grazie per aver scelto Multiplayer.com!
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </t>
+            </t>
+        </template>
+    </data>
+</odoo>

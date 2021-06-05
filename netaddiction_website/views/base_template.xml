@@ -1,0 +1,307 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <template id="_assets_primary_variables" inherit_id="website._assets_primary_variables" priority="1">
+        <xpath expr="//link[last()]" position="after">
+            <link rel="stylesheet" type="text/scss" href="/netaddiction_website/static/src/scss/primary_variables.scss"/>
+        </xpath>
+    </template>
+
+    <template id="_assets_frontend_helpers" inherit_id="website._assets_frontend_helpers" priority="1">
+        <xpath expr="//link" position="before">
+            <link rel="stylesheet" type="text/scss" href="/netaddiction_website/static/src/scss/bootstrap_overridden.scss"/>
+        </xpath>
+    </template>
+
+    <template id="assets_frontend" inherit_id="web.assets_frontend" name="">
+        <xpath expr="//link[last()]" position="after">
+            <link rel="stylesheet" type="text/scss" href="/netaddiction_website/static/src/scss/main.scss"/>
+            <link rel="stylesheet" type="text/scss" href="/netaddiction_website/static/src/scss/shop_page.scss"/>
+        </xpath>
+        <xpath expr="." position="inside">
+            <script type="text/javascript" src="/netaddiction_website/static/src/js/main_page.js"></script>
+            <script type="text/javascript" src="/netaddiction_website/static/src/js/best_seller_widget.js"></script>
+            <script type="text/javascript" src="/netaddiction_website/static/src/js/product_category_details.js"></script>
+            <script type="text/javascript" src="/netaddiction_website/static/src/js/s_select_brand_category.js"></script>
+            <script type="text/javascript" src="/netaddiction_website/static/src/js/snippets_options.js"></script>
+        </xpath>
+    </template>
+
+    <!-- menu for mobile view -->
+    <!-- <template id="netaddictionPreheaderCollapse" inherit_id="website.layout" name="preHeaderCollapse">
+
+    </template> -->
+
+    <!--TODO: check other way for better render category menuitem
+        OR
+         Create 'Mega Menu' manuel and update menu using web_editor
+    -->
+    <template id="netaddictionCategoryHeader" inherit_id="website.layout" name="Header Category">
+        <xpath expr="//header//ul[@id='top_menu']/li" position="before">
+            <t t-set="website_product_category" t-value="website.website_product_category()" />
+            <li t-attf-class="nav-item dropdown #{'' if website_product_category else 'd-none'}" t-ignore="true">
+                <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">
+                    <span>Choose by <b>Category</b></span>
+                </a>
+                <div class="dropdown-menu" role="menu">
+                    <t t-foreach="website_product_category" t-as="product_category">
+                        <a t-attf-href="/shop/category/#{product_category.id}" role="menuitem" class="dropdown-item"><t t-esc="product_category.name"/></a>
+                    </t>
+                </div>
+            </li>
+            <li class="nav-item divider"/>
+        </xpath>
+    </template>
+
+    <!-- PREHEADER - Add Logo, Searchbar, Login -->
+    <template id="netaddictionPreheader" inherit_id="website.layout" name="preHeader">
+        <xpath expr="//div[@id='wrapwrap']/header/nav" position="attributes">
+            <attribute name="class" separator=" " add="d-none d-sm-block"/>
+        </xpath>
+        <xpath expr="//div[@id='wrapwrap']/header/nav/div/a" position="attributes">
+            <attribute name="class" separator=" " add="d-none"/>
+        </xpath>
+
+        <xpath expr="//header//ul[@id='top_menu']/li[contains(@t-attf-class, 'o_wsale_my_cart')]" position="replace"/>
+
+        <xpath expr="//div[@id='top_menu_collapse']/ul" position="attributes">
+            <attribute name="class" separator=" " remove="ml-auto"/>
+        </xpath>
+        <xpath expr="//ul[@id='top_menu']/li[@t-if='website.user_id != user_id']/a" position="replace"/>
+
+        <xpath expr="//div[@id='wrapwrap']/header/nav" position="before">
+            <nav class="navbar navbar-expand-md" id="preheader">
+                <div class="container">
+                    <t t-set="website_sale_order" t-value="website.sale_get_order()" />
+                    <a href="/" class="navbar-brand logo">
+                        <span t-field="website.logo" t-options="{'widget': 'image'}" role="img" t-att-aria-label="'Logo of %s' % website.name" t-att-title="website.name" />
+                    </a>
+                    <span class="d-md-none" style="margin-right: 1rem;">
+                        <a class="o_wsale_my_cart" href="/shop/cart">
+                            <i class="fa fa-shopping-cart fa-2x"></i>
+                            <sup t-attf-class="my_cart_quantity badge badge-primary" t-esc="website_sale_order and website_sale_order.cart_quantity or ''" t-att-data-order-id="website_sale_order and website_sale_order.id or ''"/>
+                        </a>
+                    </span>
+                    <div class="row w-100">
+                        <div class="col-md-7 pr-0">
+                            <span id="top_netaddiction_searchbar">
+                                <t t-call="website_sale.s_products_searchbar_input"/>
+                            </span>
+                        </div>
+                        <div class="col-md-5 collapse navbar-collapse p-0 d-sm-none">
+                            <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#top_netaddiction_menu_collapse" aria-haspopup="true" aria-expanded="true">
+                                <span class="navbar-toggler-icon"/>
+                            </button>
+                            <ul class="nav navbar-nav ml-auto text-right" id="top_menu_preHeader">
+                                <li class="nav-item dropdown" t-ignore="true" t-if="not user_id._is_public()">
+                                    <a href="#" class="nav-link dropdown-toggle" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                                        <b>
+                                            <span t-esc="user_id.name[:23] + '...' if user_id.name and len(user_id.name) &gt; 25 else user_id.name"/>
+                                        </b>
+                                    </a>
+                                    <div class="dropdown-menu js_usermenu" role="menu" aria-labelledby="navbarDropdown">
+                                        <a href="/my/home" role="menuitem" class="dropdown-item">My Account</a>
+                                        <a id="o_logout" class="dropdown-item" t-attf-href="/web/session/logout?redirect=/" role="menuitem">Logout</a>
+                                    </div>
+                                </li>
+                                <li groups="base.group_public" class="nav-item">
+                                    <a t-attf-href="/web/login" class="nav-link">
+                                        <b>Sign in</b>
+                                    </a>
+                                </li>
+                                <li class="nav-item divider" t-ignore="true"/>
+                                <li t-attf-class="nav-item o_wsale_my_cart">
+                                    <a href="/shop/cart" class="nav-link">
+                                        <i class="fa fa-shopping-cart"></i>
+                                        My Cart<sup t-attf-class="my_cart_quantity o_animate_blink badge badge-primary" t-esc="website_sale_order and website_sale_order.cart_quantity or ''" t-att-data-order-id="website_sale_order and website_sale_order.id or ''"/>
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </nav>
+        </xpath>
+        <xpath expr="//div[@id='wrapwrap']/main/t[@t-raw='0']" position="before">
+            <div class="container">
+                <a href="https://t.me/multiplayershop" class="text-center">
+                    <img class="img-responsive mt16 w-100" src="/netaddiction_website/static/src/img/mcombm-telegramshipping-1440x120.jpg"/>
+                </a>
+            </div>
+        </xpath>
+    </template>
+
+    <template id="netaddiction_portal_show_sign_in" inherit_id="portal.portal_show_sign_in">
+        <xpath expr="//ul[@id='top_menu']/li[hasclass('divider')]" position="replace"/>
+        <xpath expr="//ul[@id='top_menu']//li[last()]" position="replace"/>
+    </template>
+
+    <template id="netaddiction_footer_custom" inherit_id="website.layout" name="Footer">
+        <xpath expr="//div[@id='footer']" position="replace">
+            <div id="footer" class="oe_structure oe_structure_solo" t-ignore="true" t-if="not no_footer">
+                <section class="s_text_block pt16 pb8">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-lg-4 text-center">
+                                <a href="#">Gestione Account e Ordini</a> - <a href="#">Affiliazioni</a>
+                            </div>
+                            <div class="col-lg-2 text-center">
+                                <a href="#">Informativa sulla Privacy</a>
+                            </div>
+                            <div class="col-lg-3 text-center">
+                                <a href="#" target="_blank">Termini e condizioni di vendita</a>
+                            </div>
+                            <div class="col-lg-3 text-center">
+                                <a href="#">Costi e metodi di spedizione</a>
+                            </div>
+                        </div>
+                        <div class="clearfix"><br/></div>
+                        <div class="row">
+                            <div class="col-12 text-center">
+                                <p><strong>Hai bisogno di aiuto per il tuo ordine? Contattaci via mail/telefono!</strong>
+                                    <br/>
+                                    <em>(Servizio di assistenza clienti attivo dalle 9:30 alle 16 dal Lunedì al Venerdì)</em>
+                                </p>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-12">
+                                <p class="text-center">
+                                    <strong>Contatta l'assistenza clienti:</strong><br/>
+                                    Scrivi a <a href="mailto:shopping@multiplayer.com"><strong class="mail">shopping@multiplayer.com</strong></a>
+                                </p>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-12">
+                                <p class="text-center">
+                                    <strong>Multiplayer.com: il miglior sito di Vendita Videogiochi Libri e DVD Online</strong><br/>
+                                    Multiplayer.com è un marchio di proprietà di NetAddiction S.r.l.<br/>
+                                    P. IVA 01206540559 - Via Arnaldo Maria Angelini, 12 - 05100 - Terni (TR) - Italy - TEL: 0744 2462990
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </xpath>
+    </template>
+
+    <template id="netaddiction_home_page" inherit_id="website.homepage" name="Netaddiction Home Page">
+        <xpath expr="//div[@id='wrap']" position="inside">
+            <div class="oe_structure"/>
+            <div class="container mt16 mb16">
+                <div id="netaddictionCarousel" class="carousel slide" data-ride="carousel">
+                    <div class="carousel-inner">
+                        <div class="carousel-item active">
+                            <img class="d-block w-100" src="/netaddiction_website/static/src/img/Artwork_1440x300.png" alt="First slide"/>
+                        </div>
+                        <div class="carousel-item">
+                            <img class="d-block w-100" src="/netaddiction_website/static/src/img/FUnko_pop.jpg" alt="Second slide"/>
+                        </div>
+                        <div class="carousel-item">
+                            <img class="d-block w-100" src="/netaddiction_website/static/src/img/Artwork_1440x300.jpg" alt="Third slide"/>
+                        </div>
+                        <div class="carousel-item">
+                            <img class="d-block w-100" src="/netaddiction_website/static/src/img/sabbia_2.jpg" alt="Forth slide"/>
+                        </div>
+                    </div>
+                    <!-- Controls -->
+                    <a class="o_carousel_product_control carousel-control-prev" href="#netaddictionCarousel" role="button" data-slide="prev">
+                        <span class="carousel-control-prev-icon"></span>
+                        <span class="sr-only">Previous</span>
+                    </a>
+                    <a class="o_carousel_product_control carousel-control-next" href="#netaddictionCarousel" role="button" data-slide="next">
+                        <span class="carousel-control-next-icon"></span>
+                        <span class="sr-only">Next</span>
+                    </a>
+                </div>
+            </div>
+            <div class="netaddiction_snippet">
+                <div class="o_best_seller pt24 pb24 o_not_editable">
+                    <div class="container">
+                        <h3 class="text-left">Best Sellers</h3>
+                        <hr/>
+                        <div class="slider o_best_seller_slider o_not_editable"/>
+                    </div>
+                </div>
+                <t t-call="website_sale.s_products_recently_viewed"/>
+                <t t-call="netaddiction_website.netaddiction_image_thumbnail_view"/>
+            </div>
+            <div class="oe_structure"/>
+        </xpath>
+    </template>
+
+    <!-- <template id="netaddiction_products_mostly_sold" inherit_id="netaddiction_website.netaddiction_home_page" active="True" customize_show="True" name="Mostly Sold Products">
+        <xpath expr="//t[@t-call='netaddiction_website.netaddiction_image_thumbnail_view']" position="before">
+            <div class="s_products_mostly_sold">
+                <t t-call="website_sale.s_products_recently_viewed"/>
+            </div>
+        </xpath>
+    </template> -->
+
+    <!-- <template id="netaddiction_recently_viewed_products_product" inherit_id="netaddiction_website.netaddiction_home_page">
+        <xpath expr="//t[@t-call='netaddiction_website.netaddiction_image_thumbnail_view']" position="before">
+            <t t-call="website_sale.s_products_recently_viewed"/>
+        </xpath>
+    </template> -->
+
+    <template id="netaddiction_image_thumbnail_view" name="Netaddiction Thumbnail View">
+        <div class="container mt16 mb16">
+            <div class="row">
+                <div class="col-lg-4 mb8">
+                    <div class="card">
+                        <a href="https://multiplayer.com/ricerca/?categoria=Figures%7C%2A&amp;sort=novita&amp;s=">
+                            <img class="card-img-top" src="/netaddiction_website/static/src/img/Artwork_720x600_1_hKult81.jpg"/>
+                        </a>
+                    </div>
+                </div>
+                <div class="col-lg-4 mb8">
+                    <div class="card">
+                        <a href="https://multiplayer.com/prodotti/ultime-uscite/?categoria=Modellismo+e+Model+Kit%7C%2A&amp;s=">
+                            <img class="card-img-top" src="/netaddiction_website/static/src/img/preview-full-models-ultime.jpg"/>
+                        </a>
+                    </div>
+                </div>
+                <div class="col-lg-4 mb8">
+                    <div class="card">
+                        <a href="https://multiplayer.com/prodotti/ultime-uscite/?categoria=Figures%7C%2A&amp;s=">
+                            <img class="card-img-top" src="/netaddiction_website/static/src/img/preview-full-figure-ultime.jpg"/>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="clearfix d-none d-sm-block"><br/></div>
+            <div class="row">
+                <div class="col-lg-4 mb8">
+                    <div class="card">
+                        <a href="https://multiplayer.com/ricerca/?s=&amp;attributo=Marca%7CMultiplayer+Edizioni">
+                            <img class="card-img-top" src="/netaddiction_website/static/src/img/edizioni-260117.jpg"/>
+                        </a>
+                    </div>
+                </div>
+                <div class="col-lg-4 mb8">
+                    <div class="card">
+                        <a href="https://multiplayer.com/prodotti/selezione/multiplayer-things.html">
+                            <img class="card-img-top" src="/netaddiction_website/static/src/img/robot-260117.jpg"/>
+                        </a>
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="card">
+                        <a href="https://multiplayer.com/ricerca/?categoria=Giochi%7C%2A&amp;s=&amp;attributo=Marca%7CNintendo">
+                            <img class="card-img-top" src="/netaddiction_website/static/src/img/plush-260117_1.jpg"/>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </template>
+
+    <template id="netaddiction_s_products_recently_viewed" inherit_id="website_sale.s_products_recently_viewed" name="Products Recently Viewed">
+        <xpath expr="//div[hasclass('slider')]" position="before">
+            <hr/>
+        </xpath>
+    </template>
+</odoo>
+

@@ -1,0 +1,126 @@
+<!-- TODO the action client reso fornitore has been removed -->
+<!--
+<?xml version="1.0" encoding="UTF-8"?>
+
+<templates id="netaddiction_supplier_reverse" xml:space="preserve">
+  <t t-name="dialog_content_supplier_reverse">
+    <select id="select_supplier_reverse">
+        <option value="" selected="selected"></option>
+        <t t-foreach="suppliers" t-as="supplier">
+          <option t-attf-value="{{supplier.id}}"><t t-esc="supplier.name"/></option>
+        </t>
+    </select>
+  </t>
+
+  <t t-name="super_block">
+    <div class="o_control_panel" style="padding-bottom: 0px;">
+			<div>
+				<ol class="breadcrumb" role="navigation">
+					<li class="breadcrumb-item active">
+						Reso per <b><t t-esc="title"/></b>
+					</li>
+				</ol>
+				<div class="o_cp_searchview" role="search">
+					<div class="o_searchview" role="search" aria-autocomplete="list">
+						<div class="o_searchview_input_container">
+							<input class="o_searchview_input" type="text" id="search" name="search" placeholder="Cerca per nome prodotto" autofocus="on" autocomplete="off"/>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-md-6">
+					<div class="o_cp_buttons">
+            <button id="send_reverse" class="btn-primary btn" type="button">Invia</button>
+					</div>
+				</div>
+				<div class="col-md-6" style="padding-left: 0;">
+          <div class="btn-group o_search_options">
+            <select name="search_supplier" id="search_supplier" style="display: inline-block; width: 50%;">
+              <option name="" disabled="disabled" selected="selected">Filtra per Fornitore</option>
+            </select>
+          </div>
+          <div id="pager" class="oe-right-toolbar">
+          </div>
+				</div>
+			</div>
+      <div class="row" style="padding-bottom:0;margin-top:10px">
+        <div class="col-md-6 oe-button-column" id="scrapped_wh">
+          <a id="scrapped_wh_link" class="active_reverse change_reverse_pick">DIFETTATI</a>
+        </div>
+        <div class="col-md-6 oe-button-column" id="normal_wh">
+          <a id="normal_wh_link" class="change_reverse_pick">MAGAZZINO</a>
+        </div>
+      </div>
+		</div>
+    <div class="o_content" id="content_reverse">
+    </div>
+  </t>
+
+   	<t t-name="page_supplier_reverse">
+   		<t t-call="super_block">
+		    <t t-set="title" >
+		    	<t t-esc="widget.supplier.name"/>
+		    </t>
+		  </t>
+   	</t>
+
+    <t t-name="table_scraped">
+      <div class="o_list_view">
+        <div class="table-responsive">
+          <table class="o_list_table table table-sm table-hover table-striped" id="purchase_in_product_list">
+            <thead>
+              <tr class="oe_list_header_columns">
+                <th width="1">
+                  <input class="oe_list_record_selector reverse_select_all" type="checkbox"/>
+                </th>
+                <th width="598">
+                        Prodotto
+                </th>
+                <th>
+                        Qty
+                </th>
+                <th help="Quantità da rendere">
+                        Qty Rend
+                </th>
+                <th>
+                        Valore Unitario
+                </th>
+                <th>
+                        Valore
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <t t-foreach="products" t-as="product">
+                <tr t-attf-data-id="{{products[product].id}}" class="product_line">
+                  <td class="oe_list_record_selector" width="1">
+                    <input name="radiogroup" class="product_selector" type="checkbox" t-attf-id="sel_{{products[product].id}}"/>
+                  </td>
+                  <td>
+                    <a href="#" class="open_product" title="Apre la scheda del prodotto" t-attf-id="product_{{products[product].id}}">
+                      <t t-esc="products[product].name"/>
+                    </a>
+                  </td>
+                  <td>
+                    <t t-esc="products[product].qty"/>
+                  </td>
+                  <td>
+                    <input type="number" class="qty_reverse" t-attf-max="{{products[product].qty}}" min="0" style="width:70px" value="0" t-attf-id="qta_{{products[product].id}}"/>
+                  </td>
+                  <td>
+                    <t t-esc="products[product].single_inventory"/>
+                  </td>
+                  <td>
+                    <t t-esc="products[product].inventory_value"/>
+                  </td>
+                </tr>
+              </t>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </t>
+
+</templates>
+-->

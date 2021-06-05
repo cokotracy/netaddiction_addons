@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+<data>
+
+    <record model="ir.ui.view" id="gdpr_partner_form">
+        <field name="name">gdpr.partner.form</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//sheet" position="before">
+                <header>
+                    <button name="%(action_partner_gdpr_disable)d"
+                            type="action"
+                            string="[GDPR] Disable partner"
+                            />
+                </header>
+            </xpath>
+        </field>
+    </record>
+
+</data>
+</odoo>
