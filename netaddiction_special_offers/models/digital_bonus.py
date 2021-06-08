@@ -25,7 +25,7 @@ class SaleCouponProgramDigitalBonus(models.Model):
     )
 
     coupon_id = fields.Many2one(
-        'sale.coupon.program',
+        'coupon.program',
         string="Coupon",
         readonly=True,
     )

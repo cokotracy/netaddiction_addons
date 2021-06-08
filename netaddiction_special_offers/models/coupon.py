@@ -4,8 +4,8 @@
 from odoo import _, api, fields, models
 
 
-class SaleCouponProgram(models.Model):
-    _inherit = 'sale.coupon.program'
+class CouponProgram(models.Model):
+    _inherit = 'coupon.program'
 
     digital_bonus_id = fields.Many2one(
         'sale.coupon.program.digital.bonus',
@@ -43,7 +43,7 @@ class SaleCouponProgram(models.Model):
 
 
 class SaleCouponReward(models.Model):
-    _inherit = 'sale.coupon.reward'
+    _inherit = 'coupon.reward'
 
     reward_type = fields.Selection(
         selection_add=[('digital_bonus', 'Digital Bonus')],
@@ -60,7 +60,7 @@ class SaleCouponReward(models.Model):
             lambda reward: reward.reward_type == 'digital_bonus'
         ).ids
         for res in reward_names:
-            coupon = self.env['sale.coupon.program'].browse(res[0])
+            coupon = self.env['coupon.program'].browse(res[0])
             result.append((res[0], res[0] in digital_bonus_reward_ids
                           and _("Digital Bonus for coupon {}"
                           .format(coupon.name)) or res[1]))
