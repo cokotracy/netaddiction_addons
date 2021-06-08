@@ -7,10 +7,6 @@ from odoo import api, models, fields
 class SaleOrderLine(models.Model):
     _inherit = 'sale.order.line'
 
-    state = fields.Selection(selection_add=[
-        ('sale', 'In Lavorazione'),
-        ('problem', 'Problema'),
-    ])
 
     @api.depends('product_id', 'order_id.state', 'qty_invoiced', 'qty_delivered')
     def _compute_product_updatable(self):
