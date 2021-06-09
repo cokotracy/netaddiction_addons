@@ -4,7 +4,6 @@
 from datetime import date, timedelta
 
 from odoo import api, fields, models
-from odoo.addons import decimal_precision as dp
 
 
 class ProductCategory(models.Model):
@@ -111,13 +110,13 @@ class ProductProduct(models.Model):
     detax_price = fields.Float(
         string="Prezzo di vendita deivato",
         compute="_get_visual_price",
-        digits_compute=dp.get_precision('Product Price'),
+        digits='Product Price',
     )
 
     intax_price = fields.Float(
         string="Prezzo di vendita Ivato",
         compute="_get_visual_price",
-        digits_compute=dp.get_precision('Product Price'),
+        digits='Product Price',
         )
 
     final_price = fields.Float(
