@@ -18,9 +18,13 @@ class StockPicking(models.Model):
         string="Barcode image",
     )
 
-    batch_id = fields.Many2one(
-        oldname='wave_id'
-    )
+    # TODO oldname is not a valid parameter on Odoo 14 anymore.
+    # It looks like wave_id is properly migrated to batch_id by
+    # upgrade.odoo.com. In case another migration iteration gives us a happy
+    # result, we can remove this field altogether
+    # batch_id = fields.Many2one(
+    #     oldname='wave_id'
+    # )
 
     date_of_shipping_home = fields.Date(
         compute='_compute_date_of_shipping',
