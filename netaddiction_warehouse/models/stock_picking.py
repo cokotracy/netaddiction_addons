@@ -58,6 +58,7 @@ class StockPicking(models.Model):
 
     sale_order_status = fields.Selection(
         related='sale_id.state',
+        string="Sale Order Status",
     )
 
     sale_order_payment_method = fields.Many2one(
