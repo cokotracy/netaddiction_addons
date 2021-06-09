@@ -11,7 +11,8 @@
                     <button name="create_csv" class="btn-primary" type="object" string="Crea Csv" attrs="{'invisible': [('state','=','close')]}"/>
                     <button name="import_csv" class="btn" type="object" string="Importa Csv Ritorno Fiera" attrs="{'invisible': [('state','=','close')]}"/>
                     <button name="close_show" class="btn" type="object" string="Chiudi Fiera" attrs="{'invisible': [('state','=','close')]}"/>
-                    <button name="difference" class="btn" type="object" string="Calcola Differenze" attrs="{'invisible': [('state','!=','close')]}"/>
+                    <!-- Method difference has been disabled in the model -->
+                    <!--<button name="difference" class="btn" type="object" string="Calcola Differenze" attrs="{'invisible': [('state','!=','close')]}"/>-->
                     <field name="state" widget="statusbar"/>
                 </header>
                 <sheet>
@@ -169,11 +170,8 @@
                     <group>
                     </group>
                     <div>
-                        <button string="Vai"
-                                type="object"
-                                name="execute"
-                                class="oe_highlight"
-                                />
+                        <!-- Method execute has been disabled in the model -->
+                        <!--<button string="Vai" type="object" name="execute" class="oe_highlight" />-->
                     </div>
                 </sheet>
             </form>
