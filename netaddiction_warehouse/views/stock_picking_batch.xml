@@ -11,7 +11,7 @@
                 <filter name="uscita" string="Clienti" domain="[('in_exit', '=', False)]"/>
                 <separator/>
                 <filter name="Today" string="Oggi" domain="[('date_done', '&gt;', (context_today()).strftime('%Y-%m-%d 00:00:00'))]"/>
-                <filter name="Yesterday" string="Ieri" domain="[('date_done', '&gt;', (context_today() - datetime.timedelta(days=1)).strftime('%Y-%m-%d 00:00:00'), ('date_done','&lt;', (context_today()).strftime('%Y-%m-%d 00:00:00')))]"/>
+                <filter name="Yesterday" string="Ieri" domain="[('date_done', '&gt;', (context_today() - datetime.timedelta(days=1)).strftime('%Y-%m-%d 00:00:00')), ('date_done','&lt;', (context_today()).strftime('%Y-%m-%d 00:00:00'))]"/>
                 <field name="supplier"/>
                 <separator/>
             </xpath>
