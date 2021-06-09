@@ -38,6 +38,7 @@
         <field name="model">netaddiction_octopus.supplier</field>
         <field name="arch" type="xml">
             <search string="Fornitori">
+                <field name="order" />
                 <filter name="all" string="All" domain="[('active', 'in', (True, False))]"/>
                 <filter name="handler" string="Octopus" domain="[('handler', '!=', False)]"/>
             </search>
