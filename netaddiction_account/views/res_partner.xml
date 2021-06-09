@@ -6,7 +6,7 @@
         <field name="model">res.partner</field>
         <field name="inherit_id" ref="account.partner_view_buttons"/>
         <field name="arch" type="xml">
-            <xpath expr="//button[@name='action_view_partner_invoices']/div/span[@class='o_stat_text']" position="replace">
+            <xpath expr="//button[@name='action_view_partner_invoices']/div/span[hasclass('o_stat_text')]" position="replace">
                 <span class="o_stat_text">Invoices</span>
             </xpath>
             <xpath expr="//button[@name='action_view_partner_invoices']//field[@name='total_invoiced']" position="replace">
