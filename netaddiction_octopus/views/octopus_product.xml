@@ -25,6 +25,7 @@
         <field name="model">netaddiction_octopus.product</field>
         <field name="arch" type="xml">
             <search>
+                <field name="name" />
                 <filter name="filter_is_new" string="Nuovi" domain="[('is_new', '=', True)]"/>
                 <filter name="group_group" string="Gruppo" context="{'group_by': 'group_key'}"/>
                 <filter name="group_barcode" string="Barcode" context="{'group_by': 'barcode'}"/>
