@@ -17,6 +17,7 @@
         'netaddiction_products',
         ],
     'data': [
+        'security/ir.model.access.csv',
         'data/template_email.xml',
         'data/cron.xml',
         'views/assets.xml',
