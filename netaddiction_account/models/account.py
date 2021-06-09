@@ -2,7 +2,6 @@
 # License LGPL-3.0 or later (https://www.gnu.org/licenses/lgpl).
 
 from odoo import api, fields, models
-import odoo.addons.decimal_precision as dp
 from odoo.exceptions import UserError
 
 
@@ -75,17 +74,17 @@ class AccountInvoiceLine(models.Model):
     )
 
     price_compute_tax = fields.Float(
-        string="Total",
+        string="Price Total",
         store=True,
         compute="_compute_tax_price",
-        digits=dp.get_precision('Product Price')
+        digits='Product Price'
     )
 
     tax_value = fields.Float(
         string="VAT Amount",
         store=True,
         compute="_compute_tax_price",
-        digits=dp.get_precision('Product Price')
+        digits='Product Price'
     )
 
     @api.depends('product_id', 'price_unit', 'tax_ids',
