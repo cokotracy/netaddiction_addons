@@ -45,6 +45,7 @@ class StockMove(models.Model):
 
         return True
 
+    """
     @api.model
     def log_change_backorder(self, supplier, product_name, sup_code, product_id, old_qty, new_qty, author_id, company):
         attr = {
@@ -59,6 +60,7 @@ class StockMove(models.Model):
             'new_value_integer': int(new_qty)
         }
         self.env['netaddiction.log.line'].sudo().create(attr)
+     """
 
     # TODO The model netaddiction.log.line doesn't exist, adapt this code with the audit log
     # @api.model

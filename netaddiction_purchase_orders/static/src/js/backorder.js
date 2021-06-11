@@ -278,20 +278,6 @@ odoo.define('netaddiction_purchase_orders.backorder', function (require) {
                     self.products[supplier][pid]['qty'] = new_value;
                     self.do_notify('Quantità backorder aggiornata');
                     self.__parentedChildren[1].destroy();
-                    self._rpc({
-                        model: 'stock.move',
-                        method: 'log_change_backorder',
-                        args: [
-                            supplier,
-                            self.products[supplier][pid]['product_name'],
-                            self.products[supplier][pid]['supplier_code'],
-                            pid,
-                            old,
-                            new_value,
-                            self.context.uid,
-                            self.company_id
-                        ]
-                    });
                 });
             }
         },
