@@ -13,6 +13,7 @@
         'netaddiction_products',
     ],
     'data': [
+        'security/ir.model.access.csv',
         'views/config_views.xml',
         'views/product_views.xml',
         'views/orders.xml',
