@@ -8,7 +8,7 @@
     'depends': [
         'base',
         'delivery',
-        'mrp',
+        # 'mrp',
         # 'netaddiction_customer',          TODO: will it be migrated?
         'netaddiction_orders',
         'netaddiction_payments',
