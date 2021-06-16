@@ -14,7 +14,7 @@
                         </div>
                         <div class="o_setting_right_pane">
                             <label for="is_load_more"/>
-                            <span class="fa fa-lg fa-globe"/>
+                            <span class="fa fa-lg fa-globe" title="Values set here are website-specific."/>
                             <div class="text-muted">
                                 Enable Load more for load product through Ajax
                             </div>
@@ -31,7 +31,7 @@
                                 </div>
                                 <div class="mt8">
                                     <label string="Load more Image" for="load_more_image"/>
-                                    <span class="fa fa-lg fa-globe"/>
+                                    <span class="fa fa-lg fa-globe" title="Values set here are website-specific."/>
                                     <div class="text-muted">
                                         Display this image while Load more applies
                                     </div>

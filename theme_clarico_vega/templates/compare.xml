@@ -27,16 +27,12 @@
         <xpath expr="//td[@t-foreach='products']/a[1]/strong" position="attributes">
             <attribute name="class"></attribute>
         </xpath>
-        <!--<xpath expr="//td[@t-foreach='products']/a[2]/img" position="attributes">
-            <attribute name="t-attf-src">/web/image/product.product/#{product.id}/image_256/300x300</attribute>
-        </xpath>-->
         <xpath expr="//td[@t-foreach='products']/a[2]/img" position="replace">
             <div class="te_cmp_img_div">
                 <img t-attf-src="/web/image/product.product/#{product.id}/image_256/300x300"
                      class="img img-fluid" style="margin:auto;" alt="Product image"/>
             </div>
         </xpath>
-
         <xpath expr="//div[hasclass('product_summary')]" position="attributes">
             <attribute name="class">product_summary text-center</attribute>
         </xpath>

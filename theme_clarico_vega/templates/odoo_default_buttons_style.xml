@@ -20,6 +20,51 @@
             <attribute name="class">btn btn-primary btn-lg o_website_form_send te_theme_button</attribute>
         </xpath>
     </template>
+    <template id="s_website_form_button" inherit_id="website_form.s_website_form">
+        <xpath expr="//a[hasclass('btn-primary')]" position="attributes">
+            <attribute name="class">btn btn-primary btn-lg s_website_form_send te_theme_button</attribute>
+        </xpath>
+    </template>
+    <template id="s_media_list_button" inherit_id="website.s_color_blocks_2">
+        <xpath expr="//a[hasclass('btn-primary')]" position="attributes">
+            <attribute name="class">btn btn-primary te_theme_button</attribute>
+        </xpath>
+    </template>
+    <template id="s_color_blocks_2_button" inherit_id="website.s_media_list">
+        <xpath expr="//a[hasclass('btn-primary')]" position="attributes">
+            <attribute name="class">btn btn-primary te_theme_button</attribute>
+        </xpath>
+    </template>
+    <template id="s_color_blocks_2_button" inherit_id="website.s_call_to_action">
+        <xpath expr="//a[hasclass('btn-primary')]" position="attributes">
+            <attribute name="class">btn btn-primary btn-lg te_theme_button</attribute>
+        </xpath>
+    </template>
+    <template id="s_product_list_button" inherit_id="website.s_product_list">
+        <xpath expr="//div[hasclass('row')]/div[1]//a[hasclass('btn-primary')]" position="attributes">
+            <attribute name="class">btn btn-primary te_theme_button</attribute>
+        </xpath>
+        <xpath expr="//div[hasclass('row')]/div[2]//a[hasclass('btn-primary')]" position="attributes">
+            <attribute name="class">btn btn-primary te_theme_button</attribute>
+        </xpath>
+        <xpath expr="//div[hasclass('row')]/div[3]//a[hasclass('btn-primary')]" position="attributes">
+            <attribute name="class">btn btn-primary te_theme_button</attribute>
+        </xpath>
+        <xpath expr="//div[hasclass('row')]/div[4]//a[hasclass('btn-primary')]" position="attributes">
+            <attribute name="class">btn btn-primary te_theme_button</attribute>
+        </xpath>
+        <xpath expr="//div[hasclass('row')]/div[5]//a[hasclass('btn-primary')]" position="attributes">
+            <attribute name="class">btn btn-primary te_theme_button</attribute>
+        </xpath>
+        <xpath expr="//div[hasclass('row')]/div[6]//a[hasclass('btn-primary')]" position="attributes">
+            <attribute name="class">btn btn-primary te_theme_button</attribute>
+        </xpath>
+    </template>
+    <template id="s_showcase_button" inherit_id="website.s_showcase">
+        <xpath expr="//a[hasclass('btn-primary')]" position="attributes">
+            <attribute name="class">btn btn-primary te_theme_button</attribute>
+        </xpath>
+    </template>
     <template id="sale_order_portal_button" inherit_id="sale.sale_order_portal_template">
         <xpath expr="//a[hasclass('o_download_btn')]" position="attributes">
             <attribute name="class">btn btn-secondary btn-block o_download_btn te_theme_button</attribute>

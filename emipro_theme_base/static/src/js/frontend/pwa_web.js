@@ -2,6 +2,7 @@ odoo.define('emipro_theme_base.pwa_web', function (require) {
 "use strict";
     
     var html = document.documentElement;
+    var utils = require('web.utils');
     var website_id = html.getAttribute('data-website-id') | 0;
     // Detects if device is on iOS
     const isIos = () => {
@@ -13,11 +14,20 @@ odoo.define('emipro_theme_base.pwa_web', function (require) {
 
     // Checks if should display install popup notification:
     if (isIos() && !isInStandaloneMode()) {
-      var iosPrompt = $(".ios-prompt");
-        iosPrompt.show();
-        $(iosPrompt).click(function() {
-            iosPrompt.hide();
-        });
+        var iosPrompt = $(".ios-prompt");
+        var ios_pwa = utils.get_cookie('ios_pwa');
+        var pwa_cache_name = utils.get_cookie('pwa_cache_name');
+        if(!ios_pwa) {
+            iosPrompt.show();
+            $(iosPrompt).click(function() {
+                iosPrompt.remove();
+                // Create a cookie to hide message in ios
+                utils.set_cookie('ios_pwa', '1', 365*60*60*24);
+            });
+        }
+        if(pwa_cache_name && !ios_pwa) {
+            utils.set_cookie('ios_pwa', '1', 365*60*60*24);
+        }
     }
     if ('serviceWorker' in navigator) {
         if(!navigator.onLine){

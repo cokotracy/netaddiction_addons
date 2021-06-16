@@ -4,7 +4,7 @@ class ProductBrandConfig(models.TransientModel):
     _name = 'product.brand.config'
     _description = "Product Brand Configuration Wizard"
 
-    brand_id = fields.Many2one('product.brand.ept',String="Brand")
+    brand_id = fields.Many2one('product.brand.ept',string="Brand")
     product_ids = fields.Many2many('product.template')
 
     @api.onchange('brand_id')

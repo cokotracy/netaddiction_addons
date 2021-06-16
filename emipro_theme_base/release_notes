@@ -1,170 +1,127 @@
-Version 13.0.2.2.7 - 30 Mar 21
+Version 14.0.2.5.1 - 1 Jun 21
+===================================
+
+Improvement
+
+- Improved Load More & other code.
+
+Version 14.0.2.5.0 - 11 May 21
+===================================
+
+Feature
+
+- Added Mutlti Tab for Product Builder.
+
+Version 14.0.2.4.2 - 24 Apr 21
+===================================
+
+Improvement
+
+- Improved Lazy Load code.
+
+Version 14.0.2.4.1 - 16 Apr 21
+===================================
+
+Improvement
+
+- Made changes in the Variants related code.
+
+Version 14.0.2.4.0 - 7 Apr 21
+===================================
+
+Feature
+- Introduce Image Hotspot.
+
+Version 14.0.2.3.3 - 02 Apr 21
+===================================
+
+Improvement
+
+- Minor Product configuration changes
+
+Version 14.0.2.3.2 - 30 Mar 21
+===================================
+
+Improvement
+
+- Added Lazy Load for the Product Slider.
+
+Version 14.0.2.3.1 - 25 Mar 21
+===================================
+
+Improvement
+
+- Improved Product Slider Code.
+
+Version 14.0.2.3.0 - 18 Mar 21
+===================================
+
+Enhancement
+
+- Enhancement Product Builder Tool.
+
+Feature
+- Introduce Brand and Category Builder Tool.
+
+Version 14.0.2.2.0 - 4 Mar 21
+===================================
+
+Feature
+
+- Introduce Attribute Swatches with Tool-tip.
+
+Version 14.0.2.1.3 - 26 Feb 21
+===================================
+
+Improvement
+
+- Improved Code of Search Bar and zoom.
+
+Version 14.0.2.1.2 - 22 Feb 21
+===================================
+
+Improvement
+
+- Improved Offer Timer Code.
+
+Version 14.0.2.1.1 - 12 Feb 21
+===================================
+
+Improvement
+
+- Improved the Product Translation Code.
+
+Version 14.0.2.1.0 - 03 Feb 21
+===================================
+
+Improvement
+
+- Improved the Search Bar Code.
+
+Version 14.0.2.0.0 - 14 Dec 20
+===================================
+
+Feature
+
+- Introduced Product Display Builder Snippet.
+
+Version 14.0.1.0.2 - 11 Nov 20
 ===================================
 Note:First upgrade emipro_theme_base.
 
 Improvement
 
- - Added Lazy Load code for the Product Slider.
+- Improvement in slider code.
 
-Version 13.0.2.2.6 - 26 Feb 21
+Version 14.0.1.0.1 - 03 Nov 20
 ===================================
 Note:First upgrade emipro_theme_base.
 
 Improvement
 
- - Improved code logic for the search in shop page.
+- Fix issue with price range and discount message when product have price zero
 
-Version 13.0.2.2.5 - 15 Feb 21
-===================================
-Note:First upgrade emipro_theme_base.
-
-Improvement
-
- - Improved code logic for the attribute.
-
-Version 13.0.2.2.4 - 5 Nov 20
-===================================
-Note:First upgrade emipro_theme_base.
-
-Improvement
-
- - Slider code improvement changes.
- 
-Version 13.0.2.2.3 - 3 Nov 20
-===================================
-Note:First upgrade emipro_theme_base.
-
-Improvement
-
- - Improved code logic for better categories page render.
-
-Version 13.0.2.2.2 - 17 Oct 20
-===================================
-Note:First upgrade emipro_theme_base.
-
-Improvement
-
- - Slider code improvement.
-
-Version 13.0.2.2.1 - 14 Aug 20
-===================================
-Note:First upgrade emipro_theme_base and pwa_ept.
-
-Improvement
-
- - Added PWA code.
-
-
-Version 13.0.2.2.0 - 15 Jul 20
-===================================
-Features
-
- - show Associated Attribute Values
-
-Improvement
-
- - Improved Brand page filter in shop page.
-
-
-Version 13.0.2.1.0 - 20 Jun 20
-===================================
-Features
-
- - Product Count In Shop Filter
- - Exclude Unnecessary Attributes From Shop Filters 
- - Documentation Tab On Product Page
-
-Version 13.0.2.0.7 - 09 June 20
-===================================
-Improvement
-
- - Made some changes in slider in backend.
- - Quick View functionality related changes.
- - Translation related issue is fixed in Product Page offer box Days, Hours etc. text as per multiple language.
-
-Version 13.0.2.0.6 - 11 April 20
-===================================
-Improvement
-
- - Made some changes in eCommerce Categories related thing.
-
-Version 13.0.2.0.5 - 12 March 20
-===================================
-Features
-
- - Added Ajax Shopping Cart.
-
-Version 13.0.2.0.4 - 13 February 20
-===================================
-Improvement
-
- - Added social icons and vertical menu related field in web-site.
- - Removed warning message while upgrading theme.
-
-Version 13.0.2.0.3 - 28 January 20
-===================================
-Improvement
-
- - Improved in Ajax Js code for Sticky Layer navigation/Attributes & Category filters.
- - Added footer related field in web-site.
-
-Version 13.0.2.0.2 - 21 January 20
-===================================
-Bug Fixes
-
- - Made some changes in module level dependency.
-
-Features
-
- - Number of rows to show in product name selection.
-
-Version 13.0.2.0.1 - 18 January 20
-===================================
-Bug Fixes
-
- - Fixed compare popover issue.
-
-Version 13.0.2.0.0 - 10 January 20
-===================================
-
-Features
-	
-	- Menu Label
-	- Lazy Load
-	- Bestseller Slider
-	- Dynamic Product Tabs
-	- Product Discount Slider
-	- Category Discount Slider
-	- All Product Discount Slider
-	- Brand Landing Page
-	- Category Landing Page
-	- Advance Category Product Slider
-	- Advance Product Label
-	- New Product Slider
-	- Load More Products
-	- Advance Mini Cart
-	- Dynamic Discount Message
-
-Version 13.0.1.0.1 - 19 November 19
-===================================
-
-1. Fix  - Solve the dynamic menu create issue.
-
-Version 13.0.1.0.0 - 14 November 19
+Version 14.0.1.0.0 - 24 Oct 20
 ===================================
 
 1. Initial release
-
-	- Dynamic Product Slider
-	- Dynamic Category Listing
-	- Quick view
-	- Product label
-	- Dynamic category slider
-	- Dynamic Brand Slider
-	- Dynamic category Sliders
-	- Dynamic product Sliders
-	- Quick filter
-	- Brand filter
-	- Price filter
-	- Product offer timer
-	- Load product through ajax

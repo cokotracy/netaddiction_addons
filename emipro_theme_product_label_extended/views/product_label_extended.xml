@@ -18,7 +18,7 @@
                             </tr>
                             <tr>
                                 <td>
-                                    <label for="html_color" string="Color"/>
+                                    <label for="html_color" string="Background Color"/>
                                 </td>
                                 <td>
                                     <field name="html_color" widget="color"/>

@@ -28,14 +28,46 @@ odoo.define('website_slider.front_js', function (require) {
         clean: function (debug) {
             this.$target.empty();
         },
+        destroy: function () {
+        	this.$el.find('.slider_body').toggleClass('d-none', true);
+        	this.$el.find('.slider_edit_msg').toggleClass('d-none', false);
+        	this._clearContent();
+        	this._super.apply(this, arguments);
+    	},
+        _clearContent: function () {
+        	// Remove the slider html content to speed up while editing the slider
+			const $dynamicSnippetTemplate = this.$el.find('.slider_body');
+			if ($dynamicSnippetTemplate) {
+				$dynamicSnippetTemplate.html('');
+			}
+    	},
         build: function (debug) {
-            /* on built snippent render the template of style as per configuration and call the common function
+            /* on built snippet render the template of style as per configuration and call the common function
             {Play with Logic} Logic : common method if not given then display first filter data other wise based on
             argument display data on template */
             var self = this;
-            var slider_id = self.$target.attr("data-slider-id");
-            ajax.jsonRpc('/slider/render', 'call', {'slider_id': slider_id}).then(function (data) {
+            var name = self.$target.attr("name");
+            var item_ids = self.$target.attr("data-item_ids");
+            var discount_policy = self.$target.attr('data-discount_policy')
+			var slider_type = self.$target.attr('data-slider_type')
+			var style = self.$target.attr('data-style')
+            var ui_options = self.$target.attr("data-ui_option");
+            var sort_by = self.$target.attr('data-sort_by')
+            var limit = self.$target.attr('data-limit')
+            var params =  {
+            'name':name,
+            'item_ids': item_ids,
+            'slider_type':slider_type,
+            'style':style,
+            'ui_options':ui_options,
+            'limit':limit,
+            'sort_by':sort_by,
+            'discount_policy':discount_policy,
+            }
+            // Render the product slider
+            ajax.jsonRpc('/slider/render', 'call',params).then(function (data) {
                 $(self.$target).html(data);
+                self.$target.find('.slider_edit_msg').toggleClass('d-none', true);
                 if($('#id_lazyload').length) {
                     $("img.lazyload").lazyload();
                 }
@@ -46,8 +78,10 @@ odoo.define('website_slider.front_js', function (require) {
                  });
                 self.addToWishlist($(self.$target));
                 self.slider_render($(self.$target));
+                if($(self.$target).find(".group_website_designer").length == 0){
+					$(self.$target).removeAttr('data-product_ids data-category_ids data-discount_policy data-ui_option data-name data-limit data-filter_id data-sort_by data-slider_type data-style name data-item_ids')
+				}
             });
-            
         },
         addToWishlist: function (target) {
             /* Init wishlist function using wishlist class object also click as per base logic
@@ -74,6 +108,10 @@ odoo.define('website_slider.front_js', function (require) {
                         var wproductId = parseInt( $(this).attr('data-product-product-id'), 10);
                         $("[data-product-product-id='"+wproductId+"']").prop("disabled", false).removeClass('disabled');
                     });
+                    /* Resize menu */
+                    setTimeout(() => {
+                        $('#top_menu').trigger('resize');
+                    }, 200);
                 }
             })
         },
@@ -82,54 +120,160 @@ odoo.define('website_slider.front_js', function (require) {
             if ($('#wrapwrap').hasClass('o_rtl')) {
                 owl_rtl = true;
             }
-            $('.te_product_slider_1, .te_slider_style_2_right_pannel, .te_product_slider_5, .te_slider_style_6').owlCarousel({
-                loop: false,
-                rtl: owl_rtl,
-                rewind: true,
-                margin: 10,
-                nav: true,
-                lazyLoad:true,
-                dots: false,
-                navText : ['<i class="fa fa-angle-left"></i>','<i class="fa fa-angle-right"></i>'],
-                autoplay: $('.te_auto_play_value span').text() == "True" ? true : false,
-                autoplayTimeout: 4000,
-                autoplayHoverPause:true,
-                items: 4,
-                responsive: {
-                    0: {
-                        items: 1,
+            $('.te_product_slider_1, .te_slider_style_2_right_pannel, .te_product_slider_5, .te_slider_style_6').each(function(index) {
+                var $items = $(this);
+                var items = $items.find(".item").length;
+                $items.owlCarousel({
+                    loop: items > 4 ? true : false,
+                    rtl: owl_rtl,
+                    margin: 10,
+                    nav: true,
+                    lazyLoad:true,
+                    dots: false,
+                    navText : ['<i class="fa fa-angle-left"></i>','<i class="fa fa-angle-right"></i>'],
+                    autoplay: $('.te_auto_play_value span').text() == "True" ? true : false,
+                    autoplayTimeout: 4000,
+                    autoplayHoverPause:true,
+                    items: 4,
+                    mouseDrag: items > 4 ? true : false,
+		            touchDrag: items > 4 ? true : false,
+		            pullDrag: items > 4 ? true : false,
+                    responsive: {
+                        0: {
+                            items: 1,
+                            loop: items > 1 ? true : false,
+                            mouseDrag: items > 1 ? true : false,
+                            touchDrag: items > 1 ? true : false,
+                            pullDrag: items > 1 ? true : false,
+                        },
+                        576: {
+                            items: 2,
+                            loop: items > 2 ? true : false,
+                            mouseDrag: items > 2 ? true : false,
+                            touchDrag: items > 2 ? true : false,
+                            pullDrag: items > 2 ? true : false,
+                        },
+                        991: {
+                            items: 3,
+                            loop: items > 3 ? true : false,
+                            mouseDrag: items > 3 ? true : false,
+                            touchDrag: items > 3 ? true : false,
+                            pullDrag: items > 3 ? true : false,
+                        },
+                        1200: {
+                            items: 4,
+                            loop: items > 4 ? true : false,
+                            mouseDrag: items > 4 ? true : false,
+                            touchDrag: items > 4 ? true : false,
+                            pullDrag: items > 4 ? true : false,
+                        },
                     },
-                    576: {
-                        items: 2,
-                    },
-                    991: {
-                        items: 3,
-                    },
-                    1200: {
-                        items: 4,
-                    },
-                },
+                });
             });
-            $('.te_product_slider_4').owlCarousel({
-                loop: false,
-                rtl: owl_rtl,
-                rewind: true,
-                nav: true,
-                dots: false,
-                lazyLoad:true,
-                navText : ['<i class="fa fa-angle-left"></i>','<i class="fa fa-angle-right"></i>'],
-                autoplay: true,
-                autoplayTimeout: 4000,
-                autoplayHoverPause:true,
-                items: 2,
-                responsive: {
-                    0: {
-                        items: 1,
+            $('.te_product_slider_4').each(function(index) {
+                var $items = $(this);
+                var items = $items.find(".item").length;
+                $items.owlCarousel({
+                    loop: items > 2 ? true : false,
+                    rtl: owl_rtl,
+                    dots: false,
+                    lazyLoad:true,
+                    nav: true,
+                    navText : ['<i class="fa fa-angle-left"></i>','<i class="fa fa-angle-right"></i>'],
+                    autoplay: true,
+                    autoplayTimeout: 4000,
+                    autoplayHoverPause:true,
+                    items: 2,
+                    mouseDrag: items > 2 ? true : false,
+		            touchDrag: items > 2 ? true : false,
+		            pullDrag: items > 2 ? true : false,
+                    responsive: {
+                        0: {
+                            items: 1,
+                            loop: items > 1 ? true : false,
+                            mouseDrag: items > 1 ? true : false,
+                            touchDrag: items > 1 ? true : false,
+                            pullDrag: items > 1 ? true : false,
+                        },
+                        576: {
+                            items: 2,
+                            loop: items > 2 ? true : false,
+                            mouseDrag: items > 2 ? true : false,
+                            touchDrag: items > 2 ? true : false,
+                            pullDrag: items > 2 ? true : false,
+                        },
                     },
-                    576: {
-                        items: 2,
+                });
+            });
+            $('.te_product_slider_banner').each(function(index) {
+                var $items = $(this);
+                var items = $items.find(".item").length;
+                var animate = false;
+                if ($items.parents('.product_banner_list').length > 0) {
+                    animate = true;
+                }
+                $items.owlCarousel({
+                    rtl: owl_rtl,
+                    nav: false,
+                    lazyLoad:true,
+                    autoplay: true,
+                    margin: 10,
+                    autoplayTimeout: 4000,
+                    autoplayHoverPause:true,
+                    loop: items > 1 ? true : false,
+                    items: 1,
+                    mouseDrag: items > 1 ? true : false,
+		            touchDrag: items > 1 ? true : false,
+		            pullDrag: items > 1 ? true : false,
+                    animateIn: animate,
+                    responsive: {
+                        0: {
+                            items: 1,
+                            loop: items > 1 ? true : false,
+                            mouseDrag: items > 1 ? true : false,
+                            touchDrag: items > 1 ? true : false,
+                            pullDrag: items > 1 ? true : false,
+                        },
+                        500: {
+                            items: 2,
+                            margin: 20,
+                            loop: items > 2 ? true : false,
+                            mouseDrag: items > 2 ? true : false,
+                            touchDrag: items > 2 ? true : false,
+                            pullDrag: items > 2 ? true : false,
+                        },
+                        992: {
+                            items: 1,
+                            loop: items > 1 ? true : false,
+                            mouseDrag: items > 1 ? true : false,
+                            touchDrag: items > 1 ? true : false,
+                            pullDrag: items > 1 ? true : false,
+                        },
                     },
-                },
+                });
+            });
+            $('.te_slider_style_7, .te_slider_style_8').each(function(index) {
+                var $items = $(this);
+                var items = $items.find(".product-rows").length;
+                $items.owlCarousel({
+                    rtl: owl_rtl,
+                    nav: false,
+                    lazyLoad:true,
+                    autoplay: true,
+                    autoplayTimeout: 4000,
+                    autoplayHoverPause:true,
+                    loop: items > 1 ? true : false,
+                    mouseDrag: items > 1 ? true : false,
+		            touchDrag: items > 1 ? true : false,
+		            pullDrag: items > 1 ? true : false,
+                    items: 1,
+                    itemClass: 'owl-item container-fluid',
+                    responsive: {
+                        992: {
+                            autoplayTimeout: 8000,
+                        },
+                    },
+                });
             });
         },
         slider_render: function(target){
@@ -197,5 +341,8 @@ odoo.define('website_slider.front_js', function (require) {
             },
         },
     });
-
+    $('.js_multi_slider .product_tabs_nav a[data-toggle="tab"]').on('shown.bs.tab', function () {
+        var data_id = $(this).attr('aria-controls');
+        $('#'+data_id).find('.owl-carousel').trigger('refresh.owl.carousel');
+    })
 });

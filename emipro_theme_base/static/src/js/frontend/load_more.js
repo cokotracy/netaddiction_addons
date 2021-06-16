@@ -3,26 +3,23 @@ odoo.define('emipro_theme_base.load_more', function(require) {
 
     var ajax = require('web.ajax');
     var publicWidget = require('web.public.widget');
+    var sAnimations = require('website.content.snippets.animation');
 
-    publicWidget.registry.load_more = publicWidget.Widget.extend({
-        selector: ".oe_website_sale",
-        events: {
-            'click .load_more_button': 'startLoadMoreNextClick',
-            'click .load_more_button_top': 'startLoadMorePrevClick',
+    sAnimations.registry.loadMore = sAnimations.Animation.extend({
+        selector: '#products_grid',
+         effects: [{
+            startEvents: 'scroll',
+            update: 'startLoadMore',
+        }],
+        init: function () {
+            this._super(...arguments);
+            this.next_call = true;
+            this.prev_call = true;
+            $('html').scrollTop(1);
         },
-        start: function () {
-            var self = this;
-            if($('.load_more_next_page').attr('button-scroll') == 'automatic') {
-                self.startLoadMore();
-            }
-            var total_product_count = $(".load_more_next_page").attr('total-products');
-        },
-        startLoadMore: function () {
-            var next_call = true;
-            var prev_call = true;
-            var self = this;
-            $(window).scroll(function() {
-                var scrollTop = $(window).scrollTop();
+        startLoadMore: function (scroll) {
+            if($('.load_more_next_page').attr('button-scroll') == 'automatic' && $("#products_grid tbody tr:last").length) {
+                var self = this;
                 var page_url = $(".load_more_next_page").attr('next-page-url');
                 var prev_page_url = $(".load_more_next_page").attr('prev-page-url');
                 var first_page_url = $(".load_more_next_page").attr('first-page-url');
@@ -31,11 +28,9 @@ odoo.define('emipro_theme_base.load_more', function(require) {
                 var next_page_num = $(".load_more_next_page").attr('next-page-num');
                 var prev_page_num = $(".load_more_next_page").attr('prev-page-num');
                 var total_page = $(".load_more_next_page").attr('total-page');
-
-
-                if($("#products_grid tbody tr:last").length && $(window).scrollTop() + $(window).height() > $(document).height() - 100) {
-                    if(next_call && current_url != last_page_url){
-                        next_call = false;
+                if($("#products_grid tbody tr:last").length && scroll > $("#products_grid tbody tr:last").offset().top - 50) {
+                    if(this.next_call && current_url != last_page_url){
+                        this.next_call = false;
                         $.ajax({
                             url: page_url,
                             type: 'GET',
@@ -56,11 +51,10 @@ odoo.define('emipro_theme_base.load_more', function(require) {
                                 if(data_replace){
                                     $("#products_grid tbody").append(data_replace);
                                 }
-                                if(last_page_url !=  page_url)
-                                {
+                                if(last_page_url !=  page_url) {
                                     $("ul.pagination li:last").removeClass("disabled");
-                                    next_call = true;
-                                }else {
+                                    self.next_call = true;
+                                } else {
                                     $("ul.pagination li:last").addClass("disabled");
                                 }
                                 $("ul.pagination li:first-child").removeClass("disabled");
@@ -81,15 +75,16 @@ odoo.define('emipro_theme_base.load_more', function(require) {
                                 if(current_page_num >= total_page) {
                                     $('.load_more_button').removeClass('active');
                                 }
-                                self.lazyLoad();
+                                if($('#id_lazyload').length) {
+                                    $("img.lazyload").lazyload();
+                                }
                             }
                         });
                     }
                 }
-                if($("#products_grid tbody tr:first").length && scrollTop <= 0)
-                {
-                    if(prev_call && current_url != first_page_url){
-                        prev_call = false;
+                if($("#products_grid tbody tr:first").length && scroll <= 0) {
+                    if(this.prev_call && current_url != first_page_url){
+                        this.prev_call = false;
                         $.ajax({
                             url: prev_page_url,
                             type: 'GET',
@@ -97,7 +92,7 @@ odoo.define('emipro_theme_base.load_more', function(require) {
                                 $(".cus_theme_loader_layout_prev").removeClass("d-none");
                             },
                             success: function(data) {
-                                $(window).scrollTop(100);
+                                $('html').scrollTop(50);
                                 $(".cus_theme_loader_layout_prev").addClass("d-none");
                                 var data_replace = null;
 
@@ -119,12 +114,12 @@ odoo.define('emipro_theme_base.load_more', function(require) {
                                 $("ul.pagination li:contains("+active_page+")").addClass("active");
 
                                 var current_page = $(data).find(".load_more_next_page").attr('current-page-url');
+                                $(".load_more_next_page").attr('current-page-url',current_url);
                                 window.history.replaceState(null, null, current_page);
-                                if(first_page_url != prev_page_url)
-                                {
+                                if(first_page_url != prev_page_url) {
                                     $("ul.pagination li:first-child").removeClass("disabled");
-                                    prev_call = true;
-                                }else {
+                                    self.prev_call = true;
+                                } else {
                                     $("ul.pagination li:first-child").addClass("disabled");
                                 }
                                 $("ul.pagination li:last-child").removeClass("disabled");
@@ -136,12 +131,26 @@ odoo.define('emipro_theme_base.load_more', function(require) {
                                 if(current_page_num < 2) {
                                     $('.load_more_button_top').removeClass('active');
                                 }
-                                self.lazyLoad();
+                                if($('#id_lazyload').length) {
+                                    $("img.lazyload").lazyload();
+                                }
                             }
                         });
                     }
                 }
-            });
+            }
+        }
+    });
+
+    publicWidget.registry.load_more = publicWidget.Widget.extend({
+        selector: ".oe_website_sale",
+        events: {
+            'click .load_more_button': 'startLoadMoreNextClick',
+            'click .load_more_button_top': 'startLoadMorePrevClick',
+        },
+        start: function () {
+            var self = this;
+            var total_product_count = $(".load_more_next_page").attr('total-products');
         },
         startLoadMoreNextClick: function () {
             if(!$('body').hasClass('editor_enable')) {

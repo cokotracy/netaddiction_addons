@@ -7,6 +7,7 @@
 	z-index: 1;
 	background-color:nth($f_color,27) !important;
 	color: nth($f_color,19) !important;
+	@include border(0px,19,solid)
 	
 	&.btn-secondary, &.btn-link
     {
@@ -42,6 +43,7 @@
 		height: 100%;
 		z-index: -4;
 		@include border(1px,19,solid)
+		border-radius: $btn-border-radius;
 		@include transition(all,0.3s,null)
 	}
 	&:after{
@@ -54,6 +56,7 @@
 		background-color: nth($f_color,19);
 		@include transition(all,0.3s,null)
 		@include transform(scale(0.5,0.5))
+		border-radius: $btn-border-radius;
 	}
 
 	&:hover{

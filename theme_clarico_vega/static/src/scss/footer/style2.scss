@@ -10,8 +10,7 @@
 	.te_company_detail {
 	    &:not(:first-child) {
 	        text-align: center;
-	        @include media-breakpoint-down(md)
-	        {
+	        @include media-breakpoint-down(md) {
 	        	text-align: left;
 	        }
 	        > span {
@@ -20,55 +19,82 @@
 	        .te_ftr_add_ept {
 	            width: auto;
 	        }
-	    }
+	   }
+	   p.te_ftr_add_ept{
+	       padding: 0 3%;
+	   }
 	}
-	.te_company_detail
-	{
+	.te_company_detail:nth-child(2){
+	    p.te_ftr_add_ept {
+            padding-left: 14px;
+            @include media-breakpoint-down(md) {
+                padding: 0px 3%
+            }
+        }
+        .ftr_icons_ept{
+            @include media-breakpoint-down(md) {
+                width: auto;
+            }
+        }
+	}
+	.te_company_detail {
 		display: inline-block;
 		width: 33%;
 		padding: 20px 0;
 		vertical-align: top;
-		> a {
-		    color: inherit;
-		}
-		>span {
+		>span.ftr_icons_ept {
 		    display: inline-block;
 			width: 15%;
 			max-width: 40px;
 			vertical-align: top;
 		}
-		.te_ftr_add_ept
-		{
+		.te_ftr_add_ept {
 		    display: inline-block;
 		    width: 80%;
 			padding: 0 3%;
 			line-height: 170%;
-			vertical-align: text-top;
-			color: $footer_text_color;
+			vertical-align: sub;
+			font-size: inherit;
 			@include spacing(null,2px);
 			> span{
 			    padding-right: 0.22rem;
 			}
 		}
-		span >.te_ftr_info_icon
-		{	
-			@include style(2,5);	
+		span >.te_ftr_info_icon {
+			font-size: inherit;
+			color: nth($f_color,5);
 			background-color: nth($f_color,19);
-			@include border-radius(20px)
-			padding-top: 10px;
+			@include border-radius(20px);
 			width: 35px;
 			height: 35px;
+			line-height: 35px;
 			text-align: center;
 		}
+		span.ftr_icons_ept {
+            vertical-align: top;
+        }
+        span.ftr_icons_ept:nth-child(2){
+            width: auto;
+        }
 		@include media-breakpoint-down(md) {
 			width: 100%;
 			padding: 10px 0;
 		}
 	}
+	.te_company_detail:last-child {
+	    @include media-breakpoint-down(md) {
+            margin-bottom: 15px;
+        }
+        .ftr_icons_ept{
+            @include media-breakpoint-down(md) {
+                width: auto;
+            }
+        }
+    }
 }
 .te_newsletter_margin {
     max-width: 350px;
-    margin: 14px auto;
+    margin: 0px auto 0px !important;
 }
 .te_footer_language_title_style_2 {
     display: inline-block;
@@ -82,69 +108,46 @@
     }
 }
 /*--- Multiple Language Selected and Social Icon ---*/
-.te_f2_lang_social
-{
-	& .te_t_footer_lang
-	{
+.te_f2_lang_social {
+	& .te_t_footer_lang {
 		display: inline-block;
 		margin-top: 10px;
-		.list-inline-item
-		{
-			a{
-				color: $footer_text_color;
-				&:hover{
-					color:nth($f_color,19);
-				}
-			}
-		}
-		@include media-breakpoint-down(sm)
-		{
-			.js_language_selector
-			{
+		@include media-breakpoint-down(sm) {
+			.js_language_selector {
 				margin-bottom: 14px !important;
 				.dropdown-menu{
                     transform: translate3d(65px, -73px, 0px) !important;
                 }
 			}
 		}	
-		@include media-breakpoint-down(xs)
-		{
+		@include media-breakpoint-down(xs) {
 			margin-right:0;
 			width:100%;
 		}
-		.js_language_selector
-		{
+		.js_language_selector {
 			margin-bottom: 18px !important;
 		}
 	}
-	& .te_footer_social_icon
-	{
+	& .te_footer_social_icon {
 		display: inline-block;
-		@include media-breakpoint-down(xs)
-		{
+		@include media-breakpoint-down(xs) {
 			width:100%;
-			margin-bottom: 12px;
 		}
 	}
-	@include media-breakpoint-down(md)
-	{
+	@include media-breakpoint-down(md) {
 		text-align:left;
 	}
-	@include media-breakpoint-down(sm)
-	{
+	@include media-breakpoint-down(sm) {
 		margin-bottom: 0px;
 	}
 }
 /*------------ Static Menu ------------*/
-.te_footer_inline_menu
-{
+.te_footer_inline_menu {
    margin: 10px 0px;
-	ul
-	{
+	ul {
         padding: 0;
         margin: 0;
-		li 
-		{
+		li {
             display: inline-block;
             border-right: 1px solid nth($f_color,11);
             @include media-breakpoint-down(xs) {
@@ -153,45 +156,35 @@
                 border-right: none;
                 width: 49%;
             }
-			 a
-			{
-				font-size:nth($f_sizes,3);
-				color: $footer_text_color;
+            a {
+				font-size: inherit;
 				padding: 15px 10px;	
-				&:hover
-				{
-					 color: nth($f_color,19);
+				&:hover {
 	 				 @include transition(null,0.3s)
 				}
 			}		
 		}	
-		li:last-child
-		{
+		li:last-child {
 			border-right: 1px solid nth($f_color,27);
 		}
 	}
 }
 /*--------- Social Icon ---------*/
-.te_footer_menu_social_icon
-{
+.te_footer_menu_social_icon {
 	text-align: center;
 	width: 100%;
-	margin:16px 0;
-
-	@include media-breakpoint-down(md)
-	{
-		margin:0;
+	margin: 20px 0px 5px;
+	@include media-breakpoint-down(md) {
+		margin:20px 0px 5px;
 		padding-top: 20px;
 	}
-	.te_footer_logo_img
-	{
+	.te_footer_logo_img {
 		display:inline-block;
 		width:100%;
 		img {
 		    /*---- Dynamic height for logo -----*/
 			height: $o-theme-navbar-logo-height;
-			@include media-breakpoint-down(md)
-			{
+			@include media-breakpoint-down(md) {
 				float: left;
 		    	padding: 1% 0;
 			}
@@ -202,76 +195,42 @@
 		}
 	}
 }
-.te_footer_social_icon
-{
-	a
-	{
-		font-size:nth($f_sizes,7);
+.te_footer_social_icon {
+	a {
+		font-size: inherit;
 		display:inline-block;
 		padding:0;
-		span
-		{
+		span {
 			display:inline-block;
 			padding: 0.625rem 0.3125rem;
-		}
-		.fa-facebook-square
-		{
-			color: #3B5998; /*This color is not used in variables*/
-		}
-		.fa-twitter
-		{
-			color: #36B9FF; /*This color is not used in variables*/
-		}
-		.fa-twitter
-		{
-			color: #36B9FF; /*This color is not used in variables*/
-		}
-		.fa-linkedin
-		{
-			color: #0077B5; /*This color is not used in variables*/
-		}
-		.fa-youtube-play
-		{
-			color: #FF0000; /*This color is not used in variables*/
-		}
-		.fa-google-plus-square
-		{
-			color: #DC4A38; /*This color is not used in variables*/
-		}
-		.fa-github
-		{
-			color: #24292E; /*This color is not used in variables*/
-		}
-		.fa-instagram
-		{
-			color: #e4405f; /*This color is not used in variables*/
 		}
 	}
 }
 /*-------- Copyright Text and Payment Image --------*/
-.te_footer_copyright_text
-{
-	margin-bottom:16px;
+.te_footer_copyright_text {
+	margin: 10px auto 16px;
 	width:95%;
+	@include media-breakpoint-down(sm) {
+	    padding-left: 0px;
+    }
 }
-.te_copyright_add_language
-{
+.te_copyright_add_language {
     width: 49%;
     text-align: left;
 	display: inline-block;
-	color: $footer_text_color;
 	@include media-breakpoint-down(sm) {
 		margin-top: 0;
 		margin-bottom: 16px;
 		font-size:nth($f_sizes,3);
 	}
-
 }
-.te_footer_payment_img
-{
-    width: 49%;
-    text-align: right;
+.te_footer_payment_img {
+    width: 100%;
+    text-align: center;
     display: inline-block;
+    @include media-breakpoint-down(md) {
+        text-align: left;
+    }
 }
 .te_copyright_add_language,.te_footer_payment_img{	
 	@include media-breakpoint-down(sm) {
@@ -279,16 +238,11 @@
 		text-align:left;
 	}
 }
-.te_footer_inline_menu,.te_footer_social_icon,.te_footer_logo_img img
-{
+.te_footer_inline_menu,.te_footer_social_icon,.te_footer_logo_img img {
 	@include media-breakpoint-down(md) {
 		text-align:left;
 	}
 }
-.te_copyright_add_language 
-{ 
-	.js_language_selector > li > a
-	{
-		color: nth($f_color,22);
-	}
+section.te_payment_list img {
+    max-height: 30px;
 }

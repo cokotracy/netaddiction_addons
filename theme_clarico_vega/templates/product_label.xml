@@ -18,7 +18,7 @@
     </template>
     <!--===================== Shop Product label =========================-->
     <template id="clarico_shop_products_label" inherit_id="website_sale.products_item" priority="23" active="True">
-        <xpath expr="//div[hasclass('ribbon-wrapper')]" position="replace">
+        <xpath expr="//div[hasclass('oe_product_image')]" position="inside">
             <div t-if="product.label_line_ids">
                 <t t-foreach="product.label_line_ids" t-as="labels">
                     <t t-if="labels.website_id.id == website.id">

@@ -47,6 +47,7 @@ odoo.define('theme_clarico_vega.ajax_cart', function (require) {
             var product_id = frm.find('#add_to_cart').attr('product-id');
             var product_product = frm.find('input[name="product_id"]').val();
             var product_custom_attribute_values = frm.find('input[name="product_custom_attribute_values"]').val();
+            var no_variant_attribute_values = frm.find('input[name="no_variant_attribute_values"]').val();
             if(!product_id) {
                product_id = frm.find('.a-submit').attr('product-id');
             }
@@ -62,29 +63,33 @@ odoo.define('theme_clarico_vega.ajax_cart', function (require) {
                 ));
                 $('div.availability_messages').html($message);
             });
-            if(/*variant_count == 1 || */is_product == 0 || is_ajax_cart || is_quick_view) {
+            if(is_product == 0 || is_ajax_cart || is_quick_view) {
                 /** if product has no variant then success popup will be opened */
                 var product_product = frm.find('input[name="product_id"]').val();
                 var quantity = frm.find('.quantity').val();
                 if(!quantity) {
                    quantity = 1;
                 }
-                ajax.jsonRpc('/shop/cart/update_custom', 'call',{'product_id':product_product,'add_qty':quantity, 'product_custom_attribute_values':product_custom_attribute_values}).then(function(data) {
+                ajax.jsonRpc('/shop/cart/update_custom', 'call',{'product_id':product_product,'add_qty':quantity, 'product_custom_attribute_values':product_custom_attribute_values,'no_variant_attribute_values':no_variant_attribute_values}).then(function(data) {
                     var ajaxCart = new publicWidget.registry.ajax_cart();
                     if(data) {
+                        $('.ajax_cart_modal > .cart_close').trigger('click');
+                        $('.quick_view_modal > .quick_close').trigger('click');
                         var $quantity = $(".my_cart_quantity");
                         var old_quantity = $quantity.html();
                         $quantity.parent().parent().removeClass('d-none');
                         $quantity.html(parseInt(quantity) + parseInt(old_quantity)).hide().fadeIn(600);
 
-                        $('.ajax_cart_modal > .close').trigger('click');
-                        $('.quick_view_modal > .close').trigger('click');
                         if(!product_id) {
                             product_id = frm.find('.product_template_id').attr('value');
                         }
                         setTimeout(function(){
                             ajaxCart.ajaxCartSucess(product_id, product_product);
                         }, 700);
+                        /* Resize menu */
+                        setTimeout(() => {
+                            $('#top_menu').trigger('resize');
+                        }, 200);
                     }
                 });
             } else {
@@ -140,8 +145,13 @@ odoo.define('theme_clarico_vega.ajax_cart', function (require) {
                         $parent.find('.css_attribute_color').filter(':has(input:checked)').parent('.list-inline-item').addClass("active_li");
                     });
 
+                    /*$( ".list-inline-item .css_attribute_color" ).change(function() {
+                        $('.list-inline-item').removeClass('active_li');
+                        $(this).parent('.list-inline-item').addClass('active_li');
+                    });*/
                     setTimeout(function(){
-                        $('.ajax_cart_content').find('.quantity').val('1').trigger('change');
+                        var quantity = $('.ajax_cart_content').find('.quantity').val();
+                        $('.ajax_cart_content').find('.quantity').val(quantity).trigger('change');
                     },500);
                 });
             }
@@ -150,6 +160,7 @@ odoo.define('theme_clarico_vega.ajax_cart', function (require) {
             if ($(ev.currentTarget).is('#add_to_cart, #products_grid .a-submit') && !forceSubmit) {
                 return;
             }
+            /** If optional products exist, then it will shows variant popup for quick view and sliders */
             var $aSubmit = $(ev.currentTarget);
             if (!ev.isDefaultPrevented() && !$aSubmit.is(".disabled")) {
                 ev.preventDefault();
@@ -170,18 +181,22 @@ odoo.define('theme_clarico_vega.ajax_cart', function (require) {
                             $quantity.parent().parent().removeClass('d-none');
                             $quantity.html(parseInt(quantity) + parseInt(old_quantity)).hide().fadeIn(600);
 
-                            $('.ajax_cart_modal > .close').trigger('click');
-                            $('.quick_view_modal > .close').trigger('click');
+                            $('.ajax_cart_modal > .cart_close').trigger('click');
+                            $('.quick_view_modal > .quick_close').trigger('click');
                             var product_id = frm.find('.product_template_id').attr('value');
                             setTimeout(function(){
                                 ajaxCart.ajaxCartSucess(product_id, product_product);
                             }, 700);
+                            /* Resize menu */
+                            setTimeout(() => {
+                                $('#top_menu').trigger('resize');
+                            }, 200);
                         }
                     });
                 } else {
                     $aSubmit.closest('form').submit();
-                    $('.ajax_cart_modal > .close').trigger('click');
-                    $('.quick_view_modal > .close').trigger('click');
+                    $('.ajax_cart_modal > .cart_close').trigger('click');
+                    $('.quick_view_modal > .quick_close').trigger('click');
                 }
             }
             if ($aSubmit.hasClass('a-submit-disable')){
@@ -217,13 +232,11 @@ odoo.define('theme_clarico_vega.ajax_cart', function (require) {
         }
     });
     $(document).on('click', '.ajax-sucess-continue', function(){
-        $('.ajax_cart_modal > .close').trigger('click');
+        $('.ajax_cart_modal > .cart_close').trigger('click');
     });
-
     $(document).on('click', '.ajax_cart_modal #buy_now', function(ev){
         WebsiteSale._onClickAdd(ev);
     });
-
     if (!$('#ajax_cart_product_template').length) {
         $(document).on('click', '.oe_website_sale #add_to_cart', async function(ev){
             if($('#add_to_cart').hasClass('quick-add-to-cart') || $('.a-submit').attr('optional-product') == 1) {

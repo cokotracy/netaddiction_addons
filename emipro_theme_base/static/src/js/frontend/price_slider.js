@@ -66,6 +66,8 @@ odoo.define('emipro_theme_base.price_slider', function(require) {
             var maxValue = parseFloat($("#price_slider_max").val());
             $("input.ept_price_min").val(minValue);
             $("input.ept_price_max").val(maxValue);
+            $("input.ept_price_min").removeAttr('name')
+            $("input.ept_price_max").removeAttr('name')
             $( "#ept_price_slider" ).slider("values",[minValue,maxValue]);
             this.applyFilter();
         },

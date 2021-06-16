@@ -25,7 +25,7 @@ odoo.define('theme_clarico_vega.multi_item_carousel', function(require) {
                 allowPageScroll:"vertical"
             });
             $('.common_carousel_emp_ept').carousel({
-              interval: 2000
+              interval: 1000
             });
             $('.common_carousel_emp_ept .carousel-item').each(function(){
                 var next = $(this).next();
@@ -35,7 +35,7 @@ odoo.define('theme_clarico_vega.multi_item_carousel', function(require) {
                 $(this).children().not(':first').remove();
                 next.children(':first-child').clone().appendTo($(this));
 
-                for (var i=0;i<2;i++) {
+                for (var i=0;i<4;i++) {
                     next=next.next();
                     if (!next.length) {
                         next = $(this).siblings(':first');

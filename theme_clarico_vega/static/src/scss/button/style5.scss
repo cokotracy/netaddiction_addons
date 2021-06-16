@@ -6,7 +6,8 @@
 	z-index: 1;
 	-webkit-transition: .2s cubic-bezier(0.19, 0.4, 0.9, 0.76) background;
 	transition: .2s cubic-bezier(0.19, 0.4, 0.9, 0.76) background; /* Transition mixin is not compatible with this property structure.*/
-	@include border(1px,19,solid)
+	border-color: nth($f_color,19);
+    border-style: solid;
 	background-color:nth($f_color,27);
 
     &.btn-secondary, &.btn-link
@@ -35,7 +36,6 @@
 	&:hover {
 	    color:nth($f_color,5);
         background-color:nth($f_color,19);
-        @include border(1px,19,solid);
 
         &:after {
             height: 100%;

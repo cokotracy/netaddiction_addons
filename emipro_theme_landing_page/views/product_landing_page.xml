@@ -6,17 +6,11 @@
         <field name="model">product.brand.ept</field>
         <field name="inherit_id" ref="emipro_theme_brand.product_brand_ept_form"/>
         <field name="arch" type="xml">
-            <xpath expr="//notebook" position="before">
-                <div>
-                    <label for="is_brand_page" string="Brand Page" class="col-sm-1 p-0 pt-3"/>
-                    <field name="is_brand_page"/>
-                </div>
-                <div>
-                    <label class="col-sm-1 p-0 pt-3" for="brand_page" string="Page Name" attrs="{'invisible': [('is_brand_page','=',False)]}"/>
-                    <field name="brand_page"
-                           attrs="{'invisible': [('is_brand_page','=',False)],'required':[('is_brand_page','!=',False)]}"/>
-                </div>
-            </xpath>
+            <field name="is_featured_brand" position="after">
+                <label for="is_brand_page" string="Brand Page"/>
+                <field name="is_brand_page" nolabel="1"/>
+                <field name="brand_page" attrs="{'invisible': [('is_brand_page','=',False)],'required':[('is_brand_page','!=',False)]}"/>
+            </field>
         </field>
     </record>
        <!-- Product Public Categories -->

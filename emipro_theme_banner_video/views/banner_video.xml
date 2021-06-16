@@ -12,7 +12,7 @@
                         <div class="o_setting_right_pane">
                             <div class="content-group">
                                 <label string="Video URL for Banner" for="banner_video_url"/>
-                                <span class="fa fa-lg fa-globe"/>
+                                <span class="fa fa-lg fa-globe" title="Values set here are website-specific."/>
                                 <div class="text-muted">
                                     Video URL for the banner
                                 </div>

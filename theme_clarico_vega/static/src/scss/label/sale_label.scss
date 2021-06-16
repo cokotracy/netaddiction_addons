@@ -86,7 +86,7 @@
 			width: auto;
 			font-size: nth($f_sizes,3);
 			background-color: $product-label;
-			@include position(absolute,10px,unset,unset,10px);
+			@include position(absolute,8px,unset,unset,8px);
 			z-index: 1;
 			overflow: hidden;
 
@@ -116,7 +116,7 @@
 	{
 		&.label_div
 		{
-			@include position(absolute,10px, auto, auto, 15px);
+			@include position(absolute,8px, auto, auto, 6px);
 			font-size: nth($f_sizes,3);
 			line-height: 1;
 			border: 1px solid #aba0a0;
@@ -170,4 +170,25 @@
 		margin-right: 0 !important;
 		margin-left: 5px;
 	}
+}
+
+.o_wsale_layout_list {
+    .te_ribbon-wrapper {
+        @include media-breakpoint-up(md){
+            #style_1 {
+                .te_before {
+                    @include position(absolute,-16px,null,null,65px);
+                }
+                .label_div {
+                    @include position(absolute,-16px,null,null,-10px);
+                }
+                .te_after {
+                    @include position(absolute,57px,null,null,-10px);
+                }
+            }
+            #style_2.label_div {
+                @include position(absolute,20px,null,null,-12px);
+            }
+        }
+    }
 }

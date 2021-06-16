@@ -1,332 +1,216 @@
-Version 13.0.1.8.1 - 30 Mar 21
+Version 14.0.2.4.2 - 7 Jun 21
 ===================================
 Note:First upgrade emipro_theme_base and update theme.
 
- Improvement
- - Updated UI/UX of Shop and Product Page.
+Improvement
 
- Feature
-  - Image Magnifier for Product.
+ - Minor UI/UX Changes.
+ - Improved the Banner Video snippet.
 
-Version 13.0.1.8.0 - 26 Feb 21
+Version 14.0.2.4.1 - 1 Jun 21
 ===================================
 Note:First upgrade emipro_theme_base and update theme.
 
- Improvement
- - Minor UI/UX changes.
+Improvement
 
- Feature
-  - Image Magnifier for Product.
+ - Minor UI/UX Changes.
 
-Version 13.0.1.7.8 - 15 Feb 21
+Version 14.0.2.4.0 - 11 May 21
+===================================
+Note:First upgrade emipro_theme_base and update theme.
+
+Feature
+
+ - Added Multi Tab for Product.
+ - Improved Vertical Menu.
+
+Version 14.0.2.3.8 - 24 Apr 21
 ===================================
 Note:update theme.
 
 Improvement
 
- - Improved the variant's behavior in the Quick View.
+ - Minor UI/UX Changes.
 
-Version 13.0.1.7.7 - 22 Dec 20
+Version 14.0.2.3.7 - 16 Apr 21
 ===================================
 Note:First upgrade emipro_theme_base and update theme.
 
 Improvement
 
- - Improved the css for the Headers and Mobile view.
+ - Improvement in Product Variants.
 
-Version 13.0.1.7.6 - 26 Nov 20
+Version 14.0.2.3.6 - 07 Apr 21
+===================================
+Note:First upgrade emipro_theme_base and update theme.
+
+Feature
+
+ - Introduce Image Hotspot.
+
+Version 14.0.2.3.5 - 02 Apr 21
 ===================================
 Note:First upgrade emipro_theme_base and update theme.
 
 Improvement
 
- - Login popup auth signup link.
- - Changed xpath for ajax cart hidden input for product page.
- - Fix Buy now not working in AJAX Add To Cart.
- - Removed pointer event from aos.css
+ - Minor UI/UX Changes.
+ - Header Dynamic font-size changes.
 
-Version 13.0.1.7.5 - 5 Nov 20
+Version 14.0.2.3.4 - 30 Mar 21
 ===================================
 Note:First upgrade emipro_theme_base and update theme.
 
 Improvement
 
- - Slider code improvement changes.
- 
-Version 13.0.1.7.4 - 3 Nov 20
-===================================
-Note:First upgrade emipro_theme_base and update theme.
+ - UI/UX Improved for the shop and product page.
 
-Improvement
-
- - Improve Product configuration on brand.
- - Improve code logic for better categories page render in shop page.
-
-Version 13.0.1.7.3 - 17 Oct 20
-===================================
-Note:First upgrade emipro_theme_base and update theme.
-
-Improvement
-
- - Minor CSS improvements.
-
-Version 13.0.1.7.2 - 14 Aug 20
-===================================
-Note:First upgrade emipro_theme_base and pwa_ept.
-
-Improvement
-
- - PWA restructure.
-
-
-Version 13.0.1.7.1 - 13 Aug 20
-===================================
-Note:First upgrade emipro_theme_base and update theme.
-
-Improvement
-
- - Associated attribute values issue while Brand Filter & Price Filter.
- - In Mobile View set Header Style Type 1 sticky.
-
-
-Version 13.0.1.7.0 - 10 Aug 20
-===================================
-Note:First upgrade emipro_theme_base and update theme.
-
-Improvement
-
- - Improved the brand filter in shop page.
- - Added Menu hover color for all the headers.
- - Removed the Load Next & Load Perv for Load more setting panel due to backend saving issue.
- - Fixed the issue for registration popup.
-
-Features
-
- - Added PWA(Progressive Web App).
-
-Version 13.0.1.6.1 - 22 Jul 20
+Version 14.0.2.3.3 - 25 Mar 21
 ===================================
 Note:update theme.
 
 Improvement
 
- - Improved show associated attributes related thing.
+ - Improved Product Builder Tool access rights.
 
-
-Version 13.0.1.6.0 - 15 Jul 20
+Version 14.0.2.3.2 - 25 Mar 21
 ===================================
 Note:First upgrade emipro_theme_base and update theme.
 
 Improvement
 
- - Improved Custom lable is not showing in cart page.
- - In Video snippet user can upload videos web-site wise.
+ - Improved Snippet animation options and added lazy load for the all the Dynamic Product Slider.
 
-Features
-
- - Added new 2 Home snippets.
-
-Version 13.0.1.5.3 - 20 Jun 20
-===================================
-Note:First upgrade emipro_theme_base and update theme.
-Improvement
-
- - Quick View changes with conflict of AJAX Add to Cart.
-
-
-Version 13.0.1.5.2 - 20 Jun 20
-===================================
-Note:First upgrade emipro_theme_base and update theme.
-Improvement
-
- - Video Banner backend setting improvement.
- - CSS changes in shop page.
- - Added new snippet design.
-
-Version 13.0.1.5.1 - 13 Jun 20
+Version 14.0.2.3.1 - 19 Mar 21
 ===================================
 Note:Update theme.
+
 Improvement
 
- - Mobile view related Improvement.
+ - Improved Footer Logo functionality.
 
-Version 13.0.1.5.0 - 09 Jun 20
+Version 14.0.2.3.0 - 18 Mar 21
 ===================================
-Note: First upgrade emipro_theme_base and update theme.
+Note: Pre activity before theme base & theme update
+You need to remove category_slider and brand_slider view
+
+Step for category_slider remove
+1) Active developer mode and goto Technical -> User Interface -> view
+2) search for category_slider and select view After Action->Delete
+
+Step for brand_slider remove
+1) Active developer mode and goto Technical -> User Interface -> view
+2) search for brand_slider and select view After Action->Delete
+
+After removing the view uninstall "Emipro Theme Category Slider" and update "emipro theme base", "theme clarico vega" into each website.
+
 Improvement
 
- - Double Qty issue in product page.
- - CSS imporvement after AJAX functionality Changes.
- - Removed text-transform property from all the css.
+ - Improved UI/UX of Product Builder Tool to use easy to configure sliders.
 
-Features
- - Introduce slider auto-play setting from backend (For Owl slider).
+ Feature
+	- Introduce New Product Slider Style and Brand and Category Slider Style.
+	- Added New Snippet called Banner With Product Slider and Dual Product Slider and Brand Builder with Banner.
 
-Version 13.0.1.4.3 - 14 May 20
+Version 14.0.2.2.3 - 4 Mar 21
 ===================================
-Note:update theme.
+Note:First upgrade emipro_theme_base and update theme.
+
 Improvement
 
- - Double Qty issue in product page.
+ - Improved UI/UX of Product Page.
 
+ Feature
+	- Introduce Attribute Swatches with Tool-tip.
 
-Version 13.0.1.4.2 - 11 Apr 20
+Version 14.0.2.2.2 - 26 Feb 21
 ===================================
-Note: First upgrade emipro_theme_base and update theme.
+Note:First upgrade emipro_theme_base and update theme.
+
 Improvement
 
- - Removed height from snippet.
- - Added Attribute id navigation menu.
+ - Improved UI/UX In Mega Menu, Logged In Popup and Product Page minor changes.
 
-Version 13.0.1.4.1 - 31 Mar 20
+ Feature
+  - Added Tooltip In Product variants level In Product Page.
+
+Version 14.0.2.2.1 - 22 Feb 21
 ===================================
+Note:First upgrade emipro_theme_base and update theme.
+
 Improvement
 
- - Improved Xpath thing in reset password.
+ - Improved UI/UX for the Product Page and Header.
 
+ Feature
+  - Image Magnifier for Product.
 
-Version 13.0.1.4.0 - 12 Mar 20
+Version 14.0.2.2.0 - 12 Feb 21
 ===================================
-Note: First upgrade emipro_theme_base and update theme.
-Features
+Note:First upgrade emipro_theme_base and update theme.
 
- - Added Ajax Shopping Cart.
-
-Version 13.0.1.3.2 - 17 Feb 20
-===================================
 Improvement
 
- - Improved some editor related thing while made changes in footer and vertical menu.
+ - Improved UI/UX for the Shop Page and Header.
+ - Added New Home Style 9 Snippet.
 
-Version 13.0.1.3.1 - 13 Feb 20
+Version 14.0.2.1.0 - 03 Feb 21
 ===================================
+Note:First upgrade emipro_theme_base and update theme.
+
 Improvement
 
- - Improve vertical menu before it was lost after upadte so fixed that thing.
- - Improve banner thing after upgrading theme cart and contact us banner image lost issue.
+ - Improved Search Bar code.
+ - Improved UI/UX for the Shop Page and Product Page.
+ - Improved functionality of Contact Us.
 
-Version 13.0.1.3.0 - 10 Feb 20
+ Feature
+
+- Added New Header Style.
+
+Version 14.0.2.0.0 - 14 Nov 20
 ===================================
+Note:First upgrade emipro_theme_base and update theme.
+
 Improvement
 
- - Blog updation issue.
- - User enable/disable Sticky Product Gallery and Sticky Product filter & Category filter in shop page.
- - Make some improvement in Product Details Sticky part.
- - Improved css in above 3.6 python version.
- - Improved Logged in popup redirection in secure server.
+ - Improved the log in popup layout code.
+ - Scroll for counting number snippet.
+ - CSS improvement in snippets and header.
 
-Features
+ Feature
 
- - Added Sticky bar for category and attribute filters.
- - Added footer payment snippet to load dynamic payment images in footer.
+- Introduced Product Display Builder Snippet.
 
-Version 13.0.1.2.0 - 28 Jan 20
+Version 14.0.1.0.3 - 24 Nov 20
 ===================================
+Note:First upgrade emipro_theme_base and update theme.
+
 Improvement
 
- - Improve the list view design.
- - Added logged in user name in dropdown.
+ - Improved Login popup auth signup link.
+ - Changed XPath for ajax cart hidden input for the product page.
+ - Removed pointer event from aos.css file.
+ - Display message if there is no video in Video banner snippet.
 
-Features
-
- - Added Landing Page Snippet.
-
-Version 13.0.1.1.0 - 28 Jan 20
+Version 14.0.1.0.2 - 11 Nov 20
 ===================================
+Note:First upgrade emipro_theme_base and update theme.
+
 Improvement
 
- - Made small improvement in Filter option in shop page,Quick View and Other Pages in mobile view and added smooth animation.
- - Added new design for dropdown in Pricelist,My Account and Language.
- - Improve sticky product details when add to cart option disable.
- - If attributes are not enable in shop page then category will be expanded in mobile view.
+ - Safari browser improvement in snippet.
 
-Features
-
- - Added default company address with user selection on google map prompt.
- - Added Google Map in footer.
- - Added Layer navigation/Attributes & Category Filters.
-
-Version 13.0.1.0.2 - 22 Jan 20
+Version 14.0.1.0.1 - 3 Nov 20
 ===================================
-Bug Fixes
- - Improve filter option styles.
- - Fixed dropdown jump issue.
- - Made some css changes in the quick view popup.
- - Improvement in product gallery.
- - Mobile view style improvements in all the pages.
+Note:First upgrade emipro_theme_base and update theme.
 
-Features
+Improvement
 
- - Added setting of how many lines you wanted to show in product name.
- - User can add/remove CSS transition effect using snippet settings for all the image.
+ - Design multi color attribute for the product page, quick view and ajax cart.
+ - Editor related improvement in full slider & some design improvement in Product Page,Shop Page.
 
-Version 13.0.1.0.1 - 18 Jan 20
-===================================
-Bug Fixes
-
- - Product page design changes.
- - Add color on active variants in cart popup.
- - Design cart popup in shop list view.
- - Fixed dynamic category dropdown animation in RTL.
- - Fixed header style 10 overlay issue.
- - Added autofocus on search box in mobile & Ipad view for header style 10.
-
-Features
-
- - Added new 3 Home snippets.
-
-Version 13.0.1.0.0 - 09 Jan 20
+Version 14.0.1.0.0 - 24 Oct 20
 ===================================
 
 1. Initial release
-
-	- 6 eCommerce Home Pages
-	- 115+ Snippets
-	- 11 Header Styles
- 	- 7 Footer Styles
- 	- 6 Mega Menu Styles
- 	- 16 Button Styles
- 	- Dynamic Category Listing
- 	- Product Slider
- 	- Menu Label
- 	- Lazy Load
- 	- Log in & Sign up Popup
- 	- Brand Slider
- 	- Bestseller Slider
- 	- Dynamic Product Tabs
- 	- Category Slider
- 	- Dynamic Product Discount Slider
- 	- Category Discount Slider
- 	- All Product Discount Slider
- 	- Brand Landing Page
- 	- Category Landing Page
- 	- Advance Category Product Slider
- 	- Product Offer Timer
-	- Advance Product Label
- 	- Sticky Product Gallery
-	- Sticky Product Detail
- 	- New Product Slider
- 	- Load More
- 	- Quick View
- 	- Price Filter
- 	- Brand Filter
-	- Quick Filter
-	- Load Product through AJAX
-	- Social Sharing In Product Page
-	- Vertical Menu
-	- Animation Effects
-	- 3 About Us Pages
-	- Contact Us Page
- 	- 3 Services Pages
-	- 4 Our Team Pages
-	- Coming Soon Page
-	- HTTP 404 Page
-	- Google Map Snippet
-	- Multi Language Compatibility
-	- Multi Web-site Compatibility
-	- RTL Compatibility
-	- Advance Mini Cart
-	- Timer Snippet
-	- Dynamic Discount Message
-	- 3 Latest Blog Snippets Style
-	- Button Gradient Effect

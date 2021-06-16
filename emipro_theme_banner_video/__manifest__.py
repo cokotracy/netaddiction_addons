@@ -3,7 +3,7 @@
     'name': 'Emipro Theme Banner Video',
     'category': 'eCommerce',
     'summary': 'This app provide the funcitonality of load video in banner.',
-    'version': '1.0.0',
+    'version': '1.0.1',
     'license': 'OPL-1',
     'depends':['emipro_theme_base'],
 

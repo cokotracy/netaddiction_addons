@@ -1,35 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <!--======================== Latest Blog snippet =====================-->
-    <template id="s_latest_posts_big_picture_ept" inherit_id="website_blog.s_latest_posts_big_picture">
-        <xpath expr="//section[hasclass('s_latest_posts_big_picture')]//h2" position="replace"></xpath>
-        <xpath expr="//section[hasclass('s_latest_posts_big_picture')]" position="attributes">
-            <attribute name="class">te_latest_posts_big_picture s_latest_posts_big_picture pt16 pb16</attribute>
-        </xpath>
-         <xpath expr="//div[hasclass('s_col_no_bgcolor')]" position="before">
-            <h3 class="te_blog_heading">Latest Posts</h3>
-        </xpath>
-    </template>
-    <template id="s_latest_posts_big_picture_template_ept"
-              inherit_id="website_blog.s_latest_posts_big_picture_template">
-        <xpath expr="//div[@t-field='p.subtitle']" position="after">
-            <div class="te_latest_post_date">
-                <span t-field="p.post_date" t-options='{"format": "MMMM dd, yyyy"}'></span>
-            </div>
-        </xpath>
-        <xpath expr="//figcaption" position="after">
-            <span class="te_icon_r_more">
-                <span class="fa fa-arrow-right"/>
-            </span>
-        </xpath>
-    </template>
     <!--===================== Latest Blog list snippet =====================-->
-    <template id="s_latest_posts_ept" inherit_id="website_blog.s_latest_posts">
-        <xpath expr="//h2" position="replace"></xpath>
-        <xpath expr="//section[hasclass('s_latest_posts')]" position="attributes">
-            <attribute name="class">te_latest_posts_snippet s_latest_posts pt16 pb16</attribute>
-        </xpath>
-    </template>
     <template id="s_latest_posts_list_template_ept" inherit_id="website_blog.s_latest_posts_list_template">
         <xpath expr="//div[hasclass('s_latest_posts_post_subtitle')]" position="after">
             <a class="btn btn-sm mt-1 btn-primary te_theme_button px-2 py-1"
@@ -46,9 +17,6 @@
     </template>
     <!--================= Latest blog page ====================-->
     <template id="blog_post_short_ept" inherit_id="website_blog.blog_post_short">
-<!--        <xpath expr="//div[@id='o_wblog_posts_loop_container']" position="attributes">-->
-<!--            <attribute name="t-attf-class">col</attribute>-->
-<!--        </xpath>-->
         <xpath expr="//section[@id='o_wblog_index_content']//div[hasclass('container')]" position="attributes">
             <attribute name="class">te_opt_blog_design container py-4</attribute>
         </xpath>
@@ -64,6 +32,15 @@
     <template id="post_teaser_ept" inherit_id="website_blog.post_teaser">
         <xpath expr="//div[@t-field='blog_post.teaser']" position="attributes">
             <attribute name="class">mt-2</attribute>
+        </xpath>
+    </template>
+
+    <template id="post_info_ept" inherit_id="website_blog.post_info">
+        <xpath expr="//time[@t-field='blog_post.post_date']" position="replace">
+            <t t-set="active_lang" t-value="request.env['res.lang'].sudo().search([('code', '=', request.env.lang)])"></t>
+            <t t-if="active_lang">
+                <time t-field="blog_post.post_date" class="text-nowrap font-weight-bold px-2" t-field-options='{"format": blog_post.post_date.strftime(active_lang.date_format)}'/>
+            </t>
         </xpath>
     </template>
 

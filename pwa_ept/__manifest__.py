@@ -3,7 +3,7 @@
     'name': 'Emipro PWA',
     'category': 'eCommerce',
     'summary': 'This app provide shortcut of the website like an application.',
-    'version': '1.0.1',
+    'version': '1.0.0',
     'license': 'OPL-1',
     "depends": ['website', 'web', 'emipro_theme_base'],
     'data': [

@@ -90,10 +90,11 @@ odoo.define('theme_clarico_vego.cart_popup', function(require) {
         }
     });
     publicWidget.registry.websiteSaleCartLink.include({
-        selector: '#my_cart[href$="/shop/cart"]',
+        selector: '.o_wsale_my_cart a[href$="/shop/cart"]',
         _onMouseEnter: function (ev) {
             var self = this;
             clearTimeout(timeout);
+            var path = window.location.pathname
             $(this.selector).not(ev.currentTarget).popover('hide');
             timeout = setTimeout(function () {
                 if (!self.$el.is(':hover') || $('.mycart-popover:visible').length) {
@@ -106,6 +107,12 @@ odoo.define('theme_clarico_vego.cart_popup', function(require) {
                     self.$el.data("bs.popover").config.content = data;
                     self.$el.popover("show");
                     $(".mycart-popover .popover-body").html(data);
+                    if (path == '/shop/payment')
+                    {
+                        $(".mycart-popover .popover-body").find('.te_prod_rm_info').remove()
+                        $(".mycart-popover .popover-body").find('.line_qty').removeClass('d-none')
+                        $(".mycart-popover .popover-body").find('.js_delete_product').remove()
+                    }
                     $('.popover').on('mouseleave', function () {
                         self.$el.trigger('mouseleave');
                     });
@@ -115,7 +122,6 @@ odoo.define('theme_clarico_vego.cart_popup', function(require) {
                     });
                     $(".mycart-popover .js_quantity[data-product-id]").off('change').on('change',function(ev) {
                         ev.preventDefault();
-
                         cartPopup._onChangeQuantity(ev)
                     });
                     $(".mycart-popover .js_delete_product").off('click').on('click',function(ev) {

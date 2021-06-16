@@ -1,7 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
+
+    <!--======================== Inclusion of Scss Files ======================-->
+    <template id="theme_base_assets_frontend" inherit_id="website.assets_frontend">
+        <xpath expr="link[last()]" position="after">
+            <link rel="stylesheet" type="text/css" href="/emipro_theme_base/static/src/scss/product_slider_editor.scss"/>
+            <link rel="stylesheet" type="text/css" href="/emipro_theme_base/static/src/scss/image_hotspot_editor.scss"/>
+        </xpath>
+    </template>
+
     <template id="quick_view_container" name="Quick View Container">
         <div class="quick_view_content"/>
+    </template>
+
+    <template id="dynamic_mega_menu_child" name="Quick View Container">
+        <div class="dynamic_mega_menu_child"/>
     </template>
     <template id="ajax_cart_container" name="Ajax Cart Container">
         <div class="ajax_cart_content"/>

@@ -9,12 +9,11 @@
                 <group>
                     <group>
                         <field name="exclude_website_ids" options="{'no_create': True}"
-                               domain="[('theme_id.author','like','Emipro Technologies Pvt. Ltd.')]"
                                widget="many2many_tags"/>
                         <field name="is_quick_filter"/>
                         <field name="website_ids" options="{'no_create': True}"
-                               domain="[('theme_id.author','like','Emipro Technologies Pvt. Ltd.')]"
                                widget="many2many_tags" attrs="{'invisible': [('is_quick_filter','=',False)]}"/>
+                        <field name="icon_style" attrs="{'invisible': [('display_type', '!=', 'color')]}"/>
                     </group>
                 </group>
             </xpath>

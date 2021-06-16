@@ -24,11 +24,6 @@
         </xpath>
         <xpath expr="//strong[@t-field='line.name_short']" position="replace">
             <strong t-field="line.product_id.name" />
-            
-<!--            <div class="te_rmv_cart_product">-->
-<!--                <a href='#' aria-label="Remove from cart" title="Remove from cart"-->
-<!--					class='js_delete_product no-decoration'>Remove item</a>-->
-<!--            </div>-->
         </xpath>
         <xpath expr="//td[hasclass('td-product_name')]/div" position="inside">
             <div class="te_cart_prod_attr_lines mt4">
@@ -66,8 +61,6 @@
             </t>
         </div>
         </xpath>
-        <!-- <xpath expr="//th[hasclass('td-action')]" position="replace"></xpath> -->
-        <!-- <xpath expr="//td[hasclass('td-action')]" position="replace"></xpath> -->
     </template>
     <!--=================== Suggested Products =====================-->
     <template id="suggested_products_list_ept" inherit_id="website_sale.suggested_products_list">
@@ -194,10 +187,6 @@
     </template>
     <!--====================== Address kanban ==========================-->
     <template id="address_kanban_ept" inherit_id="website_sale.address_kanban">
-        <!-- <xpath expr="//div[1]" position="attributes">
-            <attribute name="t-attf-class">card #{selected or 'js_change_shipping'}
-			</attribute>
-        </xpath> -->
         <xpath expr="//span[hasclass('btn-ship')]/a[hasclass('btn-primary')]" position="attributes">
             <attribute name="class">btn btn-block btn-primary te_theme_button</attribute>
         </xpath>
@@ -230,42 +219,28 @@
                             <div class="col-sm-9">
                                 <div class="te_prod_name_info">
                                     <t t-call="website_sale.cart_line_product_link">
-                                        <span class="h6 te_cart_popover_p_name" t-esc="line.product_id.name"/>
+                                        <span class="h6 te_cart_popover_p_name" t-esc="line.name_short" />
                                     </t>
                                     <div class="te_cart_popover_details">
-                                        <div class="te_cart_popover_price" name="price">
-                                            <t t-set="combination"
-                                               t-value="line.product_id.product_template_attribute_value_ids + line.product_no_variant_attribute_value_ids"/>
-                                            <t t-set="combination_info"
-                                               t-value="line.product_id.product_tmpl_id._get_combination_info(combination)"/>
-
-                                            <div itemprop="offers" itemscope="itemscope"
-                                                 itemtype="http://schema.org/Offer"
-                                                 class="product_price">
-                                                <h6 class="oe_price_h4 css_editable_mode_hidden">
-                                                    <b class="oe_price" style="white-space: nowrap;"
-                                                       t-esc="combination_info['price']"
-                                                       t-options="{'widget': 'monetary', 'display_currency': website.currency_id}"/>
-                                                    <span t-attf-class="text-danger oe_default_price te_shop_del {{'' if combination_info['has_discounted_price'] else 'd-none'}}"
-                                                          style="text-decoration: line-through; white-space: nowrap;"
-                                                          t-esc="combination_info['list_price']"
-                                                          t-options="{'widget': 'monetary', 'display_currency': website.currency_id}"/>
-                                                    <span itemprop="price" style="display:none;"
-                                                          t-esc="combination_info['price']"/>
-                                                    <span itemprop="priceCurrency" style="display:none;"
-                                                          t-esc="website.currency_id.name"/>
-                                                </h6>
-                                                <h6 class="css_non_editable_mode_hidden decimal_precision"
-                                                    t-att-data-precision="str(website.currency_id.decimal_places)">
-                                                    <span t-field="line.product_id.list_price"
-                                                          t-options='{"widget": "monetary","display_currency": line.product_id.currency_id,}'/>
-                                                </h6>
-                                            </div>
-                                        </div>
+                                        <t t-set="combination" t-value="line.product_id.product_template_attribute_value_ids + line.product_no_variant_attribute_value_ids"/>
+                                        <t t-set="combination_info" t-value="line.product_id.product_tmpl_id._get_combination_info(combination)"/>
+                                        <t t-set="list_price_converted" t-value="website.currency_id._convert(combination_info['list_price'], website_sale_order.currency_id, website_sale_order.company_id, date)"/>
+                                        <t t-set="promo_install" t-value="request.env['ir.module.module'].sudo().search([('name', '=', 'website_sale_coupon'), ('state', 'in', ['installed'])])"/>
+                                        <span t-field="line.price_reduce_taxexcl" style="white-space: nowrap;" t-options="{'widget': 'monetary', 'display_currency': website_sale_order.currency_id}" groups="account.group_show_line_subtotals_tax_excluded"/>
+                                        <t groups="account.group_show_line_subtotals_tax_excluded" t-if="(website_sale_order.pricelist_id.discount_policy == 'without_discount' and website_sale_order.currency_id.compare_amounts(list_price_converted, line.price_reduce_taxexcl) == 1) or website_sale_order.currency_id.compare_amounts(line.price_unit, line.price_reduce) == 1" name="order_line_discount">
+                                            <del t-attf-class="#{'text-danger mr8'}" style="white-space: nowrap;" t-esc="list_price_converted"
+                                            t-options="{'widget': 'monetary', 'display_currency': website_sale_order.currency_id}"
+                                            t-if="(promo_install and not line.is_reward_line) or not promo_install"/>
+                                        </t>
+                                        <t groups="account.group_show_line_subtotals_tax_included" t-if="(website_sale_order.pricelist_id.discount_policy == 'without_discount' and website_sale_order.currency_id.compare_amounts(list_price_converted, line.price_reduce_taxinc) == 1) or website_sale_order.currency_id.compare_amounts(line.price_unit, line.price_reduce) == 1" name="order_line_discount">
+                                            <del t-attf-class="#{'text-danger mr8'}" style="white-space: nowrap;" t-esc="list_price_converted" t-options="{'widget': 'monetary', 'display_currency': website_sale_order.currency_id}"/>
+                                        </t>
+                                        <span t-field="line.price_reduce_taxinc" style="white-space: nowrap;" t-options="{'widget': 'monetary', 'display_currency': website_sale_order.currency_id}" groups="account.group_show_line_subtotals_tax_included"/>
                                     </div>
                                 </div>
                                 <t t-if="request.website.viewref('theme_clarico_vega.custom_template').active">
                                     <t t-call="theme_clarico_vega.custom_template"/>
+                                    <div class="line_qty d-none">Qty: <t t-esc="int(line.product_uom_qty) == line.product_uom_qty and int(line.product_uom_qty) or line.product_uom_qty"/></div>
                                 </t>
                                 <t t-else="">
                                     <div>Qty: <t t-esc="int(line.product_uom_qty) == line.product_uom_qty and int(line.product_uom_qty) or line.product_uom_qty" /></div>
