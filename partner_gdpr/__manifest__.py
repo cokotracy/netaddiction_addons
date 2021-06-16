@@ -12,6 +12,7 @@
         'contacts',
     ],
     'data': [
+        'security/ir.model.access.csv',
         'wizard/partner_gdpr_disable.xml',
         'views/sale.xml',
         'views/partner.xml',
