@@ -5,7 +5,7 @@
     """,
     'author': "OpenForce",
     'category': 'Custom Development',
-    'version': '13.0.1.0.0',
+    'version': '14.0.1.0.0',
     'description': """
         This module will enhance the website features
         - Layout similar to multiplayer.com

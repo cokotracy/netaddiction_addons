@@ -10,7 +10,7 @@
     'author': "Netaddiction",
     'website': "http://www.netaddiction.it",
     'category': 'Sale',
-    'version': '13.0.1.1.0',
+    'version': '14.0.1.0.0',
     'depends': [
         # 'base',
         'product',

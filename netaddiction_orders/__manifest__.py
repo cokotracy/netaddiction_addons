@@ -3,7 +3,7 @@
 
 {
     'name': 'Netaddiction Orders',
-    'version': '13.0.2.3.0',
+    'version': '14.0.1.0.0',
     'category': 'Sale',
     'author': 'Openforce',
     'license': 'LGPL-3',
