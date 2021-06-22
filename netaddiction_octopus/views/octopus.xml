@@ -2,9 +2,9 @@
 <odoo>
 <data>
 
-    <menuitem id="octopus_root_menu" name="Octopus"/>
+    <menuitem id="octopus_root_menu" name="Octopus" groups="base.group_user" />
 
-    <menuitem id="octopus_menu" name="Octopus" parent="octopus_root_menu" />
+    <menuitem id="octopus_menu" name="Octopus" parent="octopus_root_menu" groups="base.group_user" />
 
 </data>
 </odoo>

@@ -58,6 +58,7 @@
               name="Fornitori"
               parent="octopus_menu"
               action="octopus_supplier_action"
+              groups="base.group_user"
               />
 
 </data>

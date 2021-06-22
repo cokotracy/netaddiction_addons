@@ -16,14 +16,16 @@
     <menuitem id="menu_netaddiction_show"
               name="Fiere"
               sequence="31"
-              />
+              groups="base.group_user"
+	      />
 
     <menuitem id="menu_netaddiction_show_base"
               name="Fiere"
               sequence="10"
               action="netaddiction_show_base"
               parent="menu_netaddiction_show"
-              />
+	      groups="base.group_user"
+	      />
 
     <record model="ir.actions.act_url" id="netaddiction_show_link">
         <field name="name">Mobile App</field>
@@ -36,7 +38,8 @@
               sequence="20"
               action="netaddiction_show_link"
               parent="menu_netaddiction_show"
-              />
+	      groups="base.group_user"
+	      />
 
     <record model="ir.actions.act_window" id="netaddiction_show_returned">
         <field name="name">Ritorno Prodotti</field>
@@ -50,7 +53,8 @@
               sequence="15"
               action="netaddiction_show_returned"
               parent="menu_netaddiction_show"
-              />
+	      groups="base.group_user"
+	      />
 
 </data>
 </odoo>

@@ -46,6 +46,7 @@
               name="Categories"
               parent="octopus_menu"
               action="octopus_category_action"
+              groups="base.group_user"
               />
 
 </data>

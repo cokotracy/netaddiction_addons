@@ -37,6 +37,7 @@
               name="Auto Import"
               parent="octopus_menu"
               action="octopus_autoimport_action"
+              groups="base.group_user"
               />
 
 </data>

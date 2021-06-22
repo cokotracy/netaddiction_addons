@@ -87,13 +87,15 @@
               name="Prodotti"
               parent="octopus_menu"
               action="octopus_product_action"
-              />
+              groups="base.group_user"
+	      />
 
     <menuitem id="octopus_stock_product_menu"
               name="Prodotti Octopus"
               parent="stock.menu_stock_warehouse_mgmt"
               action="octopus_product_action"
-              />
+	      groups="base.group_user"
+	      />
 
 </data>
 </odoo>
