@@ -14,6 +14,7 @@
         'netaddiction_payments',
         'netaddiction_products',
         # 'netaddiction_special_offers',    NB: won't be migrated
+        'partner_manual_rank',
         'product',
         'purchase',
         'sale',
