@@ -22,6 +22,26 @@ class ResPartner(models.Model):
         string="Is a Supplier",
     )
 
+    # On the original Odoo 9 instance, the fields 'customer' and 'supplier'
+    # were available, and they are widely used in netaddiction addons. It is
+    # impossibile to check each and every line of code where 'customer' and
+    # 'supplier' fields are used, and this OCA module has unfortunately
+    # changed the fields names to 'is_customer' and 'is_supplier'. The idea
+    # of adding 'customer' and 'supplier' back as related is just a
+    # quick-and-dirty workaround to prevent errors. These two fields are
+    # deprecated and should never be actually used. On the other hand, please
+    # remove all references to 'customer' and 'supplier' if you find any
+
+    customer = fields.Boolean(
+        related='is_customer',
+        string="Is a customer (Deprecated)",
+    )
+
+    supplier = fields.Boolean(
+        related='is_supplier',
+        string="Is a supplier (Deprecated)",
+    )
+
     @api.depends("customer_rank")
     def _compute_is_customer(self):
         for partner in self:
