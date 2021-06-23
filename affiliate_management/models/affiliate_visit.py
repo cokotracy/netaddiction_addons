@@ -180,6 +180,8 @@ class AffiliateVisit(models.Model):
         invoice_ids =[]
         for v in aff_vst:
             vst = self.browse([v])
+             # [[0, 'virtual_754', {'sequence': 10, 'product_id': 36, 'name': '[Deposit] Deposit', 'account_id': 21, 'analytic_account_id': False, 'analytic_tag_ids': [[6, False, []]],
+             #  'quantity': 1, 'product_uom_id': 1, 'price_unit': 150, 'discount': 0, 'tax_ids': [[6, False, [1]]]
 
             if vst.state == 'confirm':
                 # ********** creating invoice line *********************
@@ -196,17 +198,17 @@ class AffiliateVisit(models.Model):
                             'name':"Type "+vst.affiliate_type+" on Pay Per Click ",
                             'price_unit':vst.commission_amt,
                             'quantity':1,
-                            # 'move_id':inv_id.id,
                             # 'product_id':ConfigValues.get('aff_product_id'),
                         }
 
                 invoice_dict = [
-                                { 'invoice_line_ids': [(0, 0, dic)],
-                                   'type': 'out_invoice',
+                                { 
+                                   'invoice_line_ids': [(0, 0, dic)],
+                                   'move_type': 'out_invoice',
                                    'partner_id':vst.affiliate_partner_id.id,
                                    'invoice_date':fields.Datetime.now().date()
                                 }]
-                line = self.env['account.move'].with_context(default_type='out_invoice').create(invoice_dict)
+                line = self.env['account.move'].create(invoice_dict)
                 vst.state = 'invoice'
                 vst.act_invoice_id = line.id
                 invoice_ids.append(line)
@@ -275,7 +277,7 @@ class AffiliateVisit(models.Model):
                             _logger.info('================advance_pps_type_calc===============')
                             if commission and commission_type:
                                 _logger.info("---22----adv_commision_amount--%r--commision_value-%r--------commision_value_type-%r------",adv_commision_amount,commission,commission_type)
-                                
+
                             else:
                                 response={
                                     'is_error':1,

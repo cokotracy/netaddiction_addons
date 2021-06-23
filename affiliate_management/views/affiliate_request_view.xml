@@ -44,16 +44,15 @@
 
 
 	    <record id="view_affiliate_request_filter" model="ir.ui.view">
-            <field name="name">aaffiliate.request.select</field>
+            <field name="name">affiliate.request.select</field>
             <field name="model">affiliate.request</field>
             <field name="priority">1</field>
             <field name="arch" type="xml">
-                <search string="Search Request">
-
+              <search string="Search Request">
+										<field name="state"/>
+										<field name="name"/>
                     <filter name="group_register_request" string="Pending For Approval" domain="[('state','=','register')]" help="Register Request"/>
-
-
-                </search>
+              </search>
             </field>
         </record>
 

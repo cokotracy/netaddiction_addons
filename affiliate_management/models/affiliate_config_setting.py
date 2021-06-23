@@ -49,6 +49,8 @@ class AffiliateConfiguration(models.TransientModel):
     cookie_expire_period = fields.Selection([('hours','Hours'),('days','Days'),('months','Months')],required=True,default='days')
     payment_day = fields.Integer(string="Payment day",required=True, default=7)
     minimum_amt = fields.Integer(string="Minimum Payout Balance",required=True, default=0)
+    currency_id = fields.Many2one('res.currency', 'Currency', required=True,
+        default=lambda self: self.env.user.company_id.currency_id.id)
     aff_product_id = fields.Many2one('product.product', 'Product',help="Product used in Invoicing")
     enable_signup = fields.Boolean(string= "Enable Sign Up", default=True  )
     enable_login = fields.Boolean(string= "Enable Log In", default=True  )

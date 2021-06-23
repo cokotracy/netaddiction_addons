@@ -22,7 +22,7 @@
   "author"               :  "Webkul Software Pvt. Ltd.",
   "license"              :  "Other proprietary",
   "maintainer"           :  "Saurabh Gupta",
-  "website"              :  "https://webkul.com/blog/odoo-affiliate-management",
+  "website"              :  "https://store.webkul.com/Odoo-Affiliate-Management.html",
   "description"          :  """Odoo Affiliate Extension for Affiliate Management""",
   "live_test_url"        :  "http://odoodemo.webkul.com/?module=affiliate_management&lifetime=90&lout=1&custom_url=/",
   "depends"              :  [
@@ -69,5 +69,5 @@
   "application"          :  True,
   "installable"          :  True,
   "price"                :  99,
-  "currency"             :  "EUR",
+  "currency"             :  "USD",
 }
