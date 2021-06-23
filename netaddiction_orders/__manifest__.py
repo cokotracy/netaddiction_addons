@@ -13,6 +13,7 @@
         'website_sale',
         'payment',
         'netaddiction_payments',
+        'affiliate_management',
     ],
     'data': [
         'data/template_email.xml',
