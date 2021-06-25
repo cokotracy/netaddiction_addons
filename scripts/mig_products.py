@@ -4,7 +4,7 @@
 # License LGPL-3.0 or later (https://www.gnu.org/licenses/lgpl).
 
 # It looks like list_price is not properly set after the 9->14 migration of
-# NetAddiction. This script retrieves the data from the existing Odoo 9
+# NetAddiction. This script retrieves the data from the existing Odoo 9
 # instance and restores the prices on Odoo 14
 
 
@@ -34,7 +34,7 @@ def main():
     data9 = odoo9.read(
         'product.product',
         [('active', '=', True)],
-        ('id', 'list_price')
+        ('id', 'list_price', 'out_date')
     )
 
     product14 = odoo14.model('product.product')
@@ -43,7 +43,11 @@ def main():
         try:
             product14.browse(item9['id']).list_price = item9['list_price']
         except Exception:
-            print(f"ERROR: Skipping product ID {item9['id']}")
+            print(f"ERROR: Can't assign list_price to product ID {item9['id']}")
+        try:
+            product14.browse(item9['id']).out_date = item9['out_date']
+        except Exception:
+            print(f"ERROR: Can't assign out_date to product ID {item9['id']}")
 
 
 if __name__ == '__main__':
