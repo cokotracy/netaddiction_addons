@@ -73,7 +73,7 @@ class NetaddictionOctopusCron(models.Model):
                 downloaded_products = len(items)
                 rejected_products = 0
                 discarted_products = 0
-                _logger.info(' |  | Scaricato (%s prodotti)' % locale.format(
+                _logger.info(' |  | Scaricato (%s prodotti)' % locale.format_string(
                     '%d', downloaded_products, grouping=True))
                 # Mapping products
                 for item in items:
@@ -133,11 +133,11 @@ class NetaddictionOctopusCron(models.Model):
                         na_product_model.create(data)
                 # Reporting results
                 saved_products = downloaded_products - rejected_products
-                _logger.info(' |  | Rifiutati (%s prodotti)' % locale.format(
+                _logger.info(' |  | Rifiutati (%s prodotti)' % locale.format_string(
                     '%d', rejected_products, grouping=True))
-                _logger.info(' |  | Scartati (%s prodotti)' % locale.format(
+                _logger.info(' |  | Scartati (%s prodotti)' % locale.format_string(
                     '%d', discarted_products, grouping=True))
-                _logger.info(' |  | Salvato (%s prodotti)' % locale.format(
+                _logger.info(' |  | Salvato (%s prodotti)' % locale.format_string(
                     '%d', saved_products, grouping=True))
 
     def impera(self, suppliers):
