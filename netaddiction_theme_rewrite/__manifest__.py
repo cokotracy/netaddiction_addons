@@ -15,7 +15,6 @@
     'data': [
         'templates/assets.xml',
         'templates/template_home.xml',
-        'templates/template_home2.xml',
         'templates/template_category.xml',
         'templates/template_product.xml',
         'templates/google-snippet/product.xml'
