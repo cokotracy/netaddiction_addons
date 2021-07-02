@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+<!--BACKOFFICE-->
+    <!-- INSERISCO IL CAMPO DESCRIZIONE NEL BACKEND DELLA CATEGORIA -->
+    <record id="product_public_category_inherit" model="ir.ui.view">
+        <field name="name">product.public.category.inherit</field>
+        <field name="model">product.public.category</field>
+        <field name="inherit_id" ref="website_sale.product_public_category_form_view"/>
+        <field name="arch" type="xml">
+            <field name="parent_id" position="after">
+                <field name="description"/>
+            </field>
+        </field>
+    </record>
+
+<!--BACKOFFICE -->
+
+<!--FRONTEND-->
+    <template id="category_info" inherit_id="website_sale.products">
+            <!-- INSERISCO IL TITOLO DELLA CATEGORIA -->
+            <xpath expr="//div[hasclass('oe_website_sale')]" position="before">
+                <div>
+                    <t t-if="categ">
+                        <t t-set="rec" t-value="request.env['product.public.category'].sudo().search([('id', '=', categ[len(categ)- 1])])"/>
+                        <div class="s_nb_column_fixed">
+                            <div class="col-lg-12 te_title_2 pt32">
+                                <div class="te_title_sub_div">
+                                    <h1 t-esc="rec.name" class="te_s_title_default te_title_style2"></h1>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </div>
+            </xpath>
+
+            <!-- INSERISCO GLI SLIDER -->
+            <xpath expr="//div[hasclass('o_wsale_products_grid_table_wrapper')]" position="before">
+                <t t-if="rec">
+                    <div>
+                        <h2>I più venduti</h2>
+                        <section data-name="New Product Slider" class="border-bottom pb-3">
+                            <div class="js_new_product hidden" data-isemipro="true" data-slider-style-id="5"/>
+                        </section>
+                        <br/><br/>
+                    </div>
+                </t>
+            </xpath>
+
+            <xpath expr="//div[hasclass('products_pager')][2]" position="after">
+                <div>
+                    <t t-if="rec">
+                        <!-- INSERISCO GLI SLIDER NEL FOOTER -->
+                        <h2>Nuovi arrivi</h2>
+                        <section data-name="New Product Slider">
+                            <div class="js_new_product hidden" data-isemipro="true" data-slider-style-id="5"/>
+                        </section>
+                        <!-- INSERISCO GLI SLIDER NEL FOOTER -->
+                        <h2>Prossime uscite</h2>
+                        <section data-name="New Product Slider">
+                            <div class="js_new_product hidden" data-isemipro="true" data-slider-style-id="5"/>
+                        </section>
+                        <br/>
+                        <!-- INSERISCO LA DESCRIZIONE DELLA CATEGORIA A FONDO PAGINA -->
+                        <t t-if="rec.description">
+                            <section class="s_text_block bg-200" data-name="Text block">
+                                <div class="container">
+                                    <div class="row">
+                                        <div class="col-lg-12 pt32 pb32 p-3">
+                                            <p class="px-3 lead o_default_snippet_text" t-esc="rec.description"></p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </section>
+                        </t>
+                    </t>
+                </div>
+            </xpath>
+    </template>
+
+<!--FRONTEND-->
+</odoo>

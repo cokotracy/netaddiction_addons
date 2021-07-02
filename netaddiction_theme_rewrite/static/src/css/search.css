@@ -1,0 +1,14 @@
+.oe_website_sale{
+    width:100%;
+}
+.te_pc_style_main .te_slider_filter_main{
+    padding:0 !important;
+}
+#products_grid .table .o_wsale_product_grid_wrapper, .te_product_ind{
+    border:none !important;
+}
+@media only screen and (min-width: 920px) {
+    #products_grid_before{
+        top:100px !important;
+    }
+}

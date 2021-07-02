@@ -1,0 +1,341 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--PER MODIFICHE DISINSTALLARE IL MODULO,
+COPIARE TUTTO IL CODICE DENTRO HOME PAGE MANAGER (editarlo tramite drag and drop),
+POI TRASFERIRLO NUOVAMENTE NEL MODULO-->
+
+<odoo>
+    <template id="template_home_secondary" name="Template della home personalizzato">
+        <t name="Homepage" t-name="website.homepage1">
+            <t t-call="website.layout">
+                <t t-set="pageName" t-value="'homepage'"/>
+                <div id="wrap" class="oe_structure oe_empty">
+                <section data-snippet="home_page_6" class="o_colored_level" data-name="Fashion page" style="">
+                <div id="wrap" class="oe_structure oe_empty" data-editor-message="DRAG BUILDING BLOCKS HERE">
+                <div id="myCarousel1578908302092" class="s_carousel s_carousel_default carousel slide te_s_slider_10" data-interval="10000" data-name="Full screen 6">
+                    <ol class="carousel-indicators">
+                    <li data-target="#myCarousel1578908302092" data-slide-to="0" class="active"/>
+                    <li data-target="#myCarousel1578908302092" data-slide-to="1"/>
+                    </ol>
+                    <div class="carousel-inner te_arrow_small te_ts_style_7_inner">
+                    <div class="carousel-item oe_custom_bg oe_img_bg o_colored_level active" style="background-image: url(&quot;/theme_clarico_vega/static/src/img/snippets/slider_styles/style_7/1920_800.jpg&quot;);" data-name="Slide">
+                        <div class="container">
+                        <div class="row content">
+                            <div class="carousel-content col-lg-5 col-md-7 col-sm-8 col-8 te_slider_10 o_colored_level">
+                            <div class="s_title" data-name="Title">
+                                <h3 class="te_slider_10_title mb-0 o_default_snippet_text">My Heading 3</h3>
+                            </div>
+                            <br/>
+                            <div class="te_slider_10_content mt-2">
+                                <p class="o_default_snippet_text">Lorem Ipsum Dolor Sit Amet</p>
+                            </div>
+                            <div class="s_btn text-left pt16 pb16 mt16" data-name="Buttons">
+                                <a href="/it_IT/contactus" class="btn btn-primary te_theme_button o_default_snippet_text">Know more
+                                                    </a>
+                            </div>
+                            </div>
+                        </div>
+                        </div>
+                    </div>
+                    <div class="carousel-item oe_custom_bg oe_img_bg o_colored_level" style="background-image: url(&quot;/theme_clarico_vega/static/src/img/snippets/slider_styles/style_7/1920_800.jpg&quot;);" data-name="Slide">
+                        <div class="container">
+                        <div class="row content">
+                            <div class="carousel-content col-lg-5 col-md-7 col-sm-8 col-8 te_slider_10 o_colored_level">
+                            <div class="s_title" data-name="Title">
+                                <h3 class="te_slider_10_title mb-0 o_default_snippet_text">My Heading 3</h3>
+                            </div>
+                            <br/>
+                            <div class="te_slider_10_content mt-2">
+                                <p class="o_default_snippet_text">Lorem Ipsum Dolor Sit Amet</p>
+                            </div>
+                            <div class="s_btn text-left pt16 pb16 mt16" data-name="Buttons">
+                                <a href="/it_IT/contactus" class="btn btn-primary te_theme_button o_default_snippet_text">Know more
+                                                    </a>
+                            </div>
+                            </div>
+                        </div>
+                        </div>
+                    </div>
+                    <div class="carousel-control-prev" data-target="#myCarousel1578908302092" data-slide="prev" role="img" aria-label="Previous" title="Previous">
+                        <span class="carousel-control-prev-icon"/>
+                        <span class="sr-only o_default_snippet_text">Previous</span>
+                    </div>
+                    <div class="carousel-control-next" data-target="#myCarousel1578908302092" data-slide="next" role="img" aria-label="Next" title="Next">
+                        <span class="carousel-control-next-icon"/>
+                        <span class="sr-only o_default_snippet_text">Next</span>
+                    </div>
+                    </div>
+                </div>
+                <section class="pb32 pt32 o_colored_level" data-name="Style 3">
+                    <div class="container">
+                    <div class="row">
+                        <div class="col-lg-3 col-sm-6 te_col_5_main o_colored_level">
+                        <section class="o_colored_level">
+                            <img class="img img-responsive img-fluid mx-auto d-block" alt="" src="/theme_clarico_vega/static/src/img/snippets/3_column/style_2/437_500.jpg" loading="lazy"/>
+                        </section>
+                        <section class="te_4_col_content o_colored_level">
+                            <div class="te_s_5_img">
+                            <img class="img img-responsive img-fluid mx-auto d-block" alt="" src="/theme_clarico_vega/static/src/img/snippets/structure/4_blocks/40_40.png" loading="lazy"/>
+                            </div>
+                            <p class="o_default_snippet_text">Lorem ipsum consectetur dolor sit amet, adipiscing
+                                                elit.
+                                            </p>
+                            <div class="te_extra_btn">
+                            <i class="fa fa-plus"/>
+                            <a href="#" class="o_default_snippet_text">Explore</a>
+                            </div>
+                        </section>
+                        </div>
+                        <div class="col-lg-3 col-sm-6 te_col_5_main o_colored_level">
+                        <section class="o_colored_level">
+                            <img class="img img-responsive img-fluid mx-auto d-block" alt="" src="/theme_clarico_vega/static/src/img/snippets/3_column/style_2/437_500.jpg" loading="lazy"/>
+                        </section>
+                        <section class="te_4_col_content o_colored_level">
+                            <div class="te_s_5_img">
+                            <img class="img img-responsive img-fluid mx-auto d-block" alt="" src="/theme_clarico_vega/static/src/img/snippets/structure/4_blocks/40_40.png" loading="lazy"/>
+                            </div>
+                            <p class="o_default_snippet_text">Lorem ipsum dolor sit amet, consectetur adipiscing
+                                                elit.
+                                            </p>
+                            <div class="te_extra_btn">
+                            <i class="fa fa-plus"/>
+                            <a href="#" class="o_default_snippet_text">Explore</a>
+                            </div>
+                        </section>
+                        </div>
+                        <div class="col-lg-3 col-sm-6 te_col_5_main o_colored_level">
+                        <section class="o_colored_level">
+                            <img class="img img-responsive img-fluid mx-auto d-block" alt="" src="/theme_clarico_vega/static/src/img/snippets/3_column/style_2/437_500.jpg" loading="lazy"/>
+                        </section>
+                        <section class="te_4_col_content o_colored_level">
+                            <div class="te_s_5_img">
+                            <img class="img img-responsive img-fluid mx-auto d-block" alt="" src="/theme_clarico_vega/static/src/img/snippets/structure/4_blocks/40_40.png" loading="lazy"/>
+                            </div>
+                            <p class="o_default_snippet_text">Lorem ipsum dolor sit amet, consectetur adipiscing
+                                                elit.
+                                            </p>
+                            <div class="te_extra_btn">
+                            <i class="fa fa-plus"/>
+                            <a href="#" class="o_default_snippet_text">Explore</a>
+                            </div>
+                        </section>
+                        </div>
+                        <div class="col-lg-3 col-sm-6 te_col_5_main o_colored_level">
+                        <section class="o_colored_level">
+                            <img class="img img-responsive img-fluid mx-auto d-block" alt="" src="/theme_clarico_vega/static/src/img/snippets/3_column/style_2/437_500.jpg" loading="lazy"/>
+                        </section>
+                        <section class="te_4_col_content o_colored_level">
+                            <div class="te_s_5_img">
+                            <img class="img img-responsive img-fluid mx-auto d-block" alt="" src="/theme_clarico_vega/static/src/img/snippets/structure/4_blocks/40_40.png" loading="lazy"/>
+                            </div>
+                            <p class="o_default_snippet_text">Lorem ipsum dolor sit amet, consectetur adipiscing
+                                                elit.
+                                            </p>
+                            <div class="te_extra_btn">
+                            <i class="fa fa-plus"/>
+                            <a href="#" class="o_default_snippet_text">Explore</a>
+                            </div>
+                        </section>
+                        </div>
+                    </div>
+                    </div>
+                </section>
+                <section class="s_wsale_products_recently_viewed pt24 pb24 o_colored_level d-none" style="min-height: 400px;" data-snippet="s_products_recently_viewed" data-name="Viewed Products">
+                    <div class="container">
+                    <div class="alert alert-info alert-dismissible rounded-0 fade show d-print-none css_non_editable_mode_hidden o_not_editable o_default_snippet_text">
+                        This is a preview of the recently viewed products by the user.<br/>
+                        Once the user has seen at least one product this snippet will be visible.
+                        <button type="button" class="close o_default_snippet_text" data-dismiss="alert" aria-label="Close"> × </button>
+                    </div>
+                    <h3 class="text-center mb32 o_default_snippet_text">Recently viewed Products</h3>
+                    <div class="slider o_not_editable te_recently_viewed dd_recent_prod_bg"/>
+                    </div>
+                </section>
+                <section class="d-none d-xl-inline-block w-100 pt32 pb32 o_colored_level" data-snippet="offer_style_7" data-name="Style 7">
+                    <div class="container">
+                    <div class="row align-items-center">
+                        <div class="col-lg-6 pb-0 pb-sm-3 pb-lg-0 o_colored_level">
+                        <div class="t_img_hover_1 te_img_effect2 te_offer_s7_img_big">
+                            <img class="img img-fluid" src="/theme_clarico_vega/static/src/img/snippets/slider_styles/style_5/785_700.jpg" loading="lazy"/>
+                            <div class="te_offer_big_img_content">
+                            <h3 class="o_default_snippet_text">My Heading 3</h3>
+                            <p class="o_default_snippet_text">Lorem Ipsum Dolor Sit Amet</p>
+                            </div>
+                        </div>
+                        <div class="row align-items-center te_offer_s7_left">
+                            <div class="col-lg-6 col-sm-6 col-md-6 o_colored_level">
+                            <div class="t_img_hover_1 te_img_effect2 te_offer_s7_img_small">
+                                <img class="img img-fluid" src="/theme_clarico_vega/static/src/img/snippets/offer_styles/style_6/470_451.png" loading="lazy"/>
+                            </div>
+                            <div class="te_offer_small_img_content">
+                                <h4 class="o_default_snippet_text">My Heading 4</h4>
+                                <p class="o_default_snippet_text">Lorem Ipsum Dolor Sit Amet</p>
+                            </div>
+                            </div>
+                            <div class="col-lg-6 col-sm-6 col-md-6 o_colored_level">
+                            <div class="t_img_hover_1 te_img_effect2 te_offer_s7_img_small">
+                                <img class="img img-fluid" src="/theme_clarico_vega/static/src/img/snippets/offer_styles/style_6/470_451.png" loading="lazy"/>
+                            </div>
+                            <div class="te_offer_small_img_content">
+                                <h4 class="o_default_snippet_text">My Heading 4</h4>
+                                <p class="o_default_snippet_text">Lorem Ipsum Dolor Sit Amet</p>
+                            </div>
+                            </div>
+                        </div>
+                        </div>
+                        <section class="col-lg-6 pt-3 pt-lg-0 o_colored_level">
+                        <div class="row align-items-center te_offer_s7_right">
+                            <div class="col-lg-6 col-sm-6 col-md-6 o_colored_level">
+                            <div class="t_img_hover_1 te_img_effect2 te_offer_s7_img_small">
+                                <img class="img img-fluid" src="/theme_clarico_vega/static/src/img/snippets/offer_styles/style_6/470_451.png" loading="lazy"/>
+                            </div>
+                            <div class="te_offer_small_img_content">
+                                <h4 class="o_default_snippet_text">My Heading 4</h4>
+                                <p class="o_default_snippet_text">Lorem Ipsum Dolor Sit Amet</p>
+                            </div>
+                            </div>
+                            <div class="col-lg-6 col-sm-6 col-md-6 o_colored_level">
+                            <div class="t_img_hover_1 te_img_effect2 te_offer_s7_img_small">
+                                <img class="img img-fluid" src="/theme_clarico_vega/static/src/img/snippets/offer_styles/style_6/470_451.png" loading="lazy"/>
+                            </div>
+                            <div class="te_offer_small_img_content">
+                                <h4 class="o_default_snippet_text">My Heading 4</h4>
+                                <p class="o_default_snippet_text">Lorem Ipsum Dolor Sit Amet</p>
+                            </div>
+                            </div>
+                        </div>
+                        <div class="t_img_hover_1 te_img_effect2 te_offer_s7_img_big">
+                            <img class="img img-fluid" src="/theme_clarico_vega/static/src/img/snippets/slider_styles/style_5/785_700.jpg" loading="lazy"/>
+                            <div class="te_offer_big_img2_content">
+                            <h3 class="o_default_snippet_text">My Heading 3</h3>
+                            <p class="o_default_snippet_text">Lorem Ipsum Dolor Sit Amet</p>
+                            </div>
+                        </div>
+                        </section>
+                    </div>
+                    </div>
+                </section>
+                <section class="s_title_3_ept o_colored_level undefined o_cc o_cc1" data-snippet="s_title_3_ept" data-name="Title style 3">
+                    <div class="container">
+                    <div class="row s_nb_column_fixed">
+                        <div class="col-lg-12 te_title_3 pt32 o_colored_level">
+                        <div class="te_title_sub_div">
+                            <h4 class="te_s_title_default te_title_style3">I PIÙ VENDUTI</h4>
+                        </div>
+                        </div>
+                    </div>
+                    </div>
+                </section>
+                <section class="pt8 pb8 o_colored_level undefined o_cc o_cc1" data-snippet="p_slider" data-name="Product Snippet Builder">
+                    <div class="js_slider_snippet" name="product-slider" data-isemipro="true" data-name="new-arrival"/>
+                </section>
+                <div class="oe_structure" data-name="Style 1"/>
+                <div class="oe_structure" data-name="Style 2"/>
+                <div class="oe_structure" data-name="Style 10"/>
+                <section data-name="Title style 3" class="o_colored_level undefined o_cc o_cc5">
+                    <div class="container">
+                    <div class="row s_nb_column_fixed">
+                        <div class="col-lg-12 te_title_3 pt32 o_colored_level">
+                        <div class="te_title_sub_div">
+                            <h4 class="te_s_title_default te_title_style3">PRE-ORDER</h4>
+                        </div>
+                        </div>
+                    </div>
+                    </div>
+                </section>
+                <section class="pt8 pb8 o_colored_level undefined o_cc o_cc5" data-snippet="p_slider" data-name="Product Snippet Builder">
+                    <div class="js_slider_snippet" name="product-slider" data-isemipro="true" data-name="new-arrival"/>
+                </section>
+                <section class="container o_colored_level" data-name="Offer Timer Style 3">
+                    <div class="row py-5">
+                    <div class="col-lg-6 align-self-center text-center o_colored_level">
+                        <div class="te_offer_s3_img">
+                        <section class="te_offer_s3_img_before o_colored_level"/>
+                        <img class="img img-fluid d-block" src="/theme_clarico_vega/static/src/img/snippets/3_column/style_2/437_500.jpg" loading="lazy"/>
+                        <div class="te_vertical_line o_default_snippet_text">Lorem Ipsum Dolor</div>
+                        </div>
+                    </div>
+                    <section class="col-lg-6 align-self-center te_offer_s3_section o_colored_level">
+                        <section class="pb-2 o_colored_level">
+                        <p class="te_offer_s3_heading o_default_snippet_text">Lorem Ipsum Dolor Sit</p>
+                        </section>
+                        <section class="o_colored_level">
+                        <div class="js_timer_div"/>
+                        </section>
+                        <section class="o_colored_level">
+                        <p class="te_offer_s3_text py-3 o_default_snippet_text">$100</p>
+                        <p class="te_offer_s3_discount o_default_snippet_text">$500</p>
+                        </section>
+                        <section class="s_btn pt16 pb16 o_colored_level" data-name="Buttons">
+                        <a href="#" class="btn btn-primary te_theme_button o_default_snippet_text">Know
+                                            more
+                                        </a>
+                        </section>
+                    </section>
+                    </div>
+                </section>
+                </div>
+            </section>
+            <section class="s_title_3_ept o_colored_level" data-snippet="s_title_3_ept" data-name="Title style 3">
+                <div class="container">
+                <div class="row s_nb_column_fixed">
+                    <div class="col-lg-12 te_title_3 pt32 o_colored_level">
+                    <div class="te_title_sub_div">
+                        <h4 class="te_s_title_default te_title_style3">CONSIGLIATI</h4>
+                    </div>
+                    </div>
+                </div>
+                </div>
+            </section>
+            <section data-snippet="product_multiple_sliders" class="o_colored_level" data-name="Dual Product Slider">
+                <div class="container product_multiple_sliders flex_reverse_row">
+                <section class="row s_nb_column_fixed js_multi_slider align-items-end pt8 pb8 o_colored_level">
+                    <div class="col-lg-4 product_col_sm align-self-stretch pr-0 align-items-end o_colored_level">
+                    <div class="js_slider_snippet d-flex align-self-end h-100 align-items-top" name="product-slider" data-isemipro="true" data-exclude="data-limit,data-style" data-limit="3" data-ui_option="shopping_cart,wishlist,quick_view,sale_label,ratings" data-style="8"/>
+                    </div>
+                    <div class="col-lg-8 product_col_lg py-0 pl-0 o_colored_level">
+                    <div class="js_slider_snippet" name="product-slider" data-isemipro="true" data-slider_type="slider" data-exclude="data-style" data-ui_option="shopping_cart,wishlist,quick_view,sale_label,ratings" data-style="9"/>
+                    </div>
+                </section>
+                </div>
+            </section>
+            <section class="s_title_3_ept o_colored_level undefined o_cc o_cc5" data-snippet="s_title_3_ept" data-name="Title style 3">
+                <div class="container">
+                <div class="row s_nb_column_fixed">
+                    <div class="col-lg-12 te_title_3 pt32 o_colored_level">
+                    <div class="te_title_sub_div">
+                        <h4 class="te_s_title_default te_title_style3">I BRAND</h4>
+                    </div>
+                    </div>
+                </div>
+                </div>
+            </section>
+            <section class="pt4 pb4 o_colored_level undefined o_cc o_cc5" data-snippet="brand_slider" data-name="Brand Builder">
+                <div class="js_category_brand_snippet" data-isemipro="true" name="brand-slider" data-name="brand-slider"/>
+            </section>
+            <section class="s_text_block o_colored_level" data-snippet="s_text_block" data-name="Text">
+                <div class="container">
+                <div class="row">
+                    <div class="col-lg-12 pt32 pb32 o_colored_level undefined">
+                    <p class="lead o_default_snippet_text">Lorem ipsum dolor sit amet, eam et reque justo quidam, te est audire
+                                        persius. Duis meis quas vim ex, ius no oblique phaedrum.
+                                    </p>
+                    <p><b class="o_default_snippet_text">Lorem ipsum dolor sit amet.</b>
+                                        Lorem ipsum dolor sit amet, eam et reque justo quidam, te est audire persius. Duis meis
+                                        quas vim ex, ius no oblique phaedrum pertinacia. Ornatus referrentur nec cu, dicam
+                                        dolore vivendum ne mea. Usu bonorum inermis efficiantur ad, nec at detracto repudiandae,
+                                        erat denique percipit at est.
+                                    </p>
+                    <p class="o_default_snippet_text"><b class="o_default_snippet_text">Lorem ipsum dolor sit amet, eam et reque justo quidam, te est audire persius.</b>
+                                        Lorem ipsum dolor sit amet, eam et reque justo quidam, te est audire persius. Duis meis
+                                        quas vim ex, ius no oblique phaedrum pertinacia. Ornatus referrentur nec cu, dicam
+                                        dolore vivendum ne mea,
+                                    </p>
+                    </div>
+                </div>
+                </div>
+            </section>
+                </div>
+            </t>
+        </t>
+    </template>
+</odoo>

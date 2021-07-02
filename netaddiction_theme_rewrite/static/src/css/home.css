@@ -1,0 +1,25 @@
+/*
+* Copyright 2021 Netaddiction
+*/
+
+/*PALLINI SLIDER FULL SCREEN*/
+.carousel-indicators{
+    z-index:7 !important;
+}
+
+/*COMPOSIZIONE IMG HOME*/
+.big-category-cover, .small-category-cover{
+    object-fit:cover;
+    object-position: center;
+    height:350px;
+    width:100% !important;
+}
+
+@media only screen and (min-width: 920px) {
+    .big-category-cover{
+        height:445px !important;
+    }
+    .small-category-cover{
+        height:300px !important;
+    }
+}
