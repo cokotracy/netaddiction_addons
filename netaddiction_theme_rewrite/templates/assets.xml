@@ -9,7 +9,7 @@
             <t t-if="(request.env['ir.config_parameter'].sudo().get_param('web.base.url') + '/') == request.httprequest.url">
                 <link href="/netaddiction_theme_rewrite/static/src/css/home.css" rel="stylesheet"/>
             </t>
-
+            
             <!-- AGGIUNGE IN HEAD PER LE CATEGORIE -->
             <t t-if="'/shop/category/' in request.httprequest.url">
                 <link href="/netaddiction_theme_rewrite/static/src/css/category.css" rel="stylesheet"/>
@@ -22,10 +22,29 @@
             </t>
 
             <!-- AGGIUNGE IN HEAD PER I PRODOTTI --> 
+            <t t-if="'/shop' in request.httprequest.url">
+                <link href="/netaddiction_theme_rewrite/static/src/css/category.css" rel="stylesheet"/>
+            </t>
+
+            <!-- AGGIUNGE IN HEAD PER I PRODOTTI --> 
             <t t-if="'/shop/' in request.httprequest.url">
                 <link href="/netaddiction_theme_rewrite/static/src/css/product.css" rel="stylesheet"/>
                     <!-- AGGIUNGE LO SNIPPET PER PRODOTTI -->
                 <t t-call="netaddiction_theme_rewrite.product_snippet"/>
+
+                <t t-if="product_variant">
+                    <t t-set="product_images" t-value="product_variant._get_images() if product_variant else product._get_images()"/>
+                    <t t-set="img_index" t-value="0"/>
+                    <t t-foreach="product_images" t-as="img" >
+                        <t t-set="img_index" t-value="img_index + 1" />
+                        <t t-if="img._name == 'product.image'">
+                            <link rel="preload" href="base_url + '/web/image/product.image/' + str(img.id) + '/image_1024/' + str(img.name.replace(' ','%20'))" />
+                        </t>
+                        <t t-else="">
+                            <link rel="preload" href="base_url + '/web/image/product.product/' + str(img.id) + '/image_1024/' + str(img.name.replace(' ','%20'))" />
+                        </t>
+                    </t>
+                </t>
             </t>
         </xpath>
     </template>
