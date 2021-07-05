@@ -87,7 +87,7 @@ class ProductProduct(models.Model):
                     visible = 0
                 
                 if prod.out_date:
-                    if prod.out_date > datetime.now():
+                    if prod.out_date > fields.Date.today():
                         visible = 0
 
                 attr = {
