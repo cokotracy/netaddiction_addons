@@ -50,30 +50,37 @@
     </template>
     <template id="netaddiction_theme_rewrite_canonical" inherit_id="portal.frontend_layout">
         <xpath expr="//link[@rel='canonical']" position="replace">
-            <!--SOSTITUISCE IL CANONICAL-->
-            <t t-if="'/shop/category/' in request.httprequest.url">
-                <t t-log="request.httprequest.url"/>
-                <!--CATEGORIE: RIMUOVE LA PAGINAZIONE-->
-                <link rel="canonical" t-att-href="website._get_canonical_url(canonical_params=canonical_params).split('/page/')[0]"/>
-            </t>
-            <t t-if="'/shop/page/' in request.httprequest.url">
-                <t t-log="request.httprequest.url"/>
-                <!--SHOP PAGE: RIMUOVE LA PAGINAZIONE-->
-                <link rel="canonical" t-att-href="website._get_canonical_url(canonical_params=canonical_params).split('/page/')[0]"/>
-            </t>
-            <t t-elif="'&amp;search=' in request.httprequest.url">
-                <t t-log="request.httprequest.url"/>
-                <!--RICERCA: RIMUOVE LA PAGINAZIONE-->
-                <t t-set="split_url" t-value="request.httprequest.url.split('/page/')" />
-                <t t-set="split_pagination" t-value="split_url[1].split('?')" />
-                <link rel="canonical" t-attf-href="{{split_url[0]}}?{{split_pagination[1]}}" />
-            </t>
-            <t t-else="">
-                <!--GLOBALE-->
-                <link rel="canonical" t-attf-href="{{request.httprequest.url}}" />
-            </t>
+            <t t-set="canonical_find" t-value="false"/>
             <t t-if="'/shop/' in request.httprequest.url">
                 <t t-call="netaddiction_theme_rewrite.product_snippet"/>
+            </t>
+
+            <!--SOSTITUISCE IL CANONICAL-->
+            <t t-if="'/shop/category/' in request.httprequest.url">
+                <!--CATEGORIE: RIMUOVE LA PAGINAZIONE-->
+                <link rel="canonical" t-att-href="website._get_canonical_url(canonical_params=canonical_params).split('/page/')[0]"/>
+                <t t-set="canonical_find" t-value="true"/>
+            </t>
+            <t t-if="'/shop/page/' in request.httprequest.url">
+                <!--SHOP PAGE: RIMUOVE LA PAGINAZIONE-->
+                <link rel="canonical" t-att-href="website._get_canonical_url(canonical_params=canonical_params).split('/page/')[0]"/>
+                <t t-set="canonical_find" t-value="true"/>
+            </t>
+            <t t-if="'&amp;search=' in request.httprequest.url">
+                <!--RICERCA: RIMUOVE LA PAGINAZIONE-->
+                <t t-if="'/page/' in request.httprequest.url">
+                    <t t-set="split_url" t-value="request.httprequest.url.split('/page/')" />
+                    <t t-set="split_pagination" t-value="split_url[1].split('?')" />
+                    <link rel="canonical" t-attf-href="{{split_url[0]}}?{{split_pagination[1]}}" />
+                </t>
+                <t t-else="">
+                    <link rel="canonical" t-attf-href="{{request.httprequest.url}}" />
+                </t>
+                <t t-set="canonical_find" t-value="true"/>
+            </t>
+            <t t-if="canonical_find == false">
+                <!--GLOBALE-->
+                <link rel="canonical" t-attf-href="{{request.httprequest.url}}" />
             </t>
         </xpath>
     </template>
