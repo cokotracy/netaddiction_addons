@@ -26,8 +26,7 @@
         'data/mail_template.xml',
         'security/ir.model.access.csv',
         'views/digital_bonus.xml',
-        # FIXME This view is disabled, pending fixes for the new coupon module
-        #'views/sale_coupon_program.xml',
+        'views/coupon_program.xml',
         'views/sale_order.xml',
         # 'views/minimum.xml',
         # 'data/acl_minimum.xml'

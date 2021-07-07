@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="coupon_program_digital_bonus_view_form_common" model="ir.ui.view">
+        <field name="name">coupon.program.digital.bonus.view.form.common</field>
+        <field name="model">coupon.program</field>
+        <field name="inherit_id" ref="coupon.coupon_program_view_form_common" />
+        <field name="arch" type="xml">
+            <xpath expr="/form/sheet/group/group/field[@name='reward_product_id']/.." position="attributes">
+                <attribute name="attrs">{'invisible': [('reward_type', '=', 'digital_bonus')]}</attribute>
+            </xpath>
+            <xpath expr="/form/sheet/group/group/field[@name='reward_product_id']/.." position="after">
+                <group attrs="{'invisible': [('reward_type', '!=', 'digital_bonus'), ('digital_bonus_id', '=', False)]}">
+                    <field name='digital_bonus_id'/>
+                </group>
+            </xpath>
+        </field>
+    </record>
+</odoo>
