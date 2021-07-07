@@ -20,6 +20,7 @@
         'sale',
         'sale_stock',
         'stock',
+        'stock_barcode',
         'stock_picking_batch',
         'web',
         'web_onchange_enterkey',
