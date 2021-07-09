@@ -1,0 +1,260 @@
+<odoo>
+	
+	<template id="portals_payment_frontend" inherit_id="website.assets_frontend"
+		name="Payment Portal Frontend">
+		<xpath expr="." position="inside">
+			<script type="text/javascript"
+				src="/website_all_in_one/static/src/js/website_portal_payments.js"></script>
+			<script type="text/javascript"
+                src="/website_all_in_one/static/src/js/pay_multiple_partial_payment.js"></script>
+		</xpath>
+	</template>
+
+	<template id="bi_portal_my_invoices" inherit_id="account.portal_my_invoices"
+        name="My Invoices and Payments">
+        
+        <xpath expr="//t[@t-call='portal.portal_table']" position="before">
+            <div class="clearfix"> 
+                <form t-attf-action="/my/invoices/multiple/payment/" method="post">
+                    <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()" />
+                    <input type="hidden" id="invoice" name="invoice" t-att-value="[]" />
+                    <button type="submit" id="pay_multiple_partial" class="btn btn-xs btn-primary">
+                        <i class="fa fa-arrow-circle-right"/> Pay Multiple Invoices 
+                    </button>
+                </form>
+            </div>
+        </xpath>
+        
+        <xpath expr="//t[@t-call='portal.portal_table']/thead/tr/th[last()]" position="before">
+            <th></th>
+        </xpath>
+        
+        <xpath expr="//t[@t-foreach='invoices']/tr/td[last()]" position="before">
+            <td>
+                <form t-attf-action="/my/invoices/partial/#{invoice.id}"
+                    method="post">
+                    <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()" />
+                    <input name="invoice" t-att-value="invoice.id" type="hidden" />
+                    <button type="submit" t-if="invoice.payment_state in ('not_paid','in_payment')" id="pay_partial"
+                        class="btn btn-xs btn-primary">Pay Partial</button>
+                </form>
+            </td>
+        </xpath>
+
+        <xpath expr="//thead/tr/th[1]" position="before">
+            <th></th>
+        </xpath>
+        <xpath expr="//t[@t-foreach='invoices']/tr/td[1]" position="before">
+            <t t-if="invoice.payment_state in ('not_paid','in_payment')">
+                <td>
+                    <input type="checkbox" t-att-value="'%s' % (invoice.id)" style="vertical-align: text-bottom;" id="is_checked"/>
+                </td>
+            </t>
+            <t t-else="">
+                <td></td>
+            </t>
+        </xpath>
+    </template>
+
+    <template id="pay_multiple_payment" name="Partial Payment">
+        <t t-call="website.layout">
+            <t t-set="additional_title">Multiple Invoice Payment</t>
+            <div id="wrap">
+                <div class="container oe_website_sale">
+                    <div class="container">
+                        <div class="ml2 mt2">
+                            <br/>
+                            <h3>Pay Multiple Invoices</h3>
+                        </div>
+                    </div>
+                    <hr/>
+                    <t t-if="invoices">
+                        <form t-attf-action="/my/invoices/multiple/payment/confirm/" method="post">
+                            <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()" />
+                            <div class="row">
+                                <div class="col-md-12 oe_cart">
+                                    <div class="row">
+                                        <div class="form-group col-md-10">
+                                            <div class="col-md-3">
+                                                <label class="control-label"> Invoices References : </label>
+                                            </div>
+                                            <div class="col-md-7">
+                                                <!-- <div style="border:1px solid"> -->
+                                                    <span t-esc="invoice_num" style="font-size: 20px;font-weight: 400;white-space: pre-wrap;word-break: break-word;" />
+                                                    <input name="invoice_num" t-att-value="invoice_num" type="hidden"/>
+                                                <!-- </div> -->
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div t-attf-class="form-group #{error and 'amount' in error and 'has-error' or ''} col-md-6">
+                                            <label class="col-md-3 col-sm-4 control-label" for="name">Payment Amount :
+                                            </label>
+                                            <div class="col-md-7 col-sm-8">
+                                                <input type="number" step="any" min="0" class="form-control" name="amount" id="amount" required="True"/>
+                                            </div>
+                                        </div>
+                                        <div t-attf-class="form-group col-md-6">
+                                            <label class="col-md-3 col-sm-4 control-label" for="name">Total Payable Amount :
+                                            </label>
+                                            <div class="col-md-7 col-sm-8" style="font-size: x-large;">
+                                                <t t-esc="total_amount"/>
+                                                <input name="total_amount" t-att-value="total_amount" type="hidden" id="total_amount" />
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <input name="invoice_ids" t-att-value="invoices" type="hidden"/>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <t t-foreach="acquire_id" t-as="acquirers" >
+                                            <div class="col-sm-6 col-sm-offset-6 text-muted mt16">
+                                                <t t-if="acquirers.id">
+                                                    <input type="radio" t-att-data-acquirer-id="acquirers.id" t-att-data-form-payment="true"
+                                                    t-att-data-provider="acquirers.provider"
+                                                    name="pm_id" t-attf-value="{{acquirers.id}}" required="True" />
+                                                    <img alt="payment_provider_logo" class="pull-right ml8" t-att-src="website.image_url(acquirers, 'image_128')"/>
+                                                    <span>Transaction will be processed by 
+                                                    <t t-esc="acquirers.name"/>.
+                                                    </span>
+                                                </t>
+                                            </div>
+                                        </t>
+                                    </div>
+                                    <div class="row" style="padding-left: 10px;">
+                                        
+                                        <!-- <t t-if="amount &lt; total_amount "> -->
+                                            <button type="submit" id="pay_partial_payment" class="btn btn-primary pull-right" style="max-height: 45px;">Pay Partial</button>
+                                        <!-- </t> -->
+                                    </div>                                          
+                                </div>
+                            </div>
+                        </form>
+                    </t>
+                    <t t-else="">
+                        <p></p>
+                        <div class="row">
+                            <t t-if="warning == 'warning'"><h2>Please re-select invoices to pay partially. You have change behaviour!!!</h2></t>
+                            <t t-else="">
+                            <div class="col-md-12">
+                                <div class="alert alert-info">
+                                    Please select invoices to pay partially at once....!!!
+                                    <button type="button" class="close" data-dismiss="alert">&amp;times;
+                                    </button>                                    
+                                </div>
+                                <a href="/my/home" >
+                                    <button class="btn btn-primary float-right"><i class="fa fa-home" /> 
+                                        Go Back
+                                    </button>
+                                </a>
+                            </div>
+                        </t>
+                        </div>
+                    </t>
+                </div>
+            </div>
+        </t>
+    </template>
+
+    <template id="pay_portal_payment">
+        <t t-call="website.layout">
+
+            <t t-set="additional_title">Partial Payment</t>
+            <div class="wrap">
+                <div class="container o_website_payment">
+                    <h1>Partial Payment</h1>
+                    <div id="wrap">
+                        <div class="container oe_website_sale">
+                            <form t-attf-action="/my/invoices/partial/confirm/" method="post">
+                                <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()" />
+                                <div class="row">
+                                    <div class="col-md-12 oe_cart">
+                                        <div class="row">
+                                            <div class="form-group col-md-10">
+                                                <div class="col-md-3">
+                                                    <label class="control-label"> Invoices References : </label>
+                                                </div>
+                                                <div class="col-md-7">
+                                                    <!-- <div style="border:1px solid"> -->
+                                                        <span t-esc="id.name" style="font-size: 20px;" />
+                                                        <input name="invoice_id" t-att-value="id" type="hidden"/>
+                                                        <input name="invoice" t-att-value="invoice" type="hidden"/>
+                                                    <!-- </div> -->
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div t-attf-class="form-group #{error and 'amount' in error and 'has-error' or ''} col-md-6">
+                                                <label class="col-md-3 col-sm-4 control-label" for="name">Payment Amount :
+                                                </label>
+                                                <div class="col-md-7 col-sm-8">
+                                                    <input type="number" step="any" min="0" class="form-control" name="amount1" id="amount" required="True"/>
+                                                </div>
+                                            </div>
+                                            <div t-attf-class="form-group col-md-6">
+                                                <label class="col-md-3 col-sm-4 control-label" for="name">Total Payable Amount :
+                                                </label>
+                                                <div class="col-md-7 col-sm-8" style="font-size: x-large;">
+                                                    <t t-esc="id.amount_residual"/>
+                                                    <input name="total_amount1" t-att-value="id.amount_residual" type="hidden" id="total_amount" />
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <input name="invoice_ids" t-att-value="invoices" type="hidden"/>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <t t-foreach="acquire_id" t-as="acquirers" >
+                                                <div class="col-sm-6 col-sm-offset-6 text-muted mt16">
+                                                    <t t-if="acquirers.id">
+                                                        <input type="radio" t-att-data-acquirer-id="acquirers.id" t-att-data-form-payment="true"
+                                                        t-att-data-provider="acquirers.provider"
+                                                        name="pm_id" t-attf-value="{{acquirers.id}}" required="True" />
+                                                        <img alt="payment_provider_logo" class="pull-right ml8" t-att-src="website.image_url(acquirers, 'image_128')"/>
+                                                        <span>Transaction will be processed by 
+                                                        <t t-esc="acquirers.name"/>.
+                                                        </span>
+                                                    </t>
+                                                </div>
+                                            </t>
+                                        </div>
+                                        <div class="row" style="padding-left: 10px;">
+                                            
+                                            <!-- <t t-if="amount &lt; total_amount "> -->
+                                                <button type="submit" id="pay_partial_payment" class="btn btn-primary pull-right" style="max-height: 45px;">Pay Partial</button>
+                                            <!-- </t> -->
+                                        </div>                                          
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </t>
+
+    </template>
+
+
+	<template id="payment_thankyou" name="Payment Thank You">
+		<t t-call="website.layout">
+			<div id="wrap">
+				<div class="oe_structure" />
+				<div class="container">
+					<h1>Thank you!</h1>
+					<div class="row">
+						<div class="col-md-12">
+							<div class="alert alert-success">
+								Your Partial Payment has been done ...!!!
+								<button type="button" class="close" data-dismiss="alert">&amp;times;
+								</button>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="oe_structure" />
+			</div>
+		</t>
+	</template>
+
+</odoo>

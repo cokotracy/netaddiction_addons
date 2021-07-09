@@ -1,0 +1,34 @@
+
+.in-stock {
+    font: bold 15px Sans-Serif;
+    color: white;
+    text-align: center;
+    background-color: #337ab7;
+    position: relative;
+    padding: 4px 4px 4px 4px !important; 
+    cursor: default;
+    z-index: 99;
+    margin-left: 10px;
+    margin-top: 4px;
+}
+
+.out-of-stock {
+    color: #fff;
+    background-color: #c9302c;
+    font: bold 15px Sans-Serif;
+    text-align: center;
+    position: relative;
+    padding: 4px 4px 4px 4px !important; 
+    cursor: default;
+    z-index: 99;
+    margin-left: 10px;
+    margin-top: 4px;
+}
+
+.qty-text {
+    font-style: italic;
+    text-decoration: underline;
+}
+
+
+

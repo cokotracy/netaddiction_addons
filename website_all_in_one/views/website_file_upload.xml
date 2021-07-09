@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+
+
+    	<!-- attachment_id field in res_users view -->
+		<record id="custom_view_order_form" model="ir.ui.view">
+	        <field name="name">sale.order.form.custom</field>
+	        <field name="model">sale.order</field>
+	        <field name="inherit_id" ref="sale.view_order_form"/>
+	        <field name="arch" type="xml">
+	            
+	            <div name="button_box" position="inside">
+	                <button class="oe_stat_button" name="attachment_on_sale_order_button" type="object" icon="fa-cloud-upload">
+	                    <field name="attachment_count" widget="statinfo"/>
+	                </button>
+	            </div>
+	            
+	        </field>
+        </record>
+        
+			
+	    <!-- Upload an Attachement on Payment Page -->
+		<template id="payment_upload_attachement" inherit_id="website_sale.payment">
+			<xpath expr="//div[@id='payment_method']" position="before">
+			
+				<div>
+					<h4 class="modal-title">Attachment(s): [<t t-esc="order.attachment_count"/> files] </h4>
+				</div>
+				<a class="btn btn-primary oe_upload_attachement" title="Upload Attachment" href="#" data-toggle="modal" data-target="#myModal">
+		            <i class="fa fa-cloud-upload"></i> Upload an Attachment...
+		        </a>
+		        
+				
+			
+				<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+				    <div class="modal-dialog" style="max-width: 50%;">
+				        <div class="modal-content">
+				            <div class="modal-header">
+				                <h4 class="modal-title">Upload an Attachment</h4>
+				                <button type="button" class="close" data-dismiss="modal" ><![CDATA[&times;]]></button>
+				            </div>
+				            <div class="modal-body">
+				                <form action="/shop/payment/attachment/add" method="post" enctype="multipart/form-data" >
+				                    <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+				                    <div class="form-group">
+				                        <input name="upload" type="file" value="Choose images" multiple="multiple" accept="image/*"/> 
+				                    </div>
+				                    <div class="form-group">
+				                        <input type="submit" value="Upload" class="btn btn-primary" />
+				                    </div>
+				                </form>
+				            </div>
+				        </div>
+				    </div>
+				</div>
+        
+        
+				
+				                    
+   			</xpath>	
+		</template>                             
+
+
+    </data>
+</odoo>

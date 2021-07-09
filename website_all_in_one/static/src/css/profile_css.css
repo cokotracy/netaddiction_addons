@@ -1,0 +1,25 @@
+.card {
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+  max-width: 500px;
+  margin: auto;
+  text-align: center;
+  font-family: arial;
+}
+
+
+.profile-title {
+  color: grey;
+  font-size: 18px;
+}
+
+.color_style{
+  color: #337ab7;
+}
+
+hr{
+	margin:0;
+}
+
+.raghav {
+   background-color: #9e7df2;
+}

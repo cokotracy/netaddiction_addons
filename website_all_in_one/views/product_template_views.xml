@@ -1,0 +1,113 @@
+<?xml version="1.0"?>
+<odoo>
+
+	<record id="view_product_filter_line_tree_view" model="ir.ui.view">
+		<field name="name">product.filter.line.tree.view</field>
+		<field name="model">filter.product.line</field>
+		<field name="arch" type="xml">
+			<tree string="Values">                                        
+				<field name="product_tmpl_id"/>
+				<field name="filter_name_id"/>
+				<field name="filter_value_ids" widget="many2many_tags"/>
+			</tree>
+		</field>
+	</record>
+
+	<record id="view_odoo_product_filter_tree_view" model="ir.ui.view">
+		<field name="name">product.filter.tree.view</field>
+		<field name="model">product.filter</field>
+		<field name="arch" type="xml">
+			<tree string="Variant Values">                                        
+				<field name="name"/>
+				<field name="type"/>
+				<field name="group_id"/>
+			</tree>
+		</field>
+	</record>
+
+
+	<record id="view_odoo_product_filter_form_view" model="ir.ui.view">
+		<field name="name">product.filter.form.view</field>
+		<field name="model">product.filter</field>
+		<field name="arch" type="xml">
+			<form string="Variant Values">                                        
+				<group>
+					<field name="name"/>
+					<field name="type"/>
+					<field name="group_id"/>
+				</group>
+				<separator string="Filter Attribute Values"/>
+				<field name="filter_value_ids" >
+					<tree editable="bottom">
+						<field name="name"/>
+						<field name="filter_id" readonly="1"/>
+						<field name="html_color"/>
+					</tree>
+				</field>
+				<field name="filter_ids" invisible="1"/>
+			</form>
+		</field>
+	</record>
+
+	<record id="action_odoo_product_filter_menu" model="ir.actions.act_window">
+		<field name="name">Website Product Filter</field>
+		<field name="type">ir.actions.act_window</field>
+		<field name="res_model">product.filter</field>
+		<field name="view_mode">tree,form</field>
+	</record>
+
+
+	<record id="view_odoo_product_filter_value_tree_view" model="ir.ui.view">
+		<field name="name">product.filter.value.tree.view</field>
+		<field name="model">product.filter.value</field>
+		<field name="arch" type="xml">
+			<tree string="Variant Values" editable="bottom">    
+				<field name="name"/>
+				<field name="filter_id"/>
+				<field name="html_color"/>
+				<field name="product_count" invisible="1"/>
+			</tree>
+		</field>
+	</record>
+
+	<record id="action_odoo_product_filter_value_menu" model="ir.actions.act_window">
+		<field name="name">Website Product Filter</field>
+		<field name="type">ir.actions.act_window</field>
+		<field name="res_model">product.filter.value</field>
+		<field name="view_mode">tree</field>
+	</record>
+		
+
+	<menuitem id="odoo_product_filter_menu" parent="sale.prod_config_main"
+		name="Product Filter" action="action_odoo_product_filter_menu" sequence="30" />
+
+	<menuitem id="odoo_product_filter_value_menu" 
+		parent="sale.prod_config_main" name="Product Filter Value" action="action_odoo_product_filter_value_menu" sequence="30" />
+
+	<menuitem id="odoo_product_filter_menu_website_sale" 
+		parent="website_sale.menu_product_settings"
+		name="Product Filter" action="action_odoo_product_filter_menu" sequence="30" />
+
+	<menuitem id="odoo_product_filter_value_menu_website_sale" 
+		parent="website_sale.menu_product_settings" name="Product Filter Value" action="action_odoo_product_filter_value_menu" sequence="30" />
+
+
+	<record id="filter_product_template_form" model="ir.ui.view">
+		<field name="name">product.template.event.form.inherit</field>
+		<field name="model">product.template</field>
+		<field name="inherit_id" ref="product.product_template_form_view" />
+		<field name="arch" type="xml">
+			<xpath expr="//page[last()]" position="after">
+				<page name="filter" string="Filter">
+					<field name="filter_ids" nolabel="1">
+						<tree editable="bottom">
+							<field name="filter_name_id" />
+							<field name="filter_value_ids" widget='many2many_tags'/>
+						</tree>
+					</field>
+				</page>
+			</xpath>
+		</field>
+	</record>
+
+</odoo>

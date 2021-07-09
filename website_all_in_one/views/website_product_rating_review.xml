@@ -1,0 +1,359 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+       
+        <record id="inherit_view_product_rating_review" model="ir.ui.view">
+			<field name="name">inherit.view.product.rating.review</field>
+			<field name="model">product.template</field>
+			<field name="inherit_id" ref="product.product_template_form_view"/>
+			<field name="arch" type="xml">
+				<xpath expr="//page[@name='sales']" position="after">
+					<page string="Reviews &amp; Ratings">
+						<field name='reviews_ids'>
+						<tree>
+						<field name='customer_id'/>
+						<field name='short_desc'/>
+						<field name='message_rate'/>
+						<field name='website_message'/>
+						<field name='review'/>	
+						<field name='rating_product_id' invisible="1"/>
+						</tree>
+						</field>
+					</page>
+				</xpath>
+			</field>
+	</record>
+	
+
+
+
+<template id="assets_product_rating_review" inherit_id="website.assets_frontend" name="website_product_rating_review">
+	<xpath expr="." position="inside">
+		
+		<link rel='stylesheet'
+			href='/website_all_in_one/static/src/css/product_review.css'/>
+		<style>
+			h1
+			{
+			width:100%;
+			display:inline-block;
+			}
+		</style>
+		<script>
+			$.fn.stars4= function() {
+			return $(this).each(
+			function() {
+			$(this).html(
+			$('
+			<span />
+			').width(
+			Math.max(0, (Math.min(5, blog_rate_value1))) * 17));
+			});
+			}
+		</script>
+		<script type="text/javascript" src="/website_all_in_one/static/src/js/website_product_review.js"></script>
+	</xpath>
+</template>
+		
+		
+<!--<template id="product_review_on_single_product_page" inherit_id='website_sale.product'>-->
+<template id="website_sale.product_comment" inherit_id="website_sale.product" active="True" customize_show="True" name="Discussion and Rating" priority="15">
+	<xpath expr="//div[@id='product_details']//h1" position="after">
+	<div class="average_rating_view">
+	<input id="total_product_review" t-att-value="len(product.reviews_ids)" name="total_product_review" type="hidden" />
+			<a href="#comment">
+				<div>
+					<div class="average_product_class" id="rate_tooltip">
+						<div style="float:left;margin-bottom: -40px;" id="shop_rate_star">
+
+							<p class="rate_average_shop">
+								<span class="stars3">
+									<span style="width: 50.25px;"></span>
+								</span>
+							</p>
+
+						</div>
+
+						<div class="review_font">
+							<span id="product_average" style="margin-left:100px;font-weight:bold;color:black"
+								t-field="product.avg_product_rating" />
+
+							<input id="total_product_review" t-att-value="len(product.reviews_ids)"
+								name="total_product_review" type="hidden"></input>
+							<t t-if="product.avg_product_rating &lt;=0">
+								<span style="font-size:10px;color:black;">
+									(Be the first one to rate)
+								</span>
+							</t>
+							<span>(</span>
+							<span id="total_product_review_span" name="total_product_review_span">
+								<t t-esc="len(product.reviews_ids)"></t>
+							</span>
+							<t t-if="len(product.reviews_ids) &lt;= 1">Review
+							</t>
+							<t t-if="len(product.reviews_ids) > 1">Reviews</t>
+							<span>)</span>
+						</div>
+
+					</div>
+				</div>
+			</a>
+		</div>
+
+		</xpath>
+		
+		
+		<!-- Review Form Xpath -->
+		<xpath expr="//section['product_detail']//div[2][@class='row']" position="after">
+			  <t t-if="len(product.reviews_ids) &lt;= 1" style="color:#168D93">
+				<t t-esc="len(product.reviews_ids)" />
+				review
+			</t>
+			<t t-if="len(product.reviews_ids) > 1" style="color:#168D93">
+				<t t-esc="len(product.reviews_ids)" />
+				reviews
+			</t>
+
+
+			<ul class="media-list" id="comments-list">
+					<div id="paginationdemo" class="demo">
+						<t t-set="total_pages" t-value="int(len(product.reviews_ids)/10)" />
+						<t t-foreach="total_pages+1" t-as="page">
+							<t t-set="page_next" t-value="page+1" />
+							<div t-att-id="'p%s' %page_next" class="pagedemo _current">
+								<li t-foreach="product.reviews_ids[(page*10):(((page_next)*10))]"
+									t-as="ratings" class="medianew">
+									<span class="pull-left">
+										<img class="media-object img img-circle" t-att-src="website.image_url(ratings, 'author_avatar')"
+											style="width: 30px" alt="Avatar"/>
+									</span>
+
+									<div class="media-body oe_msg">
+										<div class="media-body oe_msg_content">
+											<t t-call="website.publish_short">
+												<t t-set="object" t-value="ratings" />
+											</t>
+											<input t-att-id="'product-actual-rate-%s' %ratings.id" t-att-value="ratings.message_rate" name="message_rate" type="hidden" />
+
+
+											<input t-att-id="'actual-rate-%s' %ratings.id" t-att-value="ratings.message_rate" name="message_rate" type="hidden" />
+											<t t-if="ratings.message_rate >=0">
+											<input id="message_id" t-att-value="ratings.id" name="message_id" type="hidden" />
+											<div class="starRating1">
+												<div>
+													<div>
+														<div>
+															<div>
+																<input t-att-id="'rate1-%s' %ratings.id" type="radio"
+																	t-att-name="'rate-%s' %ratings.id" value="1">
+																	<label for="rating1">
+																		<span>1</span>
+																	</label>
+																</input>
+															</div>
+															<input t-att-id="'rate2-%s' %ratings.id" type="radio"
+																t-att-name="'rate-%s' %ratings.id" value="2">
+																<label for="rating2">
+																	<span>2</span>
+																</label>
+															</input>
+														</div>
+														<input t-att-id="'rate3-%s' %ratings.id" type="radio"
+															t-att-name="'rate-%s' %ratings.id" value="3">
+															<label for="rating3">
+																<span>3</span>
+															</label>
+														</input>
+													</div>
+													<input t-att-id="'rate4-%s' %ratings.id" type="radio"
+														t-att-name="'rate-%s' %ratings.id" value="4">
+														<label for="rating4">
+															<span>4</span>
+														</label>
+													</input>
+												</div>
+												<input t-att-id="'rate5-%s' %ratings.id" type="radio"
+													t-att-name="'rate-%s' %ratings.id" value="5">
+													<label for="rating5">
+														<span>5</span>
+													</label>
+												</input>
+											</div>
+											</t>
+
+
+											<t t-if="ratings.message_rate > 0">
+												<input id="product_message_id" t-att-value="ratings.id"
+													name="product_message_id" type="hidden" />
+
+											</t>
+											<div class="product_short" t-field="ratings.short_desc" />
+											<h5 class="media-heading"
+												style="display:inline;margin-left:6px !important;color:antiquewhite;">
+
+												<span class="review_class_rating">Reviewed by</span>
+												<span t-field="ratings.customer_id"></span>
+
+											</h5>
+
+											<div>
+
+											</div>
+										</div>
+									</div>
+								</li>
+							</div>
+						</t>
+						<div id="demo5">
+						</div>
+					</div>
+					<p class="post_your_review">Submit your review about this Product</p>
+
+				</ul>
+
+
+				<hr class="mb32" />
+				<t t-if="website.user_id == user_id">
+					<p style="margin-top: 48px !important; margin-bottom: -10px;">
+						Please
+						<a t-attf-href="/web/login?redirect=/shop/product/#{slug(product)}">Sign in</a>
+						to rate this Product
+					</p>
+					<br/>
+					<form id="comment" t-attf-action="/shop/product/comment/#{product.id}"
+						method="POST">
+						<input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+						
+						<div class="media">
+							<span class="pull-left">
+								<img class="img img-circle media-object"
+									t-att-src="website.image_url(user_id.partner_id, 'image_small')"
+									style="width: 30px" />
+							</span>
+							<div class="media-body">
+								<div class="message_rate">
+									<div class="cancel_rating_class" title="Cancel Rating">
+										<a title="Cancel Rating"></a>
+									</div>
+									<input id="message_rate" name="message_rate" class="form-control"
+										type="hidden" />
+
+									<div class="starRating" id="star">
+										<div>
+											<div>
+												<div>
+													<div>
+														<input id="rating11" type="radio" name="rating"
+															value="1">
+															<label for="rating11">
+																<span>1</span>
+															</label>
+														</input>
+													</div>
+													<input id="rating12" type="radio" name="rating"
+														value="2">
+														<label for="rating12">
+															<span>2</span>
+														</label>
+													</input>
+												</div>
+												<input id="rating13" type="radio" name="rating" value="3">
+													<label for="rating13">
+														<span>3</span>
+													</label>
+												</input>
+											</div>
+											<input id="rating14" type="radio" name="rating" value="4">
+												<label for="rating14">
+													<span>4</span>
+												</label>
+											</input>
+										</div>
+										<input id="rating15" type="radio" name="rating" value="5">
+											<label for="rating15">
+												<span>5</span>
+											</label>
+										</input>
+									</div>
+								</div>
+
+							</div>
+						</div>
+						<div class="pull-left mb32" style="width: 75%">
+							<input type="text" rows="1" readonly="true" name="short_description"
+								style="margin-bottom:10px;" class="form-control"
+								placeholder="Write your feelings about this Product.."></input>
+							<textarea rows="3" name="comment" readonly="true"
+								class="form-control" placeholder="Write a Description..."></textarea>
+							<a t-if="website.user_id != user_id" disabled="disabled" class="btn btn-primary mt8 a-submit">Submit
+								Your Review
+							</a>
+						</div>
+					</form>
+				</t>
+				<t t-if="website.user_id != user_id">
+					<form id="comment" t-attf-action="/shop/product/comment/#{product.id}"
+						method="POST">
+						<input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+						<!--<span t-esc="product.id"/>-->
+						<div class="pull-left mb32" style="width: 75%">
+							<div class="set_star">
+								<div class="cancel_rating_class" title="Cancel Rating">
+									<a title="Cancel Rating"></a>
+								</div>
+
+								<div class="starRating" id="star">
+									<div>
+										<div>
+											<div>
+												<div>
+													<input id="rating21" type="radio" name="review"
+														value="1">
+														<label for="rating21">
+															<span>1</span>
+														</label>
+													</input>
+												</div>
+												<input id="rating22" type="radio" name="review" value="2">
+													<label for="rating22">
+														<span>2</span>
+													</label>
+												</input>
+											</div>
+											<input id="rating23" type="radio" name="review" value="3">
+												<label for="rating23">
+													<span>3</span>
+												</label>
+											</input>
+										</div>
+										<input id="rating24" type="radio" name="review" value="4">
+											<label for="rating24">
+												<span>4</span>
+											</label>
+										</input>
+									</div>
+									<input id="rating25" type="radio" name="review" value="5">
+										<label for="rating25">
+											<span>5</span>
+										</label>
+									</input>
+								</div>
+
+							</div>
+							<input type="hidden" id="blog_post_id" name="message_rate"
+								class="form-control" style="margin-bottom:10px;" />
+							<input type="text" rows="1" name="short_description"
+								style="margin-bottom:10px;text-shadow: 1px 1px 1px #ccc;" class="form-control"
+								placeholder="Write your feelings about this Product.."></input>
+							<textarea rows="3" name="comment" class="form-control"
+								placeholder="Write a Description..."></textarea>
+							<input class="btn btn-primary mt8 a-submit" type="submit" value="Submit Your Review"/>
+						</div>
+					</form>
+				</t>
+	</xpath>
+</template>
+	
+    </data>
+</odoo>
+            
