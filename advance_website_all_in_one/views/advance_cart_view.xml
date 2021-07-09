@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        
+        <record id="advance_cart_res_config_settings_view_form" model="ir.ui.view">
+            <field name="name">advance.cart.res.config.settings.view.inherit.website</field>
+            <field name="model">res.config.settings</field>
+            <field name="priority" eval="20"/>
+            <field name="inherit_id" ref="base.res_config_settings_view_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//div[@data-string='Website']" position="inside">
+                        <h2 groups="website.group_multi_website">Advance cart Setting</h2>
+                        <div class="row mt16 o_settings_container" id="website_selection_settings">
+                            <div class="col-xs-12 col-md-6 o_setting_box" id="website">
+                                
+                                <div class="o_setting_left_pane">
+                                    <field name="subtotal_of_orderline"/>
+                                </div>
+                                <div class="o_setting_right_pane">
+                                    <label string="Show Subtotal Of Order Lines" for="subtotal_of_orderline"/>
+                                </div>
+                                <br/>
+                                <div class="o_setting_right_pane">
+                                    <label string="Minimum Cart Amount To Validate Order" for="min_cart_value"/>
+                                    <div class="mt16">
+                                        <field name="min_cart_value"/>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xs-12 col-md-6 o_setting_box" id="website">
+                                <div class="o_setting_right_pane">
+                                    <label string="After Add To Cart Redirect To" for="redirect_opt"/>
+                                    <div class="mt16">
+                                        <field name="redirect_opt" widget="radio" required="1"/>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                </xpath>
+            </field>
+        </record>
+
+    </data>
+</odoo>

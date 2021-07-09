@@ -1,0 +1,218 @@
+<?xml version="1.0"?>
+<odoo>
+    <data>
+        <record id="product_template_form_view_in_url" model="ir.ui.view">
+            <field name="name">product.template.form.inherit</field>
+            <field name="model">product.template</field>
+            <field name="priority">5</field>
+            <field name="inherit_id" ref="product.product_template_form_view"/>
+            <field name="arch" type="xml">
+                <field name="categ_id" position="before">
+                    <field name="url_redirect"/>
+                </field>
+            </field>
+        </record>
+
+        <record id="product_public_category_form_view_in_url" model="ir.ui.view">
+            <field name="name">product.public.category.form.inherit</field>
+            <field name="model">product.public.category</field>
+            <field name="priority">5</field>
+            <field name="inherit_id" ref="website_sale.product_public_category_form_view"/>
+            <field name="arch" type="xml">
+                <field name="name" position="after">
+                    <field name="url_redirect"/>
+                </field>
+            </field>
+        </record>
+
+        <record id="view_odoo_seo_product_template_tree_view" model="ir.ui.view">
+            <field name="name">SEO Rewrite Product URl</field>
+            <field name="model">product.template</field>
+            <field name="arch" type="xml">
+                <tree string="SEO Rewrite Product URl" editable="bottom">    
+                    <field name="name"/>
+                    <field name="url_redirect"/>
+                </tree>
+            </field>
+        </record>
+        
+        <record id="view_odoo_public_category_tree_view" model="ir.ui.view">
+            <field name="name">product.public.category.tree.view</field>
+            <field name="model">product.public.category</field>
+            <field name="arch" type="xml">
+                <tree string="SEO Rewrite Category URl" editable="bottom">    
+                    <field name="name"/>
+                    <field name="url_redirect"/>
+                </tree>
+            </field>
+        </record>
+        
+        <record id="gen_url_request_form" model="ir.ui.view">
+            <field name="name">URL Config Wizard</field>
+            <field name="model">url.config</field>
+            <field name="arch" type="xml">
+                <form string="Import Invoice">
+                    <group string="SEO Rewrite Configuration">
+                        <group>
+                            <field name="suffix_url_in"/>
+                        </group>
+                        <group>
+                        </group>
+                    </group>
+                    <group string="Suffix In URL">
+                        <group>
+                            <field name="suffix_product_url"/>
+                        </group>
+                        <group>
+                            <field name="suffix_category_url"/>
+                        </group>
+                    </group>
+                    <group string="URL Pattern">
+                        <group>
+                            <field name="pattern_product_url"/>
+                        </group>
+                        <group>
+                            <field name="pattern_category_url"/>
+                        </group>
+                    </group>
+                    <footer>
+                        <button name="request_url_config" string="Save" class="btn btn-primary" icon="fa-link" type="object"/>
+                        <button name="cancel" string="Cancel" class="oe_link" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_odoo_seo_product_template_menu" model="ir.actions.act_window">
+            <field name="name">SEO Rewrite Product URl</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">product.template</field>
+            <field name="context">{}</field>
+            <field name="domain">[('website_published', '=', True)]</field>
+            <field name="view_id" ref="view_odoo_seo_product_template_tree_view"/>
+            <field name="view_mode">tree</field>
+        </record>
+                    
+
+        <record id="action_odoo_public_category_menu" model="ir.actions.act_window">
+            <field name="name">SEO Rewrite Category URl</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">product.public.category</field>
+            <field name="view_id" ref="view_odoo_public_category_tree_view"/>
+            <field name="view_mode">tree</field>
+        </record>
+        
+
+        <record id="bi_url_request_action" model="ir.actions.act_window">
+            <field name="name">URL Config</field>
+            <field name="res_model">url.config</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+        </record>
+        
+        
+        <record id="view_redirect_search_inherit_url" model="ir.ui.view">
+            <field name="name">website.rewrite.search</field>
+            <field name="model">website.rewrite</field>
+            <field name="inherit_id" ref="website.view_rewrite_search"/>
+            <field name="arch" type="xml">
+                <xpath expr="//group[1]" position="inside">
+                    <filter string="Redirect Type" name="url_rewrite" context="{'group_by':'url_rewrite'}"/>
+                 </xpath>
+            </field>
+        </record>
+        
+        <record id="website_redirect_form_view_url_inherit" model="ir.ui.view">
+            <field name="name">website.rewrite.form</field>
+            <field name="model">website.rewrite</field>
+            <field name="inherit_id" ref="website.view_website_rewrite_form"/>
+            <field name="arch" type="xml">
+                <sheet position="replace">
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="redirect_type"/>
+                                <field name="url_from"/>
+                                <field name="url_to"/>
+                                <field name="pc_id" />
+                            </group>
+                            <group>
+                                <field name="website_id" options="{'no_create': True}" groups="website.group_multi_website"/>
+                                <field name="url_rewrite" />
+                                <field name="active"/>
+                            </group>
+                        </group>
+                    </sheet>
+                </sheet>
+            </field>
+        </record>
+
+        <record id="website_redirect_tree_view_url_inherit" model="ir.ui.view">
+            <field name="name">website.rewrite.tree</field>
+            <field name="model">website.rewrite</field>
+            <field name="inherit_id" ref="website.action_website_rewrite_tree"/>
+            <field name="arch" type="xml">
+                <tree position="replace">
+                    <tree>
+                        <field name="redirect_type"/>
+                        <field name="url_from"/>
+                        <field name="url_to"/>
+                        <field name="url_rewrite" />
+                        <field name="website_id" options="{'no_create': True}" groups="website.group_multi_website"/>
+                        <field name="active"/>
+                        <field name="sequence" widget="handle" />
+                    </tree>
+                </tree>
+            </field>
+        </record>
+
+        <record id="website.action_website_rewrite_list" model="ir.actions.act_window">
+            <field name="name">Website Rewrite</field>
+            <field name="res_model">website.rewrite</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_id" ref="website_redirect_tree_view_url_inherit"/>
+            <field name="context">{'search_default_url_rewrite':1}</field>
+            <field name="target">current</field>
+            <field name="search_view_id" ref="view_redirect_search_inherit_url"/>
+        </record>
+
+
+        <menuitem action="bi_url_request_action" 
+            parent="website.menu_website_global_configuration" 
+            id= "user_url_config" name= "URL Configuration"  sequence="47"/>
+
+        <menuitem id="menu_seo_url_settings" name="SEO URL Rewrite" sequence="48"
+            parent="website.menu_website_global_configuration"/>
+
+        <menuitem id="menu_seo_url_product"
+            action="action_odoo_seo_product_template_menu"
+            parent="menu_seo_url_settings" name="Product"/>
+
+        <menuitem id="menu_seo_url_public_category"
+            action="action_odoo_public_category_menu"
+            parent="menu_seo_url_settings" name="Category"/>
+        
+
+        <act_window id="seourl_product_template_view" 
+            domain="[('id','in',active_ids)]"
+            view_id="view_odoo_seo_product_template_tree_view"
+            name="Update SEO URL" 
+            res_model="template.seourl"
+            binding_model="product.template" 
+            view_mode="form" 
+            target="new" />
+
+        <act_window id="seourl_category_template_view" 
+            domain="[('id','in',active_ids)]"
+            view_id="view_odoo_public_category_tree_view"
+            name="Update SEO URL" 
+            res_model="public.category.seourl"
+            binding_model="product.public.category" 
+            view_mode="form" 
+            target="new" 
+            />
+
+    </data>
+</odoo>
+
+
