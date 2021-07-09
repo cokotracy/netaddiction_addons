@@ -1,0 +1,2 @@
+14.0.0.1 (28-10-2020)
+==> Fixed the issue of field name changed in V14 (type to move_type in account.move model)

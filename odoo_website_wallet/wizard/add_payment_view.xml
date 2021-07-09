@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="view_add_payment_form" model="ir.ui.view">
+            <field name="name">add.payment.form</field>
+            <field name="model">add.payment</field>
+            <field name="arch" type="xml">
+                <form>
+	                <h3 style="color: #2e86c1">Are you sure you want to approve wallet transactions?</h3>
+                    <footer>
+                        <button name="add_money_to_wallet" string="Confirm" type="object" class="btn-primary"/>
+                        <button string="Cancel" class="btn-secondary" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_add_money" model="ir.actions.act_window">
+            <field name="name">Approve</field>
+            <field name="res_model">add.payment</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="view_add_payment_form"/>
+            <field name="target">new</field>
+        </record>
+
+    </data>
+</odoo>
