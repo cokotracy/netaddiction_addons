@@ -70,6 +70,14 @@
                             </t>
                         ],
                     </t>
+                    <t t-else="">
+                        "aggregateRating": {
+                            "@type": "AggregateRating",
+                            "ratingValue": "0",
+                            "reviewCount": "0"
+                        },
+                        "review":[],
+                    </t>
                     "offers": {
                         "@type": "Offer",
                         "url": "<t t-esc="request.httprequest.url"/>",

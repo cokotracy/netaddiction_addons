@@ -32,8 +32,8 @@
 }
 
 /*PREZZO*/
-.product-price{
-    font-size: 40px;
+.te_product_media > .product-price > span{
+    font-size: 40px !important;
 }
 
 .product_option_block > button{
