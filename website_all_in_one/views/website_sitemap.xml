@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Add sitemap menu in all footer styles-->
+	<template id="link_sitemap" inherit_id="website.footer_custom" name="Link Footer ">
+		<xpath expr="//div[hasclass('container')]//ul/li[last()]" position="after">
+			<li class="">
+				<a href="/page/sitemap">Sitemap</a>
+			</li>
+		</xpath>
+	</template>
+
+	<template id="sitemap_menu_template_footer_links" inherit_id="website.template_footer_links">
+		<xpath expr="//div[hasclass('container')]//ul/li[last()]" position="after">
+			<li class="list-item py-1">
+				<a href="/page/sitemap">Sitemap</a>
+			</li>
+		</xpath>
+	</template>
+
+	<template id="sitemap_menu_template_footer_minimalist" inherit_id="website.template_footer_minimalist">
+		<xpath expr="//div[hasclass('container')]//ul/li[last()]" position="after">
+			<li class="list-inline-item">
+				<a href="/page/sitemap">Sitemap</a>
+			</li>
+		</xpath>
+	</template>
+
+	<template id="sitemap_menu_template_footer_contact" inherit_id="website.template_footer_contact">
+		<xpath expr="//div[hasclass('container')]//ul/li[last()]" position="after">
+			<li class="list-inline-item">
+				<a href="/page/sitemap">Sitemap</a>
+			</li>
+		</xpath>
+	</template>
+
+	<template id="sitemap_menu_template_footer_headline" inherit_id="website.template_footer_headline">
+		<xpath expr="//div[hasclass('container')]//ul/li[last()]" position="after">
+			<li class="">
+				<a href="/page/sitemap">Sitemap</a>
+			</li>
+		</xpath>
+	</template>
+
+	
+	<!-- Sitemap Page -->
+	<template id="website_sitemap" name="Website Sitemap">
+		<t t-call="website.layout">
+			<section>
+                <div class="container">
+                    <div class="row">
+                        <div class="col-md-8">     
+                            <br/>
+                            <h2>Sitemap</h2>
+                            <hr/>
+                            <ul>
+                                <t t-foreach="website.get_website_menu()" t-as="menu">
+                                    <li style="list-style-type: none;"><h5><span title="" t-field="menu.website_id.name" /></h5>
+                                        <ul class="sub-menu">
+                                            <t t-foreach="website.get_website_child_menu(menu)" t-as="m">
+                                                <li><a title="" t-att-href="m.url" t-field="m.name"></a>
+                                                    <ul class="sub-menu">
+                                                        <t t-foreach="website.get_website_child_menu(m)" t-as="m1">
+                                                            <li><a title="" t-att-href="m1.url" t-field="m1.name"></a>
+                                                                <ul class="sub-menu">
+                                                                    <t t-foreach="website.get_website_child_menu(m1)" t-as="m2">
+                                                                        <li><a title="" t-att-href="m2.url" t-field="m2.name"></a>
+                                                                        </li>
+                                                                    </t>
+                                                                </ul>
+                                                            </li>
+                                                        </t>
+                                                    </ul>
+                                                </li>
+                                            </t>
+                                        </ul>
+                                    </li>
+                                </t> 
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </section>
+		</t>
+	</template>
+</odoo>

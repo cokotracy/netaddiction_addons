@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+	<data>
+
+		<!-- SHOW SUBTOTAL IN CART LINE -->
+		<template id="advance_cart_summary_inherit" inherit_id="website_sale.cart_lines">
+			<xpath expr="//thead//th[hasclass('td-price')]" position="after">
+				<t t-set="show_subtotal" t-value="website.get_order_line_subtotal()"/>
+				<t t-if="show_subtotal">
+					<th class="text-center td-aub-price">Subtotal</th>
+				</t>
+			</xpath>
+			<xpath expr="//td[hasclass('td-price')]" position="after">
+				<t t-set="show_subtotal" t-value="website.get_order_line_subtotal()"/>
+				<t t-if="show_subtotal">
+					<td class="text-center td-price td-sub-price">
+						<span t-field="line.price_subtotal" style="white-space: nowrap;" t-options="{'widget': 'monetary', 'from_currency': website_sale_order.pricelist_id.currency_id, 'display_currency': website.currency_id}" groups="account.group_show_line_subtotals_tax_excluded"/>
+					</td>
+				</t>
+			</xpath>
+		</template>
+
+		<!-- WARNING MESSAGE TEMPLATE -->
+		<template id="cart_lines_inherit" inherit_id="website_sale.cart_lines"  name="Shopping Cart">
+			<xpath expr="//table[@id='cart_products']" position='before'>
+				<t t-if="request.params.get('error_msg')">
+				  <div class='mt8 mb8 alert alert-warning' role="alert">
+					<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>
+					<t t-esc="request.params.get('error_msg')"/>
+				  </div>
+				</t>
+			</xpath>
+		</template>
+
+	</data>
+</odoo>

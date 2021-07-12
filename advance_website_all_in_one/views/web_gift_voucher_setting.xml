@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="view_web_coupan_setting_tree_view" model="ir.ui.view">
+            <field name="name">pos.coupan.config.tree.view</field>
+            <field name="model">web.coupons.setting</field>
+            <field name="arch" type="xml">
+               <tree string="POS Gift Coupons Configuration">   
+                    <field name="name"/>                
+                    <field name="product_id"/>
+                    <field name="min_coupan_value"/>    
+                    <field name="max_coupan_value"/>
+                    <field name="max_exp_date" widget="date"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="web_coupan_setting_form_view" model="ir.ui.view">
+            <field name="name">web.coupan.config.form.view</field>
+            <field name="model">web.coupons.setting</field>
+            <field name="arch" type="xml">
+                <form string="Website Gift Coupon Configuration" >
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="name" required="1"/>
+                                <field name="product_id" required="1" widget="selection"/>
+                                <field name="min_coupan_value" required="1"/>
+                                <field name="max_coupan_value" required="1"/>
+                                <field name="max_exp_date" widget="date"/>            
+                            </group>
+                        <group>
+                            <field name="active"/>
+                            <field name="default_availability"/>
+                        </group>
+                        </group>
+                    </sheet>
+                </form>
+            
+            </field>
+        </record>
+
+        <record model="ir.actions.act_window" id="action_web_coupan_setting">
+            <field name="name">Gift Coupons</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">web.coupons.setting</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+
+        <menuitem parent="menu_gift_coupon" action="action_web_coupan_setting" id="menu_web_coupon_setting" sequence="30" name="Gift Coupons Configuration"/>
+
+    </data>
+</odoo>

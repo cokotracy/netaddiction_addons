@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+
+
+		<record id="view_odoo_website_giftwrap_tree_view" model="ir.ui.view">
+			<field name="name">odoo.website.giftwrap.tree.view</field>
+			<field name="model">giftwrap.configuration</field>
+			<field name="arch" type="xml">
+			   <tree string="GiftWrap Configuration">													
+					<field name="product_id" widget="selection" />
+					<field name="price" />
+			   </tree>
+			</field>
+		</record>
+        
+        
+   		<record id="view_odoo_website_giftwrap_form_view" model="ir.ui.view">
+            <field name="name">odoo.website.giftwrap.form.view</field>
+            <field name="model">giftwrap.configuration</field>
+            <field name="arch" type="xml">
+				<form string="GiftWrap Configuration" version="9.0">
+					<sheet>
+						<group>
+							<field name="product_id" required="1" widget="selection"/>
+							<field name="price" required="1" />
+						</group>
+					</sheet>
+				</form>
+            </field>
+        </record>
+
+        
+     	<record id="action_odoo_website_giftwrap_menu" model="ir.actions.act_window">
+            <field name="name">GiftWrap Configuration</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">giftwrap.configuration</field>
+            <field name="binding_view_types">form</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+		
+		<menuitem 
+			id="odoo_website_giftwrap_menu" 
+			parent="website.menu_website_configuration" 
+			name="GiftWrap Configuration" 
+			action="action_odoo_website_giftwrap_menu" 
+			sequence="200" />
+		
+		
+</odoo>
