@@ -17,6 +17,8 @@
         'templates/template_home.xml',
         'templates/template_category.xml',
         'templates/template_product.xml',
+        'templates/template_privacy_policy.xml',
+        'templates/template_shipping_terms.xml',
         'templates/google-snippet/product.xml'
     ],
     # Technical
