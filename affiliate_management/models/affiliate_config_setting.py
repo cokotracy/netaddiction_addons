@@ -62,9 +62,9 @@ class AffiliateConfiguration(models.TransientModel):
     reject_mail_template = fields.Many2one('mail.template',string="Reject Request Mail ",readonly=True)
     Invitation_mail_template = fields.Many2one('mail.template',string="Invitation Request Mail ",readonly=True)
     unique_ppc_traffic = fields.Boolean(string= "Unique ppc for product", default=False,help="this field is used to enable unique traffic on product for an Affiliate for a specific browser. "  )
-    term_condition = fields.Html(String="Term & condition Text", related='affiliate_program_id.term_condition',translate=True)
+    term_condition = fields.Html(string="Term & condition Text", related='affiliate_program_id.term_condition',translate=True)
     work_title = fields.Text(string="How Does It Work Title",related='affiliate_program_id.work_title', translate=True)
-    work_text = fields.Html(String="How Does It Work Text",related='affiliate_program_id.work_text', translate=True)
+    work_text = fields.Html(string="How Does It Work Text",related='affiliate_program_id.work_text', translate=True)
 
 
 

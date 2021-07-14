@@ -39,8 +39,8 @@ class AffiliateVisit(models.Model):
 
     affiliate_method = fields.Selection([("ppc","Pay Per Click"),("pps","Pay Per Sale")],string="Order Report",readonly='True',states={'draft': [('readonly', False)]},help="state of traffic either ppc or pps")
     affiliate_type = fields.Selection([("product","Product"),("category","Category")],string="Affiliate Type",readonly='True',states={'draft': [('readonly', False)]},help="whether the ppc or pps is on product or category")
-    type_id = fields.Integer(String='Type Id',readonly='True',states={'draft': [('readonly', False)]},help="Id of product template on which ppc or pps traffic create")
-    type_name = fields.Char(String='Type Name',readonly='True',states={'draft': [('readonly', False)]},compute='_calc_type_name',help="Name of the product")
+    type_id = fields.Integer(string='Type Id',readonly='True',states={'draft': [('readonly', False)]},help="Id of product template on which ppc or pps traffic create")
+    type_name = fields.Char(string='Type Name',readonly='True',states={'draft': [('readonly', False)]},compute='_calc_type_name',help="Name of the product")
     is_converted = fields.Boolean(string="Is Converted",readonly='True',states={'draft': [('readonly', False)]})
     sales_order_line_id = fields.Many2one("sale.order.line",readonly='True',states={'draft': [('readonly', False)]})
     affiliate_key = fields.Char(string="Key",readonly='True',states={'draft': [('readonly', False)]})

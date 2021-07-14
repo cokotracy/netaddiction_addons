@@ -33,9 +33,9 @@ class AffiliateProgram(models.Model):
     advance_commision_id = fields.Many2one('advance.commision',string="Pricelist",domain="[('active_adv_comsn', '=', True)]")
 
     # config field for translation
-    term_condition = fields.Html(String="Term & condition Text", translate=True)
+    term_condition = fields.Html(string="Term & condition Text", translate=True)
     work_title = fields.Text(string="How Does It Work Title", translate=True)
-    work_text = fields.Html(String="How Does It Work Text", translate=True)
+    work_text = fields.Html(string="How Does It Work Text", translate=True)
 
 
     def unlink(self):
