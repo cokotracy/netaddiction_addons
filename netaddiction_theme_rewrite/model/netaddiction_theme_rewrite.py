@@ -11,19 +11,21 @@ class CustomHome(Controller):
     @route('/', type='http', auth='public', website=True)
     def controller(self, **post):
         return request.render("netaddiction_theme_rewrite.template_home_secondary", {})
+
+
 class CustomPrivacy(Controller):
     @route('/privacy/', type='http', auth='public', website=True)
     def controller(self, **post):
         return request.render("netaddiction_theme_rewrite.template_privacy_policy", {})
+
+
 class CustomShipping(Controller):
     @route('/costi-metodi-spedizione/', type='http', auth='public', website=True)
     def controller(self, **post):
         return request.render("netaddiction_theme_rewrite.template_shipping_terms", {})
 
+
 #AGGIUNGE ALLA FORM DELLE CATEGORIE IL CAMPO DI INSERIMENTO DESCRIZIONE
 class CategoryDescriptionInherit(models.Model):
     _inherit = 'product.public.category'
     description = fields.Text(name='description')
-
-
-
