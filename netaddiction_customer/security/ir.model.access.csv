@@ -1,0 +1,3 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_netaddiction_gift_type,access_netaddiction_gift_type,model_netaddiction_gift_type,base.group_user,1,0,0,0
+access_netaddiction_gift,access_netaddiction_gift,model_netaddiction_gift,base.group_user,1,0,0,0
