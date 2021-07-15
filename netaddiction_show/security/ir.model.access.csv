@@ -1,7 +1,0 @@
-id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
-access_netaddiction_show_user,netaddiction_show.netaddiction.show,model_netaddiction_show,base.group_user,1,1,1,1
-access_netaddiction_difference_quant_user,netaddiction_show.netaddiction.difference.quant,model_netaddiction_difference_quant,base.group_user,1,1,1,1
-access_netaddiction_show_quant_user,netaddiction_show.netaddiction.show.quant,model_netaddiction_show_quant,base.group_user,1,1,1,1
-access_netaddiction_sell_quant_user,netaddiction_show.netaddiction.sell.quant,model_netaddiction_sell_quant,base.group_user,1,1,1,1
-access_netaddiction_return_quants_user,netaddiction_show.netaddiction.return.quants,model_netaddiction_return_quants,base.group_user,1,1,1,1
-access_netaddiction_show_returned_move,access_netaddiction_show_returned_move,model_netaddiction_show_returned_move,base.group_user,1,1,1,1
