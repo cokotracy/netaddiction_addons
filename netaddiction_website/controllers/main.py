@@ -25,8 +25,8 @@ class WebsiteSale(WebsiteSale):
         }
         rating = request.website.viewref('website_sale.product_comment').active
         res = {'products': []}
-        domain = ['|', '&', ('net_sales_count', '>', 0), ('is_published', '=', True), ('website_id', '=', request.website.id)]
-        for product in request.env['product.product'].search(domain, order="net_sales_count desc", limit=10):
+        domain = ['|', '&', ('sales_count', '>', 0), ('is_published', '=', True), ('website_id', '=', request.website.id)]
+        for product in request.env['product.product'].search(domain, order="sales_count desc", limit=10):
             combination_info = product._get_combination_info_variant()
             res_product = product.read(['id', 'name', 'website_url'])[0]
             res_product.update(combination_info)
