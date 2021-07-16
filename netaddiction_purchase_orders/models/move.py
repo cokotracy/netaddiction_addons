@@ -24,7 +24,7 @@ class StockMove(models.Model):
                             line.sudo().product_uom_qty = new_qty
                     to_delete = 0
                 if new_qty <= 0:
-                    move.sudo().action_cancel()
+                    move.sudo()._action_cancel()
                     if move.sudo().purchase_line_id:
                         if move.sudo().purchase_line_id.qty_received + new_qty == 0:
                             move.sudo().purchase_line_id.unlink()
