@@ -232,11 +232,11 @@ odoo.define('netaddiction_purchase_orders.backorder', function (require) {
                 subtitle: ' '+ datas.product_name,
                 size: 'medium',
                 dialogClass: '',
-                buttons: [{text: _t("Chiudi"), close: true, classes:"btn-primary close_dialog"},{text: _t("Salva"), classes:"btn-danger save_cancel"}]
+                buttons: [{text: _t("Chiudi"), close: true, classes:"btn-primary close_dialog"},{text: _t("Salva"), classes:"btn-danger save_cancel"}],
+                $content: QWeb.render("qty_form", {pid: pid, supplier: supplier, qty: qty})
             }
             var dial = new Dialog(self,options);
             dial.open();
-            dial.$el.html(QWeb.render("qty_form", {pid: pid, supplier: supplier, qty: qty}));
             self.setElement('body');
         },
         delete_backorder: function(e){
