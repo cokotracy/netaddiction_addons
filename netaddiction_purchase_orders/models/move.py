@@ -18,9 +18,10 @@ class StockMove(models.Model):
                     move.sudo().product_uom_qty = new_qty
                     if move.sudo().purchase_line_id:
                         move.sudo().purchase_line_id.product_qty = move.sudo().purchase_line_id.qty_received + new_qty
-                    for line in move.sudo().picking_id.pack_operation_product_ids:
+                    # FIXME This for cycle used to process pack_product_operation_ids. I'm not sure move_ids_without package is the right field to proces
+                    for line in move.sudo().picking_id.move_ids_without_package:
                         if line.product_id.id == int(datas['product_id']):
-                            line.sudo().product_qty = new_qty
+                            line.sudo().product_uom_qty = new_qty
                     to_delete = 0
                 if new_qty <= 0:
                     move.sudo().action_cancel()
