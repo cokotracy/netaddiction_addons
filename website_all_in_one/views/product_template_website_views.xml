@@ -1,0 +1,94 @@
+<?xml version="1.0"?>
+<odoo>
+
+	<template id="assets_frontendss" inherit_id="website.assets_frontend">
+		<xpath expr="script[last()]" position="after">
+			<link rel="stylesheet" href="/website_all_in_one/static/src/css/customfilter.css"/>
+			<script type="text/javascript" src="/website_all_in_one/static/src/js/filter.js"></script>
+		</xpath>
+	</template>
+
+	<template id="products_filters" inherit_id="website_sale.products" active="False" customize_show="True" name="Product Filters">
+		<xpath expr="//div[@id='products_grid_before']" position="before">
+			<t t-set="enable_left_column" t-value="True"/>
+		</xpath>
+		<xpath expr="//div[@id='products_grid_before']" position="inside">
+			<!-- <t t-if="grouped_tasks"> --> 
+			<div class="card">
+			<form class="js_filtervalue" method="get">
+				<input type="hidden" name="search" t-att-value="search" />
+				<ul class="nav nav-pills flex-column mt16">
+					<div class="card-primary">
+						<t t-if="applied_filter==True">
+							<div class="customfilter">Applied Filters</div>
+							<div class="container" style="display: inline-grid;">
+								<t t-foreach="filters" t-as="a">
+									<t t-foreach="a.filter_value_ids" t-as="v">
+										<t t-if="v.id in filter_set">
+											<b><span t-esc="v.name" ></span>&amp;nbsp;&amp;nbsp;</b>
+										</t>
+									</t>
+								</t>
+							</div>
+							<hr/>
+							<div style="height:1vh;" />
+						</t>
+						<t t-foreach="grouped_tasks" t-as="filters">
+						   <div  class="card-header customfilter"> <span t-field="filters[0].sudo().group_id.name"/></div>
+							<t t-foreach="filters" t-as="a">
+								<li t-if="a.filter_value_ids and len(a.filter_value_ids) &gt; 1" class="nav-item" style="margin-bottom: 5px;">
+									<div style="padding: 10px;">
+										<strong t-field="a.name" />
+									</div>
+									<t t-if="a.type == 'select'">
+										<select class="form-control" name="filter">
+											<option value="" />
+											<t t-foreach="a.filter_value_ids" t-as="v">
+												<t t-if="v.dynamic_count &gt; 0">
+													<option t-att-value="'%s-%s' % (a.id,v.id)" t-esc="v.name,v.dynamic_count" t-att-selected="v.id in filter_set" /> 
+												</t>   
+											</t>
+										</select>
+									</t>
+									<t t-if="a.type == 'radio'">
+										<ul class="nav nav-pills flex-column" style="margin:5px;">
+											<t t-foreach="a.filter_value_ids" t-as="v">
+												<li class="nav-item" style="    margin-bottom: 5px;" t-if="v.dynamic_count &gt; 0">
+													<label style="margin: 0 20px;" t-attf-class="nav-link#{' active' if v.id in filter_set else ''}">
+														<input type="checkbox" name="filter" t-att-value="'%s-%s' % (a.id,v.id)" t-att-checked="'checked' if v.id in filter_set else None" />
+														<span style="font-weight: normal" t-field="v.name" />
+														<span>(<b><t t-esc='v.dynamic_count' /></b>)</span>
+													</label>
+												</li>
+											</t>
+										</ul>
+									</t>
+									<t t-if="a.type == 'color'" class="customcolor">
+										<div style="padding: 5px 10px;">
+											<t t-foreach="a.filter_value_ids" t-as="v">
+											<t t-if="v.dynamic_count &gt; 0">
+												<label t-attf-style="background-color:#{v.html_color or v.name}" t-attf-class="css_attribute_color #{'active' if v.id in filter_set else ''}" style="margin-bottom: 5px;">
+													<input type="checkbox" name="filter" t-att-value="'%s-%s' % (a.id,v.id)" t-att-checked="'checked' if v.id in filter_set else None" t-att-title="v.name" />
+												</label>
+												<span>(<b><t t-esc='v.dynamic_count' /></b>)</span>
+											</t>
+											</t>
+										</div>
+									</t>
+								</li>
+							</t>
+						</t>
+					</div>
+				</ul>
+			</form>
+			</div>
+			<!-- </t> -->
+		</xpath>
+		<xpath expr="//div[@id='products_grid_before']" position="attributes">
+			<attribute name="class">col-lg-3 d-none d-md-block</attribute>
+		</xpath>
+		<xpath expr="//div[@id='products_grid']" position="attributes">
+			<attribute name="class">col-lg-9</attribute>
+		</xpath>
+	</template>
+</odoo>

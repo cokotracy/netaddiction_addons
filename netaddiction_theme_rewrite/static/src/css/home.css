@@ -15,6 +15,18 @@
     width:100% !important;
 }
 
+.te_4_col_content{
+    border:1px solid var(--light-gray);
+}
+
+.te_4_col_content > .te_s_5_img{
+    display:none !important;
+}
+
+.te_4_col_content > .te_extra_btn, .o_colored_level > .te_extra_btn > a{
+    color:var(--primary) !important;
+}
+
 @media only screen and (min-width: 920px) {
     .big-category-cover{
         height:445px !important;

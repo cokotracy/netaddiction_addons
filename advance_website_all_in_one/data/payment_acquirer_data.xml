@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+
+        <record id="payment_acquirer_cod" model="payment.acquirer">
+            <field name="name">Cash on Delivery</field>
+            <field name="image_128" type="base64" file="advance_website_all_in_one/static/src/img/cod.jpg"/>
+            <field name="provider">cod</field>
+            <field name="company_id" ref="base.main_company"/>
+            <field name="view_template_id" ref="cod_acquirer_button"/>
+            <field name="pre_msg"><![CDATA[
+<p>Cash on Delivery Payment Method.</p>]]>
+            </field>
+        </record>
+        
+        <record id="product_product_fees" model="product.template">
+            <field name="name">Extra Fees</field>
+            <field name="website_published" eval="False"/>
+            <field name="type">service</field>
+            <field name="taxes_id" eval="False"/>
+            <field name="supplier_taxes_id" eval="False"/>
+            <field name="description_sale">Extra Fees</field>
+            
+        </record>
+
+    </data>
+</odoo>

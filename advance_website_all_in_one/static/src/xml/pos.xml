@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+	<templates id="bi_website_loyalty_template" inherit_id="point_of_sale.template" xml:space="preserve">
+
+		<!-- ClientDetails -->
+		<t t-extend="ClientDetails">
+			<t t-jquery=".client-details-right" t-operation="append">
+				<div class="client-detail">
+					<span class='label'>Loyalty Points</span>
+					<span> <t t-esc='partner.loyalty_points'/></span>
+				</div>
+			</t>
+
+		</t>
+
+
+	 <!-- ClientListScreenWidget -->
+		<t t-extend="ClientListScreenWidget">
+
+			<!-- -->
+			<t t-jquery="tr" t-operation="append">
+				<th>Loyalty Points</th>
+			</t>
+
+		</t>
+
+	  <!-- ClientLineWidget -->
+		<t t-extend="ClientLine">
+			<t t-jquery="tr.client-line" t-operation="append">
+				<td class="text-center">
+					<center><t t-esc='partner.loyalty_points or "0"' /></center>
+				</td>
+			</t>
+		</t>		   
+
+
+	  <!-- GiftButtonWidget -->
+	   
+		<t t-name="LoyaltyButtonWidget" name="Redeem Loyalty Points" id="redeem">
+			<t t-if="widget.pos.web_loyalty_setting.length !== 0">
+				<div class="control-button">
+					<i class="fa fa-gift"></i>Redeem
+				</div>
+			</t>
+		</t>
+
+		<!-- LoyaltyPopupWidget -->     
+		<t t-name="LoyaltyPopupWidget">
+			<div class="modal-dialog">
+				<div class="popup" style="height: 370px !important;">
+					<p class="title" style="background-color: rgb(110,200,155); color: #fff;">Loyalty Reedemption</p>
+					<p class="body" style="color: #0075AC;">Hello <b><t t-esc="widget.partner"/> !!! </b></p>
+					<p class="body" style="color: #0075AC;">Your Loyalty Points: <b><t t-esc="widget.loyalty"/></b>Point(s) </p>
+					<p class="body" style="color: #0075AC;">Your Loyalty Balance: 
+						<b><t t-esc="widget.format_currency(widget.loyalty_amount)"/></b>
+					</p>
+					<div>
+						<p class="body" style="color: #0075AC;">Enter number of points to Redeem: </p>
+						<input id ="entered_item_qty" type="text" placeholder="Enter points to redeem" class="input-field" name="code"></input>
+					</div>
+					<div class="footer" style="background-color: rgb(110,200,155); color: #fff;">
+						<div class="button cancel" style="background-color: #0075AC; color: #fff;">
+							Cancel 
+						</div>
+						<div class="button confirm" id="apply_redeem_now" style="background-color: #0075AC; color: #fff;">
+							Reedem Now 
+						</div>
+					</div>
+				</div>
+			</div>
+		</t>
+	
+
+		<!-- OrderWidget -->
+		<t t-extend="OrderWidget">
+			
+			<t t-jquery=".summary" t-operation="after">
+				<div class='items' style="display: none;padding-bottom: 10px; padding-left: 15px;padding-right: 15px;"><i><b style="font-weight: bold; color: #0075AC;font-size: 20px;"> + <span class="loyalty">0.00€</span> Loyalty Points. Total: <span class="value loyalty_value">0.00€</span></b></i></div>
+			</t>
+
+		</t>
+		
+		<t t-extend="OrderReceipt" >
+			<t t-jquery=".after-footer" t-operation="after">
+				<table class='receipt-change' style="min-width: 100%;">
+					<t t-if="widget.pos.get_client()">
+						<tr>
+							<td>Earned Loyalty Points:</td>
+							<td class="pos-right-align"><t t-esc="order.get_total_loyalty()"/></td>
+						</tr>
+						<tr>
+							<td>Total Loyalty Points:</td>
+							<td class="pos-right-align"><t t-esc="widget.pos.get_client().loyalty_points + order.get_total_loyalty()"/></td>
+						</tr>
+					</t>
+					
+				</table>
+
+			</t>
+		</t>
+		
+	</templates>
+	
+	

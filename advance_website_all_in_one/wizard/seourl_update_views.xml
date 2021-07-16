@@ -1,0 +1,55 @@
+<?xml version="1.0"?>
+<odoo>
+    <data>
+
+        <record id="gen_template_seourl_form" model="ir.ui.view">
+            <field name="name">Product Template SEO URL Wizard</field>
+            <field name="model">template.seourl</field>
+            <field name="arch" type="xml">
+                <form string="Updated URLs">
+                    <group>
+                        <group>
+                           <p>Seo Url updates for&amp;nbsp;<field name="name" readonly="1" nolabel="1"/>&amp;nbsp;products.</p>
+                        </group>
+                    </group>
+                    <footer>
+                        <button name="return_ok" string="Ok" class="btn btn-primary" type="object"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <record id="bi_url_template_seourl_action" model="ir.actions.act_window">
+            <field name="name">Product Template SEO URL</field>
+            <field name="res_model">template.seourl</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+        </record>
+
+        <record id="gen_public_category_seourl_form" model="ir.ui.view">
+            <field name="name">Public Category SEO URL Wizard</field>
+            <field name="model">public.category.seourl</field>
+            <field name="arch" type="xml">
+                <form string="Updated URLs">
+                    <group>
+                        <group>
+                           <p>Seo Url updates for&amp;nbsp;<field name="name" readonly="1" nolabel="1"/>&amp;nbsp;categories.</p>
+                        </group>
+                    </group>
+                    <footer>
+                        <button name="return_ok" string="Ok" class="btn btn-primary" type="object"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <record id="bi_public_category_seourl_action" model="ir.actions.act_window">
+            <field name="name">Public Category SEO URL</field>
+            <field name="res_model">public.category.seourl</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+        </record>
+
+
+    </data>
+</odoo>

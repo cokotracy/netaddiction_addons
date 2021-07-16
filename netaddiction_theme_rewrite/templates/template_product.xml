@@ -3,15 +3,6 @@
     <template  id="template_product_detail_custom" inherit_id="website_sale.product">
         <xpath expr="//div[@id='product_details']/h1" position="after">
             <!--METTO IL PREZZO-->
-            <strong class="product-price">
-                <span 
-                    t-att-data-product-id="product.id"
-                    t-esc="combination_info['price']"
-                    t-options='{
-                        "widget": "monetary",
-                        "display_currency": (pricelist or product).currency_id
-                    }'></span>
-            </strong>
             <div class="o_not_editable mb-3">
                 <t t-if="product.description">
                     <p t-if="product.description" t-raw="(product.description[:200] + '.. ') if len(product.description) > 75 else product.description" class="te_prod_desc text-muted"></p>

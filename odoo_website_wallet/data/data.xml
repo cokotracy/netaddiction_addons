@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+	<data noupdate="1">
+		
+		<record id="product_product_wallet" model="product.template">
+			<field name="name">Wallet Recharge</field>
+			<field name="website_published" eval="True"/>
+			<field name="type">service</field>
+			<field name="description_sale">Wallet Recharge</field>
+			<field name="taxes_id" eval="False"/>
+			
+		</record>
+		
+		<record id="email_template_wallet_transaction_debit" model="mail.template">
+			<field name="name">Customer Debit Wallet Transaction Email</field>
+			<field name="email_from">${(user.email or '')|safe}</field>
+			<field name="subject">${user.company_id.name} Customer Debit Wallet Transaction Email</field>
+			<field name="email_to">${(user.email or '')|safe}</field>
+			<field name="lang">${object.lang}</field>
+			<field name="model_id" ref="odoo_website_wallet.model_website_wallet_transaction"/>
+			<field name="auto_delete" eval="True"/>
+			<field name="body_html"><![CDATA[
+<div style="font-family: 'Lucica Grande', Ubuntu, Arial, Verdana, sans-serif; font-size: 12px; color: rgb(34, 34, 34); background-color: rgb(255, 255, 255); ">
+
+	<p>Dear ${object.partner_id.name},</p>
+	<p>
+	Wallet amount used in order.
+	</p>
+	<p>Amount : ${object.amount}</p>
+<br/>
+Best Regards,
+<br/>
+   <br/>
+${user.name}
+
+<br/>
+<br/>
+
+
+
+	<br/>
+
+</div>
+			]]></field>
+		</record>
+		
+		<record id="email_template_wallet_transaction_credit" model="mail.template">
+			<field name="name">Customer Credit Wallet Transaction Email</field>
+			<field name="email_from">${(user.email|safe}</field>
+			<field name="subject">${user.company_id.name} Customer Credit Wallet Transaction Email</field>
+			<field name="email_to">${(user.email or '')|safe}</field>
+			<field name="lang">${object.lang}</field>
+			<field name="model_id" ref="odoo_website_wallet.model_website_wallet_transaction"/>
+			<field name="auto_delete" eval="True"/>
+			<field name="body_html"><![CDATA[
+<div style="font-family: 'Lucica Grande', Ubuntu, Arial, Verdana, sans-serif; font-size: 12px; color: rgb(34, 34, 34); background-color: rgb(255, 255, 255); ">
+
+	<p>Dear ${object.partner_id.name},</p>
+	<p>
+	Wallet Recharge Successfully done. 
+	</p>
+	<p>Amount : ${object.amount}</p>
+<br/>
+Best Regards,
+<br/>
+   <br/>
+${user.name}
+
+<br/>
+<br/>
+
+
+
+	<br/>
+
+</div>
+			]]></field>
+		</record>
+
+		<record id="email_template_wallet_transaction_credit_khush" model="mail.template">
+            <field name="name">Customer Credit Wallet Transaction Email</field>
+            <field name="email_from">${(user.email|safe}</field>
+            <field name="subject">${user.company_id.name} Customer Credit Wallet Transaction Email</field>
+            <field name="email_to">${(user.email or '')|safe}</field>
+            <field name="lang">${object.lang}</field>
+            <field name="model_id" ref="odoo_website_wallet.model_add_money"/>
+            <field name="auto_delete" eval="True"/>
+            <field name="body_html"><![CDATA[
+<div style="font-family: 'Lucica Grande', Ubuntu, Arial, Verdana, sans-serif; font-size: 12px; color: rgb(34, 34, 34); background-color: rgb(255, 255, 255); ">
+
+    <p>Hello,</p>
+    <p>
+    Wallet Recharge Successfully done. 
+    </p>
+    <p>Amount : ${object.add_amount}</p>
+<br/>
+Best Regards,
+<br/>
+   <br/>
+${user.name}
+
+<br/>
+<br/>
+
+
+
+    <br/>
+
+</div>
+            ]]></field>
+        </record>
+
+        <record id="email_template_wallet_transaction_credit_payment" model="mail.template">
+            <field name="name">Customer Credit Wallet Transaction Email</field>
+            <field name="email_from">${(user.email|safe}</field>
+            <field name="subject">${user.company_id.name} Customer Credit Wallet Transaction Email</field>
+            <field name="email_to">${(user.email or '')|safe}</field>
+            <field name="lang">${object.lang}</field>
+            <field name="model_id" ref="odoo_website_wallet.model_add_payment"/>
+            <field name="auto_delete" eval="True"/>
+            <field name="body_html"><![CDATA[
+<div style="font-family: 'Lucica Grande', Ubuntu, Arial, Verdana, sans-serif; font-size: 12px; color: rgb(34, 34, 34); background-color: rgb(255, 255, 255); ">
+
+    <p>Hello,</p>
+    <p>
+    Wallet Recharge Successfully done. 
+    </p>
+    
+<br/>
+Best Regards,
+<br/>
+   <br/>
+${user.name}
+
+<br/>
+<br/>
+
+
+
+    <br/>
+
+</div>
+            ]]></field>
+        </record>
+
+	</data>
+</openerp>
+
