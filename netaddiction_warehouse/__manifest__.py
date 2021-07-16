@@ -53,7 +53,7 @@
         'views/res_config_settings.xml',
         'views/res_partner.xml',
         'views/sale_order.xml',
-        'views/stock_inventory.xml',
+        #'views/stock_inventory.xml',
         'views/stock_move.xml',
         'views/stock_picking.xml',
         'views/stock_picking_batch.xml',
