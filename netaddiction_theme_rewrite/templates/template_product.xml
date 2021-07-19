@@ -12,6 +12,11 @@
                 </t>
                 <t t-set="i" t-value="i+1"/>
             </tr> -->
+
+            <tr t-foreach="product.tag_ids" t-as="tag">
+                <a class="tag-item" t-esc="tag.name" t-attf-href="/tag/#{tag.name}"></a>
+            </tr>
+
             <div class="o_not_editable mb-3">
                 <t t-if="product.description">
                     <p t-if="product.description" t-raw="(product.description[:200] + '.. ') if len(product.description) > 75 else product.description" class="te_prod_desc text-muted"></p>
