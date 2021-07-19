@@ -8,11 +8,21 @@
 }
 
 /*COMPOSIZIONE IMG HOME*/
-.big-category-cover, .small-category-cover{
+.te_offer_s7_img_big{
+    width:100% !important;
+}
+.te_offer_s7_img_small > img, .te_offer_s7_img_big > img{
     object-fit:cover;
     object-position: center;
     height:350px;
+    cursor: pointer;
     width:100% !important;
+    border:1px solid var(--light-gray);
+    outline: 1px solid var(--primary);
+    outline-offset: -10px;
+}
+.te_offer_big_img_content, .te_offer_small_img_content{
+    cursor: pointer;
 }
 
 .te_4_col_content{
