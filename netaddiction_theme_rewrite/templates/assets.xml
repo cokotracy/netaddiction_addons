@@ -15,6 +15,11 @@
                 <link href="/netaddiction_theme_rewrite/static/src/css/category.css" rel="stylesheet"/>
             </t>
 
+            <!-- AGGIUNGE IN HEAD PER I TERMINI DI SPEDIZIONE -->
+            <t t-if="'/costi-metodi-spedizione/' in request.httprequest.url">
+                <link href="/netaddiction_theme_rewrite/static/src/css/shipping.css" rel="stylesheet"/>
+            </t>
+
             <!-- AGGIUNGE IN HEAD PER LE RICERCHE -->
             <t t-if="'/shop?search=' in request.httprequest.url">
                 <meta name="robots" content="noindex, nofollow" />

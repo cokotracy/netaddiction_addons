@@ -1,0 +1,25 @@
+.shipping-template > .nav-tabs > a{
+    border-radius: 3px 3px 0 0;
+    padding:10px 15px;
+    border-top:1px solid var(--light-gray);
+    border-left:1px solid var(--light-gray);
+    border-right:1px solid var(--light-gray);
+    border-bottom:none;
+    outline: none;
+    box-shadow: none;
+    background-color: var(--white);
+    color:var(--secondary) !important;
+}
+.shipping-template > .nav-tabs > .active{
+    color:var(--primary) !important;
+    background-color: var(--extra-light-gray);
+}
+
+.shipping-template > .tab-content > div{
+    display: none;
+    opacity:0;
+}
+.shipping-template > .tab-content > .show{
+    display: block !important;
+    opacity:1 !important;
+}

@@ -2,7 +2,16 @@
 <odoo>
     <template  id="template_product_detail_custom" inherit_id="website_sale.product">
         <xpath expr="//div[@id='product_details']/h1" position="after">
-            <!--METTO IL PREZZO-->
+            <!-- <t t-set="all_coupon" t-value="request.env['coupon.program'].sudo().search([])"/>
+            <t t-set="i" t-value="1"/>
+
+            <tr t-foreach="all_coupon" t-as="single_coupon">
+                <t t-if="product" t-set="productinfo" t-value="request.env['product.product'].sudo().search([('product_tmpl_id', '=', product.id), ast.literal_eval(single_coupon.rule_products_domain)])"/>
+                <t t-if="len(productinfo) > 0">
+                    <t t-esc="i"/>
+                </t>
+                <t t-set="i" t-value="i+1"/>
+            </tr> -->
             <div class="o_not_editable mb-3">
                 <t t-if="product.description">
                     <p t-if="product.description" t-raw="(product.description[:200] + '.. ') if len(product.description) > 75 else product.description" class="te_prod_desc text-muted"></p>
@@ -10,10 +19,40 @@
                         <span
                             style="cursor:pointer; color:var(--primary);"
                             onclick="
-                                document.querySelector('#nav_tabs_link_1').click();
-                                document.querySelector('#nav_tabs_link_1').scrollIntoView({behavior: 'smooth'});" 
+                                document.querySelector('#nav_tabs_link_description').click();
+                                document.querySelector('#nav_tabs_link_description').scrollIntoView({behavior: 'smooth'});" 
                         >Leggi tutto</span>
                     </t>
+                </t>
+            </div>
+        </xpath>
+
+        <xpath expr="//section[@id='product_detail']" position="after">
+            <div class="d-block p-3 mt-3 mb-5 w-100 container">
+                <t t-set="bundles" t-value="[[0,1,2,3],[0,1,2],[0,1]]"/>
+                <t t-foreach="bundles" t-as="bundle">
+                    <div class="w-100 border-bottom py-4 overflow-gradient">
+                        <div class="d-flex product-bundle-container">
+                            <t t-foreach="bundle" t-as="single_product">
+                                <div class="single-product-bundle-container">
+                                    <div class="single-product-bundle"></div>
+                                    <strong class="px-1 w-xl-100">Nome del prodotto (collector edition) 16cm Limited Edition solo 200 pezzi in tutto il mondo</strong>  
+                                </div>
+                            </t>
+                        </div>
+                        <div class="d-flex mt-3">
+                            <div class="d-flex align-items-center mt-3">
+                                <a role="button" id="buy_now" class="btn btn-outline-primary btn-lg d-sm-inline-block te_theme_button px-3 py-1" href="#" data-oe-model="ir.ui.view" data-oe-id="3415" data-oe-field="arch" data-oe-xpath="/t[1]/t[1]/div[1]/div[1]/div[1]/div[3]/div[1]/t[2]/a[1]">
+                                    <span class="fa fa-bolt"></span>
+                                    Acquista Bundle
+                                </a>
+                            </div>
+                            <div class="d-flex align-items-center px-2">
+                                <span class="price-tag"><sup style="margin-right:5px;"><small><del>39,90</del></small></sup>20,99 €</span>
+                            </div>
+                        </div>
+                        
+                    </div>
                 </t>
             </div>
         </xpath>
