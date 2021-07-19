@@ -4,42 +4,26 @@
 .te_pc_style_main .te_slider_filter_main{
     padding:0 !important;
 }
-#products_grid .table .o_wsale_product_grid_wrapper, .te_product_ind{
-    border:none !important;
-}
-
-#products_grid .table .o_wsale_product_grid_wrapper{
-    border:none !important;
-}
-
-#products_grid .table .o_wsale_product_grid_wrapper .card.oe_product_cart{
-    border:none !important;
-    padding:20px;
-}
-
-#products_grid .table .o_wsale_product_grid_wrapper{
-    box-shadow: none !important;
-}
 
 .o_wsale_product_btn > span{
-    color:var(--secondary)!important;
+    color:var(--primary)!important;
     line-height: initial;
 }
 .o_wsale_product_btn > a{
-    border: 1px solid var(--secondary)!important;
     display: flex !important;
     align-items: center !important;
     justify-content: center !important;
-}
-.o_wsale_products_item_title > a:nth-child(1){
-    font-weight: 600;
-    color:var(--secondary) !important;
 }
 
 #products_grid .table .o_wsale_product_grid_wrapper .card .product_price{
     font-weight: 800;
     color:var(--primary) !important;
 }
+
+#products_grid .table .o_wsale_product_grid_wrapper{
+    border:none;
+}
+
 @media only screen and (min-width: 768px) {
     #products_grid_before{
         top:100px !important;
