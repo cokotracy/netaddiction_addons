@@ -22,6 +22,10 @@
             <xpath expr="//field[@name='order_line']//tree//field[@name='price_total']" position="attributes">
                 <attribute name="groups" />
             </xpath>
+
+	    <xpath expr="//field[@name='order_line']//tree//field[@name='price_unit']" position="attributes">
+		<attribute name="attrs">{'readonly': False}</attribute>
+            </xpath>
         </field>
     </record>
 
