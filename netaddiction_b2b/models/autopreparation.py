@@ -15,6 +15,6 @@ class WaveB2B(models.Model):
                 inv_date = invoice.create_date
                 if inv_date.date() == batch_date.date():
                     invoice = invoice.id
-        this_batch.done()
+        this_batch.action_done()
 
         return {'invoice': invoice}

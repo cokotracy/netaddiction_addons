@@ -153,7 +153,7 @@ class StockPicking(models.Model):
             [('batch_id', '=', pick.batch_id.id),
              ('state', 'not in', ['draft', 'cancel', 'done'])]
         ):
-            pick.batch_id.done()
+            pick.batch_id.action_done()
 
         now = datetime.now(tz=pytz.timezone(self.env.user.tz or 'UTC'))
         # cerco la presenza di un manifest
