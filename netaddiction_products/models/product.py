@@ -138,8 +138,8 @@ class ProductProduct(models.Model):
     qty_available_now = fields.Integer(
         compute="_get_qty_available_now",
         search="_search_available_now",
-        string="Quantità Disponibile Adesso",
-        help="Quantità Disponibile Adesso (qty in possesso - qty in uscita)")
+        string="Quantita' Disponibile Adesso",
+        help="Quantita' Disponibile Adesso (qty in possesso - qty in uscita)")
 
     qty_sum_suppliers = fields.Integer(
         string="Quantità dei fornitori",
