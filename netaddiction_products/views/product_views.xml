@@ -38,11 +38,6 @@
                 <field name="special_price" string="Prezzo offerta base"/>
                 <field name="lst_price" readonly="True" string="Prezzo di Vendita"/>
             </xpath>
-            <xpath expr="/form/sheet/notebook/page[@name='general_information']//group[@name='group_general']/field[@name='categ_id']"
-                   position="after">
-                <field name="med_inventory_value" readonly="True"/>
-                <field name="med_inventory_value_intax" readonly="True"/>
-            </xpath>
             <xpath expr="/form/sheet/notebook/page[@name='general_information']//group[@name='group_standard_price']/field[@name='company_id']"
                    position="after">
                 <field name="detax_price" readonly="True"/>
