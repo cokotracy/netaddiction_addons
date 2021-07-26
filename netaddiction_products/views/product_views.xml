@@ -82,6 +82,11 @@
                         <field name="property_valuation" default="real_time" readonly="1"/>
                     </group>
                 </page>
+                <page string="Extra Images" name="extra_images">
+                    <group name="extra_images">
+                        <field name="image_ids" widget="many2many_binary"/>
+                    </group>
+                </page>
             </xpath>
         </field>
     </record>

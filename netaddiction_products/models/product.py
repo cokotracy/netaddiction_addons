@@ -198,6 +198,14 @@ class ProductProduct(models.Model):
         compute="_get_inventory_medium_value"
     )
 
+    image_ids = fields.Many2many(
+        'ir.attachment',
+        'product_image_rel',
+        'product_id',
+        'attachment_id',
+        string='Immagini'
+    )
+
     @api.model_create_multi
     def create(self, vals_list):
         res = super().create(vals_list)
