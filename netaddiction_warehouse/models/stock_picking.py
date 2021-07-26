@@ -296,13 +296,14 @@ class StockPicking(models.Model):
 
 
     def action_cancel(self):
+        if self.filtered(lambda p: p.delivery_read_manifest):
+            raise ValidationError(
+                "Non puoi annullare la spedizione in quanto e' gia' in"
+                " carico al corriere"
+            )
+
         cancel = []
-        for pick in self:
-            if pick.delivery_read_manifest:
-                raise ValidationError(
-                    "Non puoi annullare la spedizione in quanto è già in"
-                    " carico al corriere"
-                )
+        for pick in self.filtered(lambda p: p.payment_id):
             if pick.payment_id.state != 'posted':
                 # cancello tutto
                 cancel.append(pick.payment_id)
