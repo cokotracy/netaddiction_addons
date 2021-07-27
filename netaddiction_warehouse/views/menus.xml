@@ -43,7 +43,7 @@
               name="Ricarica/Sposta Prodotto"
               parent="stock.menu_stock_warehouse_mgmt"
               sequence="99"
-	      action="netaddiction_warehouse_products_movement"
+	      action="netaddiction_warehouse_products_movement_action"
 	      groups="base.group_user" />
 
     <menuitem id="menu_netaddiction_wh_locations"
