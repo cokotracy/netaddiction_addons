@@ -168,4 +168,14 @@
         </field>
     </record>
 
+    <!-- Force the action called from template to open variants,
+         to use complete form for the products -->
+    <record id="product.product_variant_action" model="ir.actions.act_window">
+        <field name="view_ids"
+               eval="[(5, 0, 0),
+                      (0, 0, {'view_mode': 'tree'}),
+                      (0, 0, {'view_mode': 'form', 'view_id': ref('product.product_normal_form_view')}),
+                      (0, 0, {'view_mode': 'kanban'})]"/>
+    </record>
+
 </odoo>
