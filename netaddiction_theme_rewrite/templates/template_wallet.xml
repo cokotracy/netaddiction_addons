@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="wallet_balance" name="Wallet Balance Page" priority="100">
+        <t t-call="website.layout">
+            <div class="container-fluid">
+                <section class="s_big_picture bg-primary">
+                    <div class="container">
+                        <form t-attf-action="/wallet/balance/confirm" method="post">
+                            <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()" />
+                            <div class="row">
+                                <div class="col-md-12 text-center mt32 mb32">
+                                    <h2>Your Wallet Details</h2>
+                                </div>
+                                <div class="container-fluid" >
+                                <div class='text-center'>   
+                                <div class="col-md-12"  >
+                                    <img class="img img-responsive col-xs-12" src="/odoo_website_wallet/static/src/img/wallet.png"  alt="Odoo CMS - a big picture" style="max-width:100%"/>
+                                </div>
+                                </div>
+                                </div>
+                                <div class="col-md-12 text-center mt32 mb32">
+                                </div>
+                                
+                                <h2>You have <b> <span class="text-right" t-esc="wallet" t-options="{'widget': 'monetary', 'display_currency': website.currency_id}"/> </b> wallet balance in your account.</h2>
+                                
+                                <div id='submit_wallet' class="col-md-12 text-center mt32 mb32">
+                                    <a href="/add/wallet/balance" class="btn" style="height: 40px;background-color: #FDC00F;color: black;">Add Wallet Balance</a>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </section>
+            </div>
+        </t>
+    </template>
+</odoo>
