@@ -196,7 +196,6 @@ class StockPickingBatch(models.Model):
             'picking_ids': [(6, 0, ids)],
             'in_exit': True,
         }])
-        new_batch.confirm_picking()
 
         return {'id': new_batch.id}
 
