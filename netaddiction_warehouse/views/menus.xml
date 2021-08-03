@@ -96,4 +96,28 @@
         <field name="active" eval="False"/>
     </record>
 
+    <!-- Move menus under another parent menu created ad-hoc -->
+    <menuitem id="menu_netaddiction_extra_operation"
+              name="Extra Operation"
+              sequence="99"
+              parent="stock.menu_stock_root"
+              />
+
+    <record id="stock.menu_reordering_rules_replenish" model="ir.ui.menu">
+        <field name="parent_id" ref="menu_netaddiction_extra_operation"/>
+    </record>
+
+    <record id="stock_picking_batch.stock_picking_batch_menu" model="ir.ui.menu">
+        <field name="parent_id" ref="menu_netaddiction_extra_operation"/>
+    </record>
+
+    <record id="stock.menu_valuation" model="ir.ui.menu">
+        <field name="parent_id" ref="menu_netaddiction_extra_operation"/>
+    </record>
+
+    <record id="stock_account.menu_valuation" model="ir.ui.menu">
+        <field name="parent_id" ref="menu_netaddiction_extra_operation"/>
+    </record>
+
+
 </odoo>
