@@ -214,7 +214,7 @@ odoo.define('netaddiction_warehouse.supplier_load', function (require) {
                     }
 
                     var ids = [];
-                    for (i in pord) {
+                    for (let i in pord) {
                         ids.push(pord[i].picking_ids);
                     }
 
