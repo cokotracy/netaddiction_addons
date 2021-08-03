@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+
+    <record id="massive_product_price_change_wizard" model="ir.ui.view">
+        <field name="name">massive.product.price.change.wizard</field>
+        <field name="model">massive.product.price.change</field>
+        <field name="arch" type="xml">
+            <form>
+                <group>
+                    <group>
+                        <field name="sale_price" />
+                    </group>
+                </group>
+                <footer>
+                    <button name="apply_price" string="Apply"
+                            type="object" class="btn-primary" />
+                    <button string="Cancel" class="btn-secondary" special="cancel" />
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="massive_product_price_change_action" model="ir.actions.act_window">
+        <field name="name">Massive Change Products Price</field>
+        <field name="res_model">massive.product.price.change</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <field name="binding_model_id" ref="product.model_product_template" />
+    </record>
+
+</odoo>
