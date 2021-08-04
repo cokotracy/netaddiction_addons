@@ -15,6 +15,11 @@
                 <link href="/netaddiction_theme_rewrite/static/src/css/category.css" rel="stylesheet"/>
             </t>
 
+            <!-- AGGIUNGE IN HEAD PER I TAG --> 
+            <t t-if="'/tag/' in request.httprequest.url">
+                <link href="/netaddiction_theme_rewrite/static/src/css/tag.css" rel="stylesheet"/>
+            </t>
+
             <!-- AGGIUNGE IN HEAD PER I TERMINI DI SPEDIZIONE -->
             <t t-if="'/costi-metodi-spedizione/' in request.httprequest.url">
                 <link href="/netaddiction_theme_rewrite/static/src/css/shipping.css" rel="stylesheet"/>

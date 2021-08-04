@@ -250,6 +250,22 @@ h1.te_product_name{
 	top: 17px;
 }
 
+/*TAG*/
+.tag-item{
+    border:2px solid var(--primary);
+    color: var(--primary);
+    font-size: 13px;
+    font-weight: bold;
+    padding-right: 0.6em;
+    padding-left: 0.6em;
+    border-radius: 10rem;
+    transition:0.2s;
+}
+.tag-item:hover{
+    border:2px solid var(--secondary);
+    color: var(--secondary);
+}
+
 @media only screen and (max-width: 800px) {
     .single-product-bundle-container{
         display: flex;
