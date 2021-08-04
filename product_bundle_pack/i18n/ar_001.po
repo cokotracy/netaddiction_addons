@@ -1,0 +1,306 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* product_bundle_pack
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 14.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2021-06-02 13:52+0000\n"
+"PO-Revision-Date: 2021-06-02 13:52+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: product_bundle_pack
+#: model_terms:ir.ui.view,arch_db:product_bundle_pack.product_bundle_inherit_sale_order_form
+msgid "Add Bundle"
+msgstr "إضافة حزمة"
+
+#. module: product_bundle_pack
+#: model_terms:ir.ui.view,arch_db:product_bundle_pack.wizard_product_bundle_bi
+msgid "Add Bundle Products"
+msgstr "إضافة منتجات الحزمة"
+
+#. module: product_bundle_pack
+#: model_terms:ir.ui.view,arch_db:product_bundle_pack.product_bundle_product_form_view
+msgid "Add a product"
+msgstr "أضف منتجًا"
+
+#. module: product_bundle_pack
+#: model_terms:ir.ui.view,arch_db:product_bundle_pack.view_res_config_purchase_inherit
+msgid "Allow Bundle Pack on Purchase"
+msgstr "السماح لحزمة الحزمة عند الشراء"
+
+#. module: product_bundle_pack
+#: model:ir.model.fields,field_description:product_bundle_pack.field_res_config_settings__allow_bundle
+msgid "Allow Manual Dropshipping Delivery"
+msgstr "السماح بتسليم دروبشيبينغ يدويًا"
+
+#. module: product_bundle_pack
+#: model:ir.model.fields,field_description:product_bundle_pack.field_wizard_product_bundle_bi__product_id
+msgid "Bundle"
+msgstr "حزمة"
+
+#. module: product_bundle_pack
+#: model_terms:ir.ui.view,arch_db:product_bundle_pack.wizard_product_bundle_bi
+msgid "Bundle Product"
+msgstr "منتج الحزمة"
+
+#. module: product_bundle_pack
+#: model:ir.model.fields,field_description:product_bundle_pack.field_product_product__cal_pack_price
+#: model:ir.model.fields,field_description:product_bundle_pack.field_product_template__cal_pack_price
+msgid "Calculate Pack Price"
+msgstr "احسب سعر الباقة"
+
+#. module: product_bundle_pack
+#: model_terms:ir.ui.view,arch_db:product_bundle_pack.wizard_product_bundle_bi
+msgid "Cancel"
+msgstr "يلغي"
+
+#. module: product_bundle_pack
+#: model:ir.model,name:product_bundle_pack.model_res_config_settings
+msgid "Config Settings"
+msgstr "ضبط الاعدادات"
+
+#. module: product_bundle_pack
+#: model:ir.model.fields,field_description:product_bundle_pack.field_product_pack__create_uid
+#: model:ir.model.fields,field_description:product_bundle_pack.field_wizard_product_bundle_bi__create_uid
+msgid "Created by"
+msgstr "انشأ من قبل"
+
+#. module: product_bundle_pack
+#: model:ir.model.fields,field_description:product_bundle_pack.field_product_pack__create_date
+#: model:ir.model.fields,field_description:product_bundle_pack.field_wizard_product_bundle_bi__create_date
+msgid "Created on"
+msgstr "تم إنشاؤها على"
+
+#. module: product_bundle_pack
+#: model:ir.model.fields,help:product_bundle_pack.field_product_pack__uom_id
+msgid "Default unit of measure used for all stock operations."
+msgstr "وحدة القياس الافتراضية المستخدمة لجميع عمليات المخزون."
+
+#. module: product_bundle_pack
+#: model:ir.model.fields,field_description:product_bundle_pack.field_product_pack__display_name
+#: model:ir.model.fields,field_description:product_bundle_pack.field_product_template__display_name
+#: model:ir.model.fields,field_description:product_bundle_pack.field_purchase_order__display_name
+#: model:ir.model.fields,field_description:product_bundle_pack.field_purchase_order_line__display_name
+#: model:ir.model.fields,field_description:product_bundle_pack.field_res_config_settings__display_name
+#: model:ir.model.fields,field_description:product_bundle_pack.field_sale_order_line__display_name
+#: model:ir.model.fields,field_description:product_bundle_pack.field_stock_move__display_name
+#: model:ir.model.fields,field_description:product_bundle_pack.field_stock_move_line__display_name
+#: model:ir.model.fields,field_description:product_bundle_pack.field_stock_picking__display_name
+#: model:ir.model.fields,field_description:product_bundle_pack.field_stock_rule__display_name
+#: model:ir.model.fields,field_description:product_bundle_pack.field_wizard_product_bundle_bi__display_name
+msgid "Display Name"
+msgstr "الاسم المعروض"
+
+#. module: product_bundle_pack
+#: model:ir.actions.act_window,name:product_bundle_pack.bi_act_product_bundle_wizard
+msgid "Dynamic Product Bundle"
+msgstr "حزمة المنتجات الديناميكية"
+
+#. module: product_bundle_pack
+#: model:ir.model.fields,field_description:product_bundle_pack.field_product_pack__id
+#: model:ir.model.fields,field_description:product_bundle_pack.field_product_template__id
+#: model:ir.model.fields,field_description:product_bundle_pack.field_purchase_order__id
+#: model:ir.model.fields,field_description:product_bundle_pack.field_purchase_order_line__id
+#: model:ir.model.fields,field_description:product_bundle_pack.field_res_config_settings__id
+#: model:ir.model.fields,field_description:product_bundle_pack.field_sale_order_line__id
+#: model:ir.model.fields,field_description:product_bundle_pack.field_stock_move__id
+#: model:ir.model.fields,field_description:product_bundle_pack.field_stock_move_line__id
+#: model:ir.model.fields,field_description:product_bundle_pack.field_stock_picking__id
+#: model:ir.model.fields,field_description:product_bundle_pack.field_stock_rule__id
+#: model:ir.model.fields,field_description:product_bundle_pack.field_wizard_product_bundle_bi__id
+msgid "ID"
+msgstr "المُعرف"
+
+#. module: product_bundle_pack
+#: model:ir.model.fields,field_description:product_bundle_pack.field_product_pack__bi_image
+msgid "Image"
+msgstr "صورة"
+
+#. module: product_bundle_pack
+#: model:ir.model.fields,field_description:product_bundle_pack.field_product_product__is_pack
+#: model:ir.model.fields,field_description:product_bundle_pack.field_product_template__is_pack
+msgid "Is Product Pack"
+msgstr "هل حزمة المنتج"
+
+#. module: product_bundle_pack
+#: model_terms:ir.ui.view,arch_db:product_bundle_pack.product_bundle_product_search_view
+msgid "Is a pack"
+msgstr "هي حزمة"
+
+#. module: product_bundle_pack
+#: model:ir.model.fields,field_description:product_bundle_pack.field_product_pack____last_update
+#: model:ir.model.fields,field_description:product_bundle_pack.field_product_template____last_update
+#: model:ir.model.fields,field_description:product_bundle_pack.field_purchase_order____last_update
+#: model:ir.model.fields,field_description:product_bundle_pack.field_purchase_order_line____last_update
+#: model:ir.model.fields,field_description:product_bundle_pack.field_res_config_settings____last_update
+#: model:ir.model.fields,field_description:product_bundle_pack.field_sale_order_line____last_update
+#: model:ir.model.fields,field_description:product_bundle_pack.field_stock_move____last_update
+#: model:ir.model.fields,field_description:product_bundle_pack.field_stock_move_line____last_update
+#: model:ir.model.fields,field_description:product_bundle_pack.field_stock_picking____last_update
+#: model:ir.model.fields,field_description:product_bundle_pack.field_stock_rule____last_update
+#: model:ir.model.fields,field_description:product_bundle_pack.field_wizard_product_bundle_bi____last_update
+msgid "Last Modified on"
+msgstr "آخر تعديل في"
+
+#. module: product_bundle_pack
+#: model:ir.model.fields,field_description:product_bundle_pack.field_product_pack__write_uid
+#: model:ir.model.fields,field_description:product_bundle_pack.field_wizard_product_bundle_bi__write_uid
+msgid "Last Updated by"
+msgstr "آخر تحديث بواسطة"
+
+#. module: product_bundle_pack
+#: model:ir.model.fields,field_description:product_bundle_pack.field_product_pack__write_date
+#: model:ir.model.fields,field_description:product_bundle_pack.field_wizard_product_bundle_bi__write_date
+msgid "Last Updated on"
+msgstr "آخر تحديث في"
+
+#. module: product_bundle_pack
+#: model:ir.model.fields,field_description:product_bundle_pack.field_product_pack__name
+msgid "Name"
+msgstr "اسم"
+
+#. module: product_bundle_pack
+#: code:addons/product_bundle_pack/models/sale.py:0
+#, python-format
+msgid "No source location defined on stock rule: %s!"
+msgstr "لم يتم تحديد موقع مصدر في قاعدة المخزون: ٪s!"
+
+#. module: product_bundle_pack
+#: code:addons/product_bundle_pack/models/sale.py:0
+#, python-format
+msgid "Not enough inventory!"
+msgstr "لا يوجد مخزون كاف!"
+
+#. module: product_bundle_pack
+#: model:ir.model.fields,field_description:product_bundle_pack.field_stock_move__pack_id
+#: model:ir.model.fields,field_description:product_bundle_pack.field_stock_move_line__pack_id
+msgid "PACK"
+msgstr "علية"
+
+#. module: product_bundle_pack
+#: model_terms:ir.ui.view,arch_db:product_bundle_pack.product_bundle_product_form_view
+msgid "Pack Products"
+msgstr "حزمة المنتجات"
+
+#. module: product_bundle_pack
+#: model:ir.model.fields,field_description:product_bundle_pack.field_wizard_product_bundle_bi__product_price
+msgid "Price"
+msgstr "سعر"
+
+#. module: product_bundle_pack
+#: model:ir.model.fields,field_description:product_bundle_pack.field_product_pack__product_id
+msgid "Product"
+msgstr "منتج"
+
+#. module: product_bundle_pack
+#: model_terms:ir.ui.view,arch_db:product_bundle_pack.wizard_product_bundle_bi
+msgid "Product Bundle"
+msgstr "حزمة المنتج"
+
+#. module: product_bundle_pack
+#: model:ir.model,name:product_bundle_pack.model_stock_move_line
+msgid "Product Moves (Stock Move Line)"
+msgstr "تحركات المنتج (بنود حركة المخزون)"
+
+#. module: product_bundle_pack
+#: model:ir.model,name:product_bundle_pack.model_product_pack
+#: model:ir.ui.menu,name:product_bundle_pack.menu_product_pack_main
+msgid "Product Pack"
+msgstr "حزمة المنتج"
+
+#. module: product_bundle_pack
+#: model:ir.actions.act_window,name:product_bundle_pack.action_pack
+msgid "Product Packs"
+msgstr "حزم المنتج"
+
+#. module: product_bundle_pack
+#: model:ir.model.fields,field_description:product_bundle_pack.field_product_pack__price
+msgid "Product Price"
+msgstr "سعر المنتج"
+
+#. module: product_bundle_pack
+#: model:ir.model,name:product_bundle_pack.model_product_template
+msgid "Product Template"
+msgstr "قالب المنتج"
+
+#. module: product_bundle_pack
+#: model:ir.model.fields,field_description:product_bundle_pack.field_product_pack__bi_product_template
+#: model:ir.model.fields,field_description:product_bundle_pack.field_product_product__pack_ids
+#: model:ir.model.fields,field_description:product_bundle_pack.field_product_template__pack_ids
+msgid "Product pack"
+msgstr "حزمة المنتج"
+
+#. module: product_bundle_pack
+#: model:ir.model,name:product_bundle_pack.model_purchase_order
+msgid "Purchase Order"
+msgstr "أمر شراء"
+
+#. module: product_bundle_pack
+#: model:ir.model,name:product_bundle_pack.model_purchase_order_line
+msgid "Purchase Order Line"
+msgstr "بند أمر الشراء"
+
+#. module: product_bundle_pack
+#: model:ir.model.fields,field_description:product_bundle_pack.field_product_pack__qty_uom
+#: model:ir.model.fields,field_description:product_bundle_pack.field_wizard_product_bundle_bi__product_qty
+msgid "Quantity"
+msgstr "كمية"
+
+#. module: product_bundle_pack
+#: model:ir.model,name:product_bundle_pack.model_sale_order_line
+msgid "Sales Order Line"
+msgstr "بند أمر المبيعات"
+
+#. module: product_bundle_pack
+#: model:ir.model.fields,field_description:product_bundle_pack.field_wizard_product_bundle_bi__pack_ids
+msgid "Select Products"
+msgstr "حدد المنتجات"
+
+#. module: product_bundle_pack
+#: model:ir.model,name:product_bundle_pack.model_stock_move
+msgid "Stock Move"
+msgstr "حركة المخزون"
+
+#. module: product_bundle_pack
+#: model:ir.model,name:product_bundle_pack.model_stock_rule
+msgid "Stock Rule"
+msgstr "قاعدة المخزون"
+
+#. module: product_bundle_pack
+#: model:ir.model.fields,help:product_bundle_pack.field_product_pack__price
+msgid ""
+"The sale price is managed from the product template. Click on the 'Configure"
+" Variants' button to set the extra attribute prices."
+msgstr ""
+
+#. module: product_bundle_pack
+#: model:ir.model,name:product_bundle_pack.model_stock_picking
+msgid "Transfer"
+msgstr "الشحنة"
+
+#. module: product_bundle_pack
+#: model:ir.model.fields,field_description:product_bundle_pack.field_product_pack__uom_id
+msgid "Unit of Measure"
+msgstr "وحدة القياس"
+
+#. module: product_bundle_pack
+#: model_terms:ir.ui.view,arch_db:product_bundle_pack.product_template_inherit_form
+msgid "Variants"
+msgstr "المتغيرات"
+
+#. module: product_bundle_pack
+#: model:ir.model,name:product_bundle_pack.model_wizard_product_bundle_bi
+msgid "Wizard Product Bundle"
+msgstr "حزمة منتج المعالج"
+
+#. module: product_bundle_pack
+#: model_terms:ir.ui.view,arch_db:product_bundle_pack.product_template_inherit_form
+msgid "You cannot create variants of the Pack"
+msgstr "لا يمكنك إنشاء متغيرات من الحزمة"
