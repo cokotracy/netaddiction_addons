@@ -160,7 +160,7 @@
         <template id="single_product_page_extended" inherit_id='website_sale.product'>
 
             <!-- Add Label on Single Product Page -->
-            <xpath expr="//div[hasclass('col-md-6')]" position="inside">
+            <xpath expr="//div[hasclass('row')][2]/div" position="inside">
                 <t t-if="product.select_label">
                      <div t-att-class="product.select_label.position">
                         <span>

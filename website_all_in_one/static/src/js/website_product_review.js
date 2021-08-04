@@ -1,4 +1,3 @@
-console.log("custom js caleedddddddddddddddddddddddddddddddddd review")
 $('a[href^="#comment"]').on('click', function(event) {
 
     var target = $( $(this).attr('href') );
@@ -58,7 +57,6 @@ $(function(){
 });
 $(document).ready(function(){	
 	var t_comment1 = document.getElementById("total_product_review");	
-	//console.log("@@@@@@@@@t_comment1@@@@@@@",t_comment1);	
 	var total_product_review_page=false
 
 	if(t_comment1){

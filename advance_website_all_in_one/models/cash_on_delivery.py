@@ -38,6 +38,7 @@ class CODPaymentTransaction(models.Model):
 	cod_poilicy = fields.Text("COD Policy")
 	cod_state = fields.Many2many("res.country.state", string="Allow States")
 	cod_zip = fields.One2many('res.zip', 'cod_id','Allow Zip')
+	cod_unavailable_user_ids = fields.Many2many("res.partner", string="COD Unavailable for the Users")
 	
 	@api.model
 	def create(self, value):
@@ -121,6 +122,18 @@ class website(models.Model):
 			if curr_pay_method.cod_config:
 				cod_conf_obj = curr_pay_method
 		return cod_conf_obj
+
+	def get_users(self):
+		users_list = []
+		cod_conf_obj = self.env['ir.model.data'].xmlid_to_object('advance_website_all_in_one.payment_acquirer_cod')
+		payment_obj = self.env['payment.acquirer'].search([])
+		for curr_pay_method in payment_obj:
+			if curr_pay_method.cod_config:
+				for users in curr_pay_method.cod_config.cod_unavailable_user_ids:
+					users_list.append(users.id)
+				if self.env.user.partner_id.id not in users_list:
+					return True
+		
 
 	def get_all_zip(self):
 		count = 0

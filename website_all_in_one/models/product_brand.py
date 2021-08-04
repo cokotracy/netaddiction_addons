@@ -87,9 +87,9 @@ class SaleReportBrand(models.Model):
         """
         return group_by_str
     
-class PosOrderBrand(models.Model):
-    _inherit = 'report.pos.order'
+# class PosOrderBrand(models.Model):
+#     _inherit = 'report.pos.order'
     
-    brand_id = fields.Many2one('product.brand', 'Brand')
+#     brand_id = fields.Many2one('product.brand', 'Brand')
     
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:           

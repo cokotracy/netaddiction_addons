@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="view_assign_credit_points_form" model="ir.ui.view">
+            <field name="name">assign.credit.points.form</field>
+            <field name="model">assign.credit.points</field>
+            <field name="arch" type="xml">
+                <form>
+                    <group>
+	                    <group>
+                            <field name="credit_points"/>
+                        </group>
+                    </group>
+                    <footer>
+                        <button name="button_assign_credit_points" string="Assign" type="object" class="btn-primary"/>
+                        <button string="Cancel" class="btn-secondary" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_assign_credit_points" model="ir.actions.act_window">
+            <field name="name">Credit Points</field>
+            <field name="res_model">assign.credit.points</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="view_assign_credit_points_form"/>
+            <field name="target">new</field>
+        </record>
+
+    </data>
+</odoo>

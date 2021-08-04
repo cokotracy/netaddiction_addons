@@ -314,9 +314,43 @@ class AdvanceCartSetting(WebsiteSale):
             request.website.sale_reset()
             return request.render("website_sale.confirmation", {'order': order})
 
-        if order and not order.amount_total and not tx:
-            order.with_context(send_email=True).action_confirm()
-            return request.redirect(order.get_portal_url())
+        if 'wallet_product_id' in request.env['website']._fields:
+            product = request.website.wallet_product_id
+
+            # if payment.acquirer is credit payment provider
+            for line in order.order_line:
+                if len(order.order_line) == 1:
+                    if product and  line.product_id.id == product.id:
+                        wallet_transaction_obj = request.env['website.wallet.transaction']        
+                        if tx.acquirer_id.need_approval:
+                            wallet_create = wallet_transaction_obj.sudo().create({ 
+                                'wallet_type': 'credit', 
+                                'partner_id': order.partner_id.id, 
+                                'sale_order_id': order.id, 
+                                'reference': 'sale_order', 
+                                'amount': order.order_line.price_unit * order.order_line.product_uom_qty,
+                                'currency_id': order.pricelist_id.currency_id.id, 
+                                'status': 'draft' 
+                            })
+                        else:
+                            wallet_create = wallet_transaction_obj.sudo().create({ 
+                                'wallet_type': 'credit', 
+                                'partner_id': order.partner_id.id, 
+                                'sale_order_id': order.id, 
+                                'reference': 'sale_order', 
+                                'amount': order.order_line.price_unit * order.order_line.product_uom_qty,
+                                'currency_id': order.pricelist_id.currency_id.id, 
+                                'status': 'done' 
+                            })
+                            wallet_create.wallet_transaction_email_send() #Mail Send to Customer
+                            order.partner_id.update({
+                                'wallet_balance': order.partner_id.wallet_balance + order.order_line.price_unit * order.order_line.product_uom_qty})
+                        order.with_context(send_email=True).action_confirm()
+                        request.website.sale_reset()
+        else:
+            if order and not order.amount_total and not tx:
+                order.with_context(send_email=True).action_confirm()
+                return request.redirect(order.get_portal_url())
 
         if (not order.amount_total and not tx) or tx.state in ['pending', 'done', 'authorized']:
             if (not order.amount_total and not tx):
@@ -378,7 +412,7 @@ class PortalLoyaltyHistory(CustomerPortal):
         return values   
     
     @http.route(['/my/loyalty/history', '/my/quotes/page/<int:page>'], type='http', auth="user", website=True)
-    def portal_my_wallet_transaction(self, page=1, date_begin=None, date_end=None, sortby=None, **kw):
+    def portal_my_loyalty_history(self, page=1, date_begin=None, date_end=None, sortby=None, **kw):
         
         values = self._prepare_portal_layout_values()
         partner = request.env.user.partner_id
@@ -450,8 +484,18 @@ class WebsiteSale(http.Controller):
         by_code = request.env['web.gift.coupon'].search([('c_barcode','=', promo)])
         if by_name:
             dv = by_name
+            for i in  current_sale_order.order_line:
+                if i.product_id.categ_id not in dv.product_categ_ids:
+                    return "Can not use coupon for '%s' category products." %(i.product_id.categ_id.display_name)
+                if i.product_id in dv.product_ids:
+                    return "Can not use coupon for product '%s'." %(i.product_id.name)
         if by_code:
             dv = by_code
+            for i in current_sale_order.order_line:
+                if i.product_id.categ_id not in dv.product_categ_ids:
+                    return "Can not use coupon for '%s' category products." %(i.product_id.categ_id.display_name)
+                if i.product_id.product_tmpl_id in dv.product_ids:
+                    return "Can not use coupon for product '%s'." %(i.product_id.name)
         if not dv:
             return "Invalid Voucher !"
         else:   
@@ -716,6 +760,8 @@ class WebsiteSale(http.Controller):
         setting = request.env['res.config.settings'].sudo().search([], order=' id desc', limit=1)
 
         list_of_product = []
+        hide_product = []
+        hide_product_cat = []
         if category:    
             parent_category_ids = [category.id]
             current_category = category
@@ -723,25 +769,52 @@ class WebsiteSale(http.Controller):
                 parent_category_ids.append(current_category.parent_id.id)
                 current_category = current_category.parent_id
 
+        if request.env.user.partner_id.hide_product_ids:
+            for p_id in request.env.user.partner_id.hide_product_ids:
+                hide_product.append(p_id.id)
+
+        if request.env.user.partner_id.hide_product_categ_ids:
+            for c_id in request.env.user.partner_id.hide_product_categ_ids:
+                hide_product_categ_ids = request.env['product.template'].sudo().search([('categ_id','=',c_id.id)])
+                for category_ids in hide_product_categ_ids:
+                    hide_product_cat.append(category_ids.id)
+
         if request.env.user.partner_id.product_ids:
             for p_id in request.env.user.partner_id.product_ids:
-                list_of_product.append(p_id.id)
+                if p_id.id not in hide_product:
+                    list_of_product.append(p_id.id)
+        
         if request.env.user.partner_id.product_categ_ids:
             for c_id in request.env.user.partner_id.product_categ_ids:
                 product_categ_ids = request.env['product.template'].sudo().search([('categ_id','=',c_id.id)])
                 for category_ids in product_categ_ids:
-                    list_of_product.append(category_ids.id)
+                    if category_ids.id not in hide_product_cat:
+                        list_of_product.append(category_ids.id)
+
         if request.env.user.partner_id:
             domain+= [('id','in',list_of_product)] 
 
+        visitor_product = []
+        visitor_product_cat = []
+        if setting.visitor_hide_product_ids:
+            for p_id in setting.visitor_hide_product_ids:
+                visitor_product.append(p_id.id)
+        if setting.visitor_product_categ_ids:
+            for c_id in setting.visitor_hide_product_categ_ids:
+                visitor_hide_product_categ_ids = request.env['product.template'].sudo().search([('categ_id','=',c_id.id)])
+                for category_ids in visitor_hide_product_categ_ids:
+                    visitor_product_cat.append(category_ids.id)
+
         if setting.visitor_product_ids:
             for p_id in setting.visitor_product_ids:
-                list_of_product.append(p_id.id)
+                if p_id.id not in visitor_product:
+                    list_of_product.append(p_id.id)
         if setting.visitor_product_categ_ids:
             for c_id in setting.visitor_product_categ_ids:
                 product_categ_ids = request.env['product.template'].sudo().search([('categ_id','=',c_id.id)])
                 for category_ids in product_categ_ids:
-                    list_of_product.append(category_ids.id)
+                    if category_ids.id not in visitor_product_cat:
+                        list_of_product.append(category_ids.id)
         if setting:
             domain+= [('id','in',list_of_product)] 
 
@@ -791,7 +864,7 @@ class WebsiteSale(http.Controller):
 
         product_count = len(search_product)
         pager = request.website.pager(url=url, total=product_count, page=page, step=ppg, scope=7, url_args=post)
-        products = Product.search(domain, limit=ppg, offset=pager['offset'], order=self._get_search_order(post))
+        products = Product.search(domain, limit=ppg, offset=pager['offset'])
 
         ProductAttribute = request.env['product.attribute']
         ProductBrand = request.env['product.brand']

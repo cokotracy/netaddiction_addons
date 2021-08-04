@@ -9,7 +9,6 @@
  * @link http://www.runningcoder.org/jquerytypeahead/
  */
 (function (factory) {
-    console.log('CCCCCC');
     if (typeof define === "function" && define.amd) {
         define("jquery-typeahead", ["jquery"], function (jQuery) {
             return factory(jQuery);
