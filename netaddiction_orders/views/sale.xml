@@ -29,4 +29,15 @@
         </field>
     </record>
 
+    <record model="ir.ui.view" id="netaddiction_orders_view_order_tree">
+        <field name="name">netaddiction.orders.view.order.tree</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_order_tree"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='state']" position="attributes">
+		<attribute name="invisible">0</attribute>
+            </xpath>
+        </field>
+    </record>
+
 </odoo>
