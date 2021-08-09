@@ -15,6 +15,15 @@
                             <field name="product_categ_ids"/>
                         </page>
                     </notebook>
+                    <separator string="Unavailable Products"/>
+                    <notebook string="Unavailable Products">
+                        <page string="Products">    
+                            <field name="hide_product_ids"/>
+                        </page>
+                        <page string="Products Category">   
+                            <field name="hide_product_categ_ids"/>
+                        </page>
+                    </notebook>
                 </xpath>    
             </field>
         </record>   
@@ -45,6 +54,29 @@
                                 <label for="visitor_product_categ_ids" string='Product Category'/>
                                 <div>
                                     <field name="visitor_product_categ_ids" widget="many2many_tags"/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <h2 >Unavailable Products for Visitor</h2>
+                    <div class="row o_settings_container" id="visitor_settings">
+                        <div class="o_setting_box" id="website_stock_setting">
+                            <div class="o_setting_left_pane">
+                            </div>
+                            <div class="o_setting_right_pane">
+                               <label for="visitor_hide_product_ids" string='products'/>
+                                <div>
+                                    <field name="visitor_hide_product_ids" domain="[('website_published', '=', True)]" widget="many2many_tags"/>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="o_setting_box">
+                            <div class="o_setting_left_pane">
+                            </div>
+                            <div class="o_setting_right_pane">
+                                <label for="visitor_hide_product_categ_ids" string='Product Category'/>
+                                <div>
+                                    <field name="visitor_hide_product_categ_ids" widget="many2many_tags"/>
                                 </div>
                             </div>
                         </div>

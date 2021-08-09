@@ -92,5 +92,8 @@ class web_gift_coupon(models.Model):
 	coupon_count = fields.Integer('Coupon used count', default=0)
 	coupon_desc = fields.Text('Discription')
 	voucher_sent = fields.Boolean(string='Sent', readonly=True, default=False)
+	product_ids = fields.Many2many('product.template',string='Products')
+	product_categ_ids = fields.Many2many('product.category',string="Product Category")
+	
 	
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:

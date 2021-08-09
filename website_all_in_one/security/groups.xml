@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>   
+    <data>
+        <record id="group_admin_reviewer" model="res.groups">
+            <field name="name">Admin Reviewer</field>
+        </record>
+    </data>
+</odoo>

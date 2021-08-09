@@ -33,6 +33,14 @@ class ReviewRating(models.Model):
     rating_product_id = fields.Many2one('product.template','Product')
     website_published = fields.Boolean(related='rating_product_id.website_published', store=True)
     
+class ProductPublicCategory(models.Model):
+    _inherit = 'product.public.category'
 
-        
+    loyal_for_review = fields.Integer(string='Number of loyal for review')
+
+class ResUsers(models.Model):
+    _inherit = 'res.users'
+
+    review_and_assign_loyalty_points = fields.Boolean( 'Review and assign loyalty point', default=False )
+    
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:

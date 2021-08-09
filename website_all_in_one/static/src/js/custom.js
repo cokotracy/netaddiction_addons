@@ -1,5 +1,3 @@
-
-//console.log("odoo_website_giftwrap custom js caleedddddddddddddddddddddddddddddddddd")
 odoo.define('website_all_in_one.odoo_website_giftwrap', function(require) {
 	"use strict";
 

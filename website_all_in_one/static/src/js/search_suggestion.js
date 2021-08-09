@@ -1,4 +1,3 @@
-console.log("custom js caleedddddddddddddddddddddddddddddddddd odoo_website_search_suggestion");
 odoo.define('website_all_in_one.search_suggestion', function(require) {
     "use strict";
 
@@ -16,9 +15,7 @@ odoo.define('website_all_in_one.search_suggestion', function(require) {
 	animation.registry.OdooWebsiteSearchSuggestion = animation.Class.extend({
 		selector: ".search-query",
 		start: function () {
-		    console.log("start caleedddddddddddddddddddddddddddddddddd")
 		    var self = this;
-		    console.log("start caleedddddddddddddddddddddddddddddddddd",this.$target.typeahead)
 		    this.$target.attr("autocomplete","off");
             this.$target.parent().addClass("typeahead__container");
             
@@ -40,7 +37,6 @@ odoo.define('website_all_in_one.search_suggestion', function(require) {
               });
               
               
-              //console.log("222222222222222222 caleedddddddddddddddddddddddddddddddddd",this.$target)
               
 		    
 		},

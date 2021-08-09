@@ -57,6 +57,7 @@ class WebsiteWallet(http.Controller):
 				"price_unit":prd_price,
 				"line_wallet_amount" : prd_price,
 			})
+			product.write({'list_price':post['amount']})
 			return request.redirect("/shop/cart")
 		else:
 			return request.render("odoo_website_wallet.wallet_product_error")

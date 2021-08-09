@@ -17,10 +17,16 @@
 	</template>
 	
 	<template id="website_product_cod" inherit_id='website_sale.product'>
-		<xpath expr="//hr[@t-if='product.description_sale']" position="before">
+		<xpath expr="//form" position="after">
 			<hr />
 			<t t-foreach="website.get_cod_conf()" t-as='cod'>
-			<t t-if="product.cod_available == True">
+			<t t-set="user_ids" t-value="website.get_users()"/>
+			<t t-if="not user_ids">
+				<p>
+					<span style="color:red"><t t-esc='cod.cod_config.cod_unavailable_msg' /></span>
+				</p>
+			</t>
+			<t t-elif="product.cod_available == True">
 			<p>
 				<span style="color:green"><t t-esc='cod.cod_config.cod_msg' /></span>
 				 
@@ -33,11 +39,12 @@
 				This Product will be Delivered within <t t-esc='cod.cod_config.exp_delivery_interval' /> days.  
 			</p>
 			</t>
-			<t t-if="product.cod_available == False">
+			<t t-elif="product.cod_available == False">
 				<p>
 					<span style="color:red"><t t-esc='cod.cod_config.cod_unavailable_msg' /></span>
 				</p>
 			</t>
+			
 			</t>  
 		</xpath>
 	</template>
@@ -46,6 +53,10 @@
 		<xpath expr="//div[@id='wrap']/div/div/div[@class='col-12 col-xl order-xl-1 oe_cart']/div[@class='card']" position="before">
 			
 			<t t-set='cod_not' t-value='0'/>
+			<t t-set="user_ids" t-value="website.get_users()"/>
+			<t t-if="not user_ids">
+				<t t-set='cod_not' t-value='cod_not + 1'/>
+			</t>
 			<t t-foreach="website.get_cod_conf()" t-as='cod2'>
 				<t t-if ="website_sale_order">
 					<t t-foreach="website_sale_order.website_order_line" t-as="line">
@@ -78,6 +89,9 @@
 				<t t-set="MAX_BRAND_LINE" t-value="3"/>
 				<t t-if="mode == 'payment'" t-foreach="acquirers" t-as="acq">
 					<t t-set='cod_not' t-value='0'/>
+					<t t-if="not user_ids">
+						<t t-set='cod_not' t-value='cod_not + 1'/>
+					</t>
 					<t t-foreach="website.get_cod_conf()" t-as='cod2'>
 						<t t-if ="website_sale_order">
 							<t t-foreach="website_sale_order.website_order_line" t-as="line">
@@ -105,15 +119,34 @@
 							 </t>
 						 </t>
 						 <t t-if='cod_not == 0'>
-							<label>
-								<input type="radio" t-att-data-acquirer-id="acq.id"
-									t-att-data-form-payment="true"
-									t-att-data-provider="acq.provider"
-									t-att-class="'d-none' if (acquirers_count==1 and pms_count==0) else ''"
-									name="pm_id" t-attf-value="form_{{acq.id}}"
-									t-att-checked="acquirers_count==1 and pms_count==0 or acquirers[0] == acq"/>
-								<span class="payment_icon_name" t-esc="acq.name"/>
-							</label>
+						 	<t t-set="user_ids" t-value="website.get_users()"/>
+							<t t-if="user_ids">
+								<label>
+									<input type="radio" t-att-data-acquirer-id="acq.id"
+										t-att-data-form-payment="true"
+										t-att-data-provider="acq.provider"
+										t-att-class="'d-none' if (acquirers_count==1 and pms_count==0) else ''"
+										name="pm_id" t-attf-value="form_{{acq.id}}"
+										t-att-checked="acquirers_count==1 and pms_count==0 or acquirers[0] == acq"/>
+									<span class="payment_icon_name" t-esc="acq.name"/>
+								</label>
+
+							</t>
+							<t t-else="">
+								<t t-foreach="website.get_cod_conf()" t-as='cod3'>
+									<t t-if="acq != cod3">
+										<label>
+											<input type="radio" t-att-data-acquirer-id="acq.id"
+											t-att-data-form-payment="true"
+											t-att-data-provider="acq.provider"
+											t-att-class="'d-none' if (acquirers_count==1 and pms_count==0) else ''"
+											name="pm_id" t-attf-value="form_{{acq.id}}"
+											t-att-checked="acquirers_count==1 and pms_count==0 or acquirers[0] == acq"/>
+											<span class="payment_icon_name" t-esc="acq.name"/>
+										</label>
+									</t>
+								</t>
+							</t>
 						 </t>
 						
 						<ul class="pull-right list-inline payment_icon_list">

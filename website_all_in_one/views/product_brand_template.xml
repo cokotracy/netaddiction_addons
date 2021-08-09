@@ -4,6 +4,7 @@
 	
 	<template id="website_product_brand" inherit_id='website_sale.product'>
 			<xpath expr="//div[@id='wrap']//section/div[2][@class='row']//div[@id='product_details']//h1" position="after">
+				<br/>
 				<span style="font-size: 20px;padding: 5px 19px;border-radius: 5px;" class="label btn-primary" t-esc="product.brand_id.name" />
 			
 			</xpath>

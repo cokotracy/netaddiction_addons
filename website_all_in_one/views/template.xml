@@ -31,7 +31,7 @@
                                     <t t-call="website_sale.cart_lines" />
                                     <t t-set="website_giftwrap" t-value="website.get_website_giftwrap()"/>
                                     <a class="btn btn-primary" t-if="website_sale_order and website_sale_order.website_order_line and website_giftwrap" href="#" data-toggle="modal" data-target="#myPack" style="margin-bottom: 10px;">
-										<img src="/odoo_website_giftwrap/static/src/img/giftwrap.png" style="height:40px; width:50px;"/>
+										<img src="/website_all_in_one/static/src/img/giftwrap.png" style="height:40px; width:50px;"/>
 										<b>Add Giftwrap</b>
 									</a>
 									

@@ -99,6 +99,17 @@
 								<field name="active"/>
 							</group>
 						</group>
+
+						<notebook>
+	                        <page string="Products Category">  
+	                        <separator string="Available Products for Gift Coupon"/> 
+	                            <field name="product_categ_ids"/>
+	                        </page>
+	                        <page string="Products">   
+	                        <separator string="Unvailable Products for Gift Coupon"/> 
+	                            <field name="product_ids" domain="[('categ_id','in',product_categ_ids)]"/>
+	                        </page>
+                    	</notebook>
 						<separator string="Description"/>
 						<field name="coupon_desc" placeholder="Coupon Description..."/>
 						<separator string="Extra Information"/>

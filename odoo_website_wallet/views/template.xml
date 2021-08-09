@@ -32,6 +32,7 @@
 								
 								<div id='submit_wallet' class="col-md-12 text-center mt32 mb32">
 								<a href="/add/wallet/balance" class="btn" style="height: 40px;background-color: #FDC00F;color: black;">Add Wallet Balance</a>
+								<a href="/my/wallet-transactions" class="btn" style="height: 40px;background-color: #FDC00F;color: black;">Wallet Transaction</a>
 								</div>
 							</div>
 					 </form>
@@ -216,28 +217,31 @@
 
 	<template id="website_sale.payment_confirmation_status">
 		<t t-if='payment_tx_id'>
-			<t t-if="payment_tx_id.acquirer_id.website_order_msg == 'confirm'">
-			  <div class="alert alert-info" role="alert">
-				<span><i>Confirmed,</i> Your online payment has been successfully processed. But your order is not validated yet.</span>
-			  </div>
-			</t>
+			<t t-set="wallet" t-value="request.env['ir.module.module'].sudo().search([('name', '=', 'odoo_website_wallet'),('state', '=', 'installed')])"/>
+			<t t-if="wallet">
+				<t t-if="payment_tx_id.acquirer_id.website_order_msg == 'confirm'">
+				  <div class="alert alert-info" role="alert">
+					<span><i>Confirmed,</i> Your online payment has been successfully processed. But your order is not validated yet.</span>
+				  </div>
+				</t>
 
-			<t t-if="payment_tx_id.acquirer_id.website_order_msg == 'invoice'">
-			  <div class="alert alert-info" role="alert">
-				<span><i>Invoiced,</i> Your online payment has been successfully invoiced. But your order is not validated yet.</span>
-			  </div>
-			</t>
-			
-			<t t-if="payment_tx_id.acquirer_id.website_order_msg == 'validate'">
-			  <div class="alert alert-info" role="alert">
-				<span><i>Validated,</i> Your online payment has been successfully processed. also your order is validated.</span>
-			  </div>
-			</t>
-			
-			<t t-if="payment_tx_id.acquirer_id.website_order_msg == 'payment'">
-			  <div class="alert alert-info" role="alert">
-				<span><i>Payment Done,</i> Your online payment has been successfully done.</span>
-			  </div>
+				<t t-if="payment_tx_id.acquirer_id.website_order_msg == 'invoice'">
+				  <div class="alert alert-info" role="alert">
+					<span><i>Invoiced,</i> Your online payment has been successfully invoiced. But your order is not validated yet.</span>
+				  </div>
+				</t>
+				
+				<t t-if="payment_tx_id.acquirer_id.website_order_msg == 'validate'">
+				  <div class="alert alert-info" role="alert">
+					<span><i>Validated,</i> Your online payment has been successfully processed. also your order is validated.</span>
+				  </div>
+				</t>
+				
+				<t t-if="payment_tx_id.acquirer_id.website_order_msg == 'payment'">
+				  <div class="alert alert-info" role="alert">
+					<span><i>Payment Done,</i> Your online payment has been successfully done.</span>
+				  </div>
+				</t>
 			</t>
 		</t>
 
