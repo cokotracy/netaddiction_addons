@@ -50,6 +50,11 @@ class ProductTemplate(models.Model):
         string="Approssimazione Data",
     )
 
+    suppliers_codes = fields.Char(
+        compute='_compute_suppliers_codes',
+        store=True,
+    )
+
     def write(self, values):
         res = super().write(values)
         if 'sale_ok' in values.keys():
@@ -65,6 +70,32 @@ class ProductTemplate(models.Model):
             res._mail_check_sale_ok()
         if 'visible' in values.keys():
             res._mail_check_visible()
+        return res
+
+    @api.depends('seller_ids', 'seller_ids.name', 'seller_ids.name.ref')
+    def _compute_suppliers_codes(self):
+        for product in self:
+            product.suppliers_codes = '~'.join([
+                si.product_code
+                for si in product.seller_ids
+                if si.product_code
+                ])
+
+    @api.model
+    def name_search(self, name, args=None, operator="ilike", limit=100):
+        """Search templates/products by supplier code, too"""
+        res = super().name_search(
+            name=name, args=args, operator=operator, limit=limit)
+        available_limit = limit - len(res)
+        if available_limit <= 0:
+            return res
+        if not args:
+            args = []
+        if name and len(name) >= 3:
+            per_supplier_args = args + [('suppliers_codes', 'ilike', name)]
+            products_per_supplier = self.search(per_supplier_args, limit=available_limit)
+            if products_per_supplier:
+                res = res + products_per_supplier.name_get()
         return res
 
     def _mail_check_sale_ok(self):
@@ -453,6 +484,23 @@ class ProductProduct(models.Model):
             result = product.taxes_id.compute_all(product.list_price)
             product.detax_price = result.get('total_excluded', 0.0)
             product.intax_price = result.get('total_included', 0.0)
+
+    @api.model
+    def name_search(self, name, args=None, operator="ilike", limit=100):
+        """Search templates/products by supplier code, too"""
+        res = super().name_search(
+            name=name, args=args, operator=operator, limit=limit)
+        available_limit = limit - len(res)
+        if available_limit <= 0:
+            return res
+        if not args:
+            args = []
+        if name and len(name) >= 3:
+            per_supplier_args = args + [('suppliers_codes', 'ilike', name)]
+            products_per_supplier = self.search(per_supplier_args, limit=available_limit)
+            if products_per_supplier:
+                res = res + products_per_supplier.name_get()
+        return res
 
 
 class SupplierInfo(models.Model):
