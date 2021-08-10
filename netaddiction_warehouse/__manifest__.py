@@ -33,6 +33,7 @@
         'data/stock_location.xml',
         'reports/report.xml',
         'reports/template/bolla_di_spedizione.xml',
+        'reports/template/stock.xml',
         'templates/allocation.xml',
         'templates/assets.xml',
         'templates/inventory_app.xml',

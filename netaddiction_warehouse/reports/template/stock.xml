@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <template id="netaddiction_label_transfer_template_view_pdf"
+              inherit_id="stock.label_transfer_template_view_pdf">
+        <!-- Show barcodes for not validated pickings, too -->
+        <xpath expr="//t[@t-translation='off']/parent::t" position="before">
+            <t t-if="picking.state != 'done'">
+                <t t-if="move_line.product_uom_id.category_id == uom_categ_unit">
+                    <t t-set="qty" t-value="int(move_line.product_qty)"/>
+                </t>
+                <t t-else="">
+                    <t t-set="qty" t-value="1"/>
+                </t>
+            </t>
+        </xpath>
+    </template>
+
+</odoo>
