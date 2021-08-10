@@ -6,11 +6,28 @@
         <field name="model">massive.product.price.change</field>
         <field name="arch" type="xml">
             <form>
-                <group>
-                    <group>
-                        <field name="sale_price" />
-                    </group>
-                </group>
+                <field name="template_ids" widget="many2many_tags" readonly="1"/>
+                <separator string="Pricelist" />
+                <field name="pricelist_id" widget="selection" required="1"/>
+                <separator string="Products"
+                           attrs="{'invisible': [('pricelist_id', '=', False)]}"/>
+                <field name="line_ids" nolabel="1" attrs="{'invisible': [('pricelist_id', '=', False)]}">
+                    <tree editable="top" delete="0"
+                          decoration-danger="to_delete == True"
+                          decoration-warning="state == 'change'"
+                          decoration-success="state == 'new'"
+                          >
+                        <field name="product_id"
+                               domain="[('product_tmpl_id', 'in', template_ids)]"
+                               options="{'no_create': True, 'no_create_edit': True}"/>
+                        <field name="sale_price"/>
+                        <field name="to_delete" attrs="{'readonly': [('can_be_deleted', '=', False)]}"/>
+                        <field name="can_be_deleted" invisible="1"/>
+                        <field name="state" invisible="1"/>
+                        <field name="item_id" invisible="1"/>
+                        <field name="template_ids" invisible="1"/>
+                    </tree>
+                </field>
                 <footer>
                     <button name="apply_price" string="Apply"
                             type="object" class="btn-primary" />
