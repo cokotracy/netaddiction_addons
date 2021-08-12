@@ -1,25 +1,48 @@
 # Copyright 2019-TODAY Openforce Srls Unipersonale (www.openforce.it)
 # License LGPL-3.0 or later (https://www.gnu.org/licenses/lgpl).
 
-from odoo import api, models, fields
+from odoo import api, models, fields, _
+from odoo.exceptions import ValidationError
 
 
 class SaleOrderLine(models.Model):
     _inherit = 'sale.order.line'
 
+    def write(self, values):
+        res = super().write(values)
+        # If a picking linked to an order it's in a pickup,
+        # it's possible only to write the state in `problem` or `cancel`
+        if self.env.context.get('ignore_pickup_check'):
+            return res
+        if values.get('state', '') in ('problem', 'cancel') \
+                and len(values.keys()) == 1:
+            return res
+        pickings_with_batch = \
+            self.mapped('order_id')\
+            .mapped('picking_ids')\
+            .filtered(lambda p: p.batch_id)
+        if pickings_with_batch:
+            raise ValidationError(
+                _('Impossibile to change values for orders in a pickup')
+                )
+        return res
 
-    @api.depends('product_id', 'order_id.state', 'qty_invoiced', 'qty_delivered')
+    @api.depends('product_id', 'order_id.state', 'qty_invoiced',
+                 'qty_delivered')
     def _compute_product_updatable(self):
         super()._compute_product_updatable()
         for line in self:
             if line.state == 'problem' or line.order_id.state == 'problem':
                 line.product_updatable = True
+            else:
+                line.product_updatable = False
 
     @api.onchange('product_uom', 'product_uom_qty')
     def product_uom_change(self):
         super().product_uom_change()
         if getattr(self, '_origin', None):
-            self.price_unit = self._origin.read(["price_unit"])[0]["price_unit"]
+            self.price_unit = \
+                self._origin.read(["price_unit"])[0]["price_unit"]
 
 
 class SaleOrder(models.Model):
@@ -56,6 +79,30 @@ class SaleOrder(models.Model):
         # ('cancel', 'Annullato'),
         # ('pending', 'Pendente'),
     ])
+
+    def write(self, values):
+        res = super().write(values)
+        # If a picking linked to an order it's in a pickup,
+        # it's possible only to write the state in `problem` or `cancel`
+        if self.env.context.get('ignore_pickup_check'):
+            return res
+        if values.get('state', '') in ('problem', 'cancel') \
+                and len(values.keys()) == 1:
+            return res
+        pickings_with_batch = \
+            self.mapped('picking_ids').filtered(lambda p: p.batch_id)
+        if pickings_with_batch:
+            raise ValidationError(
+                _('Impossibile to change values for orders in a pickup')
+                )
+        return res
+
+    # Super to fix a problem in `odoo_website_wallet` module >:(
+    def _get_invoiced(self):
+        return super(
+            SaleOrder,
+            self.with_context(ignore_pickup_check=True)
+        )._get_invoiced()
 
     '''
 
