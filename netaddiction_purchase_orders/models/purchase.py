@@ -141,9 +141,9 @@ class PurchaseOrder(models.Model):
     @api.model
     def put_in_order(self, products):
         """
-        products: lista di liste [product_id,supplier_id,qty _order]
-        data la lista cerca se c'è già aperto un ordine per quel fornitore e inserisce la riga corrispondente,
-        altrimenti crea il nuovo ordine
+        products: lista di liste [product_id, supplier_id, qty_order]
+        data la lista cerca se c'è già aperto un ordine per quel fornitore
+        e inserisce la riga corrispondente, altrimenti crea il nuovo ordine
         """
         organize = {}
         for product in products:
@@ -151,23 +151,23 @@ class PurchaseOrder(models.Model):
             if supplier_id not in organize:
                 organize.update({supplier_id: []})
             organize[supplier_id].append(product)
-
+        order_model = self.env['purchase.order']
         for supplier, prods in organize.items():
-            orders = self.search([
+            order = self.search([
                 ('company_id', '=', self.env.user.company_id.id),
                 ('state', '=', 'draft'),
                 ('partner_id', '=', int(supplier)),
-                ])
-            line_values = self._return_attr(prods,supplier)
-            if not orders:
+                ], order='date_order desc', limit=1)
+            line_values = self._return_attr(prods, supplier)
+            if not order:
                 attr = {
                     'partner_id': int(supplier),
                     'order_line': line_values
                 }
-                self.env['purchase.order'].create(attr)
+                order = order_model.create(attr)
             else:
-                orders[0].write({'order_line': line_values})
-        return True
+                order.write({'order_line': line_values})
+        return order
 
     def _return_attr(self, prods, supplier):
         line_values = []

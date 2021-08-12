@@ -2,8 +2,8 @@
 <odoo>
 <data>
 
-    <record model="ir.ui.view" id="netaddiction_product_open_do_purchase">
-        <field name="name">netaddiction.button.do.purchase</field>
+    <record model="ir.ui.view" id="netaddiction_product_open_do_purchase_2">
+        <field name="name">netaddiction.button.do.purchase.2</field>
         <field name="model">product.product</field>
         <field name="inherit_id" ref="product.product_normal_form_view"/>
         <field name="arch" type="xml">
@@ -13,8 +13,15 @@
         </field>
     </record>
 
-    <record model="ir.ui.view" id="netaddiction_do_purchase_product_form">
-        <field name="name">netaddiction.do.purchase.product.form</field>
+    <record id="netaddiction_do_purchase_product_action" model="ir.actions.act_window">
+        <field name="name">netaddiction.do.purchase.product.action</field>
+        <field name="res_model">do.purchase.product</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+    <record id="netaddiction_do_purchase_product_form_ff" model="ir.ui.view">
+        <field name="name">netaddiction.do.purchase.product.form.ff</field>
         <field name="model">do.purchase.product</field>
         <field name="arch" type="xml">
             <form>
