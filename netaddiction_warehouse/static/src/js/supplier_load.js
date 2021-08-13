@@ -229,7 +229,7 @@ odoo.define('netaddiction_warehouse.supplier_load', function (require) {
                         batch = result.id
                         let supplier_name = sup != null && sup.length > 0 ? sup[0].name : "";
                         var nuovo = new carico_go(this_choose.getParent().parent, supplier_id, supplier_name, document_number, batch);
-                        this_choose.destroy();
+                        this_choose.$el.empty();
                         nuovo.appendTo(this_choose.$el);
                     });
 
