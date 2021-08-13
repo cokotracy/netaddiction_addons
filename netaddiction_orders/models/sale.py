@@ -80,6 +80,11 @@ class SaleOrder(models.Model):
         # ('pending', 'Pendente'),
     ])
 
+    is_in_a_pickup = fields.Boolean(
+        compute='_compute_is_in_a_pickup',
+        store=True,
+    )
+
     def write(self, values):
         res = super().write(values)
         # If a picking linked to an order it's in a pickup,
@@ -96,6 +101,13 @@ class SaleOrder(models.Model):
                 _('Impossibile to change values for orders in a pickup')
                 )
         return res
+
+    @api.depends('picking_ids', 'picking_ids.batch_id')
+    def _compute_is_in_a_pickup(self):
+        for sale in self:
+            pickings_with_batch = \
+                sale.mapped('picking_ids').filtered(lambda p: p.batch_id)
+            sale.is_in_a_pickup = True if pickings_with_batch else False
 
     # Super to fix a problem in `odoo_website_wallet` module >:(
     def _get_invoiced(self):
