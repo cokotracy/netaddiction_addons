@@ -17,14 +17,11 @@ class SaleOrderLine(models.Model):
         if values.get('state', '') in ('problem', 'cancel') \
                 and len(values.keys()) == 1:
             return res
-        pickings_with_batch = \
-            self.mapped('order_id')\
-            .mapped('picking_ids')\
-            .filtered(lambda p: p.batch_id)
-        if pickings_with_batch:
-            raise ValidationError(
-                _('Impossibile to change values for orders in a pickup')
-                )
+        for sale in self.mapped('order_id'):
+            if sale.is_in_a_pickup:
+                raise ValidationError(
+                    _('Impossibile to change values for orders in a pickup')
+                    )
         return res
 
     @api.depends('product_id', 'order_id.state', 'qty_invoiced',
@@ -94,12 +91,11 @@ class SaleOrder(models.Model):
         if values.get('state', '') in ('problem', 'cancel') \
                 and len(values.keys()) == 1:
             return res
-        pickings_with_batch = \
-            self.mapped('picking_ids').filtered(lambda p: p.batch_id)
-        if pickings_with_batch:
-            raise ValidationError(
-                _('Impossibile to change values for orders in a pickup')
-                )
+        for sale in self:
+            if sale.is_in_a_pickup:
+                raise ValidationError(
+                    _('Impossibile to change values for orders in a pickup')
+                    )
         return res
 
     @api.depends('picking_ids', 'picking_ids.batch_id')
