@@ -36,7 +36,6 @@
                 <field name="out_date_approx_type" />
                 <field name="final_price" required="True" string="Prezzo Listino"/>
                 <field name="special_price" string="Prezzo offerta base"/>
-                <field name="lst_price" readonly="True" string="Prezzo di Vendita"/>
             </xpath>
             <xpath expr="/form/sheet/notebook/page[@name='general_information']//group[@name='group_standard_price']/field[@name='company_id']"
                    position="after">
