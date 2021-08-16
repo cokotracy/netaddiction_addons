@@ -11,7 +11,8 @@
         'web',
         'website',
         'website_sale',
-        'odoo_website_wallet'
+        'odoo_website_wallet',
+        'product_template_tags',
     ],
     'data': [
         'templates/assets.xml',
