@@ -30,6 +30,10 @@
         <field name="model">product.product</field>
         <field name="inherit_id" ref="product.product_normal_form_view" />
         <field name="arch" type="xml">
+            <xpath expr="//div[@name='options']" position="before">
+                <label for="product_tmpl_id" />
+                <field name="product_tmpl_id" readonly="True" />
+            </xpath>
             <xpath expr="/form/sheet/notebook/page[@name='general_information']//group[@name='group_general']/field[@name='categ_id']"
                    position="before">
                 <field name="out_date" />
