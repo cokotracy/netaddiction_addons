@@ -124,12 +124,6 @@ class ProductProduct(models.Model):
         digits='Product Price'
     )
 
-    special_price = fields.Float(
-        string="Prezzo offerta base",
-        digits='Product Price',
-        default=0
-    )
-
     visible = fields.Boolean(
         string="Visibile",
         default=True,
@@ -453,7 +447,7 @@ class ProductProduct(models.Model):
             domain = []
         return domain
 
-    @api.depends('final_price', 'special_price')
+    @api.depends('fix_price', 'lst_price', 'list_price')
     def _get_visual_price(self):
         for product in self:
             result = product.taxes_id.compute_all(product.list_price)

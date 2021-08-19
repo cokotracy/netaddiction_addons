@@ -60,7 +60,7 @@ class Products(models.Model):
     _inherit = "product.product"
 
     @api.multi
-    @api.constrains('final_price', 'special_price')
+    @api.constrains('final_price', 'fix_price', 'lst_price', 'list_price',)
     def _guaranteed_minimum(self):
         """
         Suggerimento:
