@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="custom_products_label_slider_one" inherit_id="theme_clarico_vega.clarico_slider_styles_one_template" priority="23" active="True">
+        <xpath expr="//section[hasclass('te_slider_img')]" position="inside">
+            <t t-call="theme_clarico_vega.custom_label_check" />
+        </xpath>
+    </template>
+    <template id="custom_products_label_slider_two" inherit_id="theme_clarico_vega.clarico_slider_styles_two_template" priority="23" active="True">
+       <xpath expr="//section[hasclass('te_slider_img')]" position="inside">
+            <t t-call="theme_clarico_vega.custom_label_check" />
+        </xpath>
+    </template>
+    <template id="custom_products_label_slider_three" inherit_id="theme_clarico_vega.clarico_slider_styles_three_template" priority="23" active="True">
+        <xpath expr="//section[hasclass('te_slider_img')]" position="inside">
+            <t t-call="theme_clarico_vega.custom_label_check" />
+        </xpath>
+    </template>
+    <template id="custom_products_label_slider_four" inherit_id="theme_clarico_vega.clarico_slider_styles_four_template" priority="23" active="True">
+        <xpath expr="//section[hasclass('te_slider_img')]" position="inside">
+            <t t-call="theme_clarico_vega.custom_label_check" />
+        </xpath>
+    </template>
+    <template id="custom_products_label_slider_five" inherit_id="theme_clarico_vega.clarico_slider_styles_five_template" priority="23" active="True">
+        <xpath expr="//section[hasclass('te_slider_img')]" position="inside">
+            <t t-call="theme_clarico_vega.custom_label_check" />
+        </xpath>
+    </template>
+    <template id="custom_products_label_slider_six" inherit_id="theme_clarico_vega.clarico_slider_styles_six_template" priority="23" active="True">
+        <xpath expr="//section[hasclass('te_slider_img')]" position="inside">
+            <t t-call="theme_clarico_vega.custom_label_check" />
+        </xpath>
+    </template>
+
+    <template id="custom_label_check">
+        <t t-if="product">
+            <t t-set="current" t-value="datetime.datetime.now()"/>
+            <t t-set="current_reduced" t-value="(datetime.datetime.now() - datetime.timedelta(days = 20))"/>
+            <t t-if="product.out_date">
+                <t t-set="out_date" t-value="datetime.datetime.strptime(str(product.out_date) + ' 00:00:00.00000', '%Y-%m-%d %H:%M:%S.%f')"/>
+            </t>
+
+            <div class="product-label-container position-absolute">
+                <!--label novità-->
+                <t t-if="current_reduced &lt;= product.create_date">
+                    <t t-if="out_date">
+                        <t t-if="out_date &lt;= current">
+                            <strong class="label label-news">NOVITÀ</strong>
+                        </t>
+                    </t>
+                    <t t-else="">
+                        <strong class="label label-news">NOVITÀ</strong>
+                    </t>
+                </t>
+                <!--label prenotazione-->
+                <t t-if="out_date">
+                    <t t-if="out_date &gt; current">
+                        <strong class="label label-preorder">PRENOTAZIONE</strong>
+                    </t>
+                </t>
+
+                <t t-if="product.sudo().virtual_available &lt; 1 and product.inventory_availability in ['always', 'threshold']">
+                    <t t-if="out_date">
+                        <t t-if="out_date &lt;= current">
+                            <strong class="label label-out">OUT OF STOCK</strong>
+                        </t>
+                    </t>
+                    <t t-else="">
+                        <strong class="label label-out">OUT OF STOCK</strong>
+                    </t>
+                </t>
+                <t t-else="">
+                    <!--label disponibile-->
+                    <t t-if="product.qty_available &gt; 0">
+                        <strong class="label label-in">DISPONIBILE</strong>
+                    </t>
+                    <!--label ordinabile-->
+                    <t t-else="">
+                        <strong class="label label-request">ORDINABILE</strong>
+                    </t>
+                </t>
+            </div>
+        </t>
+    </template>
+</odoo>

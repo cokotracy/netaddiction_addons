@@ -24,9 +24,14 @@
     border:none;
 }
 
+.te_shop_grid .oe_currency_value{
+    font-size:28px;
+    font-weight: 400;
+}
+
 @media only screen and (min-width: 768px) {
     #products_grid_before{
-        top:100px !important;
+        top:130px !important;
     }
     #products_grid .te_shop_grid{
         width:33.3% !important;

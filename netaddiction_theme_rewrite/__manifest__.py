@@ -11,7 +11,8 @@
         'web',
         'website',
         'website_sale',
-        'odoo_website_wallet'
+        'theme_clarico_vega',
+        'odoo_website_wallet',
     ],
     'data': [
         'templates/assets.xml',
@@ -22,6 +23,7 @@
         'templates/template_shipping_terms.xml',
         'templates/template_tag.xml',
         'templates/template_wallet.xml',
+        'templates/custom_product_label.xml',
         'templates/google-snippet/product.xml'
     ],
     # Technical

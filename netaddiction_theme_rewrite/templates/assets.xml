@@ -36,6 +36,11 @@
                 <link href="/netaddiction_theme_rewrite/static/src/css/category.css" rel="stylesheet"/>
             </t>
 
+            <!-- AGGIUNGE IN HEAD PER IL WALLET --> 
+            <t t-if="'/wallet' in request.httprequest.url">
+                <link href="/netaddiction_theme_rewrite/static/src/css/wallet.css" rel="stylesheet"/>
+            </t>
+
             <!-- AGGIUNGE IN HEAD PER I PRODOTTI --> 
             <t t-if="'/shop/' in request.httprequest.url">
                 <link href="/netaddiction_theme_rewrite/static/src/css/product.css" rel="stylesheet"/>
