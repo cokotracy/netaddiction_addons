@@ -2,8 +2,8 @@
 # License LGPL-3.0 or later (https://www.gnu.org/licenses/lgpl).
 
 from datetime import date, timedelta
-
-from odoo import api, fields, models
+from odoo.exceptions import ValidationError
+from odoo import api, fields, models, _
 
 
 class ProductCategory(models.Model):
@@ -460,6 +460,22 @@ class ProductProduct(models.Model):
             product.detax_price = result.get('total_excluded', 0.0)
             product.intax_price = result.get('total_included', 0.0)
 
+    def _compute_product_lst_price(self):
+        # Ehy Odoo, are you trying to show a price? Ahahahahahaha
+        # Pfffff. Misguided idealist! Get my data and shut up!
+        super()._compute_product_lst_price()
+        # Force Odoo to show the pricelist data as list price
+        item_model = self.env['product.pricelist.item'].sudo()
+        for product in self:
+            price = product.lst_price
+            item = item_model.search([
+                ('applied_on', '=', '0_product_variant'),
+                ('product_id', '=', product.id),
+                ], limit=1)
+            if item:
+                price = item.fixed_price
+            product.lst_price = price
+
 
 class SupplierInfo(models.Model):
 
@@ -489,3 +505,20 @@ class SupplierInfo(models.Model):
 
             item.detax_margin = prod_price['total_excluded'] \
                 - sup_price['total_excluded']
+
+
+class ProductPricelistItem(models.Model):
+
+    _inherit = 'product.pricelist.item'
+
+    @api.constrains("product_id")
+    def _unique_product(self):
+        for item in self:
+            if item.product_id and self.search([
+                    ('product_id', '=', item.product_id.id),
+                    ('id', '!=', item.id),
+                    ]):
+                raise ValidationError(_(
+                    "Impossibile to create more than one pricelist rule"
+                    "for product %s"
+                    ) % item.product_id.name_get()[0][1])

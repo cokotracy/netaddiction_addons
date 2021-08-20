@@ -10,7 +10,7 @@ from odoo.tools import float_compare
 from ..tools.lib_holidays import is_holiday
 
 
-class Orders(models.Model):
+class SaleOrder(models.Model):
     _inherit = 'sale.order'
 
     count_reverse = fields.Integer(
@@ -162,6 +162,11 @@ class Orders(models.Model):
 
         return res
 
+    '''
+    TODO: Function commented because this not-stored field compute
+    trigger, every time, a write on sale order. This is crazy!
+    It's an useless stress for the database.
+    I comment it. We will study this case later.
     def _compute_picking_ids(self):
         for order in self:
             picks = self.env['stock.picking'].search(
@@ -169,6 +174,7 @@ class Orders(models.Model):
             )
             order.picking_ids = picks
             order.delivery_count = len(order.picking_ids)
+    '''
 
     def create_shipping(self):
         """
