@@ -13,6 +13,7 @@
         'website_sale',
         'theme_clarico_vega',
         'odoo_website_wallet',
+        'product_bundle_pack'
     ],
     'data': [
         'templates/assets.xml',

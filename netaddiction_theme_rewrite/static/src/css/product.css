@@ -43,41 +43,13 @@ h1.te_product_name{
 }
 
 /*PREZZO*/
-.js_product .oe_currency_value{
+.js_product .oe_price_h4 .oe_price{
     font-size: 40px !important;
+    font-weight: 600;
+}
+.js_product .oe_price_h4 .oe_default_price{
+    font-size: 25px !important;
     font-weight: 400;
-}
-
-/*STELLE RECENSIONI*/
-.product-info-rating-star, .o_website_rating_static > i{
-    font-size: 20px !important;
-    color:var(--primary);
-}
-.product-info-rating-star-off, .o_website_rating_static > .text-black-25{
-    font-size: 20px !important;
-    color:var(--light-gray);
-}
-.o_portal_chatter_header > .o_website_rating_card_container > div > p > strong{
-    display: none;
-}
-.o_portal_chatter_message .o_website_rating_static > i{
-    font-size: 15px !important;
-}
-.progress-bar{
-    background-color: var(--primary) !important;
-}
-
-.o_website_rating_progress_table{
-    margin-top:20px;
-    display: flex !important;
-    justify-content: center !important;
-}
-.o_website_rating_progress_table tr{
-    min-height:35px;
-    display: block;
-}
-.o_website_rating_table_reset{
-    display: none;
 }
 
 
@@ -91,49 +63,6 @@ h1.te_product_name{
 .nav-item .active > span{
     color:var(--black) !important;
 }
-
-
-/*RECENSIONI*/
-.o_portal_chatter_message{
-    padding:15px !important;
-    border: 10px solid;
-    border-image-slice: 1;
-    border-width: 1px;
-    border-image-source: linear-gradient(to left, var(--light-primary), var(--light-green));
-    margin-bottom:20px;
-}
-
-/*COMMENTI RECENSIONI*/
-.o_wrating_publisher_comment{
-    border:none !important;
-}
-.o_wrating_publisher_comment > .o_portal_chatter_message{
-    border:none !important;
-    box-shadow:none !important;
-}
-.o_portal_chatter > hr{
-    display:none;
-}
-
-
-/*VARIANTI*/
-.js_main_product .custom-radio{
-    padding:10px 20px 10px 35px;
-    margin-bottom:5px;
-    border: 10px solid;
-    border-image-slice: 1;
-    border-width: 1px;
-    border-image-source: linear-gradient(to left, var(--light-primary), var(--light-green));
-    color:var(--secondary);
-    background-color: var(--white);
-    white-space: nowrap; 
-    overflow: hidden;
-    text-overflow: ellipsis; 
-}
-.custom-radio span{
-    font-size: 13px;
-}
-
 
 /*BUNDLE*/
 .overflow-gradient{
@@ -267,6 +196,22 @@ h1.te_product_name{
     border:2px solid var(--secondary);
     color: var(--secondary);
 }
+
+
+/*TIMER*/
+.timer_data{
+    background-color:transparent !important;
+}
+.te_offer_timer_msg_div{
+    background-color: var(--primary);
+    transform:skew(-0.06turn, 0deg);
+    border-radius: 3px;
+    border:none !important;
+}
+.te_offer_timer_msg_div h6{
+    font-weight: 600;
+}
+
 
 @media only screen and (max-width: 800px) {
     .single-product-bundle-container > strong{

@@ -3,13 +3,17 @@
     <template  id="template_product_detail_custom" inherit_id="website_sale.product">
         <xpath expr="//div[@id='product_details']/h1" position="after">
             <!--MOSTRO I TAG RELATIVI AL PRODOTTO-->
-            <tr t-foreach="product.tag_ids" t-as="tag">
-                <a class="tag-item" t-esc="tag.name" t-attf-href="/tag/#{tag.name}"></a>
-            </tr>
+            <t t-if="product.tag_ids">
+                <div class="d-block mt-2">
+                    <t t-foreach="product.tag_ids" t-as="tag">
+                        <a class="tag-item" t-esc="tag.name" t-attf-href="/tag/#{tag.name}"></a>
+                    </t>
+                </div>
+            </t>
             <!--MOSTRO UNA PICCOLA PARTE DELLA DESCRIZIONE-->
-            <div class="o_not_editable mb-3">
+            <div class="o_not_editable mt-2">
                 <t t-if="product.website_description">
-                    <p t-raw="(product.website_description[:200] + '.. ') if len(product.website_description) > 75 else product.website_description" class="te_prod_desc text-muted"></p>
+                    <p t-raw="(product.website_description[:200] + '.. ') if len(product.website_description) > 75 else product.website_description" class="te_prod_desc text-muted small-description"></p>
                     <t t-if="len(product.website_description) > 75">
                         <span
                             style="cursor:pointer; color:var(--primary);"

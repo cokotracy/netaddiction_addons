@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
+    <!--LABEL PRODOTTI-->
     <template id="custom_products_label_slider_one" inherit_id="theme_clarico_vega.clarico_slider_styles_one_template" priority="23" active="True">
         <xpath expr="//section[hasclass('te_slider_img')]" position="inside">
             <t t-call="theme_clarico_vega.custom_label_check" />
@@ -81,4 +82,18 @@
             </div>
         </t>
     </template>
+
+
+
+    <!--MENU HEADER-->
+    <template id="custom_menu_dropdown" inherit_id="theme_clarico_vega.customize_header_style_10" priority="23" active="True">
+        <xpath expr="//div[hasclass('js_usermenu')]" position="inside">
+            <a href="/wallet" role="menuitem" class="dropdown-item">
+                <span class="fa fa-money"/>
+                <span class="te_user_drop_item">Wallet
+                </span>
+            </a>
+        </xpath>
+    </template>
+    
 </odoo>

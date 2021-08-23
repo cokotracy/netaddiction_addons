@@ -5,16 +5,6 @@
     font-family: 'Montserrat' !important;
 }
 
-/*disattivare il fixed header dal tema*/
-/*impostare il logo del tema a larghezza 400*/
-/*impostare ottavo bottone del tema*/
-/*impostare questo come primary color nel tema var(--primary)*/
-/*impostare questo come header text color nel tema #3d3d3d*/
-
-/*impostare il background del footer #343a40*/
-/*impostare il colore testo del footer var(--white)*/
-/*impostare il quinto footer*/
-
 :root {
     --primary: #f6842a !important;
     --light-primary: #f0af7d !important;
@@ -23,33 +13,28 @@
     --white: #ffffff;
     --light-gray:#cccccc;
     --extra-light-gray:#f5f5f5;
-    --light-green:#c4dac6;
 }
 
 /*SCROLLBAR CUSTOM*/
-/* width */
 ::-webkit-scrollbar {
     width: 10px;
 }
 
-/* Track */
 ::-webkit-scrollbar-track {
     box-shadow: inset 0 0 5px grey; 
     border-radius: 10px;
 }
 
-/* Handle */
 ::-webkit-scrollbar-thumb {
     background: var(--primary); 
     border-radius: 10px;
 }
 
-/* Handle on hover */
 ::-webkit-scrollbar-thumb:hover {
     background: var(--primary); 
 } 
 
-
+/*NAVBAR*/
 #wrapwrap > main{
     margin-top:44px;
     min-height: 100vh !important;
@@ -122,22 +107,14 @@ header nav.navbar .header_middle .te_header_right_icon > div, header nav.navbar 
 }
 .breadcrumb-item:last-child > a, .breadcrumb-item:last-child > span{
     color:var(--primary) !important;
+    overflow: hidden;
+    white-space:nowrap;
+    text-overflow:ellipsis;
+    width:120px;
+    display:inline-block;
+    vertical-align: middle;
 }
 
-
-/*bordi griglie prodotti*/
-.o_carousel_product_card, .o_carousel_product_card_body, #products_grid .table .o_wsale_product_grid_wrapper .card.oe_product_cart{
-    border:none !important;
-    padding:10px;
-}
-.o_wsale_products_item_title > a{
-    font-weight: 800;
-    color:var(--secondary) !important;
-}
-.o_wsale_products_item_title > a:nth-child(2){
-    font-weight: 600;
-    color:var(--primary) !important;
-}
 
 /*ADD TO CART VISTI DI RECENTE*/
 .js_add_cart, .js_add_cart_json{
@@ -158,9 +135,10 @@ header nav.navbar .header_middle .te_search_popover .input-group input.form-cont
     position: initial !important;
 }
 
+/*LABEL PRODOTTI*/
 .product-label-container{
     top:0;
-    left:0;
+    left:-5px;
     max-width:110px;
     display: flex;
     flex-wrap: wrap;
@@ -230,6 +208,43 @@ header nav.navbar .header_middle .te_search_popover .input-group input.form-cont
     border:none !important;
 }
 
+
+
+/*carte prodotto*/
+.card{
+    border:none !important;
+    box-shadow: none !important;
+}
+
+.card .product_price > span:nth-child(1){
+    font-size: 25px !important;
+    margin-right:10px;
+    font-weight: 400;
+    color:var(--primary) !important;
+}
+.card .product_price > del > span, .product_price > del{
+    font-size: 15px !important;
+    font-weight: 400;
+}
+
+.card .product_price .te_discount{
+    display:block;
+}
+
+.card .product_name{
+    color:var(--secondary);
+}
+
+/*NASCONDO LE LABEL DEFAULT*/
+.o_ribbon{
+    display:none !important;
+}
+
+
+footer{
+    margin-top:50px;
+}
+
 @media only screen and (min-width: 768px) {
     #wrapwrap > main{
         margin-top:0px;
@@ -256,6 +271,9 @@ header nav.navbar .header_middle .te_search_popover .input-group input.form-cont
     }
     header nav.navbar .header_middle .te_search_popover .input-group input.form-control{
         border-bottom:1px solid var(--light-gray) !important;
+    }
+    .breadcrumb-item:last-child > a, .breadcrumb-item:last-child > span{
+        width:50%;
     }
 }
 

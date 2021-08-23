@@ -57,7 +57,7 @@
         'templates/extra_pages.xml',
         'templates/comingsoon.xml',
         'templates/search.xml',
-        'templates/slider_netaddiction.xml',
+        'templates/netaddiction_customization.xml',
         'templates/emipro_dynamic_snippets_styles.xml',
     ],
 

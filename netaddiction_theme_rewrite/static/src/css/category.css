@@ -15,25 +15,17 @@
     justify-content: center !important;
 }
 
-#products_grid .table .o_wsale_product_grid_wrapper .card .product_price{
-    font-weight: 800;
-    color:var(--primary) !important;
-}
-
 #products_grid .table .o_wsale_product_grid_wrapper{
     border:none;
 }
 
-.te_shop_grid .oe_currency_value{
-    font-size:28px;
-    font-weight: 400;
+.te_title_sub_div > h1{
+    font-size: 1.7rem !important;
+    font-weight: 600;
 }
 
 @media only screen and (min-width: 768px) {
     #products_grid_before{
         top:130px !important;
-    }
-    #products_grid .te_shop_grid{
-        width:33.3% !important;
     }
 }
