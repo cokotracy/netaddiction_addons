@@ -245,6 +245,45 @@ footer{
     margin-top:50px;
 }
 
+
+/*RIMUOVO BOTTONE DI TROPPO SU CHECKOUT*/
+.js_cart_summary > .card-body > div > .btn-secondary{
+    display:none !important;
+}
+
+
+/*TOGGLE MENU*/
+.header_menu_slide{
+    background-color:var(--secondary) !important;
+    color:#ffffff !important;
+}
+.header_menu_slide ul li{
+    border-top:none !important;
+    margin-top:10px;
+    border-bottom:2px solid var(--primary);
+    box-sizing: border-box;
+    box-shadow: 0 0 var(--secondary), 6px 0 var(--secondary), 0 3px 0px -2px #ffffff;
+    margin:0 20px !important;
+}
+.header_menu_slide ul li a{
+    color:#ffffff !important;
+}
+.close_top_menu{
+    border:none !important;
+    font-size: 30px;
+}
+.header_menu_slide .dropdown-toggle:focus{
+    background-color:#2d2d2d !important;
+}
+.header_menu_slide .o_mega_menu{
+    background-color:#2d2d2d !important;
+    border:none !important;
+}
+
+/*SOCIAL SIDEBAR*/
+.social-sidebar > a > img{
+    height:27px;
+}
 @media only screen and (min-width: 768px) {
     #wrapwrap > main{
         margin-top:0px;
@@ -274,6 +313,41 @@ footer{
     }
     .breadcrumb-item:last-child > a, .breadcrumb-item:last-child > span{
         width:50%;
+    }
+
+
+    /*TOGGLE MENU*/
+    .te_vertical_menu{
+        background-color:var(--secondary) !important;
+        color:#ffffff !important;
+    }
+    .te_vertical_menu .te_content_text, .te_vertical_menu .te_sidenav_content{
+        margin-top:30px !important;
+    }
+    .te_vertical_menu span{
+        color:#ffffff !important;
+    }
+    .te_vertical_menu ul{
+        overflow: initial !important;
+    }
+    .te_vertical_menu ul section{
+        margin-top:10px;
+        border-bottom:2px solid var(--primary);
+        transform:skew(-0.06turn, 0deg);
+        box-sizing: border-box;
+        box-shadow: -6px 0 var(--secondary), 6px 0 var(--secondary), 0 3px 0px -2px #ffffff;
+    }
+    .te_vertical_menu ul section > li > a{
+        color:#ffffff !important;
+        transform: skew(21deg, 0deg);
+    }
+    .te_menu_btn_close{
+        font-size: 30px !important;
+        color: #fff !important;
+        transition: 0.5s;
+    }
+    .te_menu_btn_close:hover{
+        transform:rotate(90deg)
     }
 }
 

@@ -94,6 +94,21 @@
                 </span>
             </a>
         </xpath>
+        <xpath expr="//div[hasclass('close_top_menu')]" position="replace">
+            <div class="close_top_menu"><i class="fa fa-times-circle te_menu_icon_close"></i></div>
+        </xpath>
     </template>
-    
+
+    <template id="custom_close_btn" inherit_id="theme_clarico_vega.vertical_menu_ept_10">
+        <xpath expr="//a[hasclass('te_menu_btn_close')]" position="replace">
+            <a href="#" class="te_menu_btn_close fa fa-times-circle te_menu_icon_close"></a>
+        </xpath>
+    </template>
+
+    <template id="custom_vertical_menu" inherit_id="theme_clarico_vega.menu_vertical">
+        <xpath expr="//div[hasclass('te_content_text')]" position="after">
+            <t t-call="netaddiction_theme_rewrite.social_sidebar"/>
+        </xpath>
+    </template>
+
 </odoo>

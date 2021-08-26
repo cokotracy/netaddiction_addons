@@ -3,9 +3,10 @@
     <template  id="template_product_detail_custom" inherit_id="website_sale.product">
         <xpath expr="//div[@id='product_details']/h1" position="after">
             <!--MOSTRO I TAG RELATIVI AL PRODOTTO-->
-            <t t-if="product.tag_ids">
+            <t t-set="tags" t-value="request.env['product.template'].sudo().search([('id', '=', product.id)]).tag_ids"/>
+            <t t-if="tags">
                 <div class="d-block mt-2">
-                    <t t-foreach="product.tag_ids" t-as="tag">
+                    <t t-foreach="tags" t-as="tag">
                         <a class="tag-item" t-esc="tag.name" t-attf-href="/tag/#{tag.name}"></a>
                     </t>
                 </div>

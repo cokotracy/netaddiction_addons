@@ -22,18 +22,18 @@ class SiteCategories(Shop):
 
         Category = request.env['product.public.category']
         if category:
-            category = Category.search([('id', '=', int(category))], limit=1)
+            category = Category.sudo().search([('id', '=', int(category))], limit=1)
             if not category or not category.can_access_from_current_website():
                 raise NotFound()
         else:
             category = Category
 
         if category:
-            preorder_list = request.env["product.template"].search([
+            preorder_list = request.env["product.template"].sudo().search([
                 ('out_date', '>', date.today().strftime("%Y-%m-%d")),
                 ('public_categ_ids', 'in', category.id)], limit=20)
 
-            newest_list = request.env["product.template"].search([
+            newest_list = request.env["product.template"].sudo().search([
                 ('create_date', '>=', (date.today() - timedelta(days = 20)).strftime("%Y-%m-%d")),
                 ('create_date', '<=', date.today().strftime("%Y-%m-%d")),
                 ('public_categ_ids', 'in', category.id),
@@ -54,7 +54,7 @@ class SiteCategories(Shop):
             bestseller_list = []
 
             for prod in bestseller_list_temp:
-                bestseller_list.append(request.env['product.product'].search([('id', '=', prod['product_id'][0])]).product_tmpl_id)
+                bestseller_list.append(request.env['product.product'].sudo().search([('id', '=', prod['product_id'][0])]).product_tmpl_id)
 
         
             sup.qcontext["category"] = category
@@ -69,7 +69,7 @@ class SiteCategories(Shop):
 class CustomHome(Controller):
     @route('/', type='http', auth='public', website=True)
     def controller(self, **post):
-        preorder_list = request.env["product.template"].search([('out_date', '>', date.today().strftime("%Y-%m-%d"))], limit=20)
+        preorder_list = request.env["product.template"].sudo().search([('out_date', '>', date.today().strftime("%Y-%m-%d"))], limit=20)
         return request.render("netaddiction_theme_rewrite.template_home_secondary", {'preorder_list':preorder_list})
 
 #AGGIUNGE LA PAGINA PRIVACY
@@ -90,12 +90,12 @@ class CategoryDescriptionInherit(models.Model):
     _inherit = 'product.public.category'
     description = fields.Text(name='description')
     
-#AGGIUNGE LA PAGINA COSTI DI SPEDIZIONECREA DELLE PAGINE DINAMICHE PER I TAG
+#AGGIUNGE PAGINE DINAMICHE PER I TAG
 class CustomTagPage(Controller):
     @route(['/tag/<string:tag_name>'], type='http',auth='public',website=True) 
     def controller(self, tag_name, **kw):
 
-        tag = request.env['product.template.tag'].search([('name', '=', tag_name)])
+        tag = request.env['product.template.tag'].sudo().search([('name', '=', tag_name)])
 
         if not tag.id:
             page = request.website.is_publisher() and 'website.page_404' or 'http_routing.404'
@@ -109,8 +109,8 @@ class CustomTagPage(Controller):
             current_page = (int(kw.get('page')) - 1)
             start_element = (page_size * (int(kw.get('page')) - 1))
 
-        product_count = request.env["product.template"].search_count([('tag_ids', '=', tag.id)])
-        product_list_id = request.env["product.template"].search([('tag_ids', '=', tag.id)], limit=page_size, offset=start_element)
+        product_count = request.env["product.template"].sudo().search_count([('tag_ids', '=', tag.id)])
+        product_list_id = request.env["product.template"].sudo().search([('tag_ids', '=', tag.id)], limit=page_size, offset=start_element)
         page_number = (product_count / page_size)
 
         if(page_number > int(page_number)):
@@ -134,3 +134,13 @@ class WalletPageOverride(Wallet):
     def wallet_balance(self, **post):
         sup = super(WalletPageOverride, self).wallet_balance()
         return request.render("netaddiction_theme_rewrite.wallet_balance", sup.qcontext)
+
+    @route(
+        ['/add/wallet/balance']
+        , type='http', auth='public', website=True)
+    def add_wallet_balance(self, **post):
+        sup = super(WalletPageOverride, self).add_wallet_balance()
+        return request.render("netaddiction_theme_rewrite.add_wallet_balance", sup.qcontext)
+
+    
+   
