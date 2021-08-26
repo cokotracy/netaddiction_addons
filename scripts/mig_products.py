@@ -41,9 +41,9 @@ def main():
     for item9 in data9:
         print(f"Processing product ID {item9['id']}")
         try:
-            product14.browse(item9['id']).list_price = item9['list_price']
+            product14.browse(item9['id']).fix_price = item9['list_price']
         except Exception:
-            print(f"ERROR: Can't assign list_price to product ID {item9['id']}")
+            print(f"ERROR: Can't assign fix_price to product ID {item9['id']}")
         try:
             product14.browse(item9['id']).out_date = item9['out_date']
         except Exception:

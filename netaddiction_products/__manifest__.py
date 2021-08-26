@@ -12,6 +12,7 @@
         'stock',
         'purchase',
         'website_sale',
+        'product_variant_sale_price',
     ],
     'data': [
         'views/product_views.xml',

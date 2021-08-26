@@ -14,7 +14,8 @@
         'theme_clarico_vega',
         'odoo_website_wallet',
         'product_bundle_pack',
-        'advance_website_all_in_one'
+        'advance_website_all_in_one',
+        'product_template_tags'
     ],
     'data': [
         'templates/assets.xml',
