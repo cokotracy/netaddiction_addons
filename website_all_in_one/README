@@ -11,3 +11,7 @@
 
 2) Version: 14.0.0.2 | Date : 04/08/2021
 - Remove point of sale dependency from module.
+
+3) Version: 14.0.0.3 | Date : 23/08/2021
+- Change the name of link for reviews to 'Reviews and Ratings'.
+- Redirect Reviews to 'Reviews' tab.

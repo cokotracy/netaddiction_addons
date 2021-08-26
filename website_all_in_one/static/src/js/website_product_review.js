@@ -1,4 +1,4 @@
-$('a[href^="#comment"]').on('click', function(event) {
+/*$('a[href^="#nav_tabs_content_ratings_reviews"]').on('click', function(event) {
 
     var target = $( $(this).attr('href') );
 
@@ -9,7 +9,7 @@ $('a[href^="#comment"]').on('click', function(event) {
         }, 1000);
     }
 
-});
+});*/
 var p_id,i1=0,blog_rate_value1;
 $(function() {
 	p_id = document.getElementsByName('product');		
