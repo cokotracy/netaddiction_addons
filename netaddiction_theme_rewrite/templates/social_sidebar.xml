@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="social_sidebar">
+        <div class="d-flex social-sidebar">
+            <a class="py-3 mr-3" href="https://www.instagram.com/multiplayer_com/" target="_blank"><img src="/netaddiction_theme_rewrite/static/src/img/instagram.svg"/></a>
+            <a class="py-3 mr-3" href="https://www.facebook.com/groups/623304898486532/" target="_blank"><img src="/netaddiction_theme_rewrite/static/src/img/facebook.svg"/></a>
+            <a class="py-3 mr-3" href="https://t.me/multiplayershop" target="_blank"><img src="/netaddiction_theme_rewrite/static/src/img/telegram.svg"/></a>
+        </div>
+    </template>
+</odoo>

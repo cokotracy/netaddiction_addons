@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="loaylty_info" inherit_id="advance_website_all_in_one.web_loaylty_info">
+        <xpath expr="//button[@data-target='#redeem_modal']" position="replace">
+
+        </xpath>
+        <xpath expr="//div[hasclass('coupon_info')]" position="replace">
+            <div class="coupon_info" style="font-size: 16px; color: #077bfe; font-weight: 700;" t-att-data-id='website_sale_order.id'>
+                <t t-set="partner_loyalty" t-value="website.sudo().get_loyalty_balance(website_sale_order)"/>
+                <t t-if="partner_loyalty[0] > 0"> 
+                    <span>+ <t t-esc="partner_loyalty[0]"/>  </span>
+                </t>
+                <span> Punti Fedeltà:  <t t-esc="partner_loyalty[1]"/>.</span>
+            </div>
+        </xpath>
+        <xpath expr="//div[hasclass('coupon_info')]" position="replace">
+            <div class="coupon_info" t-att-data-id='website_sale_order.id'>
+                <t t-set="partner_loyalty" t-value="website.sudo().get_loyalty_balance(website_sale_order)"/>
+                <a role="button" t-att-data-id='website_sale_order.id' data-toggle="modal" data-target="#redeem_modal" class="open-redeem w-100 my-0 btn btn-outline-primary btn-lg d-sm-inline-block te_theme_button px-3 py-1 js_check_product a-submit" href="#">
+                    Riscatta Punti
+                </a>
+            </div>
+        </xpath>
+        <xpath expr="//div[@id='redeem_modal']" position="replace">
+            <div id="redeem_modal" class="modal fade" role="dialog">
+                <div class="modal-dialog mt-5">
+                    <!-- Modal content-->
+                    <div class="modal-content">
+                        <div class="modal-header justify-content-end">
+                            <button type="button" class="close" data-dismiss="modal" style="margin-left: 0px;color: red;">x</button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="my-3" style="color:var(--secondary); text-align: center; font-size: 20px;">
+                                <p style="margin: 2px;"> Ciao <span class="redeem_name"/> hai a disposizione: </p>
+                                <big><strong class="redeem_points"></strong> Punti</big>
+                                <p style="margin: 2px;">L'equivalente di <strong style="color:var(--primary);" class="redeem_total"/> <strong style="color:var(--primary);" t-esc="website.currency_id.symbol"/></p>
+                                <span style="display: none;" class="redeem_value"></span>
+                                <span style="display: none;" class="order_id"></span>
+                                <span style="display: none;" class="amount_total"></span>
+                                <span style="display: none;" class="order_redeem_points"></span>
+                            </div>
+                            <small class="text-left d-block"><strong>seleziona un numero di punti da riscattare:</strong></small>
+                            <div style="display: grid;">
+                                <input style="box-shadow:none; outline:none;" id ="entered_points" type="number" placeholder="scrivi il numero di punti" class="form-control input-field mb-3" name="code" />
+                                <a role="button" class="redeem_ok my-0 btn btn-outline-primary btn-lg d-sm-inline-block te_theme_button px-3 py-1 js_check_product a-submit" href="#">
+                                    Riscatta Punti
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </xpath>
+    </template>
+
+    <template id="reduction_code_ept" inherit_id="website_sale.reduction_code">
+        <xpath expr="//a[hasclass('show_coupon')]" position="replace">
+            <a role="button" class="mb-2 show_coupon te_show_cpn w-100 my-0 btn btn-outline-primary btn-lg d-sm-inline-block te_theme_button px-3 py-1 js_check_product a-submit" href="#">
+                Ho un codice promo
+            </a>
+        </xpath>
+    </template>
+    
+    <template id="voucher_code" inherit_id="website_sale.total" active="True" customize_show="True" name="Voucher Code">
+		<xpath expr="//div[hasclass('col-md-offset-7')]" position="replace">
+			
+		</xpath>
+	</template>
+    
+</odoo>

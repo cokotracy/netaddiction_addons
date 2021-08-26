@@ -2,25 +2,20 @@
 <odoo>
     <template  id="template_product_detail_custom" inherit_id="website_sale.product">
         <xpath expr="//div[@id='product_details']/h1" position="after">
-            <!-- <t t-set="all_coupon" t-value="request.env['coupon.program'].sudo().search([])"/>
-            <t t-set="i" t-value="1"/>
-
-            <tr t-foreach="all_coupon" t-as="single_coupon">
-                <t t-if="product" t-set="productinfo" t-value="request.env['product.product'].sudo().search([('product_tmpl_id', '=', product.id), ast.literal_eval(single_coupon.rule_products_domain)])"/>
-                <t t-if="len(productinfo) > 0">
-                    <t t-esc="i"/>
-                </t>
-                <t t-set="i" t-value="i+1"/>
-            </tr> -->
-
-            <tr t-foreach="product.tag_ids" t-as="tag">
-                <a class="tag-item" t-esc="tag.name" t-attf-href="/tag/#{tag.name}"></a>
-            </tr>
-
-            <div class="o_not_editable mb-3">
-                <t t-if="product.description">
-                    <p t-if="product.description" t-raw="(product.description[:200] + '.. ') if len(product.description) > 75 else product.description" class="te_prod_desc text-muted"></p>
-                    <t t-if="len(product.description) > 75">
+            <!--MOSTRO I TAG RELATIVI AL PRODOTTO-->
+            <t t-set="tags" t-value="request.env['product.template'].sudo().search([('id', '=', product.id)]).tag_ids"/>
+            <t t-if="tags">
+                <div class="d-block mt-2">
+                    <t t-foreach="tags" t-as="tag">
+                        <a class="tag-item" t-esc="tag.name" t-attf-href="/tag/#{tag.name}"></a>
+                    </t>
+                </div>
+            </t>
+            <!--MOSTRO UNA PICCOLA PARTE DELLA DESCRIZIONE-->
+            <div class="o_not_editable mt-2">
+                <t t-if="product.website_description">
+                    <p t-raw="(product.website_description[:200] + '.. ') if len(product.website_description) > 75 else product.website_description" class="te_prod_desc text-muted small-description"></p>
+                    <t t-if="len(product.website_description) > 75">
                         <span
                             style="cursor:pointer; color:var(--primary);"
                             onclick="
@@ -32,34 +27,65 @@
             </div>
         </xpath>
 
+        <!--CREO LA SEZIONE BUNDLE SE ESISTE-->
         <xpath expr="//section[@id='product_detail']" position="after">
-            <div class="d-block p-3 mt-3 mb-5 w-100 container">
-                <t t-set="bundles" t-value="[[0,1,2,3],[0,1,2],[0,1]]"/>
-                <t t-foreach="bundles" t-as="bundle">
-                    <div class="w-100 border-bottom py-4 overflow-gradient">
-                        <div class="d-flex product-bundle-container">
-                            <t t-foreach="bundle" t-as="single_product">
-                                <div class="single-product-bundle-container">
-                                    <div class="single-product-bundle"></div>
-                                    <strong class="px-1 w-xl-100">Nome del prodotto (collector edition) 16cm Limited Edition solo 200 pezzi in tutto il mondo</strong>  
+            <t t-set="internal_ref" t-value="product_variant.default_code"/>
+            <t t-if="internal_ref">
+                <t t-set="bundle" t-value="request.env['product.pack'].sudo().search([('product_id', '=', internal_ref)]).bi_product_template"/>
+                <t t-if="bundle">
+                    <div class="d-block p-3 mt-3 mb-5 w-100 container">
+                        <t t-foreach="bundle" t-as="current_product_bundle">
+                            <t t-set="compleate_bundle" t-value="request.env['product.pack'].sudo().search([('bi_product_template', '=', current_product_bundle.id)])"/>
+                            <div class="w-100 border-top py-4 overflow-gradient">
+                                <div class="d-flex product-bundle-container">
+                                    <t t-set="full_price" t-value="0"/>
+                                    <t t-foreach="compleate_bundle" t-as="single_product">
+                                        <div class="single-product-bundle-container mx-3 d-flex flex-wrap justify-content-center">
+                                            <t t-set="product_temp" t-value="request.env['product.product'].sudo().search([('id', '=', single_product.product_id.id)]).product_tmpl_id"/>
+                                            <t t-set="full_price" t-value="full_price + product_temp._get_combination_info()['price']"/>
+                                            <div class="single-product-bundle" t-attf-style="background-image:url(/web/image/product.template/#{product_temp.id}/image_512)"></div>
+                                            <strong class="px-1 w-xl-100" t-esc="single_product.name"></strong>  
+                                        </div>
+                                    </t>
                                 </div>
-                            </t>
-                        </div>
-                        <div class="d-flex mt-3">
-                            <div class="d-flex align-items-center mt-3">
-                                <a role="button" id="buy_now" class="btn btn-outline-primary btn-lg d-sm-inline-block te_theme_button px-3 py-1" href="#" data-oe-model="ir.ui.view" data-oe-id="3415" data-oe-field="arch" data-oe-xpath="/t[1]/t[1]/div[1]/div[1]/div[1]/div[3]/div[1]/t[2]/a[1]">
-                                    <span class="fa fa-bolt"></span>
-                                    Acquista Bundle
-                                </a>
+                                <div class="d-flex mt-3">
+                                    <div class="d-flex align-items-center">
+                                        <t t-if="current_product_bundle.sudo().virtual_available &lt; 1 and current_product_bundle.inventory_availability in ['always', 'threshold']">
+                                            <div class="d-flex align-items-center px-2 mt-3">
+                                                <div>
+                                                    <a role="button" style="display:block !important; font-size:15px;" id="add_to_cart" class="mr-1 my-0 btn-not-avaiable btn btn-outline btn-lg d-sm-inline-block te_theme_button px-3 py-1 js_check_product a-submit" href="#">
+                                                        <span class="fa fa-times"></span>
+                                                        Non disponibile
+                                                    </a>
+                                                </div>
+                                                <span class="price-tag"><sup style="margin-right:5px;"><small><del><strong><t t-esc="full_price"/></strong></del></small></sup><t t-esc="current_product_bundle._get_combination_info()['price']"/> €</span>
+                                            </div>
+                                        </t>
+                                        <t t-else="">
+                                            <div id="product_details" class="oe_website_sale">
+                                                <form t-if="current_product_bundle._is_add_to_cart_possible()" action="/shop/cart/update" method="POST">
+                                                    <div class="d-flex align-items-center px-2">
+                                                        <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()" />
+                                                        <div class="js_product js_main_product">
+                                                            <input type="hidden" class="product_id" name="product_id" t-att-value="current_product_bundle.default_code" />
+                                                            <input type="hidden" class="product_template_id" name="product_template_id" t-att-value="current_product_bundle.id" />
+                                                            <a role="button" style="display:block !important;" id="add_to_cart" class="my-0 btn btn-outline-primary btn-lg d-sm-inline-block te_theme_button px-3 py-1 js_check_product a-submit" href="#">
+                                                                <span class="fa fa-bolt"></span>
+                                                                Acquista Bundle
+                                                            </a>
+                                                        </div>
+                                                        <span class="price-tag"><sup style="margin-right:5px;"><small><del><strong><t t-esc="full_price"/></strong></del></small></sup><t t-esc="current_product_bundle._get_combination_info()['price']"/> €</span>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                        </t>
+                                    </div>
+                                </div>
                             </div>
-                            <div class="d-flex align-items-center px-2">
-                                <span class="price-tag"><sup style="margin-right:5px;"><small><del>39,90</del></small></sup>20,99 €</span>
-                            </div>
-                        </div>
-                        
+                        </t>
                     </div>
                 </t>
-            </div>
+            </t>
         </xpath>
     </template> 
 </odoo>
