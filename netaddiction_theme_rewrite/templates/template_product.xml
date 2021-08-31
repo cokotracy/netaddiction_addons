@@ -12,19 +12,19 @@
                 </div>
             </t>
             <!--MOSTRO UNA PICCOLA PARTE DELLA DESCRIZIONE-->
-            <div class="o_not_editable mt-2">
-                <t t-if="product.website_description">
-                    <p t-raw="(product.website_description[:200] + '.. ') if len(product.website_description) > 75 else product.website_description" class="te_prod_desc text-muted small-description"></p>
-                    <t t-if="len(product.website_description) > 75">
+            <t t-if="product.website_description and len(product.website_description) > 20">
+                <div class="o_not_editable mt-2">
+                    <p t-raw="(product.website_description[:200] + '.. ') if len(product.website_description) >= 200 else product.website_description" class="te_prod_desc text-muted small-description"></p>
+                    <t t-if="len(product.website_description) >= 200">
                         <span
                             style="cursor:pointer; color:var(--primary);"
                             onclick="
                                 document.querySelector('#nav_tabs_link_description').click();
-                                document.querySelector('#nav_tabs_link_description').scrollIntoView({behavior: 'smooth'});" 
+                                document.querySelector('.te_s_shipping_info').scrollIntoView({behavior: 'smooth'});" 
                         >Leggi tutto</span>
                     </t>
-                </t>
-            </div>
+                </div>
+            </t>
         </xpath>
 
         <!--CREO LA SEZIONE BUNDLE SE ESISTE-->
@@ -88,4 +88,44 @@
             </t>
         </xpath>
     </template> 
+
+    <template id="custom_rating_info" inherit_id="website_all_in_one.website_sale_product_comment">
+        <xpath expr="//div[hasclass('review_font')]" position="replace">
+            <div class="review_font">
+                <span id="product_average" class="d-none"></span>
+                <t t-set="rat" t-value="product.avg_product_rating"/>
+
+                <strong t-esc="rat" class="mr-1"/>
+                <t t-foreach="range(0,5)" t-as="val">
+                    <t t-if="rat > val">
+                        <t t-if="(val + 1) > rat">
+                            <t t-if="(val + 0.5) &lt;= rat">
+                                <i style="color:var(--primary); cursor:pointer;" class="fa fa-star-half-o"></i>
+                            </t>
+                            <t t-else="">
+                                <i style="color:var(--primary); cursor:pointer;" class="fa fa-star-o"></i>
+                            </t>
+                        </t>
+                        <t t-else="">
+                            <i style="color:var(--primary); cursor:pointer;" class="fa fa-star"></i>
+                        </t>
+                    </t>
+                    <t t-else="">
+                        <i style="color:var(--primary); cursor:pointer;" class="fa fa-star-o"></i>
+                    </t>
+                </t>
+
+                <input id="total_product_review" t-att-value="len(product.reviews_ids)"
+                    name="total_product_review" type="hidden"></input>
+                <span>(</span>
+                <span id="total_product_review_span" name="total_product_review_span">
+                    <t t-esc="len(product.reviews_ids)"></t>
+                </span>
+                <t t-if="len(product.reviews_ids) &lt;= 1">Review
+                </t>
+                <t t-if="len(product.reviews_ids) > 1">Reviews</t>
+                <span>)</span>
+            </div>
+        </xpath>
+    </template>
 </odoo>

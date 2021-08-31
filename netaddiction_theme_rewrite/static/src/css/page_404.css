@@ -26,8 +26,8 @@
 	left: 50%;
 	height: 50%;
 	top: 50%;
-  transform: translateX(-50%) translateY(-50%);	
-  animation: logo 100s ease-out forwards; 
+  	transform: translateX(-50%) translateY(-50%);	
+  	animation: logo 80s ease-out forwards; 
 }
 
 
