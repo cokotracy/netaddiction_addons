@@ -111,4 +111,26 @@
         </xpath>
     </template>
 
+
+    <template id="custom_full_description" inherit_id="theme_clarico_vega.html_content_tabs_ept">
+        <xpath expr="//div[@id='product_full_description']" position="replace">
+            <t t-if="product.website_description and len(product.website_description) > 20">
+                <div id="full-description" class="col-12 col-md-6 mx-auto">
+                    <p t-raw="(product.website_description[:400] + '.. ') if len(product.website_description) >= 400 else product.website_description" class="te_prod_desc text-muted small-description"></p>
+                    <t t-if="len(product.website_description) >= 400">
+                        <div id="button-read-more" class="text-center d-block pt-3"> 
+                            <button
+                                style="font-size:14px;"
+                                class="my-0 btn btn-outline-primary btn-lg d-sm-inline-block te_theme_button px-3 py-1 js_check_product a-submit"
+                                t-attf-onclick='document.querySelector("#full-description").innerHTML = "{{product.website_description}}";'
+                            >
+                                <span class="fa fa-chevron-down"></span>
+                                Continua a leggere
+                            </button>
+                        </div>
+                    </t>
+                </div>
+            </t>
+        </xpath>
+    </template>
 </odoo>

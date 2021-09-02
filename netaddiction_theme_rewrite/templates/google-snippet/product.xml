@@ -31,52 +31,38 @@
                             </t>
                         </t>
                     ],
-                    "description": "<t t-esc="product.description"/>",
+                    "description": "<t t-esc="product.website_description"/>",
                     "sku": "<t t-esc="product.barcode"/>",
                     "mpn": "<t t-esc="product.default_code"/>",
                     "brand": {
                         "@type": "Brand",
                         "name": "<t t-esc="product.product_brand_ept_id.name"/>"
                     },
-                    <t t-if="len(all_ratings) > 0">
-                        <t t-set="avg_rating_score" t-value="0"/>
-                        <t t-foreach="all_ratings" t-as="rating">
-                            <t t-set="avg_rating_score" t-value="avg_rating_score + rating.rating"/>
-                        </t>
-                        <!--GENERO LA MEDIA DEI VOTI-->
-                        <t t-set="avg_rating_score" t-value="(avg_rating_score / 2) / len(all_ratings)"/>
+                    <t t-if="len(product.reviews_ids) > 0">
                         "aggregateRating": {
                             "@type": "AggregateRating",
-                            "ratingValue": "<t t-esc="avg_rating_score"/>",
-                            "reviewCount": "<t t-esc="len(all_ratings)"/>"
+                            "ratingValue": "<t t-esc="product.avg_product_rating"/>",
+                            "reviewCount": "<t t-esc="len(product.reviews_ids)"/>"
                         },
                         "review":[
                             <t t-set="rew_index" t-value="0" />
-                            <t t-foreach="all_ratings" t-as="rating">
+                            <t t-foreach="product.reviews_ids" t-as="rating">
                                 <t t-set="rew_index" t-value="rew_index + 1" />
                                 {
                                     "@type": "Review",
-                                    "reviewBody":"<t t-esc="rating.feedback"/>",
+                                    "reviewBody":"<t t-esc="ratings.short_desc"/>",
                                     "reviewRating": {
                                         "@type": "Rating",
-                                        "ratingValue": "<t t-esc="rating.rating / 2"/>",
+                                        "ratingValue": "<t t-esc="ratings.message_rate"/>",
                                         "bestRating": "5"
                                     },
                                     "author": {
                                         "@type": "Person",
-                                        "name": " <t t-esc="rating.partner_id.name"/>"
+                                        "name": " <t t-esc="ratings.customer_id"/>"
                                     }
-                                } <t t-if="rew_index != len(all_ratings)">,</t>
+                                } <t t-if="rew_index != len(product.reviews_ids)">,</t>
                             </t>
                         ],
-                    </t>
-                    <t t-else="">
-                        "aggregateRating": {
-                            "@type": "AggregateRating",
-                            "ratingValue": "0",
-                            "reviewCount": "0"
-                        },
-                        "review":[],
                     </t>
                     "offers": {
                         "@type": "Offer",
