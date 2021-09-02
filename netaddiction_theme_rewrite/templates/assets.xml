@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <template id="theme_assets_frontend_custom" inherit_id="website.assets_frontend">
-        <xpath expr="link[last()]" position="after">
+        <xpath expr="." position="inside">
             <!-- AGGIUNGE IN HEAD IN TUTTO IL SITO --> 
             <link href="/netaddiction_theme_rewrite/static/src/css/global.css" rel="stylesheet"/>
                 
@@ -13,6 +13,11 @@
             <!-- AGGIUNGE IN HEAD PER LE CATEGORIE -->
             <t t-if="'/shop/category/' in request.httprequest.url">
                 <link href="/netaddiction_theme_rewrite/static/src/css/category.css" rel="stylesheet"/>
+            </t>
+
+            <!-- AGGIUNGE IN HEAD PER I TAG --> 
+            <t t-if="'/tag/' in request.httprequest.url">
+                <link href="/netaddiction_theme_rewrite/static/src/css/tag.css" rel="stylesheet"/>
             </t>
 
             <!-- AGGIUNGE IN HEAD PER I TERMINI DI SPEDIZIONE -->
@@ -29,6 +34,11 @@
             <!-- AGGIUNGE IN HEAD PER I PRODOTTI --> 
             <t t-if="'/shop' in request.httprequest.url">
                 <link href="/netaddiction_theme_rewrite/static/src/css/category.css" rel="stylesheet"/>
+            </t>
+
+            <!-- AGGIUNGE IN HEAD PER IL WALLET --> 
+            <t t-if="'/wallet' in request.httprequest.url">
+                <link href="/netaddiction_theme_rewrite/static/src/css/wallet.css" rel="stylesheet"/>
             </t>
 
             <!-- AGGIUNGE IN HEAD PER I PRODOTTI --> 
@@ -59,7 +69,6 @@
             <t t-if="'/shop/' in request.httprequest.url">
                 <t t-call="netaddiction_theme_rewrite.product_snippet"/>
             </t>
-
             <!--SOSTITUISCE IL CANONICAL-->
             <t t-if="'/shop/category/' in request.httprequest.url">
                 <!--CATEGORIE: RIMUOVE LA PAGINAZIONE-->

@@ -7,20 +7,19 @@
 				<form create='false'>
 					<header >
 						<field name="state" widget="statusbar" statusbar_visible="draft,cancel,confirm,invoice,paid"/>
-						<!-- attrs="{'invisible':['|',('state','=','draft'),'|',('state','=','hold'),('state','=','run')]}" -->
-						<!-- <button name="action_draft"  type="object" string="Draft"/> -->
+
+						<!-- <button name="action_confirm" id="action_confirm"
+                        string="Confirm" class="btn-primary" type="object"
+                        attrs="{'invisible': [('state', 'not in', ['sent'])]}"/> -->
+
 						<button name="action_confirm"  string="Confirm" type="object"
-							attrs="{'invisible':['|',('state','=','cancel'),'|',('state','=','confirm'),'|',('state','=','invoice'),'|',('state','=','paid')]}"
+							attrs="{'invisible':['|','|','|',('state','=','cancel'),('state','=','confirm'),('state','=','invoice'),('state','=','paid')]}"
 							groups="base.group_system,affiliate_management.affiliate_security_manager_group"/>
-							<button name="action_cancel" type="object" string="Cancel"
-								attrs="{'invisible':['|',('state','=','invoice'),'|',('state','=','paid'),'|',('state','=','cancel')]}"
+						<button name="action_cancel" type="object" string="Cancel"
+								attrs="{'invisible':['|','|',('state','=','invoice'),('state','=','paid'),('state','=','cancel')]}"
 								groups="base.group_system,affiliate_management.affiliate_security_manager_group"/>
-
-
-							<!-- <button name="action_invoice"  type="object" string="Create invoice"
-								attrs="{'invisible':['|',('state','=','draft'),'|',('state','=','cancel'),'|',('state','=','invoice'),'|',('state','=','paid')]}"/> -->
-							<button name="action_paid"  type="object" string="Paid"
-								attrs="{'invisible':['|',('state','=','draft'),'|',('state','=','cancel'),'|',('state','=','confirm'),'|',('state','=','paid')]}"
+						<button name="action_paid"  type="object" string="Paid"
+								attrs="{'invisible':['|','|','|',('state','=','draft'),('state','=','cancel'),('state','=','confirm'),('state','=','paid')]}"
 								invisible="1"
 								groups="base.group_system,affiliate_management.affiliate_security_manager_group"/>
 						</header>
@@ -93,6 +92,8 @@
 	  	      	 <field name="model">affiliate.visit</field>
 	  	      	 <field name="arch" type="xml">
 	  	      	 	<search string="Search Employees">
+									<field name="commission_amt" />
+									<field name="state" />
 	  	      	 		<filter string="Not Invoiced" name="state" domain="[('state','!=','invoice')]"/>
 	  	      	 		 <group string="Group By">
 	  	      	 			<filter string="Method" name="affiliate_method" domain="[]" context="{'group_by':'affiliate_method'}"/>

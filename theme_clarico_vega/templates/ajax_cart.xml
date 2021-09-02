@@ -19,16 +19,10 @@
             <div class="modal fade" id="ajax_cart_model" tabindex='-1'>
                 <div class="modal-dialog modal-md modal-dialog-centered">
                     <div class="modal-content ajax_cart_modal">
-                        <button type="button" class="close" data-dismiss="modal"
+                        <button type="button" class="cart_close" data-dismiss="modal"
                                 aria-label="Close" tabindex="-1">
                         </button>
-                        <!--<t t-if="is_shop">-->
                         <div class="modal-body"/>
-
-                        <!--</t>
-                        <t t-else="">
-                            <div class="modal-body  oe_website_sale"/>
-                        </t>-->
                     </div>
                 </div>
             </div>
@@ -40,7 +34,7 @@
                 <div class="modal fade" id="ajax_cart_model_shop" tabindex='-1'>
                     <div class="modal-dialog modal-md modal-dialog-centered">
                         <div class="modal-content ajax_cart_modal">
-                            <button type="button" class="close" data-dismiss="modal"
+                            <button type="button" class="cart_close" data-dismiss="modal"
                                     aria-label="Close" tabindex="-1">
                             </button>
                             <div class="modal-body">
@@ -54,7 +48,7 @@
     <!-- Ajax view template block -->
     <template id="ajax_cart_template" inherit_id="emipro_theme_base.ajax_cart_container" name="Ajax Cart Template">
         <xpath expr="//div[hasclass('ajax_cart_content')]" position="attributes">
-            <attribute name="class">ajax_cart_content d-flex align-content-center flex-wrap</attribute>
+            <attribute name="class">ajax_cart_content te_ajax_cart_content d-flex align-content-center flex-wrap</attribute>
         </xpath>
         <xpath expr="//div[hasclass('ajax_cart_content')]" position="inside">
             <t t-set="combination" t-value="product._get_first_possible_combination()"/>
@@ -65,32 +59,23 @@
                     t-attf-class="container-fluid py-2 oe_website_sale #{'discount' if combination_info['has_discounted_price'] else ''}"
                     id="product_detail">
                 <div class="row">
-
-                    <h1 itemprop="name" t-field="product.name" class="te_product_name mb-3 col-lg-12">Product Name</h1>
-                    <div class="col-md-12 col-lg-12">
-                        <t t-call="website_sale.shop_product_carousel"/>
+                    <div class="col-auto img_section text-left">
+                        <div class="te_img_container border">
+                            <img t-if="product_variant" t-att-src="'/web/image/product.product/%s/image_128' % product_variant.id"  class="variant_image" alt="Product Image"/>
+                            <img t-else="" t-att-src="'/web/image/product.template/%s/image_128' % product.id"  class="variant_image" alt="Product Image"/>
+                        </div>
+                    </div>
+                    <div class="col text-left w-50 position-relative px-0 overflow-hidden">
+                        <div class="col-right-details">
+                            <h1 itemprop="name" t-field="product.name" class="te_product_name" t-att-title="product.name">Product Name</h1>
+                            <t t-call="website_sale.product_price"/>
+                        </div>
                     </div>
                     <div class="col-md-12 col-xl-12" id="product_details">
-                        <!--<t t-if="request.website.viewref('theme_clarico_vega.clarico_shop_products_label').active">
-                            <t t-if="product.label_line_ids">
-                                <t t-foreach="product.label_line_ids" t-as="labels">
-                                    <t t-if="labels.website_id.id == website.id">
-                                        <div class="te_prod_label"
-                                             t-attf-style="background-color:#{labels.label.html_color};color:#{labels.label.font_html_color}">
-                                            <div class="te_label_tag" t-field="labels.label.name"/>
-                                        </div>
-                                    </t>
-                                </t>
-                            </t>
-                        </t>-->
-                        <!--<div class="o_not_editable">
-                            <p t-field="product.description_sale" class="te_prod_desc"/>
-                        </div>-->
                         <span itemprop="url" style="display:none;" t-esc="product.website_url"/>
                         <form t-if="product._is_add_to_cart_possible()" action="/shop/cart/update" method="POST">
                             <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
                             <div class="js_product js_main_product">
-                                <t t-call="website_sale.product_price"/>
                                 <t t-placeholder="select">
                                     <input type="hidden" class="product_id" name="product_id"
                                            t-att-value="product_variant.id"/>
@@ -113,7 +98,6 @@
                                 <t t-set="buy_now_show"
                                    t-value="request.website.viewref('website_sale.product_buy_now').active"/>
                                 <t t-if="qty_show">
-                                    <hr class="te_s_hr_line"/>
                                     <div class="css_quantity input-group oe_website_spinner te_product_quantity"
                                          contenteditable="false">
                                         <div class="input-group-prepend">
@@ -144,7 +128,7 @@
                                 <t t-if="buy_now_show">
                                     <a role="button" id="buy_now"
                                        class="btn btn-outline-primary btn-lg mt16 d-block d-sm-inline-block te_theme_button"
-                                       href="javascript:void(0)">
+                                       href="#">
                                         <span class="fa fa-bolt"/>
                                         Buy Now
                                     </a>
@@ -173,7 +157,6 @@
             <t t-set="combination" t-value="product._get_first_possible_combination()"/>
             <t t-set="combination_info"
                t-value="product._get_combination_info(combination, add_qty=add_qty or 1, pricelist=pricelist)"/>
-            <!--<t t-set="product_variant" t-value="product.env['product.product'].browse(combination_info['product_id'])"/>-->
             <t t-set="website_sale_order" t-value="website.sale_get_order()"/>
             <t t-set="cart_qty" t-value="website_sale_order.cart_quantity"/>
             <section
@@ -204,10 +187,11 @@
                     <div class="ajax-sucess-bottom">
                         <div class="te_cart_btn">
                             <a role="button" href="javascript:void(0)"
-                               class="btn btn-secondary mb32 d-xl-inline-block ajax-sucess-continue">
+                               class="btn btn-secondary mb32 d-xl-inline-block ajax-sucess-continue te_theme_button">
                                 <span class="">Continue Shopping</span>
                             </a>
-                            <a role="button" class="btn btn-primary float-right d-xl-inline-block ajax-sucess-checkout"
+                            <a role="button"
+                               class="btn btn-primary float-right d-xl-inline-block ajax-sucess-checkout te_theme_button"
                                href="/shop/checkout?express=1">
                                 <span class="">Process Checkout</span>
                                 <span class="fa fa-chevron-right"/>

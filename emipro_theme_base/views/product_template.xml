@@ -12,8 +12,7 @@
                         <field name="document_ids">
                             <tree string="Documents" editable="bottom">
                                 <field name="name" string="Name"/>
-                                <field name="public"/>
-                                <field name="datas"/>
+                                <field name="public" string="Is Public?"/>
                             </tree>
                         </field>
                     </group>

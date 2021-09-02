@@ -6,7 +6,6 @@
 from odoo import api, fields, models
 from odoo.osv import expression
 
-
 class ProductLabelLine(models.Model):
     _name = "product.label.line"
     _description = 'Product Template Label Line'
@@ -22,7 +21,6 @@ class ProductLabelLine(models.Model):
         if name and operator in ('=', 'ilike', '=ilike', 'like', '=like'):
             args = args or []
             domain = [('label', operator, name)]
-            label_ids = self._search(expression.AND([domain, args]), limit=limit, access_rights_uid=name_get_uid)
-            return models.lazy_name_get(self.browse(label_ids).with_user(name_get_uid))
+            return self._search(expression.AND([domain, args]), limit=limit, access_rights_uid=name_get_uid)
         return super(ProductLabelLine, self)._name_search(name=name, args=args, operator=operator,
-                                                                      limit=limit, name_get_uid=name_get_uid)
+                                                          limit=limit, name_get_uid=name_get_uid)

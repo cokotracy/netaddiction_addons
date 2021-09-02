@@ -14,13 +14,13 @@
                         </div>
                         <div class="o_setting_right_pane">
                             <label for="is_lazy_load"/>
-                            <span class="fa fa-lg fa-globe"/>
+                            <span class="fa fa-lg fa-globe" title="Values set here are website-specific."/>
                             <div class="text-muted">
                                 Enable lazy load for images
                             </div>
                             <div class="content-group" attrs="{'invisible': [('is_lazy_load', '=', False)]}">
                                 <label string="Lazyload Image" for="lazy_load_image"/>
-                                <span class="fa fa-lg fa-globe"/>
+                                <span class="fa fa-lg fa-globe" title="Values set here are website-specific."/>
                                 <div class="text-muted">
                                     Display this image while lazy load
                                 </div>

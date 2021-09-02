@@ -127,10 +127,9 @@
         </field>
     </record>
 
-    <record id="netaddiction_tree_stock_picking" model="ir.ui.view">
-        <field name="name">netaddiction.tree.stock.picking</field>
+    <record id="netaddiction_stock_vpicktree" model="ir.ui.view">
+        <field name="name">netaddiction.stock.vpicktree</field>
         <field name="model">stock.picking</field>
-        <field name="priority" eval="30"/>
         <field name="inherit_id" ref="stock.vpicktree"/>
         <field name="arch" type="xml">
             <!-- Edit tree attributes -->
@@ -170,7 +169,6 @@
             <!-- Add custom fields -->
             <xpath expr="/tree/field[@name='partner_id']" position="after">
                 <field name="partner_rating" optional="show"/>
-                <field name="scheduled_date" optional="show"/>
                 <field name="date_of_shipping_home" readonly="True" optional="show"/>
                 <field name="sale_id" attrs="{'invisible' : [('picking_type_id','!=', %(stock.picking_type_out)d)]}" optional="show"/>
             </xpath>

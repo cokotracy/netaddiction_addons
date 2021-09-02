@@ -10,8 +10,8 @@
 						</section>
 	           	        <p>The page you requested could not be found</p>
 	                    <ul class="mt16 mb32">
-	                        <li class="mr8"><a href="/" class="btn btn-primary">Homepage</a></li>
-	                        <li><a href="/contactus" class="btn btn-primary">Contact Us</a></li>
+	                        <li class="mr8"><a href="/" class="btn btn-primary te_theme_button">Homepage</a></li>
+	                        <li><a href="/contactus" class="btn btn-primary te_theme_button">Contact Us</a></li>
 	                    </ul>
 					</div>
 				</div>

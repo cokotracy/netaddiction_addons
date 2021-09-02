@@ -4,6 +4,7 @@ odoo.define('theme_clarico_vega.wishlist_animate', function (require) {
     var publicWidget = require('web.public.widget');
     var wSaleUtils = require('website_sale.utils');
     var ProductWishlist = new publicWidget.registry.ProductWishlist();
+    var dom = require('web.dom');
     //--------------------------------------------------------------------------
     // Shop page wishlist animation & wishlist page add to cart animation
     //--------------------------------------------------------------------------
@@ -45,10 +46,10 @@ odoo.define('theme_clarico_vega.wishlist_animate', function (require) {
                             product_id: productId,
                         },
                     }).then(function () {
-                        var $navButton = self.getCustomNavBarButton('.te_wish_icon_head');
+                        var $navButton = self.getCustomNavBarButton('.o_wsale_my_wish');
                         self.wishlistProductIDs.push(productId);
                         self._updateWishlistView();
-                        wSaleUtils.animateClone($navButton, $el.closest('form'), 17, 12);
+                        wSaleUtils.animateClone($navButton, $el.closest('form'),  25, 40);
                     }).guardedCatch(function () {
                         $el.prop("disabled", false).removeClass('disabled');
                     });
@@ -56,17 +57,23 @@ odoo.define('theme_clarico_vega.wishlist_animate', function (require) {
             }).guardedCatch(function () {
                 $el.prop("disabled", false).removeClass('disabled');
             });
+            /* Resize menu */
+            setTimeout(() => {
+                $('#top_menu').trigger('resize');
+            }, 200);
+
+
         },
         _addOrMoveWish: function (e) {
             var self = this;
-            var $navButton = self.getCustomNavBarButton('.te_cart_icon_head');
+            var $navButton = self.getCustomNavBarButton('.o_wsale_my_wish');
             if($navButton.length == 0) {
-                $navButton = $('#top_menu_collapse #my_cart');
+                $navButton = $('#top_menu_collapse .o_wsale_my_wish');
             }
             var tr = $(e.currentTarget).parents('tr');
             var product = tr.data('product-id');
-            $('.te_cart_icon_head').removeClass('d-none');
-            wSaleUtils.animateClone($navButton, tr, 17, 10);
+            $('.o_wsale_my_cart').removeClass('d-none');
+            wSaleUtils.animateClone($navButton, tr, 25, 40);
 
             if ($('#b2b_wish').is(':checked')) {
                 return this._addToCart(product, tr.find('add_qty').val() || 1);
@@ -75,10 +82,14 @@ odoo.define('theme_clarico_vega.wishlist_animate', function (require) {
                 this._removeWish(e, adding_deffered);
                 return adding_deffered;
             }
+            /* Resize menu */
+            setTimeout(() => {
+                $('#top_menu').trigger('resize');
+            }, 200);
         },
         // To get product wishlist and wishlist page addtocart selector based on header
         getCustomNavBarButton: function(selector) {
-            var $affixedHeaderButton = $('header.affixed ' + selector);
+            var $affixedHeaderButton = $('header.o_header_affixed #top_menu_collapse ' + selector);
             if ($affixedHeaderButton.length) {
                 return $affixedHeaderButton;
             } else {

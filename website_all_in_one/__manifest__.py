@@ -3,9 +3,9 @@
 
 {
     "name" : "Website eCommerce All in One Features/Bundle - Odoo",
-    "version" : "14.0.0.0",
+    "version" : "14.0.0.3",
     "category" : "Website",
-    "depends" : ['base', 'sale','sale_management','stock', 'website', 'website_sale', 'portal','account','sale_product_configurator','bi_product_brand','point_of_sale'],
+    "depends" : ['base', 'sale','sale_management','stock', 'web','website', 'website_sale', 'portal','account','sale_product_configurator','bi_product_brand','theme_clarico_vega'],
     "author": "BrowseInfo",
     "summary": 'Website all in one website multi invoice payment website Product Stock In-Out Message Discount website Label Stickers Review Rating for Product Attachment on Website Order website all features e-Commerce all in one Product sortby and shopby website wallet',
     "description": """
@@ -167,6 +167,7 @@ Odoo Website Sale.
     "currency": 'EUR',
     "data": [
         'security/ir.model.access.csv',
+        'security/groups.xml',
         'data/data.xml',
         'views/website_portal_payment_template.xml',
         'views/website_product_attachment.xml',
@@ -184,6 +185,7 @@ Odoo Website Sale.
         'views/sale_count_template.xml',
         'views/product_brand_template.xml',
         'views/website_customer_profile.xml',
+        'wizard/credit_points_view.xml',
     ],
     'qweb': [
     ],

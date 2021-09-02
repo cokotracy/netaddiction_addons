@@ -1,3 +1,7 @@
+# FIXME This file has been disabled as we likely don't want to have this feature
+# and want to use the standard Odoo features instead. This file might be
+# completely removed later on.
+
 from odoo import fields, models
 
 

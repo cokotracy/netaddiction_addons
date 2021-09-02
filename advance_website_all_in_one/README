@@ -1,0 +1,11 @@
+1) Version: 14.0.0.1 | Date : 30/07/2021
+-->  Make module compatible with Clarico Vega v.14.
+-->  Add product and product category field in website configuration and in customer form view.
+-->  Hide selected product from Non Login user and Login user.
+-->  Make module compatible with odoo_website_wallet.
+-->  In the Cash on delivery configuration add a field to whom the cash on delivery should not be visible.
+-->  Add a category product field, with the possibility to select one or more categories and the coupon will be available for all products in the selected categories.
+-->  Add a product field, where the user can select one or more products belonging to the chosen categories and select the products on which the coupon will not be usable.
+
+2) Version: 14.0.0.2 | Date : 23/08/2021
+- Remove description tab from Product page.

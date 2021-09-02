@@ -1,0 +1,17 @@
+1) Version: 14.0.0.1 | Date : 30/07/2021
+- In eCommerce Categories add a field named "Number of loyal for review".
+- Add a new group/role in user access right "Review and assign loyalty point" to define if a PORTAL USER can see the reviews done by others.
+- Add a new group/role in user access right "ADMIN Reviewer" to define the ADMIN USER. Add menu in the backend to view all the reviews.
+- In the FrontEnd, Add a new link/page that shows all the reviews done by users for the portal user who has the right group/role.
+- Add a feature to select one or more reviews and manually assign a credit points to the users who have done the review.
+- Assign Loyalty points when user does a review for specific product for FIRST time.
+- A user can do a review only if he had AT LEAST one sale order in done state.
+- Make module compatible with Clarico Vega v.14.
+- Make module compatible with odoo_website_wallet.
+
+2) Version: 14.0.0.2 | Date : 04/08/2021
+- Remove point of sale dependency from module.
+
+3) Version: 14.0.0.3 | Date : 23/08/2021
+- Change the name of link for reviews to 'Reviews and Ratings'.
+- Redirect Reviews to 'Reviews' tab.

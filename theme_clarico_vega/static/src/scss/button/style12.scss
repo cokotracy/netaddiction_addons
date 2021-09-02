@@ -4,6 +4,7 @@
     @include position(relative);
     background-color:nth($f_color,19);
     color:nth($f_color,5);
+    border-width: 0px;
 
     &.btn-secondary, &.btn-link
     {

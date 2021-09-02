@@ -18,9 +18,13 @@ class StockPicking(models.Model):
         string="Barcode image",
     )
 
-    batch_id = fields.Many2one(
-        oldname='wave_id'
-    )
+    # TODO oldname is not a valid parameter on Odoo 14 anymore.
+    # It looks like wave_id is properly migrated to batch_id by
+    # upgrade.odoo.com. In case another migration iteration gives us a happy
+    # result, we can remove this field altogether
+    # batch_id = fields.Many2one(
+    #     oldname='wave_id'
+    # )
 
     date_of_shipping_home = fields.Date(
         compute='_compute_date_of_shipping',
@@ -58,12 +62,12 @@ class StockPicking(models.Model):
 
     sale_order_status = fields.Selection(
         related='sale_id.state',
+        string="Sale Order Status",
     )
 
     sale_order_payment_method = fields.Many2one(
         'account.journal',
-        compute='_get_sale_order_payment',
-        string="Metodo di pagamento",
+        related='sale_id.payment_method_id',
     )
 
     # TODO: Migrare
@@ -73,13 +77,6 @@ class StockPicking(models.Model):
         string="Importo",
     )
     '''
-
-    def _get_sale_order_payment(self):
-        for pick in self:
-            # TODO payment_method_id doesn't exist into sale.order check module
-            #  netaddiction_payments and ask to Francesca Bianchini or Andrea
-            #  Colangelo
-            pick.sale_order_payment_method = False # pick.sale_id.payment_method_id
 
     def _compute_date_of_shipping(self):
         for pick in self:
@@ -156,7 +153,7 @@ class StockPicking(models.Model):
             [('batch_id', '=', pick.batch_id.id),
              ('state', 'not in', ['draft', 'cancel', 'done'])]
         ):
-            pick.batch_id.done()
+            pick.batch_id.action_done()
 
         now = datetime.now(tz=pytz.timezone(self.env.user.tz or 'UTC'))
         # cerco la presenza di un manifest
@@ -299,13 +296,14 @@ class StockPicking(models.Model):
 
 
     def action_cancel(self):
+        if self.filtered(lambda p: p.delivery_read_manifest):
+            raise ValidationError(
+                "Non puoi annullare la spedizione in quanto e' gia' in"
+                " carico al corriere"
+            )
+
         cancel = []
-        for pick in self:
-            if pick.delivery_read_manifest:
-                raise ValidationError(
-                    "Non puoi annullare la spedizione in quanto è già in"
-                    " carico al corriere"
-                )
+        for pick in self.filtered(lambda p: p.payment_id):
             if pick.payment_id.state != 'posted':
                 # cancello tutto
                 cancel.append(pick.payment_id)

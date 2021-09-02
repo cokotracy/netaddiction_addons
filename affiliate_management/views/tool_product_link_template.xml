@@ -69,15 +69,20 @@
               </div>
                 <div class="container" style="text-align:center;width:58%;">
                   <form role="form" class="form-inline" t-attf-action="/search/product" method="post">
+                    <div class="input-group">
                        <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
                         <input type="name" name="name" t-att-value="name" id="name" class="form-control" required="required" autofocus="autofocus" placeholder="eg. Ipad mini" style="width:440px;"/>
-                        <select type="text" name="categories" class="form-control">
+                        <select style="width:auto;" type="text" name="categories" class="form-control">
                               <option selected="selected">All Categories</option>
                              <t t-foreach="category" t-as="c">
                                  <option><span t-field="c.name"/></option>
                              </t>
                         </select>
-                        <button type="submit" class="btn btn-primary">Fetch</button>
+
+                      <span>
+                        <button style="margin-right:3px;" type="submit" class="btn btn-primary">Fetch</button>
+                      </span>
+                    </div>
                     </form>
                   </div>
                   <br/>
@@ -90,85 +95,88 @@
 
       <table class="table table-borderless m-0" width="100%">
         <tbody>
-          <!-- <tr t-ignore="true">
-              <td t-foreach="range(0,rows)" t-as="row" t-attf-width="#{100/rows}%"></td>
-          </tr> -->
+          <!-- <tr t-foreach="bins" t-as="tr_product">
+                                            <t t-foreach="tr_product" t-as="td_product">
+                                                <t t-if="td_product">
+                                                    <t t-set="product" t-value="td_product['product']" />
+                                                    <td t-att-colspan="td_product['x'] != 1 and td_product['x']"
+                                                        t-att-rowspan="td_product['y'] != 1 and td_product['y']"
+                                                        t-attf-class="oe_product"
+                                                        t-att-data-ribbon-id="td_product['ribbon'].id">
+                                                        <div t-attf-class="o_wsale_product_grid_wrapper o_wsale_product_grid_wrapper_#{td_product['x']}_#{td_product['y']}">
+                                                            <t t-call="website_sale.products_item">
+                                                                <t t-set="product_image_big" t-value="td_product['x'] + td_product['y'] &gt; 2"/>
+                                                            </t>
+                                                        </div>
+                                                    </td>
+                                                </t>
+                                                <td t-else=""/>
+                                            </t>
+                                        </tr> -->
 
           <tr t-foreach="bins" t-as="tr_product">
               <t t-foreach="tr_product" t-as="td_product">
                   <t t-if="td_product">
                       <t t-set="product" t-value="td_product['product']" />
-
                       <t t-set="combination_info" t-value="product._get_combination_info(only_template=True, add_qty=add_qty or 1, pricelist=pricelist)"/>
                       <t t-set="product_image_big" t-value="td_product['x'] + td_product['y'] &gt; 2"/>
-                      <td t-att-colspan="td_product['x'] != 1 and td_product['x']" t-att-rowspan="td_product['y'] != 1 and td_product['y']" t-attf-class="oe_product  #{ td_product['class'] }">
 
-                      <!-- o_wsale_product_grid_wrapper o_wsale_product_grid_wrapper_1_1 -->
-                      <!-- <td t-att-colspan="2" t-att-rowspan="2" class ="oe_product oe_image_full"> -->
-                      <!-- <t t-set="product_image_big" t-value="td_product['x']+td_product['y'] &gt; 2" /> -->
-
-                        <!-- t-attf-href="/shop/product/{{td_product.get('product').id}}?{{keep_query()}}" -->
-                  <div t-attf-class ="o_wsale_product_grid_wrapper o_wsale_product_grid_wrapper_#{td_product['y']}_#{td_product['y']}">
-                      <div  class="card oe_product_cart"
-                            t-att-data-publish="product.website_published and 'on' or 'off'"
-                              itemscope="itemscope" itemtype="http://schema.org/Product">
-                      <div class="card-body p-1 oe_product_image">
-                          <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()" />
-                          <div class="ribbon-wrapper">
-                            <a href="#" role="button" class="ribbon btn btn-danger">Sale</a>
-                          </div>
-                          <a  t-attf-href="/shop/product/{{td_product.get('product').id}}?{{keep_query()}}" class="d-block h-100" itemprop="url">
-                            <span class="d-flex h-100 justify-content-center align-items-center" t-field="product.image_1920"
-                              t-options="{'widget': 'image', 'preview_image': 'image_1024' if product_image_big else 'image_256'}"
-                              />
-                            </a>
-                        </div>
-                        <!-- card_large_product -->
-                        <div t-attf-class="card-body p-0 o_wsale_product_information {{'card_large_product' if product_image_big else 'text-center'}}">
-                        <!-- <div class="card_large_product p-0 text-center o_wsale_product_information "> -->
-                          <div class="p-2 o_wsale_product_information_text">
-                            <h6 class="o_wsale_products_item_title">
-                              <a itemprop="name" t-attf-href="/shop/product/{{td_product.get('product').id}}?{{keep_query()}}" t-att-content="product.name" t-field="product.name" />
-                        <!-- <a role="button" t-if="not product.website_published" t-att-href="product_href" class="btn btn-sm btn-danger" title="This product is unpublished.">Unpublished</a> -->
-                            </h6>
-                            <div class="product_price" itemprop="offers" itemscope="itemscope" itemtype="http://schema.org/Offer">
-                              <del t-attf-class="text-danger mr-2 {{'' if combination_info['has_discounted_price'] else 'd-none'}}" style="white-space: nowrap;" t-esc="combination_info['list_price']" t-options="{'widget': 'monetary', 'display_currency': website.currency_id}" />
-                              <span t-if="combination_info['price']" t-esc="combination_info['price']" t-options="{'widget': 'monetary', 'display_currency': website.currency_id}"/>
-                              <span itemprop="price" style="display:none;" t-esc="combination_info['price']" />
-                              <span itemprop="priceCurrency" style="display:none;" t-esc="website.currency_id.name" />
+                      <td t-att-colspan="td_product['x'] != 1 and td_product['x']" t-att-rowspan="td_product['y'] != 1 and td_product['y']" t-attf-class="oe_product  #{ td_product['ribbon'] }" >
+                        <div t-attf-class ="o_wsale_product_grid_wrapper o_wsale_product_grid_wrapper_#{td_product['y']}_#{td_product['y']}">
+                          <div  class="card oe_product_cart"
+                                t-att-data-publish="product.website_published and 'on' or 'off'"
+                                  itemscope="itemscope" itemtype="http://schema.org/Product">
+                          <div class="card-body p-1 oe_product_image">
+                              <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()" />
+                              <!-- <div class="ribbon-wrapper">
+                                <a href="#" role="button" class="ribbon btn btn-danger">Sale</a>
+                              </div> -->
+                              <a  t-attf-href="/shop/product/{{td_product.get('product').id}}?{{keep_query()}}" class="d-block h-100" itemprop="url">
+                                <span class="d-flex h-100 justify-content-center align-items-center" t-field="product.image_1920"
+                                  t-options="{'widget': 'image', 'preview_image': 'image_1024' if product_image_big else 'image_256'}"
+                                  />
+                                </a>
                             </div>
-                          </div>
-                        </div>
-                        <div t-attf-class="card-body o_wsale_product_information ">
-                          <div class ="row">
-                            <div class="col-md-6">
-                              <div class="form">
-                                <form role="form" class="form-inline" t-attf-action="/tool/generate_banner" method="post">
-                                 <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
-                                    <input type="hidden" name="product_id" t-att-value="int(td_product.get('product').id)"/>
-                                      <button type="submit" class="btn btn-success">Generate Banner
-                                      </button>
-                                 </form>
+                            <div t-attf-class="card-body p-0 o_wsale_product_information {{'card_large_product' if product_image_big else 'text-center'}}">
+                              <div class="p-2 o_wsale_product_information_text">
+                                <h6 class="o_wsale_products_item_title">
+                                  <a itemprop="name" t-attf-href="/shop/product/{{td_product.get('product').id}}?{{keep_query()}}" t-att-content="product.name" t-field="product.name" />
+                                </h6>
+                                <div class="product_price" itemprop="offers" itemscope="itemscope" itemtype="http://schema.org/Offer">
+                                  <del t-attf-class="text-danger mr-2 {{'' if combination_info['has_discounted_price'] else 'd-none'}}" style="white-space: nowrap;" t-esc="combination_info['list_price']" t-options="{'widget': 'monetary', 'display_currency': website.currency_id}" />
+                                  <span t-if="combination_info['price']" t-esc="combination_info['price']" t-options="{'widget': 'monetary', 'display_currency': website.currency_id}"/>
+                                  <span itemprop="price" style="display:none;" t-esc="combination_info['price']" />
+                                  <span itemprop="priceCurrency" style="display:none;" t-esc="website.currency_id.name" />
+                                </div>
+                              </div>
+                            </div>
+
+
+                            <div t-attf-class="card-body o_wsale_product_information ">
+                              <div class ="row">
+                                <div class="col-md-6">
+                                  <div class="form">
+                                    <form role="form" class="form-inline" t-attf-action="/tool/generate_banner" method="post">
+                                     <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                                        <input type="hidden" name="product_id" t-att-value="int(td_product.get('product').id)"/>
+                                          <button type="submit" class="btn btn-success">Generate Banner
+                                          </button>
+                                     </form>
+                                   </div>
+                                 </div>
+                                <div class="col-md-6">
+                                 <div class="copy button" >
+
+                                 <input type="text" name="Element To Be Copied" t-att-id="'copy-me_%s'%(td_product.get('product').id)" t-att-value="'%s/shop/product/%s?aff_key=%s'%(base_url,int(td_product.get('product').id),partner_key)" style="display:none"/>
+
+                                 <button class="btn btn-success" t-att-id="'copy-btn_%s'%(td_product.get('product').id)" >Copy to Clipboard</button>
                                </div>
                              </div>
-                            <div class="col-md-6">
-                             <div class="copy button" >
-
-                             <!-- copy to clipboard input text -->
-                             <input type="text" name="Element To Be Copied" t-att-id="'copy-me_%s'%(td_product.get('product').id)" t-att-value="'%s/shop/product/%s?aff_key=%s'%(base_url,int(td_product.get('product').id),partner_key)" style="display:none"/>
-
-                             <button class="btn btn-success" t-att-id="'copy-btn_%s'%(td_product.get('product').id)" >Copy to Clipboard</button>
                            </div>
-                         </div>
-                       </div>
-                        </div>
-                    <!-- </form> -->
-                  </div>
-                  </div>
-
-
-
-              </td>
+                            </div>
+                      </div>
+                      </div>
+                    </td>
                   </t>
                   <td t-if="not td_product" class="oe-height-2" />
               </t>

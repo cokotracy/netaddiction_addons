@@ -17,19 +17,22 @@ INDEX:
 {
 	display:none;
 }
+form.o_wsale_products_searchbar_form div.dropdown-menu.show{
+	overflow-y: auto !important;
+}
 .te_user_account
 {
 	> .dropdown-menu a.dropdown-item
 	{
 		padding: 0.55rem 1.5rem;
 		border-bottom: 1px solid #ededed;
-		font-size:nth($f_sizes,3);
+		font-size: inherit;
 
 		> span.fa
 		{
 // 			@include style(3,19);
-			font-size: 0.8125rem;
-			color: $theme-extra-color;
+			font-size: inherit;
+			color: rgba(0, 0, 0, 0.5);
 			margin-right:1rem;
 		}
 		&:hover{
@@ -45,7 +48,10 @@ INDEX:
 	.dropdown-menu
 	{
 	    padding: 0.2rem 0 0 0;
-	    margin-top: 8px !important;
+	    margin-top: 0px !important;
+	    @include media-breakpoint-down(sm){
+	        margin-top: 8px !important;
+	    }
 	    &:before
 	    {
 	        content: "";
@@ -70,12 +76,15 @@ INDEX:
 	    }
 	}
 }
-.te_header_lang, .te_header_pricelist, .te_pricelist, .te_header_style_3_inner, .te_header_style_4_inner, .te_header_style_5_main, .te_header_style_6_main, .h8_pricelist,
-.te_language_selector, .h10_pricelist
+.te_header_lang, .te_header_pricelist, .te_pricelist, .te_header_style_3_inner, .te_header_style_4_inner, .te_header_style_4_main, .te_header_style_6_main, .h6_pricelist,
+.te_language_selector, .h8_pricelist
 {
     .dropdown-menu
 	{
-	    margin-top: 8px !important;
+	    margin-top: 0px !important;
+	    @include media-breakpoint-down(sm){
+	        margin-top: 8px !important;
+	    }
 	    &:before
 	    {
 	        content: "";
@@ -108,7 +117,7 @@ INDEX:
 		height:$o-theme-navbar-logo-height;
 		@include media-breakpoint-down(sm)
 		{
-			max-height: 50px;
+			max-width: 110px;
 		}
 	}
 }
@@ -167,16 +176,47 @@ INDEX:
 			border-color: nth($f_color,3);
 		}
 	}
+	& .form-group{
+	    margin-bottom: 12px;
+	}
 	& label
 	{
 		font-weight: normal;
 		@include style(1,3);
 		@include spacing(1px,0);
+		margin-bottom: 2px
 	}
-	& .o_auth_oauth_providers >a
-	{
-		margin-bottom:8px;
-	}
+}
+#loginPopup, #registerPopup{
+    .oe_login_form, .oe_signup_form, .oe_reset_password_form{
+        & .o_auth_oauth_providers {
+            vertical-align: middle;
+            > a{
+                margin-bottom:8px;
+                &:hover{
+                    background-color: inherit;
+                }
+                > i{
+                    font-size: 20px;
+                    vertical-align: middle;
+                    width: 40px;
+                    height: 40px;
+                    line-height: 40px;
+                    border-radius: 50%;
+                    background-color: #eaeaea;
+                    text-align: center;
+                    margin-right: 5px;
+                    margin-bottom: 5px;
+                    &:before{
+                        mix-blend-mode: luminosity;
+                    }
+                    &:hover:before{
+                        mix-blend-mode: unset;
+                    }
+                }
+            }
+        }
+    }
 }
 .form-control:disabled, .form-control[readonly] {
   background-color: nth($f_color,18);
@@ -212,7 +252,7 @@ INDEX:
 .s_website_form{
     .col-form-label
     {
-        @include style(3,1,$o-theme-fonts,null);
+        //@include style(3,1,$o-theme-fonts,null);
         font-weight: normal;
     }
     .form-control
@@ -305,6 +345,7 @@ div[name="mail_button"]
 	padding:20px;
 	text-align: center;
 	backface-visibility: hidden;
+	background: nth($f_color,05);
 }
 .te_contactus_banner_section
 {
@@ -315,34 +356,45 @@ div[name="mail_button"]
 }
 /*=========================== 06 - Click to scroll top ===================================*/
 .scrollup-div{
-	@include position(fixed,auto,15px,15px,auto);
+    @include position(fixed,null,30px,30px);
     background: nth($f_color,3);
-    width: 35px;
+    width: 35px !important;
     height: 35px;
     display:none;
     cursor: pointer;
-    @include transition(null,.3s,null)
+    @include transition(null,.3s,null);
+    line-height: 1.7;
     z-index:9999;
+    &.justify-content-end {
+        @include position(fixed,null,30px,30px);
+    }
+    &.justify-content-center {
+        @include position(fixed,null,50%,15px);
+        @include transform(translateX(50%))
+    }
+    &.justify-content-start {
+        @include position(fixed,null,unset,30px, 30px);
+    }
+    #o_footer_scrolltop {
+        background: nth($f_color,28) !important;
+    }
     @include media-breakpoint-down(md)
     {
-		z-index:99;
-		bottom:65px;
-	}
+        z-index:99;
+        bottom:65px;
+    }
     &:hover{
-    	 background: nth($f_color,19);
+         background: nth($f_color,19);
     }
     .scrollup-i{
-	    padding: 6px 0px 0 10px;
-
-	    @include style(19,5);
-	    font-weight: 900;
-	    width: 35px;
-    	height: 35px;
-    	@include transition(null,.3s,null)
-    	padding: 0.25rem;
+        @include position(absolute,null,null,null, 0px);
+        font-weight: 900;
+        width: 35px;
+        height: 35px;
+        @include transition(null,.3s,null)
+        padding: 0.25rem;
     }
 }
-
 /*================================= 07 - social button icons for product page ====================================*/
 
 .oe_share_icon {

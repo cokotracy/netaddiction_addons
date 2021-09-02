@@ -4,7 +4,6 @@
 from datetime import date, timedelta
 
 from odoo import api, fields, models
-from odoo.addons import decimal_precision as dp
 
 
 class ProductCategory(models.Model):
@@ -51,6 +50,11 @@ class ProductTemplate(models.Model):
         string="Approssimazione Data",
     )
 
+    suppliers_codes = fields.Char(
+        compute='_compute_suppliers_codes',
+        store=True,
+    )
+
     def write(self, values):
         res = super().write(values)
         if 'sale_ok' in values.keys():
@@ -66,6 +70,32 @@ class ProductTemplate(models.Model):
             res._mail_check_sale_ok()
         if 'visible' in values.keys():
             res._mail_check_visible()
+        return res
+
+    @api.depends('seller_ids', 'seller_ids.name', 'seller_ids.name.ref')
+    def _compute_suppliers_codes(self):
+        for product in self:
+            product.suppliers_codes = '~'.join([
+                si.product_code
+                for si in product.seller_ids
+                if si.product_code
+                ])
+
+    @api.model
+    def name_search(self, name, args=None, operator="ilike", limit=100):
+        """Search templates/products by supplier code, too"""
+        res = super().name_search(
+            name=name, args=args, operator=operator, limit=limit)
+        available_limit = limit - len(res)
+        if available_limit <= 0:
+            return res
+        if not args:
+            args = []
+        if name and len(name) >= 3:
+            per_supplier_args = args + [('suppliers_codes', 'ilike', name)]
+            products_per_supplier = self.search(per_supplier_args, limit=available_limit)
+            if products_per_supplier:
+                res = res + products_per_supplier.name_get()
         return res
 
     def _mail_check_sale_ok(self):
@@ -111,24 +141,18 @@ class ProductProduct(models.Model):
     detax_price = fields.Float(
         string="Prezzo di vendita deivato",
         compute="_get_visual_price",
-        digits_compute=dp.get_precision('Product Price'),
+        digits='Product Price',
     )
 
     intax_price = fields.Float(
         string="Prezzo di vendita Ivato",
         compute="_get_visual_price",
-        digits_compute=dp.get_precision('Product Price'),
+        digits='Product Price',
         )
 
     final_price = fields.Float(
         string="Pricelist Price",
         digits='Product Price'
-    )
-
-    special_price = fields.Float(
-        string="Prezzo offerta base",
-        digits='Product Price',
-        default=0
     )
 
     visible = fields.Boolean(
@@ -139,8 +163,8 @@ class ProductProduct(models.Model):
     qty_available_now = fields.Integer(
         compute="_get_qty_available_now",
         search="_search_available_now",
-        string="Quantità Disponibile Adesso",
-        help="Quantità Disponibile Adesso (qty in possesso - qty in uscita)")
+        string="Quantita' Disponibile Adesso",
+        help="Quantita' Disponibile Adesso (qty in possesso - qty in uscita)")
 
     qty_sum_suppliers = fields.Integer(
         string="Quantità dei fornitori",
@@ -197,6 +221,14 @@ class ProductProduct(models.Model):
         string="Valore Medio Inventario Ivato",
         default=0,
         compute="_get_inventory_medium_value"
+    )
+
+    image_ids = fields.Many2many(
+        'ir.attachment',
+        'product_image_rel',
+        'product_id',
+        'attachment_id',
+        string='Immagini'
     )
 
     @api.model_create_multi
@@ -446,12 +478,29 @@ class ProductProduct(models.Model):
             domain = []
         return domain
 
-    @api.depends('final_price', 'special_price')
+    @api.depends('fix_price', 'lst_price', 'list_price')
     def _get_visual_price(self):
         for product in self:
             result = product.taxes_id.compute_all(product.list_price)
             product.detax_price = result.get('total_excluded', 0.0)
             product.intax_price = result.get('total_included', 0.0)
+
+    @api.model
+    def name_search(self, name, args=None, operator="ilike", limit=100):
+        """Search templates/products by supplier code, too"""
+        res = super().name_search(
+            name=name, args=args, operator=operator, limit=limit)
+        available_limit = limit - len(res)
+        if available_limit <= 0:
+            return res
+        if not args:
+            args = []
+        if name and len(name) >= 3:
+            per_supplier_args = args + [('suppliers_codes', 'ilike', name)]
+            products_per_supplier = self.search(per_supplier_args, limit=available_limit)
+            if products_per_supplier:
+                res = res + products_per_supplier.name_get()
+        return res
 
 
 class SupplierInfo(models.Model):

@@ -44,6 +44,7 @@
               name="Taxes"
               parent="octopus_menu"
               action="octopus_tax_action"
+              groups="base.group_user"
               />
 
 </data>

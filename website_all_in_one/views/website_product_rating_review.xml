@@ -23,8 +23,173 @@
 				</xpath>
 			</field>
 	</record>
-	
 
+	<record id="inherit_product_public_category_form_view" model="ir.ui.view">
+		<field name="name">product.public.category.form</field>
+		<field name="model">product.public.category</field>
+		<field name="inherit_id" ref="website_sale.product_public_category_form_view"/>
+		<field name="arch" type="xml">
+			<xpath expr="//field[@name='sequence']" position="after">
+				<separator/>
+					<field name='loyal_for_review'/>
+			</xpath>
+		</field>
+	</record>
+
+	<record id="inherit_user_form_view" model="ir.ui.view">
+        <field name="name">res.users.form</field>
+        <field name="model">res.users</field>
+        <field name="inherit_id" ref="base.view_users_form"/>
+        <field name="arch" type="xml">
+        	<xpath expr="//page[@name='access_rights']" position="inside">
+        		<group >
+        			<group>
+                    	<field name="review_and_assign_loyalty_points"/>
+        			</group>
+        		</group>
+        	</xpath>
+        </field>
+    </record>
+
+	 <record id="reviewes_and_ratings_tree_view" model="ir.ui.view">
+		<field name="name">reviews.ratings.tree.view</field>
+		<field name="model">reviews.ratings</field>
+		<field name="arch" type="xml">
+		   <tree string="Reviews and Ratings" create="false">
+		 		<field name="rating_product_id"/>	
+				<field name="customer_id"/>			
+				<field name='short_desc'/>
+				<field name='message_rate'/>
+				<field name='website_message'/>
+				<field name='review'/>
+			</tree>
+		</field>
+	</record>
+
+	<record id="reviewes_and_ratings_form_view" model="ir.ui.view">
+		<field name="name">reviews.ratings.form.view</field>
+		<field name="model">reviews.ratings</field>
+		<field name="arch" type="xml">
+			<form string="Reviews and Ratings" create="false">
+				<sheet>
+					<group>
+						<group>
+							<field name="rating_product_id"/>	
+							<field name='short_desc'/>
+							<field name='website_message'/>
+						</group>
+						<group>
+							<field name="customer_id"/>
+							<field name='message_rate'/>
+							<field name='review'/>
+						</group>
+					</group>
+				</sheet>
+			</form>
+		</field>
+	</record>
+		
+	<record model="ir.actions.act_window" id="action_reviewes_and_ratings_view">
+		<field name="name">Reviews and Ratings</field>
+		<field name="type">ir.actions.act_window</field>
+		<field name="res_model">reviews.ratings</field>
+		<field name="view_mode">tree,form</field>
+	</record>
+
+	<menuitem 
+			id="reviewes_and_ratings_view_menu" 
+			parent="website.menu_website_configuration" 
+			name="Reviews and Ratings" 
+			action="action_reviewes_and_ratings_view" 
+			sequence="25"
+			groups="website_all_in_one.group_admin_reviewer"/>
+
+	<act_window id="action_assign_credit_points"
+        name="Assign Credit Points"
+        binding_model="reviews.ratings"
+        res_model="assign.credit.points"
+        view_mode="form"
+        target="new" 
+        binding_views="form"/>
+
+        <act_window id="action_assign_credit_points_multi"
+        name="Assign Credit Points"
+        binding_model="reviews.ratings"
+        res_model="assign.credit.points"
+        view_mode="form"
+        target="new" 
+        binding_views="list"/>
+
+    <template id="assets_frontend_reviews" inherit_id="website.assets_frontend" name="Custom CSS-JS">
+			<xpath expr="." position="inside">
+				<script src="/website_all_in_one/static/src/js/submit_review.js" type="text/javascript"></script>
+			</xpath>
+	</template>
+
+	<template id="portal_reviewes_and_ratings" name="Portal My Home : Reviews and Ratings"  customize_show="True" inherit_id="portal.portal_my_home" priority="40">
+        <xpath expr="//div[hasclass('o_portal_docs')]" position="inside">
+            <t t-if="reviewes_count">
+            	<t t-call="portal.portal_docs_entry">
+                    <t t-set="title">Reviews and Ratings</t>
+                    <t t-set="url" t-value="'/reviewes'"/>
+                    <t t-set="count" t-value="reviewes_count"/>
+                </t>
+            </t>
+        </xpath>
+    </template>
+
+    <template id="portal_reviewes_view" name="My reviewes">
+        <t t-call="portal.portal_layout">
+            <t t-set="breadcrumbs_searchbar" t-value="True"/>
+            <t t-call="portal.portal_searchbar">
+                <t t-set="title">Reviews</t>
+            </t>
+            
+            
+            <t t-if="all_reviews">
+                <t t-call="portal.portal_table">
+                	<br/>
+                    <t t-foreach="all_reviews" t-as="reviews">
+                        <thead>
+                            <tr t-attf-class="{{'thead-light' if not groupby == 'none' else ''}}">
+                                <th class="text-left">Review</th>
+                                <th class="text-center">Product</th>
+                                <th class="text-center">Customer</th>
+                                <th class="text-center">Short Description</th>
+                                <th class="text-center">Message Rating</th>
+                                <th class="text-center">Is Website Message</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <t t-foreach="reviews" t-as="review">
+                                <tr>
+                                    <td class="text-left">
+                                        <span t-esc="review.review"/>
+                                    </td>
+                                    <td class="text-center">
+                                        <span t-field="review.rating_product_id.name"/>
+                                    </td>
+                                    <td class="text-center">
+                                        <span t-field="review.customer_id.name"/>
+                                    </td>
+                                    <td class="text-center">
+                                        <span t-field="review.short_desc"/>
+                                    </td>
+                                    <td class="text-center">
+                                        <span t-field="review.message_rate"/>
+                                    </td>
+                                    <td class="text-center">
+                                        <span t-field="review.website_published"/>
+                                    </td>
+                                    
+                                </tr>
+                            </t>
+                        </tbody>
+                    </t>
+                </t>
+            </t>
+        </t>
+    </template>
 
 
 <template id="assets_product_rating_review" inherit_id="website.assets_frontend" name="website_product_rating_review">
@@ -52,17 +217,19 @@
 			}
 		</script>
 		<script type="text/javascript" src="/website_all_in_one/static/src/js/website_product_review.js"></script>
+		
 	</xpath>
 </template>
-		
+
+
 		
 <!--<template id="product_review_on_single_product_page" inherit_id='website_sale.product'>-->
-<template id="website_sale.product_comment" inherit_id="website_sale.product" active="True" customize_show="True" name="Discussion and Rating" priority="15">
+<template id="website_sale_product_comment" inherit_id="website_sale.product" active="True" customize_show="True" name="Reviews and Ratings" priority="15">
 	<xpath expr="//div[@id='product_details']//h1" position="after">
 	<div class="average_rating_view">
 	<input id="total_product_review" t-att-value="len(product.reviews_ids)" name="total_product_review" type="hidden" />
-			<a href="#comment">
-				<div>
+			<!-- <a href="#nav_tabs_content_ratings_reviews">
+			 -->	<div>
 					<div class="average_product_class" id="rate_tooltip">
 						<div style="float:left;margin-bottom: -40px;" id="shop_rate_star">
 
@@ -97,261 +264,11 @@
 
 					</div>
 				</div>
-			</a>
+			<!-- </a> -->
 		</div>
 
 		</xpath>
 		
-		
-		<!-- Review Form Xpath -->
-		<xpath expr="//section['product_detail']//div[2][@class='row']" position="after">
-			  <t t-if="len(product.reviews_ids) &lt;= 1" style="color:#168D93">
-				<t t-esc="len(product.reviews_ids)" />
-				review
-			</t>
-			<t t-if="len(product.reviews_ids) > 1" style="color:#168D93">
-				<t t-esc="len(product.reviews_ids)" />
-				reviews
-			</t>
-
-
-			<ul class="media-list" id="comments-list">
-					<div id="paginationdemo" class="demo">
-						<t t-set="total_pages" t-value="int(len(product.reviews_ids)/10)" />
-						<t t-foreach="total_pages+1" t-as="page">
-							<t t-set="page_next" t-value="page+1" />
-							<div t-att-id="'p%s' %page_next" class="pagedemo _current">
-								<li t-foreach="product.reviews_ids[(page*10):(((page_next)*10))]"
-									t-as="ratings" class="medianew">
-									<span class="pull-left">
-										<img class="media-object img img-circle" t-att-src="website.image_url(ratings, 'author_avatar')"
-											style="width: 30px" alt="Avatar"/>
-									</span>
-
-									<div class="media-body oe_msg">
-										<div class="media-body oe_msg_content">
-											<t t-call="website.publish_short">
-												<t t-set="object" t-value="ratings" />
-											</t>
-											<input t-att-id="'product-actual-rate-%s' %ratings.id" t-att-value="ratings.message_rate" name="message_rate" type="hidden" />
-
-
-											<input t-att-id="'actual-rate-%s' %ratings.id" t-att-value="ratings.message_rate" name="message_rate" type="hidden" />
-											<t t-if="ratings.message_rate >=0">
-											<input id="message_id" t-att-value="ratings.id" name="message_id" type="hidden" />
-											<div class="starRating1">
-												<div>
-													<div>
-														<div>
-															<div>
-																<input t-att-id="'rate1-%s' %ratings.id" type="radio"
-																	t-att-name="'rate-%s' %ratings.id" value="1">
-																	<label for="rating1">
-																		<span>1</span>
-																	</label>
-																</input>
-															</div>
-															<input t-att-id="'rate2-%s' %ratings.id" type="radio"
-																t-att-name="'rate-%s' %ratings.id" value="2">
-																<label for="rating2">
-																	<span>2</span>
-																</label>
-															</input>
-														</div>
-														<input t-att-id="'rate3-%s' %ratings.id" type="radio"
-															t-att-name="'rate-%s' %ratings.id" value="3">
-															<label for="rating3">
-																<span>3</span>
-															</label>
-														</input>
-													</div>
-													<input t-att-id="'rate4-%s' %ratings.id" type="radio"
-														t-att-name="'rate-%s' %ratings.id" value="4">
-														<label for="rating4">
-															<span>4</span>
-														</label>
-													</input>
-												</div>
-												<input t-att-id="'rate5-%s' %ratings.id" type="radio"
-													t-att-name="'rate-%s' %ratings.id" value="5">
-													<label for="rating5">
-														<span>5</span>
-													</label>
-												</input>
-											</div>
-											</t>
-
-
-											<t t-if="ratings.message_rate > 0">
-												<input id="product_message_id" t-att-value="ratings.id"
-													name="product_message_id" type="hidden" />
-
-											</t>
-											<div class="product_short" t-field="ratings.short_desc" />
-											<h5 class="media-heading"
-												style="display:inline;margin-left:6px !important;color:antiquewhite;">
-
-												<span class="review_class_rating">Reviewed by</span>
-												<span t-field="ratings.customer_id"></span>
-
-											</h5>
-
-											<div>
-
-											</div>
-										</div>
-									</div>
-								</li>
-							</div>
-						</t>
-						<div id="demo5">
-						</div>
-					</div>
-					<p class="post_your_review">Submit your review about this Product</p>
-
-				</ul>
-
-
-				<hr class="mb32" />
-				<t t-if="website.user_id == user_id">
-					<p style="margin-top: 48px !important; margin-bottom: -10px;">
-						Please
-						<a t-attf-href="/web/login?redirect=/shop/product/#{slug(product)}">Sign in</a>
-						to rate this Product
-					</p>
-					<br/>
-					<form id="comment" t-attf-action="/shop/product/comment/#{product.id}"
-						method="POST">
-						<input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
-						
-						<div class="media">
-							<span class="pull-left">
-								<img class="img img-circle media-object"
-									t-att-src="website.image_url(user_id.partner_id, 'image_small')"
-									style="width: 30px" />
-							</span>
-							<div class="media-body">
-								<div class="message_rate">
-									<div class="cancel_rating_class" title="Cancel Rating">
-										<a title="Cancel Rating"></a>
-									</div>
-									<input id="message_rate" name="message_rate" class="form-control"
-										type="hidden" />
-
-									<div class="starRating" id="star">
-										<div>
-											<div>
-												<div>
-													<div>
-														<input id="rating11" type="radio" name="rating"
-															value="1">
-															<label for="rating11">
-																<span>1</span>
-															</label>
-														</input>
-													</div>
-													<input id="rating12" type="radio" name="rating"
-														value="2">
-														<label for="rating12">
-															<span>2</span>
-														</label>
-													</input>
-												</div>
-												<input id="rating13" type="radio" name="rating" value="3">
-													<label for="rating13">
-														<span>3</span>
-													</label>
-												</input>
-											</div>
-											<input id="rating14" type="radio" name="rating" value="4">
-												<label for="rating14">
-													<span>4</span>
-												</label>
-											</input>
-										</div>
-										<input id="rating15" type="radio" name="rating" value="5">
-											<label for="rating15">
-												<span>5</span>
-											</label>
-										</input>
-									</div>
-								</div>
-
-							</div>
-						</div>
-						<div class="pull-left mb32" style="width: 75%">
-							<input type="text" rows="1" readonly="true" name="short_description"
-								style="margin-bottom:10px;" class="form-control"
-								placeholder="Write your feelings about this Product.."></input>
-							<textarea rows="3" name="comment" readonly="true"
-								class="form-control" placeholder="Write a Description..."></textarea>
-							<a t-if="website.user_id != user_id" disabled="disabled" class="btn btn-primary mt8 a-submit">Submit
-								Your Review
-							</a>
-						</div>
-					</form>
-				</t>
-				<t t-if="website.user_id != user_id">
-					<form id="comment" t-attf-action="/shop/product/comment/#{product.id}"
-						method="POST">
-						<input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
-						<!--<span t-esc="product.id"/>-->
-						<div class="pull-left mb32" style="width: 75%">
-							<div class="set_star">
-								<div class="cancel_rating_class" title="Cancel Rating">
-									<a title="Cancel Rating"></a>
-								</div>
-
-								<div class="starRating" id="star">
-									<div>
-										<div>
-											<div>
-												<div>
-													<input id="rating21" type="radio" name="review"
-														value="1">
-														<label for="rating21">
-															<span>1</span>
-														</label>
-													</input>
-												</div>
-												<input id="rating22" type="radio" name="review" value="2">
-													<label for="rating22">
-														<span>2</span>
-													</label>
-												</input>
-											</div>
-											<input id="rating23" type="radio" name="review" value="3">
-												<label for="rating23">
-													<span>3</span>
-												</label>
-											</input>
-										</div>
-										<input id="rating24" type="radio" name="review" value="4">
-											<label for="rating24">
-												<span>4</span>
-											</label>
-										</input>
-									</div>
-									<input id="rating25" type="radio" name="review" value="5">
-										<label for="rating25">
-											<span>5</span>
-										</label>
-									</input>
-								</div>
-
-							</div>
-							<input type="hidden" id="blog_post_id" name="message_rate"
-								class="form-control" style="margin-bottom:10px;" />
-							<input type="text" rows="1" name="short_description"
-								style="margin-bottom:10px;text-shadow: 1px 1px 1px #ccc;" class="form-control"
-								placeholder="Write your feelings about this Product.."></input>
-							<textarea rows="3" name="comment" class="form-control"
-								placeholder="Write a Description..."></textarea>
-							<input class="btn btn-primary mt8 a-submit" type="submit" value="Submit Your Review"/>
-						</div>
-					</form>
-				</t>
-	</xpath>
 </template>
 	
     </data>

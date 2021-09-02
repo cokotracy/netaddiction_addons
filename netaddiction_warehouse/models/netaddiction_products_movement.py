@@ -8,7 +8,7 @@ class ProductsMovement(models.TransientModel):
 
     action = fields.Selection(
         [('scraped', 'Difettato'),
-         ('rialloca', 'Rialloca'),
+         ('rialloca', 'Alloca'),
          ('down', 'Scarica')],
         required=True,
         string="Azione",

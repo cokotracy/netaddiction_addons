@@ -7,9 +7,12 @@ odoo.define('emipro_theme_base.load_product_through_ajax', function(require) {
     var config = require('web.config');
     var VariantMixin = require('sale.VariantMixin');
     var themeEvent = new sAnimations.registry.themeEvent();
+    var StickyFilter = new sAnimations.registry.StickyFilter();
     var product_detail = new sAnimations.registry.product_detail();
     var priceSlider = new publicWidget.registry.price_slider();
     var quickFilter = new sAnimations.registry.te_quick_filter_main_div();
+    var core = require('web.core');
+    var _t = core._t;
 
     sAnimations.registry.WebsiteSale.include({
         _onChangeAttribute: function(event) {
@@ -75,6 +78,21 @@ odoo.define('emipro_theme_base.load_product_through_ajax', function(require) {
                 this.trigger_up('widgets_start_request', {$target: $carousel});
             }
             $carousel.toggleClass('css_not_available', !isCombinationPossible);
+            /* update image while update variant */
+            var pro_img_src = "/web/image/product.product/"+productId+"/image_128";
+            var temp_img_src = "/web/image/product.template/"+productId+"/image_128";
+            if ( $(".te_ajax_cart_content").length ){
+                if( $(pro_img_src.length) ){
+                    $(".te_ajax_cart_content").find(".img_section img.variant_image").attr("src", pro_img_src);
+                }
+                else{
+                    $(".te_ajax_cart_content").find(".img_section img.variant_image").attr("src", temp_img_src);
+                }
+            }
+            /* Attribute value tooltip */
+            $(function () {
+              $('[data-toggle="tooltip"]').tooltip({ animation:true, delay: {show: 300, hide: 100} })
+            });
         },
         /**
          * Toggles the add to cart button depending on the possibility of the
@@ -87,7 +105,7 @@ odoo.define('emipro_theme_base.load_product_through_ajax', function(require) {
             $parent.find("#add_to_cart,.quick-add-to-cart").toggleClass('disabled', !isCombinationPossible);
             $parent.find("#buy_now").toggleClass('disabled', !isCombinationPossible);
         },
-          /**
+        /**
          * Displays SKU and change based on select varient
          * current combination.
          *
@@ -119,11 +137,11 @@ odoo.define('emipro_theme_base.load_product_through_ajax', function(require) {
             var minValue = parseFloat($("#price_slider_min").val());
             var maxValue = parseFloat($("#price_slider_max").val());
 
+            // Don't submit the price filter data if price filter not appyied
             if (inputMinVal==minValue && inputMaxVal==maxValue){
                 $("input.ept_price_min").removeAttr('name')
                 $("input.ept_price_max").removeAttr('name')
             }
-
             if($(".load_products_through_ajax").length)
             {
                 var through_ajax = $(".load_products_through_ajax").val();
@@ -141,7 +159,10 @@ odoo.define('emipro_theme_base.load_product_through_ajax', function(require) {
             $('.cus_theme_loader_layout').removeClass('d-none');
             var url = window.location.pathname;
             var frm = $('.js_attributes')
-            url = url + "?" + frm.serialize();
+
+            var url_prm = frm.serialize()
+
+            url = url + "?" + url_prm;
             window.history.pushState({}, "", url);
             $.ajax({
                 url: url,
@@ -160,60 +181,16 @@ odoo.define('emipro_theme_base.load_product_through_ajax', function(require) {
                     $(".load_more_next_page").replaceWith(data_replace);
                     themeEvent.onShowClearVariant();
                     themeEvent.onSelectAttribute();
-                    themeEvent.stickySidebar();
+                    StickyFilter._stickyFilter();
                     priceSlider.start();
                     quickFilter.start();
+                    $("html, body").animate({
+                        scrollTop: 0
+                    }, 1000);
                     if ($(window).width() < 768) {
                         quickFilter.openQuickFilterPopup();
                         quickFilter.hideSidebar();
                         quickFilter.closeQuickFilterPopup();
-                    }
-                    if($( window ).width() > 1200) {
-                        var $stickyFilter = $('.te_shop_pager_top');
-                        var footerTop = $('footer').offset().top - 200;
-                        var stickyTop = $('.te_shop_pager_top').offset().top;
-                        $(window).scroll(function(){
-                            if($('#oe_main_menu_navbar').length) {
-                                var header_height = $('#oe_main_menu_navbar').height() + $('.te_header_navbar').height();
-                            } else {
-                                var header_height = $('.te_header_navbar').height();
-                            }
-                            var stickOffset = header_height;
-                            var windowTop = $(window).scrollTop();
-                            if ((footerTop > windowTop + header_height) && (stickyTop < windowTop)) {
-                                $stickyFilter.css({top: stickOffset});
-                                $stickyFilter.addClass('sticky-filter');
-                            } else {
-                                $stickyFilter.css({top: 'initial'});
-                                $stickyFilter.removeClass('sticky-filter');
-                            }
-                        });
-                    }
-                    if($( window ).width() < 1200) {
-                        var $stickyFilter = $('.te_shop_filter_resp_ept');
-                        if (!!$stickyFilter.offset()) {
-                            var sidebar_height = $stickyFilter.innerHeight();
-                            var stickyTop = $('.te_shop_filter_resp_ept').offset().top;
-                            var footerTop = $('footer').offset().top - 300;
-                            $(window).scroll(function(){
-                                if($('#oe_main_menu_navbar').length) {
-                                    var header_height = $('#oe_main_menu_navbar').height() + $('.te_header_navbar').height() + 10;
-                                } else {
-                                    var header_height = $('.te_header_navbar').height() + 10;
-                                }
-                                var stickOffset = header_height;
-                                var windowTop = $(window).scrollTop();
-                                if ((footerTop > windowTop + header_height) && (stickyTop < windowTop)) {
-                                    $('.filters-title-ept').hide();
-                                    $stickyFilter.css({top: stickOffset});
-                                    $stickyFilter.addClass('sticky-filter');
-                                } else {
-                                    $('.filters-title-ept').show();
-                                    $stickyFilter.css({top: 'initial'});
-                                    $stickyFilter.removeClass('sticky-filter');
-                                }
-                            });
-                        }
                     }
 
                     $('.nav-item input[type="checkbox"]').click(function(){
@@ -247,22 +224,14 @@ odoo.define('emipro_theme_base.load_product_through_ajax', function(require) {
                             }
                         });
                     });
-                    /* Changes for Sticky filter in mobile view  */
-                    if ( $('.te_shop_pager_mobile').length ){
-                        if($( window ).width() < 768) {
-                            $('.te_shop_pager_top').css({ position: 'relative', top: 'initial', width: window.innerWidth, display: 'flex', padding: '0px 15px', margin: '0px -15px', 'background-color': '#FFF', 'z-index':'8' });
-                        }
-                    }
-
-
                     /* Custom jquery scrollbar*/
-//                    if($('.te_product_sidebar_scrollbar').length){
+                    if($('.te_product_sidebar_scrollbar').length){
 //                        $(".js_attributes .nav-item ul.nav.nav-pills").mCustomScrollbar({
 //                           axis:"y",
 //                           theme:"dark-thin",
 //                           alwaysShowScrollbar: 2
 //                        });
-//                    }
+                    }
 
                     $('.cus_theme_loader_layout').addClass('d-none');
                     $('#wrapwrap').removeClass('wrapwrap_trans');

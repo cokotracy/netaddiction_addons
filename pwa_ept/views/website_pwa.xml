@@ -17,7 +17,7 @@
                             </div>
                             <div class="o_setting_right_pane">
                                 <label for="is_pwa"/>
-                                <span class="fa fa-lg fa-globe"/>
+                                <span class="fa fa-lg fa-globe" title="Values set here are website-specific."/>
                                 <div class="text-muted">
                                     Enable Progressive Web Application
                                 </div>
@@ -29,7 +29,7 @@
                             <div class="o_setting_right_pane">
                                 <div class="content-group" attrs="{'invisible': [('is_pwa', '=', False)]}">
                                     <label string="Name" for="pwa_name"/>
-                                    <span class="fa fa-lg fa-globe"/>
+                                    <span class="fa fa-lg fa-globe" title="Values set here are website-specific."/>
                                     <div class="text-muted">
                                         It will be used in the splash screen and Add To Home Screen’ pop-up.
                                     </div>
@@ -43,7 +43,7 @@
                             <div class="o_setting_right_pane">
                                 <div class="content-group">
                                     <label string="Short name of Pwa" for="pwa_short_name"/>
-                                    <span class="fa fa-lg fa-globe"/>
+                                    <span class="fa fa-lg fa-globe" title="Values set here are website-specific."/>
                                     <div class="text-muted">
                                         It will be used in a browser pop-up and the app shortcut name.
                                     </div>
@@ -57,7 +57,7 @@
                             <div class="o_setting_right_pane">
                                 <div class="content-group">
                                     <label string="Theme Color" for="pwa_theme_color"/>
-                                    <span class="fa fa-lg fa-globe"/>
+                                    <span class="fa fa-lg fa-globe" title="Values set here are website-specific."/>
                                     <div class="text-muted">
                                         The color is used to customize the look of the browser.
                                     </div>
@@ -71,7 +71,7 @@
                             <div class="o_setting_right_pane">
                                 <div class="content-group">
                                     <label string="Background Color" for="pwa_bg_color"/>
-                                    <span class="fa fa-lg fa-globe"/>
+                                    <span class="fa fa-lg fa-globe" title="Values set here are website-specific."/>
                                     <div class="text-muted">
                                         The color used to customize the splash screen when launching from the home screen shortcut.
                                     </div>
@@ -85,7 +85,7 @@
                             <div class="o_setting_right_pane">
                                 <div class="content-group">
                                     <label string="Start URL" for="pwa_start_url"/>
-                                    <span class="fa fa-lg fa-globe"/>
+                                    <span class="fa fa-lg fa-globe" title="Values set here are website-specific."/>
                                     <div class="text-muted">
                                         This is the URL on which the user will be landed when they add this app to the home screen and click on it.
                                     </div>
@@ -99,7 +99,7 @@
                             <div class="o_setting_right_pane">
                                 <div class="content-group">
                                     <label string="Application Image(512x512)" for="app_image_512"/>
-                                    <span class="fa fa-lg fa-globe"/>
+                                    <span class="fa fa-lg fa-globe" title="Values set here are website-specific."/>
                                     <div class="text-muted">
                                         It will be used in an app launcher, home screen, splash screen icons. (Required 512x512)
                                     </div>

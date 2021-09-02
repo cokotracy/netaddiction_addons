@@ -1,0 +1,306 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* product_bundle_pack
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 14.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2021-06-02 14:31+0000\n"
+"PO-Revision-Date: 2021-06-02 14:31+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: product_bundle_pack
+#: model_terms:ir.ui.view,arch_db:product_bundle_pack.product_bundle_inherit_sale_order_form
+msgid "Add Bundle"
+msgstr "Agregar paquete"
+
+#. module: product_bundle_pack
+#: model_terms:ir.ui.view,arch_db:product_bundle_pack.wizard_product_bundle_bi
+msgid "Add Bundle Products"
+msgstr "Agregar productos en paquete"
+
+#. module: product_bundle_pack
+#: model_terms:ir.ui.view,arch_db:product_bundle_pack.product_bundle_product_form_view
+msgid "Add a product"
+msgstr "Agregar un producto"
+
+#. module: product_bundle_pack
+#: model_terms:ir.ui.view,arch_db:product_bundle_pack.view_res_config_purchase_inherit
+msgid "Allow Bundle Pack on Purchase"
+msgstr "Permitir paquete en la compra"
+
+#. module: product_bundle_pack
+#: model:ir.model.fields,field_description:product_bundle_pack.field_res_config_settings__allow_bundle
+msgid "Allow Manual Dropshipping Delivery"
+msgstr "Permitir la entrega manual de Dropshipping"
+
+#. module: product_bundle_pack
+#: model:ir.model.fields,field_description:product_bundle_pack.field_wizard_product_bundle_bi__product_id
+msgid "Bundle"
+msgstr "Manojo"
+
+#. module: product_bundle_pack
+#: model_terms:ir.ui.view,arch_db:product_bundle_pack.wizard_product_bundle_bi
+msgid "Bundle Product"
+msgstr "Paquete de producto"
+
+#. module: product_bundle_pack
+#: model:ir.model.fields,field_description:product_bundle_pack.field_product_product__cal_pack_price
+#: model:ir.model.fields,field_description:product_bundle_pack.field_product_template__cal_pack_price
+msgid "Calculate Pack Price"
+msgstr "Calcular precio del paquete"
+
+#. module: product_bundle_pack
+#: model_terms:ir.ui.view,arch_db:product_bundle_pack.wizard_product_bundle_bi
+msgid "Cancel"
+msgstr "Cancelar"
+
+#. module: product_bundle_pack
+#: model:ir.model,name:product_bundle_pack.model_res_config_settings
+msgid "Config Settings"
+msgstr "Opciones de configuración"
+
+#. module: product_bundle_pack
+#: model:ir.model.fields,field_description:product_bundle_pack.field_product_pack__create_uid
+#: model:ir.model.fields,field_description:product_bundle_pack.field_wizard_product_bundle_bi__create_uid
+msgid "Created by"
+msgstr "Creado por"
+
+#. module: product_bundle_pack
+#: model:ir.model.fields,field_description:product_bundle_pack.field_product_pack__create_date
+#: model:ir.model.fields,field_description:product_bundle_pack.field_wizard_product_bundle_bi__create_date
+msgid "Created on"
+msgstr "Creado por"
+
+#. module: product_bundle_pack
+#: model:ir.model.fields,help:product_bundle_pack.field_product_pack__uom_id
+msgid "Default unit of measure used for all stock operations."
+msgstr "Unidad de medida predeterminada utilizada para todas las operaciones de stock"
+
+#. module: product_bundle_pack
+#: model:ir.model.fields,field_description:product_bundle_pack.field_product_pack__display_name
+#: model:ir.model.fields,field_description:product_bundle_pack.field_product_template__display_name
+#: model:ir.model.fields,field_description:product_bundle_pack.field_purchase_order__display_name
+#: model:ir.model.fields,field_description:product_bundle_pack.field_purchase_order_line__display_name
+#: model:ir.model.fields,field_description:product_bundle_pack.field_res_config_settings__display_name
+#: model:ir.model.fields,field_description:product_bundle_pack.field_sale_order_line__display_name
+#: model:ir.model.fields,field_description:product_bundle_pack.field_stock_move__display_name
+#: model:ir.model.fields,field_description:product_bundle_pack.field_stock_move_line__display_name
+#: model:ir.model.fields,field_description:product_bundle_pack.field_stock_picking__display_name
+#: model:ir.model.fields,field_description:product_bundle_pack.field_stock_rule__display_name
+#: model:ir.model.fields,field_description:product_bundle_pack.field_wizard_product_bundle_bi__display_name
+msgid "Display Name"
+msgstr "Nombre mostrado"
+
+#. module: product_bundle_pack
+#: model:ir.actions.act_window,name:product_bundle_pack.bi_act_product_bundle_wizard
+msgid "Dynamic Product Bundle"
+msgstr "Paquete de producto dinámico"
+
+#. module: product_bundle_pack
+#: model:ir.model.fields,field_description:product_bundle_pack.field_product_pack__id
+#: model:ir.model.fields,field_description:product_bundle_pack.field_product_template__id
+#: model:ir.model.fields,field_description:product_bundle_pack.field_purchase_order__id
+#: model:ir.model.fields,field_description:product_bundle_pack.field_purchase_order_line__id
+#: model:ir.model.fields,field_description:product_bundle_pack.field_res_config_settings__id
+#: model:ir.model.fields,field_description:product_bundle_pack.field_sale_order_line__id
+#: model:ir.model.fields,field_description:product_bundle_pack.field_stock_move__id
+#: model:ir.model.fields,field_description:product_bundle_pack.field_stock_move_line__id
+#: model:ir.model.fields,field_description:product_bundle_pack.field_stock_picking__id
+#: model:ir.model.fields,field_description:product_bundle_pack.field_stock_rule__id
+#: model:ir.model.fields,field_description:product_bundle_pack.field_wizard_product_bundle_bi__id
+msgid "ID"
+msgstr "IDENTIFICACIÓN"
+
+#. module: product_bundle_pack
+#: model:ir.model.fields,field_description:product_bundle_pack.field_product_pack__bi_image
+msgid "Image"
+msgstr "Imagen"
+
+#. module: product_bundle_pack
+#: model:ir.model.fields,field_description:product_bundle_pack.field_product_product__is_pack
+#: model:ir.model.fields,field_description:product_bundle_pack.field_product_template__is_pack
+msgid "Is Product Pack"
+msgstr "Es paquete de producto"
+
+#. module: product_bundle_pack
+#: model_terms:ir.ui.view,arch_db:product_bundle_pack.product_bundle_product_search_view
+msgid "Is a pack"
+msgstr "Es un paquete"
+
+#. module: product_bundle_pack
+#: model:ir.model.fields,field_description:product_bundle_pack.field_product_pack____last_update
+#: model:ir.model.fields,field_description:product_bundle_pack.field_product_template____last_update
+#: model:ir.model.fields,field_description:product_bundle_pack.field_purchase_order____last_update
+#: model:ir.model.fields,field_description:product_bundle_pack.field_purchase_order_line____last_update
+#: model:ir.model.fields,field_description:product_bundle_pack.field_res_config_settings____last_update
+#: model:ir.model.fields,field_description:product_bundle_pack.field_sale_order_line____last_update
+#: model:ir.model.fields,field_description:product_bundle_pack.field_stock_move____last_update
+#: model:ir.model.fields,field_description:product_bundle_pack.field_stock_move_line____last_update
+#: model:ir.model.fields,field_description:product_bundle_pack.field_stock_picking____last_update
+#: model:ir.model.fields,field_description:product_bundle_pack.field_stock_rule____last_update
+#: model:ir.model.fields,field_description:product_bundle_pack.field_wizard_product_bundle_bi____last_update
+msgid "Last Modified on"
+msgstr "Última modificación el"
+
+#. module: product_bundle_pack
+#: model:ir.model.fields,field_description:product_bundle_pack.field_product_pack__write_uid
+#: model:ir.model.fields,field_description:product_bundle_pack.field_wizard_product_bundle_bi__write_uid
+msgid "Last Updated by"
+msgstr "Actualizado por última vez por"
+
+#. module: product_bundle_pack
+#: model:ir.model.fields,field_description:product_bundle_pack.field_product_pack__write_date
+#: model:ir.model.fields,field_description:product_bundle_pack.field_wizard_product_bundle_bi__write_date
+msgid "Last Updated on"
+msgstr "Ultima actualización en"
+
+#. module: product_bundle_pack
+#: model:ir.model.fields,field_description:product_bundle_pack.field_product_pack__name
+msgid "Name"
+msgstr "Nombre"
+
+#. module: product_bundle_pack
+#: code:addons/product_bundle_pack/models/sale.py:0
+#, python-format
+msgid "No source location defined on stock rule: %s!"
+msgstr "Ninguna ubicación de origen definida en la regla de existencias:% s!"
+
+#. module: product_bundle_pack
+#: code:addons/product_bundle_pack/models/sale.py:0
+#, python-format
+msgid "Not enough inventory!"
+msgstr "¡No hay suficiente inventario!"
+
+#. module: product_bundle_pack
+#: model:ir.model.fields,field_description:product_bundle_pack.field_stock_move__pack_id
+#: model:ir.model.fields,field_description:product_bundle_pack.field_stock_move_line__pack_id
+msgid "PACK"
+msgstr "PAQUETE"
+
+#. module: product_bundle_pack
+#: model_terms:ir.ui.view,arch_db:product_bundle_pack.product_bundle_product_form_view
+msgid "Pack Products"
+msgstr "Productos del paquete"
+
+#. module: product_bundle_pack
+#: model:ir.model.fields,field_description:product_bundle_pack.field_wizard_product_bundle_bi__product_price
+msgid "Price"
+msgstr "Precio"
+
+#. module: product_bundle_pack
+#: model:ir.model.fields,field_description:product_bundle_pack.field_product_pack__product_id
+msgid "Product"
+msgstr "Producto"
+
+#. module: product_bundle_pack
+#: model_terms:ir.ui.view,arch_db:product_bundle_pack.wizard_product_bundle_bi
+msgid "Product Bundle"
+msgstr "Paquete de productos"
+
+#. module: product_bundle_pack
+#: model:ir.model,name:product_bundle_pack.model_stock_move_line
+msgid "Product Moves (Stock Move Line)"
+msgstr "Movimientos de Producto (Stock Move Line)"
+
+#. module: product_bundle_pack
+#: model:ir.model,name:product_bundle_pack.model_product_pack
+#: model:ir.ui.menu,name:product_bundle_pack.menu_product_pack_main
+msgid "Product Pack"
+msgstr "Paquete de producto"
+
+#. module: product_bundle_pack
+#: model:ir.actions.act_window,name:product_bundle_pack.action_pack
+msgid "Product Packs"
+msgstr "Paquetes de productos"
+
+#. module: product_bundle_pack
+#: model:ir.model.fields,field_description:product_bundle_pack.field_product_pack__price
+msgid "Product Price"
+msgstr "Precio del producto"
+
+#. module: product_bundle_pack
+#: model:ir.model,name:product_bundle_pack.model_product_template
+msgid "Product Template"
+msgstr "Plantilla de producto"
+
+#. module: product_bundle_pack
+#: model:ir.model.fields,field_description:product_bundle_pack.field_product_pack__bi_product_template
+#: model:ir.model.fields,field_description:product_bundle_pack.field_product_product__pack_ids
+#: model:ir.model.fields,field_description:product_bundle_pack.field_product_template__pack_ids
+msgid "Product pack"
+msgstr "Paquete de producto"
+
+#. module: product_bundle_pack
+#: model:ir.model,name:product_bundle_pack.model_purchase_order
+msgid "Purchase Order"
+msgstr "Orden de compra"
+
+#. module: product_bundle_pack
+#: model:ir.model,name:product_bundle_pack.model_purchase_order_line
+msgid "Purchase Order Line"
+msgstr "Línea de pedido de compra"
+
+#. module: product_bundle_pack
+#: model:ir.model.fields,field_description:product_bundle_pack.field_product_pack__qty_uom
+#: model:ir.model.fields,field_description:product_bundle_pack.field_wizard_product_bundle_bi__product_qty
+msgid "Quantity"
+msgstr "Cantidad"
+
+#. module: product_bundle_pack
+#: model:ir.model,name:product_bundle_pack.model_sale_order_line
+msgid "Sales Order Line"
+msgstr "Línea de pedido de venta"
+
+#. module: product_bundle_pack
+#: model:ir.model.fields,field_description:product_bundle_pack.field_wizard_product_bundle_bi__pack_ids
+msgid "Select Products"
+msgstr "Seleccionar productos"
+
+#. module: product_bundle_pack
+#: model:ir.model,name:product_bundle_pack.model_stock_move
+msgid "Stock Move"
+msgstr "Movimiento de existencias"
+
+#. module: product_bundle_pack
+#: model:ir.model,name:product_bundle_pack.model_stock_rule
+msgid "Stock Rule"
+msgstr "Regla de Inventario"
+
+#. module: product_bundle_pack
+#: model:ir.model.fields,help:product_bundle_pack.field_product_pack__price
+msgid ""
+"The sale price is managed from the product template. Click on the 'Configure"
+" Variants' button to set the extra attribute prices."
+msgstr ""
+
+#. module: product_bundle_pack
+#: model:ir.model,name:product_bundle_pack.model_stock_picking
+msgid "Transfer"
+msgstr "Albarán"
+
+#. module: product_bundle_pack
+#: model:ir.model.fields,field_description:product_bundle_pack.field_product_pack__uom_id
+msgid "Unit of Measure"
+msgstr "Unidad de medida"
+
+#. module: product_bundle_pack
+#: model_terms:ir.ui.view,arch_db:product_bundle_pack.product_template_inherit_form
+msgid "Variants"
+msgstr "Variantes"
+
+#. module: product_bundle_pack
+#: model:ir.model,name:product_bundle_pack.model_wizard_product_bundle_bi
+msgid "Wizard Product Bundle"
+msgstr "Paquete de productos Wizard"
+
+#. module: product_bundle_pack
+#: model_terms:ir.ui.view,arch_db:product_bundle_pack.product_template_inherit_form
+msgid "You cannot create variants of the Pack"
+msgstr "No puedes crear variantes del Pack"

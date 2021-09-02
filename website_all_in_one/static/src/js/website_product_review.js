@@ -1,5 +1,4 @@
-console.log("custom js caleedddddddddddddddddddddddddddddddddd review")
-$('a[href^="#comment"]').on('click', function(event) {
+/*$('a[href^="#nav_tabs_content_ratings_reviews"]').on('click', function(event) {
 
     var target = $( $(this).attr('href') );
 
@@ -10,7 +9,7 @@ $('a[href^="#comment"]').on('click', function(event) {
         }, 1000);
     }
 
-});
+});*/
 var p_id,i1=0,blog_rate_value1;
 $(function() {
 	p_id = document.getElementsByName('product');		
@@ -58,7 +57,6 @@ $(function(){
 });
 $(document).ready(function(){	
 	var t_comment1 = document.getElementById("total_product_review");	
-	//console.log("@@@@@@@@@t_comment1@@@@@@@",t_comment1);	
 	var total_product_review_page=false
 
 	if(t_comment1){

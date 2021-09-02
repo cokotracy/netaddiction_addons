@@ -42,6 +42,7 @@ odoo.define('theme_clarico_vega.drift_zoom', function (require) {
                 ev.stopPropagation();
                 ev.preventDefault();
             }
+
         },
     });
     

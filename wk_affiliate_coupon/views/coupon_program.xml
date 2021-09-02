@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright (c) 2019-Present Webkul Software Pvt. Ltd. (<https://webkul.com/>) -->
+<!-- See LICENSE file for full copyright and licensing details. -->
+<odoo>
+    <record id="inherit_coupon_program_view_form_common" model="ir.ui.view">
+      <field name="name">inherit.coupon.program.view.form.common</field>
+      <field name="model">coupon.program</field>
+      <field name="inherit_id" ref="coupon.coupon_program_view_form_common"/>
+      <field name="arch" type="xml">
+      <xpath expr="//field[@name='discount_fixed_amount']" position="after">
+        <notebook>
+        <page string="Visit Details">
+          <group>
+            <field name="aff_visit_id" required="1" group="sales_team.group_sale_manager"/>
+          </group>
+        </page>
+      </notebook>
+
+      </xpath>
+    </field>
+    </record>
+</odoo>

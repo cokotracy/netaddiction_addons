@@ -1,10 +1,33 @@
 /*
 * Copyright 2021 Netaddiction
-*/
+*/  
 
-/*PALLINI SLIDER FULL SCREEN*/
-.carousel-indicators{
+/*SLIDER FULL SCREEN*/
+.s_carousel .carousel-inner, .s_quotes_carousel .carousel-inner{
+    max-height:220px;
+    background-color:#222222 !important;
+}
+.s_carousel .carousel-inner .carousel-item, .s_quotes_carousel .carousel-inner .carousel-item{
+    background-position: top;
+    background-size: contain;
+}
+.te_s_slider_10 .carousel-indicators{
     z-index:7 !important;
+}
+.carousel-content{
+    display: none;
+}
+
+/*SPONSORIZZATI*/
+.o_colored_level .te_col_5_main > .o_colored_level > img, .o_colored_level .te_col_5_main img{
+    height:155px;
+    width:100%;
+    object-fit: cover;
+}
+
+/*SLIDER PREORDER*/
+.te_prod_cart_wish_4 button{
+    background-color: var(--primary) !important;
 }
 
 /*COMPOSIZIONE IMG HOME*/
@@ -37,11 +60,192 @@
     color:var(--primary) !important;
 }
 
+
+/*FLOATING BUTTON*/
+.fab-telegram {
+    position:fixed;
+    right:5px;
+    bottom:30px;
+    display: flex;
+    align-items: center;
+    height: 40px;
+    border-radius: 50%;
+    box-shadow: 0 0 0 0 #0088CC;
+    animation: pulse-blue 2s infinite;
+}
+.fab-telegram > i{
+    color: #0088CC;
+    font-size: 40px;
+    background-image: radial-gradient(at center, var(--white) 45%, transparent 45%);
+}
+
+.fab-facebook {
+    position:fixed;
+    right:5px;
+    bottom:75px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 40px;
+    width:40px;
+    background-color: #3b5998;
+    border-radius: 50%;
+    box-shadow: 0 0 0 0 #3b5998;
+    animation: pulse-blue-dark 2s infinite;
+}
+.fab-facebook > i{
+    color: var(--white);
+    font-size: 20px;
+}
+
+.fab-instagram {
+    position:fixed;
+    right:5px;
+    bottom:120px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 40px;
+    width:40px;
+    background: linear-gradient(45deg, #f09433 0%,#e6683c 25%,#dc2743 50%,#cc2366 75%,#bc1888 100%); 
+    border-radius: 50%;
+    box-shadow: 0 0 0 0 #000000;
+    animation: pulse-ig 2s infinite;
+}
+.fab-instagram > img{
+    height:20px;
+}
+
+@keyframes pulse-blue {
+    0% {
+        transform: scale(0.95);
+        box-shadow: 0 0 0 0 #0088CC;
+    }
+
+    70% {
+        transform: scale(1);
+        box-shadow: 0 0 0 10px rgba(52, 172, 224, 0);
+    }
+
+    100% {
+        transform: scale(0.95);
+        box-shadow: 0 0 0 0 rgba(52, 172, 224, 0);
+    }
+}
+@keyframes pulse-blue-dark {
+    0% {
+        transform: scale(0.95);
+        box-shadow: 0 0 0 0 #3b5998;
+    }
+
+    70% {
+        transform: scale(1);
+        box-shadow: 0 0 0 10px rgba(52, 172, 224, 0);
+    }
+
+    100% {
+        transform: scale(0.95);
+        box-shadow: 0 0 0 0 rgba(52, 172, 224, 0);
+    }
+}
+@keyframes pulse-ig {
+    0% {
+        transform: scale(0.95);
+        box-shadow: 0 0 0 0 #e6683c;
+    }
+
+    70% {
+        transform: scale(1);
+        box-shadow: 0 0 0 10px rgba(52, 172, 224, 0);
+    }
+
+    100% {
+        transform: scale(0.95);
+        box-shadow: 0 0 0 0 rgba(52, 172, 224, 0);
+    }
+}
+
 @media only screen and (min-width: 920px) {
     .big-category-cover{
         height:445px !important;
     }
     .small-category-cover{
         height:300px !important;
+    }
+
+    .fab-telegram {
+        right:30px;
+        bottom:50px;
+        height: 50px;
+    }
+    .fab-telegram > i{
+        font-size: 50px;
+    }
+
+    .fab-facebook {
+        right:30px;
+        bottom:110px;
+        height: 50px;
+        width:50px;
+    }
+    .fab-facebook > i{
+        font-size: 30px;
+    }
+
+    .fab-instagram {
+        right:30px;
+        bottom:170px;
+        height: 50px;
+        width:50px;
+    }
+    .fab-instagram > img{
+        height: 30px;
+    }
+}
+
+@media only screen and (min-width: 768px) {
+    .s_carousel .carousel-inner, .s_quotes_carousel .carousel-inner{
+        max-height:467px;
+    }
+    .s_carousel .carousel-control-prev, .s_quotes_carousel .carousel-control-prev {
+        background: linear-gradient(to right, #000, transparent);
+        width:100px;
+        height: 100px;
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+    }
+
+    .s_carousel .carousel-control-next, .s_quotes_carousel .carousel-control-next {
+        background: linear-gradient(to left, #000, transparent);
+        width:100px;
+        height: 100px;
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+    }
+}
+
+@media screen and (min-width: 1280px) {
+    .s_carousel .carousel-inner, .s_quotes_carousel .carousel-inner{
+        max-height:550px;
+    }
+    .s_carousel .carousel-inner .carousel-item, .s_quotes_carousel .carousel-inner .carousel-item{
+        background-position: top right;
+        background-size: 1024px;
+    }
+    .te_slider_10{
+        top:30% !important;
+        background-image: url(../img/logo-mcom.png);
+        background-repeat: no-repeat;
+        background-position: center;
+        background-size: contain;
+    }
+    .te_slider_10 .s_title, .te_slider_10 .te_slider_10_content{
+        background-color:rgba(0,0,0,0.7);
+        transform:skew(-8deg, 0deg);
+    }
+    .carousel-content{
+        display: block;
     }
 }

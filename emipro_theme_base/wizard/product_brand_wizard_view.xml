@@ -12,7 +12,7 @@
                         <field name="product_ids" widget="many2many_tags" domain="[('sale_ok', '=', True),('website_published', '=', True)]" nolabel="1"/>
                     </group>
                     <h2>If any other brand set on select product list will replace on save.</h2>
-                 </sheet>
+                </sheet>
                 <footer>
                     <button type="object" name="config_brand_product" class="oe_highlight" string="Set Product"/>
                 </footer>

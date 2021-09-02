@@ -25,7 +25,15 @@ class DoPurchaseProducts(models.TransientModel):
 
     def do_put_in_purhcase_order(self):
         products = [[self.product_id.id, self.supplier, self.qty], ]
-        self.env['purchase.order'].put_in_order(products)
+        order = self.env['purchase.order'].put_in_order(products)
+        return {
+            'type': 'ir.actions.act_window',
+            'name': 'Purchase Order',
+            'view_mode': 'form',
+            'res_model': 'purchase.order',
+            'target': 'curent',
+            'res_id': order.id,
+            }
 
 
 class ProductProduct(models.Model):
@@ -37,14 +45,13 @@ class ProductProduct(models.Model):
         for seller in self.seller_ids:
             text = '%s - %s' % (seller.name.name, seller.price)
             select.append((seller.name.id, text))
-        return {
-            'type': 'ir.actions.act_window',
-            'name': 'Acquista il prodotto',
-            'view_mode': 'form',
-            'res_model': 'do.purchase.product',
-            'target': 'new',
-            'context': {
+        action = self.env.ref(
+            'netaddiction_purchase_orders.'
+            'netaddiction_do_purchase_product_action').read()[0]
+        ctx = self.env.context.copy()
+        ctx.update({
                 'this_product': self.id,
                 'selection': select
-            }
-        }
+            })
+        action['context'] = ctx
+        return action

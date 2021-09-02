@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="template_tag" name="Template della pagina tag">
+        <t t-call="website.layout">
+            <div>
+                <t t-if="tag_name">
+                    <div class="s_nb_column_fixed">
+                        <div class="col-lg-12 te_title_2 pt32">
+                            <div class="te_title_sub_div">
+                                <h1 t-esc="tag_name" class="te_s_title_default te_title_style2"></h1>
+                            </div>
+                        </div>
+                    </div>
+                </t>
+            </div>
+            <br/>
+            <t t-call="netaddiction_theme_rewrite.pagination"/>
+            <section class="container">
+                <t t-set="products_ids" t-value="''" />
+                <t t-foreach="product_list_id" t-as="product">
+                    <t t-set="products_ids" t-value="products_ids + str(product['id']) + ','" />
+                </t>
+                <t t-set="products_ids" t-value="products_ids[:-1]"/>
+                <section class="pt8 pb8 o_colored_level tag_product_list" data-snippet="p_slider" data-name="Product Snippet Builder">
+                    <div class="js_slider_snippet" name="manual-configuration" data-isemipro="true" data-name="manual-configuration" t-attf-data-item_ids="{{products_ids}}" data-style="7" data-ui_option="shopping_cart,wishlist,quick_view,sale_label,ratings" data-slider_type="slider" t-attf-data-limit="{{str(page_size)}}"/>
+                </section>
+            </section>
+            <t t-call="netaddiction_theme_rewrite.pagination"/>
+        </t>
+    </template>
+
+    <!-- PAGINAZIONE -->
+    <template id="pagination">
+        <div class="products_pager form-inline justify-content-end mt-3 mb-3 te_shop_pager">            
+            <ul class="pagination m-0 ">
+                <t t-set="active_prev" t-value=""/>
+                <t t-if="current_page == 0">
+                    <t t-set="active_prev" t-value="'disabled'"/>
+                </t>
+                <li t-attf-class="page-item {{active_prev}}">
+                    <t t-set="link_prev" t-value="'/tag/' + tag_name"/>
+                    <t t-if="current_page > 1">
+                        <t t-set="link_prev" t-value="link_prev + '?page=' + str(current_page)"/>
+                    </t>
+                    <a data-oe-model="ir.ui.view" data-oe-id="1332" data-oe-field="arch" data-oe-xpath="/t[1]/ul[1]/li[1]/a[1]" t-attf-href="{{link_prev}}" class="page-link ">Prev</a>
+                </li>
+
+                <t t-set="button_index" t-value="0"/>
+                <t t-foreach="range(current_page, page_number)" t-as="row_index">
+                    <t t-if="button_index &lt; 7">
+                        <t t-set="button_index" t-value="(button_index + 1)"/>
+                        <t t-set="active_link" t-value=""/>
+                        <t t-if="current_page == row_index">
+                            <t t-set="active_link" t-value="'active'"/>
+                        </t>
+
+                        <li t-attf-class="page-item {{active_link}}">
+                            <t t-if="row_index == 0">
+                                <a t-attf-href="/tag/#{tag_name}" class="page-link" t-esc="(row_index + 1)"></a>
+                            </t>
+                            <t t-else="">
+                                <a t-attf-href="/tag/#{tag_name}?page=#{(row_index + 1)}" class="page-link" t-esc="(row_index + 1)"></a>
+                            </t>
+                        </li>
+                    </t>
+                </t>
+
+                <t t-set="active_next" t-value=""/>
+                <t t-if="(current_page + 1) == page_number">
+                    <t t-set="active_next" t-value="'disabled'"/>
+                </t>
+                <li t-attf-class="page-item {{active_next}}">
+                    <t t-set="link_next" t-value=""/>
+                    <t t-if="current_page &lt; page_number">
+                        <t t-set="link_next" t-value="'/tag/' + tag_name + '?page=' + str(current_page + 2)"/>
+                    </t>
+                    <a data-oe-model="ir.ui.view" data-oe-id="1332" data-oe-field="arch" data-oe-xpath="/t[1]/ul[1]/li[2]/a[1]" t-attf-href="{{link_next}}" class="page-link ">Next</a>
+                </li>
+            </ul>
+        </div>
+    </template>
+</odoo>

@@ -25,12 +25,12 @@ class CouponsProgram(models.Model):
 
 
 class SaleCoupon(models.Model):
-    _inherit = 'sale.coupon'
+    _inherit = 'coupon.coupon'
 
     is_affiliate_coupon = fields.Boolean(string='Affiliate Coupon',default=False)
 
 class SaleCouponProgram(models.Model):
-    _inherit = 'sale.coupon.program'
+    _inherit = 'coupon.program'
 
     aff_visit_id = fields.One2many('affiliate.visit','sale_coupon_program_id',string="Visit Related To Coupon")
     coupon_type = fields.Selection([('single', 'Single'),('consolidate', 'Consolidate')],readonly='True', string="Coupon Type")

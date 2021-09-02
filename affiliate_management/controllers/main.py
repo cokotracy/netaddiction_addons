@@ -53,40 +53,40 @@ class WebsiteSale(WebsiteSale):
         '/shop/page/<int:page>',
         '/shop/category/<model("product.public.category"):category>',
         '/shop/category/<model("product.public.category"):category>/page/<int:page>'
-    ], type='http', auth="public", website=True)
+    ], type='http', auth="public", website=True,sitemap=WebsiteSale.sitemap_shop)
     def shop(self, page=0, category=None, search='', ppg=False, **post):
-      enable_ppc = request.env['res.config.settings'].sudo().website_constant().get('enable_ppc')
-      expire = False
-      result = super(WebsiteSale,self).shop(page=page, category=category, search=search, ppg=ppg, **post)
-      aff_key = request.httprequest.args.get('aff_key')
-      if category and aff_key:
-        expire = self.calc_cookie_expire_date()
-        path = request.httprequest.full_path
-        partner_id = request.env['res.partner'].sudo().search([('res_affiliate_key','=',aff_key),('is_affiliate','=',True)])
-        vals = self.create_affiliate_visit(aff_key,partner_id,category)
-        vals.update({'affiliate_type':'category'})
-        if ( len(partner_id) == 1):
-          affiliate_visit = self.create_aff_visit_entry(vals) if enable_ppc else False
-          result.set_cookie(key='affkey_%s'%(aff_key), value='category_%s'%(category.id),expires=expire)
+        enable_ppc = request.env['res.config.settings'].sudo().website_constant().get('enable_ppc')
+        expire = False
+        result = super(WebsiteSale,self).shop(page=page, category=category, search=search, ppg=ppg, **post)
+        aff_key = request.httprequest.args.get('aff_key')
+        if category and aff_key:
+            expire = self.calc_cookie_expire_date()
+            path = request.httprequest.full_path
+            partner_id = request.env['res.partner'].sudo().search([('res_affiliate_key','=',aff_key),('is_affiliate','=',True)])
+            vals = self.create_affiliate_visit(aff_key,partner_id,category)
+            vals.update({'affiliate_type':'category'})
+            if ( len(partner_id) == 1):
+                affiliate_visit = self.create_aff_visit_entry(vals) if enable_ppc else False
+                result.set_cookie(key='affkey_%s'%(aff_key), value='category_%s'%(category.id),expires=expire)
+            else:
+                _logger.info("=====affiliate_visit not created by category===========")
         else:
-         _logger.info("=====affiliate_visit not created by category===========")
-      else:
-        if aff_key:
-          expire = self.calc_cookie_expire_date()
-          partner_id = request.env['res.partner'].sudo().search([('res_affiliate_key','=',aff_key),('is_affiliate','=',True)])
-          if partner_id:
-            result.set_cookie(key='affkey_%s'%(aff_key), value='shop',expires=expire)
-      return result
+            if aff_key:
+                expire = self.calc_cookie_expire_date()
+                partner_id = request.env['res.partner'].sudo().search([('res_affiliate_key','=',aff_key),('is_affiliate','=',True)])
+                if partner_id:
+                    result.set_cookie(key='affkey_%s'%(aff_key), value='shop',expires=expire)
+        return result
 
 
     @http.route(['/shop/product/<model("product.template"):product>'], type='http', auth="public", website=True)
-    def product(self, product, category='', search='', **kwargs):
+    def old_product(self, product, category='', search='', **kwargs):
       _logger.info("=====product page=========")
       _logger.info("=====product page aff_key==%r=========",request.httprequest.args)
       enable_ppc = request.env['res.config.settings'].sudo().website_constant().get('enable_ppc')
       expire = self.calc_cookie_expire_date()
 
-      result = super(WebsiteSale,self).product(product=product, category=category, search=search, **kwargs)
+      result = super(WebsiteSale,self).old_product(product=product, category=category, search=search, **kwargs)
       if request.httprequest.args.get('aff_key'):
         # path is the complete url with url = xxxx?aff_key=XXXXXXXX
         path = request.httprequest.full_path

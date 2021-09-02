@@ -242,7 +242,12 @@ POI TRASFERIRLO NUOVAMENTE NEL MODULO-->
                 </div>
             </section>
             <section class="pt8 pb8 o_colored_level undefined o_cc o_cc5" data-snippet="p_slider" data-name="Product Snippet Builder">
-                <div class="js_slider_snippet" name="product-slider" data-isemipro="true" data-name="new-arrival"/>
+                <t t-set="products_preorder_ids" t-value="''" />
+                <t t-foreach="preorder_list" t-as="product">
+                    <t t-set="products_preorder_ids" t-value="products_preorder_ids + str(product['id']) + ','" />
+                </t>
+                <t t-set="products_preorder_ids" t-value="products_preorder_ids[:-1]" />
+                <div class="js_slider_snippet" name="manual-configuration" data-isemipro="true" data-name="manual-configuration" t-attf-data-item_ids="{{products_preorder_ids}}" data-style="3" data-ui_option="shopping_cart,wishlist,quick_view,sale_label,ratings" data-slider_type="slider" t-attf-data-limit="20"/>
             </section>
             <section class="container o_colored_level" data-name="Offer Timer Style 3">
                 <div class="row py-5">
@@ -335,5 +340,8 @@ POI TRASFERIRLO NUOVAMENTE NEL MODULO-->
         </section>
             </div>
         </t>
+        <a href="https://www.instagram.com/multiplayer_com/" target="_blank" class="fab-instagram"><img src="/netaddiction_theme_rewrite/static/src/img/instagram.svg"/></a>
+        <a href="https://www.facebook.com/groups/623304898486532/" target="_blank" class="fab-facebook"><i class="fa fa-facebook"></i></a>
+        <a href="https://t.me/multiplayershop" target="_blank" class="fab-telegram"><i class="fa fa-telegram"></i></a>
     </template>
 </odoo>

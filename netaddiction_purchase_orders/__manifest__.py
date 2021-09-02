@@ -5,7 +5,7 @@
     'author': "OpenForce",
     'website': "http://www.openforce.it",
     'category': 'Purchase',
-    'version': '13.0.2.1.0',
+    'version': '14.0.1.0.0',
     'depends': [
         'web',
         # 'base',
@@ -17,12 +17,13 @@
         'netaddiction_products',
         ],
     'data': [
+        'security/ir.model.access.csv',
         'data/template_email.xml',
         'data/cron.xml',
         'views/assets.xml',
         'views/actions_client.xml',
     #     'views/purchase_product_list.xml',
-    #     'views/purchase_order_line.xml',
+        'views/purchase_order_line.xml',
         'views/res_partner.xml',
     #     'views/wave.xml',
     #     'views/move.xml',

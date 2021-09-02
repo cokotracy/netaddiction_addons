@@ -97,15 +97,13 @@
 			
 		</template>
 
-		<template id="portal_web_loyalty_transaction" name="Loyalty History" inherit_id="portal.portal_my_home" priority="40">
+		<template id="portal_web_loyalty_transaction" name="Loyalty History" inherit_id="portal.portal_my_home" priority="40" customize_show="True">
 			<xpath expr="//div[hasclass('o_portal_docs')]" position="inside">
-				<div class="o_portal_docs list-group">
 					<t t-if="loyalty_count" t-call="portal.portal_docs_entry">
 						<t t-set="title">Loyalty History</t>
 						<t t-set="url" t-value="'/my/loyalty/history'"/>
 						<t t-set="count" t-value="loyalty_count"/>
 					</t>
-				</div>
 			</xpath>
 		</template>
 	

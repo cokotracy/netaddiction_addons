@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <odoo>
-
-    <report id="netaddiction_bolla_di_spedizione"
-            model="stock.picking"
-            string="Bolla di Spedizione"
-            report_type="qweb-pdf"
-            name="netaddiction_warehouse.bolla_di_spedizione"
-            file="netaddiction_warehouse.bolla_di_spedizione"/>
-
+    <record id="netaddiction_bolla_di_spedizione" model="ir.actions.report">
+        <field name="name">Bolla di Spedizione</field>
+        <field name="model">stock.picking</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">netaddiction_warehouse.bolla_di_spedizione</field>
+        <field name="report_file">netaddiction_warehouse.bolla_di_spedizione</field>
+        <field name="binding_model_id" ref="stock.model_stock_picking"/>
+        <field name="binding_type">report</field>
+    </record>
 </odoo>

@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!--  Header search bar  -->
+    <template id="header_search_ept" inherit_id="website_sale.website_sale_products_search_box">
+        <xpath expr="//form" position="attributes">
+            <attribute name="t-att-action">'/shop'</attribute>
+        </xpath>
+         <xpath expr="//div[@role='search']//input[hasclass('search-query')]" position="before">
+            <t t-set="curr_web" t-value="request.env['website'].get_current_website()"/>
+            <t t-if="curr_web.is_advanced_search">
+                <div class="te_advanced_search_div dropdown">
+                    <a role="button" href="#" t-att-search_in="'all'" class="btn btn-primary dropdown-toggle ept-parent-category" name="category" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                        <span class="category_img_span"/><span class="span_category">All</span><span class="caret"/>
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="ept-parent-category">
+                        <a t-att-search_in="'all'" t-esc="'All'" class="dropdown-item "/>
+                        <a t-att-search_in="'product'" t-esc="'Products'" class="dropdown-item "/>
+                        <a t-att-search_in="'category'" t-esc="'Categories'" class="dropdown-item" t-if="curr_web.allowed_search_category"/>
+                        <a t-att-search_in="'blog'" t-esc="'Blogs'" class="dropdown-item" t-if="curr_web.allowed_search_blog"/>
+                    </div>
+                </div>
+            </t>
+            <t t-else="">
+                <!-- add get_parent_category() and  ept-parent-category selection for cateogry wise search. @Author : Angel Patel (24/09/2020) -->
+                <t t-set="ept_cat" t-value="request.env['website'].sudo().get_parent_category()"/>
+                <div class="te_advanced_search_div dropdown">
+                    <a role="button" href="#" class="btn btn-primary dropdown-toggle ept-parent-category" id="ept-parent-category" name="category" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                        <span class="category_img_span"/><span class="span_category">All</span><span class="caret"/>
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="ept-parent-category">
+                        <t t-foreach="ept_cat" t-as="cat">
+                            <a t-att-value="cat.get('id')" t-esc="cat.get('name')" class="dropdown-item ept-category-a"/>
+                        </t>
+                    </div>
+                </div>
+            </t>
+        </xpath>
+    </template>
+</odoo>

@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     
-    <template id="portal_my_home_wallet_transaction" name="Portal My Home : Wallet Transactions" inherit_id="portal.portal_my_home" priority="40">
+    <template id="portal_my_home_wallet_transaction" name="Portal My Home : Wallet Transactions" inherit_id="portal.portal_my_home" priority="40" customize_show="True">
         <xpath expr="//div[hasclass('o_portal_docs')]" position="inside">
-            <div class="o_portal_docs list-group">
-                <t t-if="wallet_count" t-call="portal.portal_docs_entry">
+            <t t-if="wallet_count">
+                <t t-call="portal.portal_docs_entry">
                     <t t-set="title">Wallet Transactions</t>
                     <t t-set="url" t-value="'/my/wallet-transactions'"/>
                     <t t-set="count" t-value="wallet_count"/>
                 </t>
-            </div>
+            </t>
         </xpath>
     </template>
     

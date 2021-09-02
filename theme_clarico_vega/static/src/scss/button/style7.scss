@@ -9,7 +9,7 @@
     background-image: linear-gradient(75deg, $theme-color-dark, nth($f_color,19), nth($f_color,19), $theme-color-dark);
     box-shadow: 0 6px 15px 0 $theme-color-light;
     background-size: 300% 100%;
-    @include border-radius(25px);
+    border-width: 0px;
     padding: 0.7rem 1.8rem;
     
     &.btn-secondary, &.btn-link

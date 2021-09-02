@@ -4,7 +4,8 @@
     display: inline-block;
     @include transition(all,300ms,null)
     background-color:nth($f_color,27);
-    @include border(1px,19,solid);
+    border-color: nth($f_color,19);
+    border-style: solid;
 
     &.btn-secondary, &.btn-link
 	{

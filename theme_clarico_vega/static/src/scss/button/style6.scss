@@ -7,7 +7,8 @@
     overflow: hidden;
     background-color:nth($f_color,27);
     z-index:1;
-	@include border(2px,27,solid);
+	border-color: nth($f_color,19);
+    border-style: solid;
 
     &.btn-secondary, &.btn-link
     {
@@ -51,7 +52,8 @@
 	    @include transition(all,0.3s,null)
     }
     &:hover {
-		@include border(2px,27,solid)
+		border-color: nth($f_color,19);
+        border-style: solid;
 	    background-color:unset;
 	    color:nth($f_color,5);
 	    &:after {

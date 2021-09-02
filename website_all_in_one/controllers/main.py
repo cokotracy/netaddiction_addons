@@ -84,7 +84,7 @@ class OdooWebsiteAllInOne(http.Controller):
 		return request.render("website_all_in_one.website_sitemap")
 
 	@http.route('/shop/cart/giftwrap', type='json', auth="public", methods=['POST'], website=True)
-	def wallet(self, notes,product, **post):
+	def shop_cart_giftwrap(self, notes,product, **post):
 		cr, uid, context = request.cr, request.uid, request.context
 		
 		order = request.website.sale_get_order()
@@ -108,6 +108,12 @@ class OdooWebsiteAllInOne(http.Controller):
 			})
 		  
 		return True
+
+	@http.route('/submit_review/', type='json', auth="public", website=True)
+	def submit_review(self, **post):
+		account_move_obj = request.env['account.move'].search([('partner_id','=',request.env.user.partner_id.id),('payment_state','=','paid')])
+		if not account_move_obj:
+			return True
 		
 				
 class WebsiteSaleAttachment(WebsiteSale):
@@ -139,11 +145,22 @@ class WebsiteSaleAttachment(WebsiteSale):
 		description=post.get('short_description')
 		review_rate = post.get('review')
 		comment = post.get('comment')
-		
-		reviews_ratings = request.env['reviews.ratings']
-		reviews_ratings.create({'message_rate':review_rate, 'short_desc':description, 'review':comment, 'website_message':True, 'rating_product_id':product_template_id, 'customer_id':uid})
+		account_move_obj = request.env['account.move'].search([('partner_id','=',request.env.user.partner_id.id),('payment_state','=','paid')])
+		if account_move_obj:
+			public_category = request.env['product.public.category'].search([('product_tmpl_ids','in',product_template_id)])
+			if public_category.loyal_for_review:
+				points = public_category.loyal_for_review
+			else:
+				points = public_category.parent_id.loyal_for_review
 
-		return werkzeug.utils.redirect( request.httprequest.referrer + "#reviews" )
+			reviews_ratings = request.env['reviews.ratings'].search([('customer_id','=',uid),('rating_product_id','=',product_template_id)])
+			if not reviews_ratings:
+				points += request.env.user.partner_id.loyalty_points
+				request.env.user.partner_id.write({'loyalty_points':points})
+			
+			reviews_ratings = request.env['reviews.ratings']
+			reviews_ratings.create({'message_rate':review_rate, 'short_desc':description, 'review':comment, 'website_message':True, 'rating_product_id':product_template_id, 'customer_id':uid})
+			return werkzeug.utils.redirect( request.httprequest.referrer + "#reviews" )
 				
 				
 class website_account_payment(CustomerPortal):
@@ -197,7 +214,10 @@ class website_account_payment(CustomerPortal):
 			currency = request.env['res.currency'].browse(currency_id)
 			
 			acquirer = post['pm_id']
-			invoices = post['reconciled_invoice_ids']
+			if post.get('reconciled_invoice_ids'):
+				invoices = post['reconciled_invoice_ids']
+			else:
+				invoices = False
 			num_list = post['invoice_num']
 			
 			invoices = num_list.split(',')
@@ -261,10 +281,12 @@ class website_account_payment(CustomerPortal):
 				invoice_id.has_reconciled_entries = True
 				invoice_id.sudo().action_invoice_paid()
 
-				pay_confirm = request.env['account.payment'].sudo().search([("ref","=",invoice_id.name)])
+				# pay_confirm = request.env['account.payment'].sudo().search([("ref","=",invoice_id.name)])
+				pay_confirm = request.env['account.payment.register'].sudo().search([("communication","=",invoice_id.name)])
+				
 				for payment in pay_confirm:
 					if not payment.state == 'posted':
-						payment.sudo().post()
+						payment.sudo().action_create_payments()
 
 		return request.render("website_all_in_one.payment_thankyou")
 		
@@ -718,3 +740,43 @@ class website_account_payment(CustomerPortal):
 			'sortby': sortby,
 		})
 		return request.render("account.portal_my_invoices", values)
+
+	def _prepare_portal_layout_values(self):
+		values = super(website_account_payment, self)._prepare_portal_layout_values()
+		reviewes_ids = request.env['reviews.ratings'].sudo()
+		if request.env.user.review_and_assign_loyalty_points == True:
+			reviewes_count = reviewes_ids.sudo().search_count([])
+			values.update({
+				'reviewes_count': reviewes_count,
+			})
+		return values
+
+	@http.route(['/reviewes', '/reviewes/<int:page>'], type='http', auth="user", website=True)
+	def portal_my_reviewes(self, page=1, date_begin=None, date_end=None, sortby=None, filterby=None, search=None, search_in='content', groupby=None, **kw):
+		values = self._prepare_portal_layout_values()
+		
+		# task count
+		reviews_count = request.env['reviews.ratings'].sudo().search_count([])
+		# pager
+		pager = portal_pager(
+			url="/reviewes",
+			total=reviews_count,
+			page=page,
+			step=self._items_per_page
+		)
+		# content according to pager and archive selected
+		
+		reviews = request.env['reviews.ratings'].sudo().search([], limit=self._items_per_page, offset=pager['offset'])
+		all_reviews = [reviews]
+
+		values.update({
+			'date': date_begin,
+			'date_end': date_end,
+			'all_reviews': all_reviews,
+			'page_name': 'reviewes',
+			'default_url': '/reviewes',
+			'pager': pager,
+		})
+		return request.render("website_all_in_one.portal_reviewes_view", values)
+
+		

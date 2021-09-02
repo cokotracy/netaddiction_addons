@@ -32,7 +32,7 @@ class AccountInvoiceInherit(models.Model):
 #         result = super(AccountInvoiceInherit,self).write(vals)
 #         if self.ref:
 #             move_id = self.env["account.move"].sudo().search([("name","=",self.ref)])
-#             if self.invoice_payment_state == "paid":
+#             if self.payment_state == "paid":
 
 #                 if move_id.aff_visit_id:
 #                     move_id.aff_visit_id.write({"state":"paid"})
@@ -52,7 +52,7 @@ class AccountPaymentInherit(models.Model):
         result = super(AccountPaymentInherit,self).post()
         if result and self.invoice_ids:
             move_id = self.invoice_ids[0]
-            if move_id.invoice_payment_state == "paid" and move_id.aff_visit_id and move_id.aff_visit_id.state != "paid":
+            if move_id.payment_state == "paid" and move_id.aff_visit_id and move_id.aff_visit_id.state != "paid":
                 move_id.aff_visit_id.write({"state":"paid"})
 
         return result

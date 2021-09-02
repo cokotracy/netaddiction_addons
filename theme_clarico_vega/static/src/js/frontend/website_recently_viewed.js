@@ -27,6 +27,10 @@ odoo.define('theme_clarico_vega.website_recently_viewed', function (require) {
                 Promise.all([fetch, animation]).then(function (values) {
                     self._render(values[0]);
                 });
+                /* Resize menu */
+                setTimeout(() => {
+                    $('#top_menu').trigger('resize');
+                }, 200);
             });
         },
         // Recently viewed product slider get add to cart selector based on header

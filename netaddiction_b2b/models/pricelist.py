@@ -223,9 +223,6 @@ class ProductPricelist(models.Model):
             else:
                 percentage_price = product.final_price * percentage
                 real_price = product.final_price - percentage_price
-            real_price = product.special_price \
-                if (product.special_price > 0 and
-                    product.special_price < real_price) \
                 else real_price
             # TODO offer_price field is inside module
             #  netaddiction_special_offer version 9.0 ask to Andrea Colangelo

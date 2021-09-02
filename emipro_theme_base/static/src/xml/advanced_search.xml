@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates id="template" xml:space="preserve">
+    <div t-extend="website_sale.productsSearchBar.autocomplete">
+        <t t-jquery="t[t-if='!products.length']" t-operation="attributes">
+            <attribute name="t-if" value="!products.length and !categories.length and !blogs.length" />
+        </t>
+        <t t-jquery="a[t-foreach='products']" t-operation="before" >
+            <p t-if="products.length" class="pl-2 bg-primary">Products</p>
+        </t>
+        <t t-jquery="t[t-if='hasMoreProducts']" t-operation="after">
+            <p t-if="categories" class="pl-2 bg-primary">Categories</p>
+            <a t-attf-href="/shop/category/#{category['id']}" t-foreach="categories" t-as="category" class="dropdown-item p-2 text-wrap " t-if="categories">
+                <t t-esc="category['name']"/>
+            </a>
+            <p t-if="blogs" class="pl-2 bg-primary">Blogs</p>
+            <a t-attf-href="/blog/#{blog['blog_id'][0]}/post/#{blog['id']}" t-foreach="blogs" t-as="blog" class="dropdown-item p-2 text-wrap " t-if="blogs">
+                <t t-esc="blog['name']"/>
+            </a>
+            <t t-if="hasMoreBlogs">
+                <a t-attf-href="/blog?search=#{term}" class="dropdown-item text-right text-primary">View all blogs</a>
+            </t>
+        </t>
+        <t t-jquery="t[t-if='hasMoreProducts']"  t-operation="replace">
+            <t t-if="hasMoreProducts and products.length">
+                <button type="submit" class="dropdown-item text-right text-primary">View all products</button>
+            </t>
+        </t>
+    </div>
+</templates>

@@ -1,233 +1,167 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <!-- ================ Added new custom Header in customize option ================ -->
-    <template id="theme_customize_ept" inherit_id="website.theme_customize">
-        <xpath expr="//content[@id='theme_customize_content_fonts']"
-               position="after">
-            <!-- Button  Styles-->
-            <content id="theme_customize_content_button" string="Buttons"
-                     title="Choose your Button styles">
-                <more data-depends="">
-                    <list>
-                        <opt data-xmlid="theme_clarico_vega.option_s_button_01_assets"
-                             data-icon="/theme_clarico_vega/static/src/img/customise_option/g1-16.gif" string=" "/>
-                        <opt data-xmlid="theme_clarico_vega.option_s_button_02_assets"
-                             data-icon="/theme_clarico_vega/static/src/img/customise_option/g2-16.gif" string=" "/>
-                        <opt data-xmlid="theme_clarico_vega.option_s_button_03_assets"
-                             data-icon="/theme_clarico_vega/static/src/img/customise_option/g3-16.gif" string=" "/>
-                        <opt data-xmlid="theme_clarico_vega.option_s_button_04_assets"
-                             data-icon="/theme_clarico_vega/static/src/img/customise_option/g4-16.gif" string=" "/>
-                        <opt data-xmlid="theme_clarico_vega.option_s_button_05_assets"
-                             data-icon="/theme_clarico_vega/static/src/img/customise_option/g5-16.gif" string=" "/>
-                        <opt data-xmlid="theme_clarico_vega.option_s_button_06_assets"
-                             data-icon="/theme_clarico_vega/static/src/img/customise_option/g6-16.gif" string=" "/>
-                        <opt data-xmlid="theme_clarico_vega.option_s_button_07_assets"
-                             data-icon="/theme_clarico_vega/static/src/img/customise_option/g7-16.gif" string=" "/>
-                        <opt data-xmlid="theme_clarico_vega.option_s_button_08_assets"
-                             data-icon="/theme_clarico_vega/static/src/img/customise_option/g8-16.gif" string=" "/>
-                        <opt data-xmlid="theme_clarico_vega.option_s_button_09_assets"
-                             data-icon="/theme_clarico_vega/static/src/img/customise_option/g9-16.gif" string=" "/>
-                        <opt data-xmlid="theme_clarico_vega.option_s_button_10_assets"
-                             data-icon="/theme_clarico_vega/static/src/img/customise_option/g10-16.gif" string=" "/>
-                        <opt data-xmlid="theme_clarico_vega.option_s_button_11_assets"
-                             data-icon="/theme_clarico_vega/static/src/img/customise_option/button_11.gif" string=" "/>
-                        <opt data-xmlid="theme_clarico_vega.option_s_button_12_assets"
-                             data-icon="/theme_clarico_vega/static/src/img/customise_option/button_12.gif" string=" "/>
-                        <opt data-xmlid="theme_clarico_vega.option_s_button_13_assets"
-                             data-icon="/theme_clarico_vega/static/src/img/customise_option/button_13.gif" string=" "/>
-                        <opt data-xmlid="theme_clarico_vega.option_s_button_14_assets"
-                             data-icon="/theme_clarico_vega/static/src/img/customise_option/button_14.gif" string=" "/>
-                        <opt data-xmlid="theme_clarico_vega.option_s_button_15_assets"
-                             data-icon="/theme_clarico_vega/static/src/img/customise_option/button_15.gif" string=" "/>
-                        <opt data-xmlid="theme_clarico_vega.option_s_button_16_assets"
-                             data-icon="/theme_clarico_vega/static/src/img/customise_option/button_16.gif" string=" "/>
-                    </list>
-                </more>
-            </content>
-            <!-- Header Styles-->
-            <content id="theme_customize_content_header" string="Headers" title="Choose your Header styles">
-                <more data-depends="">
-                    <list>
-                        <opt data-xmlid="theme_clarico_vega.option_header_01_assets,theme_clarico_vega.customize_header_style_1"
-                             data-icon="/theme_clarico_vega/static/src/img/customise_option/h_style-1.jpg"
-                             data-reload="/"
-                             string=" "/>
-                        <opt data-xmlid="theme_clarico_vega.option_header_02_assets,theme_clarico_vega.customize_header_style_2"
-                             data-icon="/theme_clarico_vega/static/src/img/customise_option/h_style-2.jpg"
-                             data-reload="/"
-                             string=" "/>
-                        <opt data-xmlid="theme_clarico_vega.option_header_03_assets,theme_clarico_vega.customize_header_style_3"
-                             data-icon="/theme_clarico_vega/static/src/img/customise_option/h_style-3.jpg"
-                             data-reload="/"
-                             string=" "/>
-                        <opt data-xmlid="theme_clarico_vega.option_header_04_assets,theme_clarico_vega.customize_header_style_4"
-                             data-icon="/theme_clarico_vega/static/src/img/customise_option/h_style-4.jpg"
-                             data-reload="/"
-                             string=" "/>
-                        <opt data-xmlid="theme_clarico_vega.option_header_05_assets,theme_clarico_vega.customize_header_style_5"
-                             data-icon="/theme_clarico_vega/static/src/img/customise_option/h_style-5.jpg"
-                             data-reload="/"
-                             string=" "/>
-                        <opt data-xmlid="theme_clarico_vega.option_header_06_assets,theme_clarico_vega.customize_header_style_6"
-                             data-icon="/theme_clarico_vega/static/src/img/customise_option/h_style-6.jpg"
-                             data-reload="/"
-                             string=" "/>
-                        <opt data-xmlid="theme_clarico_vega.option_header_07_assets,theme_clarico_vega.customize_header_style_7"
-                             data-icon="/theme_clarico_vega/static/src/img/customise_option/h_style-7.jpg"
-                             data-reload="/"
-                             string=" "/>
-                        <opt data-xmlid="theme_clarico_vega.option_header_08_assets,theme_clarico_vega.customize_header_style_8"
-                             data-icon="/theme_clarico_vega/static/src/img/customise_option/h_style-8.jpg"
-                             data-reload="/"
-                             string=" "/>
-                        <opt data-xmlid="theme_clarico_vega.option_header_09_assets,theme_clarico_vega.customize_header_style_9"
-                             data-icon="/theme_clarico_vega/static/src/img/customise_option/h_style-9.jpg"
-                             data-reload="/"
-                             string=" "/>
-                        <opt data-xmlid="theme_clarico_vega.option_header_10_assets,theme_clarico_vega.customize_header_style_10"
-                             data-icon="/theme_clarico_vega/static/src/img/customise_option/h_style-10.jpg"
-                             data-reload="/"
-                             string=" "/>
-                        <opt data-xmlid="theme_clarico_vega.option_header_11_assets,theme_clarico_vega.customize_header_style_11"
-                             data-icon="/theme_clarico_vega/static/src/img/customise_option/h_style-11.jpg"
-                             data-reload="/"
-                             string=" "/>
-                    </list>
-                </more>
-            </content>
-            <!-- Footer Styles-->
-            <content id="theme_customize_content_footer" string="Footers" title="Choose your Footer styles">
-                <more data-depends="">
-                    <list>
-                        <opt data-xmlid="theme_clarico_vega.option_footer_01_assets,theme_clarico_vega.customize_footer_style_1"
-                             data-reload="/"
-                             data-icon="/theme_clarico_vega/static/src/img/customise_option/footer_1.jpg"
-                             string=" "/>
-                        <opt data-xmlid="theme_clarico_vega.option_footer_02_assets,theme_clarico_vega.customize_footer_style_2"
-                             data-reload="/"
-                             data-icon="/theme_clarico_vega/static/src/img/customise_option/footer_2.jpg"
-                             string=" "/>
-                        <opt data-xmlid="theme_clarico_vega.option_footer_03_assets,theme_clarico_vega.customize_footer_style_3"
-                             data-reload="/"
-                             data-icon="/theme_clarico_vega/static/src/img/customise_option/footer_3.jpg"
-                             string=" "/>
-                        <opt data-xmlid="theme_clarico_vega.option_footer_04_assets,theme_clarico_vega.customize_footer_style_4"
-                             data-reload="/"
-                             data-icon="/theme_clarico_vega/static/src/img/customise_option/footer_4.jpg"
-                             string=" "/>
-                        <opt data-xmlid="theme_clarico_vega.option_footer_05_assets,theme_clarico_vega.customize_footer_style_5"
-                             data-reload="/"
-                             data-icon="/theme_clarico_vega/static/src/img/customise_option/footer_5.jpg"
-                             string=" "/>
-                        <opt data-xmlid="theme_clarico_vega.option_footer_06_assets,theme_clarico_vega.customize_footer_style_6"
-                             data-reload="/"
-                             data-icon="/theme_clarico_vega/static/src/img/customise_option/footer_6.jpg"
-                             string=" "/>
-                        <opt data-xmlid="theme_clarico_vega.option_footer_07_assets,theme_clarico_vega.customize_footer_style_7"
-                             data-reload="/"
-                             data-icon="/theme_clarico_vega/static/src/img/customise_option/footer_7.jpg"
-                             string=" "/>
-                    </list>
-                </more>
-            </content>
-            <!-- Theme Configurations Added by ept_1-->
-            <content id="theme_configuration" string="Theme Settings"
-                     title="Manage Theme Features">
-                <list>
-                    <checkbox>
-                        <opt data-xmlid="theme_clarico_vega.ajax_add_to_cart" data-reload="/"
-                             string="AJAX Shopping Cart"/>
-                    </checkbox>
-                    <checkbox>
-                        <opt data-xmlid="theme_clarico_vega.quickview_icon_shop_product_item" data-reload="/"
-                             string="Quick View"/>
-                    </checkbox>
-                    <checkbox>
-                        <opt data-xmlid="theme_clarico_vega.website_pricefilter_ept" data-reload="/"
-                             string="Price Filter"/>
-                    </checkbox>
-                    <checkbox>
-                        <opt data-xmlid="theme_clarico_vega.website_attribute_values_count_ept" data-reload="/"
-                             string="Product Count In Shop Filter"/>
-                    </checkbox>
-                    <checkbox>
-                        <opt data-xmlid="theme_clarico_vega.display_product_associate_attribute_value_ept"
-                             data-reload="/"
-                             string="Show Associated Attribute Value"/>
-                    </checkbox>
-                    <checkbox>
-                        <opt data-xmlid="theme_clarico_vega.custom_template" data-reload="/"
-                             string="Advance Mini cart"/>
-                    </checkbox>
-                    <checkbox>
-                        <opt data-xmlid="theme_clarico_vega.login_popup_ept" data-reload="/"
-                             string="Login Popup"/>
-                    </checkbox>
-                    <checkbox>
-                        <opt data-xmlid="theme_clarico_vega.product_sticky_details_container" data-reload="/"
-                             string="Sticky Product Details"/>
-                    </checkbox>
-                    <checkbox>
-                        <opt data-xmlid="theme_clarico_vega.drift_zoom_ept" data-reload="/"
-                             string="Image Magnifier"/>
-                    </checkbox>
-                    <checkbox>
-                        <opt data-xmlid="theme_clarico_vega.product_sticky_gallary" data-reload="/"
-                             string="Sticky Product Gallary"/>
-                    </checkbox>
-                </list>
-                <list>
-                    <checkbox>
-                        <opt data-xmlid="theme_clarico_vega.load_products_through_ajax" data-reload="/"
-                             string="Load Products Through Ajax"/>
-                    </checkbox>
-                    <checkbox>
-                        <opt data-xmlid="theme_clarico_vega.product_brand_attribute_custom" data-reload="/"
-                             string="Product Brand"/>
-                    </checkbox>
-                    <!--                    product_brand_container-->
-                    <checkbox>
-                        <opt data-xmlid="theme_clarico_vega.menu_vertical" data-reload="/"
-                             string="Vertical Menu"/>
-                    </checkbox>
-                    <checkbox>
-                        <opt data-xmlid="theme_clarico_vega.website_submenu_label_ept" data-reload="/"
-                             string="Menu Label"/>
-                    </checkbox>
-                    <checkbox>
-                        <opt data-xmlid="theme_clarico_vega.sticky_product_categories" data-reload="/"
-                             string="Sticky Attribute &amp; Category Filter"/>
-                    </checkbox>
-                </list>
-                <!-- Product Label Styles -->
-                <list string="Product Label">
-                    <checkbox>
-                        <opt data-xmlid="theme_clarico_vega.clarico_shop_products_label" data-reload="/"
-                             string="Product Label"/>
-                    </checkbox>
-                    <more data-depends="">
-                        <list>
-                            <opt data-widget="color" data-color="product_label" string="Default Color of Label"/>
-                        </list>
-                    </more>
-                </list>
-            </content>
-            <!-- End by ept_1 -->
+    <template id="header_custom_options" inherit_id="website.snippet_options">
+        <xpath expr="//we-select[@data-variable='header-template']/we-button[last()]" position="after">
+            <we-button title="Header Style 1"
+                       data-name="header_style_1_opt"
+                       data-customize-website-views="theme_clarico_vega.option_header_01_assets,theme_clarico_vega.customize_header_style_1"
+                       data-customize-website-variable="'header_style_1'"
+                       data-img="/theme_clarico_vega/static/src/img/customise_option/h_style-1.jpg"/>
+
+            <we-button title="Header Style 2"
+                       data-name="header_style_2_opt"
+                       data-customize-website-views="theme_clarico_vega.option_header_02_assets,theme_clarico_vega.customize_header_style_2"
+                       data-customize-website-variable="'header_style_2'"
+                       data-img="/theme_clarico_vega/static/src/img/customise_option/h_style-2.jpg"/>
+
+            <we-button title="Header Style 3"
+                       data-name="header_style_3_opt"
+                       data-customize-website-views="theme_clarico_vega.option_header_03_assets,theme_clarico_vega.customize_header_style_3"
+                       data-customize-website-variable="'header_style_3'"
+                       data-img="/theme_clarico_vega/static/src/img/customise_option/h_style-4.jpg"/>
+
+            <we-button title="Header Style 4"
+                       data-name="header_style_4_opt"
+                       data-customize-website-views="theme_clarico_vega.option_header_04_assets,theme_clarico_vega.customize_header_style_4"
+                       data-customize-website-variable="'header_style_4'"
+                       data-img="/theme_clarico_vega/static/src/img/customise_option/h_style-5.jpg"/>
+
+            <we-button title="Header Style 5"
+                       data-name="header_style_5_opt"
+                       data-customize-website-views="theme_clarico_vega.option_header_05_assets,theme_clarico_vega.customize_header_style_5"
+                       data-customize-website-variable="'header_style_5'"
+                       data-img="/theme_clarico_vega/static/src/img/customise_option/h_style-7.jpg"/>
+
+            <we-button title="Header Style 6"
+                       data-name="header_style_6_opt"
+                       data-customize-website-views="theme_clarico_vega.option_header_06_assets,theme_clarico_vega.customize_header_style_6"
+                       data-customize-website-variable="'header_style_6'"
+                       data-img="/theme_clarico_vega/static/src/img/customise_option/h_style-8.jpg"/>
+
+            <we-button title="Header Style 7"
+                       data-name="header_style_7_opt"
+                       data-customize-website-views="theme_clarico_vega.option_header_07_assets,theme_clarico_vega.customize_header_style_7"
+                       data-customize-website-variable="'header_style_7'"
+                       data-img="/theme_clarico_vega/static/src/img/customise_option/h_style-9.jpg"/>
+
+            <we-button title="Header Style 8"
+                       data-name="header_style_8_opt"
+                       data-customize-website-views="theme_clarico_vega.option_header_08_assets,theme_clarico_vega.customize_header_style_8"
+                       data-customize-website-variable="'header_style_8'"
+                       data-img="/theme_clarico_vega/static/src/img/customise_option/h_style-10.jpg"/>
+
+            <we-button title="Header Style 9"
+                       data-name="header_style_9_opt"
+                       data-customize-website-views="theme_clarico_vega.option_header_09_assets,theme_clarico_vega.customize_header_style_9"
+                       data-customize-website-variable="'header_style_9'"
+                       data-img="/theme_clarico_vega/static/src/img/customise_option/h_style-11.jpg"/>
+
+            <we-button title="Header Style 10"
+                       data-name="header_style_10_opt"
+                       data-customize-website-views="theme_clarico_vega.option_header_10_assets,theme_clarico_vega.customize_header_style_10"
+                       data-customize-website-variable="'header_style_10'"
+                       data-img="/theme_clarico_vega/static/src/img/customise_option/h_style-10.png"/>
         </xpath>
-        <!-- Added color for header text and footer text -->
-        <xpath expr="//content[@id='theme_customize_content_colors']//list[1]//opt[5]"
-               position="replace">
+        <xpath expr="//we-select[@data-variable='header-template']" position="after">
+            <we-colorpicker data-dependencies="header_style_10_opt" string="Header Top BG Color"
+                            data-color="header_top_bg_color" data-color-type="theme" data-customize-website-color=""/>
+            <we-colorpicker data-dependencies="header_style_10_opt" string="Header Top Text Color"
+                            data-color="header_top_text_color" data-color-type="theme" data-customize-website-color=""/>
         </xpath>
-        <xpath expr="//content[@id='theme_customize_content_colors']//list[4]"
-               position="after">
-            <list string="Header">
-                <opt data-widget="color" data-color-type="theme" data-color="gamma" string="Header Text Color"/>
-                <opt data-widget="color" data-color="header_text_hover_color" string="Header Text Hover Color"/>
-            </list>
-            <list string="Footer">
-                <opt data-widget="color" data-color="footer_text_color" string="Footer Text Color"/>
-            </list>
+        <xpath expr="//we-select[@data-variable='header-template']" position="after">
+            <t t-if="request.env['website'].sudo().get_current_website().is_lazy_load">
+                <div data-selector="img">
+                    <we-checkbox string="Lazy Load" data-select-class="lazyload" data-no-preview="true"/>
+                </div>
+            </t>
+            <div data-selector=".s_title_3_ept, .s_title_1_ept">
+                <we-colorpicker string="Gradient color 1" data-color="button_gradient_1" data-color-type="theme"
+                                data-customize-website-color=""/>
+                <we-colorpicker string="Gradient color 1" data-color="button_gradient_2" data-color-type="theme"
+                                data-customize-website-color=""/>
+            </div>
+            <div data-selector="section, section .row > div, .s_col_no_bgcolor, .s_col_no_bgcolor.row > div, .o_gallery .row > div">
+                <we-select string="Animations" class="fa fa-magic" data-no-preview="true">
+                    <we-button data-select-class="none" data-aos-data="none">Remove Animation</we-button>
+
+                    <div class="text-muted text-white py-3 px-4">Fade</div>
+
+                    <we-button data-select-class="fade-up" data-aos-data="fade-up">Up</we-button>
+                    <we-button data-select-class="fade-down" data-aos-data="fade-down">Down</we-button>
+                    <we-button data-select-class="fade-right" data-aos-data="fade-right">Right</we-button>
+                    <we-button data-select-class="fade-left" data-aos-data="fade-left">Left</we-button>
+                    <we-button data-select-class="fade-up-right" data-aos-data="fade-up-right">up-right</we-button>
+                    <we-button data-select-class="fade-up-left" data-aos-data="fade-up-left">Up-left</we-button>
+                    <we-button data-select-class="fade-down-right" data-aos-data="fade-down-right">down-right</we-button>
+                    <we-button data-select-class="fade-down-left" data-aos-data="fade-down-left">down-left</we-button>
+
+                    <div class="text-muted text-white py-3 px-4">Flip</div>
+
+                    <we-button data-select-class="flip-left" data-aos-data="flip-left">Left</we-button>
+                    <we-button data-select-class="flip-right" data-aos-data="flip-right">Right</we-button>
+                    <we-button data-select-class="flip-up" data-aos-data="flip-up">Up</we-button>
+                    <we-button data-select-class="flip-down" data-aos-data="flip-down">Down</we-button>
+
+                    <div class="text-muted text-white py-3 px-4">Zoom</div>
+
+                    <we-button data-select-class="zoom-in" data-aos-data="zoom-in">In</we-button>
+                    <we-button data-select-class="zoom-in-up" data-aos-data="zoom-in-up">in-up</we-button>
+                    <we-button data-select-class="zoom-in-down" data-aos-data="zoom-in-down">in-down</we-button>
+                    <we-button data-select-class="zoom-in-left" data-aos-data="zoom-in-left">in-left</we-button>
+                    <we-button data-select-class="zoom-in-right" data-aos-data="zoom-in-right">in-right</we-button>
+                    <we-button data-select-class="zoom-out" data-aos-data="zoom-out">Out</we-button>
+                    <we-button data-select-class="zoom-out-up" data-aos-data="zoom-out-up">out-up</we-button>
+                    <we-button data-select-class="zoom-out-down" data-aos-data="zoom-out-down">out-down</we-button>
+                    <we-button data-select-class="zoom-out-right" data-aos-data="zoom-out-right">out-right</we-button>
+                    <we-button data-select-class="zoom-out-left" data-aos-data="zoom-out-left">out-left</we-button>
+                </we-select>
+            </div>
+
+            <div data-selector=".t_img_hover_1">
+                <we-select string="Transition Effect" data-no-preview="true">
+                    <we-button data-select-class="te_img_effect1">Effect 1</we-button>
+                    <we-button data-select-class="te_img_effect2">Effect 2</we-button>
+                    <we-button data-select-class="te_img_effect3">Effect 3</we-button>
+                    <we-button data-select-class="te_img_effect4">Effect 4</we-button>
+                    <we-button data-select-class="te_img_effect5">Effect 5</we-button>
+                    <we-button data-select-class="te_img_effect6">Effect 6</we-button>
+                </we-select>
+            </div>
+
         </xpath>
     </template>
+    <template id="footer_custom_options" inherit_id="website.snippet_options">
+        <xpath expr="//we-select[@data-variable='footer-template']/we-button[last()]" position="after">
+            <we-button title="Footer Style 1"
+                       data-customize-website-views="theme_clarico_vega.option_footer_01_assets,theme_clarico_vega.customize_footer_style_1"
+                       data-customize-website-variable="'option_footer_01'"
+                       data-img="/theme_clarico_vega/static/src/img/customise_option/footer_1.jpg"/>
+            <we-button title="Footer Style 2"
+                       data-customize-website-views="theme_clarico_vega.option_footer_02_assets,theme_clarico_vega.customize_footer_style_2"
+                       data-customize-website-variable="'option_footer_02'"
+                       data-img="/theme_clarico_vega/static/src/img/customise_option/footer_2.jpg"/>
+            <we-button title="Footer Style 3"
+                       data-customize-website-views="theme_clarico_vega.option_footer_03_assets,theme_clarico_vega.customize_footer_style_3"
+                       data-customize-website-variable="'option_footer_03'"
+                       data-img="/theme_clarico_vega/static/src/img/customise_option/footer_3.jpg"/>
+            <we-button title="Footer Style 4"
+                       data-customize-website-views="theme_clarico_vega.option_footer_04_assets,theme_clarico_vega.customize_footer_style_4"
+                       data-customize-website-variable="'option_footer_04'"
+                       data-img="/theme_clarico_vega/static/src/img/customise_option/footer_4.jpg"/>
+            <we-button title="Footer Style 5"
+                       data-customize-website-views="theme_clarico_vega.option_footer_05_assets,theme_clarico_vega.customize_footer_style_5"
+                       data-customize-website-variable="'option_footer_05'"
+                       data-img="/theme_clarico_vega/static/src/img/customise_option/footer_5.jpg"/>
+            <we-button title="Footer Style 6"
+                       data-customize-website-views="theme_clarico_vega.option_footer_06_assets,theme_clarico_vega.customize_footer_style_6"
+                       data-customize-website-variable="'option_footer_06'"
+                       data-img="/theme_clarico_vega/static/src/img/customise_option/footer_6.jpg"/>
+            <we-button title="Footer Style 7"
+                       data-customize-website-views="theme_clarico_vega.option_footer_07_assets,theme_clarico_vega.customize_footer_style_7"
+                       data-customize-website-variable="'option_footer_07'"
+                       data-img="/theme_clarico_vega/static/src/img/customise_option/footer_7.jpg"/>
 
+        </xpath>
+    </template>
 </odoo>

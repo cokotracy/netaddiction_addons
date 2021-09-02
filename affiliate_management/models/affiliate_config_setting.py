@@ -49,6 +49,10 @@ class AffiliateConfiguration(models.TransientModel):
     cookie_expire_period = fields.Selection([('hours','Hours'),('days','Days'),('months','Months')],required=True,default='days')
     payment_day = fields.Integer(string="Payment day",required=True, default=7)
     minimum_amt = fields.Integer(string="Minimum Payout Balance",required=True, default=0)
+    # This override of currency_id makes Odoo extremely slow. As we don't need
+    # multicurrency on NetAddiction, we remove it altogether
+    # currency_id = fields.Many2one('res.currency', 'Currency', required=True,
+    #    default=lambda self: self.env.user.company_id.currency_id.id)
     aff_product_id = fields.Many2one('product.product', 'Product',help="Product used in Invoicing")
     enable_signup = fields.Boolean(string= "Enable Sign Up", default=True  )
     enable_login = fields.Boolean(string= "Enable Log In", default=True  )
@@ -58,9 +62,9 @@ class AffiliateConfiguration(models.TransientModel):
     reject_mail_template = fields.Many2one('mail.template',string="Reject Request Mail ",readonly=True)
     Invitation_mail_template = fields.Many2one('mail.template',string="Invitation Request Mail ",readonly=True)
     unique_ppc_traffic = fields.Boolean(string= "Unique ppc for product", default=False,help="this field is used to enable unique traffic on product for an Affiliate for a specific browser. "  )
-    term_condition = fields.Html(String="Term & condition Text", related='affiliate_program_id.term_condition',translate=True)
+    term_condition = fields.Html(string="Term & condition Text", related='affiliate_program_id.term_condition',translate=True)
     work_title = fields.Text(string="How Does It Work Title",related='affiliate_program_id.work_title', translate=True)
-    work_text = fields.Html(String="How Does It Work Text",related='affiliate_program_id.work_text', translate=True)
+    work_text = fields.Html(string="How Does It Work Text",related='affiliate_program_id.work_text', translate=True)
 
 
 

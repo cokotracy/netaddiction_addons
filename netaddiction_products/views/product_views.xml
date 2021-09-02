@@ -6,12 +6,21 @@
         <field name="model">product.product</field>
         <field name="inherit_id" ref="product.product_product_tree_view" />
         <field name="arch" type="xml">
-            <xpath expr="//field[@name='name']" position="before">
-                <field name="id" />
-            </xpath>
             <xpath expr="//field[@name='name']" position="after">
                 <field name="barcode" />
+                <field name="sale_ok" string="Vendibile"/>
                 <field name="visible"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="netaddiction_view_stock_product_tree" model="ir.ui.view">
+        <field name="name">netaddiction.view.stock.product.tree</field>
+        <field name="model">product.product</field>
+        <field name="inherit_id" ref="stock.view_stock_product_tree" />
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='qty_available']" position="after">
+                <field name="qty_available_now" />
             </xpath>
         </field>
     </record>
@@ -21,18 +30,19 @@
         <field name="model">product.product</field>
         <field name="inherit_id" ref="product.product_normal_form_view" />
         <field name="arch" type="xml">
+            <xpath expr="//div[@name='options']" position="before">
+                <label for="product_tmpl_id" />
+                <field name="product_tmpl_id" readonly="True" />
+            </xpath>
             <xpath expr="/form/sheet/notebook/page[@name='general_information']//group[@name='group_general']/field[@name='categ_id']"
                    position="before">
                 <field name="out_date" />
                 <field name="out_date_approx_type" />
                 <field name="final_price" required="True" string="Prezzo Listino"/>
-                <field name="special_price" string="Prezzo offerta base"/>
-                <field name="lst_price" readonly="True" string="Prezzo di Vendita"/>
             </xpath>
-            <xpath expr="/form/sheet/notebook/page[@name='general_information']//group[@name='group_general']/field[@name='categ_id']"
+            <xpath expr="/form/sheet/notebook/page[@name='general_information']//group[@name='group_general']/field[@name='default_code']"
                    position="after">
-                <field name="med_inventory_value" readonly="True"/>
-                <field name="med_inventory_value_intax" readonly="True"/>
+                <field name="suppliers_codes" groups="base.group_no_one"/>
             </xpath>
             <xpath expr="/form/sheet/notebook/page[@name='general_information']//group[@name='group_standard_price']/field[@name='company_id']"
                    position="after">
@@ -78,6 +88,24 @@
                         <field name="property_valuation" default="real_time" readonly="1"/>
                     </group>
                 </page>
+                <page string="Extra Images" name="extra_images">
+                    <group name="extra_images">
+                        <field name="image_ids" widget="many2many_binary"/>
+                    </group>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="netaddiction_website_product_template_form_view" model="ir.ui.view">
+        <field name="name">netaddiction.website.product.template.form.view</field>
+        <field name="model">product.template</field>
+        <field name="inherit_id" ref="website_sale.product_template_form_view" />
+        <field name="arch" type="xml">
+            <xpath expr="//group[@name='shop']" position="after">
+                <group name="description">
+                    <field name="website_description" widget='html'/>
+		</group>
             </xpath>
         </field>
     </record>
@@ -95,6 +123,17 @@
                     <field name="price" />
                     <field name="detax_margin" />
                 </tree>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="netaddiction_product_supplierinfo_tree_view2" model="ir.ui.view">
+        <field name="name">netaddiction.product.supplierinfo.tree.view2</field>
+        <field name="model">product.supplierinfo</field>
+        <field name="inherit_id" ref="purchase.product_supplierinfo_tree_view2" />
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='name']" position="after">
+                <field name="product_id" />
             </xpath>
         </field>
     </record>
@@ -144,6 +183,16 @@
                 </group>
             </xpath>
         </field>
+    </record>
+
+    <!-- Force the action called from template to open variants,
+         to use complete form for the products -->
+    <record id="product.product_variant_action" model="ir.actions.act_window">
+        <field name="view_ids"
+               eval="[(5, 0, 0),
+                      (0, 0, {'view_mode': 'tree'}),
+                      (0, 0, {'view_mode': 'form', 'view_id': ref('product.product_normal_form_view')}),
+                      (0, 0, {'view_mode': 'kanban'})]"/>
     </record>
 
 </odoo>

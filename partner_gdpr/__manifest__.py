@@ -3,7 +3,7 @@
 
 {
     'name': 'Partner - GDPR',
-    'version': '13.0.1.0.0',
+    'version': '14.0.1.0.0',
     'category': 'Contact',
     'author': 'Openforce',
     'license': 'LGPL-3',
@@ -12,6 +12,7 @@
         'contacts',
     ],
     'data': [
+        'security/ir.model.access.csv',
         'wizard/partner_gdpr_disable.xml',
         'views/sale.xml',
         'views/partner.xml',
