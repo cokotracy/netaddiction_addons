@@ -105,11 +105,11 @@
         </xpath>
     </template>
 
-    <template id="custom_vertical_menu" inherit_id="theme_clarico_vega.menu_vertical">
+    <!-- <template id="custom_vertical_menu" inherit_id="theme_clarico_vega.menu_vertical">
         <xpath expr="//div[hasclass('te_content_text')]" position="after">
             <t t-call="netaddiction_theme_rewrite.social_sidebar"/>
         </xpath>
-    </template>
+    </template> -->
 
 
     <template id="custom_full_description" inherit_id="theme_clarico_vega.html_content_tabs_ept">
