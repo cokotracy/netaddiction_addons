@@ -12,24 +12,31 @@
                 </style>
                 <t t-foreach="docs" t-as="o">
                     <div class="page">
-                        <table  border="0" cellspacing="0" cellpadding="0" style="font-family:Arial, Helvetica, sans-serif; font-size:12px; font-weight:bold; line-height:14px; margin:0px; padding:0px; ">
+                        <table border="0" cellspacing="0" cellpadding="0"
+                               style="font-family:Arial, Helvetica, sans-serif; font-size:12px; font-weight:bold; line-height:14px; margin:0px; padding:0px; margin-top: 3px;">
                             <tr>
                                 <td align="left" valign="top" style="font-family:Arial, Helvetica, sans-serif; font-size:12px; font-weight:bold; line-height:14px;">
-                                    <table  border="0" cellspacing="0" cellpadding="0" style="font-family:Arial, Helvetica, sans-serif; font-size:12px; font-weight:bold; line-height:14px; margin:0px; padding:0px; ">
+                                    <table border="0" cellspacing="0" cellpadding="0" style="font-family:Arial, Helvetica, sans-serif; font-size:12px; font-weight:bold; line-height:14px; margin:0px; padding:0px; ">
                                         <tr>
-                                            <td width="215" align="left" valign="middle"><span t-field="o.company_id.logo" t-field-options="{'widget': 'image', 'class': 'img-rounded'}" /></td>
-                                            <td width="333" rowspan="2" align="right" valign="top">
-                                                <table width="333" border="0" cellspacing="0" cellpadding="0">
+                                            <!-- <td width="215" align="left" valign="middle"><span t-field="o.company_id.logo" t-field-options="{'widget': 'image', 'class': 'img-rounded'}" /></td> -->
+                                            <td width="274">
+                                                <table border="0" cellspacing="0" cellpadding="0" padding-right="3px">
                                                     <tr>
-                                                        <td width="333" align="right" valign="middle" style="font-family:Arial, Helvetica, sans-serif; font-size:16px; font-weight:bold; line-height:18px;">
-                                                        <em style="font-size:12px">Ordine:</em> <span t-field="o.origin"/><br/>
-                                                        <em style="font-size:12px">Dest:</em> <span t-field="o.sale_id.partner_shipping_id.name"/></td>
+                                                        <td align="right"
+                                                            valign="middle"
+                                                            style="font-family:Arial, Helvetica, sans-serif; font-size:16px; font-weight:bold; line-height:18px;">
+                                                            <em style="font-size:12px">Ordine:</em> <span t-field="o.origin"/><br/>
+                                                            <em style="font-size:12px">Dest:</em> <span t-field="o.sale_id.partner_shipping_id.name"/>
+                                                        </td>
                                                     </tr>
                                                 </table>
                                             </td>
-                                        </tr>
-                                        <tr>
-                                            <td align="center" valign="middle" style="font-size:9px; font-family:Arial, Helvetica, sans-serif;font-weight:normal !important">Mail:<span t-field="o.company_id.email"/></td>
+                                            <td width="274" style="font-size:12px; font-weight:normal !important">
+                                                <span t-field="o.sale_id.partner_shipping_id.street"/>
+                                                <span t-field="o.sale_id.partner_shipping_id.street2"/><br/>
+                                                <span t-field="o.sale_id.partner_shipping_id.city"/>,
+                                                <span t-field="o.sale_id.partner_shipping_id.zip"/><br/>
+                                            </td>
                                         </tr>
                                         <tr>
                                             <td height="10" colspan="2" align="left" valign="middle"></td>
