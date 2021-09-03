@@ -7,6 +7,7 @@
     'author': 'Netaddiction',
     'license': 'LGPL-3',
     'depends': [
+        'portal',
         'product',
         'web',
         'website',
@@ -15,6 +16,7 @@
         'odoo_website_wallet',
         'product_bundle_pack',
         'advance_website_all_in_one',
+        'website_all_in_one',
         'product_template_tags'
     ],
     'data': [

@@ -206,14 +206,11 @@
 		</style>
 		<script>
 			$.fn.stars4= function() {
-			return $(this).each(
-			function() {
-			$(this).html(
-			$('
-			<span />
-			').width(
-			Math.max(0, (Math.min(5, blog_rate_value1))) * 17));
-			});
+				return $(this).each(
+					function() {
+					$(this).html($('<span />').width(Math.max(0, (Math.min(5, blog_rate_value1))) * 17));
+					}
+				);
 			}
 		</script>
 		<script type="text/javascript" src="/website_all_in_one/static/src/js/website_product_review.js"></script>

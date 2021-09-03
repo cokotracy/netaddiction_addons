@@ -5,7 +5,6 @@
 /*SLIDER FULL SCREEN*/
 .s_carousel .carousel-inner, .s_quotes_carousel .carousel-inner{
     max-height:220px;
-    background-color:#222222 !important;
 }
 .s_carousel .carousel-inner .carousel-item, .s_quotes_carousel .carousel-inner .carousel-item{
     background-position: top;
@@ -232,18 +231,17 @@
     }
     .s_carousel .carousel-inner .carousel-item, .s_quotes_carousel .carousel-inner .carousel-item{
         background-position: top right;
-        background-size: 1024px;
+        background-size: 880px;
     }
     .te_slider_10{
         top:30% !important;
-        background-image: url(../img/logo-mcom.png);
         background-repeat: no-repeat;
         background-position: center;
         background-size: contain;
     }
     .te_slider_10 .s_title, .te_slider_10 .te_slider_10_content{
         background-color:rgba(0,0,0,0.7);
-        transform:skew(-8deg, 0deg);
+        color:#ffffff !important;
     }
     .carousel-content{
         display: block;
