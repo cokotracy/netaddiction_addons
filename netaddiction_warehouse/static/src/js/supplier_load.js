@@ -206,7 +206,8 @@ odoo.define('netaddiction_warehouse.supplier_load', function (require) {
                         'picking_ids'
                     ],
                     domain: [
-                        ['id', '=', parseInt(supplier_id)]
+                        ['partner_id', '=', parseInt(supplier_id)],
+                        ['state', '=', 'purchase']
                     ],
                 }).then(function (pord) {
                     if (pord.length == 0) {
