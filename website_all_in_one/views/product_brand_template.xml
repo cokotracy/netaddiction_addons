@@ -10,7 +10,7 @@
 			</xpath>
 	</template>
 	
-	<template id="product_labels" inherit_id="website_sale.products" active="True" customize_show="True" name="Show Product Brand Labels">
+	<!-- <template id="product_labels" inherit_id="website_sale.products" active="True" customize_show="True" name="Show Product Brand Labels">
 		<xpath expr="//div[hasclass('products_pager')]" position="after">
 			<br/>
 			<div class='justify-content-center container-fluid' style='text-align: center; padding-bottom: 10px;'> 
@@ -18,7 +18,7 @@
 				<t t-foreach='products' t-as='pr'>
 					<t t-set="prod_count" t-value='prod_count+1'/>
 				</t>
-				<!-- <t t-if="brand_record"> --><strong> Showing <t t-esc="prod_count"/> Products </strong><br/><!-- </t> -->
+				<strong> Showing <t t-esc="prod_count"/> Products </strong><br/>
 				<form class="js_attributes" method="get" style="margin-left:100px;">
 					<input type="hidden" name="search" t-att-value="search" />
 					
@@ -42,7 +42,7 @@
 				</form>
 			</div>
 		</xpath>
-	</template>
+	</template> -->
 
 	<template id="products_brands" inherit_id="website_sale.products" active="False" customize_show="True" name="Product Brands">
 		<xpath expr="//div[@id='products_grid_before']" position="before">

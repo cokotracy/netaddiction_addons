@@ -660,299 +660,299 @@ class WebsiteSale(http.Controller):
             if not qs or qs.lower() in loc:
                 yield {'loc': loc}
 
-    @http.route([
-        '''/shop''',
-        '''/shop/page/<int:page>''',
-        '''/shop/category/<model("product.public.category", "[('website_id', 'in', (False, current_website_id))]"):category>''',
-        '''/shop/category/<model("product.public.category", "[('website_id', 'in', (False, current_website_id))]"):category>/page/<int:page>''',
-        '''/shop/category/<abc>''',
-        '''/shop/category/page/<int:page>/<abc>'''
-    ], type='http', auth="public", website=True, sitemap=sitemap_shop)
-    def shop(self, page=0, category=None, abc=None, search='', ppg=False, **post):
-        add_qty = int(post.get('add_qty', 1))
-        if abc != None:
-            config_id = request.env['url.config'].sudo().search([],order="id desc", limit=1)
-            y = config_id.suffix_category_url
+    # @http.route([
+    #     '''/shop''',
+    #     '''/shop/page/<int:page>''',
+    #     '''/shop/category/<model("product.public.category", "[('website_id', 'in', (False, current_website_id))]"):category>''',
+    #     '''/shop/category/<model("product.public.category", "[('website_id', 'in', (False, current_website_id))]"):category>/page/<int:page>''',
+    #     '''/shop/category/<abc>''',
+    #     '''/shop/category/page/<int:page>/<abc>'''
+    # ], type='http', auth="public", website=True, sitemap=sitemap_shop)
+    # def shop(self, page=0, category=None, abc=None, search='', ppg=False, **post):
+    #     add_qty = int(post.get('add_qty', 1))
+    #     if abc != None:
+    #         config_id = request.env['url.config'].sudo().search([],order="id desc", limit=1)
+    #         y = config_id.suffix_category_url
 
-            if y:
-                x = abc.replace(y,'')
-            else:
-                x = abc.replace('False','')
+    #         if y:
+    #             x = abc.replace(y,'')
+    #         else:
+    #             x = abc.replace('False','')
 
-            category = request.env['product.public.category'].sudo().search([('url_redirect', '=', x)], limit=1)
-            if not category or not category.can_access_from_current_website():
-                raise NotFound()
-        else:
-            if category:
-                if isinstance(category, str):
-                    category = request.env['product.public.category'].search([('id', '=',  int(category))], limit=1)
-                else:
-                    category = request.env['product.public.category'].search([('id', '=',  category.id)], limit=1)
-                if not category or not category.can_access_from_current_website():
-                    raise NotFound()
-        Category = request.env['product.public.category']
-        if category:
-            category = Category.search([('id', '=', int(category))], limit=1)
-            if not category or not category.can_access_from_current_website():
-                raise NotFound()
-        else:
-            category = Category
+    #         category = request.env['product.public.category'].sudo().search([('url_redirect', '=', x)], limit=1)
+    #         if not category or not category.can_access_from_current_website():
+    #             raise NotFound()
+    #     else:
+    #         if category:
+    #             if isinstance(category, str):
+    #                 category = request.env['product.public.category'].search([('id', '=',  int(category))], limit=1)
+    #             else:
+    #                 category = request.env['product.public.category'].search([('id', '=',  category.id)], limit=1)
+    #             if not category or not category.can_access_from_current_website():
+    #                 raise NotFound()
+    #     Category = request.env['product.public.category']
+    #     if category:
+    #         category = Category.search([('id', '=', int(category))], limit=1)
+    #         if not category or not category.can_access_from_current_website():
+    #             raise NotFound()
+    #     else:
+    #         category = Category
 
-        if ppg:
-            try:
-                ppg = int(ppg)
-                post['ppg'] = ppg
-            except ValueError:
-                ppg = False
-        else:
-            ppg = PPG
-        if not ppg:
-            ppg = request.env['website'].get_current_website().shop_ppg or 20
+    #     if ppg:
+    #         try:
+    #             ppg = int(ppg)
+    #             post['ppg'] = ppg
+    #         except ValueError:
+    #             ppg = False
+    #     else:
+    #         ppg = PPG
+    #     if not ppg:
+    #         ppg = request.env['website'].get_current_website().shop_ppg or 20
 
-        ppr = request.env['website'].get_current_website().shop_ppr or 4
+    #     ppr = request.env['website'].get_current_website().shop_ppr or 4
 
-        attrib_list = request.httprequest.args.getlist('attrib')
-        attrib_values = [[int(x) for x in v.split("-")] for v in attrib_list if v]
-        attributes_ids = {v[0] for v in attrib_values}
-        attrib_set = {v[1] for v in attrib_values}
-        brand = request.httprequest.args.getlist('brand')
-        brand_set1 = [[int(x) for x in v] for v in brand if v]
-        brand_set = [v[0] for v in brand_set1]
-        filter_list = request.httprequest.args.getlist('filter')
+    #     attrib_list = request.httprequest.args.getlist('attrib')
+    #     attrib_values = [[int(x) for x in v.split("-")] for v in attrib_list if v]
+    #     attributes_ids = {v[0] for v in attrib_values}
+    #     attrib_set = {v[1] for v in attrib_values}
+    #     brand = request.httprequest.args.getlist('brand')
+    #     brand_set1 = [[int(x) for x in v] for v in brand if v]
+    #     brand_set = [v[0] for v in brand_set1]
+    #     filter_list = request.httprequest.args.getlist('filter')
         
-        filter_values = [[int(x) for x in v.split("-")] for v in filter_list if v]
-        filter_ids = {v[0] for v in filter_values}
-        filter_set = {v[1] for v in filter_values}
+    #     filter_values = [[int(x) for x in v.split("-")] for v in filter_list if v]
+    #     filter_ids = {v[0] for v in filter_values}
+    #     filter_set = {v[1] for v in filter_values}
 
-        if brand_set:
-            brand_record = request.env['product.brand'].search([('id', 'in', brand_set)])
-        else:
-            brand_record = False
+    #     if brand_set:
+    #         brand_record = request.env['product.brand'].search([('id', 'in', brand_set)])
+    #     else:
+    #         brand_record = False
         
-        domain = self._get_search_domain(search, category, attrib_values, filter_values, brand_set)
+    #     domain = self._get_search_domain(search, category, attrib_values, filter_values, brand_set)
 
-        keep = QueryURL('/shop', category=category and int(category), search=search, attrib=attrib_list, order=post.get('order'))
-        pricelist_context, pricelist = self._get_pricelist_context()
+    #     keep = QueryURL('/shop', category=category and int(category), search=search, attrib=attrib_list, order=post.get('order'))
+    #     pricelist_context, pricelist = self._get_pricelist_context()
 
-        request.context = dict(request.context, pricelist=pricelist.id, partner=request.env.user.partner_id)
+    #     request.context = dict(request.context, pricelist=pricelist.id, partner=request.env.user.partner_id)
 
-        url = "/shop"
-        if search:
-            post["search"] = search
-            AllBrands = request.env['product.brand'].search([('name','ilike',search)])
-            ids = []
-            for i in AllBrands:
-                ids.append(i.id)
-            domain_new = [('brand_id', 'in', ids)]
+    #     url = "/shop"
+    #     if search:
+    #         post["search"] = search
+    #         AllBrands = request.env['product.brand'].search([('name','ilike',search)])
+    #         ids = []
+    #         for i in AllBrands:
+    #             ids.append(i.id)
+    #         domain_new = [('brand_id', 'in', ids)]
         
-        if category:
-            category = request.env['product.public.category'].browse(int(category))
-            url = "/shop/category/%s" % slug(category)
-        if attrib_list:
-            post['attrib'] = attrib_list
+    #     if category:
+    #         category = request.env['product.public.category'].browse(int(category))
+    #         url = "/shop/category/%s" % slug(category)
+    #     if attrib_list:
+    #         post['attrib'] = attrib_list
         
-        if brand_set:
-            post['brand'] = brand_set
-        if filter_list:
-            post['filter'] = filter_list
+    #     if brand_set:
+    #         post['brand'] = brand_set
+    #     if filter_list:
+    #         post['filter'] = filter_list
 
-        Product = request.env['product.template'].with_context(bin_size=True)
-        setting = request.env['res.config.settings'].sudo().search([], order=' id desc', limit=1)
+    #     Product = request.env['product.template'].with_context(bin_size=True)
+    #     setting = request.env['res.config.settings'].sudo().search([], order=' id desc', limit=1)
 
-        list_of_product = []
-        hide_product = []
-        hide_product_cat = []
-        if category:    
-            parent_category_ids = [category.id]
-            current_category = category
-            while current_category.parent_id:
-                parent_category_ids.append(current_category.parent_id.id)
-                current_category = current_category.parent_id
+    #     list_of_product = []
+    #     hide_product = []
+    #     hide_product_cat = []
+    #     if category:    
+    #         parent_category_ids = [category.id]
+    #         current_category = category
+    #         while current_category.parent_id:
+    #             parent_category_ids.append(current_category.parent_id.id)
+    #             current_category = current_category.parent_id
 
-        if request.env.user.partner_id.hide_product_ids:
-            for p_id in request.env.user.partner_id.hide_product_ids:
-                hide_product.append(p_id.id)
+    #     if request.env.user.partner_id.hide_product_ids:
+    #         for p_id in request.env.user.partner_id.hide_product_ids:
+    #             hide_product.append(p_id.id)
 
-        if request.env.user.partner_id.hide_product_categ_ids:
-            for c_id in request.env.user.partner_id.hide_product_categ_ids:
-                hide_product_categ_ids = request.env['product.template'].sudo().search([('categ_id','=',c_id.id)])
-                for category_ids in hide_product_categ_ids:
-                    hide_product_cat.append(category_ids.id)
+    #     if request.env.user.partner_id.hide_product_categ_ids:
+    #         for c_id in request.env.user.partner_id.hide_product_categ_ids:
+    #             hide_product_categ_ids = request.env['product.template'].sudo().search([('categ_id','=',c_id.id)])
+    #             for category_ids in hide_product_categ_ids:
+    #                 hide_product_cat.append(category_ids.id)
 
-        if request.env.user.partner_id.product_ids:
-            for p_id in request.env.user.partner_id.product_ids:
-                if p_id.id not in hide_product:
-                    list_of_product.append(p_id.id)
+    #     if request.env.user.partner_id.product_ids:
+    #         for p_id in request.env.user.partner_id.product_ids:
+    #             if p_id.id not in hide_product:
+    #                 list_of_product.append(p_id.id)
         
-        if request.env.user.partner_id.product_categ_ids:
-            for c_id in request.env.user.partner_id.product_categ_ids:
-                product_categ_ids = request.env['product.template'].sudo().search([('categ_id','=',c_id.id)])
-                for category_ids in product_categ_ids:
-                    if category_ids.id not in hide_product_cat:
-                        list_of_product.append(category_ids.id)
+    #     if request.env.user.partner_id.product_categ_ids:
+    #         for c_id in request.env.user.partner_id.product_categ_ids:
+    #             product_categ_ids = request.env['product.template'].sudo().search([('categ_id','=',c_id.id)])
+    #             for category_ids in product_categ_ids:
+    #                 if category_ids.id not in hide_product_cat:
+    #                     list_of_product.append(category_ids.id)
 
-        if request.env.user.partner_id:
-            domain+= [('id','in',list_of_product)] 
+    #     if request.env.user.partner_id:
+    #         domain+= [('id','in',list_of_product)] 
 
-        visitor_product = []
-        visitor_product_cat = []
-        if setting.visitor_hide_product_ids:
-            for p_id in setting.visitor_hide_product_ids:
-                visitor_product.append(p_id.id)
-        if setting.visitor_product_categ_ids:
-            for c_id in setting.visitor_hide_product_categ_ids:
-                visitor_hide_product_categ_ids = request.env['product.template'].sudo().search([('categ_id','=',c_id.id)])
-                for category_ids in visitor_hide_product_categ_ids:
-                    visitor_product_cat.append(category_ids.id)
+    #     visitor_product = []
+    #     visitor_product_cat = []
+    #     if setting.visitor_hide_product_ids:
+    #         for p_id in setting.visitor_hide_product_ids:
+    #             visitor_product.append(p_id.id)
+    #     if setting.visitor_product_categ_ids:
+    #         for c_id in setting.visitor_hide_product_categ_ids:
+    #             visitor_hide_product_categ_ids = request.env['product.template'].sudo().search([('categ_id','=',c_id.id)])
+    #             for category_ids in visitor_hide_product_categ_ids:
+    #                 visitor_product_cat.append(category_ids.id)
 
-        if setting.visitor_product_ids:
-            for p_id in setting.visitor_product_ids:
-                if p_id.id not in visitor_product:
-                    list_of_product.append(p_id.id)
-        if setting.visitor_product_categ_ids:
-            for c_id in setting.visitor_product_categ_ids:
-                product_categ_ids = request.env['product.template'].sudo().search([('categ_id','=',c_id.id)])
-                for category_ids in product_categ_ids:
-                    if category_ids.id not in visitor_product_cat:
-                        list_of_product.append(category_ids.id)
-        if setting:
-            domain+= [('id','in',list_of_product)] 
+    #     if setting.visitor_product_ids:
+    #         for p_id in setting.visitor_product_ids:
+    #             if p_id.id not in visitor_product:
+    #                 list_of_product.append(p_id.id)
+    #     if setting.visitor_product_categ_ids:
+    #         for c_id in setting.visitor_product_categ_ids:
+    #             product_categ_ids = request.env['product.template'].sudo().search([('categ_id','=',c_id.id)])
+    #             for category_ids in product_categ_ids:
+    #                 if category_ids.id not in visitor_product_cat:
+    #                     list_of_product.append(category_ids.id)
+    #     if setting:
+    #         domain+= [('id','in',list_of_product)] 
 
-        search_product = Product.search(domain)
-        search_categories = False
-        if search:
-            categories = search_product.mapped('public_categ_ids')
-            search_categories = Category.search([('id', 'parent_of', categories.ids)] + request.website.website_domain())
-            categs = search_categories.filtered(lambda c: not c.parent_id)
-        else:
-            categs = Category.search([('parent_id', '=', False)] + request.website.website_domain())
+    #     search_product = Product.search(domain)
+    #     search_categories = False
+    #     if search:
+    #         categories = search_product.mapped('public_categ_ids')
+    #         search_categories = Category.search([('id', 'parent_of', categories.ids)] + request.website.website_domain())
+    #         categs = search_categories.filtered(lambda c: not c.parent_id)
+    #     else:
+    #         categs = Category.search([('parent_id', '=', False)] + request.website.website_domain())
 
-        website_domain = request.website.website_domain()
-        categs_domain = [('parent_id', '=', False)] + website_domain
-        if search:
-            search_categories = Category.search([('product_tmpl_ids', 'in', search_product.ids)] + website_domain).parents_and_self
-            categs_domain.append(('id', 'in', search_categories.ids))
-        else:
-            search_categories = Category
-        categs = Category.search(categs_domain)
+    #     website_domain = request.website.website_domain()
+    #     categs_domain = [('parent_id', '=', False)] + website_domain
+    #     if search:
+    #         search_categories = Category.search([('product_tmpl_ids', 'in', search_product.ids)] + website_domain).parents_and_self
+    #         categs_domain.append(('id', 'in', search_categories.ids))
+    #     else:
+    #         search_categories = Category
+    #     categs = Category.search(categs_domain)
 
-        if category:
-            url = "/shop/category/%s" % slug(category)
+    #     if category:
+    #         url = "/shop/category/%s" % slug(category)
 
-        config_id = request.env['url.config'].sudo().search([],order="id desc", limit=1)
-        categ_extension = ''
-        if config_id:
-            categ_extension = config_id.suffix_category_url
-        else:
-            categ_extension = '.htm'
-        parent_category_ids = []
-        if abc != None:
-            url = "/shop/category/%s%s" % (category.url_redirect,categ_extension)
-            parent_category_ids = [category.id]
-            current_category = category
-            while current_category.parent_id:
-                parent_category_ids.append(current_category.parent_id.id)
-                current_category = current_category.parent_id
-        if abc == None:
-            if category:
-                url = "/shop/category/%s" % slug(category)
-                parent_category_ids = [category.id]
-                current_category = category
-                while current_category.parent_id:
-                    parent_category_ids.append(current_category.parent_id.id)
-                    current_category = current_category.parent_id
+    #     config_id = request.env['url.config'].sudo().search([],order="id desc", limit=1)
+    #     categ_extension = ''
+    #     if config_id:
+    #         categ_extension = config_id.suffix_category_url
+    #     else:
+    #         categ_extension = '.htm'
+    #     parent_category_ids = []
+    #     if abc != None:
+    #         url = "/shop/category/%s%s" % (category.url_redirect,categ_extension)
+    #         parent_category_ids = [category.id]
+    #         current_category = category
+    #         while current_category.parent_id:
+    #             parent_category_ids.append(current_category.parent_id.id)
+    #             current_category = current_category.parent_id
+    #     if abc == None:
+    #         if category:
+    #             url = "/shop/category/%s" % slug(category)
+    #             parent_category_ids = [category.id]
+    #             current_category = category
+    #             while current_category.parent_id:
+    #                 parent_category_ids.append(current_category.parent_id.id)
+    #                 current_category = current_category.parent_id
 
-        product_count = len(search_product)
-        pager = request.website.pager(url=url, total=product_count, page=page, step=ppg, scope=7, url_args=post)
-        products = Product.search(domain, limit=ppg, offset=pager['offset'])
+    #     product_count = len(search_product)
+    #     pager = request.website.pager(url=url, total=product_count, page=page, step=ppg, scope=7, url_args=post)
+    #     products = Product.search(domain, limit=ppg, offset=pager['offset'])
 
-        ProductAttribute = request.env['product.attribute']
-        ProductBrand = request.env['product.brand']
-        ProductFilter = request.env['product.filter']
+    #     ProductAttribute = request.env['product.attribute']
+    #     ProductBrand = request.env['product.brand']
+    #     ProductFilter = request.env['product.filter']
 
-        if products:
-            # get all products without limit
-            attributes = ProductAttribute.search([('product_tmpl_ids', 'in', search_product.ids)])
-            brands = ProductBrand.search([])
-        else:
-            attributes = ProductAttribute.browse(attributes_ids)
-            brands = ProductBrand.browse(brand_set)
-        filters = grouped_tasks = None
-        if products:
-            # get all products without limit
-            selected_products = Product.search(domain, limit=False)
+    #     if products:
+    #         # get all products without limit
+    #         attributes = ProductAttribute.search([('product_tmpl_ids', 'in', search_product.ids)])
+    #         brands = ProductBrand.search([])
+    #     else:
+    #         attributes = ProductAttribute.browse(attributes_ids)
+    #         brands = ProductBrand.browse(brand_set)
+    #     filters = grouped_tasks = None
+    #     if products:
+    #         # get all products without limit
+    #         selected_products = Product.search(domain, limit=False)
             
-            filters = ProductFilter.search([('filter_value_ids', '!=', False), ('filter_ids.product_tmpl_id', 'in', selected_products.ids)])
+    #         filters = ProductFilter.search([('filter_value_ids', '!=', False), ('filter_ids.product_tmpl_id', 'in', selected_products.ids)])
             
-        else:
-            filters = ProductFilter.browse(filter_ids)
+    #     else:
+    #         filters = ProductFilter.browse(filter_ids)
 
-        filter_group = request.env['group.filter'].search([])
+    #     filter_group = request.env['group.filter'].search([])
         
-        applied_filter = False
-        if filter_values:
-            applied_filter = True
+    #     applied_filter = False
+    #     if filter_values:
+    #         applied_filter = True
 
-        if filter_group:
-            grouped_tasks = [request.env['product.filter'].concat(*g) for k, g in groupbyelem(filters, itemgetter('group_id'))]
-        else:
-            grouped_tasks = [filters]
+    #     if filter_group:
+    #         grouped_tasks = [request.env['product.filter'].concat(*g) for k, g in groupbyelem(filters, itemgetter('group_id'))]
+    #     else:
+    #         grouped_tasks = [filters]
 
-        prods  = Product.sudo().search(domain)
-        request.website.sudo().get_dynamic_count(prods)
+    #     prods  = Product.sudo().search(domain)
+    #     request.website.sudo().get_dynamic_count(prods)
 
-        layout_mode = request.session.get('website_sale_shop_layout_mode')
-        if not layout_mode:
-            if request.website.viewref('website_sale.products_list_view').active:
-                layout_mode = 'list'
-            else:
-                layout_mode = 'grid'
+    #     layout_mode = request.session.get('website_sale_shop_layout_mode')
+    #     if not layout_mode:
+    #         if request.website.viewref('website_sale.products_list_view').active:
+    #             layout_mode = 'list'
+    #         else:
+    #             layout_mode = 'grid'
 
-        compute_currency = self._get_compute_currency(pricelist, products[:1])
+    #     compute_currency = self._get_compute_currency(pricelist, products[:1])
 
-        keep = QueryURL('/shop', category=category and int(category), search=search,brand=brand_set, attrib=attrib_list, order=post.get('order'))
+    #     keep = QueryURL('/shop', category=category and int(category), search=search,brand=brand_set, attrib=attrib_list, order=post.get('order'))
 
-        values = {
-            'search': search,
-            'category': category,
-            'attrib_values': attrib_values,
-            'attrib_set': attrib_set,
-            'brand_set': brand_set,
-            'brand_record': brand_record,
-            'filter_set': filter_set,
-            'filter_values': filter_values,
-            'pager': pager,
-            'pricelist': pricelist,
-            'grouped_tasks':grouped_tasks,
-            'add_qty': add_qty,
-            'products': products,
-            'search_count': product_count,  # common for all searchbox
-            'bins': TableCompute().process(products, ppg),
-            'rows': PPR,
-            'ppg': ppg,
-            'ppr': ppr,
-            'categories': categs,
-            'filters': filters,
-            'attributes': attributes,
-            'keep': keep,
-            'brands':brands,
-            'parent_category_ids': parent_category_ids,
-            'search_categories_ids': search_categories.ids,
-            'layout_mode': layout_mode,
-            'seo_url' : dict(zip([p.id for p in products], [p.url_redirect for p in products ])),
-            'config_id' : config_id
-        }
+    #     values = {
+    #         'search': search,
+    #         'category': category,
+    #         'attrib_values': attrib_values,
+    #         'attrib_set': attrib_set,
+    #         'brand_set': brand_set,
+    #         'brand_record': brand_record,
+    #         'filter_set': filter_set,
+    #         'filter_values': filter_values,
+    #         'pager': pager,
+    #         'pricelist': pricelist,
+    #         'grouped_tasks':grouped_tasks,
+    #         'add_qty': add_qty,
+    #         'products': products,
+    #         'search_count': product_count,  # common for all searchbox
+    #         'bins': TableCompute().process(products, ppg),
+    #         'rows': PPR,
+    #         'ppg': ppg,
+    #         'ppr': ppr,
+    #         'categories': categs,
+    #         'filters': filters,
+    #         'attributes': attributes,
+    #         'keep': keep,
+    #         'brands':brands,
+    #         'parent_category_ids': parent_category_ids,
+    #         'search_categories_ids': search_categories.ids,
+    #         'layout_mode': layout_mode,
+    #         'seo_url' : dict(zip([p.id for p in products], [p.url_redirect for p in products ])),
+    #         'config_id' : config_id
+    #     }
 
         
-        if 'seo_url' in values:
-            for j,k in values['seo_url'].items():
-                if k == False or k == '':
-                    pro = Product.sudo().search([('id','=',int(j))],limit=1)
-                    values['seo_url'].update({j : slug(pro)})
+    #     if 'seo_url' in values:
+    #         for j,k in values['seo_url'].items():
+    #             if k == False or k == '':
+    #                 pro = Product.sudo().search([('id','=',int(j))],limit=1)
+    #                 values['seo_url'].update({j : slug(pro)})
 
-        if category:
-            values['main_object'] = category
-        return request.render("website_sale.products", values)
+    #     if category:
+    #         values['main_object'] = category
+    #     return request.render("website_sale.products", values)
 
     @http.route(['''/shop/product/<model("product.template"):product>''',
         '''/shop/product/<abc>'''], type='http', auth="public", website=True)
