@@ -24,7 +24,7 @@
 											</div>
 											<div class="carousel-content o_colored_level">
 												<div class="s_btn text-left pt16 pb16 mt16" data-name="Buttons">
-													<a href="#" class="btn btn-primary te_theme_button" style="background-color:#ffffff;">
+													<a href="#" class="btn btn-primary te_theme_button">
 														Scopri di più
 													</a>
 												</div>
@@ -44,7 +44,7 @@
 											</div>
 											<div class="carousel-content o_colored_level">
 												<div class="s_btn text-left pt16 pb16 mt16" data-name="Buttons">
-													<a href="#" class="btn btn-primary te_theme_button" style="background-color:#ffffff;">
+													<a href="#" class="btn btn-primary te_theme_button">
 														Scopri di più
 													</a>
 												</div>
