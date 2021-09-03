@@ -245,3 +245,20 @@ class StockPickingBatch(models.Model):
                 out.write({'batch_id': None})
 
         batch.done()
+
+    def done(self):
+        '''
+            This function is used as hook for every call to `batch.done()`
+            in the code.
+            `Batchs` are the old `waves` and waves had `done()`
+            function to confirm them.
+            To keep compatibility with migrated code
+            we reintroduce this function
+        '''
+        #  Simulate Confirm on draft batchs
+        draft_batchs = self.filtered(lambda b: b.state == 'draft')
+        if draft_batchs:
+            draft_batchs.action_confirm()
+            self.refresh()
+        #  Simulate Validate on confirmed batchs
+        self.action_done()
