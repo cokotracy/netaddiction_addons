@@ -127,11 +127,7 @@ class InventoryApp(http.Controller):
     @http.route('/inventory/app/pick_up/<batch_id>', type='http', auth='user')
     def batch_pick_up(self, batch_id, debug=False, **k):
         # prendo tutte le liste di prelievo in stato draft
-        states = ['assigned', 'partially_available']
-        batch = request.env['stock.picking.batch'].search(
-            [('id', '=', batch_id),
-             ('picking_ids.move_line_ids.state', 'in', states)]
-        )
+        batch = request.env['stock.picking.batch'].browse(int(batch_id))
 
         if batch.state == 'draft':
             batch.write({'state': 'in_progress'})
