@@ -4,7 +4,7 @@
 
 /*SLIDER FULL SCREEN*/
 .s_carousel .carousel-inner, .s_quotes_carousel .carousel-inner{
-    max-height:220px;
+    max-height:240px;
 }
 .s_carousel .carousel-inner .carousel-item, .s_quotes_carousel .carousel-inner .carousel-item{
     background-position: top;

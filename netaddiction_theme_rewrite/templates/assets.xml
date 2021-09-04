@@ -8,7 +8,7 @@
     </template>
     <template id="netaddiction_theme_rewrite_canonical" inherit_id="portal.frontend_layout">
         <xpath expr="//meta[last()]" position="after">
-            <t t-set="current_url" t-value="website._get_canonical_url(canonical_params=canonical_params)"/>
+            <t t-set="current_url" t-value="website._get_canonical_url(canonical_params=canonical_params).replace('/it_IT/', '/')"/>
             <!-- AGGIUNGE IN HEAD PER LA HOME --> 
             <t t-if="(request.env['ir.config_parameter'].sudo().get_param('web.base.url') + '/') == current_url">
                 <link href="/netaddiction_theme_rewrite/static/src/css/home.css" rel="stylesheet"/>
@@ -68,7 +68,7 @@
         </xpath>
         <xpath expr="//link[@rel='canonical']" position="replace">
             <t t-set="canonical_find" t-value="false"/>
-            <t t-set="current_url" t-value="website._get_canonical_url(canonical_params=canonical_params)"/>
+            <t t-set="current_url" t-value="website._get_canonical_url(canonical_params=canonical_params).replace('/it_IT/', '/')"/>
 
             <!--SOSTITUISCE IL CANONICAL-->
             <t t-if="'/shop/category/' in current_url">
@@ -84,7 +84,7 @@
             <t t-if="'&amp;search=' in current_url">
                 <!--RICERCA: RIMUOVE LA PAGINAZIONE-->
                 <t t-if="'/page/' in current_url">
-                    <t t-set="split_url" t-value="website._get_canonical_url(canonical_params=canonical_params).split('/page/')" />
+                    <t t-set="split_url" t-value="website._get_canonical_url(canonical_params=canonical_params).replace('/it_IT/', '/').split('/page/')" />
                     <t t-set="split_pagination" t-value="split_url[1].split('?')" />
                     <link rel="canonical" t-attf-href="{{split_url[0]}}?{{split_pagination[1]}}" />
                 </t>

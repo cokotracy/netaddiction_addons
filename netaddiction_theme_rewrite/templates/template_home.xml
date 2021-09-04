@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-	<template id="template_home_secondary" name="Template della home personalizzato">
+	<template id="template_home_secondary" name="Vendita Videogiochi Libri e DVD Online - Multiplayer.com">
 		<t t-call="website.layout">
 			<t t-set="pageName" t-value="'homepage'" />
 			<div id="wrap" class="oe_structure oe_empty">

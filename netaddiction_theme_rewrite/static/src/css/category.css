@@ -16,7 +16,7 @@
 }
 
 #products_grid .table .o_wsale_product_grid_wrapper{
-    border:none;
+    border:none !important;
 }
 
 .te_title_sub_div > h1{

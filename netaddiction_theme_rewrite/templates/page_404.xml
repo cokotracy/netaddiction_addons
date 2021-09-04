@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 	<!--======================== 404 Page ==========================-->	
-	<template id="404_ept" inherit_id="http_routing.404" priority="100">
+	<template id="404_ept" inherit_id="http_routing.404" priority="100" name="404 pagina non trovata - Multiplayer.com">
 			<xpath expr="//div[@id='wrap']" position="replace">
 				<link href="/netaddiction_theme_rewrite/static/src/css/page_404.css" rel="stylesheet"/>
 				<div id="intro"> Abbiamo girato tutte le galassie<br/> per trovare la tua pagina ma....</div>
