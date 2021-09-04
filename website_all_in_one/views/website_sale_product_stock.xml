@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-		
+<!-- 		
 		<record model="ir.ui.view" id="view_website_sale_config_settings_inherited">
 			<field name="name">website.config.settings.inherited</field>
 			<field name="model">res.config.settings</field>         
@@ -8,21 +8,21 @@
 			<field name="arch" type="xml">                             
 				<xpath expr="//div[@id='webmaster_settings']" position="after">
 					<h2>Stock Type Configuration</h2>
-					<!-- <div class="col-12 col-lg-6 o_setting_box" data-string="Website" data-key="website"> -->
+					
 						<div class="row mt16 o_settings_container" id="web_stock_settings">
 							<div class="col-xs-12 col-md-6 o_setting_box" id="website_stock_setting">
 								<div class="o_setting_left_pane">
 								</div>
 								<div class="o_setting_right_pane">
 									<label class="o_light_label" string="Stock Type Configuration" for="stock_type"/>
-									<!-- <field name="stock_type" widget="radio"/> -->
+								
 									<div class="mt8">
 										<field name="stock_type" widget="radio"/>
 									</div>
 								</div>
 							</div>
 						</div>
-					<!-- </div> -->
+			
 				</xpath>
 			</field>                    
 		</record>
@@ -35,12 +35,6 @@
 			</xpath>
 		</template>
 		
-		<!-- website.config.settings -->
-		
-
-
-		<!-- New Template For Show/Hide Stock in Product Page -->
-		<!-- '''- - - - - - - - - - - - - - - - - - - - - - -''' -->
 		
 
 		<template id="website_all_in_one.show_stock_qty_message" name="Show Stock Qty Message">
@@ -49,7 +43,7 @@
 					 <t t-foreach="product.product_variant_ids" t-as="product">
 						<t t-set="product_quantity" />
 						<div class="show_hide_stock_change" t-att-id="'%s' % product.id" t-att-value="'%s' % product.qty_available" style="display:none;"> 
-							<!-- if the qty_available then t-att-value is define for SHow/Hide Stock Message  -->
+							
 							<t t-set="product_obj" t-value="product"/>
 							<t t-call="website_all_in_one.display_stock_qty_message"/>
 						</div>
@@ -60,7 +54,7 @@
 				<t t-if="product.product_variant_ids">         
 					 <t t-foreach="product.product_variant_ids" t-as="product">
 					 <t t-set="qty_forecasted" t-value="product.qty_available - product.outgoing_qty + product.incoming_qty"/>
-						<div class="show_hide_stock_change" t-att-id="'%s' % product.id" t-att-value="'%s' % qty_forecasted" style="display:none;"> <!-- if the forecasted qty is greater than zero then t-att-value is define for SHow/Hide Stock Message  -->
+						<div class="show_hide_stock_change" t-att-id="'%s' % product.id" t-att-value="'%s' % qty_forecasted" style="display:none;">
 							<t t-set="product_obj" t-value="product"/>
 							<t t-call="website_all_in_one.display_stock_qty_message"/>
 						</div>
@@ -71,7 +65,6 @@
 		
 
 
-		<!-- New Template For Disppaly Stock qty in Product Page -->
 		<template id="website_all_in_one.display_stock_qty_message_in_item" name="Display Stock Qty Message">
 			<t t-if="website.get_website_config() == 'available'">
 				<t t-if="product.type == 'product'">
@@ -140,7 +133,7 @@
 			</t>
 		</template>
 		
-		<!-- New Template For Disppaly Stock qty in Product Page -->
+		
 		<template id="website_all_in_one.display_stock_qty_message" name="Display Stock Qty Message">
 			<t t-if="product.type == 'product'">
 				<t t-if="website.get_website_config() == 'available'">
@@ -248,10 +241,10 @@
 
 
 
-		<!-- website_sale.products_item page -->
+
 		<template id="product_qty_in_products_item_page" inherit_id="website_sale.products_item" active="True" customize_show="True" name="Show Stock Qty">
 
-			<!-- Show Stock Qty in products_item  -->
+
 
 			<xpath expr="//div//div//div" position="after">
 				<t t-if="product.type == 'product'">
@@ -283,7 +276,7 @@
 	
 		</template>
 				
-				<!-- Product Qty in single_product_page page -->
+	
 		<template id="product_qty_in_single_product_page" inherit_id="website_sale.product" active="True" customize_show="True" name="Show Stock Qty">
 			<xpath expr="//a[@id='add_to_cart']" position="before">
 				<t t-if="product.type == 'product'">
@@ -291,9 +284,9 @@
 				</t>
 			</xpath>
 		</template>
+-->
 
 
-		<!-- Product Qty in cart_lines -->
 		<template id="cart_lines_inherit" inherit_id="website_sale.cart_lines"  name="Shopping Cart">
 			<xpath expr="//table[@id='cart_products']/tbody//td[hasclass('td-qty')]" position="replace">
 				<td class="text-center td-qty">
@@ -327,5 +320,5 @@
 				</td>
 			</xpath>
 		</template>   
-				
+				 
 </odoo>

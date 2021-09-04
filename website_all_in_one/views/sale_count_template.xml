@@ -3,7 +3,7 @@
     <data>
         
         <!-- website_sale.products_item page -->
-        <template id="show_sale_count_in_products_item_page" inherit_id="website_sale.products_item" active="True" customize_show="True" name="Website Sale Count">
+        <!-- <template id="show_sale_count_in_products_item_page" inherit_id="website_sale.products_item" active="True" customize_show="True" name="Website Sale Count">
           <xpath expr="//div[@class='product_price']" position="before">
             <t t-if="product.sales_count &gt; 0">
                 <div class="show_sale_count_1" title="Total No. of Sales Count" style="float: right;
@@ -13,10 +13,10 @@
                  </div>
             </t>
           </xpath>
-        </template>     
+        </template>      -->
     
         <!-- website_sale.product page -->
-        <template id="show_sale_count_in_product_page" inherit_id="website_sale.product" active="True" customize_show="True" name="Website Sale Count">
+        <!-- <template id="show_sale_count_in_product_page" inherit_id="website_sale.product" active="True" customize_show="True" name="Website Sale Count">
             
             <xpath expr="//a[@id='add_to_cart']" position="before">
                     <a id="sales_count">
@@ -36,7 +36,7 @@
                   </a>
             </xpath>
             
-        </template>
+        </template> -->
         
         
 

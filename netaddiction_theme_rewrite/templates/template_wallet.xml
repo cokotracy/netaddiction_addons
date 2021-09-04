@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <template id="wallet_balance" name="Wallet Balance Page" priority="100">
+    <template id="wallet_balance" name="I tuoi fondi - Multiplayer.com" priority="100">
         <t t-call="website.layout">
             <div class="container-fluid">
                 <section class="s_big_picture">

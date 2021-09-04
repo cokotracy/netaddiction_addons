@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-<template id="template_privacy_policy" name="Template della privacy">
+<template id="template_privacy_policy" name="Privacy policy - Multiplayer.com">
     <t t-call="website.layout">
         <t t-set="pageName" t-value="'privacy'"/>
         <div class="iubenda_legal_document container py-5">

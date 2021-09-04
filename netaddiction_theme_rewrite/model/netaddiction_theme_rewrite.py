@@ -41,7 +41,7 @@ class SiteCategories(Shop):
                 ('out_date', '<=', date.today().strftime("%Y-%m-%d")), ('out_date', '=', False)
                 ], limit=20)
 
-            bestseller_list_temp = request.env['sale.order.line'].read_group(
+            bestseller_list_temp = request.env['sale.order.line'].sudo().read_group(
                 domain=[
                     ('create_date', '>=', (date.today() - timedelta(days = 20)).strftime("%Y-%m-%d")),
                     ('create_date', '<=', date.today().strftime("%Y-%m-%d")),

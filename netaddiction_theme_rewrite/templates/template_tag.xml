@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <template id="template_tag" name="Template della pagina tag">
+    <template id="template_tag" name="Tag - Multiplayer.com">
         <t t-call="website.layout">
             <div>
                 <t t-if="tag_name">

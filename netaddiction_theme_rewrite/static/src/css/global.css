@@ -179,9 +179,13 @@ header nav.navbar .header_middle .te_search_popover .input-group input.form-cont
 
 
 #products_grid .te_shop_grid h6.o_wsale_products_item_title .product_name, .te_prod_info_sub .product_name, .te_recently_viewed .te_rect_name{
-    -webkit-line-clamp: inherit !important;
-    height: 45px !important;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 2; /* number of lines to show */
+    -webkit-box-orient: vertical;
     font-weight: 600 !important;
+    height: initial !important;
 }
 
 .te_slider_4_content .te_prod_info_4 .btn{
@@ -255,6 +259,7 @@ footer{
 /*TOGGLE MENU*/
 .header_menu_slide{
     background-color:var(--secondary) !important;
+    height:100vh !important;
     color:#ffffff !important;
 }
 .header_menu_slide ul li{
