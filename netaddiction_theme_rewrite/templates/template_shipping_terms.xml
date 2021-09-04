@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-<template id="template_shipping_terms" name="Template dei termini di spedizione">
+<template id="template_shipping_terms" name="Termini di spedizione - Multiplayer.com">
     <t t-call="website.layout">
         <t t-set="pageName" t-value="'shipping'"/>
         <div class="container py-5 shipping-template">

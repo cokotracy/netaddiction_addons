@@ -38,7 +38,7 @@
 				<!-- Product Attachment in single_product_page page -->
 		<template id="product_attachment_in_single_product_page" inherit_id="website_sale.product" active="True" customize_show="True" name="Show Product Attachment">
 		
-			<xpath expr="//form" position="after">
+			<xpath expr="//form" position="before">
             	<t t-if="attachments">
                     <div style="height:1vh;" />
 		        	<div class="product_attachment">

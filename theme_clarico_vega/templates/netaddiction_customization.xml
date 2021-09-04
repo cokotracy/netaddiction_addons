@@ -72,7 +72,14 @@
                 <t t-else="">
                     <!--label disponibile-->
                     <t t-if="product.qty_available &gt; 0">
-                        <strong class="label label-in">DISPONIBILE</strong>
+                        <t t-if="out_date">
+                            <t t-if="out_date &lt;= current">
+                                <strong class="label label-in">DISPONIBILE</strong>
+                            </t>
+                        </t>
+                        <t t-else="">
+                            <strong class="label label-in">DISPONIBILE</strong>
+                        </t>
                     </t>
                     <!--label ordinabile-->
                     <t t-else="">
