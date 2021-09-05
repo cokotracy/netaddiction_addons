@@ -1,0 +1,14 @@
+boto3==1.15.16
+click
+codicefiscale
+email-validator
+iso8601
+ipdb
+git+https://github.com/OCA/openupgradelib.git@master
+paramiko
+phonenumbers
+pyxb==1.2.6
+pysftp
+unicodecsv
+unidecode
+workalendar
