@@ -1,0 +1,594 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+	
+	
+	
+	<template id="customer_profile" inherit_id="website.assets_frontend" name="Customer profile Frontend">
+       <xpath expr="." position="inside">
+          <link rel='stylesheet' href='/website_all_in_one/static/src/css/profile_css.css'/>
+      </xpath>
+    </template>
+    
+    <template id="my_account_profile" name="Link to Profile" inherit_id="portal.my_account_link">
+        <xpath expr="//a[@href='/my/home']" position="after">
+            <a href="/my/profile" role="menuitem" class="dropdown-item">My Profile</a>
+        </xpath>
+    </template>
+    
+    <template id="bi_portal_my_profile" name="My Profile">
+			<t t-call="website.layout">
+			<div class="row" style="margin-top:10px;">
+					<div class="card col-md-2" style="margin-top:0;">
+						<h4>Shipping Address</h4>
+						<hr/>
+						<t t-foreach="sh_address" t-as="sh">
+							<div class="row">
+								<div class="col">
+									<a t-att-href="('/shipping_address/delete/%d' %sh.id)">
+										<i class='fa fa-trash-o' style="float:left;"></i>
+									</a>
+								</div>
+								<div class="col">
+									<a t-att-href="('/my/shipping_address/edit/%d' %sh.id)">
+										<i class='fa fa-pencil-square-o' style="float:right;"></i>
+									</a>
+								</div>
+							</div>
+							<pre t-esc="sh._display_address()" style="font-family:arial;"/>
+							<hr/>
+						</t>
+						<a href="/my/shipping_address/edit" class="btn btn-primary">Add Shipping Address</a>
+					</div>
+
+					<div class="card col-md-12" >
+					 	<h2 style="text-align:center; margin:0;">My Profile</h2>
+					 	<hr/>
+						<br/>
+					 	<img alt="user_image" t-att-src="'data:image/png;base64,%s' % to_text(user_id.partner_id.image_1920)" style="max-width: 75%; max-height: 50%;
+						padding-left: 138px;"/>
+						<br/>
+						<h3><span t-field="user_id.partner_id.name"/></h3>
+						<p class="profile-title"><span t-field="user_id.partner_id.function"/></p>
+						<p><span class="color_style"><i class="fa fa-building" aria-hidden="true"></i></span> <span t-field="user_id.partner_id.company_name"/></p>
+						<p><span t-if="user_id.partner_id.street" class="color_style"><i class="fa fa-map-marker" aria-hidden="true"></i></span> <span t-if="user_id.partner_id.street" t-field="user_id.partner_id.street"/></p>
+						<p><span t-if="user_id.partner_id.street2" t-field="user_id.partner_id.street2"/></p>
+						<p><span t-if="user_id.partner_id.city" t-field="user_id.partner_id.city"/></p>
+						<p><span t-if="user_id.partner_id.zip" t-field="user_id.partner_id.zip"/></p>
+						<p><span t-if="user_id.partner_id.state_id.name" t-field="user_id.partner_id.state_id.name"/></p>
+						<p><span t-if="user_id.partner_id.country_id.name" t-field="user_id.partner_id.country_id.name"/></p>
+					 
+						<p><span t-if="user_id.partner_id.phone" class="color_style"><i class="fa fa-phone"></i></span> <span t-field="user_id.partner_id.phone"/></p>
+						<p><span t-if="user_id.partner_id.mobile" class="color_style"><i class="fa fa-phone"></i></span> <span t-field="user_id.partner_id.mobile"/></p>
+						<p><span t-if="user_id.partner_id.email" class="color_style"><i class="fa fa-envelope" aria-hidden="true"></i></span> <span t-field="user_id.partner_id.email"/></p>
+					  
+					  	
+						<p>
+							<a href="/my/profile/edit" class="btn btn-primary" style="float:left;">Edit</a>
+							<a href="/web/reset_password/" class="btn btn-primary" style="float:right;">Reset Password</a>
+						</p>
+					</div>
+
+					<div class="card col-md-2" style="margin-top:0;">
+						<h4>Billing Address</h4>
+						<hr/>
+						<t t-foreach="inv_address" t-as="bl">
+							<div class="row">
+								<div class="col">
+									<a t-att-href="('/billing_address/delete/%d' %bl.id)">
+										<i class='fa fa-trash-o' style="float:left;"></i>
+									</a>
+								</div>
+								<div class="col">
+									<a t-att-href="('/my/billing_address/edit/%d' %bl.id)">
+										<i class='fa fa-pencil-square-o' style="float:right;"></i>
+									</a>
+								</div>
+							</div>
+							<pre t-esc="bl._display_address()" style="font-family:arial;"/>
+							<hr/>
+						</t>
+						<a href="/my/billing_address/edit" class="btn btn-primary">Add Billing Address</a>
+					</div>
+				</div>
+			</t>
+		</template>
+    
+    <template id="bi_portal_my_profile_edit" name="Edit My Profile">
+			<t t-call="website.layout">
+				<t t-set="additional_title">Edit My Profile</t>
+				<div id="wrap">
+					<div class="container oe_website_sale">
+						<h1>Edit Your Profile</h1>
+						<form t-attf-action="/my/profile/thankyou" method="post" enctype="multipart/form-data">
+							<input type="hidden" name="csrf_token" t-att-value="request.csrf_token()" />
+							<div class="row">
+								<div class="col-md-12 oe_cart">
+									<div class="row">
+										<div class="col-md-12">
+											<div t-if="error_message" class="alert alert-danger">
+												<t t-foreach="error_message" t-as="err">
+													<t t-esc="err" />
+													<br />
+												</t>
+											</div>
+										</div>
+										
+										<div class="col-md-12">
+                                        <span>
+                                            <img class="img img-responsive" t-att-src="image"/>
+                                        </span>
+                                      
+				    					<span class="btn btn-primary btn-file mt16">
+
+                                       <!-- Upload picture New--><img src="/website_all_in_one/static/src/img/uploadimage.png" title="Upload Picture" height="80px;" width="80px;" />
+                                        <input type="file" name="picture" title="Upload Picture"/>
+                                    	</span>  
+                                    	</div>
+
+										<input type="hidden" name="id" t-att-value="user_id.partner_id.id" />
+
+										<input type="hidden" name="current_pic" t-att-value="user_id.partner_id.image_1920" />
+
+										<div
+											class="form-group #{error and 'name' in error and 'has-error' or ''} col-lg-6">
+											<label class="control-label" for="name">Name</label>
+											<input type="text" name="name" required="True" class="form-control" t-att-value="user_id.partner_id.name"/>
+										</div>
+										<div
+											t-attf-class="form-group #{error and 'company_name' in error and 'has-error' or ''} col-lg-6">
+											<label class="control-label" for="company_name">Company Name</label>
+											<input type="text" name="company_name" required="True" class="form-control" t-att-value="user_id.partner_id.company_name"/>
+										</div>
+										<div
+											t-attf-class="form-group #{error and 'street' in error and 'has-error' or ''} col-lg-6">
+											<label class="control-label" for="street">Street</label>
+											<input type="text" name="street" required="required" class="form-control" t-att-value="user_id.partner_id.street"/>
+										</div>
+										<div
+											t-attf-class="form-group #{error and 'street2' in error and 'has-error' or ''} col-lg-6">
+											<label class="control-label" for="street2">Street2</label>
+											<input type="text" name="street2" required="True" class="form-control" t-att-value="user_id.partner_id.street2"/>
+										</div>
+										<div
+											t-attf-class="form-group #{error and 'city' in error and 'has-error' or ''} col-lg-6">
+											<label class="control-label" for="city">City</label>
+											<input type="text" name="city" required="True" class="form-control" t-att-value="user_id.partner_id.city"/>
+										</div>
+										<div
+											t-attf-class="form-group #{error and 'zip' in error and 'has-error' or ''} col-lg-6">
+											<label class="control-label" for="zip">Zip
+											</label>
+											<input type="text" name="zip" required="True" class="form-control" t-att-value="user_id.partner_id.zip"/>
+										</div>
+										
+										<div
+											t-attf-class="form-group #{error and 'country_id' in error and 'has-error' or ''} col-lg-6">
+											<label class="control-label" for="country_id">Country
+											</label>
+
+											<select name="country_id" class="form-control" required="required">
+												<option value="">Select an option...</option>
+												<t t-set="country_list" t-value="website.get_country_list()" />
+												<t t-foreach="country_list" t-as="country">
+													<option t-att-value="country.id" t-att-selected="country.id == country_id">
+														<t t-esc="country.name" />
+													</option>
+												</t>
+											</select>
+										</div>
+										
+										<div
+											t-attf-class="form-group #{error and 'state_id' in error and 'has-error' or ''} col-lg-6">
+											<label class="control-label" for="state_id">State</label>
+											<t t-set="state_list" t-value="website.get_state_list()" />
+											<select name="state_id" class="form-control" required="required">
+												<option value="">Select State</option>
+												<t t-foreach="state_list or []" t-as="state">
+													<option t-att-value="state.id"
+														t-att-data-country_id="state.country_id.id">
+														<t t-esc="state.name" />
+													</option>
+												</t>
+												
+											</select>
+										</div>
+										
+										<div
+											t-attf-class="form-group #{error and 'email' in error and 'has-error' or ''} col-lg-6">
+											<label class="control-label" for="email">Email</label>
+											<input type="email" required="True" name="email" class="form-control" t-att-value="user_id.partner_id.email"/>
+										</div>
+										
+										<div
+											t-attf-class="form-group #{error and 'function' in error and 'has-error' or ''} col-lg-6">
+											<label class="control-label" for="function">Job Postion</label>
+											<input type="text" required="True" name="function" class="form-control" t-att-value="user_id.partner_id.function"/>
+										</div>
+										
+										<div
+											t-attf-class="form-group #{error and 'phone' in error and 'has-error' or ''} col-lg-6">
+											<label class="control-label" for="phone">Phone</label>
+											<input type="text" required="True" name="phone" class="form-control" t-att-value="user_id.partner_id.phone"/>
+										</div>
+										
+										<div
+											t-attf-class="form-group #{error and 'mobile' in error and 'has-error' or ''} col-lg-6">
+											<label class="control-label" for="mobile">Mobile</label>
+											<input type="text" required="True" name="mobile" class="form-control" t-att-value="user_id.partner_id.mobile"/>
+										</div>
+
+										<div class="clearfix" />
+
+										<div class="row">
+											<a href="/my/profile" class="btn btn-default mb32">
+												<span class="fa fa-long-arrow-left" />
+												Return to Profile
+											</a>
+											<button type="submit" class="btn btn-primary a-submit pull-right">Submit</button>
+										</div>
+
+									</div>
+								</div>
+							</div>
+						</form>
+					</div>
+				</div>
+			</t>
+		</template>
+		
+
+		<template id="bi_portal_my_shipping_edit" name="Shipping Address">
+			<t t-call="website.layout">
+				<t t-set="additional_title">Shipping Address</t>
+				<div id="wrap">
+					<div class="container oe_website_sale">
+						<t t-if="option == 'create'">
+							<h1>Add Shipping Address</h1>
+						</t>
+						<t t-else="">
+							<h1>Edit Shipping Address</h1>
+						</t>
+						
+						<form t-attf-action="/shipping_address/thankyou" method="post" enctype="multipart/form-data">
+							<input type="hidden" name="csrf_token" t-att-value="request.csrf_token()" />
+							<div class="row">
+								<div class="col-md-12 oe_cart">
+									<div class="row">
+										<div class="col-md-12">
+											<div t-if="error_message" class="alert alert-danger">
+												<t t-foreach="error_message" t-as="err">
+													<t t-esc="err" />
+													<br />
+												</t>
+											</div>
+										</div>
+
+										<input type="hidden" name="id" t-att-value="partner.id" />
+
+										<div
+											class="form-group #{error and 'name' in error and 'has-error' or ''} col-lg-6">
+											<label class="control-label" for="name">Name</label>
+											<input type="text" name="name" required="True" class="form-control" t-att-value="partner.name"/>
+										</div>
+										<div
+											t-attf-class="form-group #{error and 'street' in error and 'has-error' or ''} col-lg-6">
+											<label class="control-label" for="street">Street</label>
+											<input type="text" name="street" required="required" class="form-control" t-att-value="partner.street"/>
+										</div>
+										<div
+											t-attf-class="form-group #{error and 'street2' in error and 'has-error' or ''} col-lg-6">
+											<label class="control-label" for="street2">Street2</label>
+											<input type="text" name="street2" required="True" class="form-control" t-att-value="partner.street2"/>
+										</div>
+										<div
+											t-attf-class="form-group #{error and 'city' in error and 'has-error' or ''} col-lg-6">
+											<label class="control-label" for="city">City</label>
+											<input type="text" name="city" required="True" class="form-control" t-att-value="partner.city"/>
+										</div>
+										<div
+											t-attf-class="form-group #{error and 'zip' in error and 'has-error' or ''} col-lg-6">
+											<label class="control-label" for="zip">Zip
+											</label>
+											<input type="text" name="zip" required="True" class="form-control" t-att-value="partner.zip"/>
+										</div>
+										
+										
+										<div
+											t-attf-class="form-group #{error and 'country_id' in error and 'has-error' or ''} col-lg-6">
+											<label class="control-label" for="country_id">Country
+											</label>
+
+											<select name="country_id" class="form-control" required="required">
+												<option value="">Select an option...</option>
+												<t t-set="country_list" t-value="website.get_country_list()" />
+												<t t-foreach="country_list" t-as="country">
+													<option t-att-value="country.id" t-att-selected="country.id == country_id">
+														<t t-esc="country.name" />
+													</option>
+												</t>
+											</select>
+										</div>
+										
+										<div
+											t-attf-class="form-group #{error and 'state_id' in error and 'has-error' or ''} col-lg-6">
+											<label class="control-label" for="state_id">State</label>
+											<t t-set="state_list" t-value="website.get_state_list()" />
+											<select name="state_id" class="form-control" required="required">
+												<option value="">Select State</option>
+												<t t-foreach="state_list or []" t-as="state">
+													<option t-att-value="state.id"
+														t-att-data-country_id="state.country_id.id">
+														<t t-esc="state.name" />
+													</option>
+												</t>
+												
+											</select>
+										</div>
+										
+										<div
+											t-attf-class="form-group #{error and 'email' in error and 'has-error' or ''} col-lg-6">
+											<label class="control-label" for="email">Email</label>
+											<input type="email" required="True" name="email" class="form-control" t-att-value="partner.email"/>
+										</div>
+										
+										<div
+											t-attf-class="form-group #{error and 'phone' in error and 'has-error' or ''} col-lg-6">
+											<label class="control-label" for="phone">Phone</label>
+											<input type="text" required="True" name="phone" class="form-control" t-att-value="partner.phone"/>
+										</div>
+										
+										<div
+											t-attf-class="form-group #{error and 'mobile' in error and 'has-error' or ''} col-lg-6">
+											<label class="control-label" for="mobile">Mobile</label>
+											<input type="text" required="True" name="mobile" class="form-control" t-att-value="partner.mobile"/>
+										</div>
+
+										<div class="clearfix" />
+
+										<div class="row">
+											<a href="/my/profile" class="btn btn-default mb32">
+												<span class="fa fa-long-arrow-left" />
+												Return to Profile
+											</a>
+											<button type="submit" class="btn btn-primary a-submit pull-right mb32">Submit</button>
+										</div>
+
+									</div>
+								</div>
+							</div>
+						</form>
+					</div>
+				</div>
+			</t>
+		</template>
+
+
+		<template id="bi_portal_my_billing_edit" name="Billing Address">
+			<t t-call="website.layout">
+				<t t-set="additional_title">Billing Address</t>
+				<div id="wrap">
+					<div class="container oe_website_sale">
+						<t t-if="option == 'create'">
+							<h1>Add Billing Address</h1>
+						</t>
+						<t t-else="">
+							<h1>Edit Billing Address</h1>
+						</t>
+						
+						<form t-attf-action="/billing_address/thankyou" method="post" enctype="multipart/form-data">
+							<input type="hidden" name="csrf_token" t-att-value="request.csrf_token()" />
+							<div class="row">
+								<div class="col-md-12 oe_cart">
+									<div class="row">
+										<div class="col-md-12">
+											<div t-if="error_message" class="alert alert-danger">
+												<t t-foreach="error_message" t-as="err">
+													<t t-esc="err" />
+													<br />
+												</t>
+											</div>
+										</div>
+
+										<input type="hidden" name="id" t-att-value="partner.id" />
+
+										<div
+											class="form-group #{error and 'name' in error and 'has-error' or ''} col-lg-6">
+											<label class="control-label" for="name">Name</label>
+											<input type="text" name="name" required="True" class="form-control" t-att-value="partner.name"/>
+										</div>
+										<div
+											t-attf-class="form-group #{error and 'street' in error and 'has-error' or ''} col-lg-6">
+											<label class="control-label" for="street">Street</label>
+											<input type="text" name="street" required="required" class="form-control" t-att-value="partner.street"/>
+										</div>
+										<div
+											t-attf-class="form-group #{error and 'street2' in error and 'has-error' or ''} col-lg-6">
+											<label class="control-label" for="street2">Street2</label>
+											<input type="text" name="street2" required="True" class="form-control" t-att-value="partner.street2"/>
+										</div>
+										<div
+											t-attf-class="form-group #{error and 'city' in error and 'has-error' or ''} col-lg-6">
+											<label class="control-label" for="city">City</label>
+											<input type="text" name="city" required="True" class="form-control" t-att-value="partner.city"/>
+										</div>
+										<div
+											t-attf-class="form-group #{error and 'zip' in error and 'has-error' or ''} col-lg-6">
+											<label class="control-label" for="zip">Zip
+											</label>
+											<input type="text" name="zip" required="True" class="form-control" t-att-value="partner.zip"/>
+										</div>
+										
+										
+										<div
+											t-attf-class="form-group #{error and 'country_id' in error and 'has-error' or ''} col-lg-6">
+											<label class="control-label" for="country_id">Country
+											</label>
+
+											<select name="country_id" class="form-control" required="required">
+												<option value="">Select an option...</option>
+												<t t-set="country_list" t-value="website.get_country_list()" />
+												<t t-foreach="country_list" t-as="country">
+													<option t-att-value="country.id" t-att-selected="country.id == country_id">
+														<t t-esc="country.name" />
+													</option>
+												</t>
+											</select>
+										</div>
+										
+										<div
+											t-attf-class="form-group #{error and 'state_id' in error and 'has-error' or ''} col-lg-6">
+											<label class="control-label" for="state_id">State</label>
+											<t t-set="state_list" t-value="website.get_state_list()" />
+											<select name="state_id" class="form-control" required="required">
+												<option value="">Select State</option>
+												<t t-foreach="state_list or []" t-as="state">
+													<option t-att-value="state.id"
+														t-att-data-country_id="state.country_id.id">
+														<t t-esc="state.name" />
+													</option>
+												</t>
+												
+											</select>
+										</div>
+										
+										<div
+											t-attf-class="form-group #{error and 'email' in error and 'has-error' or ''} col-lg-6">
+											<label class="control-label" for="email">Email</label>
+											<input type="email" required="True" name="email" class="form-control" t-att-value="partner.email"/>
+										</div>
+										
+										<div
+											t-attf-class="form-group #{error and 'phone' in error and 'has-error' or ''} col-lg-6">
+											<label class="control-label" for="phone">Phone</label>
+											<input type="text" required="True" name="phone" class="form-control" t-att-value="partner.phone"/>
+										</div>
+										
+										<div
+											t-attf-class="form-group #{error and 'mobile' in error and 'has-error' or ''} col-lg-6">
+											<label class="control-label" for="mobile">Mobile</label>
+											<input type="text" required="True" name="mobile" class="form-control" t-att-value="partner.mobile"/>
+										</div>
+
+										<div class="clearfix" />
+
+										<div class="row">
+											<a href="/my/profile" class="btn btn-default mb32">
+												<span class="fa fa-long-arrow-left" />
+												Return to Profile
+											</a>
+											<button type="submit" class="btn btn-primary a-submit pull-right mb32">Submit</button>
+										</div>
+
+									</div>
+								</div>
+							</div>
+						</form>
+					</div>
+				</div>
+			</t>
+		</template>
+
+
+		<!-- Shipping Address Thank You page -->
+
+				<template id="shipping_address_thankyou" name="Shipping Address Thank You">
+					<t t-call="website.layout">
+						<div id="wrap">
+							<div class="oe_structure" />
+							<div class="container">
+								<h1>Thank you!</h1>
+								<div class="row">
+									<div class="col-md-12">
+										<div class="alert alert-success">
+											Your Shipping Address is Successfully Updated. Thank you. 
+											<button type="button" class="close" data-dismiss="alert">&amp;times;
+											</button>
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="oe_structure" />
+						</div>
+					</t>
+				</template> 
+
+
+		<!-- Billing Address Thank You page -->
+
+				<template id="billing_address_thankyou" name="Billing Address Thank You">
+					<t t-call="website.layout">
+						<div id="wrap">
+							<div class="oe_structure" />
+							<div class="container">
+								<h1>Thank you!</h1>
+								<div class="row">
+									<div class="col-md-12">
+										<div class="alert alert-success">
+											Your Billing Address is Successfully Updated. Thank you. 
+											<button type="button" class="close" data-dismiss="alert">&amp;times;
+											</button>
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="oe_structure" />
+						</div>
+					</t>
+				</template>
+
+		
+				<!-- Profile Thank You page -->
+
+				<template id="profile_thankyou" name="Profile Thank You">
+					<t t-call="website.layout">
+						<div id="wrap">
+							<div class="oe_structure" />
+							<div class="container">
+								<h1>Thank you!</h1>
+								<div class="row">
+									<div class="col-md-12">
+										<div class="alert alert-success">
+											Your Profile is Successfully Updated. Thank you. 
+											<button type="button" class="close" data-dismiss="alert">&amp;times;
+											</button>
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="oe_structure" />
+						</div>
+					</t>
+				</template>
+
+				<!-- Error page -->
+				<template id="error_page" name="Address Error">
+					<t t-call="website.layout">
+						<div id="wrap">
+							<div class="oe_structure" />
+							<div class="container">
+								<div class="row">
+									<div class="col-md-12">
+										<div class="alert alert-danger">
+											<t t-if="address=='shipping'">
+												You cannot delete this Shipping Address.
+											</t>
+											<t t-else="address=='billing'">
+												You cannot delete this Billing Address.
+											</t>
+											<button type="button" class="close" data-dismiss="alert">&amp;times;
+											</button>
+										</div>
+									</div>
+								</div>
+								<div class="row">
+									<a href="/my/profile" class="btn btn-default mb32">
+										<span class="fa fa-long-arrow-left" />
+										Return to Profile
+									</a>
+								</div>
+							</div>
+							<div class="oe_structure" />
+						</div>
+					</t>
+				</template>   
+</odoo>

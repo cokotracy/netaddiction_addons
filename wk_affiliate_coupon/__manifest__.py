@@ -17,14 +17,14 @@
     "name"                 : "wk_affiliate_coupon",
     "summary"              :  """The module allows you to create discount coupons for Affiliate Management module""",
     "category"             :  "Website",
-    "version"              :  "1.0.0",
+    "version"              :  "14.0.1.0.0",
     "sequence"             :  1,
     "author"               :  "Webkul Software Pvt. Ltd.",
     "license"              :  "Other proprietary",
     "description"          :  """The module allows you to create discount coupons  for Affiliate Management module""",
 
     # any module necessary for this one to work correctly
-    "depends"              : ['affiliate_management','sale_coupon'],
+    "depends"              : ['affiliate_management', 'coupon', 'sale_coupon'],
 
     # always loaded
     'data'                  : [
@@ -35,7 +35,7 @@
                                 'views/coupons_program_view.xml',
                                 # 'views/inherit_affiliate_res_config.xml',
                                 'views/inherit_affiliate_visit.xml',
-                                'views/sale_coupon_program.xml',
+                                'views/coupon_program.xml',
                                 'views/templates.xml',
                                 # 'views/inherit_affilate_report.xml'
                                ],

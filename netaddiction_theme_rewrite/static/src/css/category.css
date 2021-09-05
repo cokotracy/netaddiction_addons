@@ -1,0 +1,31 @@
+.oe_website_sale{
+    width:100%;
+}
+.te_pc_style_main .te_slider_filter_main{
+    padding:0 !important;
+}
+
+.o_wsale_product_btn > span{
+    color:var(--primary)!important;
+    line-height: initial;
+}
+.o_wsale_product_btn > a{
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+}
+
+#products_grid .table .o_wsale_product_grid_wrapper{
+    border:none !important;
+}
+
+.te_title_sub_div > h1{
+    font-size: 1.7rem !important;
+    font-weight: 600;
+}
+
+@media only screen and (min-width: 768px) {
+    #products_grid_before{
+        top:130px !important;
+    }
+}

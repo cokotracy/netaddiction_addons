@@ -18,11 +18,8 @@ class res_config(models.TransientModel):
                                  help="Load next page products with Ajax")
     load_more_image = fields.Binary(string='Load More Image', related='website_id.load_more_image', readonly=False,
                                help="Display this image while load more applies.")
-    button_or_scroll = fields.Selection([
-        ('automatic', 'Automatic- on page scroll'),
-        ('button', 'Button- on click button')
-        ], string="Loading type for products", related='website_id.button_or_scroll',
-        required=True, default='automatic', readonly=False,help="Define how to show the pagination of products in a shop page with on scroll or button.")
+    button_or_scroll = fields.Selection(related='website_id.button_or_scroll',
+        required=True,readonly=False,help="Define how to show the pagination of products in a shop page with on scroll or button.")
     prev_button_label = fields.Char(string='Label for the Prev Button', related='website_id.prev_button_label', readonly=False, translate=True)
     next_button_label = fields.Char(string='Label for the Next Button', related='website_id.next_button_label', readonly=False, translate=True)
     is_lazy_load = fields.Boolean(string='Lazyload', related='website_id.is_lazy_load', readonly=False,
@@ -30,12 +27,8 @@ class res_config(models.TransientModel):
     lazy_load_image = fields.Binary(string='Lazyload Image', related='website_id.lazy_load_image', readonly=False,
                                    help="Display this image while lazy load applies.")
     banner_video_url = fields.Many2one('ir.attachment', "Video URL", related='website_id.banner_video_url', help='URL of a video for banner.', readonly=False)
-    number_of_product_line = fields.Selection([
-        ('1', '1'),
-        ('2', '2'),
-        ('3', '3')
-        ], string="Number of lines for product name", related='website_id.number_of_product_line',
-        default='1', readonly=False, help="Number of lines to show in product name for shop.")
+    number_of_product_line = fields.Selection(related='website_id.number_of_product_line',string="Number of lines for product name",
+         readonly=False, help="Number of lines to show in product name for shop.")
     is_auto_play = fields.Boolean(string='Slider Auto Play', related='website_id.is_auto_play', default=True, readonly=False)
 
     is_pwa = fields.Boolean(string='PWA', related='website_id.is_pwa', readonly=False, help="Pwa will be enabled.")
@@ -47,30 +40,23 @@ class res_config(models.TransientModel):
     app_image_512 = fields.Binary(string='Application Image(512x512)', related='website_id.app_image_512',
                                   readonly=False)
 
+    is_price_range_filter = fields.Boolean(string='Price Range Filter', related='website_id.is_price_range_filter', readonly=False, help="Enable the price range filter")
+    price_filter_on = fields.Selection(related='website_id.price_filter_on',
+                                         readonly=False)
+    is_advanced_search = fields.Boolean(string='Enable Advanced Search', related='website_id.is_advanced_search', readonly=False, help="Enable the advance search")
+    allowed_search_category = fields.Boolean(string='Allow Search In Category',related='website_id.allowed_search_category', readonly=False)
+    allowed_search_blog = fields.Boolean(string='Enable Advance Blog',related='website_id.allowed_search_blog', readonly=False)
+
     @api.onchange('is_load_more')
     def get_value_icon_load_more(self):
         if self.is_load_more == False:
-            img_path = get_resource_path('theme_clarico_vega', 'static/src/img/Loadmore.gif')
+            img_path = get_resource_path('emipro_theme_base', 'static/src/img/Loadmore.gif')
             with tools.file_open(img_path, 'rb') as f:
                 self.load_more_image = base64.b64encode(f.read())
 
     @api.onchange('is_lazy_load')
     def get_value_icon_lazy_load(self):
         if self.is_lazy_load == False:
-            img_path = get_resource_path('theme_clarico_vega', 'static/src/img/Lazyload.gif')
+            img_path = get_resource_path('emipro_theme_base', 'static/src/img/Lazyload.gif')
             with tools.file_open(img_path, 'rb') as f:
                 self.lazy_load_image = base64.b64encode(f.read())
-
-    @api.onchange('module_sale_product_configurator')
-    def install_child_modules(self):
-        if self.module_sale_product_configurator:
-            irModuleObject = self.env['ir.module.module']
-            irModuleObject.update_list()
-            emiproInheritModuleId = irModuleObject.search(
-                [
-                    ('state', '!=', 'installed'),
-                    ('name', '=', 'emipro_theme_sale_product_configurator')
-                ]
-            )
-            if emiproInheritModuleId:
-                emiproInheritModuleId[0].button_immediate_install()

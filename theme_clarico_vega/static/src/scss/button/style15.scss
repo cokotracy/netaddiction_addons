@@ -7,6 +7,7 @@
     background:nth($f_color,19);
     color:nth($f_color,5);
     @include transition(all, 0.3s, ease-out);
+    box-shadow: 0 15px 10px -10px rgba(31, 31, 31, 0.5);
 
     &.btn-secondary, &.btn-link
     {
@@ -25,25 +26,9 @@
             color: theme-color('danger');
         }
     }
-
-    &:before, &:after {
-        content: "";
-        @include position(absolute);
-        z-index: 3;
-        @include transition(all, 0.3s, ease-out);
-    }
-    &:before {
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        box-shadow: 0 15px 10px -10px rgba(31, 31, 31, 0.5);
-    }
     &:hover {
         background-color:nth($f_color,5);
         color:nth($f_color,19);
-        &:before {
-            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3), 0 0 40px rgba(128, 128, 128, 0.1) inset;
-        }
+        box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3), 0 0 40px rgba(128, 128, 128, 0.1) inset;
     }
 }

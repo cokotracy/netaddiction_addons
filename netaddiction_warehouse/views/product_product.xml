@@ -22,7 +22,12 @@
             <xpath expr="/form/sheet/notebook/page[@name='inventory_netaddiction']/group[last()]"
                    position="after">
                 <group name="locations" string="Allocazioni">
-                    <field name="product_wh_location_line_ids" nolabel="1" readonly="1"/>
+                    <field name="product_wh_location_line_ids" nolabel="1" readonly="1">
+                        <tree>
+                            <field name="wh_location_id" />
+                            <field name="qty" />
+                        </tree>
+                    </field>
                 </group>
             </xpath>
         </field>

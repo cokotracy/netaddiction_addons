@@ -94,4 +94,4 @@ odoo.define('theme_clarico_vega.editor_js',function(require) {
            },
         });
 });
-    
+

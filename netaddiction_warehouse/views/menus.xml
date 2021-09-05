@@ -11,52 +11,60 @@
     <menuitem id="netaddiction_warehouse_carico"
               name="Carico da Fornitore"
               parent="stock.menu_stock_warehouse_mgmt"
-              action="action_carico"/>
+	      action="action_carico"
+	      groups="base.group_user" />
 
     <menuitem id="netaddiction_warehouse_spara_pacchi"
               name="Spara Pacchi"
               parent="stock.menu_stock_warehouse_mgmt"
-              action="action_open_manifest_control"/>
+	      action="action_open_manifest_control"
+	      groups="base.group_user" />
 
     <menuitem id="netaddiction_warehouse_controllo_pickup"
               name="Controllo Pickup"
               parent="stock.menu_stock_warehouse_mgmt"
-              action="action_controllo_pickup_2"/>
+	      action="action_controllo_pickup_2"
+	      groups="base.group_user" />
 
     <menuitem id="netaddiction_autopreparation"
               name="Autopreparazione"
               parent="stock.menu_stock_warehouse_mgmt"
               action="netaddiction_autopreparation_action"
-              sequence="1"/>
+	      sequence="1"
+	      groups="base.group_user" />
 
     <menuitem id="netaddiction_warehouse_manifest"
               name="Manifest"
               parent="stock.menu_stock_warehouse_mgmt"
-              action="action_manifest"/>
+	      action="action_manifest"
+	      groups="base.group_user" />
 
     <menuitem id="menu_netaddiction_products_movement"
               name="Ricarica/Sposta Prodotto"
               parent="stock.menu_stock_warehouse_mgmt"
               sequence="99"
-              action="netaddiction_warehouse_products_movement"/>
+	      action="netaddiction_warehouse_products_movement_action"
+	      groups="base.group_user" />
 
     <menuitem id="menu_netaddiction_wh_locations"
               name="Allocazioni Magazzino"
               parent="stock.menu_stock_root"
-              sequence="12"/>
+	      sequence="12"
+	      groups="base.group_user" />
 
     <menuitem id="netaddiction_warehouse_operation_config_menu"
               parent="stock.menu_warehouse_config"
               name="Config. Resi"
               sequence="90"
               action="netaddiction_warehouse_operation_config"
-              groups="base.group_system"/>
+	      groups="base.group_system" />
 
     <menuitem id="netaddiction_warehouse_inventory_reports_menu"
               name="Inventario"
               parent="stock.menu_warehouse_report"
               action="netaddiction_warehouse_assets_inventory_reports"
-              sequence="70"/>
+	      sequence="70"
+	      groups="base.group_user" />
 
     <!-- TODO remove Old menuitem that launch ir action client -->
     <!--<menuitem id="products_problem"
@@ -69,21 +77,47 @@
               name="Prodotti Problematici"
               parent="stock.menu_stock_inventory_control"
               action="netaddiction_warehouse.assets_inventory_reports_suppliers"
-              sequence="70"/>
+	      sequence="70"
+	      groups="base.group_user" />
 
     <menuitem id="submenu_netaddiction_wh_locations"
               name="Allocazioni"
               parent="menu_netaddiction_wh_locations"
-              action="netaddiction_wh_locations_base"/>
+	      action="netaddiction_wh_locations_base"
+	      groups="base.group_user" />
 
     <menuitem id="menu_netaddiction_warehouse"
               name="Inventory App"
               sequence="90"
               action="netaddiction_warehouse_link"
-              groups="stock.group_stock_manager"/>
+	      groups="stock.group_stock_manager" />
 
     <record id="stock.stock_picking_type_menu" model="ir.ui.menu">
         <field name="active" eval="False"/>
     </record>
+
+    <!-- Move menus under another parent menu created ad-hoc -->
+    <menuitem id="menu_netaddiction_extra_operation"
+              name="Extra Operation"
+              sequence="99"
+              parent="stock.menu_stock_root"
+              />
+
+    <record id="stock.menu_reordering_rules_replenish" model="ir.ui.menu">
+        <field name="parent_id" ref="menu_netaddiction_extra_operation"/>
+    </record>
+
+    <record id="stock_picking_batch.stock_picking_batch_menu" model="ir.ui.menu">
+        <field name="parent_id" ref="menu_netaddiction_extra_operation"/>
+    </record>
+
+    <record id="stock.menu_valuation" model="ir.ui.menu">
+        <field name="parent_id" ref="menu_netaddiction_extra_operation"/>
+    </record>
+
+    <record id="stock_account.menu_valuation" model="ir.ui.menu">
+        <field name="parent_id" ref="menu_netaddiction_extra_operation"/>
+    </record>
+
 
 </odoo>

@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        
+        <!-- website_sale.products_item page -->
+        <!-- <template id="show_sale_count_in_products_item_page" inherit_id="website_sale.products_item" active="True" customize_show="True" name="Website Sale Count">
+          <xpath expr="//div[@class='product_price']" position="before">
+            <t t-if="product.sales_count &gt; 0">
+                <div class="show_sale_count_1" title="Total No. of Sales Count" style="float: right;
+                color: #337AB7;">
+                      <i class="fa fa-shopping-cart"></i>
+                      <sup t-attf-class="show_number_of_counts label label-primary" t-esc="product.sales_count"/>
+                 </div>
+            </t>
+          </xpath>
+        </template>      -->
+    
+        <!-- website_sale.product page -->
+        <!-- <template id="show_sale_count_in_product_page" inherit_id="website_sale.product" active="True" customize_show="True" name="Website Sale Count">
+            
+            <xpath expr="//a[@id='add_to_cart']" position="before">
+                    <a id="sales_count">
+                    <t t-if="product.sales_count &gt; 0">
+                          <div class="show_sale_count" title="Total No. of Sales Count" style="color: #fff;
+                                background-color: #337AB7;
+                                border-color: #337AB7;
+                                margin-top: 8px!important;
+                                padding: 10px 16px;
+                                font-size: 18px;
+                                line-height: 1.3333333;
+                                width: 150px;">
+                              <i class="fa fa-shopping-cart"></i>
+                              <sup t-attf-class="show_number_of_counts label label-info" t-esc="product.sales_count"/> <span class=""> + Sold </span>
+                         </div>
+                    </t>
+                  </a>
+            </xpath>
+            
+        </template> -->
+        
+        
+
+    </data>
+</odoo>

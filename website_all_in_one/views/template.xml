@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+	<template id="website_giftwrap_aa" inherit_id="website_sale.cart" active="True" customize_show="True" name="Gift Wraps">
+		<xpath expr="//div[@id='wrap']" position="replace">
+			<div id="wrap">
+                <div class="container oe_website_sale py-2">
+                    <div class="row">
+                        <div class="col-12">
+                            <t t-call="website_sale.wizard_checkout">
+                                <t t-set="step" t-value="10" />
+                            </t>
+                        </div>
+                        <div class="col-12 col-xl-8 oe_cart">
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <div t-if="abandoned_proceed or access_token" class="mt8 mb8 alert alert-info" role="alert"> <!-- abandoned cart choices -->
+                                        <t t-if="abandoned_proceed">
+                                            <p>Your previous cart has already been completed.</p>
+                                            <p t-if="website_sale_order">Please proceed your current cart.</p>
+                                        </t>
+                                        <t t-if="access_token">
+                                            <p>This is your current cart.</p>
+                                            <p>
+                                                <strong><a t-attf-href="/shop/cart/?access_token=#{access_token}&amp;revive=squash">Click here</a></strong> if you want to restore your previous cart. Your current cart will be replaced with your previous cart.</p>
+                                            <p>
+                                                <strong><a t-attf-href="/shop/cart/?access_token=#{access_token}&amp;revive=merge">Click here</a></strong> if you want to merge your previous cart into current cart.
+                                            </p>
+                                        </t>
+                                    </div>
+                                    <t t-call="website_sale.cart_lines" />
+                                    <t t-set="website_giftwrap" t-value="website.get_website_giftwrap()"/>
+                                    <a class="btn btn-primary" t-if="website_sale_order and website_sale_order.website_order_line and website_giftwrap" href="#" data-toggle="modal" data-target="#myPack" style="margin-bottom: 10px;">
+										<img src="/website_all_in_one/static/src/img/giftwrap.png" style="height:40px; width:50px;"/>
+										<b>Add Giftwrap</b>
+									</a>
+									
+
+									<div class="modal fade" id="myPack" tabindex="-1" role="dialog" aria-labelledby="termsModalLabel" aria-hidden="true">
+										<div class="modal-dialog" role="document">
+											<div class="modal-content">
+												<div class="modal-header">
+													<h5 class="modal-title text-center" id="PackModalLabel"><b>Giftwrap</b></h5>
+												</div>
+												<div class="modal-body">
+
+													<div class="touch-scrollable scrollable-x">
+														<div  id="row_data" style="overflow: scroll;max-height: 360px;display: inherit;">
+														<div class="row">
+															<t t-foreach="website_giftwrap" t-as="giftwrap">
+																<div class="item_image" style="text-align: center;" id="my_pro" t-att-value="giftwrap.id" t-att-data-id='giftwrap.id'>
+																	<span>
+																		<img src="/website_all_in_one/static/src/img/giftwrap.png" t-options='{"widget": "image", "class": "img img-responsive"}'
+																		style="height:150px;"/>
+																		<br/>
+																		<b><span t-field="giftwrap.price" /></b>
+																	</span>
+																</div>
+															</t>
+														</div>
+														</div>
+														
+														<div class="" id="giftwrapnotes" >
+															<h5><b>Add Note from here...</b></h5>
+
+															<div class="input-group">
+																<input id="notes" name="notes" class="form-control" type="text" placeholder="Add Your Note..."/>
+															</div>
+														</div>
+													</div>					
+												</div>
+												<div class="modal-footer">
+													<button type="submit" id="giftwrapbutton" class="btn btn-primary">Submit</button>
+													<button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+											  	</div>
+											</div>
+										</div>
+									</div>
+
+                                    <div class="clearfix" />
+                                    <a role="button" href="/shop" class="btn btn-secondary mb32 d-none d-xl-inline-block">
+                                        <span class="fa fa-chevron-left" />
+                                        <span class="">Continue Shopping</span>
+                                    </a>
+                                    <a role="button" t-if="website_sale_order and website_sale_order.website_order_line" class="btn btn-primary float-right d-none d-xl-inline-block" href="/shop/checkout?express=1">
+                                        <span class="">Process Checkout</span>
+                                        <span class="fa fa-chevron-right" />
+                                    </a>
+                                    <div class="oe_structure" id="oe_structure_website_sale_cart_1"/>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12 col-xl-4">
+                            <t t-call="website_sale.short_cart_summary"/>
+                            <div class="d-xl-none mt8">
+                                <a role="button" href="/shop" class="btn btn-secondary mb32">
+                                    <span class="fa fa-chevron-left" />
+                                    Continue<span class="d-none d-md-inline"> Shopping</span>
+                                </a>
+                                <a role="button" t-if="website_sale_order and website_sale_order.website_order_line" class="btn btn-primary float-right" href="/shop/checkout?express=1">
+                                    <span class="">Process Checkout</span>
+                                    <span class="fa fa-chevron-right" />
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="oe_structure" id="oe_structure_website_sale_cart_2"/>
+            </div>
+		</xpath>
+
+	</template>
+	
+			
+</odoo>

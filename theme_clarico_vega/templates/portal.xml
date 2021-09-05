@@ -150,16 +150,12 @@
 
     <!--========================== To change tags and font style in portal layout(sale order page) ===============================-->
     <template id="sale_order_portal_content_custom" inherit_id="sale.sale_order_portal_content">
-        <xpath expr="//section[@id='details']//tbody[hasclass('sale_tbody')]/t[@t-as='line']//t[@t-if='not line.display_type']/td[@id='product_name']/a/span"
+        <xpath expr="//section[@id='details']//tbody[hasclass('sale_tbody')]/t[@t-as='line']//t[@t-if='not line.display_type']//td[@id='product_name']//span"
                position="replace">
-            <p t-field="line.name" class="te_so_product_name"></p>
+            <p t-field="line.name" class="te_so_product_name" />
         </xpath>
 
         <xpath expr="//section[@id='details']//table[@id='sales_order_table']" position="attributes">
-            <attribute name="class">table</attribute>
-        </xpath>
-
-        <xpath expr="//section[@id='details']/div[@id='total']//table[hasclass('table')]" position="attributes">
             <attribute name="class">table</attribute>
         </xpath>
     </template>
@@ -182,6 +178,10 @@
         <xpath expr="//div[hasclass('o_portal_details')]/div/div/button" position="attributes">
             <attribute name="class">btn btn-primary float-right mb32 te_theme_button</attribute>
         </xpath>
+        <!-- To remove label-optional class from the zip code field. @Author : Angel Patel-->
+        <xpath expr="//div[hasclass('o_portal_details')]//div[hasclass('row')]/div[11]/label" position="attributes">
+			<attribute name="class">col-form-label</attribute>
+		</xpath>
 	</template>
 
     <!--========================== To add class for add heading of Quotation table in mobile view (Quotations Page) ===============================-->
@@ -201,6 +201,12 @@
                     </td>
                 </tr>
             </t>
+        </xpath>
+    </template>
+
+    <template id="portal_my_security_ept" inherit_id="portal.portal_my_security">
+        <xpath expr="//button[@type='submit']" position="attributes">
+            <attribute name="class">btn btn-danger te_theme_button</attribute>
         </xpath>
     </template>
 

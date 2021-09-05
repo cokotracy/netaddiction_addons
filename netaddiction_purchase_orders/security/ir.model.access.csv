@@ -1,0 +1,3 @@
+"id","name","model_id:id","group_id:id","perm_read","perm_write","perm_create","perm_unlink"
+access_netaddiction_generate_and_send_monday_report,access_netaddiction_generate_and_send_monday_report,model_netaddiction_generate_and_send_monday_report,base.group_user,1,1,1,1
+access_do_purchase_product,access_do_purchase_product,model_do_purchase_product,base.group_user,1,1,1,1

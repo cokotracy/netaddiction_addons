@@ -8,5 +8,4 @@ var core = require('web.core');
 var QWeb = core.qweb;
 
 QWeb.add_template('/theme_clarico_vega/static/src/xml/customise_option.xml');
-
 })

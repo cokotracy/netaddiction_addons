@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+        <!-- Show Description Field in product.product-->
+        <record id="product_product_variant_description_form_view" model="ir.ui.view">
+            <field name="name">product.product.variant.description</field>
+            <field name="model">product.product</field>
+            <field name="inherit_id" ref="product.product_normal_form_view" />
+            <field name="arch" type="xml">
+                <xpath expr="//page[@name='inventory']" position="after">
+		            <page string="Website Description" name="variant_description">
+		                <group name="variant_description">
+		                    <group string="Description" attrs="{'invisible': [('sale_ok','=',False)]}">
+		                        <field name="variant_description" nolabel="1" placeholder="This description will show up on every variant of the product."/>
+		                    </group>
+		                </group>
+		             </page>
+                </xpath>
+            </field>
+        </record>
+        
+            
+        <!-- Custom JS added in single product page -->
+        <template id="assets_frontend_website_product_variant_description" inherit_id="website.assets_frontend" name="Custom CSS-JS">
+			<xpath expr="." position="inside">
+				 <script src="/advance_website_all_in_one/static/src/js/product_variant.js" type="text/javascript"></script>
+				  <link rel="stylesheet" href="/advance_website_all_in_one/static/src/css/custom.css"/>
+			</xpath>
+		</template>
+		
+
+		<!-- variant_description_in single product page -->
+			<!-- <template id="variant_description_in_single_product_page" inherit_id="website_sale.product" active="True" customize_show="True" name="Show Variant Description">
+			<xpath expr="//div[@id='product_full_description']" position="after">
+				<section id="bi_variant_description" class="container mt8 oe_website_sale ayaz">
+						<div class="row">
+				
+							<div class="panel panel-primary">
+								<div class="panel-heading" style="background-color: #0075AC; height: 50px; padding: 10px 1px;">
+										<ul class="nav nav-tabs">
+											<li class="active"><a href="#tab1primary" data-toggle="tab">Description</a></li>
+										</ul>
+								</div>
+								<div class="panel-body">
+									<div class="tab-content">
+										<div class="tab-pane active" id="tab1primary">
+											<t t-if="product.product_variant_ids">	       
+												<t t-foreach="product.product_variant_ids" t-as="product">
+											<span class="shubh" t-att-id="'%s' % product.id" t-field="product.variant_description" style="color: #0075AC;" />
+											</t>
+										</t>
+										
+										</div>
+										<div class="tab-pane fade" id="tab2primary">
+											<p t-field="product.description_sale" class="text-muted" />
+
+										</div>
+									</div>
+								</div>
+							</div>
+							
+					</div>     
+			   </section>	   					
+		  </xpath>
+		</template> -->
+</odoo>

@@ -11,8 +11,9 @@
      </xpath>
 </template>
 
-<template id="my_affiliate_link" name="Link to My Affiliate Account" inherit_id="website.layout">
-    <xpath expr="//a[@id='o_logout']" position="before">
+<template id="my_affiliate_link" name="Link to My Affiliate Account" inherit_id="portal.user_dropdown">
+    <xpath expr="//div[@id='o_logout_divider']" position="before">
+
     <t t-if="user_id.partner_id.is_affiliate">
     <!-- <li><a href="/affiliate/about" role="menuitem">My Affiliate</a></li> -->
     <a class="dropdown-item" href="/affiliate/about" role="menuitem">My Affiliate</a>

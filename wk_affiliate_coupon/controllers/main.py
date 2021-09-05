@@ -114,7 +114,7 @@ class website_affiliate(website_affiliate):
 
     @http.route(['/affiliate/coupon','/affiliate/coupon/<int:id>'], type='http', auth="user", website=True)
     def coupon_details(self,**kw):
-        visits = request.env['sale.coupon'].sudo()
+        visits = request.env['coupon.coupon'].sudo()
         partner = request.env.user.partner_id
         coupon = visits.search([('is_affiliate_coupon','=',True),('partner_id','=',partner.id)])
         currency_id = request.env.user.company_id.currency_id

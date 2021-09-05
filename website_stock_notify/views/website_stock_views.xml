@@ -43,6 +43,8 @@
         name="Product Stock Notification"
         action="action_product_stock_notification"
         parent="website_sale.menu_catalog"
-        sequence="9"/>
+	sequence="9"
+	groups="base.group_user"
+	/>
 
 </odoo>

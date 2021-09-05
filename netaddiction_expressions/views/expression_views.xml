@@ -5,13 +5,15 @@
                 name="Offers"
                 parent="sale.sale_menu_root"
                 sequence="90"
-                />
+	        groups="base.group_user"
+	        />
 
     <menuitem id="menu_netaddiction_expression"
                 name="Expressions"
                 parent="menu_netaddiction_offers"
                 sequence="1"
-                />
+	        groups="base.group_user"
+	        />
 
     <record model="ir.ui.view" id="netaddiction_expressions_expression_tree">
         <field name="name">netaddiction.expressions.expression.tree</field>
@@ -63,7 +65,8 @@
                 name="Expressions"
                 parent="menu_netaddiction_expression"
                 action="action_expressions_expression"
-                />
+	        groups="base.group_user"
+	        />
 
     <record model="ir.ui.view" id="netaddiction_expressions_condition_tree">
         <field name="name">netaddiction.expressions.condition.tree</field>
@@ -110,6 +113,7 @@
                 name="Conditions"
                 parent="menu_netaddiction_expression"
                 action="action_expressions_condition"
-                />
+	        groups="base.group_user"
+	        />
 
 </odoo>

@@ -27,7 +27,7 @@ class AffiliateImage(models.Model):
     banner_height = fields.Integer(string = "Height")
     bannner_width =  fields.Integer(string = "Width")
     image = fields.Binary(string="Image",required=True)
-    user_id = fields.Many2one('res.users', string='current user', index=True, track_visibility='onchange', default=lambda self: self.env.user)
+    user_id = fields.Many2one('res.users', string='current user', index=True, tracking=1, default=lambda self: self.env.user)
     image_active = fields.Boolean(string="Active",default=True)
 
 

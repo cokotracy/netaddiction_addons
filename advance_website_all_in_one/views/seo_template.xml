@@ -1,0 +1,78 @@
+<?xml version="1.0"?>
+<odoo>
+    <data>
+        <!-- <template id="products_itemss" inherit_id="website_sale.products_item" name="Products item">
+            <xpath expr="//t[@t-set='product_href']" position="replace">
+                <t t-if="product.website_published == True">
+                    <t t-if="seo_url">
+                        <t t-if="product.id in seo_url">
+                            <t t-if="config_id">
+                                <t t-if="config_id.suffix_product_url">
+                                    <t t-set="product_href" t-value="keep('/shop/product/%s%s' % (seo_url[product.id] ,config_id.suffix_product_url), page=(pager['page']['num'] if pager['page']['num']&gt;1 else None))" />
+                                </t>
+                                <t t-else="">
+                                    <t t-set="product_href" t-value="keep('/shop/product/%s' % (seo_url[product.id]), page=(pager['page']['num'] if pager['page']['num']&gt;1 else None))" />
+                                </t>
+                            </t>
+                            <t t-else="">
+                                <t t-set="product_href" t-value="keep('/shop/product/%s' % (seo_url[product.id]), page=(pager['page']['num'] if pager['page']['num']&gt;1 else None))" />
+                            </t>
+                        </t>
+                        <t t-else="">
+                            <t t-set="product_href" t-value="keep('/shop/product/%s' % slug(product), page=(pager['page']['num'] if pager['page']['num']&gt;1 else None))" />
+                        </t>    
+                    </t>
+                    <t t-else="">
+                        <t t-set="product_href" t-value="keep('/shop/product/%s' % slug(product), page=(pager['page']['num'] if pager['page']['num']&gt;1 else None))" />
+                    </t>
+                </t>
+                <t t-else="">
+                    <t t-set="product_href" t-value="keep('/shop/product/%s' % slug(product), page=(pager['page']['num'] if pager['page']['num']&gt;1 else None))" />
+                </t>
+
+            </xpath>
+        </template>
+
+        <template id="categories_itemss" inherit_id="website_sale.categories_recursive" name="Category list">
+            <xpath expr="//li[hasclass('nav-item')]" position="replace">
+                <li class="nav-item">
+                    <t t-if="c.url_redirect">
+                        <t t-if="config_id.suffix_category_url">
+                            <a t-att-href="keep('/shop/category/%s%s' % (c.url_redirect,config_id.suffix_category_url), category=0)" t-attf-class="nav-link#{' active' if c.id == int(category or 0) else ''}">
+                                <span t-field="c.name"/>
+                            </a>
+                        </t>
+                        <t t-else="">
+                            <a t-att-href="keep('/shop/category/%s' % (c.url_redirect), category=0)" t-attf-class="nav-link#{' active' if c.id == int(category or 0) else ''}">
+                                <span t-field="c.name"/>
+                            </a>
+                        </t>
+                    </t>
+                    <t t-else="">
+                        <a t-att-href="keep('/shop/category/' + slug(c), category=0)" t-attf-class="nav-link#{' active' if c.id == int(category or 0) else ''}">
+                            <span t-field="c.name"/>
+                        </a>
+                    </t>
+                </li>
+            </xpath>
+        </template>
+
+
+        <template id="seo_collap_categories_itemss" inherit_id="website_sale.option_collapse_categories_recursive" name="Collapse Category Recursive">
+            <xpath expr="//li/a[@t-field='c.name']" position="replace">
+                <t t-if="c.url_redirect">
+                    <t t-if="config_id.suffix_category_url">
+                        <a t-att-href="keep('/shop/category/%s%s' % (c.url_redirect,config_id.suffix_category_url), category=0)" t-attf-class="nav-link #{'active' if c.id == category.id else ''}" t-field="c.name"></a>
+                    </t>
+                    <t t-else="">
+                        <a t-att-href="keep('/shop/category/%s%s' % (c.url_redirect,config_id.suffix_category_url), category=0)" t-attf-class="nav-link #{'active' if c.id == category.id else ''}" t-field="c.name"></a>
+                    </t>
+                </t>
+                <t t-else="">
+                    <a t-att-href="keep('/shop/category/' + slug(c), category=0)" t-attf-class="nav-link #{'active' if c.id == category.id else ''}" t-field="c.name"></a>
+                </t>
+            </xpath>
+        </template> -->
+
+    </data>
+</odoo>

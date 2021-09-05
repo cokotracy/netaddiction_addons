@@ -1,31 +1,20 @@
 /*========================== Footer Style 3 ==========================*/
 /*----------- Company Logo -------------*/
-.te_footer_logo_title_socialicon
-{
+.te_footer_logo_title_socialicon {
 	background: darken(color('footer'), 5%);
-	>h5 span
-	{
+	>h5 span {
         padding: 0 0.3125rem;
 	}
 }
 /*---------- Multiple Language Selected ---------*/	
-.te_footer_language
-{
-	ul li
-	{
-        .btn-secondary
-        {
-                background-color: nth($f_color,27);
-                font-size:nth($f_sizes,2);
-                color: inherit;
-        }
-        a
-        {
+.te_footer_language {
+	ul li {
+        .btn-secondary {
+            background-color: nth($f_color,27);
             font-size:nth($f_sizes,2);
-            color: inherit;
-            &:hover{
-                color:nth($f_color,19);
-            }
+        }
+        a {
+            font-size:nth($f_sizes,2);
         }
 	}
 	.js_language_selector .dropdown-menu{
@@ -35,27 +24,21 @@
     }
  }
  /*--------- Social Icon ----------*/
-.te_footer_social_icon
-{
-	>a
-	{
-		@include style(2,5,null,1.75rem);
-		background-color: nth($f_color,25);
-		width: 35px;
-		height: 35px;
+.te_footer_social_icon {
+	>a {
+		font-size: inherit;
+        color: nth($f_color,5);
+        line-height: 1rem;
+        text-align: center;
 		text-align: center;
-		@include border-radius(50%)
 		margin-right: 8px;
 		margin-bottom: 8px;
 		padding:0;
-		span
-		{
+		span {
 			padding: 0.625rem 0.3125rem;
-			color: inherit;
 		}
-		&:hover
-		{
-			background-color: nth($f_color,25);
+		span:first-child{
+			padding-left: 0px;
 		}
 		@include media-breakpoint-down(sm) {
 		    margin-right: 3px;
@@ -63,95 +46,87 @@
 	}
 }
 /*-------- Static Menu -----------*/
-.te_footer_info_ept 
-{
+.te_footer_info_ept {
     margin: 0;
     padding: 0;
-	li{
-        font-size:nth($f_sizes,3);
+	li {
+        font-size: inherit;
         padding: 10px 0;
         list-style-type: none;
         @include transition(padding,.5s,ease,0s)
         cursor: pointer;
-        &:hover
-        {
-            color: nth($f_color,19);
+        &:hover {
             padding-left: 10px;
         }
-        a{
-            color: $footer_text_color;
+        a {
             display: block;
         }
     }
 }
 /*---------- Contact Info ----------*/
-.te_footer_info_text 
-{
+.te_footer_info_text {
     margin: 0;
     padding: 0;
-    .te_ftr_add_info
-    {
+    .te_ftr_add_info {
         list-style-type: none;
         padding-top: 12px;
     }
-    .te_ftr_text_style
-    {
-        font-size:nth($f_sizes,3);
+    .te_ftr_text_style {
+        font-size: inherit;
         @include spacing(null,0.125rem);
         width: calc(100% - 24px);
-        color: $footer_text_color;
-        >span
-        {
+        >span {
             padding-right: 0.22rem;
         }
     }
-    .te_footer_add_tel_email_text_ept
-    {
+    .te_footer_add_tel_email_text_ept {
         display: inline-block;
         vertical-align: top;
         padding-right: 5px;
-        color: $footer_text_color;
+        width: 15px;
+        @include media-breakpoint-down(sm) {
+            width: 20px;
+        }
     }
 }
-.te_footer_menu_info
-{
-		font-size:nth($f_sizes,2);
-		color: $footer_text_color;
-		list-style-type: none;
+.te_footer_menu_info {
+    font-size: inherit;
+    list-style-type: none;
 }
-@include media-breakpoint-down(sm)
-{	
-	.te_contact_info_s
-	{
+@include media-breakpoint-down(sm) {
+	.te_contact_info_s {
 		padding-top: 0px !important;
-		padding-bottom: 0px !important;	
+		padding-bottom: 15px !important;
 	}
+	.te_end_ftr_container {
+        padding-bottom: 15px !important;
+    }
 }
 /*---------- Copyright And Payment Image ----------*/
-.te_copyright_add_language
-{
-    color: $footer_text_color;
+.te_copyright_add_language {
 	@include media-breakpoint-down(md) {
 		font-size:nth($f_sizes,3);
 		margin-bottom: 8px;
 		margin-top: 8px;
-		}
-		@include media-breakpoint-down(sm) {
+    }
+    @include media-breakpoint-down(sm) {
 		text-align:left;
 	}
 }
-.te_footer_payment_img
-{
-	text-align:right;
+.te_footer_payment_img {
+	text-align:left;
 	@include media-breakpoint-down(sm) {
 		text-align:left;
+		padding-left: 0px;
 	}
 }
 @include media-breakpoint-down(sm) {
-	.te_end_ftr_container
-	{
+	.te_end_ftr_container {
 		width: 90%;
 		padding: 0;
 		padding-top:0 !important;
 	}
+}
+section.te_payment_list img {
+    max-height: 30px;
 }

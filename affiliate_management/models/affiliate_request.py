@@ -156,8 +156,10 @@ class AffiliateRequest(models.Model):
     def send_joining_mail(self,aff_request):
         if aff_request.signup_valid:
             template_id = self.env.ref('affiliate_management.join_affiliate_email')
-            res = template_id.send_mail(aff_request.id,force_send=True)
-
+            user = self.env.user
+            email_values = {"email_from":user.partner_id.company_id.email}
+            res = template_id.send_mail(aff_request.id,force_send=True,email_values=email_values)
+            
 
     def regenerate_token(self):
         self.signup_token = self.random_token()

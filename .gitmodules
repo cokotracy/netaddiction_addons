@@ -1,0 +1,9 @@
+[submodule "OCA/l10n-italy"]
+	path = OCA/l10n-italy
+	url = https://github.com/OCA/l10n-italy.git
+	branch = 14.0
+
+[submodule "OCA/partner-contact"]
+	path = OCA/partner-contact
+	url = https://github.com/OCA/partner-contact.git
+	branch = 14.0

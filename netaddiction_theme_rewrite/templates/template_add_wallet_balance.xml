@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="add_wallet_balance">
+        <t t-call="website.layout">
+            <t t-set="additional_title">Carica il wallet</t>
+            <div class="wrap">
+                <div class="container o_website_payment">
+                    <div id="wrap">
+                        <div class="container oe_website_sale">
+                            <form t-attf-action="/wallet/balance/confirm" method="post">
+                                <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()" />
+                                <div class="row">
+                                    <div class="col-md-8 oe_cart">
+                                        <div class="row container">
+                                            <div class="col-md-12">
+                                                <div t-if="error_message" class="alert alert-danger">
+                                                    <t t-foreach="error_message" t-as="err">
+                                                        <t t-esc="err" />
+                                                        <br />
+                                                    </t>
+                                                </div>
+                                            </div>
+                                            <div t-attf-class="form-group col-12 s_website_form_field mt32 #{error and 'name' in error and 'has-error' or ''}">
+                                                <div class="row s_col_no_resize s_col_no_bgcolor">
+                                                    <label class="col-md-3 col-sm-4 control-label" for="name">
+                                                        <small class="s_website_form_label_content font-weight-bold">Indica la cifra da caricare:</small>
+                                                    </label>
+                                                    <div class="col-sm">
+                                                        <input type="number" placeholder="scrivi la cifra.." class="form-control s_website_form_input" name="amount"	required="True" />
+                                                        <a role="button" id="add_wallet_payment" class="mt-3 w-100 my-0 btn btn-outline-primary btn-lg d-sm-inline-block te_theme_button py-2 js_check_product a-submit" href="#">
+                                                            Carica il tuo wallet
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </t>
+    </template>
+</odoo>

@@ -13,22 +13,24 @@ class StockMove(models.Model):
         to_delete = qty
         for move in moves:
             if to_delete > 0:
+                purchase_line = move.sudo().purchase_line_id
                 new_qty = int(move.product_qty) - int(to_delete)
                 if new_qty > 0:
                     move.sudo().product_uom_qty = new_qty
-                    if move.sudo().purchase_line_id:
-                        move.sudo().purchase_line_id.product_qty = move.sudo().purchase_line_id.qty_received + new_qty
-                    for line in move.sudo().picking_id.pack_operation_product_ids:
+                    if purchase_line:
+                        purchase_line.product_qty = purchase_line.qty_received + new_qty
+                    # FIXME This for cycle used to process pack_product_operation_ids. I'm not sure move_ids_without package is the right field to proces
+                    for line in move.sudo().picking_id.move_ids_without_package:
                         if line.product_id.id == int(datas['product_id']):
-                            line.sudo().product_qty = new_qty
+                            line.sudo().product_uom_qty = new_qty
                     to_delete = 0
                 if new_qty <= 0:
-                    move.sudo().action_cancel()
-                    if move.sudo().purchase_line_id:
-                        if move.sudo().purchase_line_id.qty_received + new_qty == 0:
-                            move.sudo().purchase_line_id.unlink()
+                    move.sudo()._action_cancel()
+                    if purchase_line:
+                        if purchase_line.qty_received + new_qty == 0:
+                            purchase_line.product_qty = 0
                         else:
-                            move.sudo().purchase_line_id.product_qty = move.sudo().purchase_line_id.qty_received + new_qty
+                            purchase_line.product_qty = purchase_line.qty_received + new_qty
                     to_delete -= move.product_qty
                     origin = move.origin
                     order = self.env['purchase.order'].search([('name', '=', origin)])
@@ -45,6 +47,7 @@ class StockMove(models.Model):
 
         return True
 
+    """
     @api.model
     def log_change_backorder(self, supplier, product_name, sup_code, product_id, old_qty, new_qty, author_id, company):
         attr = {
@@ -59,6 +62,7 @@ class StockMove(models.Model):
             'new_value_integer': int(new_qty)
         }
         self.env['netaddiction.log.line'].sudo().create(attr)
+     """
 
     # TODO The model netaddiction.log.line doesn't exist, adapt this code with the audit log
     # @api.model

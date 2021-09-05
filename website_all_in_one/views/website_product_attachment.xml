@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <!-- inherited product template form view -->
+        <record id="product_attachment_template_only_form_view" model="ir.ui.view">
+            <field name="model">product.template</field>
+            <field name="inherit_id" ref="product.product_template_only_form_view"/>
+            <field name="arch" type="xml">
+                <xpath expr="//page[@name='sales']" position="after">
+                    <page string="Product Attachments">
+                        <field name="attachments" mode="tree" context="{'default_name': name}">
+                            <form string="Product Attachments">
+                                <sheet>
+                                    <group>
+                                        <field name="name"/>
+                                        <field name="description"/>
+                                        <field name="attachment" filename="file_name"/>
+                                        <field name="file_name" invisible="1"/>
+                                    </group>
+                                </sheet>
+                            </form>
+                            <tree editable="bottom">
+                                <field name="name"/>
+                                <field name="description"/>
+                                <field name="file_name" invisible="1"/>
+                                <field name="attachment" filename="file_name"/>
+                            </tree>
+                        </field>
+                    </page>
+                </xpath>
+            </field>
+        </record>
+
+
+
+	
+				<!-- Product Attachment in single_product_page page -->
+		<template id="product_attachment_in_single_product_page" inherit_id="website_sale.product" active="True" customize_show="True" name="Show Product Attachment">
+		
+			<xpath expr="//form" position="before">
+            	<t t-if="attachments">
+                    <div style="height:1vh;" />
+		        	<div class="product_attachment">
+		        		<h4>Product Documents/Attachments</h4>
+						
+						<t t-foreach="attachments" t-as="attachment">
+							<form t-att-action="'/download/attachment?attachment_id=%i' % attachment.id" method="post">
+		          				<input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+									<button type="submit" class="btn btn-secondary" style="margin: 0 0 10px;"> <i class="fa fa-download"></i>  <span t-esc="attachment.name"/> </button>
+							</form>
+						</t>
+						
+		        	</div>
+            	</t>
+            </xpath>
+            
+            
+		</template>
+		
+		     
+
+    </data>
+</odoo>

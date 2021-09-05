@@ -8,18 +8,24 @@
         <field name="arch" type="xml">
             <field name="date_end" position="after">
                 <field name="is_display_timer"/>
-                <field name="offer_msg" attrs="{'invisible': [('is_display_timer','=',False)],'required': [('is_display_timer', '=', True)]}"/>
+                <label for="offer_msg"
+                       attrs="{'invisible': [('is_display_timer','=',False)],'required': [('is_display_timer', '=', True)]}" />
+                <div attrs="{'invisible': [('is_display_timer','=',False)],'required': [('is_display_timer', '=', True)]}">
+                    <field name="offer_msg"/>
+                    <div class="oe_grey">Max 35 characters for Message</div>
+                </div>
             </field>
         </field>
     </record>
     <record id="product_pricelist_ept" model="ir.ui.view">
         <field name="name">product.pricelist.offer.form</field>
         <field name="model">product.pricelist</field>
-        <field name="inherit_id" ref="product.product_pricelist_view_inherit"/>
+        <field name="inherit_id" ref="product.product_pricelist_view"/>
         <field name="arch" type="xml">
             <field name="date_end" position="after">
                 <field name="is_display_timer"/>
-                <field name="offer_msg" attrs="{'invisible': [('is_display_timer','=',False)]}"/>
+                <field name="offer_msg"
+                       attrs="{'invisible': [('is_display_timer','=',False)],'required': [('is_display_timer', '=', True)]}"/>
             </field>
         </field>
     </record>

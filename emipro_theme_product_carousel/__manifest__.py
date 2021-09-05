@@ -8,7 +8,6 @@
     'depends':['emipro_theme_base'],
 
     'data': [
-        'views/slider.xml',
         'views/slider_filter.xml',
         'security/ir.model.access.csv',
         'templates/assets.xml'

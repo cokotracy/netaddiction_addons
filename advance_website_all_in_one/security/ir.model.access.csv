@@ -1,0 +1,19 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_web_redeem_rule_manager,web.redeem.rule.manager,model_web_redeem_rule,website.group_website_designer,1,1,1,1
+access_web_redeem_rule_user,web.redeem.rule.user,model_web_redeem_rule,website.group_website_publisher,1,1,1,0
+access_web_loyalty_history_manager,web.loyalty.history.manager,model_web_loyalty_history,website.group_website_designer,1,1,1,1
+access_web_loyalty_history_manager,web.loyalty.history.user,model_web_loyalty_history,website.group_website_publisher,1,1,1,0
+access_web_loyalty_setting_manager,web.loyalty.setting.manager,model_web_loyalty_setting,website.group_website_designer,1,1,1,1
+access_web_loyalty_setting_manager,web.loyalty.setting.user,model_web_loyalty_setting,website.group_website_publisher,1,1,1,1
+website_cod_user,website_cod_user_name,advance_website_all_in_one.model_cod_config,,1,1,1,1
+web_res_zip,web.res.zip,advance_website_all_in_one.model_res_zip,,1,1,1,1
+web_cod_payment_collection,web.cod.payment.collection,advance_website_all_in_one.model_cod_payment_collection,,1,1,1,0
+access_pos_gift_coupon_manager,pos.gift.coupon.manager,model_web_gift_coupon,website.group_website_designer,1,1,1,0
+access_pos_gift_coupon_user,pos.gift.coupon.user,model_web_gift_coupon,website.group_website_publisher,1,1,1,1
+access_pos_gift_coupon_portal,pos.gift.coupon.portal,model_web_gift_coupon,base.group_portal,1,1,0,0
+access_pos_gift_coupon_public,pos.gift.coupon.public,model_web_gift_coupon,base.group_public,1,1,0,0
+access_pos_gift_coupon_base_user,pos.gift.coupon.base.user,model_web_gift_coupon,base.group_user,1,1,0,0
+access_sale_order_public,sale.order.public.coupon,sale.model_sale_order,base.group_public,1,1,0,0
+access_url_config_user,url.config user,model_url_config,,1,1,1,1
+bi_website_product_template_seo_url,bi_website_product_template_seo_url,model_template_seourl,,1,1,1,1
+bi_website_product_public_category_seourl,bi_website_product_public_category_seourl,model_public_category_seourl,,1,1,1,1

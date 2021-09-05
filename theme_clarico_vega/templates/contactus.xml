@@ -2,33 +2,27 @@
 <odoo>
     <!--============ Contactus Info ===============-->
     <template id="contact_us_ept" inherit_id="website.contactus" name="Contact Us">
-        <!--<xpath expr="//section[hasclass('s_text_block')]" position="replace">
-        </xpath>-->
-        <!--<xpath expr="//div[hasclass('oe_structure')]" position="replace">
+        <xpath expr="//section[hasclass('s_text_block')]" position="replace">
+        </xpath>
+        <xpath expr="//div[hasclass('oe_structure')]" position="replace">
             <div class="oe_structure">
                 <div class="s_title text-center pt32">
                     <h2>Contact Us</h2>
                 </div>
             </div>
-        </xpath>-->
+        </xpath>
         <xpath expr="//div[@id='wrap']/div[hasclass('container')]" position="attributes">
             <attribute name="class">container mt-2 mb32</attribute>
         </xpath>
         <xpath expr="//div[hasclass('col-lg-4')]" position="replace">
         </xpath>
-        <xpath expr="//div[hasclass('col-lg-8')]" position="after">
+        <xpath expr="//div[hasclass('col-lg-7')]" position="after">
             <div class="col-lg-12 te_company_details pt48 pb48">
                 <t t-call="theme_clarico_vega.company_description_ept"/>
             </div>
         </xpath>
-        <xpath expr="//div[hasclass('col-lg-8')]" position="attributes">
+        <xpath expr="//div[hasclass('col-lg-7')]" position="attributes">
             <attribute name="class">col-lg-12</attribute>
-        </xpath>
-    </template>
-    <!--============ About us default page ===============-->
-    <template id="about_us_ept" inherit_id="website.aboutus" name="About Us">
-        <xpath expr="//section[hasclass('s_text_image')]//div[hasclass('col-lg-6')][2]" position="attributes">
-            <attribute name="class">col-lg-6 pt16 pb16 te_aboutus_img</attribute>
         </xpath>
     </template>
     <!--============== Default Contact Us (replace address section) ============= -->

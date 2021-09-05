@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="view_add_money_form" model="ir.ui.view">
+            <field name="name">add.money.form</field>
+            <field name="model">add.money</field>
+            <field name="arch" type="xml">
+                <form>
+                    <group>
+	                    <group>
+                            <field name="add_amount"/>
+                        </group>
+                    </group>
+                    <footer>
+                        <button name="add_money_to_wallet" string="Confirm" type="object" class="btn-primary"/>
+                        <button string="Cancel" class="btn-secondary" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_add_money" model="ir.actions.act_window">
+            <field name="name">Add Money to Wallet</field>
+            <field name="res_model">add.money</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="view_add_money_form"/>
+            <field name="target">new</field>
+        </record>
+
+    </data>
+</odoo>

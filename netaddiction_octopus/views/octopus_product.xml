@@ -14,7 +14,8 @@
                 <field name="group_name"/>
                 <field name="group_key"/>
                 <field name="is_new"/>
-                <button name="blacklist_product" type="object" string="Rimuovi" confirm="Sicuro sicuro?"/>
+                <!-- Method blacklist_product has been disabled in the model -->
+                <!--<button name="blacklist_product" type="object" string="Rimuovi" confirm="Sicuro sicuro?"/> -->
             </tree>
         </field>
     </record>
@@ -24,6 +25,7 @@
         <field name="model">netaddiction_octopus.product</field>
         <field name="arch" type="xml">
             <search>
+                <field name="name" />
                 <filter name="filter_is_new" string="Nuovi" domain="[('is_new', '=', True)]"/>
                 <filter name="group_group" string="Gruppo" context="{'group_by': 'group_key'}"/>
                 <filter name="group_barcode" string="Barcode" context="{'group_by': 'barcode'}"/>
@@ -85,13 +87,15 @@
               name="Prodotti"
               parent="octopus_menu"
               action="octopus_product_action"
-              />
+              groups="base.group_user"
+	      />
 
     <menuitem id="octopus_stock_product_menu"
               name="Prodotti Octopus"
               parent="stock.menu_stock_warehouse_mgmt"
               action="octopus_product_action"
-              />
+	      groups="base.group_user"
+	      />
 
 </data>
 </odoo>

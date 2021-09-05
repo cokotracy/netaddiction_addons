@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template  id="template_product_detail_custom" inherit_id="website_sale.product">
+        <xpath expr="//div[@id='product_details']/h1" position="after">
+            <!--MOSTRO I TAG RELATIVI AL PRODOTTO-->
+            <t t-set="tags" t-value="request.env['product.template'].sudo().search([('id', '=', product.id)]).tag_ids"/>
+            <t t-if="tags">
+                <div class="d-block mt-2">
+                    <t t-foreach="tags" t-as="tag">
+                        <a class="tag-item" t-esc="tag.name" t-attf-href="/tag/#{tag.name}"></a>
+                    </t>
+                </div>
+            </t>
+            <!--MOSTRO UNA PICCOLA PARTE DELLA DESCRIZIONE-->
+            <t t-if="product.website_description and len(product.website_description) > 20">
+                <div class="o_not_editable mt-2">
+                    <p t-raw="(product.website_description[:200] + '.. ') if len(product.website_description) >= 200 else product.website_description" class="te_prod_desc text-muted small-description"></p>
+                    <t t-if="len(product.website_description) >= 200">
+                        <span
+                            style="cursor:pointer; color:var(--primary);"
+                            onclick="
+                                document.querySelector('#nav_tabs_link_description').click();
+                                document.querySelector('.te_s_shipping_info').scrollIntoView({behavior: 'smooth'});" 
+                        >Leggi tutto</span>
+                    </t>
+                </div>
+            </t>
+        </xpath>
+
+        <!--CREO LA SEZIONE BUNDLE SE ESISTE-->
+        <xpath expr="//section[@id='product_detail']" position="after">
+            <t t-set="internal_ref" t-value="product_variant.default_code"/>
+            <t t-if="internal_ref">
+                <t t-set="bundle" t-value="request.env['product.pack'].sudo().search([('product_id', '=', internal_ref)]).bi_product_template"/>
+                <t t-if="bundle">
+                    <div class="d-block p-3 mt-3 mb-5 w-100 container">
+                        <t t-foreach="bundle" t-as="current_product_bundle">
+                            <t t-set="compleate_bundle" t-value="request.env['product.pack'].sudo().search([('bi_product_template', '=', current_product_bundle.id)])"/>
+                            <div class="w-100 border-top py-4 overflow-gradient">
+                                <div class="d-flex product-bundle-container">
+                                    <t t-set="full_price" t-value="0"/>
+                                    <t t-foreach="compleate_bundle" t-as="single_product">
+                                        <div class="single-product-bundle-container mx-3 d-flex flex-wrap justify-content-center">
+                                            <t t-set="product_temp" t-value="request.env['product.product'].sudo().search([('id', '=', single_product.product_id.id)]).product_tmpl_id"/>
+                                            <t t-set="full_price" t-value="full_price + product_temp._get_combination_info()['price']"/>
+                                            <div class="single-product-bundle" t-attf-style="background-image:url(/web/image/product.template/#{product_temp.id}/image_512)"></div>
+                                            <strong class="px-1 w-xl-100" t-esc="single_product.name"></strong>  
+                                        </div>
+                                    </t>
+                                </div>
+                                <div class="d-flex mt-3">
+                                    <div class="d-flex align-items-center">
+                                        <t t-if="current_product_bundle.sudo().virtual_available &lt; 1 and current_product_bundle.inventory_availability in ['always', 'threshold']">
+                                            <div class="d-flex align-items-center px-2 mt-3">
+                                                <div>
+                                                    <a role="button" style="display:block !important; font-size:15px;" id="add_to_cart" class="mr-1 my-0 btn-not-avaiable btn btn-outline btn-lg d-sm-inline-block te_theme_button px-3 py-1 js_check_product a-submit" href="#">
+                                                        <span class="fa fa-times"></span>
+                                                        Non disponibile
+                                                    </a>
+                                                </div>
+                                                <span class="price-tag"><sup style="margin-right:5px;"><small><del><strong><t t-esc="full_price"/></strong></del></small></sup><t t-esc="current_product_bundle._get_combination_info()['price']"/> €</span>
+                                            </div>
+                                        </t>
+                                        <t t-else="">
+                                            <div id="product_details" class="oe_website_sale">
+                                                <form t-if="current_product_bundle._is_add_to_cart_possible()" action="/shop/cart/update" method="POST">
+                                                    <div class="d-flex align-items-center px-2">
+                                                        <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()" />
+                                                        <div class="js_product js_main_product">
+                                                            <input type="hidden" class="product_id" name="product_id" t-att-value="current_product_bundle.default_code" />
+                                                            <input type="hidden" class="product_template_id" name="product_template_id" t-att-value="current_product_bundle.id" />
+                                                            <a role="button" style="display:block !important;" id="add_to_cart" class="my-0 btn btn-outline-primary btn-lg d-sm-inline-block te_theme_button px-3 py-1 js_check_product a-submit" href="#">
+                                                                <span class="fa fa-bolt"></span>
+                                                                Acquista Bundle
+                                                            </a>
+                                                        </div>
+                                                        <span class="price-tag"><sup style="margin-right:5px;"><small><del><strong><t t-esc="full_price"/></strong></del></small></sup><t t-esc="current_product_bundle._get_combination_info()['price']"/> €</span>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                        </t>
+                                    </div>
+                                </div>
+                            </div>
+                        </t>
+                    </div>
+                </t>
+            </t>
+        </xpath>
+    </template> 
+
+    <template id="custom_rating_info" inherit_id="website_all_in_one.website_sale_product_comment">
+        <xpath expr="//div[hasclass('review_font')]" position="replace">
+            <div class="review_font">
+                <span id="product_average" class="d-none"></span>
+                <t t-set="rat" t-value="product.avg_product_rating"/>
+
+                <strong t-esc="rat" class="mr-1"/>
+                <t t-foreach="range(0,5)" t-as="val">
+                    <t t-if="rat > val">
+                        <t t-if="(val + 1) > rat">
+                            <t t-if="(val + 0.5) &lt;= rat">
+                                <i style="color:var(--primary); cursor:pointer;" class="fa fa-star-half-o"></i>
+                            </t>
+                            <t t-else="">
+                                <i style="color:var(--primary); cursor:pointer;" class="fa fa-star-o"></i>
+                            </t>
+                        </t>
+                        <t t-else="">
+                            <i style="color:var(--primary); cursor:pointer;" class="fa fa-star"></i>
+                        </t>
+                    </t>
+                    <t t-else="">
+                        <i style="color:var(--primary); cursor:pointer;" class="fa fa-star-o"></i>
+                    </t>
+                </t>
+
+                <input id="total_product_review" t-att-value="len(product.reviews_ids)"
+                    name="total_product_review" type="hidden"></input>
+                <span>(</span>
+                <span id="total_product_review_span" name="total_product_review_span">
+                    <t t-esc="len(product.reviews_ids)"></t>
+                </span>
+                <t t-if="len(product.reviews_ids) &lt;= 1">Review
+                </t>
+                <t t-if="len(product.reviews_ids) > 1">Reviews</t>
+                <span>)</span>
+            </div>
+        </xpath>
+    </template>
+</odoo>

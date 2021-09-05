@@ -3,6 +3,8 @@
 
 from odoo import api, SUPERUSER_ID
 
+from openupgradelib import openupgrade
+
 
 def create_public_category(env, name, parent_id=False):
     return env['product.public.category'].create({
@@ -17,6 +19,7 @@ def migrate(cr, version):
     product.category.
     Also, assign all products of the product.category to the newly created
     product.public.category
+    Then, publish all products on the website.
     """
     if not version:
         return
@@ -40,3 +43,10 @@ def migrate(cr, version):
             ).write({
                 'public_categ_ids': [(4, public_categ.id)]
             })
+
+    openupgrade.logged_query(
+        env.cr, """
+        update product_template set is_published = 't' where sale_ok = 't'
+        and active = 't';
+        """,
+    )

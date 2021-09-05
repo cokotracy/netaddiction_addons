@@ -1,0 +1,7 @@
+14.0.0.1 (28-10-2020)
+==> Fixed the issue of field name changed in V14 (type to move_type in account.move model)
+
+Version: 14.0.0.2 | Date : 30/07/2021
+-->  Fixed the issue when add money to wallet from user.
+-->  Make odoo_website_wallet module compatible with advance_website_all_in_one module.
+-->  Add a button "wallet transaction" that redirect to the user's wallet transactions page. 

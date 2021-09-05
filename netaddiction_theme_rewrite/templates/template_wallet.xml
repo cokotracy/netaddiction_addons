@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="wallet_balance" name="I tuoi fondi - Multiplayer.com" priority="100">
+        <t t-call="website.layout">
+            <div class="container-fluid">
+                <section class="s_big_picture">
+                    <div class="container">
+                        <form t-attf-action="/wallet/balance/confirm" method="post">
+                            <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()" />
+                            <div class="container-fluid"> 
+                                <div class="col-md-12 text-center">
+                                    <img class="img img-responsive col-xs-12 w-75 w-md-50 mt-3 mb-3" src="/netaddiction_theme_rewrite/static/src/img/pig-money.png"  alt="Odoo CMS - a big picture" style="max-width:100%"/>
+                                    <h2>IL TUO SALDO</h2>
+                                    <span class="currency" t-esc="wallet" t-options="{'widget': 'monetary', 'display_currency': website.currency_id}"/>
+                                    <div id="submit_wallet" onClick="document.querySelector('#charge-form').classList.remove('d-none');" class="d-block mt-5 mb-5">
+                                        <a role="button" class="charge-coin" href="#">RICARICA IL TUO CONTO</a>
+                                    </div>
+                                    
+                                    <div class="wrap d-none" id="charge-form">
+                                        <div class="container o_website_payment">
+                                            <div id="wrap">
+                                                <div class="container oe_website_sale mx-auto">
+                                                    <form t-attf-action="/wallet/balance/confirm" method="post">
+                                                        <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()" />
+                                                        <div class="oe_cart">
+                                                            <div class="col-md-12">
+                                                                <div t-if="error_message" class="alert alert-danger">
+                                                                    <t t-foreach="error_message" t-as="err">
+                                                                        <t t-esc="err" />
+                                                                        <br />
+                                                                    </t>
+                                                                </div>
+                                                            </div>
+                                                            <div t-attf-class="col-12 col-md-6 form-group s_website_form_field #{error and 'name' in error and 'has-error' or ''} mx-auto">
+                                                                <form t-attf-action="/wallet/balance/confirm" method="post">
+                                                                    <small class="d-block text-left font-weight-bold">Indica la cifra da caricare:</small>
+                                                                    <input type="number" placeholder="scrivi la cifra.." class="form-control s_website_form_input" name="amount"	required="True" />
+                                                                    <a role="button" id="add_wallet_payment" class="mt-3 w-100 my-0 btn btn-outline-primary btn-lg d-sm-inline-block te_theme_button py-2 js_check_product a-submit" href="#">
+                                                                        Carica il tuo wallet
+                                                                    </a>
+                                                                </form>
+                                                            </div> 
+                                                        </div>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <u><a style="color:#000;" href="/my/wallet-transactions">Vai alle tue transazioni</a></u>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </section>
+            </div>
+        </t>
+    </template>
+</odoo>

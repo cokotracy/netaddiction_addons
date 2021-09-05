@@ -28,7 +28,7 @@ class InheritAffiliateVisit(models.Model):
     coupon_amount = fields.Float(string='Coupon Amount',default=0.0)
     coupon_code = fields.Char(string='Code', size=100)
     consolidate_amount = fields.Float(string='Consolidate Amount',default=0.0)
-    sale_coupon_program_id = fields.Many2one('sale.coupon.program',string='Coupon Program',readonly='True')
+    sale_coupon_program_id = fields.Many2one('coupon.program',string='Coupon Program',readonly='True')
 
     @api.model
     def create_invoice(self):
@@ -38,7 +38,7 @@ class InheritAffiliateVisit(models.Model):
             return super(InheritAffiliateVisit,self).create_invoice()
 
     def _coupon_code(self,partner):
-        visit = self.env["sale.coupon"].sudo().search([("is_affiliate_coupon","=",True)])
+        visit = self.env["coupon.coupon"].sudo().search([("is_affiliate_coupon","=",True)])
         return str(partner.res_affiliate_key) + "-" + str(len(visit))
 
 
@@ -84,7 +84,7 @@ class InheritAffiliateVisit(models.Model):
                     "coupon_type" : "single",
                 }
 
-            coupon_program = self.env["sale.coupon.program"].sudo().create(vals)
+            coupon_program = self.env["coupon.program"].sudo().create(vals)
             coupon= self._create_coupon(coupon_program,self.affiliate_partner_id)
             self.write({'coupon_type':"single",
                         "sale_coupon_program_id": coupon_program.id,
@@ -162,7 +162,7 @@ class InheritAffiliateVisit(models.Model):
                                 "coupon_type" : ["consolidate" if len(visit_ids)>1 else "single"][0],
                                 # "aff_visit_id":[(6, 0, [IDs])]
                             }
-                        coupon_program = self.env["sale.coupon.program"].sudo().create(vals)
+                        coupon_program = self.env["coupon.program"].sudo().create(vals)
                         coupon = self._create_coupon(coupon_program,visit_ids[0].affiliate_partner_id)
                         sent_mail = self.send_coupon_mail(coupon,v.affiliate_partner_id)
                         coupon_count += 1

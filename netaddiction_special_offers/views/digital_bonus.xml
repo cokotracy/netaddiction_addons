@@ -15,7 +15,7 @@
         <field name="name">view.sale.coupon.program.digital.bonus.form</field>
         <field name="model">sale.coupon.program.digital.bonus</field>
         <field name="arch" type="xml">
-            <form>
+            <form create="false">
                 <header>
                     <button name="send_all_valid" type="object" class="oe_highlight" icon="fa-star" string="Send Valid Codes"/>
                     <button name="send_all_possible" type="object" class="oe_highlight" icon="fa-exclamation" string="Send All Codes"/>

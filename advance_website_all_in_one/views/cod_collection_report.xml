@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <report 
+            string="Cash on Delivery Payment Report" 
+            id="action_cod_collections" 
+            model="cod.payment.collection" 
+            report_type="qweb-pdf"
+            name="advance_website_all_in_one.report_cod_collection" 
+            file="advance_website_all_in_one.report_cod_collection" 
+        />
+    </data>
+</odoo>

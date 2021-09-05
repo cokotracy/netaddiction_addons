@@ -63,7 +63,7 @@
                                     </td>
                                     <td><span t-field="i.amount_total"/></td>
                                     <td><span t-field="i.invoice_date"/></td>
-                                    <td><span t-field="i.invoice_payment_state" /></td>
+                                    <td><span t-field="i.payment_state" /></td>
                                 </tr>
                             </t>
                         </table>
@@ -125,7 +125,7 @@
                             </div>
 
                             <div class="mb8">
-                              <strong>Invoice State :</strong> <span t-field="invoice.invoice_payment_state"/>
+                              <strong>Invoice State :</strong> <span t-field="invoice.payment_state"/>
                             </div>
 
                             <!-- <t t-if="invoice.aff_visit_id.sales_order_line_id">

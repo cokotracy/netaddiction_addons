@@ -11,11 +11,14 @@ from werkzeug.exceptions import NotFound
 from odoo.tools.safe_eval import safe_eval
 
 import odoo
+import logging
+
 from odoo import fields, models, http
 from odoo.addons.auth_oauth.controllers.main import OAuthLogin
 from odoo.addons.website_sale_wishlist.controllers.main import WebsiteSale
 from odoo.addons.website_sale_wishlist.controllers.main import WebsiteSaleWishlist
 from odoo.addons.emipro_theme_base.controller.main import EmiproThemeBaseExtended
+_logger = logging.getLogger(__name__)
 
 class Website(models.Model):
     _inherit = "website"
@@ -430,7 +433,7 @@ class Website(models.Model):
         <p></p>
             <div class="row">
                 <div class="col-sm-6">
-                    <div class="te_block_title">My Account</div>
+                    <h3 class="te_block_title">My Account</h3>
                     <a class="te_collapse_icon collapsed" data-toggle="collapse" data-target="#my_account">
                         <div class="te_block_title_col">My Account</div>
                         <i class="fa fa-plus"></i>
@@ -464,7 +467,7 @@ class Website(models.Model):
                     </ul>
                 </div>
                 <div class="col-sm-6">
-                    <div class="te_block_title">Main Features</div>
+                    <h3 class="te_block_title">Main Features</h3>
                     <a class="te_collapse_icon collapsed" data-toggle="collapse" data-target="#feature">
                         <div class="te_block_title_col">Main Features</div>
                         <i class="fa fa-plus"></i>
@@ -504,7 +507,7 @@ class Website(models.Model):
         <p></p>
         <div class="row">
             <div class="col-sm-6 col-6 te_account_info">
-                <div class="te_block_title">My Account</div>
+                <h3 class="te_block_title">My Account</h3>
                 <ul class="te_footer_info_ept">
                     <section>
                         <li>
@@ -539,7 +542,7 @@ class Website(models.Model):
                 </ul>
             </div>
             <div class="col-sm-6 col-6">
-                <div class="te_block_title">Main Features</div>
+                <h3 class="te_block_title">Main Features</h3>
                 <ul class="te_footer_info_ept">
                     <section>
                         <li>
@@ -576,7 +579,7 @@ class Website(models.Model):
             <p></p>
             <div class="row">
                 <div class="col-md-6 col-6">
-                    <div class="te_block_title">Useful link</div>
+                    <h3 class="te_block_title">Useful link</h3>
                     <ul class="te_footer_info_ept">
                         <section>
                             <li>
@@ -618,7 +621,7 @@ class Website(models.Model):
                     </ul>
                 </div>
                 <div class="col-md-6 col-6">
-                    <div class="te_block_title">Take Action</div>
+                    <h3 class="te_block_title">Take Action</h3>
                     <ul class="te_footer_info_ept">
                         <section>
                             <li>
@@ -751,7 +754,7 @@ class Website(models.Model):
     twitter_sharing = fields.Boolean(string='Twitter')
     linkedin_sharing = fields.Boolean(string='Linkedin')
     mail_sharing = fields.Boolean(string='Mail')
-    is_load_more = fields.Boolean(string='Load More', help="Load moer will be enabled", readonly=False)
+    is_load_more = fields.Boolean(string='Load More', help="Load more will be enabled", readonly=False)
     load_more_image = fields.Binary('Load More Image', help="Display this image while load more applies.",
                                     readonly=False)
     button_or_scroll = fields.Selection([
@@ -804,11 +807,15 @@ class Website(models.Model):
     pwa_bg_color = fields.Char(string='Background Color', readonly=False)
     pwa_start_url = fields.Char(string='Start URL', readonly=False)
     app_image_512 = fields.Binary(string='Application Image(512x512)', readonly=False, store=True)
-
-    # @api.depends('banner_video_url')
-    # def _compute_embed_code(self):
-    #     for image in self:
-    #         image.embed_code = get_video_embed_code(image.video_url)
+    is_price_range_filter = fields.Boolean(string='Price Range Filter',help="Enable the price range filter")
+    price_filter_on = fields.Selection([
+        ('list_price', 'On Product Sale Price'),
+        ('website_price', 'On Product Discount Price')
+    ], string="Price Range Filter For Products",
+         default='list_price', readonly=False)
+    is_advanced_search = fields.Boolean(string='Enable Advanced Search', help="Enable the advance search")
+    allowed_search_category = fields.Boolean(string='Allow Search In Category')
+    allowed_search_blog = fields.Boolean(string='Enable Advance Blog')
 
     def getDatabase(self):
         """
@@ -868,6 +875,30 @@ class Website(models.Model):
 
         return street +' '+ street2 +' '+ city + ' '+ zip + ' '+ state + ' '+ country
 
+    def get_parent_category(self):
+        """
+        Collect all the parent category. and return with category name and category ID
+        @Author : Angel Patel (24/09/2020)
+        :return: cat_array
+        """
+        cat_array = [{'name': "All", 'id': ""}]
+        try:
+            category_obj = self.env['product.public.category'].sudo().search([('parent_id', '=', False),('website_id','in',[False,request.env['website'].sudo().get_current_website().id])])
+            if category_obj:
+                for cat in category_obj:
+                    cat_array.append({'name': cat.name, 'id': cat.id})
+        except Exception:
+            return cat_array
+        return cat_array
+
+    def get_carousel_category_list(self):
+        """
+        This method is used for return the list of category
+        which has selected the allow category in carousel option from admin
+        :return: list of category.
+        """
+        return []
+
     def get_product_categs_path(self, id):
         """
         To render full path for breadcrumbs based on argument
@@ -875,10 +906,12 @@ class Website(models.Model):
         :return: list of category path and website url
         """
         categ_set = []
+        categ_name_set = []
         if id:
             while id:
                 categ = self.env['product.public.category'].sudo().search([('id', '=', id)])
                 categ_set.append(categ.id)
+                categ_name_set.append(categ.name)
                 if categ and categ.parent_id:
                     id = categ.parent_id.id
                 else:
@@ -886,9 +919,11 @@ class Website(models.Model):
 
         # For Reverse order
         categ_set = categ_set[::-1]
+        categ_name_set = categ_name_set[::-1]
 
         values = {
             'categ_set': categ_set,
+            'categ_name_set':categ_name_set,
             'web_url': self.env['ir.config_parameter'].sudo().get_param('web.base.url')
         }
         return values
@@ -901,7 +936,6 @@ class Website(models.Model):
         range_list = []
         cust_min_val = request.httprequest.values.get('min_price', False)
         cust_max_val = request.httprequest.values.get('max_price', False)
-
         domain = WebsiteSaleWishlist._get_search_domain(self, search=search, category=category,
                                                         attrib_values=attributes)
 
@@ -910,45 +944,43 @@ class Website(models.Model):
             if ids:
                 domain += [('product_brand_ept_id.id', 'in', ids)]
         products = self.env['product.template'].search(domain)
+        prices_list = []
+        min_price = max_price = 0
+        is_web_price = request.website.price_filter_on == 'website_price'
         if products:
-            # Add code for product filter based on price list
-            # @Author : Angel Patel (28/10/2020)
             pricelist = self.get_current_pricelist()
-            context = dict(self.env.context, quantity=1, pricelist=pricelist.id if pricelist else False)
-            products = products.with_context(context).sorted('price')
+            if is_web_price:
+                context = dict(self.env.context, quantity=1, pricelist=pricelist.id if pricelist else False)
+                products = products.with_context(context).sorted('price')
+            else:
+                products = products.sorted('lst_price')
+                min_price = products[0].currency_id._convert(products[0].lst_price, pricelist.currency_id,
+                                                              self.company_id, date=fields.Date.today())
+                max_price = products[-1].currency_id._convert(products[-1].lst_price, pricelist.currency_id,
+                                                              self.company_id, date=fields.Date.today())
 
-        if not products: return False
+        if not products : return False
+
         try:
             cust_max_val = float(cust_max_val)
         except ValueError:
-            cust_max_val = products[-1].price
+            cust_max_val = max_price
         try:
             cust_min_val = float(cust_min_val)
         except ValueError:
-            cust_min_val = products[0].price
+            cust_min_val = min_price
 
         if not cust_min_val and not cust_max_val:
-            range_list.append(round(products[0].price,2))
-            range_list.append(round(products[-1].price,2))
-            range_list.append(round(products[0].price,2))
-            range_list.append(round(products[-1].price,2))
+            range_list.append(round(products[0].price if is_web_price else min_price,2))
+            range_list.append(round(products[-1].price if is_web_price else max_price,2))
+            range_list.append(round(products[0].price if is_web_price else min_price, 2))
+            range_list.append(round(products[-1].price if is_web_price else max_price, 2))
         else:
             range_list.append(round(float(cust_min_val),2))
             range_list.append(round(float(cust_max_val),2))
-            range_list.append(round(products[0].price, 2))
-            range_list.append(round(products[-1].price, 2))
+            range_list.append(round(products[0].price if is_web_price else min_price, 2))
+            range_list.append(round(products[-1].price if is_web_price else max_price, 2))
         return range_list
-
-    def get_brand(self, products=False):
-        """
-        This function is used to search the list of brand data
-        :return: List of all the brands
-        """
-
-        shop_brands = self.env['product.brand.ept'].sudo().search(
-            [('website_published', '=', True), ('products_count', '>', 0),
-             ('website_id', 'in', (False, self.get_current_website().id))])
-        return shop_brands
 
     def image_resize(self, img, width, height):
         """
@@ -960,17 +992,6 @@ class Website(models.Model):
         :return: resizable image url
         """
         return image_process(img, size=(width, height))
-
-    def get_carousel_category_list(self):
-        """
-        This method is used for return the list of category
-        which has selected the allow category in carousel option from admin
-        :return: list of category.
-        """
-        domain = [('website_id', 'in', (False, self.get_current_website().id)),
-                  ('allow_in_category_carousel', '=', True)]
-        category = self.env['product.public.category'].sudo().search(domain)
-        return category
 
     def checkQuickFilter(self, currentWebsite, filterWebsiteArray):
         if currentWebsite in filterWebsiteArray or len(filterWebsiteArray) == 0:
@@ -1000,16 +1021,65 @@ class Website(models.Model):
             provider['auth_link'] = "%s?%s" % (provider['auth_endpoint'], werkzeug.url_encode(params))
         return providers
 
+
     def get_shop_products(self, search=False, category=False, attrib_values=False):
         """
         Get the product count based on attribute value and current search domain.
         """
         domain = EmiproThemeBaseExtended._get_search_domain(EmiproThemeBaseExtended(),search, category, attrib_values)
+        prod = self.env['product.template']
+        query = prod._where_calc(domain)
+        prod._apply_ir_rules(query, 'read')
+        from_clause, where_clause, where_clause_params = query.get_sql()
+        where_str = where_clause and ("WHERE %s" % where_clause) or ''
+        query_str = 'SELECT product_template.id FROM ' + from_clause + where_str
+        self._cr.execute(query_str, where_clause_params)
+        temp_ids = [m_dict['id'] for m_dict in request.env.cr.dictfetchall()]
+        if not temp_ids:
+            return {}
+        temp_ids_data = "(%s)" % tuple(temp_ids) if len(temp_ids) == 1 else str(tuple(temp_ids))
+        query_attrb = '''select product_attribute_value_id,count(DISTINCT product_tmpl_id) as count from product_template_attribute_value where ptav_active = true AND product_tmpl_id in %s group by product_attribute_value_id'''%temp_ids_data
+        self._cr.execute(query_attrb)
+        attribute_dict = {}
+        for dict in request.env.cr.dictfetchall():
+            attribute_dict[dict['product_attribute_value_id']]=dict['count']
+        return attribute_dict
+
+    def get_brand_products(self, search=False, category=False, attrib_values=False):
+        """
+        Get the product count based on attribute value and current search domain.
+        """
+        domain = EmiproThemeBaseExtended._get_search_domain(EmiproThemeBaseExtended(),search, category, attrib_values)
+        prod = self.env['product.template']
         domain = [dom for dom in domain if not dom[0] == 'product_brand_ept_id.id']
-        Product = request.env['product.template']
-        brand_inc_products = search_product = Product.search(domain)
-        if attrib_values:
-            ids = [attrib[1] for attrib in attrib_values if attrib[0] == 0]
-            if ids:
-                brand_inc_products = search_product.filtered(lambda r: r.product_brand_ept_id.id in ids)
-        return [brand_inc_products,search_product]
+        query = prod._where_calc(domain)
+        prod._apply_ir_rules(query, 'read')
+        from_clause, where_clause, where_clause_params = query.get_sql()
+        where_str = where_clause and ("WHERE %s" % where_clause) or ''
+        query_str = 'SELECT product_template.id FROM ' + from_clause + where_str
+        self._cr.execute(query_str, where_clause_params)
+        temp_ids = [m_dict['id'] for m_dict in request.env.cr.dictfetchall()]
+        if not temp_ids:
+            return {}
+        temp_ids_data = "(%s)" % tuple(temp_ids) if len(temp_ids) == 1 else str(tuple(temp_ids))
+        query_brand = '''select product_brand_ept_id,count(id) as count from product_template where id in %s group by product_brand_ept_id'''%temp_ids_data
+        self._cr.execute(query_brand)
+        brand_dict = {}
+        for dict in request.env.cr.dictfetchall():
+            brand_dict[dict['product_brand_ept_id']]=dict['count']
+        return brand_dict
+
+    def get_product_data(self, products, product_count=1):
+        product_items = []
+        product_data = []
+        count = 2
+        i = 1
+        for product in products:
+            product_data.append(product)
+            if(count / product_count > i):
+                product_items.append(product_data)
+                product_data = []
+                i += 1
+            count += 1
+        product_items.append(product_data)
+        return product_items

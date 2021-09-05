@@ -283,7 +283,7 @@ class website_affiliate(Home):
         values={}
         partner = request.env.user.partner_id
         invoices = request.env['account.move']
-        domain = [('partner_id','=',partner.id),('invoice_payment_state','=','paid'),('ref','=',None)]
+        domain = [('partner_id','=',partner.id),('payment_state','=','paid'),('ref','=',None)]
         if date_begin and date_end:
             domain += [('create_date', '>', date_begin), ('create_date', '<=', date_end)]
         invoice_count = invoices.search_count(domain)
@@ -421,6 +421,7 @@ class website_affiliate(Home):
                 'base_url': request.env['ir.config_parameter'].sudo().get_param('web.base.url')
 
                 })
+        _logger.info("=======values====%r",values)
         return http.request.render('affiliate_management.product_link',values)
 
 

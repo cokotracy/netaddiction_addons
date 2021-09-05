@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+<template id="template_shipping_terms" name="Termini di spedizione - Multiplayer.com">
+    <t t-call="website.layout">
+        <t t-set="pageName" t-value="'shipping'"/>
+        <div class="container py-5 shipping-template">
+            <div class="nav nav-tabs">
+                <a class="mx-2 active w-100 w-md-auto" data-toggle="tab"  href="#menu0">Costi e Tempi di consegna</a>
+                <a class="mx-2 w-100 w-md-auto" data-toggle="tab" href="#menu1">Tracciare una Spedizione</a>
+                <a class="mx-2 w-100 w-md-auto" data-toggle="tab" href="#menu2">Ricezione Pacchi Compromessi</a>
+                <a class="mx-2 w-100 w-md-auto" data-toggle="tab" href="#menu3">Garanzia prodotti ricevuti</a>
+            </div>
+
+            <div class="tab-content pt-5">
+                <div style="color:var(--secondary)" id="menu0" class="tab-pane py-2 fade active show">
+                    <h2>Costi e Tempi di consegna</h2>
+                    <p>
+                        Modestia a parte, il nostro servizio di spedizione tramite Corriere Espresso può vantarsi di essere: 
+                    </p>
+                    <ul>
+                        <li>
+                                <b>economico</b>: il nostro servizio di spedizione è tra i più economici della rete, con un <u>costo di spedizione di 4,90 euro per ordini
+                                inferiori a 49,00 euro</u> e <u>gratuito invece per ordini superiori</u>;
+                        </li>
+                        <li>
+                                <b>veloce</b>: il tempo stimato per ogni consegna è di 24/48 ore dal momento della spedizione.
+                        </li>
+                    </ul>
+
+                    <p>
+                        Multiplayer.com ha un catalogo sterminato con più di un milione di prodotti e sebbene una piccola parte sia ospitata nel nostro magazzino centrale, la maggior parte degli articoli risiede presso una moltitudine di fornitori che quotidianamente ci inviano ciò che ordinate presso di noi. 
+                    </p>
+                    <p>
+                        Un ordine di prodotti con la dicitura <i></i>"Disponibilità immediata"" richiede almeno 24/48 ore per essere evaso, mentre per <i>"Prodotto disponibile"</i>" o <i>""In riassortimento"</i>" le tempistiche possono variare a seconda della categoria merceologica scelta.
+                    </p>
+                    I Corrieri che abbiamo scelto per le nostre spedizioni sono:
+                    <ul>
+                        <li><a style="color:#0000FF" href="http://www.sda.it/SITO_SDA-INSIDEX-WEB/pages/Home_it/119?" target="_blank">SDA</a>
+                        </li>
+                        <li><a style="color:#FF0000" href="http://as777.brt.it/vas/sped_numspe_par.htm?lang=it" target="_blank">Bartolini</a>
+                        </li>
+                    </ul>
+
+                    <p>
+                        Noi facciamo di tutto per ridurre al minimo i tempi di attesa e per tenervi informati sull'evoluzione del vostro ordine, quindi siate fiduciosi!<br/>
+                        <b>Importante</b>: Multiplayer.com effettua solo spedizioni <b>nazionali</b>, quindi solo ed esclusivamente <b>in Italia</b>.<br/>
+                        <b>Attention please</b>: Multiplayer.com ships to <b>Italy alone</b>, we do not ship to other countries.
+                    </p>
+                </div>
+                <div style="color:var(--secondary)" id="menu1" class="tab-pane py-2 fade">
+                    <h2>Tracciare una Spedizione</h2>
+                    <p>
+                        Hai presente l'e-mail che ti abbiamo inviato nel momento esatto in cui il tuo pacco ha lasciato il nostro magazzino? Tientela stretta, questa mail contiene il codice identificativo della tua spedizione e i link per tracciare il tuo pacco!
+                    </p>
+                    <p>
+                        <i>Nel caso vi fossero problemi durante questa o altre procedure, e per ogni altro genere di informazione o aiuto, potrai sempre scriverci una e-mail all'indirizzo <a href="mailto:shopping@multiplayer.com" target="_blank">shopping@multiplayer.com</a></i>
+                    </p>
+                </div>
+                <div style="color:var(--secondary)" id="menu2" class="tab-pane py-2 fade">
+                    <h2>Ricezione Pacchi Compromessi</h2>
+                    <p>
+                        Può capitare (molto di rado, intendiamoci) che un pacco mostri, in fase di consegna, i segni di una cattiva movimentazione.
+                        <br/>
+                        Per ogni pacco che riceverai <u>il nastro adesivo marchiato Multiplayer.com deve essere perfettamente integro</u> al momento della consegna; noi usiamo solo nastro personalizzato con il logo della nostra azienda, qualsiasi altro tipo di nastro adesivo deve essere considerato come indizio di una manomissione.
+                        <br/>
+                        In questi, ed in altri casi meno evidenti, esiste la possibilità, in particolare nel caso del Corriere Espresso, di <strong>Accettare il Pacco con Riserva</strong>.
+                        <br/>
+                        <br/>
+                        Questa opzione permetterà ad entrambi di risolvere molto più velocemente eventuali sostituzioni per merce danneggiata o mancante in quanto ogni pacco che lascia Multiplayer.com è assicurato, così da evitare che una eventuale imperizia di una società, quale un corriere, non controllata da noi direttamente, possa essere in grado di compromettere la qualità del servizio che ci contraddistingue.
+                        <br/>
+                        <br/>
+                        Dopo aver firmato con riserva alla ricezione del pacco e aver riscontrato, aprendo il pacco, che qualcosa davvero non è andata a buon fine, segui le istruzioni riportate nel retro del Documento di Vettura inserito nel pacco, così da farci pervenire al più presto la merce danneggiata e procedere ad una rapida sostituzione.
+                    </p>
+                    <br/>
+                        <i>Nel caso vi fossero problemi durante questa o altre procedure, e per ogni altro genere di informazione o aiuto, scrivici una e-mail all'indirizzo <a href="mailto:shopping@multiplayer.com" target="_blank">shopping@multiplayer.com</a></i>
+                    <br/>                    
+                </div>
+                <div style="color:var(--secondary)" id="menu3" class="tab-pane py-2 fade">
+                    <h2>Garanzia prodotti ricevuti</h2>
+                    <ul>
+                        <li>Tutti i prodotti venduti da Multiplayer.com - NetAddiction SRL sono coperti dalla garanzia convenzionale del produttore e dalla garanzia di 24 mesi per i difetti di conformità, ai sensi del Dlgs 206/05. Per fruire dell'assistenza  in garanzia, il Cliente dovrà conservare la fattura (o il DDT) che riceverà in concomitanza alla ricezione della merce.<br/>
+                        L'esercizio della Garanzia può prevedere la richiesta di assistenza ai Centri Assistenza Autorizzati presenti sul territorio e/o seguire le modalità illustrate nella documentazione presente all'interno della 
+                        confezione del prodotto.
+                        </li>
+                        <li>La garanzia convenzionale del produttore viene fornita secondo le modalità illustrate nella documentazione presente all'interno della confezione del prodotto. Se, a seguito di intervento da parte di un Centro Assistenza Autorizzato, il difetto dovesse risultare non coperto dalla garanzia convenzionale del produttore, al Cliente saranno addebitati gli eventuali costi di verifica e ripristino richiesti dall'Assistenza Autorizzata, nonchè i costi di trasporto, se sostenuti da NetAddiction SRL.
+                        </li>
+                        <li>La garanzia di 24 mesi ai sensi del Dlgs 206/05 si applica al prodotto che presenti un difetto di conformità, purchè il prodotto stesso sia utilizzato correttamente, nel rispetto della sua destinazione d'uso e di quanto previsto nella documentazione tecnica allegata. Tale garanzia è riservata al Consumatore privato (persona fisica che acquista la merce per scopi non riferibili alla propria attività professionale, ovvero effettua l'acquisto senza indicare nel modulo d'ordine un riferimento di Partita IVA). In caso di difetto di conformità, NetAddiction SRL provvede, senza spese per il Cliente, al ripristino della conformità  del prodotto mediante riparazione/sostituzione o alla riduzione del prezzo, fino alla risoluzione del contratto. Se, a seguito di intervento da parte di un Centro Assistenza Autorizzato, il vizio non dovesse risultare un difetto di conformità ai sensi del Dlgs 206/05, al Cliente saranno addebitati gli eventuali costi di verifica e  ripristino richiesti dall'Assistenza Autorizzata, nonchè i costi di trasporto se sostenuti da NetAddiction SRL.
+                        </li>
+                        <li>Le sostituzioni in caso di DOA (Dead On Arrival: prodotto non funzionante alla consegna) avvengono solo se espressamente previste dal produttore. I tempi di sostituzione o eventuale riparazione del prodotto dipendono esclusivamente dalle politiche del produttore.</li>
+                        <li>Nel caso in cui, per qualsiasi ragione, non fosse in grado di rendere al proprio cliente un prodotto in garanzia (ripristinato o sostituito), NetAddiction SRL potrà procedere a propria discrezione alla restituzione dell'importo pagato tenendo conto dell'uso del bene oppure alla sua sostituzione con un prodotto di caratteristiche pari o superiori. </li>
+                        <li>I tempi di riparazione o eventuale sostituzione del prodotto dipendono esclusivamente dalle politiche del produttore e nessun danno può essere richiesto a NetAddiction SRL per eventuali ritardi nell'effettuazione di riparazioni o sostituzioni.</li>
+                        <li>Nei casi in cui l'applicazione delle garanzie preveda la restituzione del prodotto, il bene dovrà essere restituito dal Cliente nella confezione originale, completa in tutte le sue parti (compresi imballo ed eventuale documentazione e dotazione accessoria: manuali, cavi, ecc...); per limitare danneggiamenti alla confezione originale, raccomandiamo di inserirla in una seconda scatola; va evitata in tutti i casi l'apposizione di etichette o nastri adesivi direttamente sulla confezione originale del prodotto. <br/>
+                        Al Cliente verrà fornito un numero di autorizzazione al rientro del prodotto (RMA) che dovrà essere indicato all'esterno dell'imballo, seguendo le indicazioni fornite direttamente nella relativa e-mail di autorizzazione.
+                        </li>
+                        <br/>
+                        <i>Per qualsiasi dubbio sulla <b>garanzia</b> scrivici una e-mail all'indirizzo <a href="mailto:shopping@multiplayer.com" target="_blank">shopping@multiplayer.com</a></i>
+                    </ul>
+                </div>
+            </div>
+        </div> 
+    </t>
+</template>
+</odoo>

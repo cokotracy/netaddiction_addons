@@ -5,7 +5,8 @@
         name="Da Acquistare" 
         parent="purchase.menu_purchase_products"
         action="netaddiction_purchase_home_page" 
-        sequence="1"
+	sequence="1"
+        groups="base.group_user"
     />
 
     <menuitem 
@@ -14,5 +15,6 @@
         action="netaddiction_purchase_backorder" 
         parent="purchase.menu_purchase_products"
         sequence="2"
+        groups="base.group_user"
     />
 </odoo>

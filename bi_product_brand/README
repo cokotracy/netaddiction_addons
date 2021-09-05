@@ -1,0 +1,3 @@
+14.0.0.1 : 10-11-2020 => Fixed while creating product temp. and from it created variant brand was not set becase of the change method _create_variant_ids.
+14.0.0.2 : 24-3-2021 => Remove the product from the product brand and then added product is also removed from the product by brand,
+	                when change the brand from the product by brand then product brand is changed but the added product is Removed from the product brand.

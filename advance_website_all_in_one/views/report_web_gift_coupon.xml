@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+	<data>
+
+		<template id="report_pos_web_gift_coupon">
+			<t t-foreach="docs" t-as="o">
+				<t t-call="web.html_container">
+				<t t-call="web.internal_layout">
+					<div class="page">
+						<div class="row">
+							<!-- Coupon Background Image -->
+							<div class="gift_bg_img" style="position:absolute;opacity:1.0;z-index:1000;">
+								<img src="advance_website_all_in_one/static/src/img/gift-voucher1.jpg" />
+							</div>
+							<!-- Company Details -->
+							<div class="bi_company_details" style="max-width:30%;position:absolute;top:100px;margin-left:830px;font-size:24px; text-align:left;z-index:1005">
+							<t t-if="o.partner_id.company_id">
+								<img class="image" t-att-src="'data:image/png;base64,%s' % to_text(o.partner_id.company_id.logo)" style="max-width:70%;" />
+								<br/>
+								<span t-field="o.partner_id.company_id.name" />
+								<br/>
+								<span t-field="o.partner_id.company_id.street" /><span t-field="o.partner_id.company_id.street2" />
+								<br/><span t-field="o.partner_id.company_id.city" />
+							</t>
+							</div>
+							<!-- Coupon Details -->
+							<div class="bi_coupon_details" style="width:50%;position:absolute;top:350px;font-size:20px; text-align:left;margin: 0 500px; font-color:#E74C3C;z-index:1005;">
+								<!-- Coupon Details Left Side -->
+								<div class="left_side" style="width:50%;float:left;">
+									<strong style="color:#E74C3C;margin-right:5px;">Name: </strong><span t-field="o.name"/>
+									<br/>
+									<t t-if="o.partner_true == True">
+										<strong style="margin-right:5px;">Customer:</strong><span t-field="o.partner_id" style="word-wrap: break-word;"/>
+										<br/>
+									</t>
+									<t t-if='o.amount'>
+										<strong style="margin-right:5px;">Amount:</strong>
+										<span t-field="o.amount" />
+										<br/>
+									</t>
+								</div>
+								<!-- Coupon Details Right Side -->
+								<div class="right_side" style="width:50%;float:right;">
+								<t t-if='o.issue_date'>
+									<strong style="margin-right:5px;">Issue Date:</strong>
+									<span t-esc="time.strftime('%m-%d-%Y',time.strptime(str(o.issue_date), '%Y-%m-%d %H:%M:%S'))" />
+									<br/>
+								</t>
+								<t t-if='o.expiry_date'>
+									<strong style="margin-right:5px;">Expiry Date:</strong>
+									<span t-esc="time.strftime('%m-%d-%Y',time.strptime(str(o.expiry_date), '%Y-%m-%d %H:%M:%S'))"/>
+								</t>
+								<br/>
+								<t t-if='o.coupon_apply_times'>
+									<strong style="margin-right:5px;">Coupon Limit:</strong>
+									<span t-field="o.coupon_apply_times" />
+								</t>
+								<br/>
+								</div>
+								<div class="barcode_img" style="max-width:90%;margin:25% auto;">
+									<img alt="Barcode" t-att-src="'/report/barcode/?type=%s&amp;value=%s&amp;width=%s&amp;height=%s' % ('Code128', o.c_barcode, 600, 150)" style="width:60%;height::4rem;"/><br/>
+									<span t-field="o.c_barcode" style="margin-left:15%;"/>
+								</div>
+							</div>
+						</div>
+					</div>
+				</t>
+				</t>
+			</t>
+		</template>
+
+		<!-- Main template -->
+		<template id="report_gift_coupon">
+			<t t-call="web.html_container">
+				<t t-foreach="docs" t-as="doc">
+					<t t-call="advance_website_all_in_one.report_pos_web_gift_coupon" t-lang="doc.partner_id.lang"/>
+				</t>
+			</t>
+		</template>
+		
+		<record id="gift_paper_format" model="report.paperformat">
+			<field name="name">Indian</field>
+			<field name="default" eval="True" />
+			<field name="format">custom</field>
+			<field name="page_height">240</field>
+			<field name="page_width">300</field>
+			<field name="margin_top">5</field>
+			<field name="margin_bottom">5</field>
+			<field name="margin_left">7</field>
+			<field name="margin_right">7</field>
+			<field name="header_line" eval="False" />
+			<field name="orientation">Portrait</field>
+			<field name="header_spacing">20</field>
+			<field name="dpi">80</field>
+		</record>
+
+		<report 
+			id="action_report_print_gift_coupon" 
+			string="Gift Coupon" 
+			model="web.gift.coupon" 
+			report_type="qweb-pdf"
+			name="advance_website_all_in_one.report_gift_coupon"
+			file="advance_website_all_in_one.report_gift_coupon"
+			paperformat="advance_website_all_in_one.gift_paper_format"/>
+
+	</data>
+</odoo>

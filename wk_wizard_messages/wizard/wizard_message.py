@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
-################################################################################
-#
-#   Copyright (c) 2016-Present Webkul Software Pvt. Ltd. (<https://webkul.com/>)
-#
-################################################################################
+##############################################################################
+# Copyright (c) 2015-Present Webkul Software Pvt. Ltd. (<https://webkul.com/>)
+# See LICENSE file for full copyright and licensing details.
+# License URL : <https://store.webkul.com/license.html/>
+##############################################################################
 from odoo import api, fields, models, _
 from odoo.exceptions import Warning
 
@@ -13,18 +13,15 @@ class WkWizardMessage(models.TransientModel):
 	_description = "Message Wizard"
 
 	text = fields.Text(string='Message')
-	
+
+	@api.model
 	def genrated_message(self,message,name='Message/Summary'):
-		partial_id = self.create({'text':message}).id
+		res = self.create({'text': message})
 		return {
-			'name':name,
-			'view_mode': 'form',
-			'view_id': False,
-			'view_type': 'form',
+			'name'     : name,
+			'type'     : 'ir.actions.act_window',
 			'res_model': 'wk.wizard.message',
-			'res_id': partial_id,
-			'type': 'ir.actions.act_window',
-			'nodestroy': True,
-			'target': 'new',
-			'domain': '[]',
+			'view_mode': 'form',
+			'target'   : 'new',
+			'res_id'   : res.id,
 		}

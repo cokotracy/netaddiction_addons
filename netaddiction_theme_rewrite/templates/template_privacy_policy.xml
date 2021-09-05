@@ -1,0 +1,246 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+<template id="template_privacy_policy" name="Privacy policy - Multiplayer.com">
+    <t t-call="website.layout">
+        <t t-set="pageName" t-value="'privacy'"/>
+        <div class="iubenda_legal_document container py-5">
+            <h1>Privacy Policy di <strong>Multiplayer.com</strong></h1>
+            <p>Questo Sito Web raccoglie alcuni Dati Personali dei propri Utenti.</p>
+            <br/> 
+            <p>Questo documento può essere stampato utilizzando il comando di stampa presente nelle impostazioni di qualsiasi browser.</p>
+            <h2 id="owner_of_the_data"> Titolare del Trattamento dei Dati </h2>
+            <p>NetAddiction Srl - Via Arnaldo Maria Angelini 12, 05100 Terni (Italia)</p>
+            <p><strong>Indirizzo email del Titolare:</strong> amministrazione@netaddiction.it</p>
+            <h2 id="types_of_data"> Tipologie di Dati raccolti </h2>
+            <p> Fra i Dati Personali raccolti da questo Sito Web, in modo autonomo o tramite terze parti, ci sono: nome; cognome; sesso; data di nascita; numero di telefono; indirizzo; username; email; password; nazione; provincia; CAP; città; immagine; Cookie; Dati di utilizzo; stato; Su di me; Dati comunicati durante l'utilizzo del servizio. </p>
+            <p>Dettagli completi su ciascuna tipologia di dati raccolti sono forniti nelle sezioni dedicate di questa privacy policy o mediante specifici testi informativi visualizzati prima della raccolta dei dati stessi.<br/> I Dati Personali possono essere liberamente forniti dall'Utente o, nel caso di Dati di Utilizzo, raccolti automaticamente durante l'uso di questo Sito Web.<br/> Se non diversamente specificato, tutti i Dati richiesti da questo Sito Web sono obbligatori. Se l’Utente rifiuta di comunicarli, potrebbe essere impossibile per questo Sito Web fornire il Servizio. Nei casi in cui questo Sito Web indichi alcuni Dati come facoltativi, gli Utenti sono liberi di astenersi dal comunicare tali Dati, senza che ciò abbia alcuna conseguenza sulla disponibilità del Servizio o sulla sua operatività.<br/> Gli Utenti che dovessero avere dubbi su quali Dati siano obbligatori, sono incoraggiati a contattare il Titolare.<br/> L’eventuale utilizzo di Cookie - o di altri strumenti di tracciamento - da parte di questo Sito Web o dei titolari dei servizi terzi utilizzati da questo Sito Web, ove non diversamente precisato, ha la finalità di fornire il Servizio richiesto dall'Utente, oltre alle ulteriori finalità descritte nel presente documento e nella Cookie Policy, se disponibile.</p>
+            <p>L'Utente si assume la responsabilità dei Dati Personali di terzi ottenuti, pubblicati o condivisi mediante questo Sito Web e garantisce di avere il diritto di comunicarli o diffonderli, liberando il Titolare da qualsiasi responsabilità verso terzi.</p>
+            <h2 id="place_of_processing">Modalità e luogo del trattamento dei Dati raccolti</h2>
+            <h3>Modalità di trattamento</h3>
+            <p>Il Titolare adotta le opportune misure di sicurezza volte ad impedire l’accesso, la divulgazione, la modifica o la distruzione non autorizzate dei Dati Personali. <br/> Il trattamento viene effettuato mediante strumenti informatici e/o telematici, con modalità organizzative e con logiche strettamente correlate alle finalità indicate. Oltre al Titolare, in alcuni casi, potrebbero avere accesso ai Dati altri soggetti coinvolti nell’organizzazione di questo Sito Web (personale amministrativo, commerciale, marketing, legali, amministratori di sistema) ovvero soggetti esterni (come fornitori di servizi tecnici terzi, corrieri postali, hosting provider, società informatiche, agenzie di comunicazione) nominati anche, se necessario, Responsabili del Trattamento da parte del Titolare. L’elenco aggiornato dei Responsabili potrà sempre essere richiesto al Titolare del Trattamento.</p>
+            <h3>Base giuridica del trattamento</h3>
+            <p>Il Titolare tratta Dati Personali relativi all’Utente in caso sussista una delle seguenti condizioni:</p>
+            <ul>
+                <li>l’Utente ha prestato il consenso per una o più finalità specifiche; Nota: in alcuni ordinamenti il Titolare può essere autorizzato a trattare Dati Personali senza che debba sussistere il consenso dell’Utente o un’altra delle basi giuridiche specificate di seguito, fino a quando l’Utente non si opponga (“opt-out”) a tale trattamento. Ciò non è tuttavia applicabile qualora il trattamento di Dati Personali sia regolato dalla legislazione europea in materia di protezione dei Dati Personali;</li>
+                <li>il trattamento è necessario all'esecuzione di un contratto con l’Utente e/o all'esecuzione di misure precontrattuali;</li>
+                <li>il trattamento è necessario per adempiere un obbligo legale al quale è soggetto il Titolare;</li>
+                <li>il trattamento è necessario per l'esecuzione di un compito di interesse pubblico o per l'esercizio di pubblici poteri di cui è investito il Titolare;</li>
+                <li>il trattamento è necessario per il perseguimento del legittimo interesse del Titolare o di terzi.</li>
+            </ul>
+            <p>È comunque sempre possibile richiedere al Titolare di chiarire la concreta base giuridica di ciascun trattamento ed in particolare di specificare se il trattamento sia basato sulla legge, previsto da un contratto o necessario per concludere un contratto.</p>
+            <h3>Luogo</h3>
+            <p>I Dati sono trattati presso le sedi operative del Titolare ed in ogni altro luogo in cui le parti coinvolte nel trattamento siano localizzate. Per ulteriori informazioni, contatta il Titolare.<br/> I Dati Personali dell’Utente potrebbero essere trasferiti in un paese diverso da quello in cui l’Utente si trova. Per ottenere ulteriori informazioni sul luogo del trattamento l’Utente può fare riferimento alla sezione relativa ai dettagli sul trattamento dei Dati Personali.</p>
+            <p>L’Utente ha diritto a ottenere informazioni in merito alla base giuridica del trasferimento di Dati al di fuori dell’Unione Europea o ad un’organizzazione internazionale di diritto internazionale pubblico o costituita da due o più paesi, come ad esempio l’ONU, nonché in merito alle misure di sicurezza adottate dal Titolare per proteggere i Dati.<br/><br/> L’Utente può verificare se abbia luogo uno dei trasferimenti appena descritti esaminando la sezione di questo documento relativa ai dettagli sul trattamento di Dati Personali o chiedere informazioni al Titolare contattandolo agli estremi riportati in apertura.</p>
+            <h3>Periodo di conservazione</h3>
+            <p>I Dati sono trattati e conservati per il tempo richiesto dalle finalità per le quali sono stati raccolti.</p>
+            <p>Pertanto:</p>
+            <ul>
+                <li>I Dati Personali raccolti per scopi collegati all’esecuzione di un contratto tra il Titolare e l’Utente saranno trattenuti sino a quando sia completata l’esecuzione di tale contratto.</li>
+                <li>I Dati Personali raccolti per finalità riconducibili all’interesse legittimo del Titolare saranno trattenuti sino al soddisfacimento di tale interesse. L’Utente può ottenere ulteriori informazioni in merito all’interesse legittimo perseguito dal Titolare nelle relative sezioni di questo documento o contattando il Titolare.</li>
+            </ul>
+            <p>Quando il trattamento è basato sul consenso dell’Utente, il Titolare può conservare i Dati Personali più a lungo sino a quando detto consenso non venga revocato. Inoltre, il Titolare potrebbe essere obbligato a conservare i Dati Personali per un periodo più lungo in ottemperanza ad un obbligo di legge o per ordine di un’autorità.<br/><br/> Al termine del periodo di conservazione i Dati Personali saranno cancellati. Pertanto, allo spirare di tale termine il diritto di accesso, cancellazione, rettificazione ed il diritto alla portabilità dei Dati non potranno più essere esercitati.</p>
+            <h2 id="use_collected_data">Finalità del Trattamento dei Dati raccolti</h2>
+            <p> I Dati dell’Utente sono raccolti per consentire al Titolare di fornire il Servizio, adempiere agli obblighi di legge, rispondere a richieste o azioni esecutive, tutelare i propri diritti ed interessi (o quelli di Utenti o di terze parti), individuare eventuali attività dolose o fraudolente, nonché per le seguenti finalità: Registrazione ed autenticazione, Commento dei contenuti, Statistica, Interazione con social network e piattaforme esterne, Remarketing e behavioral targeting, Pubblicità, Gestione indirizzi e invio di messaggi email, Contattare l'Utente, Funzionalità sociali, Gestione dei pagamenti, Visualizzazione di contenuti da piattaforme esterne e Interazione con le piattaforme di live chat. </p>
+            <p>Per ottenere informazioni dettagliate sulle finalità del trattamento e sui Dati Personali trattati per ciascuna finalità, l’Utente può fare riferimento alla sezione “Dettagli sul trattamento dei Dati Personali”.</p>
+            <div data-locale="it"></div>
+            <h2 id="data_processing_detailed_info">Dettagli sul trattamento dei Dati Personali</h2>
+            <p>I Dati Personali sono raccolti per le seguenti finalità ed utilizzando i seguenti servizi:</p>
+            <h3>Commento dei contenuti</h3>
+            <p>I servizi di commento consentono agli Utenti di formulare e rendere pubblici propri commenti riguardanti il contenuto di questo Sito Web.<br/> Gli Utenti, a seconda delle impostazioni decise dal Titolare, possono lasciare il commento anche in forma anonima. Nel caso tra i Dati Personali rilasciati dall’Utente ci sia l’email, questa potrebbe essere utilizzata per inviare notifiche di commenti riguardanti lo stesso contenuto. Gli Utenti sono responsabili del contenuto dei propri commenti.<br/> Nel caso in cui sia installato un servizio di commenti fornito da soggetti terzi, è possibile che, anche nel caso in cui gli Utenti non utilizzino il servizio di commento, lo stesso raccolga dati di traffico relativi alle pagine in cui il servizio di commento è installato.</p>
+            <h4>Sistema di commento gestito in modo diretto (Questo Sito Web)</h4>
+            <p>Questo Sito Web dispone di un proprio sistema di commento dei contenuti.</p>
+            <p>Dati Personali trattati: email; username.</p>
+            <h4>Facebook Comments (Facebook, Inc.)</h4>
+            <p>Facebook Comments è un servizio gestito da Facebook, Inc. che consente all’Utente di lasciare propri commenti e condividerli all’interno della piattaforma Facebook.</p>
+            <p>Dati Personali trattati: Cookie; Dati di utilizzo.</p>
+            <p>Luogo del trattamento: USA – <a href="https://www.facebook.com/privacy/explanation" target="_blank" rel="noopener noreferrer">Privacy Policy</a>. </p>
+            <h3>Contattare l'Utente</h3>
+            <h4>Contatto via telefono (Questo Sito Web)</h4>
+            <p>Gli Utenti che hanno fornito il proprio numero di telefono potrebbero essere contattati per finalità commerciali o promozionali collegate a questo Sito Web, così come per soddisfare richieste di supporto.</p>
+            <p>Dati Personali trattati: numero di telefono.</p>
+            <h4>Mailing List o Newsletter (Questo Sito Web)</h4>
+            <p>Con la registrazione alla mailing list o alla newsletter, l’indirizzo email dell’Utente viene automaticamente inserito in una lista di contatti a cui potranno essere trasmessi messaggi email contenenti informazioni, anche di natura commerciale e promozionale, relative a questo Sito Web. L'indirizzo email dell'Utente potrebbe anche essere aggiunto a questa lista come risultato della registrazione a questo Sito Web o dopo aver effettuato un acquisto.</p>
+            <p>Dati Personali trattati: città; cognome; data di nascita; Dati di utilizzo; email; nome; provincia; sesso; stato.</p>
+            <h4>Modulo di contatto (Questo Sito Web)</h4>
+            <p>L’Utente, compilando con i propri Dati il modulo di contatto, acconsente al loro utilizzo per rispondere alle richieste di informazioni, di preventivo, o di qualunque altra natura indicata dall’intestazione del modulo.</p>
+            <p>Dati Personali trattati: cognome; email; nome; numero di telefono.</p>
+            <h3>Funzionalità sociali</h3>
+            <h4>Profilo pubblico (Questo Sito Web)</h4>
+            <p>Gli Utenti possono avere un profilo pubblico visualizzabile da altri Utenti. In aggiunta ai Dati Personali forniti, questo profilo può contenere le interazioni dell'Utente con questo Sito Web.</p>
+            <p>Dati Personali trattati: username.</p>
+            <h3>Gestione dei pagamenti</h3>
+            <p>I servizi di gestione dei pagamenti permettono a questo Sito Web di processare pagamenti tramite carta di credito, bonifico bancario o altri strumenti. I dati utilizzati per il pagamento vengono acquisiti direttamente dal gestore del servizio di pagamento richiesto senza essere in alcun modo trattati da questo Sito Web.<br/> Alcuni di questi servizi potrebbero inoltre permettere l'invio programmato di messaggi all'Utente, come email contenenti fatture o notifiche riguardanti il pagamento.</p>
+            <h4>PayPal (Paypal)</h4>
+            <p>PayPal è un servizio di pagamento fornito da PayPal Inc., che consente all’Utente di effettuare pagamenti online.</p>
+            <p>Dati Personali trattati: varie tipologie di Dati secondo quanto specificato dalla privacy policy del servizio.</p>
+            <h3>Gestione indirizzi e invio di messaggi email</h3>
+            <p>Questo tipo di servizi consente di gestire un database di contatti email, contatti telefonici o contatti di qualunque altro tipo, utilizzati per comunicare con l’Utente.<br/> Questi servizi potrebbero inoltre consentire di raccogliere dati relativi alla data e all’ora di visualizzazione dei messaggi da parte dell’Utente, così come all’interazione dell'Utente con essi, come le informazioni sui click sui collegamenti inseriti nei messaggi.</p>
+            <h4>MailUp (MailUp)</h4>
+            <p>MailUp è un servizio di gestione indirizzi e invio di messaggi email fornito da MailUp S.p.A.</p>
+            <p>Dati Personali trattati: email.</p>
+            <p>Luogo del trattamento: Italia – <a href="https://www.mailup.it/informativa-privacy/mailup-spa/" target="_blank" rel="noopener noreferrer">Privacy Policy</a>. </p>
+            <h3>Interazione con le piattaforme di live chat</h3>
+            <p>Questo tipo di servizi permette di interagire con le piattaforme di live chat, gestite da soggetti terzi, direttamente dalle pagine di questo Sito Web. Ciò permette all'Utente di contattare il servizio di supporto di questo Sito Web o a questo Sito Web di contattare l'Utente mentre sta navigando le sue pagine.<br/> Nel caso in cui sia installato un servizio di interazione con le piattaforme di live chat, è possibile che, anche nel caso gli Utenti non utilizzino il servizio, lo stesso raccolga Dati di Utilizzo relativi alle pagine in cui è installato. Inoltre, le conversazioni della live chat potrebbero essere registrate.</p>
+            <h4>Facebook Messenger Customer Chat (Facebook, Inc.)</h4>
+            <p>Il Facebook Messenger Customer Chat è un servizio di interazione con la piattaforma di live chat Facebook Messenger, fornito da Facebook, Inc.</p>
+            <p>Dati Personali trattati: Cookie; Dati comunicati durante l'utilizzo del servizio; Dati di utilizzo; Su di me.</p>
+            <p>Luogo del trattamento: Stati Uniti – <a href="https://www.facebook.com/about/privacy/" target="_blank" rel="noopener noreferrer">Privacy Policy</a>. </p>
+            <h3>Interazione con social network e piattaforme esterne</h3>
+            <p>Questo tipo di servizi permette di effettuare interazioni con i social network, o con altre piattaforme esterne, direttamente dalle pagine di questo Sito Web.<br/> Le interazioni e le informazioni acquisite da questo Sito Web sono in ogni caso soggette alle impostazioni privacy dell’Utente relative ad ogni social network.<br/> Questo tipo di servizio potrebbe comunque raccogliere dati sul traffico per le pagine dove il servizio è installato, anche quando gli Utenti non lo utilizzano.<br/> Si raccomanda di disconnettersi dai rispettivi servizi per assicurarsi che i dati elaborati su questo Sito Web non vengano ricollegati al profilo dell'Utente.</p>
+            <h4>Pulsante Mi Piace e widget sociali di Facebook (Facebook, Inc.)</h4>
+            <p>Il pulsante “Mi Piace” e i widget sociali di Facebook sono servizi di interazione con il social network Facebook, forniti da Facebook, Inc.</p>
+            <p>Dati Personali trattati: Cookie; Dati di utilizzo.</p>
+            <p>Luogo del trattamento: USA – <a href="https://www.facebook.com/privacy/explanation" target="_blank" rel="noopener noreferrer">Privacy Policy</a>. </p>
+            <h4>Pulsante Tweet e widget sociali di Twitter (Twitter, Inc.)</h4>
+            <p>Il pulsante Tweet e i widget sociali di Twitter sono servizi di interazione con il social network Twitter, forniti da Twitter, Inc.</p>
+            <p>Dati Personali trattati: Cookie; Dati di utilizzo.</p>
+            <p>Luogo del trattamento: USA – <a href="https://twitter.com/privacy" target="_blank" rel="noopener noreferrer">Privacy Policy</a>. </p>
+            <h4>Pulsante +1 e widget sociali di Google+ (Google Inc.)</h4>
+            <p>Il pulsante +1 e i widget sociali di Google+ sono servizi di interazione con il social network Google+, forniti da Google Inc.</p>
+            <p>Dati Personali trattati: Cookie; Dati di utilizzo.</p>
+            <p>Luogo del trattamento: USA – <a href="https://www.google.com/intl/policies/privacy/" target="_blank" rel="noopener noreferrer">Privacy Policy</a>. </p>
+            <h3>Pubblicità</h3>
+            <p>Questo tipo di servizi consentono di utilizzare i Dati dell’Utente per finalità di comunicazione commerciale in diverse forme pubblicitarie, quali il banner, anche in relazione agli interessi dell’Utente.<br/> Ciò non significa che tutti i Dati Personali vengano utilizzati per questa finalità. Dati e condizioni di utilizzo sono indicati di seguito.<br/> Alcuni dei servizi di seguito indicati potrebbero utilizzare Cookie per identificare l’Utente o utilizzare la tecnica del behavioral retargeting, ossia visualizzare annunci pubblicitari personalizzati in base agli interessi e al comportamento dell’Utente, rilevati anche al di fuori di questo Sito Web. Per avere maggiori informazioni in merito, ti suggeriamo di verificare le informative privacy dei rispettivi servizi.</p>
+            <h4>Direct Email Marketing (DEM) (Questo Sito Web)</h4>
+            <p>Questo Sito Web utilizza i Dati dell’Utente per inviare proposte di natura commerciale relativi a servizi e prodotti forniti da terze parti o non correlati al prodotto o servizio forniti da questo Sito Web.</p>
+            <p>Dati Personali trattati: email.</p>
+            <h3>Registrazione ed autenticazione</h3>
+            <p>Con la registrazione o l’autenticazione l’Utente consente all’Applicazione di indentificarlo e di dargli accesso a servizi dedicati.<br/> A seconda di quanto indicato di seguito, i servizi di registrazione e di autenticazione potrebbero essere forniti con l’ausilio di terze parti. Qualora questo avvenga, questa applicazione potrà accedere ad alcuni Dati conservati dal servizio terzo usato per la registrazione o l’identificazione.</p>
+            <h4>Registrazione diretta (Questo Sito Web)</h4>
+            <p>L’Utente si registra compilando il modulo di registrazione e fornendo direttamente a questo Sito Web i propri Dati Personali.</p>
+            <p>Dati Personali trattati: CAP; città; cognome; data di nascita; email; immagine; indirizzo; nazione; nome; numero di telefono; password; provincia; sesso; username.</p>
+            <h4>Facebook Authentication (Facebook, Inc.)</h4>
+            <p>Facebook Authentication è un servizio di registrazione ed autenticazione fornito da Facebook, Inc. e collegato al social network Facebook.</p>
+            <p>Dati Personali trattati: varie tipologie di Dati secondo quanto specificato dalla privacy policy del servizio.</p>
+            <p>Luogo del trattamento: Stati Uniti – <a href="https://www.facebook.com/help/405977429438260" target="_blank" rel="noopener noreferrer">Privacy Policy</a>. </p>
+            <h3>Remarketing e behavioral targeting</h3>
+            <p>Questo tipo di servizi consente a questo Sito Web ed ai suoi partner di comunicare, ottimizzare e servire annunci pubblicitari basati sull'utilizzo passato di questo Sito Web da parte dell'Utente.<br/> Questa attività è facilitata dal tracciamento dei Dati di Utilizzo e dall'utilizzo di Strumenti di Tracciamento per raccogliere informazioni che vengono poi trasferite ai partner che gestiscono le attività di remarketing e di behavioral targeting. <br/> Alcuni servizi offrono un'opzione di remarketing basata sulle liste di indirizzi email. <br/> In aggiunta alle funzionalità di opt-out offerte dai servizi di seguito riportati, l'Utente può effettuare l’opt-out visitando la <a href="http://optout.networkadvertising.org/">pagina di opt-out della Network Advertising Initiative</a>.</p>
+            <p><strong>Gli Utenti possono anche scegliere di non partecipare a determinate funzionalità pubblicitarie attraverso le corrispondenti opzioni di configurazione del dispositivo, come le opzioni di configurazione pubblicitaria del dispositivo mobile o la configurazione pubblicitaria generica</strong>.</p>
+            <h4>Facebook Remarketing (Facebook, Inc.)</h4>
+            <p>Facebook Remarketing è un servizio di Remarketing e Behavioral Targeting fornito da Facebook, Inc. che collega l'attività di questo Sito Web con il network di advertising Facebook.</p>
+            <p>Dati Personali trattati: Cookie; Dati di utilizzo.</p>
+            <p>Luogo del trattamento: USA – <a href="https://www.facebook.com/about/privacy/" target="_blank" rel="noopener noreferrer">Privacy Policy</a> – <a href="https://www.aboutads.info/choices/">Opt Out</a>. </p>
+            <h4>Google Ad Manager Audience Extension (Google Inc.)</h4>
+            <p>Google Ad Manager Audience Extension è un servizio di remarketing e behavioral targeting fornito da Google LLC che traccia i visitatori di questo Sito Web e consente a partner pubblicitari selezionati di mostrare ad essi annunci personalizzati all'interno del web.</p>
+            <p>Dati Personali trattati: Cookie; Dati di utilizzo.</p>
+            <p>Luogo del trattamento: USA – <a href="http://www.google.com/intl/en/policies/privacy/" target="_blank" rel="noopener noreferrer">Privacy Policy</a> – <a href="https://www.google.com/settings/ads/onweb#display_optout">Opt Out</a>. </p>
+            <h4>AdRoll (AdRoll, Inc.)</h4>
+            <p>AdRoll è un servizio di advertising fornito da AdRoll, Inc.</p>
+            <p>Dati Personali trattati: Cookie; Dati di utilizzo.</p>
+            <p>Luogo del trattamento: USA – <a href="https://www.adroll.com/about/privacy" target="_blank" rel="noopener noreferrer">Privacy Policy</a> – <a href="https://info.evidon.com/pub_info/573?v=1&amp;nt=1&amp;nw=false">Opt Out</a>. </p>
+            <h4>Remarketing Google Ads (Google Inc.)</h4>
+            <p>Remarketing Google Ads è un servizio di remarketing e behavioral targeting fornito da Google LLC oppure da Google Ireland Limited, a seconda della posizione in cui questo Sito Web viene utilizzata, che collega l'attività di questo Sito Web con il network di advertising Google Ads ed il Cookie DoubleClick.</p>
+            <p>Gli Utenti possono scegliere di non utilizzare i cookie di Google per la personalizzazione degli annunci visitando le <a href="https://adssettings.google.com/authenticated">Impostazioni annunci</a> di Google.</p>
+            <p>Dati Personali trattati: Cookie; Dati di utilizzo.</p>
+            <p>Luogo del trattamento: USA – <a href="http://www.google.com/intl/it/policies/privacy/" target="_blank" rel="noopener noreferrer">Privacy Policy</a> – <a href="https://www.google.com/settings/ads/onweb/optout">Opt Out</a>. </p>
+            <h4>Remarketing con Google Analytics (Google Inc.)</h4>
+            <p>Remarketing con Google Analytics è un servizio di remarketing e behavioral targeting fornito da Google LLC oppure da Google Ireland Limited, a seconda della posizione in cui questo Sito Web viene utilizzata, che collega l'attività di tracciamento effettuata da Google Analytics e dai suoi Cookie con il network di advertising Google Ads ed il Cookie Doubleclick.</p>
+            <p>Dati Personali trattati: Cookie; Dati di utilizzo.</p>
+            <p>Luogo del trattamento: USA – <a href="https://www.google.com/intl/it/policies/privacy/" target="_blank" rel="noopener noreferrer">Privacy Policy</a> – <a href="https://www.google.com/settings/ads/onweb/optout">Opt Out</a>. </p>
+            <h4>Twitter Remarketing (Twitter, Inc.)</h4>
+            <p>Twitter Remarketing è un servizio di Remarketing e Behavioral Targeting fornito da Twitter, Inc. che collega l'attività di questo Sito Web con il network di advertising Twitter.</p>
+            <p>Dati Personali trattati: Cookie; Dati di utilizzo.</p>
+            <p>Luogo del trattamento: USA – <a href="https://twitter.com/privacy" target="_blank" rel="noopener noreferrer">Privacy Policy</a> – <a href="https://support.twitter.com/articles/20170405">Opt Out</a>. </p>
+            <h4>Facebook Custom Audience (Facebook, Inc.)</h4>
+            <p>Facebook Custom Audience è un servizio di remarketing e behavioral targeting fornito da Facebook, Inc. che collega l'attività di questo Sito Web con il network di advertising Facebook.</p>
+            <p>Dati Personali trattati: Cookie; email.</p>
+            <p>Luogo del trattamento: Stati Uniti – <a href="https://www.facebook.com/about/privacy/" target="_blank" rel="noopener noreferrer">Privacy Policy</a> – <a href="https://www.aboutads.info/choices/">Opt Out</a>. </p>
+            <h3>Statistica</h3>
+            <p>I servizi contenuti nella presente sezione permettono al Titolare del Trattamento di monitorare e analizzare i dati di traffico e servono a tener traccia del comportamento dell’Utente.</p>
+            <h4>Google Analytics con IP anonimizzato (Google Inc.)</h4>
+            <p>Google Analytics è un servizio di analisi web fornito da Google Inc. (“Google”). Google utilizza i Dati Personali raccolti allo scopo di tracciare ed esaminare l’utilizzo di questo Sito Web, compilare report e condividerli con gli altri servizi sviluppati da Google.<br/> Google potrebbe utilizzare i Dati Personali per contestualizzare e personalizzare gli annunci del proprio network pubblicitario.<br/> Questa integrazione di Google Analytics rende anonimo il tuo indirizzo IP. L'anonimizzazione funziona abbreviando entro i confini degli stati membri dell'Unione Europea o in altri Paesi aderenti all'accordo sullo Spazio Economico Europeo l'indirizzo IP degli Utenti. Solo in casi eccezionali, l'indirizzo IP sarà inviato ai server di Google ed abbreviato all'interno degli Stati Uniti.</p>
+            <p>Dati Personali trattati: Cookie; Dati di utilizzo.</p>
+            <p>Luogo del trattamento: USA – <a href="https://www.google.com/intl/it/policies/privacy/" target="_blank" rel="noopener noreferrer">Privacy Policy</a> – <a href="https://tools.google.com/dlpage/gaoptout?hl=it" onclick="javascript:return tryFunc('tryGaOptOut',{href:'https://tools.google.com/dlpage/gaoptout?hl=it'})" target="_blank">Opt Out</a>. </p>
+            <h4>Monitoraggio conversioni di Facebook Ads (pixel di Facebook) (Facebook, Inc.)</h4>
+            <p>Il monitoraggio conversioni di Facebook Ads (pixel di Facebook) è un servizio di statistiche fornito da Facebook, Inc. che collega i dati provenienti dal network di annunci Facebook con le azioni compiute all'interno di questo Sito Web. Il pixel di Facebook monitora le conversioni che possono essere attribuite alle inserzioni di Facebook, Instagram e Audience Network.</p>
+            <p>Dati Personali trattati: Cookie; Dati di utilizzo.</p>
+            <p>Luogo del trattamento: USA – <a href="https://www.facebook.com/about/privacy/" target="_blank" rel="noopener noreferrer">Privacy Policy</a>. </p>
+            <h4>Chartbeat (Chartbeat)</h4>
+            <p>Chartbeat è un servizio di statistica fornito da Chartbeat Inc.</p>
+            <p>Dati Personali trattati: Cookie; Dati di utilizzo.</p>
+            <p>Luogo del trattamento: USA – <a href="https://chartbeat.com/privacy/" target="_blank" rel="noopener noreferrer">Privacy Policy</a>. </p>
+            <h4>Nielsen Audience Measurement (The Nielsen Company)</h4>
+            <p>Nielsen Audience Measurement è un servizio di statistica fornito da The Nielsen Company.</p>
+            <p>Dati Personali trattati: Cookie; Dati di utilizzo.</p>
+            <p>Luogo del trattamento: USA – <a href="https://www.nielsen.com/it/it/privacy-policy/digital-measurement.html" target="_blank" rel="noopener noreferrer">Privacy Policy</a> – <a href="https://priv-policy.imrworldwide.com/priv/browser/it/it/optout.html#choices">Opt Out</a>. </p>
+            <h3>Visualizzazione di contenuti da piattaforme esterne</h3>
+            <p>Questo tipo di servizi permette di visualizzare contenuti ospitati su piattaforme esterne direttamente dalle pagine di questo Sito Web e di interagire con essi.<br/> Nel caso in cui sia installato un servizio di questo tipo, è possibile che, anche nel caso gli Utenti non utilizzino il servizio, lo stesso raccolga dati di traffico relativi alle pagine in cui è installato.</p>
+            <h4>Google Fonts (Google Inc.)</h4>
+            <p>Google Fonts è un servizio di visualizzazione di stili di carattere gestito da Google LLC oppure da Google Ireland Limited, a seconda della posizione in cui questo Sito Web viene utilizzata, che permette a questo Sito Web di integrare tali contenuti all’interno delle proprie pagine.</p>
+            <p>Dati Personali trattati: Dati di utilizzo; varie tipologie di Dati secondo quanto specificato dalla privacy policy del servizio.</p>
+            <p>Luogo del trattamento: USA – <a href="https://www.google.it/intl/policies/privacy/" target="_blank" rel="noopener noreferrer">Privacy Policy</a>. </p>
+            <h4>Widget Video YouTube (Google Inc.)</h4>
+            <p>YouTube è un servizio di visualizzazione di contenuti video gestito da Google Inc. che permette a questo Sito Web di integrare tali contenuti all’interno delle proprie pagine.</p>
+            <p>Dati Personali trattati: Cookie; Dati di utilizzo.</p>
+            <p>Luogo del trattamento: USA – <a href="http://www.google.it/intl/it/policies/privacy/" target="_blank" rel="noopener noreferrer">Privacy Policy</a>. </p>
+            <div data-locale="it"></div>
+            <h2 id="further_data">Ulteriori informazioni sui Dati Personali</h2>
+            <h3>Vendita di beni e servizi online</h3>
+            <p>I Dati Personali raccolti sono utilizzati per l’erogazione di servizi all’Utente o per la vendita di prodotti, inclusi il pagamento e l’eventuale consegna. I Dati Personali raccolti per perfezionare il pagamento possono essere quelli relativi alla carta di credito, al conto corrente utilizzato per il bonifico o ad altri strumenti di pagamento previsti. I Dati di pagamento raccolti da questo Sito Web dipendono dal sistema di pagamento utilizzato.</p>
+            <h2 id="rights_subjects">Diritti dell’Utente</h2>
+            <p>Gli Utenti possono esercitare determinati diritti con riferimento ai Dati trattati dal Titolare.</p>
+            <p>In particolare, l’Utente ha il diritto di:</p>
+            <ul>
+                <li><strong>revocare il consenso in ogni momento.</strong> L’Utente può revocare il consenso al trattamento dei propri Dati Personali precedentemente espresso. </li>
+                <li><strong>opporsi al trattamento dei propri Dati.</strong> L’Utente può opporsi al trattamento dei propri Dati quando esso avviene su una base giuridica diversa dal consenso. Ulteriori dettagli sul diritto di opposizione sono indicati nella sezione sottostante.</li>
+                <li><strong>accedere ai propri Dati.</strong> L’Utente ha diritto ad ottenere informazioni sui Dati trattati dal Titolare, su determinati aspetti del trattamento ed a ricevere una copia dei Dati trattati.</li>
+                <li><strong>verificare e chiedere la rettificazione.</strong> L’Utente può verificare la correttezza dei propri Dati e richiederne l’aggiornamento o la correzione. </li>
+                <li><strong>ottenere la limitazione del trattamento.</strong> Quando ricorrono determinate condizioni, l’Utente può richiedere la limitazione del trattamento dei propri Dati. In tal caso il Titolare non tratterà i Dati per alcun altro scopo se non la loro conservazione.</li>
+                <li><strong>ottenere la cancellazione o rimozione dei propri Dati Personali.</strong> Quando ricorrono determinate condizioni, l’Utente può richiedere la cancellazione dei propri Dati da parte del Titolare.</li>
+                <li><strong>ricevere i propri Dati o farli trasferire ad altro titolare.</strong> L’Utente ha diritto di ricevere i propri Dati in formato strutturato, di uso comune e leggibile da dispositivo automatico e, ove tecnicamente fattibile, di ottenerne il trasferimento senza ostacoli ad un altro titolare. Questa disposizione è applicabile quando i Dati sono trattati con strumenti automatizzati ed il trattamento è basato sul consenso dell’Utente, su un contratto di cui l’Utente è parte o su misure contrattuali ad esso connesse.</li>
+                <li><strong>proporre reclamo.</strong> L’Utente può proporre un reclamo all’autorità di controllo della protezione dei dati personali competente o agire in sede giudiziale.</li>
+            </ul>
+            <h3>Dettagli sul diritto di opposizione</h3>
+            <p>Quando i Dati Personali sono trattati nell’interesse pubblico, nell’esercizio di pubblici poteri di cui è investito il Titolare oppure per perseguire un interesse legittimo del Titolare, gli Utenti hanno diritto ad opporsi al trattamento per motivi connessi alla loro situazione particolare.</p>
+            <p>Si fa presente agli Utenti che, ove i loro Dati fossero trattati con finalità di marketing diretto, possono opporsi al trattamento senza fornire alcuna motivazione. Per scoprire se il Titolare tratti dati con finalità di marketing diretto gli Utenti possono fare riferimento alle rispettive sezioni di questo documento.</p>
+            <h3>Come esercitare i diritti</h3>
+            <p>Per esercitare i diritti dell’Utente, gli Utenti possono indirizzare una richiesta agli estremi di contatto del Titolare indicati in questo documento. Le richieste sono depositate a titolo gratuito e evase dal Titolare nel più breve tempo possibile, in ogni caso entro un mese.</p>
+            <h2 id="cookie_policy">Cookie Policy</h2>
+            <p>Questo Sito Web fa utilizzo di Strumenti di Tracciamento. Per saperne di più, l’Utente può consultare la <a href="//www.iubenda.com/privacy-policy/gdpr/489188/cookie-policy" title="Cookie Policy" class="show_comp_link iframe-preserve an-preserve">Cookie Policy</a>.</p>
+            <h2 id="further_data_processing_info">Ulteriori informazioni sul trattamento</h2>
+            <h3>Difesa in giudizio</h3>
+            <p>I Dati Personali dell’Utente possono essere utilizzati da parte del Titolare in giudizio o nelle fasi preparatorie alla sua eventuale instaurazione per la difesa da abusi nell'utilizzo di questo Sito Web o dei Servizi connessi da parte dell’Utente.<br/> L’Utente dichiara di essere consapevole che il Titolare potrebbe essere obbligato a rivelare i Dati per ordine delle autorità pubbliche.</p>
+            <h3>Informative specifiche</h3>
+            <p>Su richiesta dell’Utente, in aggiunta alle informazioni contenute in questa privacy policy, questo Sito Web potrebbe fornire all'Utente delle informative aggiuntive e contestuali riguardanti Servizi specifici, o la raccolta ed il trattamento di Dati Personali.</p>
+            <h3>Log di sistema e manutenzione</h3>
+            <p>Per necessità legate al funzionamento ed alla manutenzione, questo Sito Web e gli eventuali servizi terzi da essa utilizzati potrebbero raccogliere log di sistema, ossia file che registrano le interazioni e che possono contenere anche Dati Personali, quali l’indirizzo IP Utente.</p>
+            <h3>Informazioni non contenute in questa policy</h3>
+            <p>Ulteriori informazioni in relazione al trattamento dei Dati Personali potranno essere richieste in qualsiasi momento al Titolare del Trattamento utilizzando gli estremi di contatto.</p>
+            <h3>Risposta alle richieste “Do Not Track”</h3>
+            <p>Questo Sito Web non supporta le richieste “Do Not Track”.<br/> Per scoprire se gli eventuali servizi di terze parti utilizzati le supportino, l'Utente è invitato a consultare le rispettive privacy policy.</p>
+            <h3>Modifiche a questa privacy policy</h3>
+            <p>Il Titolare del Trattamento si riserva il diritto di apportare modifiche alla presente privacy policy in qualunque momento notificandolo agli Utenti su questa pagina e, se possibile, su questo Sito Web nonché, qualora tecnicamente e legalmente fattibile, inviando una notifica agli Utenti attraverso uno degli estremi di contatto di cui è in possesso. Si prega dunque di consultare con frequenza questa pagina, facendo riferimento alla data di ultima modifica indicata in fondo.<br/><br/>Qualora le modifiche interessino trattamenti la cui base giuridica è il consenso, il Titolare provvederà a raccogliere nuovamente il consenso dell’Utente, se necessario. </p>
+            <h3 id="definitions_and_legal_references"> Definizioni e riferimenti legali </h3>
+            <h4>Dati Personali (o Dati)</h4>
+            <p>Costituisce dato personale qualunque informazione che, direttamente o indirettamente, anche in collegamento con qualsiasi altra informazione, ivi compreso un numero di identificazione personale, renda identificata o identificabile una persona fisica.</p>
+            <h4>Dati di Utilizzo</h4>
+            <p>Sono le informazioni raccolte automaticamente attraverso questo Sito Web (anche da applicazioni di parti terze integrate in questo Sito Web), tra cui: gli indirizzi IP o i nomi a dominio dei computer utilizzati dall’Utente che si connette con questo Sito Web, gli indirizzi in notazione URI (Uniform Resource Identifier), l’orario della richiesta, il metodo utilizzato nell’inoltrare la richiesta al server, la dimensione del file ottenuto in risposta, il codice numerico indicante lo stato della risposta dal server (buon fine, errore, ecc.) il paese di provenienza, le caratteristiche del browser e del sistema operativo utilizzati dal visitatore, le varie connotazioni temporali della visita (ad esempio il tempo di permanenza su ciascuna pagina) e i dettagli relativi all’itinerario seguito all’interno dell’Applicazione, con particolare riferimento alla sequenza delle pagine consultate, ai parametri relativi al sistema operativo e all’ambiente informatico dell’Utente.</p>
+            <h4>Utente</h4>
+            <p>L'individuo che utilizza questo Sito Web che, salvo ove diversamente specificato, coincide con l'Interessato.</p>
+            <h4>Interessato</h4>
+            <p>La persona fisica cui si riferiscono i Dati Personali.</p>
+            <h4>Responsabile del Trattamento (o Responsabile)</h4>
+            <p>La persona fisica, giuridica, la pubblica amministrazione e qualsiasi altro ente che tratta dati personali per conto del Titolare, secondo quanto esposto nella presente privacy policy.</p>
+            <h4>Titolare del Trattamento (o Titolare)</h4>
+            <p>La persona fisica o giuridica, l'autorità pubblica, il servizio o altro organismo che, singolarmente o insieme ad altri, determina le finalità e i mezzi del trattamento di dati personali e gli strumenti adottati, ivi comprese le misure di sicurezza relative al funzionamento ed alla fruizione di questo Sito Web. Il Titolare del Trattamento, salvo quanto diversamente specificato, è il titolare di questo Sito Web.</p>
+            <h4>Questo Sito Web (o questa Applicazione)</h4>
+            <p>Lo strumento hardware o software mediante il quale sono raccolti e trattati i Dati Personali degli Utenti.</p>
+            <h4>Servizio</h4>
+            <p>Il Servizio fornito da questo Sito Web così come definito nei relativi termini (se presenti) su questo sito/applicazione.</p>
+            <h4>Unione Europea (o UE)</h4>
+            <p>Salvo ove diversamente specificato, ogni riferimento all’Unione Europea contenuto in questo documento si intende esteso a tutti gli attuali stati membri dell’Unione Europea e dello Spazio Economico Europeo.</p>
+            <h4>Cookie</h4>
+            <p>I Cookie sono Strumenti di Tracciamento che consistono in piccole porzioni di dati conservate all'interno del browser dell'Utente.</p>
+            <h4>Strumento di Tracciamento</h4>
+            <p>Per Strumento di Tracciamento s’intende qualsiasi tecnologia - es. Cookie, identificativi univoci, web beacons, script integrati, e-tag e fingerprinting - che consenta di tracciare gli Utenti, per esempio raccogliendo o salvando informazioni sul dispositivo dell’Utente.</p>
+            <h4>Su di me</h4>
+            <p>Fornisce accesso alla sezione 'Su di me' del profilo.</p>
+            <h4>Riferimenti legali</h4>
+            <p>La presente informativa privacy è redatta sulla base di molteplici ordinamenti legislativi, inclusi gli artt. 13 e 14 del Regolamento (UE) 2016/679.</p>
+            <p>Ove non diversamente specificato, questa informativa privacy riguarda esclusivamente questo Sito Web.</p>
+            <p> Ultima modifica: 22 ottobre 2019 </p>
+            <p> <a target="_top" href="//www.iubenda.com" title="iubenda - generatore di Privacy Policy">iubenda</a> ospita questo contenuto e raccoglie solo <a target="_top" href="//www.iubenda.com/privacy-policy/19418041">i Dati Personali strettamente necessari</a> alla sua fornitura. </p>
+        </div>
+    </t>
+</template>
+</odoo>

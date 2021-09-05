@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    
+    <template id="portal_my_home_wallet_transaction" name="Portal My Home : Wallet Transactions" inherit_id="portal.portal_my_home" priority="40" customize_show="True">
+        <xpath expr="//div[hasclass('o_portal_docs')]" position="inside">
+            <t t-if="wallet_count">
+                <t t-call="portal.portal_docs_entry">
+                    <t t-set="title">Wallet Transactions</t>
+                    <t t-set="url" t-value="'/my/wallet-transactions'"/>
+                    <t t-set="count" t-value="wallet_count"/>
+                </t>
+            </t>
+        </xpath>
+    </template>
+    
+    <template id="portal_my_wallet_transactions" name="My Wallet Transactions">
+      <t t-call="portal.portal_layout">
+        <br/>
+        <h3 class="text-center">Wallet Transactions
+        </h3>
+        <br/>
+        <t t-if="not wallets">
+            <p>There are currently no Wallet Transaction for your account.</p>
+        </t>
+        <div t-if="wallets" class="panel panel-default">
+            <div class="table-responsive"><table class="table table-hover o_portal_my_doc_table">
+                <thead>
+                  <tr class="active">
+                      <th>Transaction Type</th>
+                      <th>Customer</th>
+                      <th>Sale Order</th>
+                      <th>Amount</th>
+                      <th>Currency</th>
+                    </tr>
+                </thead>
+                <t t-foreach="wallets" t-as="wallet">
+                    <t t-if='wallet.wallet_type == "debit"'>
+                        <tr style='background-color:rgba(255, 0, 24, 0.37);'>
+                            <td> <span t-field="wallet.wallet_type"/>
+                            </td>
+                            <td><span t-field="wallet.partner_id.name"/></td>
+                            <td><span t-field="wallet.sale_order_id.name"/></td>
+                            <td>
+                                <span t-field="wallet.amount"/>
+                            </td>
+                            <td><span t-field="wallet.currency_id.name"/>
+                            </td>
+                        </tr>
+                    </t>
+                    
+                    <t t-if='wallet.wallet_type == "credit"'>
+                        <tr style='background-color:rgba(0, 128, 0, 0.34);'>
+                            <td> <span t-field="wallet.wallet_type"/>
+                            </td>
+                            <td><span t-field="wallet.partner_id.name"/></td>
+                            <td><span t-field="wallet.sale_order_id.name"/></td>
+                            <td>
+                                <span t-field="wallet.amount"/>
+                            </td>
+                            <td><span t-field="wallet.currency_id.name"/>
+                            </td>
+                        </tr>
+                    </t>
+                </t>
+            </table></div>
+            <div t-if="pager" class="o_portal_pager text-center">
+              <t t-call="portal.pager"/>
+            </div>
+        </div>
+      </t>
+    </template>
+    
+    
+    
+</odoo>

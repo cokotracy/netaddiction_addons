@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+	<data>
+
+		<record id="coupon_product_form_view1" model="ir.ui.view">
+			<field name="name">product.template.coupon</field>
+			<field name="model">product.template</field>
+			<field name="inherit_id" ref="product.product_template_form_view" />
+			<field name="arch" type="xml">
+				<xpath expr="//div[hasclass('oe_title')]/div[@name='options']" position="inside">
+					<div attrs="{'invisible':[('type', '!=', 'service')]}">
+						<field name="is_coupon_product"/>  
+						<label for="is_coupon_product"/> 
+					</div>
+				</xpath>
+			</field>
+		</record>
+
+
+		<record id="view_web_gift_coupan_tree_view" model="ir.ui.view">
+			<field name="name">web.gift.coupon.tree.view</field>
+			<field name="model">web.gift.coupon</field>
+			<field name="arch" type="xml">
+			   <tree string="POS Gift Coupons">
+					<field name="name"/>
+					<field name="user_id"/> 
+					<field name="create_date"/> 
+					<field name="issue_date"/>  
+					<field name="expiry_date"/>
+					<field name="amount"/>
+				</tree>
+			</field>
+		</record>
+
+		<record id="view_web_gift_coupan_form_view" model="ir.ui.view">
+			<field name="name">web.gift.coupon.form.view</field>
+			<field name="model">web.gift.coupon</field>
+			<field name="arch" type="xml">
+				<form string="New Gift Coupon" version="7.0">
+					<header>
+						<button class="oe_highlight" icon="fa-print" name="print_report_coupons" string="Print" type="object"/>
+					</header>
+					<sheet>
+						
+						<group>
+							<group>
+								<field name="name" required="1" placeholder="This will be displayed in the order summary, as well as on the invoice."/>
+								<field name="product_id" required='1' context="{'default_is_coupon_product': True, 'default_type' : 'service', 'default_sale_ok' : False}"/>
+							</group>
+
+							<group>
+								<field name="c_barcode" readonly="1" />
+							</group>
+						</group>
+
+						<group name="newcoupon">    
+							<group>
+								<field name="used" invisible='1'/>
+								<field name="coupon_apply_times"/>
+								<field name="coupon_count" invisible='1'/>
+							</group>
+							<group>
+								<field name="issue_date" required="1" widget="date"/>   
+							</group>
+							<group>
+								<label for="expiry_date" string="Expiry Date"/>
+								<div class="col-xs-12 o_setting_box">
+									<div class="o_setting_left_pane">
+									</div>
+									<div class="o_setting_right_pane" >
+										<div class="mt8">
+											<field name="exp_dat_show"/>
+											<field name="expiry_date"  attrs="{'required':[('exp_dat_show','=', True)],'invisible': [('exp_dat_show', '!=', True)]}" nolabel="1" widget="date"/>
+										</div>
+									</div>
+								</div>
+							</group>
+						</group>
+						<group>
+							<group>
+								<label for="amount" string="Coupon Amount"/>
+								<div class="col-xs-12 col-md-6 ">
+									<div class="o_setting_right_pane">
+										<div class="mt4">
+											<field name="amount" nolabel="1" required="1"/>
+											<field name="amount_type" widget="radio"/>
+										</div>
+									</div>
+								</div>
+							</group>
+							<group>
+								<field name="max_amount"/>
+							</group>
+							<group>
+								<field name="partner_true"/>
+								<field name="partner_id" options="{'no_create': True}" attrs="{'required':[('partner_true','=', True)], 'invisible':[('partner_true', '=', False)]}"/>
+							</group>
+							<group>
+								<field name="active"/>
+							</group>
+						</group>
+
+						<notebook>
+	                        <page string="Products Category">  
+	                        <separator string="Available Products for Gift Coupon"/> 
+	                            <field name="product_categ_ids"/>
+	                        </page>
+	                        <page string="Products">   
+	                        <separator string="Unvailable Products for Gift Coupon"/> 
+	                            <field name="product_ids" domain="[('categ_id','in',product_categ_ids)]"/>
+	                        </page>
+                    	</notebook>
+						<separator string="Description"/>
+						<field name="coupon_desc" placeholder="Coupon Description..."/>
+						<separator string="Extra Information"/>
+						<field name="description" placeholder="For your eyes only. This will never be displayed to the customer."/>
+						<separator string="Sale Order Coupon History"/>
+						<field name="sale_order_ids" readonly="1">
+							<tree>
+								<field name="name"/>
+								<field name="date_order"/>
+								<field name="partner_id"/>
+								<field name="user_id"/>
+								<field name="amount_total"/>
+								<field name="state"/>
+							</tree>
+						</field>
+						
+					</sheet>
+				</form>
+			</field>
+		</record>
+
+		<record model="ir.actions.act_window" id="action_web_coupan">
+			<field name="name">All Gift Coupons</field>
+			<field name="type">ir.actions.act_window</field>
+			<field name="res_model">web.gift.coupon</field>
+			<field name="binding_view_types">form</field>
+			<field name="view_mode">tree,form</field>
+		</record>
+
+		<menuitem name="Gift Coupons &amp; Vouchers" id="menu_gift_coupon" parent="website.menu_website_configuration" sequence="6"/>
+
+		<menuitem parent="menu_gift_coupon" name="All Gift Coupons" action="action_web_coupan" id="menu_pos_gift_act" sequence="1"/>
+
+	</data>
+</odoo>

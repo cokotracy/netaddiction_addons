@@ -1,0 +1,54 @@
+
+/* Custom CSS for Odoo Website Product Label */
+
+ .center {
+	 text-align: center;
+	 left: 40%;
+	 position: absolute;
+	 z-index: 10;
+	 top: 50%;
+ } 
+ .topcenter,.topleft,.topright{
+ 	position: absolute;
+ 	z-index: 10;
+ 	top:0%;
+ } 
+ .topcenter {
+	 text-align: center;
+	 left: 40%;
+ } 
+  .topright {
+	 text-align: right;
+	 right: 0%;
+ } 
+ .bottomcenter,.bottomleft,.bottomright {
+	 position: absolute;
+	 z-index: 10;
+	 bottom:0%;
+ } 
+ .bottomcenter {
+	 text-align: center;
+	 left: 40%
+ } 
+ .bottomright {
+	 text-align: right;
+	 right: 0%;
+ } 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

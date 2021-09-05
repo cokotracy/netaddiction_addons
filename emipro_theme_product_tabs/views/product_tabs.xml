@@ -22,8 +22,7 @@
                                 <group>
                                     <field name="tab_name"/>
                                     <field name="tab_content"/>
-                                    <field name="website_ids" options="{'no_create': True}" widget="many2many_tags"
-                                           groups="website.group_multi_website" domain="[('theme_id.author','like','Emipro Technologies Pvt. Ltd.')]"/>
+                                    <field name="website_ids" options="{'no_create': True}" widget="many2many_tags" domain="[('theme_id.author','like','Emipro Technologies Pvt. Ltd.')]" groups="website.group_multi_website"/>
                                     <field name="sequence"/>
                                 </group>
                             </sheet>

@@ -1,0 +1,273 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+       
+        <record id="inherit_view_product_rating_review" model="ir.ui.view">
+			<field name="name">inherit.view.product.rating.review</field>
+			<field name="model">product.template</field>
+			<field name="inherit_id" ref="product.product_template_form_view"/>
+			<field name="arch" type="xml">
+				<xpath expr="//page[@name='sales']" position="after">
+					<page string="Reviews &amp; Ratings">
+						<field name='reviews_ids'>
+						<tree>
+						<field name='customer_id'/>
+						<field name='short_desc'/>
+						<field name='message_rate'/>
+						<field name='website_message'/>
+						<field name='review'/>	
+						<field name='rating_product_id' invisible="1"/>
+						</tree>
+						</field>
+					</page>
+				</xpath>
+			</field>
+	</record>
+
+	<record id="inherit_product_public_category_form_view" model="ir.ui.view">
+		<field name="name">product.public.category.form</field>
+		<field name="model">product.public.category</field>
+		<field name="inherit_id" ref="website_sale.product_public_category_form_view"/>
+		<field name="arch" type="xml">
+			<xpath expr="//field[@name='sequence']" position="after">
+				<separator/>
+					<field name='loyal_for_review'/>
+			</xpath>
+		</field>
+	</record>
+
+	<record id="inherit_user_form_view" model="ir.ui.view">
+        <field name="name">res.users.form</field>
+        <field name="model">res.users</field>
+        <field name="inherit_id" ref="base.view_users_form"/>
+        <field name="arch" type="xml">
+        	<xpath expr="//page[@name='access_rights']" position="inside">
+        		<group >
+        			<group>
+                    	<field name="review_and_assign_loyalty_points"/>
+        			</group>
+        		</group>
+        	</xpath>
+        </field>
+    </record>
+
+	 <record id="reviewes_and_ratings_tree_view" model="ir.ui.view">
+		<field name="name">reviews.ratings.tree.view</field>
+		<field name="model">reviews.ratings</field>
+		<field name="arch" type="xml">
+		   <tree string="Reviews and Ratings" create="false">
+		 		<field name="rating_product_id"/>	
+				<field name="customer_id"/>			
+				<field name='short_desc'/>
+				<field name='message_rate'/>
+				<field name='website_message'/>
+				<field name='review'/>
+			</tree>
+		</field>
+	</record>
+
+	<record id="reviewes_and_ratings_form_view" model="ir.ui.view">
+		<field name="name">reviews.ratings.form.view</field>
+		<field name="model">reviews.ratings</field>
+		<field name="arch" type="xml">
+			<form string="Reviews and Ratings" create="false">
+				<sheet>
+					<group>
+						<group>
+							<field name="rating_product_id"/>	
+							<field name='short_desc'/>
+							<field name='website_message'/>
+						</group>
+						<group>
+							<field name="customer_id"/>
+							<field name='message_rate'/>
+							<field name='review'/>
+						</group>
+					</group>
+				</sheet>
+			</form>
+		</field>
+	</record>
+		
+	<record model="ir.actions.act_window" id="action_reviewes_and_ratings_view">
+		<field name="name">Reviews and Ratings</field>
+		<field name="type">ir.actions.act_window</field>
+		<field name="res_model">reviews.ratings</field>
+		<field name="view_mode">tree,form</field>
+	</record>
+
+	<menuitem 
+			id="reviewes_and_ratings_view_menu" 
+			parent="website.menu_website_configuration" 
+			name="Reviews and Ratings" 
+			action="action_reviewes_and_ratings_view" 
+			sequence="25"
+			groups="website_all_in_one.group_admin_reviewer"/>
+
+	<act_window id="action_assign_credit_points"
+        name="Assign Credit Points"
+        binding_model="reviews.ratings"
+        res_model="assign.credit.points"
+        view_mode="form"
+        target="new" 
+        binding_views="form"/>
+
+        <act_window id="action_assign_credit_points_multi"
+        name="Assign Credit Points"
+        binding_model="reviews.ratings"
+        res_model="assign.credit.points"
+        view_mode="form"
+        target="new" 
+        binding_views="list"/>
+
+    <template id="assets_frontend_reviews" inherit_id="website.assets_frontend" name="Custom CSS-JS">
+			<xpath expr="." position="inside">
+				<script src="/website_all_in_one/static/src/js/submit_review.js" type="text/javascript"></script>
+			</xpath>
+	</template>
+
+	<template id="portal_reviewes_and_ratings" name="Portal My Home : Reviews and Ratings"  customize_show="True" inherit_id="portal.portal_my_home" priority="40">
+        <xpath expr="//div[hasclass('o_portal_docs')]" position="inside">
+            <t t-if="reviewes_count">
+            	<t t-call="portal.portal_docs_entry">
+                    <t t-set="title">Reviews and Ratings</t>
+                    <t t-set="url" t-value="'/reviewes'"/>
+                    <t t-set="count" t-value="reviewes_count"/>
+                </t>
+            </t>
+        </xpath>
+    </template>
+
+    <template id="portal_reviewes_view" name="My reviewes">
+        <t t-call="portal.portal_layout">
+            <t t-set="breadcrumbs_searchbar" t-value="True"/>
+            <t t-call="portal.portal_searchbar">
+                <t t-set="title">Reviews</t>
+            </t>
+            
+            
+            <t t-if="all_reviews">
+                <t t-call="portal.portal_table">
+                	<br/>
+                    <t t-foreach="all_reviews" t-as="reviews">
+                        <thead>
+                            <tr t-attf-class="{{'thead-light' if not groupby == 'none' else ''}}">
+                                <th class="text-left">Review</th>
+                                <th class="text-center">Product</th>
+                                <th class="text-center">Customer</th>
+                                <th class="text-center">Short Description</th>
+                                <th class="text-center">Message Rating</th>
+                                <th class="text-center">Is Website Message</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <t t-foreach="reviews" t-as="review">
+                                <tr>
+                                    <td class="text-left">
+                                        <span t-esc="review.review"/>
+                                    </td>
+                                    <td class="text-center">
+                                        <span t-field="review.rating_product_id.name"/>
+                                    </td>
+                                    <td class="text-center">
+                                        <span t-field="review.customer_id.name"/>
+                                    </td>
+                                    <td class="text-center">
+                                        <span t-field="review.short_desc"/>
+                                    </td>
+                                    <td class="text-center">
+                                        <span t-field="review.message_rate"/>
+                                    </td>
+                                    <td class="text-center">
+                                        <span t-field="review.website_published"/>
+                                    </td>
+                                    
+                                </tr>
+                            </t>
+                        </tbody>
+                    </t>
+                </t>
+            </t>
+        </t>
+    </template>
+
+
+<template id="assets_product_rating_review" inherit_id="website.assets_frontend" name="website_product_rating_review">
+	<xpath expr="." position="inside">
+		
+		<link rel='stylesheet'
+			href='/website_all_in_one/static/src/css/product_review.css'/>
+		<style>
+			h1
+			{
+			width:100%;
+			display:inline-block;
+			}
+		</style>
+		<script>
+			$.fn.stars4= function() {
+				return $(this).each(
+					function() {
+					$(this).html($('<span />').width(Math.max(0, (Math.min(5, blog_rate_value1))) * 17));
+					}
+				);
+			}
+		</script>
+		<script type="text/javascript" src="/website_all_in_one/static/src/js/website_product_review.js"></script>
+		
+	</xpath>
+</template>
+
+
+		
+<!--<template id="product_review_on_single_product_page" inherit_id='website_sale.product'>-->
+<template id="website_sale_product_comment" inherit_id="website_sale.product" active="True" customize_show="True" name="Reviews and Ratings" priority="15">
+	<xpath expr="//div[@id='product_details']//h1" position="after">
+	<div class="average_rating_view">
+	<input id="total_product_review" t-att-value="len(product.reviews_ids)" name="total_product_review" type="hidden" />
+			<!-- <a href="#nav_tabs_content_ratings_reviews">
+			 -->	<div>
+					<div class="average_product_class" id="rate_tooltip">
+						<div style="float:left;margin-bottom: -40px;" id="shop_rate_star">
+
+							<p class="rate_average_shop">
+								<span class="stars3">
+									<span style="width: 50.25px;"></span>
+								</span>
+							</p>
+
+						</div>
+
+						<div class="review_font">
+							<span id="product_average" style="margin-left:100px;font-weight:bold;color:black"
+								t-field="product.avg_product_rating" />
+
+							<input id="total_product_review" t-att-value="len(product.reviews_ids)"
+								name="total_product_review" type="hidden"></input>
+							<t t-if="product.avg_product_rating &lt;=0">
+								<span style="font-size:10px;color:black;">
+									(Be the first one to rate)
+								</span>
+							</t>
+							<span>(</span>
+							<span id="total_product_review_span" name="total_product_review_span">
+								<t t-esc="len(product.reviews_ids)"></t>
+							</span>
+							<t t-if="len(product.reviews_ids) &lt;= 1">Review
+							</t>
+							<t t-if="len(product.reviews_ids) > 1">Reviews</t>
+							<span>)</span>
+						</div>
+
+					</div>
+				</div>
+			<!-- </a> -->
+		</div>
+
+		</xpath>
+		
+</template>
+	
+    </data>
+</odoo>
+            

@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="theme_assets_frontend_custom" inherit_id="website.assets_frontend">
+        <xpath expr="." position="inside">
+            <!-- AGGIUNGE IN HEAD IN TUTTO IL SITO --> 
+            <link href="/netaddiction_theme_rewrite/static/src/css/global.css" rel="stylesheet"/>
+        </xpath>
+    </template>
+    <template id="netaddiction_theme_rewrite_canonical" inherit_id="portal.frontend_layout">
+        <xpath expr="//meta[last()]" position="after">
+            <t t-set="current_url" t-value="website._get_canonical_url(canonical_params=canonical_params).replace('/it_IT/', '/')"/>
+            <!-- AGGIUNGE IN HEAD PER LA HOME --> 
+            <t t-if="(request.env['ir.config_parameter'].sudo().get_param('web.base.url') + '/') == current_url">
+                <link href="/netaddiction_theme_rewrite/static/src/css/home.css" rel="stylesheet"/>
+            </t>
+            
+            <!-- AGGIUNGE IN HEAD PER LE CATEGORIE -->
+            <t t-if="'/shop/category/' in current_url">
+                <link href="/netaddiction_theme_rewrite/static/src/css/category.css" rel="stylesheet"/>
+            </t>
+
+            <!-- AGGIUNGE IN HEAD PER I TAG --> 
+            <t t-if="'/tag/' in current_url">
+                <link href="/netaddiction_theme_rewrite/static/src/css/tag.css" rel="stylesheet"/>
+            </t>
+
+            <!-- AGGIUNGE IN HEAD PER I TERMINI DI SPEDIZIONE -->
+            <t t-if="'/costi-metodi-spedizione/' in current_url">
+                <link href="/netaddiction_theme_rewrite/static/src/css/shipping.css" rel="stylesheet"/>
+            </t>
+
+            <!-- AGGIUNGE IN HEAD PER LE RICERCHE -->
+            <t t-if="'/shop?search=' in current_url">
+                <meta name="robots" content="noindex, nofollow" />
+                <link href="/netaddiction_theme_rewrite/static/src/css/search.css" rel="stylesheet"/>
+            </t>
+
+            <!-- AGGIUNGE IN HEAD PER I PRODOTTI --> 
+            <t t-if="'/shop' in current_url">
+                <link href="/netaddiction_theme_rewrite/static/src/css/category.css" rel="stylesheet"/>
+            </t>
+
+            <!-- AGGIUNGE IN HEAD PER IL WALLET --> 
+            <t t-if="'/wallet' in current_url">
+                <link href="/netaddiction_theme_rewrite/static/src/css/wallet.css" rel="stylesheet"/>
+            </t>
+
+            <!-- AGGIUNGE IN HEAD PER I PRODOTTI --> 
+            <t t-if="'/shop/' in current_url">
+                <link href="/netaddiction_theme_rewrite/static/src/css/product.css" rel="stylesheet"/>
+                    <!-- AGGIUNGE LO SNIPPET PER PRODOTTI -->
+                <t t-call="netaddiction_theme_rewrite.product_snippet"/>
+
+                <t t-if="product_variant">
+                    <t t-set="product_images" t-value="product_variant._get_images() if product_variant else product._get_images()"/>
+                    <t t-set="img_index" t-value="0"/>
+                    <t t-foreach="product_images" t-as="img" >
+                        <t t-set="img_index" t-value="img_index + 1" />
+                        <t t-if="img._name == 'product.image'">
+                            <link rel="preload" href="base_url + '/web/image/product.image/' + str(img.id) + '/image_1024/' + str(img.name.replace(' ','%20'))" />
+                        </t>
+                        <t t-else="">
+                            <link rel="preload" href="base_url + '/web/image/product.product/' + str(img.id) + '/image_1024/' + str(img.name.replace(' ','%20'))" />
+                        </t>
+                    </t>
+                </t>
+            </t>
+        </xpath>
+        <xpath expr="//link[@rel='canonical']" position="replace">
+            <t t-set="canonical_find" t-value="false"/>
+            <t t-set="current_url" t-value="website._get_canonical_url(canonical_params=canonical_params).replace('/it_IT/', '/')"/>
+
+            <!--SOSTITUISCE IL CANONICAL-->
+            <t t-if="'/shop/category/' in current_url">
+                <!--CATEGORIE: RIMUOVE LA PAGINAZIONE-->
+                <link rel="canonical" t-att-href="website._get_canonical_url(canonical_params=canonical_params).split('/page/')[0]"/>
+                <t t-set="canonical_find" t-value="true"/>
+            </t>
+            <t t-if="'/shop/page/' in current_url">
+                <!--SHOP PAGE: RIMUOVE LA PAGINAZIONE-->
+                <link rel="canonical" t-att-href="website._get_canonical_url(canonical_params=canonical_params).split('/page/')[0]"/>
+                <t t-set="canonical_find" t-value="true"/>
+            </t>
+            <t t-if="'&amp;search=' in current_url">
+                <!--RICERCA: RIMUOVE LA PAGINAZIONE-->
+                <t t-if="'/page/' in current_url">
+                    <t t-set="split_url" t-value="website._get_canonical_url(canonical_params=canonical_params).replace('/it_IT/', '/').split('/page/')" />
+                    <t t-set="split_pagination" t-value="split_url[1].split('?')" />
+                    <link rel="canonical" t-attf-href="{{split_url[0]}}?{{split_pagination[1]}}" />
+                </t>
+                <t t-else="">
+                    <link rel="canonical" t-attf-href="{{current_url}}" />
+                </t>
+                <t t-set="canonical_find" t-value="true"/>
+            </t>
+            <t t-if="canonical_find == false">
+                <!--GLOBALE-->
+                <link rel="canonical" t-attf-href="{{current_url}}" />
+            </t>
+        </xpath>
+    </template>
+    
+</odoo>

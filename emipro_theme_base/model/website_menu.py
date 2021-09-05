@@ -16,8 +16,6 @@ class WebsiteMenu(models.Model):
                                     help="Menu Label text to display on the menu link", translate=True)
     menu_label_text_color = fields.Char(string="Menu Label Text Color")
 
-    def write(self,vals):
-        return super(WebsiteMenu, self).write(vals)
     # Overide get_tree method to add is_dynamic_menu field
     @api.model
     def get_tree(self, website_id, menu_id=None):
@@ -62,14 +60,14 @@ class WebsiteMenu(models.Model):
         """
 
         res = super(WebsiteMenu, self).save(website_id, data)
-        if self.env['website'].browse(website_id).theme_id.name == 'theme_clarico_vega':
-            for menu in data['data']:
-                if menu['menu_label_text'] == '':
-                    menu_id = self.browse(menu['id'])
-                    menu_id.write({'menu_label_text':menu['menu_label_text']})
-                    transaltion_records = self.env["ir.translation"].search([('name', '=', 'website.menu,menu_label_text'), ('res_id', '=', menu['id'])])
-                    for rec in transaltion_records:
-                        rec.unlink()
-                    self._cr.execute("update website_menu set menu_label_text=NULL where id=%s"%(menu_id.id))
+        # if self.env['website'].browse(website_id).theme_id.name == 'theme_clarico_vega':
+        for menu in data['data']:
+            if 'menu_label_text' in menu and menu['menu_label_text'] == '':
+                menu_id = self.browse(menu['id'])
+                menu_id.write({'menu_label_text':menu['menu_label_text']})
+                transaltion_records = self.env["ir.translation"].search([('name', '=', 'website.menu,menu_label_text'), ('res_id', '=', menu['id'])])
+                for rec in transaltion_records:
+                    rec.unlink()
+                self._cr.execute("update website_menu set menu_label_text=NULL where id=%s"%(menu_id.id))
 
-            return True
+        return True

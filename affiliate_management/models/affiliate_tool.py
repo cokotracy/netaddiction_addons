@@ -48,7 +48,7 @@ class AffiliateTool(models.TransientModel):
     aff_product_id = fields.Many2one('product.template', string='Product')
     aff_category_id = fields.Many2one('product.public.category',string='Category')
     link = fields.Char(string='Link',compute='_make_link')
-    user_id = fields.Many2one('res.users', string='current user', index=True, track_visibility='onchange', default=lambda self: self.env.user)
+    user_id = fields.Many2one('res.users', string='current user', index=True, tracking=1, default=lambda self: self.env.user)
 
     @api.model
     def create(self, vals):

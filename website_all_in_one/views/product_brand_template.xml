@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+	
+	<template id="website_product_brand" inherit_id='website_sale.product'>
+			<xpath expr="//div[@id='wrap']//section/div[2][@class='row']//div[@id='product_details']//h1" position="after">
+				<br/>
+				<span style="font-size: 20px;padding: 5px 19px;border-radius: 5px;" class="label btn-primary" t-esc="product.brand_id.name" />
+			
+			</xpath>
+	</template>
+	
+	<!-- <template id="product_labels" inherit_id="website_sale.products" active="True" customize_show="True" name="Show Product Brand Labels">
+		<xpath expr="//div[hasclass('products_pager')]" position="after">
+			<br/>
+			<div class='justify-content-center container-fluid' style='text-align: center; padding-bottom: 10px;'> 
+				<t t-set='prod_count' t-value='0'/>
+				<t t-foreach='products' t-as='pr'>
+					<t t-set="prod_count" t-value='prod_count+1'/>
+				</t>
+				<strong> Showing <t t-esc="prod_count"/> Products </strong><br/>
+				<form class="js_attributes" method="get" style="margin-left:100px;">
+					<input type="hidden" name="search" t-att-value="search" />
+					
+					<ul class="nav nav-pills mt16 mb32 col-md-8" style="margin:auto;">
+						<t t-foreach="brands" t-as="a">		                
+							<t t-att-class="'active' if a.id in brand_set else ''">
+								<div class="checkbox checkbox-info checkbox-circle checkbox-inline"  t-if="'hide' if a.id in brand_set else ''">
+									<input id="checkbox8" 
+											type="checkbox" 
+											name="brand" 
+											t-att-value="'%s' % (a.id)" 
+											t-att-checked="'checked' if a.id in brand_set else None" />
+									<label for="checkbox8">
+									   <span t-field="a.name" />
+									</label>
+								</div>
+							</t>
+						</t>
+					</ul>
+				
+				</form>
+			</div>
+		</xpath>
+	</template> -->
+
+	<template id="products_brands" inherit_id="website_sale.products" active="False" customize_show="True" name="Product Brands">
+		<xpath expr="//div[@id='products_grid_before']" position="before">
+        	<t t-set="enable_left_column" t-value="True"/>
+    	</xpath>
+		<xpath expr="//div[@id='products_grid_before']" position="inside">
+			<button type="button" class="btn btn-link d-lg-none"
+                data-target="#wsale_products_brand_collapse" data-toggle="collapse">
+                Show options
+            </button>
+			<div class="collapse d-lg-block" id="wsale_products_brand_collapse">
+				<form class="js_attributes mb-2" method="get">
+					<input type="hidden" name="search" t-att-value="search" />
+					<div>
+						<strong>Brands</strong>
+					</div>					
+					<ul class="nav nav-pills flex-column">    
+						<t t-foreach="brands" t-as="a">
+							<t t-if="a.product_ids">
+								<li class="nav-item" >
+									<label style="margin: 0 20px;"  t-attf-class="nav-link#{' active' if a.id in brand_set else ''}">
+										<input type="checkbox" 
+												name="brand" 
+												t-att-value="'%s' % (a.id)" 
+												t-att-checked="'checked' if a.id in brand_set else None"  /> 
+												
+										<span style="font-weight: normal" t-field="a.name" />
+									</label>
+								</li>
+							</t>	
+						</t>
+					</ul>
+				</form>
+		</div>			
+		</xpath>
+	</template>
+	
+	<template id="brand_item" name="Shop By Brand Item">
+		   <t t-call="website.layout">
+			  <t t-set="additional_title">Brand Items</t>
+			  <div id="wrap" class="js_sale">
+				<div class="oe_structure"/>
+				<div class="container oe_website_sale">
+					  <div class="products_pager">
+						<div class="row" style="width: 100%;">
+						
+						</div>
+					  </div>
+				
+				  <div class='row' style="margin-top:10px;">
+					<div class="hidden" id="products_grid_before"></div>
+					<div class="col-md-12" id="products_grid">
+					
+					
+								<t t-foreach="brands" t-as="product">
+								  <div class="col-md-3" style="border: 1px solid rgba(100, 100, 100, 0.2);padding: 0 15px 10px 32px;">
+
+									  <div class="oe_product_cart">
+										 <div class="oe_product_image">
+											  <a itemprop="url" t-attf-href="/shop/product/#{slug(product)}">
+												  <span itemprop="image" t-field="product.image" t-options="{'widget': 'image', 'resize': None if product_image_big else '300x300', 'zoom': 'image'}" t-att-alt="product.name"/>
+											  </a>
+							
+										  </div>
+										  
+										  <section>
+											  <h5><strong><a t-attf-href="/shop/product/#{slug(product)}" itemprop="name" t-field="product.name"/></strong></h5>
+											  
+										  </section>
+										
+									  </div>
+
+								  </div>
+							  </t>
+							  <div t-if="not product" class="oe-height-2"/>
+					  <t t-if="not brands">
+						<div class="text-center text-muted">
+						  <h3 class="css_editable_display">No Brands defined.</h3>
+						  <t groups="base.group_website_publisher">
+							<p groups="base.group_sale_manager">Use the <i>'Content'</i> top menu to create a new brand.</p>
+						  </t>
+						</div>
+					  </t>
+					</div>
+				  </div>
+				</div>
+				<div class="oe_structure mb32"/>
+			  </div>
+		  </t>
+										  
+		</template>
+	
+</odoo>

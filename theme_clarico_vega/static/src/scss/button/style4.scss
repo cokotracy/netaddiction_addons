@@ -11,7 +11,7 @@
     background-size: 300% auto;
 	@include transition(all,0.4s,null);
 	@include position(relative);
-	@include border-radius(25px);
+	border-width: 0;
 	
 	&.btn-secondary, &.btn-link
     {
@@ -19,6 +19,7 @@
 		background-image: linear-gradient(to right, theme-color("secondary") 0%, theme-color("secondary") 33.3333%, #303030 66.666667%, #303030 100%);
 		background-image: -webkit-linear-gradient(to right, theme-color("secondary") 0%, theme-color("secondary") 33.3333%, #303030 66.666667%, #303030 100%);
 		background-image: -ms-linear-gradient(to right, theme-color("secondary") 0%, theme-color("secondary") 33.3333%, #303030 66.666667%, #303030 100%);
+		color: nth($f_color,5) !important;
     }
     &.btn-danger
     {

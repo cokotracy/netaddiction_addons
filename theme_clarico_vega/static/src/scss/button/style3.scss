@@ -4,10 +4,10 @@
 	overflow: hidden;
 	@include position(relative,null,null,null,null);
 	z-index: 1;
-	@include border(null,19,solid)
+	@include border(0px,19,solid)
 	@include transition(all,0.4s,null)
 	box-sizing: border-box;
-    box-shadow: 0 15px 40px -10px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 3px 25px -10px rgba(0, 0, 0, 0.3);
     background: unset;
     color: nth($f_color,19);
     @include position(relative);
