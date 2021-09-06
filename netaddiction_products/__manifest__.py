@@ -18,6 +18,7 @@
     ],
     'data': [
         'views/product_views.xml',
+        'views/coupon_views.xml',
         'wizard/massive_product_price_change.xml',
         'data/template_email.xml',
         'security/ir.model.access.csv',
