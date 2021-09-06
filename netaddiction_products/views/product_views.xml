@@ -94,6 +94,20 @@
                     </group>
                 </page>
             </xpath>
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <button
+                    name="show_coupon_programs"
+                    help="Active Promo"
+                    class="oe_stat_button"
+                    icon="fa-list"
+                    type="object">
+                    <field
+                        string="Active Promo"
+                        name="product_coupon_programs_count"
+                        widget="statinfo"
+                    />
+                </button>
+            </xpath>
         </field>
     </record>
 

@@ -13,6 +13,8 @@
         'purchase',
         'website_sale',
         'product_variant_sale_price',
+        'coupon',
+        'sale_coupon',
     ],
     'data': [
         'views/product_views.xml',
