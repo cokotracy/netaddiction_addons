@@ -16,7 +16,7 @@ import ssl
 ssl._create_default_https_context = ssl._create_unverified_context
 
 URL14 = 'http://localhost:8069'
-DB14 = 'migrazione_netaddiction'
+DB14 = 'netaddiction'
 LOGIN14 = 'ecommerce-servizio@netaddiction.it'
 PASSWORD14 = '2VBrhX^49Qh!'
 
