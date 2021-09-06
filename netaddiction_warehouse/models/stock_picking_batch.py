@@ -261,4 +261,23 @@ class StockPickingBatch(models.Model):
             draft_batchs.action_confirm()
             self.refresh()
         #  Simulate Validate on confirmed batchs
-        self.action_done()
+        # Validate return two different response:
+        #
+        # ** 1 **
+        #   If we transfer all the products, the result will be True.
+        #   In this case we need only to call `action_done`
+        #   and return the result.
+        #
+        # ** 2 **
+        #   If we transfer a partial quantity of products, the result will be
+        #   an action to show (in the interface) a wizard.
+        #   In this case we need to simulate user is confirming this wizard.
+        res = self.action_done()
+        if res is True:
+            return res
+        else:
+            res_model = res.get('res_model', '')
+            res_context = res.get('context', {})
+            wizard = self.env[res_model].with_context(res_context).create({})
+            wizard.process()
+        return res
