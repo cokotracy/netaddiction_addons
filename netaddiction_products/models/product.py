@@ -231,6 +231,10 @@ class ProductProduct(models.Model):
         string='Immagini'
     )
 
+    product_coupon_programs_count = fields.Integer(
+        compute='_compute_product_coupon_programs_count',
+    )
+
     @api.model_create_multi
     def create(self, vals_list):
         res = super().create(vals_list)
@@ -501,6 +505,29 @@ class ProductProduct(models.Model):
             if products_per_supplier:
                 res = res + products_per_supplier.name_get()
         return res
+
+    def _compute_product_coupon_programs_count(self):
+        program_model = self.env['coupon.program']
+        result = program_model._get_program_from_products(self)
+        for product in self:
+            product.product_coupon_programs_count = len(
+                result.get(product, []))
+
+    def show_coupon_programs(self):
+        self.ensure_one()
+        program_model = self.env['coupon.program']
+        product = self
+        result = program_model._get_program_from_products(product)
+        programs = result.get(product, program_model)
+        # Show all the programs in a tree
+        action = self.env.ref('coupon.coupon_program_action_coupon_program')\
+            .sudo().read()[0]
+        action.update({
+            'domain': [('id', 'in', programs.ids)],
+            'context': {},
+            'res_ids': programs.ids,
+            })
+        return action
 
 
 class SupplierInfo(models.Model):
