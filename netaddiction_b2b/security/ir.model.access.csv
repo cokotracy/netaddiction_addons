@@ -1,3 +1,2 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
 access_netaddiction_pricelist_ftp_user_user,netaddiction_b2b.netaddiction_pricelist_ftp_user,model_netaddiction_pricelist_ftp_user,base.group_user,1,1,1,1
-access_pricelist_condition_user,netaddiction_b2b.pricelist.condition,model_pricelist_condition,base.group_user,1,1,1,1
