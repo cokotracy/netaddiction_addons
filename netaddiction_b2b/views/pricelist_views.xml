@@ -7,6 +7,7 @@
         <field name="inherit_id" ref="product.product_pricelist_view"/>
         <field name="arch" type="xml">
             <xpath expr="//group[@name='pricelist_settings']/field[@name='company_id']" position="after">
+                <field name="is_b2b"/>
                 <field name="generate_csv_ftp"/>
             </xpath>
             <xpath expr="//field[@name='item_ids']" position="before">
@@ -59,6 +60,30 @@
         </field>
     </record>
 
+    <record id="netaddiction_b2b_product_pricelist_view_tree" model="ir.ui.view">
+        <field name="name">netaddiction.b2b.pricelist.tree</field>
+        <field name="model">product.pricelist</field>
+        <field name="inherit_id" ref="product.product_pricelist_view_tree"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='name']" position="after">
+                <field name="is_b2b"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="netaddiction_b2b_product_pricelist_view_search" model="ir.ui.view">
+        <field name="name">netaddiction.b2b.product.pricelist.search</field>
+        <field name="model">product.pricelist</field>
+        <field name="inherit_id" ref="product.product_pricelist_view_search"/>
+        <field name="arch" type="xml">
+            <xpath expr="//filter[@name='inactive']" position="after">
+                <separator/>
+                <filter string="Only B2B" name="only_b2b" domain="[('is_b2b', '=', True)]"/>
+                <filter string="Only B2C" name="only_b2c" domain="[('is_b2b', '=', False)]"/>
+            </xpath>
+        </field>
+    </record>
+
     <record id="netaddiction_b2b_product_pricelist_view_inherit" model="ir.ui.view">
         <field name="name">netaddiction.b2b.pricelist.form.inherit</field>
         <field name="model">product.pricelist</field>
@@ -70,5 +95,6 @@
             </xpath>
         </field>
     </record>
+
 
 </odoo>

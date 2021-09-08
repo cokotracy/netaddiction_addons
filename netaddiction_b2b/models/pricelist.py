@@ -39,6 +39,10 @@ class ProductPricelistCondition(models.Model):
 class ProductPricelist(models.Model):
     _inherit = 'product.pricelist'
 
+    is_b2b = fields.Boolean(
+        string='Is a B2B'
+    )
+
     carrier_price = fields.Float(
         string='Delivery Cost'
     )
