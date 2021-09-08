@@ -144,7 +144,7 @@ class ProductPricelist(models.Model):
             company.pricelist_csv_ftp_password)
         for line in self.ftp_user:
             if not line.path.startswith('/'):
-                path = f'/{line.path}' % line.path
+                path = f'/{line.path}'
             else:
                 path = line.path
             ftp.cwd(path)
