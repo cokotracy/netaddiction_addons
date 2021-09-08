@@ -8,3 +8,4 @@ from . import product
 from . import pricelist
 from . import orders
 from . import partner
+from . import picking

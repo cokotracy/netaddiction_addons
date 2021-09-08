@@ -11,6 +11,7 @@
         'sale',
         'sale_management',
         'product',
+        'stock',
         'netaddiction_products',
     ],
     'data': [
@@ -20,6 +21,7 @@
         'views/partner_views.xml',
         'views/order_views.xml',
         'views/pricelist_views.xml',
+        'views/picking_views.xml',
         'data/cron.xml',
     ],
 }
