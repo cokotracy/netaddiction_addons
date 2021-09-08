@@ -7,3 +7,4 @@ from . import config
 from . import product
 from . import pricelist
 from . import orders
+from . import partner
