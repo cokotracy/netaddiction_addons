@@ -3,11 +3,12 @@
 
 {
     'name': 'Netaddiction B2B',
-    'version': '14.0.1.1.0',
+    'version': '14.0.1.1.1',
     'category': 'Sale',
     'author': 'Openforce',
     'license': 'LGPL-3',
     'depends': [
+        'sale',
         'sale_management',
         'netaddiction_expressions',
         'netaddiction_products',
@@ -17,7 +18,7 @@
         'views/config_views.xml',
         'views/product_views.xml',
         'views/partner_views.xml',
-        'views/orders.xml',
+        'views/order_views.xml',
         'data/cron.xml',
     ],
 }
