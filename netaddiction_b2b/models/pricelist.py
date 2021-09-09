@@ -3,12 +3,10 @@
 
 import io
 import csv
-import locale
 import datetime
 import base64
 from ftplib import FTP
 from odoo import api, fields, models, _
-from odoo.exceptions import UserError
 
 
 # TODO: Remove code after the last migration
@@ -28,29 +26,12 @@ class PricelistFTPUser(models.Model):
     )
 
 
-# TODO: Remove code after the last migration
-# (the last refactoring to remove useless code)
+# TODO: Remove useless class
 
 class ProductPricelistCondition(models.Model):
     _name = 'pricelist.condition'
     _description = 'Pricelist Condition'
 
-    expression = fields.Many2one(
-        'netaddiction.expressions.expression',
-        string='Expression'
-    )
-
-    percentage_discount = fields.Integer(
-        string='Discount %'
-    )
-
-    typology = fields.Selection([
-        ('discount', 'Discount'),
-        ('inflation', 'Inflation')
-        ],
-        string='Pricelist Type',
-        default='discount',
-    )
 
 # TODO: Remove code after the last migration
 # (the last refactoring to remove useless code)
@@ -58,9 +39,8 @@ class ProductPricelistCondition(models.Model):
 class ProductPricelist(models.Model):
     _inherit = 'product.pricelist'
 
-    expression = fields.Many2many(
-        'pricelist.condition',
-        string='Expressions'
+    is_b2b = fields.Boolean(
+        string='Is a B2B'
     )
 
     carrier_price = fields.Float(
@@ -126,9 +106,13 @@ class ProductPricelist(models.Model):
         name = 'Multiplayer_com_B2B_%s.csv' % datetime.date.today()
         return {
             'name': name,
-            'datas_fname': name,
+            'store_fname': name,
             'type': 'binary',
-            'datas': data
+            'datas': data,
+            'res_model': 'product.pricelist',
+            'res_field': 'last_attachment_id',
+            'res_id': self.id,
+            'res_name': self.name,
             }
 
     def create_csv(self):
@@ -149,20 +133,26 @@ class ProductPricelist(models.Model):
         '''
         if not self.last_attachment_id:
             return False
-        file_content = self.last_attachment_id
+        file_content = io.BytesIO(base64.b64decode(
+            self.last_attachment_id.datas))
+        filename = 'Listino_Multiplayer_com_%s.csv' % \
+            datetime.date.today().strftime('%Y_%m_%d')
         company = self.env.user.company_id
         ftp = FTP(
             company.pricelist_csv_ftp_host,
             company.pricelist_csv_ftp_user,
             company.pricelist_csv_ftp_password)
         for line in self.ftp_user:
-            file_content.seek(0)
-            path = '/%s' % line.path
-            filename = 'Listino_Multiplayer_com_%s.csv' % \
-                datetime.date.today().strftime('%Y_%m_%d')
+            if not line.path.startswith('/'):
+                path = f'/{line.path}'
+            else:
+                path = line.path
             ftp.cwd(path)
-            for current_file in ftp.nlst():
+            current_files = [cf for cf in ftp.nlst() if cf not in ('.', '..')]
+            # REmove previous files sent
+            for current_file in current_files:
                 ftp.delete(current_file)
+            # BOOOOM! File online!
             ftp.storbinary('STOR %s' % filename, file_content)
         return True
 
@@ -231,45 +221,6 @@ class ProductPricelist(models.Model):
             #     else real_price
             results[product_id] = (real_price, item.id)
         return results
-
-    @api.model
-    def cron_updater(self):
-        pricelists = self.sudo().search([('active', '=', True)])
-        pricelists.filtered(
-            lambda r: r.expression).populate_item_ids_from_expression()
-
-    def populate_item_ids_from_expression(self):
-        product_model = self.env['product.product']
-        item_model = self.env['product.pricelist.item']
-        for pricelist in self:
-            if not pricelist.expression:
-                raise UserError(
-                    _('Set an expression on pricelist "{name}"').format(
-                        name=pricelist.name))
-            pids = []
-            lines = {}
-            for line in pricelist.item_ids:
-                pids.append(line.product_id.id)
-                lines[line.product_id.id] = line
-                if line.qty_available_now <= line.qty_lmit_b2b:
-                    line.unlink()
-            new_items = []
-            for expr in pricelist.expression:
-                domain = expr.expression.get_domain()
-                for prod in product_model.search(domain):
-                    attr = {
-                        'applied_on': '0_product_variant',
-                        'product_id': prod.id,
-                        'compute_price': 'formula',
-                        'base': 'final_price',
-                        'price_discount': expr.percentage_discount,
-                        'percent_price': expr.percentage_discount,
-                        'typology': expr.typology,
-                        }
-                    if prod.id not in pids:
-                        new_items.append((0, 0, attr), )
-            if new_items:
-                pricelist.item_ids = new_items
 
     def delete_all_items(self):
         for pricelist in self:
