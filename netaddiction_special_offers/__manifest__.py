@@ -18,7 +18,6 @@
         # 'purchase',
         # 'mrp',
         # 'stock',
-        # 'netaddiction_expressions',
         # 'netaddiction_customer',
         # 'netaddiction_customer_care'
     ],
