@@ -39,12 +39,6 @@ class StockPicking(models.Model):
         string="Letto nel manifest",
     )
 
-    is_b2b = fields.Boolean(
-        compute='compute_b2b',
-        search="search_b2b",
-        string="B2B",
-    )
-
     manifest = fields.Many2one(
         'netaddiction.manifest',
         string="Manifest",
@@ -270,17 +264,6 @@ class StockPicking(models.Model):
                     qty_pick += line.product_qty
 
         return qty_pick > qty_sale
-
-    def compute_b2b(self):
-        for pick in self:
-            pick.is_b2b = pick.sale_id.is_b2b
-
-    def search_b2b(self, operator, value):
-        if operator not in ('=', '!='):
-            raise ValueError('Dominio invalido per ricerca B2B')
-        if (operator == '=' and value) or (operator == '!=' and not value):
-            return [('sale_id.is_b2b', '=', True)]
-        return [('sale_id.is_b2b', '=', False)]
 
     def _compute_barcode_image(self):
         for pick in self:

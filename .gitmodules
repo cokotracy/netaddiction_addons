@@ -7,3 +7,8 @@
 	path = OCA/partner-contact
 	url = https://github.com/OCA/partner-contact.git
 	branch = 14.0
+
+[submodule "saydigital/sale-workflow"]
+	path = saydigital/sale-workflow
+	url = git@github.com:saydigital/sale-workflow.git
+	branch = 14.0

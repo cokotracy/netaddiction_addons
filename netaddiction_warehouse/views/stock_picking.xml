@@ -83,9 +83,6 @@
                 <filter name="today" string="Previsti Oggi" domain="[('scheduled_date', '&gt;=', context_today().strftime('%%Y-%%m-%%d 00:00:00')), ('scheduled_date', '&lt;=', context_today().strftime('%%Y-%%m-%%d 23:59:59'))]"/>
                 <filter name="today" string="In Ritardo" domain="[('scheduled_date', '&lt;', context_today().strftime('%%Y-%%m-%%d'))]"/>
                 <separator/>
-                <filter name="is_B2B" string="B2B" domain="[('is_b2b', '=', True)]" />
-                <filter name="not_B2B" string="Escludi B2B" domain="[('is_b2b', '=', False)]" />
-                <separator/>
                 <filter name="contrassegno" string="Contrassegno" domain="[('move_lines.procurement_id.sale_line_id.order_id.account_payment_ids.journal_id.id', '=', %(netaddiction_payments.contrassegno_journal)d)]" />
                 <filter name="cc" string="Carta di Credito" domain="[('move_lines.procurement_id.sale_line_id.order_id.account_payment_ids.journal_id.id', '=', %(netaddiction_payments.cc_journal)d)]" />
                 <filter name="pp" string="PayPal" domain="[('move_lines.procurement_id.sale_line_id.order_id.account_payment_ids.journal_id.id', '=', %(netaddiction_payments.paypal_journal)d)]" />

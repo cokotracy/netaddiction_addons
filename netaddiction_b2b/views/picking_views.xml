@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <record id="netaddiction_b2b_view_picking_form" model="ir.ui.view">
+        <field name="name">netaddiction.b2b.stock.picking.form</field>
+        <field name="model">stock.picking</field>
+        <field name="inherit_id" ref="stock.view_picking_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='origin']" position="after">
+                <field name="is_b2b" readonly="1" />
+            </xpath>
+            <xpath expr="//sheet/div[hasclass('oe_title')]/h1/field[@name='name']"
+                   position="before">
+                <b attrs="{'invisible' : [('is_b2b', '=', False)]}" style="color:red">[B2B] </b>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="netaddiction_b2b_vpicktree" model="ir.ui.view">
+        <field name="name">netaddiction.b2b.vpicktree</field>
+        <field name="model">stock.picking</field>
+        <field name="inherit_id" ref="stock.vpicktree"/>
+        <field name="arch" type="xml">
+            <field name="name" position="after">
+                <field name="is_b2b"/>
+            </field>
+        </field>
+    </record>
+
+    <record id="netaddiction_b2b_view_picking_internal_search" model="ir.ui.view">
+        <field name="name">netaddiction.b2b.stock.picking.internal.search</field>
+        <field name="model">stock.picking</field>
+        <field name="inherit_id" ref="stock.view_picking_internal_search"/>
+        <field name="arch" type="xml">
+            <xpath expr="//filter[@name='activities_exception']" position="after">
+                <separator/>
+                <filter string="Only B2B" name="only_b2b" domain="[('is_b2b', '=', True)]"/>
+                <filter string="Only B2C" name="only_b2c" domain="[('is_b2b', '=', False)]"/>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

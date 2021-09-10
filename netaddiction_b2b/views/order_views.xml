@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <record id="netaddiction_b2b_view_order_form" model="ir.ui.view">
+        <field name="name">netaddiction.b2b.sale.order.form</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_order_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//notebook/page[@name='other_information']//group[@name='sales_person']/field[@name='company_id']"
+                   position="after">
+                <field name="is_b2b" />
+            </xpath>
+            <xpath expr="//sheet/div[hasclass('oe_title')]/h1/field[@name='name']"
+                   position="before">
+                <b attrs="{'invisible' : [('is_b2b', '=', False)]}" style="color:red">[B2B] </b>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="netaddiction_b2b_view_quotation_tree" model="ir.ui.view">
+        <field name="name">netaddiction.b2b.sale.order.quotation.tree</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_quotation_tree"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='name']" position="after">
+                <field name="is_b2b" />
+            </xpath>
+        </field>
+    </record>
+
+    <record id="netaddiction_b2b_view_order_tree" model="ir.ui.view">
+        <field name="name">netaddiction.b2b.sale.order.order.tree</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_order_tree"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='name']" position="after">
+                <field name="is_b2b" />
+            </xpath>
+        </field>
+    </record>
+
+    <record id="netaddiction_b2b_view_sales_order_filter" model="ir.ui.view">
+        <field name="name">netaddiction.b2b.sale.order.filter</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_sales_order_filter"/>
+        <field name="arch" type="xml">
+            <xpath expr="//filter[@name='activities_upcoming_all']" position="after">
+                <separator/>
+                <filter string="Only B2B" name="only_b2b" domain="[('is_b2b', '=', True)]"/>
+                <filter string="Only B2C" name="only_b2c" domain="[('is_b2b', '=', False)]"/>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>
