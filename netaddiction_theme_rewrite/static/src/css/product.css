@@ -249,7 +249,7 @@ h1.te_product_name{
 }
 .image-zoom-custom > i{
     position:absolute;
-    top:20px;
+    top:10px;
     right:20px;
     font-size: 40px;
 }
