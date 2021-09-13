@@ -210,6 +210,7 @@
                                     class="img img-fluid lazyload product_detail_img"
                                     itemprop="image"
                                     alt="Product image" loading="eager"
+                                    style="cursor:pointer;"
                                     t-attf-onClick="document.querySelector('#image-zoom-custom').style.display='flex'; document.querySelector('#image-zoom-custom > img').src='/web/image/#{product_image._name}/#{product_image.id}/image_1024';"
                                     />
                             </t>
@@ -546,7 +547,7 @@
 
                                                     </div>
                                                 </div>
-                                                <div class="pull-left mb32" style="width: 75%">
+                                                <div class="pull-left mb32 w-100 w-md-75">
                                                     <input type="text" rows="1" readonly="true" name="short_description"
                                                         style="margin-bottom:10px;" class="form-control"
                                                         placeholder="Titolo della recensione.."></input>
@@ -563,7 +564,7 @@
                                                 method="POST">
                                                 <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
                                                 <!--<span t-esc="product.id"/>-->
-                                                <div class="pull-left mb32" style="width: 75%">
+                                                <div class="pull-left mb32 w-100 w-md-75">
                                                     <div class="set_star">
                                                         <div class="cancel_rating_class" title="Cancel Rating">
                                                             <a title="Cancel Rating"></a>
@@ -611,7 +612,7 @@
                                                         class="form-control" style="margin-bottom:10px;" />
                                                     <input type="text" rows="1" name="short_description" class="form-control"
                                                         placeholder="Titolo della recensione.."></input>
-                                                    <textarea rows="3" name="comment" class="form-control"
+                                                    <textarea rows="3" name="comment" class="form-control col-12"
                                                         placeholder="Inserisci la tua opinione.."></textarea>
                                                     <input class="btn btn-primary mt8 a-submit" type="submit" value="Crea Recensione" id="submit_review"/>
                                                 </div>

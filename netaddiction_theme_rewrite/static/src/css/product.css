@@ -72,6 +72,9 @@ h1.te_product_name{
     overflow:hidden;
     transition:0.2s;
 }
+.tabs_container_main ul#te_product_tabs li a.active{
+    background-color: #ffffff !important;
+}
 
 
 /*BUNDLE*/

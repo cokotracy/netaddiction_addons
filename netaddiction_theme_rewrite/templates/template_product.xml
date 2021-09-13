@@ -139,7 +139,7 @@
             </t>
             <t t-if="out_date">
                 <t t-if="out_date &gt; current">
-                    <div class="d-block">
+                    <div class="d-block mb-3">
                         <small class="text-primary font-weight-bold">Prenota ora e lo ricevi a <t t-esc="out_date.strftime('%B %Y')"/></small>
                         <div class="d-block mt-3">
                             <strong class="label"><i class="fa fa-info-circle mr-1 text-primary"></i>Prezzo Minimo Garantito</strong>
