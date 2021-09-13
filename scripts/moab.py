@@ -138,7 +138,7 @@ with open(RULES_FILE) as f:
     migrations = json.load(f)
 
 ts = time.time()
-products = self.env["product.product"].search([])[:100]
+products = self.env["product.product"].search([])
 for product in tqdm(products):
     try:
         set_redirect(product)
