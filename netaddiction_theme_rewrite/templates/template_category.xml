@@ -1,120 +1,116 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-<!--BACKOFFICE-->
-    <!-- INSERISCO IL CAMPO DESCRIZIONE NEL BACKEND DELLA CATEGORIA -->
-    <record id="product_public_category_inherit" model="ir.ui.view">
-        <field name="name">product.public.category.inherit</field>
-        <field name="model">product.public.category</field>
-        <field name="inherit_id" ref="website_sale.product_public_category_form_view"/>
-        <field name="arch" type="xml">
-            <field name="parent_id" position="after">
-                <field name="description"/>
-            </field>
-        </field>
-    </record>
-
-<!--BACKOFFICE -->
-
-<!--FRONTEND-->
-    <template id="category_info" inherit_id="website_sale.products">
-            <!-- INSERISCO IL TITOLO DELLA CATEGORIA -->
-            <xpath expr="//div[hasclass('oe_website_sale')]" position="before">
-                <div>
-                    <t t-if="category">
-                        <div class="s_nb_column_fixed">
-                            <div class="col-lg-12 te_title_2 pt32">
-                                <div class="te_title_sub_div">
-                                    <h1 t-esc="category.name" class="te_s_title_default te_title_style2"></h1>
-                                </div>
+	<!-- BACKOFFICE -->
+	<!-- INSERISCO IL CAMPO DESCRIZIONE NEL BACKEND DELLA CATEGORIA -->
+	<record id="product_public_category_inherit" model="ir.ui.view">
+		<field name="name">product.public.category.inherit</field>
+		<field name="model">product.public.category</field>
+		<field name="inherit_id" ref="website_sale.product_public_category_form_view" />
+		<field name="arch" type="xml">
+			<field name="parent_id" position="after">
+				<field name="description" />
+			</field>
+		</field>
+	</record>
+	<!-- BACKOFFICE -->
+	<!-- FRONTEND -->
+	<template id="category_info" inherit_id="website_sale.products">
+		<!-- INSERISCO IL TITOLO DELLA CATEGORIA -->
+		<xpath expr="//div[hasclass('oe_website_sale')]" position="before">
+			<div>
+				<t t-if="category">
+                    <div class="container nopadding" style="background-color: #f5f5f5;">
+                        <div class="row nopadding">
+                            <div t-attf-data-original-id="cat_{{category.id}}" class="img_category oe_structure oe_empty">
+                                 
+                            </div>
+                            <div class="col-sm nopadding text-center">
+                                <h1 class="d-inline py-3 d-block" t-esc="category.name"></h1>
+                                <t t-if="category.description">
+                                    <p class="pb-3" t-esc="category.description"></p>
+                                </t>
                             </div>
                         </div>
-                    </t>
-                </div>
-            </xpath>
-
-            <xpath expr="//div[hasclass('products_pager')][2]" position="after">
-                <t t-if="category">
-                    <div>
-                        <!-- INSERISCO GLI SLIDER NEL FOOTER -->
-                        <t t-if="bestseller_list">
-                            <section data-name="Title style 3" class="o_colored_level undefined o_cc">
-                                <div class="container">
-                                <div class="row s_nb_column_fixed">
-                                    <div class="col-lg-12 te_title_3 pt32 o_colored_level">
-                                    <div class="te_title_sub_div">
-                                        <h4 class="te_s_title_default te_title_style3">I più venduti</h4>
-                                    </div>
-                                    </div>
-                                </div>
-                                </div>
-                            </section>
-                            <section class="pt8 pb8 o_colored_level undefined o_cc" data-snippet="p_slider" data-name="Product Snippet Builder">
-                                <t t-set="products_bestseller_ids" t-value="''" />
-                                <t t-foreach="bestseller_list" t-as="product">
-                                    <t t-set="products_bestseller_ids" t-value="products_bestseller_ids + str(product['id']) + ','" />
-                                </t>
-                                <t t-set="products_bestseller_ids" t-value="products_bestseller_ids[:-1]" />
-                                <div class="js_slider_snippet" name="manual-configuration" data-isemipro="true" data-name="manual-configuration" t-attf-data-item_ids="{{products_bestseller_ids}}" data-style="2" data-ui_option="shopping_cart,wishlist,quick_view,sale_label,ratings" data-slider_type="slider" t-attf-data-limit="20"/>
-                            </section>
-                        </t>
-                        <t t-if="preorder_list">
-                            <section data-name="Title style 3" class="o_colored_level undefined o_cc">
-                                <div class="container">
-                                <div class="row s_nb_column_fixed">
-                                    <div class="col-lg-12 te_title_3 pt32 o_colored_level">
-                                    <div class="te_title_sub_div">
-                                        <h4 class="te_s_title_default te_title_style3">Prossime uscite</h4>
-                                    </div>
-                                    </div>
-                                </div>
-                                </div>
-                            </section>
-                            <section class="pt8 pb8 o_colored_level undefined o_cc" data-snippet="p_slider" data-name="Product Snippet Builder">
-                                <t t-set="products_preorder_ids" t-value="''" />
-                                <t t-foreach="preorder_list" t-as="product">
-                                    <t t-set="products_preorder_ids" t-value="products_preorder_ids + str(product['id']) + ','" />
-                                </t>
-                                <t t-set="products_preorder_ids" t-value="products_preorder_ids[:-1]" />
-                                <div class="js_slider_snippet" name="manual-configuration" data-isemipro="true" data-name="manual-configuration" t-attf-data-item_ids="{{products_preorder_ids}}" data-style="2" data-ui_option="shopping_cart,wishlist,quick_view,sale_label,ratings" data-slider_type="slider" t-attf-data-limit="20"/>
-                            </section>
-                        </t>
-                        <t t-if="newest_list">
-                            <section data-name="Title style 3" class="o_colored_level undefined o_cc">
-                                <div class="container">
-                                <div class="row s_nb_column_fixed">
-                                    <div class="col-lg-12 te_title_3 pt32 o_colored_level">
-                                    <div class="te_title_sub_div">
-                                        <h4 class="te_s_title_default te_title_style3">Nuovi arrivi</h4>
-                                    </div>
-                                    </div>
-                                </div>
-                                </div>
-                            </section>
-                            <section class="pt8 pb8 o_colored_level undefined o_cc" data-snippet="p_slider" data-name="Product Snippet Builder">
-                                <t t-set="products_newest_ids" t-value="''" />
-                                <t t-foreach="newest_list" t-as="product">
-                                    <t t-set="products_newest_ids" t-value="products_newest_ids + str(product['id']) + ','" />
-                                </t>
-                                <t t-set="products_newest_ids" t-value="products_newest_ids[:-1]" />
-                                <div class="js_slider_snippet" name="manual-configuration" data-isemipro="true" data-name="manual-configuration" t-attf-data-item_ids="{{products_newest_ids}}" data-style="2" data-ui_option="shopping_cart,wishlist,quick_view,sale_label,ratings" data-slider_type="slider" t-attf-data-limit="20"/>
-                            </section>
-                        </t>
-                        <!-- INSERISCO LA DESCRIZIONE DELLA CATEGORIA A FONDO PAGINA -->
-                        <t t-if="category.description">
-                            <section class="s_text_block bg-200" data-name="Text block">
-                                <div class="container">
-                                    <div class="row">
-                                        <div class="col-lg-12 pt32 pb32 p-3">
-                                            <p class="px-3 lead o_default_snippet_text" t-esc="category.description"></p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </section>
-                        </t>
                     </div>
-                </t> 
-            </xpath>
-    </template>
-
-<!--FRONTEND-->
+				</t>
+			</div>
+		</xpath>
+		<xpath expr="//div[hasclass('products_pager')][2]" position="after">
+			<t t-if="category">
+				<div>
+					<!-- INSERISCO GLI SLIDER NEL FOOTER -->
+					<t t-if="bestseller_list">
+						<section data-name="Title style 3" class="o_colored_level undefined o_cc">
+							<div class="container">
+								<div class="row s_nb_column_fixed">
+									<div class="col-lg-12 te_title_3 pt32 o_colored_level">
+										<div class="te_title_sub_div">
+											<h4 class="te_s_title_default te_title_style3">
+												I più venduti
+											</h4>
+										</div>
+									</div>
+								</div>
+							</div>
+						</section>
+						<section class="pt8 pb8 o_colored_level undefined o_cc" data-snippet="p_slider" data-name="Product Snippet Builder">
+							<t t-set="products_bestseller_ids" t-value="''" />
+							<t t-foreach="bestseller_list" t-as="product">
+								<t t-set="products_bestseller_ids" t-value="products_bestseller_ids + str(product['id']) + ','" />
+							</t>
+							<t t-set="products_bestseller_ids" t-value="products_bestseller_ids[:-1]" />
+							<div class="js_slider_snippet" name="manual-configuration" data-isemipro="true" data-name="manual-configuration" t-attf-data-item_ids="{{products_bestseller_ids}}" data-style="2" data-ui_option="shopping_cart,wishlist,quick_view,sale_label,ratings" data-slider_type="slider" t-attf-data-limit="20" />
+						</section>
+					</t>
+					<t t-if="preorder_list">
+						<section data-name="Title style 3" class="o_colored_level undefined o_cc">
+							<div class="container">
+								<div class="row s_nb_column_fixed">
+									<div class="col-lg-12 te_title_3 pt32 o_colored_level">
+										<div class="te_title_sub_div">
+											<h4 class="te_s_title_default te_title_style3">
+												Prossime uscite
+											</h4>
+										</div>
+									</div>
+								</div>
+							</div>
+						</section>
+						<section class="pt8 pb8 o_colored_level undefined o_cc" data-snippet="p_slider" data-name="Product Snippet Builder">
+							<t t-set="products_preorder_ids" t-value="''" />
+							<t t-foreach="preorder_list" t-as="product">
+								<t t-set="products_preorder_ids" t-value="products_preorder_ids + str(product['id']) + ','" />
+							</t>
+							<t t-set="products_preorder_ids" t-value="products_preorder_ids[:-1]" />
+							<div class="js_slider_snippet" name="manual-configuration" data-isemipro="true" data-name="manual-configuration" t-attf-data-item_ids="{{products_preorder_ids}}" data-style="2" data-ui_option="shopping_cart,wishlist,quick_view,sale_label,ratings" data-slider_type="slider" t-attf-data-limit="20" />
+						</section>
+					</t>
+					<t t-if="newest_list">
+						<section data-name="Title style 3" class="o_colored_level undefined o_cc">
+							<div class="container">
+								<div class="row s_nb_column_fixed">
+									<div class="col-lg-12 te_title_3 pt32 o_colored_level">
+										<div class="te_title_sub_div">
+											<h4 class="te_s_title_default te_title_style3">
+												Nuovi arrivi
+											</h4>
+										</div>
+									</div>
+								</div>
+							</div>
+						</section>
+						<section class="pt8 pb8 o_colored_level undefined o_cc" data-snippet="p_slider" data-name="Product Snippet Builder">
+							<t t-set="products_newest_ids" t-value="''" />
+							<t t-foreach="newest_list" t-as="product">
+								<t t-set="products_newest_ids" t-value="products_newest_ids + str(product['id']) + ','" />
+							</t>
+							<t t-set="products_newest_ids" t-value="products_newest_ids[:-1]" />
+							<div class="js_slider_snippet" name="manual-configuration" data-isemipro="true" data-name="manual-configuration" t-attf-data-item_ids="{{products_newest_ids}}" data-style="2" data-ui_option="shopping_cart,wishlist,quick_view,sale_label,ratings" data-slider_type="slider" t-attf-data-limit="20" />
+						</section>
+					</t>
+				</div>
+			</t>
+		</xpath>
+		<!-- FRONTEND -->
+	</template>
 </odoo>

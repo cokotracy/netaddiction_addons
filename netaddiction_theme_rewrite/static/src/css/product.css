@@ -206,6 +206,7 @@ h1.te_product_name{
     padding-left: 0.6em;
     border-radius: 10rem;
     transition:0.2s;
+    display: inline-block;
 }
 .tag-item:hover{
     border:2px solid var(--secondary);

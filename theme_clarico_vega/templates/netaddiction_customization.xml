@@ -112,13 +112,6 @@
         </xpath>
     </template>
 
-    <!-- <template id="custom_vertical_menu" inherit_id="theme_clarico_vega.menu_vertical">
-        <xpath expr="//div[hasclass('te_content_text')]" position="after">
-            <t t-call="netaddiction_theme_rewrite.social_sidebar"/>
-        </xpath>
-    </template> -->
-
-
     <template id="custom_full_description" inherit_id="theme_clarico_vega.html_content_tabs_ept">
         <xpath expr="//div[@id='product_full_description']" position="replace">
             <t t-if="product.website_description and len(product.website_description) > 20">
@@ -137,6 +130,61 @@
                         </div>
                     </t>
                 </div>
+            </t>
+        </xpath>
+    </template>
+
+    <template id="product_shipping_info" inherit_id="website_sale.product_custom_text" priority="30">
+        <!-- Shipping Information section  -->
+        <xpath expr="//div[@id='product_details']/p[last()]" position="replace">
+        </xpath>
+    </template>
+
+    <template id="products_categories_ept" inherit_id="website_sale.products_categories" name="Ecommerce Categories" priority="30">     
+        <xpath expr="//div[@id='wsale_products_categories_collapse']/ul" position="replace">
+            <t t-if="category.parent_id">
+                <t t-set="related_category" t-value="request.env['product.public.category'].sudo().search([('parent_id','=',category.parent_id.id)])"/>
+            </t>
+            <t t-else="">
+                <t t-if="category.id">
+                    <t t-set="related_category" t-value="request.env['product.public.category'].sudo().search([('parent_id','=',category.id)])"/>
+                </t>
+                <t t-else="">
+                    <t t-set="related_category" t-value="request.env['product.public.category'].sudo().search([('parent_id','=',1)])"/>
+                </t>
+            </t>
+            
+            <t t-if="related_category">
+                <ul class="list-unstyled mt-3">
+                    <t t-foreach="related_category" t-as="cat">
+                        <t t-set="subcat" t-value="request.env['product.public.category'].sudo().search([('parent_id','=',cat.id)])"/>
+                        <t t-if="category.id == cat.id">
+                            <li class="p-2 border-top">
+                                <a style="color:var(--black);" t-attf-href="{{keep('/shop/category/' + slug(cat), category=0)}}">
+                                    <small class="font-weight-bold" t-esc="cat.name"></small>
+                                </a>
+                            </li>
+                        </t>
+                        <t t-else="">
+                            <li class="p-2 border-top">
+                                <a class="text-secondary" t-attf-href="{{keep('/shop/category/' + slug(cat), category=0)}}">
+                                    <small class="font-weight-bold" t-esc="cat.name"></small>
+                                </a>
+                            </li>
+                        </t>
+                        <t t-if="category.id == cat.id">
+                            <ul class="pl-3 list-unstyled">
+                                <t t-foreach="subcat" t-as="sub">
+                                    <li class="p-2 border-top">
+                                        <a class="font-weight-bold" t-attf-href="{{keep('/shop/category/' + slug(sub), category=0)}}">
+                                            <small t-esc="sub.name"></small>
+                                        </a>
+                                    </li>
+                                </t>
+                            </ul>
+                        </t>
+                    </t>
+                </ul>
             </t>
         </xpath>
     </template>
