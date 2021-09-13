@@ -21,8 +21,10 @@
 				<t t-if="category">
                     <div class="container nopadding" style="background-color: #f5f5f5;">
                         <div class="row nopadding">
-                            <div t-attf-data-original-id="cat_{{category.id}}" class="img_category oe_structure oe_empty">
-                                 
+                            <div t-attf-data-original-id="cat_{{category.id}}" class="img_category">
+                                <t t-if="category.image_512">
+                                    <img class="w-100" t-attf-src="data:image/jpeg;base64,{{category.image_512}}" />
+                                </t>
                             </div>
                             <div class="col-sm nopadding text-center">
                                 <h1 class="d-inline py-3 d-block" t-esc="category.name"></h1>

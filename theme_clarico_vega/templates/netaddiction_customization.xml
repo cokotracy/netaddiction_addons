@@ -188,4 +188,442 @@
             </t>
         </xpath>
     </template>
+
+    <template id="drift_zoom_ept" inherit_id="website.assets_frontend" active="True" name="Image Magnifier" priority="30">
+        <xpath expr="script[last()]" position="after"></xpath>
+        <xpath expr="link[last()]" position="after"></xpath>
+    </template>
+
+    <template id="shop_product_carousel_ept" inherit_id="website_sale.shop_product_carousel" priority="30">
+        <xpath expr="//div[@id='o-carousel-product']" position="replace">
+            <div id="mainSlider" class="position-relative">
+                <div class="owl-carousel carousel-inner">
+                    <t t-foreach="product_images" t-as="product_image">
+                        <div t-if="product_image._name == 'product.image' and product_image.embed_code"
+                             class="">
+                            <t t-raw="product_image.embed_code"/>
+                        </div>
+                        <t t-else="">
+                            <t t-if="website.is_lazy_load">
+                                <img t-attf-data-src="/web/image/#{product_image._name}/#{product_image.id}/image_1024"
+                                    t-attf-src="/web/image/website/#{website.id}/lazy_load_image"
+                                    class="img img-fluid lazyload product_detail_img"
+                                    itemprop="image"
+                                    alt="Product image" loading="eager"
+                                    t-attf-onClick="document.querySelector('#image-zoom-custom').style.display='flex'; document.querySelector('#image-zoom-custom > img').src='/web/image/#{product_image._name}/#{product_image.id}/image_1024';"
+                                    />
+                            </t>
+                            <div t-else="" t-field="product_image.image_1920" class=""
+                                 t-options='{"widget": "image", "preview_image": "image_1024", "class": "product_detail_img mh-100", "alt-field": "name", "zoom": product_image.can_image_1024_be_zoomed and "image_1920", "loading": "eager", "itemprop": "image"}'/>
+                        </t>
+                    </t>
+                </div>
+                <div class="image-zoom-custom" id="image-zoom-custom">
+                    <i class="fa fa-window-close text-primary" 
+                        onClick="document.querySelector('#image-zoom-custom').style.display='none'"></i>
+                    <img alt="Zoom immagine corrente" src=""/>
+                </div>
+            </div>
+            <div t-ignore="True" id="thumbnailSlider" class="">
+                <input id="len-ept-image" type="hidden" t-attf-value="#{len(product_images)}"/>
+                <ol t-if="len(product_images) > 1" class="owl-carousel d-inline-block my-0 py-1 px-0 text-left">
+                    <t t-foreach="product_images" t-as="product_image">
+                        <li t-attf-class="d-inline-block align-top {{'active' if product_image_first else ''}}"
+                            data-target="#o-carousel-product" t-att-data-slide-to="str(product_image_index)">
+                            <t t-if="website.is_lazy_load">
+                                <div class="d-flex align-items-center justify-content-center h-100">
+                                    <img t-attf-data-src="/web/image/#{product_image._name}/#{product_image.id}/image_128"
+                                         t-attf-src="/web/image/website/#{website.id}/lazy_load_image"
+                                         class="img img-fluid lazyload"
+                                         alt="Product image"/>
+                                </div>
+                            </t>
+                            <t t-else="">
+                                <div t-field="product_image.image_128"
+                                     class="d-flex align-items-center justify-content-center h-100"
+                                     t-options='{"widget": "image", "alt-field": "name"}'/>
+                            </t>
+                            <span t-if="product_image._name == 'product.image' and product_image.embed_code"
+                                  class="fa fa-2x fa-play-circle-o o_product_video_thumb"/>
+                        </li>
+                    </t>
+                </ol>
+            </div>
+        </xpath>
+    </template>
+
+
+    <!--=================== Product Tabs ========================-->
+    <template id="html_content_tabs_ept" name="Product Tabs" priority="30">
+        <section class="product_tabs_ept s_tabs">
+            <div class="container tabs_container_main">
+                <div class="row s_col_no_bgcolor">
+                    <div class="col-lg-12">
+                        <div class="bg-white">
+                            <div class="product-header">
+                                <ul id="te_product_tabs" class="nav nav-tabs product-header-tabs" role="tablist">
+                                    <t t-if="product.website_description and len(product.website_description) > 20">
+                                        <li class="nav-item"
+                                            t-if="product.website_description or request.env.user.has_group('website.group_website_designer')">
+                                            <a class="nav-link te_tab_mb_nav_link active show"
+                                            id="nav_tabs_link_description"
+                                            data-toggle="tab"
+                                            href="#nav_tabs_content_description"
+                                            role="tab"
+                                            aria-controls="nav_tabs_content_description"
+                                            aria-selected="true">
+                                                <span class="fa fa-sliders mr-2"></span>
+                                                <span class="nav_tab_title">Description</span>
+                                            </a>
+                                        </li>
+                                    </t>
+                                    <t t-set="categories"
+                                       t-value="product.valid_product_template_attribute_line_ids._prepare_categories_for_display()"/>
+                                    <t t-if="product.sudo().document_ids">
+                                        <li class="nav-item"
+                                            t-if="len(product.sudo().document_ids.filtered(lambda x:x.public == true)) > 0">
+                                            <a class="nav-link te_tab_mb_nav_link"
+                                               id="nav_tabs_link_doc"
+                                               data-toggle="tab"
+                                               href="#nav_tabs_content_doc"
+                                               role="tab"
+                                               aria-controls="nav_tabs_content_doc"
+                                               aria-selected="false">
+                                                <span class="fa fa-file-text mr-2"></span>
+                                                <span class="nav_tab_title">Documents</span>
+                                            </a>
+                                        </li>
+                                    </t>
+                                    <!-- Browseinfo modification -->
+                                    <t t-if="request.website.viewref('website_all_in_one.website_sale_product_comment').active">
+                                        <li class="nav-item">
+                                            <a class="nav-link te_tab_mb_nav_link"
+                                               id="nav_tabs_link_ratings_reviews"
+                                               data-toggle="tab"
+                                               href="#nav_tabs_content_ratings_reviews"
+                                               role="tab"
+                                               aria-controls="nav_tabs_content_ratings_reviews"
+                                               aria-selected="false">
+                                                <span class="fa fa-star mr-2"></span>
+                                                <span class="nav_tab_title">Recensioni</span>
+                                            </a>
+                                        </li>
+                                    </t>
+
+                                    <t t-foreach="product.tab_line_ids" t-as="tab">
+                                        <t t-if="request.env['product.tab.line'].checkTab(website.id,tab.website_ids.ids)">
+                                            <li class="nav-item">
+                                                <a class="nav-link te_tab_mb_nav_link"
+                                                   t-if="tab.tab_content or request.env.user._is_admin()"
+                                                   t-att-id="'nav_tabs_link_%s_%s' % (product.id, tab.id)"
+                                                   data-toggle="tab"
+                                                   t-att-href="'#nav_tabs_content_%s_%s' % (product.id, tab.id)"
+                                                   role="tab"
+                                                   t-att-aria-controls="'nav_tabs_content_%s_%s' % (product.id, tab.id)"
+                                                   aria-selected="false">
+                                                    <p t-field="tab.icon_content"/>
+                                                    <span t-field="tab.tab_name" class="nav_tab_title"/>
+                                                </a>
+                                            </li>
+                                        </t>
+                                    </t>
+                                </ul>
+                            </div>
+                            <div class="product-body tab-content">
+                                <t t-if="product.website_description and len(product.website_description) > 20">
+                                    <div class="tab-pane fade show active py-3"
+                                        id="nav_tabs_content_description"
+                                        role="tabpanel"
+                                        aria-labelledby="nav_tabs_link_description">
+                                        <div itemprop="description" t-field="product.website_description"
+                                            class="oe_structure"
+                                            id="product_full_description"/>
+                                    </div>
+                                </t>
+                                <t t-if="product.sudo().document_ids">
+                                    <div class="tab-pane fade py-3"
+                                         id="nav_tabs_content_doc"
+                                         role="tabpanel"
+                                         aria-labelledby="nav_tabs_link_doc"
+                                         t-if="len(product.sudo().document_ids.filtered(lambda x:x.public == true)) > 0">
+                                        <div itemprop="doc" id="product_documents">
+                                            <t t-foreach="product.sudo().document_ids" t-as="doc">
+                                                <ul t-if="doc.public">
+                                                    <li>
+                                                        <a t-att-href="doc.sudo().website_url"
+                                                           t-att-download="doc.name">
+                                                            <t t-esc="doc.name"/>
+                                                        </a>
+                                                        <a t-att-href="doc.sudo().website_url"
+                                                           t-att-download="doc.name">
+                                                            <i class="o_image o_image_thumbnail"
+                                                               t-att-data-mimetype="doc.sudo().mimetype"/>
+                                                        </a>
+                                                    </li>
+                                                </ul>
+                                            </t>
+                                        </div>
+                                    </div>
+                                </t>
+
+                                <t t-foreach="product.tab_line_ids" t-as="tab">
+                                    <t t-if="request.env['product.tab.line'].checkTab(website.id,tab.website_ids.ids)">
+                                        <div class="tab-pane fade py-3"
+                                             t-att-id="'nav_tabs_content_%s_%s' % (product.id, tab.id)"
+                                             role="tabpanel"
+                                             t-att-aria-labelledby="'nav_tabs_link_%s_%s' % (product.id, tab.id)">
+                                            <div t-field="tab.tab_content"
+                                                 class="oe_structure"/>
+                                        </div>
+                                    </t>
+                                </t>
+                                
+                                <!-- Browseinfo modification -->
+                                <t t-if="request.website.viewref('website_all_in_one.website_sale_product_comment').active">
+                                    <div class="tab-pane fade o_not_editable py-3"
+                                        id="nav_tabs_content_ratings_reviews"
+                                        role="tabpanel"
+                                        aria-labelledby="nav_tabs_link_ratings_reviews">
+                                        <ul class="media-list pl-0" id="comments-list">
+                                            <div id="paginationdemo" class="demo">
+                                                <t t-set="total_pages" t-value="int(len(product.reviews_ids)/10)" />
+                                                <t t-foreach="total_pages+1" t-as="page">
+                                                    <t t-set="page_next" t-value="page+1" />
+                                                    <div t-att-id="'p%s' %page_next" class="pagedemo _current">
+                                                        <li t-foreach="product.reviews_ids[(page*10):(((page_next)*10))]"
+                                                            t-as="ratings" class="medianew">
+                                                            <span class="pull-left">
+                                                                <img class="media-object img img-circle" t-att-src="website.image_url(ratings, 'author_avatar')"
+                                                                    style="width: 30px" alt="Avatar"/>
+                                                            </span>
+
+                                                            <div class="media-body oe_msg">
+                                                                <div class="media-body oe_msg_content">
+                                                                    <t t-call="website.publish_short">
+                                                                        <t t-set="object" t-value="ratings" />
+                                                                    </t>
+                                                                    <input t-att-id="'product-actual-rate-%s' %ratings.id" t-att-value="ratings.message_rate" name="message_rate" type="hidden" />
+
+
+                                                                    <input t-att-id="'actual-rate-%s' %ratings.id" t-att-value="ratings.message_rate" name="message_rate" type="hidden" />
+                                                                    <t t-if="ratings.message_rate >=0">
+                                                                    <input id="message_id" t-att-value="ratings.id" name="message_id" type="hidden" />
+                                                                    <div class="starRating1">
+                                                                        <div>
+                                                                            <div>
+                                                                                <div>
+                                                                                    <div>
+                                                                                        <input t-att-id="'rate1-%s' %ratings.id" type="radio"
+                                                                                            t-att-name="'rate-%s' %ratings.id" value="1">
+                                                                                            <label for="rating1">
+                                                                                                <span>1</span>
+                                                                                            </label>
+                                                                                        </input>
+                                                                                    </div>
+                                                                                    <input t-att-id="'rate2-%s' %ratings.id" type="radio"
+                                                                                        t-att-name="'rate-%s' %ratings.id" value="2">
+                                                                                        <label for="rating2">
+                                                                                            <span>2</span>
+                                                                                        </label>
+                                                                                    </input>
+                                                                                </div>
+                                                                                <input t-att-id="'rate3-%s' %ratings.id" type="radio"
+                                                                                    t-att-name="'rate-%s' %ratings.id" value="3">
+                                                                                    <label for="rating3">
+                                                                                        <span>3</span>
+                                                                                    </label>
+                                                                                </input>
+                                                                            </div>
+                                                                            <input t-att-id="'rate4-%s' %ratings.id" type="radio"
+                                                                                t-att-name="'rate-%s' %ratings.id" value="4">
+                                                                                <label for="rating4">
+                                                                                    <span>4</span>
+                                                                                </label>
+                                                                            </input>
+                                                                        </div>
+                                                                        <input t-att-id="'rate5-%s' %ratings.id" type="radio"
+                                                                            t-att-name="'rate-%s' %ratings.id" value="5">
+                                                                            <label for="rating5">
+                                                                                <span>5</span>
+                                                                            </label>
+                                                                        </input>
+                                                                    </div>
+                                                                    </t>
+
+
+                                                                    <t t-if="ratings.message_rate > 0">
+                                                                        <input id="product_message_id" t-att-value="ratings.id"
+                                                                            name="product_message_id" type="hidden" />
+
+                                                                    </t>
+                                                                    <div class="product_short" t-field="ratings.short_desc" />
+                                                                    <h5 class="media-heading"
+                                                                        style="display:inline;margin-left:6px !important;color:antiquewhite;">
+
+                                                                        <span class="review_class_rating">Recensito da: </span>
+                                                                        <span t-field="ratings.customer_id"></span>
+
+                                                                    </h5>
+
+                                                                    <div>
+
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </li>
+                                                    </div>
+                                                </t>
+                                                <div id="demo5">
+                                                </div>
+                                            </div>
+                                            <p class="post_your_review">Scrivi qui la tua recensione:</p>
+
+                                        </ul>
+
+                                        <hr class="mb32" />
+                                        <t t-if="website.user_id == user_id">
+                                            <p style="margin-top: 48px !important; margin-bottom: -10px;">
+                                                Devi registrarti prima di recensire il prodotto!
+                                                <a t-attf-href="/web/login?redirect=/shop/product/#{slug(product)}">Registrati</a>
+                                            </p>
+                                            <br/>
+                                            <form id="comment" t-attf-action="/shop/product/comment/#{product.id}"
+                                                method="POST">
+                                                <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                                                
+                                                <div class="media">
+                                                    <span class="pull-left">
+                                                        <img class="img img-circle media-object"
+                                                            t-att-src="website.image_url(user_id.partner_id, 'image_small')"
+                                                            style="width: 30px" />
+                                                    </span>
+                                                    <div class="media-body">
+                                                        <div class="message_rate">
+                                                            <div class="cancel_rating_class" title="Cancel Rating">
+                                                                <a title="Cancel Rating"></a>
+                                                            </div>
+                                                            <input id="message_rate" name="message_rate" class="form-control"
+                                                                type="hidden" />
+
+                                                            <div class="starRating" id="star">
+                                                                <div>
+                                                                    <div>
+                                                                        <div>
+                                                                            <div>
+                                                                                <input id="rating11" type="radio" name="rating"
+                                                                                    value="1">
+                                                                                    <label for="rating11">
+                                                                                        <span>1</span>
+                                                                                    </label>
+                                                                                </input>
+                                                                            </div>
+                                                                            <input id="rating12" type="radio" name="rating"
+                                                                                value="2">
+                                                                                <label for="rating12">
+                                                                                    <span>2</span>
+                                                                                </label>
+                                                                            </input>
+                                                                        </div>
+                                                                        <input id="rating13" type="radio" name="rating" value="3">
+                                                                            <label for="rating13">
+                                                                                <span>3</span>
+                                                                            </label>
+                                                                        </input>
+                                                                    </div>
+                                                                    <input id="rating14" type="radio" name="rating" value="4">
+                                                                        <label for="rating14">
+                                                                            <span>4</span>
+                                                                        </label>
+                                                                    </input>
+                                                                </div>
+                                                                <input id="rating15" type="radio" name="rating" value="5">
+                                                                    <label for="rating15">
+                                                                        <span>5</span>
+                                                                    </label>
+                                                                </input>
+                                                            </div>
+                                                        </div>
+
+                                                    </div>
+                                                </div>
+                                                <div class="pull-left mb32" style="width: 75%">
+                                                    <input type="text" rows="1" readonly="true" name="short_description"
+                                                        style="margin-bottom:10px;" class="form-control"
+                                                        placeholder="Titolo della recensione.."></input>
+                                                    <textarea rows="3" name="comment" readonly="true"
+                                                        class="form-control" placeholder="Inserisci la tua opinione.."></textarea>
+                                                    <a t-if="website.user_id != user_id" disabled="disabled" class="btn btn-primary mt8 a-submit">
+                                                        Crea Recensione
+                                                    </a>
+                                                </div>
+                                            </form>
+                                        </t>
+                                        <t t-if="website.user_id != user_id">
+                                            <form id="comment" t-attf-action="/shop/product/comment/#{product.id}"
+                                                method="POST">
+                                                <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                                                <!--<span t-esc="product.id"/>-->
+                                                <div class="pull-left mb32" style="width: 75%">
+                                                    <div class="set_star">
+                                                        <div class="cancel_rating_class" title="Cancel Rating">
+                                                            <a title="Cancel Rating"></a>
+                                                        </div>
+
+                                                        <div class="starRating" id="star">
+                                                            <div>
+                                                                <div>
+                                                                    <div>
+                                                                        <div>
+                                                                            <input id="rating21" type="radio" name="review"
+                                                                                value="1">
+                                                                                <label for="rating21">
+                                                                                    <span>1</span>
+                                                                                </label>
+                                                                            </input>
+                                                                        </div>
+                                                                        <input id="rating22" type="radio" name="review" value="2">
+                                                                            <label for="rating22">
+                                                                                <span>2</span>
+                                                                            </label>
+                                                                        </input>
+                                                                    </div>
+                                                                    <input id="rating23" type="radio" name="review" value="3">
+                                                                        <label for="rating23">
+                                                                            <span>3</span>
+                                                                        </label>
+                                                                    </input>
+                                                                </div>
+                                                                <input id="rating24" type="radio" name="review" value="4">
+                                                                    <label for="rating24">
+                                                                        <span>4</span>
+                                                                    </label>
+                                                                </input>
+                                                            </div>
+                                                            <input id="rating25" type="radio" name="review" value="5">
+                                                                <label for="rating25">
+                                                                    <span>5</span>
+                                                                </label>
+                                                            </input>
+                                                        </div>
+
+                                                    </div>
+                                                    <input type="hidden" id="blog_post_id" name="message_rate"
+                                                        class="form-control" style="margin-bottom:10px;" />
+                                                    <input type="text" rows="1" name="short_description" class="form-control"
+                                                        placeholder="Titolo della recensione.."></input>
+                                                    <textarea rows="3" name="comment" class="form-control"
+                                                        placeholder="Inserisci la tua opinione.."></textarea>
+                                                    <input class="btn btn-primary mt8 a-submit" type="submit" value="Crea Recensione" id="submit_review"/>
+                                                </div>
+                                            </form>
+                                        </t>
+                                    </div>
+                                </t>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </template>
 </odoo>

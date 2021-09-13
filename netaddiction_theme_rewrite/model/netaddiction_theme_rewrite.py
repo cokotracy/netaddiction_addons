@@ -8,9 +8,7 @@ from odoo.http import request, route, Controller
 from odoo import models, fields
 from odoo.addons.odoo_website_wallet.controllers.main import WebsiteWallet as Wallet
 from odoo.addons.website_sale.controllers.main import WebsiteSale as Shop
-import locale
 
-locale.setlocale(locale.LC_ALL, 'it_IT.utf8')
 
 class SiteCategories(Shop):
     @route([

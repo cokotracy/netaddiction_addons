@@ -121,7 +121,9 @@
                 <span id="total_product_review_span" name="total_product_review_span">
                     <t t-esc="len(product.reviews_ids)"></t>
                 </span>
-                <t t-if="len(product.reviews_ids) &lt;= 1">Recensione
+                <t t-if="len(product.reviews_ids) == 0">Recensioni
+                </t>
+                <t t-if="len(product.reviews_ids) == 1">Recensione
                 </t>
                 <t t-if="len(product.reviews_ids) > 1">Recensioni</t>
                 <span>)</span>
@@ -130,7 +132,7 @@
     </template>
 
     <template id="preorder_info" inherit_id="website_sale.product_price" priority="30">
-        <xpath expr="//b[hasclass('oe_price')]" position="after">
+        <xpath expr="//div[hasclass('product_price')]" position="after">
             <t t-set="current" t-value="datetime.datetime.now()"/>
             <t t-if="product.out_date">
                 <t t-set="out_date" t-value="datetime.datetime.strptime(str(product.out_date) + ' 00:00:00.00000', '%Y-%m-%d %H:%M:%S.%f')"/>
@@ -138,7 +140,7 @@
             <t t-if="out_date">
                 <t t-if="out_date &gt; current">
                     <div class="d-block">
-                        <small class="text-primary">prenota ora e lo ricevi a <t t-esc="out_date.strftime('%B %Y')"/></small>
+                        <small class="text-primary font-weight-bold">Prenota ora e lo ricevi a <t t-esc="out_date.strftime('%B %Y')"/></small>
                         <div class="d-block mt-3">
                             <strong class="label"><i class="fa fa-info-circle mr-1 text-primary"></i>Prezzo Minimo Garantito</strong>
                             <br/>
