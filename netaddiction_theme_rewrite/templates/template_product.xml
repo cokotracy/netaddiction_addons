@@ -20,7 +20,7 @@
                             style="cursor:pointer; color:var(--primary);"
                             onclick="
                                 document.querySelector('#nav_tabs_link_description').click();
-                                document.querySelector('.te_s_shipping_info').scrollIntoView({behavior: 'smooth'});" 
+                                document.querySelector('.product_tabs_ept').scrollIntoView({behavior: 'smooth'});" 
                         >Leggi tutto</span>
                     </t>
                 </div>
