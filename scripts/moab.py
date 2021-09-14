@@ -132,7 +132,20 @@ def check_condition(product_cat, conditions, attributes):
     return is_valid
 
 
-_error = {"rewrite": [], "tag": [], "category": [], "brand": []}
+def remove_duplicate_attributes(product):
+    seen_ids = set()
+    duplicate_list = []
+    for attr in product.product_template_attribute_value_ids:
+        if attr.attribute_id.id not in seen_ids:
+            seen_ids.add(attr.attribute_id.id)
+        else:
+            duplicate_list.append(attr)
+    if duplicate_list:
+        product.write({"product_template_attribute_value_ids": [(3, attr.id) for attr in duplicate_list]})
+        self._cr.commit()
+
+
+_error = {"rewrite": [], "tag": [], "category": [], "brand": [], "duplicate_attrs": []}
 
 
 with open(RULES_FILE) as f:
@@ -176,6 +189,11 @@ for product in tqdm(products):
                             set_brand(operation["new_name"], product)
                         except Exception as e:
                             _error["brand"].append(f"{product.id}: {e}")
+    try:
+        remove_duplicate_attributes(product)
+    except Exception as e:
+        _error["duplicate_attrs"].append(f"{product.id}: {e}")
+
 
 with open("error_migration.json", "w") as fp:
     json.dump(_error, fp, sort_keys=True, indent=4, separators=(",", ": "))
