@@ -99,6 +99,7 @@ def set_redirect(product):
     redirect = self.env["website.rewrite"].create(
         {
             "name": f"Redirect: {product.display_name}",
+            "redirect_type": "301",
             "url_from": old_url,
             "url_rewrite": "custom_url",
             "url_to": product.website_url,
@@ -158,8 +159,6 @@ for product in tqdm(products):
             for operation in migration["operations"]:
                 if operation["conditions"]:
                     if not check_condition(product.categ_id, operation["conditions"], attribute_list):
-                        if product.id not in _error["conditions"]:
-                            _error["conditions"].append(product.id)
                         continue
                 if operation["new_type"] == "Tag":
                     try:
