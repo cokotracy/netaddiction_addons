@@ -1,0 +1,22 @@
+.list-group-item{
+    border:none !important;
+    box-shadow: 0 4px 8px 0 rgba(156, 156, 156, 0.1), 0 6px 20px 0 rgba(156, 156, 156, 0.1);
+}
+.badge-pill{
+    background-color: var(--primary) !important;
+}
+.o_portal_my_details > h4 > a{
+    border:2px solid var(--primary);
+    font-size: 13px;
+    font-weight: bold;
+    padding-right: 0.6em;
+    padding-left: 0.6em;
+    border-radius: 10rem;
+    transition:0.2s;
+    display: inline-block;
+    margin-top:0 !important;
+    color: var(--primary) !important;
+}
+.o_portal_my_details address i{
+    position:static !important;
+}
