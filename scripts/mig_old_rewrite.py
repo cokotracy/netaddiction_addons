@@ -5,7 +5,7 @@ import time
 from tqdm import tqdm
 
 # Change with correct path
-URLS_FILE = "/Users/matteoserafini/sviluppo/mcom_odoo/netaddiction_addons/scripts/old_urls.json"
+URLS_FILE = "/opt/Rapsodoo/netaddiction_addons/scripts/old_urls.json"
 
 with open(URLS_FILE) as f:
     urls = json.load(f)
