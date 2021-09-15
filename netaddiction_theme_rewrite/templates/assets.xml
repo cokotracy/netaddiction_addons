@@ -9,6 +9,7 @@
     <template id="netaddiction_theme_rewrite_canonical" inherit_id="portal.frontend_layout">
         <xpath expr="//meta[last()]" position="after">
             <t t-set="current_url" t-value="website._get_canonical_url(canonical_params=canonical_params).replace('/it_IT/', '/')"/>
+            
             <!-- AGGIUNGE IN HEAD PER LA HOME --> 
             <t t-if="(request.env['ir.config_parameter'].sudo().get_param('web.base.url') + '/') == current_url">
                 <link href="/netaddiction_theme_rewrite/static/src/css/home.css" rel="stylesheet"/>
@@ -27,6 +28,11 @@
             <!-- AGGIUNGE IN HEAD PER I TERMINI DI SPEDIZIONE -->
             <t t-if="'/costi-metodi-spedizione/' in current_url">
                 <link href="/netaddiction_theme_rewrite/static/src/css/shipping.css" rel="stylesheet"/>
+            </t>
+
+            <!-- AGGIUNGE IN HEAD LA PAGINA UTENTE -->
+            <t t-if="request.env['ir.config_parameter'].sudo().get_param('web.base.url') + '/my' == current_url">
+                <link href="/netaddiction_theme_rewrite/static/src/css/user_home.css" rel="stylesheet"/>
             </t>
 
             <!-- AGGIUNGE IN HEAD PER LE RICERCHE -->

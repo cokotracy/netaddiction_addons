@@ -106,6 +106,39 @@
         </xpath>
     </template>
 
+    <template id="header_style_10_custom" inherit_id="theme_clarico_vega.customize_header_style_10">
+        <xpath expr="//div[hasclass('te_user_account')]" position="replace">
+            <div class="dropdown te_user_account" t-ignore="true" t-if="not user_id._is_public()">
+                <a href="#" class="dropdown-toggle btn-link" data-toggle="dropdown">
+                        <span class="fa fa-user-o"/>
+                </a>
+                <div class="dropdown-menu dropdown-menu-right js_usermenu" role="menu">
+                    <a role="menuitem" class="dropdown-item te_user_name">
+                        <span class="te_user_drop_item">Ciao,
+                            <span class="te_user_drop_item"
+                                    t-esc="user_id.name[:15] + '...' if user_id.name and len(user_id.name) &gt; 16 else user_id.name"/>
+                        </span>
+                    </a>
+                    <a href="/my/home" role="menuitem" class="dropdown-item">
+                        <span class="fa fa-user-o"/>
+                        <span class="te_user_drop_item">Account
+                        </span>
+                    </a>
+                    <a href="/my/orders" role="menuitem" class="dropdown-item">
+                        <span class="fa fa-pie-chart"/>
+                        <span class="te_user_drop_item">Ordini
+                        </span>
+                    </a>
+                    <a id="o_logout" class="dropdown-item" t-attf-href="/web/session/logout?redirect=/"
+                        role="menuitem">
+                        <span class="fa fa-sign-out"/>
+                        <span class="te_user_drop_item">Esci</span>
+                    </a>
+                </div>
+            </div>
+        </xpath>
+    </template>
+
     <template id="custom_close_btn" inherit_id="theme_clarico_vega.vertical_menu_ept_10">
         <xpath expr="//a[hasclass('te_menu_btn_close')]" position="replace">
             <a href="#" class="te_menu_btn_close fa fa-times-circle te_menu_icon_close"></a>
@@ -144,6 +177,28 @@
                     </t>
                 </div>
             </t>
+        </xpath>
+    </template>
+
+    <template id="cart_popover_ept_custom" inherit_id="theme_clarico_vega.cart_popover_ept">
+        <xpath expr="//div[hasclass('te_cart_btn')]" position="replace">
+            <div class="te_cart_btn">
+                <a role="button" class="btn btn-primary te_theme_button mb-2" href="/shop/cart">
+                    Vai al carrello (<t t-esc="website_sale_order.cart_quantity" /> prodotti)
+                </a>
+                <a role="button" class="btn btn-primary te_theme_button" href="/shop/checkout?express=1">
+                    Vai al pagamento
+                </a>
+            </div>
+        </xpath>
+    </template>
+
+    <template id="portal_home_gridview" inherit_id="portal.portal_my_home" priority="30">
+        <xpath expr="//div[hasclass('o_portal_docs')]" position="attributes">
+            <attribute name="id">portal_grid</attribute>
+        </xpath>
+        <xpath expr="//div[hasclass('o_portal_my_home')]/h3" position="replace">
+            <h3 class="page-header">Riepilogo</h3>
         </xpath>
     </template>
 
@@ -639,5 +694,79 @@
                 </div>
             </div>
         </section>
+    </template>
+
+
+    <template id="blank_details" inherit_id="portal.portal_layout" priority="30">
+        <xpath expr="//t[@t-if='my_details']/div[hasclass('row')]" position="attributes">
+            <attribute name="class">row max_width_1000 mx-auto justify-content-between mt-4</attribute>
+        </xpath>
+        <xpath expr="//div[hasclass('row')]/div[@t-attf-class='col-12 col-md col-lg-6']" position="attributes">
+            <attribute name="t-attf-class">col-lg-12 col-xl-12 p-0</attribute>
+        </xpath>
+        <xpath expr="//div[@id='o_my_sidebar']" position="attributes">
+            <attribute name="class">col-lg-12 col-md-12 o_my_sidebar p-0</attribute>
+        </xpath>
+        <xpath expr="//div[@id='o_my_sidebar']/div[hasclass('o_portal_my_details')]/h4/a[hasclass('btn-link')]"
+               position="replace">
+            <a role="button" href="/my/account" class="btn btn-sm btn-link pull-right mt8">
+                <i class="fa fa-pencil mx-1"></i> Modifica
+            </a>
+        </xpath>
+        <xpath expr="//div[@id='o_my_sidebar']/div[hasclass('o_portal_my_details')]/hr" position="replace">
+            <attribute></attribute>
+        </xpath>
+
+        <xpath expr="//div[hasclass('o_portal_my_details')]/div" position="replace">
+            <address>
+                <t t-if="user_id.partner_id.name">
+                    <div class="w-100 d-inline-block py-3 border-bottom">
+                        <b class="text-primary">
+                            <p><i class="fa fa-user text-primary mx-1"/>  <span>Nome:</span></p>
+                        </b>
+                        <div>
+                            <small class="d-block pl-4" t-field="user_id.partner_id.name"/>
+                        </div>
+                    </div>
+                </t>
+                <t t-if="user_id.partner_id.city or user_id.partner_id.street2 or user_id.partner_id.state_id or user_id.partner_id.country_id or user_id.partner_id.zip">
+                    <div class="w-100 d-inline-block py-3 border-bottom">
+                        <b class="text-primary">
+                            <p><i class="fa fa-map-marker text-primary mx-1"/> <span>Indirizzo:</span></p>
+                        </b>
+                        <div class="pl-4">
+                            <small t-field="user_id.partner_id.street"/>
+                            <small t-field="user_id.partner_id.city"/>
+                            <small class="pl-1" t-field="user_id.partner_id.zip"/>
+                            <small t-field="user_id.partner_id.state_id"/>
+                            <small t-field="user_id.partner_id.country_id"/>
+                        </div>
+                    </div>
+                </t>
+                <t t-if="user_id.partner_id.phone">
+                    <div class="w-100 d-inline-block py-3 border-bottom">
+                        <b class="text-primary">
+                            <p><i class="fa fa-phone text-primary mx-1"/>  <span>Telefono:</span></p>
+                        </b>
+                        <div>
+                            <small class="d-block pl-4" t-field="user_id.partner_id.phone"/>
+                        </div>
+                    </div>
+                </t>
+                <t t-if="user_id.partner_id.email">
+                    <div class="w-100 d-inline-block py-3">
+                        <b class="text-primary">
+                            <p><i class="fa fa-envelope text-primary mx-1"/> <span>Email:</span></p>
+                        </b>
+                        <div>
+                            <small class="d-block pl-4" t-field="user_id.partner_id.email"/>
+                        </div>
+                    </div>
+                </t>
+            </address>
+        </xpath>
+        <xpath expr="//div[hasclass('o_portal')]/div[hasclass('row')]" position="attributes">
+            <attribute name="class">row align-items-center bg-white no-gutters rounded-top mb16</attribute>
+        </xpath>
     </template>
 </odoo>
