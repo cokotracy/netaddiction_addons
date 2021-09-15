@@ -9,7 +9,7 @@ from datetime import date
 from tqdm import tqdm
 
 # Change with correct path
-RULES_FILE = "migration_rules.json"
+RULES_FILE = "/opt/Rapsodoo/netaddiction_addons/scripts/migration_rules.json"
 
 
 def get_or_create_tag(name):
