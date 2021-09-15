@@ -145,7 +145,7 @@ def remove_duplicate_attributes(product):
         self._cr.commit()
 
 
-_error = {"rewrite": [], "tag": [], "category": [], "brand": [], "duplicate_attrs": []}
+_error = {"rewrite": [], "tag": [], "category": [], "brand": []}
 
 
 with open(RULES_FILE) as f:
@@ -189,10 +189,10 @@ for product in tqdm(products):
                             set_brand(operation["new_name"], product)
                         except Exception as e:
                             _error["brand"].append(f"{product.id}: {e}")
-    try:
-        remove_duplicate_attributes(product)
-    except Exception as e:
-        _error["duplicate_attrs"].append(f"{product.id}: {e}")
+    # try:
+    #     remove_duplicate_attributes(product)
+    # except Exception as e:
+    #     _error["duplicate_attrs"].append(f"{product.id}: {e}")
 
 
 with open("error_migration.json", "w") as fp:
