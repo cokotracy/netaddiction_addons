@@ -19,7 +19,6 @@ class SiteCategories(Shop):
     ], type='http', auth="public", website=True, sitemap=Shop.sitemap_shop)
     def shop(self, page=0, category=None, search='', ppg=False, **post):
         sup = super(SiteCategories, self).shop(page=page, category=category, search=search, **post)
-
         Category = request.env['product.public.category']
         if category:
             category = Category.sudo().search([('id', '=', int(category))], limit=1)

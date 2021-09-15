@@ -3,69 +3,12 @@
 	<template id="template_home_secondary" name="Vendita Videogiochi Libri e DVD Online - Multiplayer.com">
 		<t t-call="website.layout">
 			<t t-set="pageName" t-value="'homepage'" />
-			<div id="wrap" class="oe_structure oe_empty">
+			<div class="oe_structure oe_empty">
 				<section data-snippet="home_page_6" class="o_colored_level" data-name="Fashion page" style="">
-					<div id="wrap" class="oe_structure oe_empty" data-editor-message="DRAG BUILDING BLOCKS HERE">
-						<div id="myCarousel1578908302092" class="s_carousel s_carousel_default carousel slide te_s_slider_10" data-interval="10000" data-name="Full screen 6">
-							<ol class="carousel-indicators">
-								<li data-target="#myCarousel1578908302092" data-slide-to="0" class="active" />
-								<li data-target="#myCarousel1578908302092" data-slide-to="1" />
-							</ol>
-							<div class="carousel-inner te_arrow_small te_ts_style_7_inner">
-								<div class="carousel-item oe_custom_bg oe_img_bg o_colored_level position-relative" style="background-image: url(&quot;/theme_clarico_vega/static/src/img/snippets/slider_styles/style_7/1920_800.jpg&quot;); background-color:#3d3d3d;" data-name="Slide">
-									<div class="container d-none d-lg-block">
-										<div class="te_slider_10">
-                                            <div class="carousel-content te_slider_10_content o_colored_level px-2">
-												<div>
-													<p class="h2 o_default_snippet_text" style="max-width:500px;">
-                                                        Descrizione offerta
-													</p>
-												</div>
-											</div>
-											<div class="carousel-content o_colored_level">
-												<div class="s_btn text-left pt16 pb16 mt16" data-name="Buttons">
-													<a href="#" class="btn btn-primary te_theme_button">
-														Scopri di più
-													</a>
-												</div>
-											</div>
-										</div>
-									</div>
-								</div>
-								<div class="carousel-item oe_custom_bg oe_img_bg o_colored_level active position-relative" style="background-image: url(&quot;/theme_clarico_vega/static/src/img/snippets/slider_styles/style_7/1920_800.jpg&quot;); background-color:#3d3d3d;" data-name="Slide">
-									<div class="container d-none d-lg-block">
-										<div class="te_slider_10">
-                                            <div class="carousel-content te_slider_10_content o_colored_level px-2">
-												<div>
-													<p class="h2 o_default_snippet_text" style="max-width:500px;">
-                                                        Descrizione offerta
-													</p>
-												</div>
-											</div>
-											<div class="carousel-content o_colored_level">
-												<div class="s_btn text-left pt16 pb16 mt16" data-name="Buttons">
-													<a href="#" class="btn btn-primary te_theme_button">
-														Scopri di più
-													</a>
-												</div>
-											</div>
-										</div>
-									</div>
-								</div>
-								<div class="carousel-control-prev" data-target="#myCarousel1578908302092" data-slide="prev" role="img" aria-label="Previous" title="Previous">
-									<span class="carousel-control-prev-icon" />
-									<span class="sr-only">
-										Previous
-									</span>
-								</div>
-								<div class="carousel-control-next" data-target="#myCarousel1578908302092" data-slide="next" role="img" aria-label="Next" title="Next">
-									<span class="carousel-control-next-icon" />
-									<span class="sr-only">
-										Next
-									</span>
-								</div>
-							</div>
-						</div>
+					<div class="oe_structure oe_empty" data-editor-message="DRAG BUILDING BLOCKS HERE">
+						
+						<div class="oe_structure oe_empty"/>
+						
 						<section class="pb32 pt32 o_colored_level" data-name="Style 3">
 							<div class="container">
 								<div class="row">
@@ -241,9 +184,7 @@
 											Nome del prodotto
 										</p>
 									</section>
-									<section class="o_colored_level">
-										<div class="js_timer_div" />
-									</section>
+									<div class="oe_structure oe_empty"/>
 									<section class="o_colored_level">
 										<p class="te_offer_s3_text py-3 o_default_snippet_text">
 											€100
@@ -275,18 +216,9 @@
 						</div>
 					</div>
 				</section>
-				<section data-snippet="product_multiple_sliders" class="o_colored_level" data-name="Dual Product Slider">
-					<div class="container product_multiple_sliders flex_reverse_row">
-						<section class="row s_nb_column_fixed js_multi_slider align-items-end pt8 pb8 o_colored_level">
-							<div class="col-lg-4 product_col_sm align-self-stretch pr-0 align-items-end o_colored_level">
-								<div class="js_slider_snippet d-flex align-self-end h-100 align-items-top" name="product-slider" data-isemipro="true" data-exclude="data-limit,data-style" data-limit="3" data-ui_option="shopping_cart,wishlist,quick_view,sale_label,ratings" data-style="8" />
-							</div>
-							<div class="col-lg-8 product_col_lg py-0 pl-0 o_colored_level">
-								<div class="js_slider_snippet" name="product-slider" data-isemipro="true" data-slider_type="slider" data-exclude="data-style" data-ui_option="shopping_cart,wishlist,quick_view,sale_label,ratings" data-style="9" />
-							</div>
-						</section>
-					</div>
-				</section>
+
+				<div class="oe_structure oe_empty"/>
+
 				<section class="s_title_3_ept o_colored_level undefined o_cc o_cc5" data-snippet="s_title_3_ept" data-name="Title style 3">
 					<div class="container">
 						<div class="row s_nb_column_fixed">
