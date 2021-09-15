@@ -24,8 +24,26 @@
     font-weight: 600;
 }
 
+
+/*SPAZIO FILTRI CATEGORIA*/
+.te_shop_pager_top{
+    width:inherit !important;
+    margin:30px auto 50px auto !important;
+}
+/*immagine di categoria*/
+.img_category{
+    width:100%;
+}
+
 @media only screen and (min-width: 768px) {
     #products_grid_before{
         top:130px !important;
+    }
+
+    /*immagine di categoria*/
+    .img_category{
+        width:auto;
+        min-width:0;
+        max-width: 45%;
     }
 }
