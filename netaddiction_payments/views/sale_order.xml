@@ -12,6 +12,11 @@
             <xpath expr="//sheet//group[@name='order_details']/field[@name='payment_term_id']" position="attributes">
                 <attribute name="invisible">1</attribute>
             </xpath>
+            <xpath expr="//notebook/page[@name='other_information']" position="before">
+                <page string="Payments" name="payments">
+                   <field name="transaction_ids" />
+                </page>
+            </xpath>
         </field>
     </record>
 

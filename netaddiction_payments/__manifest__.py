@@ -14,7 +14,7 @@
 
     'website': "http://www.netaddiction.it",
     'category': 'Technical Settings',
-    'version': '14.0.1.1.0',
+    'version': '14.0.1.2.0',
     'depends': [
         'account',
         'product',
