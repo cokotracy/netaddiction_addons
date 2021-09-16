@@ -3,12 +3,11 @@
 	<template id="template_home_secondary" name="Vendita Videogiochi Libri e DVD Online - Multiplayer.com">
 		<t t-call="website.layout">
 			<t t-set="pageName" t-value="'homepage'" />
+			<div class="oe_structure oe_empty" />
 			<div class="oe_structure oe_empty">
 				<section data-snippet="home_page_6" class="o_colored_level" data-name="Fashion page" style="">
 					<div class="oe_structure oe_empty" data-editor-message="DRAG BUILDING BLOCKS HERE">
-						
-						<div class="oe_structure oe_empty"/>
-						
+						<div class="oe_structure oe_empty" />
 						<section class="pb32 pt32 o_colored_level" data-name="Style 3">
 							<div class="container">
 								<div class="row">
@@ -184,7 +183,7 @@
 											Nome del prodotto
 										</p>
 									</section>
-									<div class="oe_structure oe_empty"/>
+									<div class="oe_structure oe_empty" />
 									<section class="o_colored_level">
 										<p class="te_offer_s3_text py-3 o_default_snippet_text">
 											€100
@@ -203,6 +202,7 @@
 						</section>
 					</div>
 				</section>
+				<div class="oe_structure oe_empty" />
 				<section class="s_title_3_ept o_colored_level" data-snippet="s_title_3_ept" data-name="Title style 3">
 					<div class="container">
 						<div class="row s_nb_column_fixed">
@@ -216,9 +216,60 @@
 						</div>
 					</div>
 				</section>
-
-				<div class="oe_structure oe_empty"/>
-
+				<div class="oe_structure oe_empty" />
+				<section class="d-none d-xl-inline-block w-100 pt32 pb32 o_colored_level" data-snippet="offer_style_7" data-name="Style 7">
+					<div class="container">
+						<div class="row align-items-center">
+							<div class="col-lg-6 pb-0 pb-sm-3 pb-lg-0 o_colored_level">
+								<div class="t_img_hover_1 te_img_effect2 te_offer_s7_img_big">
+									<img class="img img-fluid" src="/theme_clarico_vega/static/src/img/snippets/slider_styles/style_5/785_700.jpg" loading="lazy" />
+									<div class="te_offer_big_img_content">
+									</div>
+								</div>
+								<div class="row align-items-center te_offer_s7_left">
+									<div class="col-lg-6 col-sm-6 col-md-6 o_colored_level">
+										<div class="t_img_hover_1 te_img_effect2 te_offer_s7_img_small">
+											<img class="img img-fluid" src="/theme_clarico_vega/static/src/img/snippets/offer_styles/style_6/470_451.png" loading="lazy" />
+										</div>
+										<div class="te_offer_small_img_content">
+										</div>
+									</div>
+									<div class="col-lg-6 col-sm-6 col-md-6 o_colored_level">
+										<div class="t_img_hover_1 te_img_effect2 te_offer_s7_img_small">
+											<img class="img img-fluid" src="/theme_clarico_vega/static/src/img/snippets/offer_styles/style_6/470_451.png" loading="lazy" />
+										</div>
+										<div class="te_offer_small_img_content">
+										</div>
+									</div>
+								</div>
+							</div>
+							<section class="col-lg-6 pt-3 pt-lg-0 o_colored_level">
+								<div class="row align-items-center te_offer_s7_right">
+									<div class="col-lg-6 col-sm-6 col-md-6 o_colored_level">
+										<div class="t_img_hover_1 te_img_effect2 te_offer_s7_img_small">
+											<img class="img img-fluid" src="/theme_clarico_vega/static/src/img/snippets/offer_styles/style_6/470_451.png" loading="lazy" />
+										</div>
+										<div class="te_offer_small_img_content">
+										</div>
+									</div>
+									<div class="col-lg-6 col-sm-6 col-md-6 o_colored_level">
+										<div class="t_img_hover_1 te_img_effect2 te_offer_s7_img_small">
+											<img class="img img-fluid" src="/theme_clarico_vega/static/src/img/snippets/offer_styles/style_6/470_451.png" loading="lazy" />
+										</div>
+										<div class="te_offer_small_img_content">
+										</div>
+									</div>
+								</div>
+								<div class="t_img_hover_1 te_img_effect2 te_offer_s7_img_big">
+									<img class="img img-fluid" src="/theme_clarico_vega/static/src/img/snippets/slider_styles/style_5/785_700.jpg" loading="lazy" />
+									<div class="te_offer_big_img2_content">
+									</div>
+								</div>
+							</section>
+						</div>
+					</div>
+				</section>
+				<div class="oe_structure oe_empty" />
 				<section class="s_title_3_ept o_colored_level undefined o_cc o_cc5" data-snippet="s_title_3_ept" data-name="Title style 3">
 					<div class="container">
 						<div class="row s_nb_column_fixed">
@@ -232,6 +283,7 @@
 						</div>
 					</div>
 				</section>
+				<div class="oe_structure oe_empty" />
 				<section class="pt4 pb4 o_colored_level undefined o_cc o_cc5" data-snippet="brand_slider" data-name="Brand Builder">
 					<div class="js_category_brand_snippet" data-isemipro="true" name="brand-slider" data-name="brand-slider" />
 				</section>
@@ -247,6 +299,7 @@
 						</div>
 					</div>
 				</section>
+				<div class="oe_structure oe_empty" />
 			</div>
 		</t>
 		<a href="https://www.instagram.com/multiplayer_com/" target="_blank" class="fab-instagram">

@@ -35,6 +35,21 @@
                 <link href="/netaddiction_theme_rewrite/static/src/css/user_home.css" rel="stylesheet"/>
             </t>
 
+            <!-- AGGIUNGE IN HEAD LA PAGINA ORDINI UTENTE -->
+            <t t-if="'/my/orders' in current_url">
+                <link href="/netaddiction_theme_rewrite/static/src/css/user_orders.css" rel="stylesheet"/>
+            </t>
+            <t t-if="'/my/purchase' in current_url">
+                <link href="/netaddiction_theme_rewrite/static/src/css/user_orders.css" rel="stylesheet"/>
+            </t>
+            <t t-if="'/my/quotes' in current_url">
+                <link href="/netaddiction_theme_rewrite/static/src/css/user_orders.css" rel="stylesheet"/>
+            </t>
+            <t t-if="'/my/invoices' in current_url">
+                <link href="/netaddiction_theme_rewrite/static/src/css/user_orders.css" rel="stylesheet"/>
+            </t>
+            
+
             <!-- AGGIUNGE IN HEAD PER LE RICERCHE -->
             <t t-if="'/shop?search=' in current_url">
                 <meta name="robots" content="noindex, nofollow" />

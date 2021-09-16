@@ -4,7 +4,9 @@
 *{
     font-family: 'Montserrat' !important;
 }
-
+main > #wrap{
+    min-height:110vh;
+}
 :root {
     --primary: #f6842a !important;
     --light-primary: #f0af7d !important;
