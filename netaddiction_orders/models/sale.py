@@ -357,3 +357,20 @@ class SaleOrder(models.Model):
         ctx['confirm_problem_order'] = True
         res = self.with_context(ctx).action_confirm()
         return res
+
+    def _cart_update(self, product_id=None, line_id=None, add_qty=0,
+                     set_qty=0, **kwargs):
+        if product_id and line_id:
+            line = self.env['sale.order.line'].sudo().browse(line_id)
+            product = self.env['product.product'].sudo().browse(product_id)
+            product_limit_qty = product.qty_single_order
+            if product_limit_qty > 0:
+                if set_qty:
+                    qty = set_qty
+                elif add_qty:
+                    qty = line.product_uom_qty + add_qty
+                if qty > product_limit_qty:
+                    return {'order_limit': product_limit_qty}
+        value = self._cart_update(product_id, line_id, add_qty, set_qty,
+                                  **kwargs)
+        return value

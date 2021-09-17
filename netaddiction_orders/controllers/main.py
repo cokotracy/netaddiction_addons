@@ -23,3 +23,15 @@ class NetaddictionWebsiteSale(WebsiteSale):
             order = request.website.sale_get_order()
         order.note = post.get('note', '')
         return True
+
+    @route()
+    def cart_update_json(self, product_id, line_id=None, add_qty=None,
+                         set_qty=None, display=True):
+        value = super().cart_update_json(
+            product_id, line_id, add_qty, set_qty, display)
+        if value and \
+                value.get('order_limit', 0) and \
+                value.get('cart_quantity', 0) in value and \
+                value['cart_quantity'] > value['order_limit']:
+            del value['cart_quantity']
+        return value

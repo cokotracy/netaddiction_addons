@@ -3,7 +3,7 @@
 
 {
     'name': 'Netaddiction Orders',
-    'version': '14.0.1.0.0',
+    'version': '14.0.1.1.0',
     'category': 'Sale',
     'author': 'Openforce',
     'license': 'LGPL-3',
@@ -13,7 +13,9 @@
         'website_sale',
         'payment',
         'netaddiction_payments',
+        'netaddiction_products',
         'affiliate_management',
+        'advance_website_all_in_one',
     ],
     'data': [
         'data/template_email.xml',
