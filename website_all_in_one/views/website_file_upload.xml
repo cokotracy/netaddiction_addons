@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <data>
+    <!-- <data>
 
 
 
-    	<!-- attachment_id field in res_users view -->
+    	
 		<record id="custom_view_order_form" model="ir.ui.view">
 	        <field name="name">sale.order.form.custom</field>
 	        <field name="model">sale.order</field>
@@ -20,8 +20,7 @@
 	        </field>
         </record>
         
-			
-	    <!-- Upload an Attachement on Payment Page -->
+		
 		<template id="payment_upload_attachement" inherit_id="website_sale.payment">
 			<xpath expr="//div[@id='payment_method']" position="before">
 			
@@ -63,5 +62,5 @@
 		</template>                             
 
 
-    </data>
+    </data> -->
 </odoo>

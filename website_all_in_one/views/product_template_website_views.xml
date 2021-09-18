@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <odoo>
 
-	<template id="assets_frontendss" inherit_id="website.assets_frontend">
+	<!-- <template id="assets_frontendss" inherit_id="website.assets_frontend">
 		<xpath expr="script[last()]" position="after">
 			<link rel="stylesheet" href="/website_all_in_one/static/src/css/customfilter.css"/>
 			<script type="text/javascript" src="/website_all_in_one/static/src/js/filter.js"></script>
@@ -13,7 +13,6 @@
 			<t t-set="enable_left_column" t-value="True"/>
 		</xpath>
 		<xpath expr="//div[@id='products_grid_before']" position="inside">
-			<!-- <t t-if="grouped_tasks"> --> 
 			<div class="card">
 			<form class="js_filtervalue" method="get">
 				<input type="hidden" name="search" t-att-value="search" />
@@ -82,7 +81,6 @@
 				</ul>
 			</form>
 			</div>
-			<!-- </t> -->
 		</xpath>
 		<xpath expr="//div[@id='products_grid_before']" position="attributes">
 			<attribute name="class">col-lg-3 d-none d-md-block</attribute>
@@ -90,5 +88,5 @@
 		<xpath expr="//div[@id='products_grid']" position="attributes">
 			<attribute name="class">col-lg-9</attribute>
 		</xpath>
-	</template>
+	</template> -->
 </odoo>

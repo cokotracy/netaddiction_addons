@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-
+<!-- 
 
 
 		<record id="view_odoo_website_giftwrap_tree_view" model="ir.ui.view">
@@ -46,5 +46,5 @@
 			action="action_odoo_website_giftwrap_menu" 
 			sequence="200" />
 		
-		
+		 -->
 </odoo>
