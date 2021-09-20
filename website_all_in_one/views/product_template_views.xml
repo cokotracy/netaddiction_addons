@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <odoo>
-
+<!-- 
 	<record id="view_product_filter_line_tree_view" model="ir.ui.view">
 		<field name="name">product.filter.line.tree.view</field>
 		<field name="model">filter.product.line</field>
@@ -108,6 +108,6 @@
 				</page>
 			</xpath>
 		</field>
-	</record>
+	</record> -->
 
 </odoo>

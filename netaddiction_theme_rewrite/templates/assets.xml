@@ -49,6 +49,10 @@
                 <link href="/netaddiction_theme_rewrite/static/src/css/user_orders.css" rel="stylesheet"/>
             </t>
             
+            <!-- AGGIUNGE IN HEAD LA PAGINA PAGAMENTO -->
+            <t t-if="'/shop/payment' in current_url">
+                <link href="/netaddiction_theme_rewrite/static/src/css/cart_payment.css" rel="stylesheet"/>
+            </t>
 
             <!-- AGGIUNGE IN HEAD PER LE RICERCHE -->
             <t t-if="'/shop?search=' in current_url">

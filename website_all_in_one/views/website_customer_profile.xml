@@ -2,7 +2,7 @@
 <odoo>
 	
 	
-	
+<!-- 	
 	<template id="customer_profile" inherit_id="website.assets_frontend" name="Customer profile Frontend">
        <xpath expr="." position="inside">
           <link rel='stylesheet' href='/website_all_in_one/static/src/css/profile_css.css'/>
@@ -120,7 +120,7 @@
                                       
 				    					<span class="btn btn-primary btn-file mt16">
 
-                                       <!-- Upload picture New--><img src="/website_all_in_one/static/src/img/uploadimage.png" title="Upload Picture" height="80px;" width="80px;" />
+                                       <img src="/website_all_in_one/static/src/img/uploadimage.png" title="Upload Picture" height="80px;" width="80px;" />
                                         <input type="file" name="picture" title="Upload Picture"/>
                                     	</span>  
                                     	</div>
@@ -489,8 +489,6 @@
 		</template>
 
 
-		<!-- Shipping Address Thank You page -->
-
 				<template id="shipping_address_thankyou" name="Shipping Address Thank You">
 					<t t-call="website.layout">
 						<div id="wrap">
@@ -513,8 +511,6 @@
 				</template> 
 
 
-		<!-- Billing Address Thank You page -->
-
 				<template id="billing_address_thankyou" name="Billing Address Thank You">
 					<t t-call="website.layout">
 						<div id="wrap">
@@ -536,8 +532,6 @@
 					</t>
 				</template>
 
-		
-				<!-- Profile Thank You page -->
 
 				<template id="profile_thankyou" name="Profile Thank You">
 					<t t-call="website.layout">
@@ -560,7 +554,6 @@
 					</t>
 				</template>
 
-				<!-- Error page -->
 				<template id="error_page" name="Address Error">
 					<t t-call="website.layout">
 						<div id="wrap">
@@ -590,5 +583,5 @@
 							<div class="oe_structure" />
 						</div>
 					</t>
-				</template>   
+				</template>    -->
 </odoo>

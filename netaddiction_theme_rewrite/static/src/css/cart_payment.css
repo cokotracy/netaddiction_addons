@@ -1,0 +1,7 @@
+
+.te_checkout_prod_attr_lines{
+    display:none !important;
+}
+#cart_products > tbody > tr{
+    border-bottom:1px solid #ededed !important;
+}

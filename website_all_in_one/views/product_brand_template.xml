@@ -2,7 +2,7 @@
 <odoo>
 
 	
-	<template id="website_product_brand" inherit_id='website_sale.product'>
+	<!--<template id="website_product_brand" inherit_id='website_sale.product'>
 			<xpath expr="//div[@id='wrap']//section/div[2][@class='row']//div[@id='product_details']//h1" position="after">
 				<br/>
 				<span style="font-size: 20px;padding: 5px 19px;border-radius: 5px;" class="label btn-primary" t-esc="product.brand_id.name" />
@@ -10,7 +10,7 @@
 			</xpath>
 	</template>
 	
-	<!-- <template id="product_labels" inherit_id="website_sale.products" active="True" customize_show="True" name="Show Product Brand Labels">
+	<template id="product_labels" inherit_id="website_sale.products" active="True" customize_show="True" name="Show Product Brand Labels">
 		<xpath expr="//div[hasclass('products_pager')]" position="after">
 			<br/>
 			<div class='justify-content-center container-fluid' style='text-align: center; padding-bottom: 10px;'> 
@@ -42,7 +42,7 @@
 				</form>
 			</div>
 		</xpath>
-	</template> -->
+	</template>
 
 	<template id="products_brands" inherit_id="website_sale.products" active="False" customize_show="True" name="Product Brands">
 		<xpath expr="//div[@id='products_grid_before']" position="before">
@@ -133,6 +133,6 @@
 			  </div>
 		  </t>
 										  
-		</template>
+		</template>-->
 	
 </odoo>

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <data>
+    <!-- <data>
 
         <record id="view_odoo_website_product_label_tree_view" model="ir.ui.view">
             <field name="name">odoo.website.product.label.tree.view</field>
@@ -132,10 +132,9 @@
         </template>
         
         
-        <!-- Product item used by /shop inherit -->
+
         <template id="product_listing_page_extended" inherit_id='website_sale.products_item'>
 
-            <!-- Add Label on Shop/Product Listing Page -->
             <xpath expr="//div[hasclass('oe_product_image')]/a" position="after">
                 <t t-if="product.select_label">
                      <div t-att-class="product.select_label.position">
@@ -156,10 +155,9 @@
         </template>
 
 
-        <!-- /shop/product single product page -->
+     
         <template id="single_product_page_extended" inherit_id='website_sale.product'>
 
-            <!-- Add Label on Single Product Page -->
             <xpath expr="//div[hasclass('row')][2]/div" position="inside">
                 <t t-if="product.select_label">
                      <div t-att-class="product.select_label.position">
@@ -180,5 +178,5 @@
         
                 
         
-    </data>
+    </data> -->
 </odoo>
