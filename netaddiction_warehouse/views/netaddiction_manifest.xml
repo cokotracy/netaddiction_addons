@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <odoo>
 
-    <record id="netaddiction_warehouse_manifest_tree" model="ir.ui.view">
+    <record id="netaddiction_warehouse_manifest_tree_2" model="ir.ui.view">
         <field name="name">netaddiction.warehouse.manifest.tree</field>
         <field name="model">netaddiction.manifest</field>
         <field name="groups_id" eval="[(4, ref('base.group_system'))]"/>
@@ -13,7 +13,7 @@
         </field>
     </record>
 
-    <record id="netaddiction_warehouse_manifest_form" model="ir.ui.view">
+    <record id="netaddiction_warehouse_manifest_form_2" model="ir.ui.view">
         <field name="name">netaddiction.warehouse.manifest.form</field>
         <field name="model">netaddiction.manifest</field>
         <field name="groups_id" eval="[(4, ref('base.group_system'))]"/>
@@ -24,19 +24,33 @@
                     <button name="create_manifest" class="btn-primary" type="object" string="Crea Manifest" />
                 </header>
                 <sheet>
-                    <group colspan="4">
+                    <group col="3">
                         <group>
                             <field name="carrier_id" readonly="1"/>
+                        </group>
+                        <group>
                             <field name="date_sent" readonly="1"/>
                         </group>
                         <group>
                             <field name="date" readonly="1"/>
-                            <field name="manifest_file1" readonly="1"/>
-                            <field name="manifest_file2" readonly="1"/>
                         </group>
                     </group>
-                    <group colspan="4">
-                        <field name="delivery_ids" >
+                    <group>
+                        <group>
+                            <field name="manifest_file1"
+                                   filename="manifest_file1_name"
+                                   readonly="1"/>
+                            <field name="manifest_file1_name" invisible="1"/>
+                        </group>
+                        <group>
+                            <field name="manifest_file2"
+                                   filename="manifest_file2_name"
+                                   readonly="1"/>
+                            <field name="manifest_file2_name" invisible="1"/>
+                        </group>
+                    </group>
+                    <group>
+                        <field name="delivery_ids" nolabel="1">
                             <tree name="delivery" >
                                 <field name="name"/>
                                 <field name="origin"/>
@@ -53,12 +67,10 @@
         </field>
     </record>
 
-    <record id="action_manifest" model="ir.actions.act_window">
+    <record id="netaddiction_warehouse_manifest_action" model="ir.actions.act_window">
         <field name="name">Manifest</field>
         <field name="res_model">netaddiction.manifest</field>
         <field name="view_mode">tree,form</field>
-        <field name="view_id" eval="False"/>
-        <field name="domain" eval=""/>
     </record>
 
 </odoo>
