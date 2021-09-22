@@ -1,10 +1,14 @@
+# Copyright 2019-2020 Openforce Srls Unipersonale (www.openforce.it)
+# Copyright 2021-TODAY Rapsodoo Italia S.r.L. (www.rapsodoo.com)
+# License LGPL-3.0 or later (https://www.gnu.org/licenses/lgpl).
+
 import datetime
 import base64
 import io
 
 from ftplib import FTP
 
-from odoo import fields, models
+from odoo import api, fields, models
 from odoo.exceptions import ValidationError
 
 SPECIAL_CHARS = {
@@ -137,7 +141,12 @@ class NetaddictionManifest(models.Model):
     _name = 'netaddiction.manifest'
     _description = "Netaddiction Manifest"
     _order = 'date desc'
-    _rec_name = 'date'
+    _rec_name = 'name'
+
+    name = fields.Char(
+        compute='_compute_name',
+        store=True,
+    )
 
     carrier_id = fields.Many2one(
         'delivery.carrier',
@@ -163,10 +172,22 @@ class NetaddictionManifest(models.Model):
         string="File1",
     )
 
+    manifest_file1_name = fields.Char()
+
     manifest_file2 = fields.Binary(
         attachment=True,
         string="File2",
     )
+
+    manifest_file2_name = fields.Char()
+
+    @api.depends('date', 'carrier_id')
+    def _compute_name(self):
+        for manifest in self:
+            name = manifest.date
+            if manifest.carrier_id:
+                name = f'{name} - {manifest.carrier_id.name}'
+            manifest.name = name
 
     def send_manifest(self):
         self.ensure_one()
@@ -176,42 +197,46 @@ class NetaddictionManifest(models.Model):
         prefix1 = params.get_param('bartolini_prefix_file1')
         prefix2 = params.get_param('bartolini_prefix_file2')
 
+        now = datetime.datetime.now()
+
+        try:
+            ftp = FTP(self.carrier_id.manifest_ftp_url)
+            ftp.login(
+                self.carrier_id.manifest_ftp_user,
+                self.carrier_id.manifest_ftp_password,
+                )
+            ftp.cwd(self.carrier_id.manifest_ftp_path)
+        except Exception as e:
+            raise ValidationError(
+                f'Impossibile connettersi al server FTP '
+                f'per il seguente motivo:\n'
+                f'{str(e)}'
+                )
+
         if brt == self.carrier_id:
             if not self.manifest_file1 or not self.manifest_file2:
                 raise ValidationError("Non hai ancora creato il manifest")
             try:
-                now = datetime.datetime.now()
-                ftp = FTP('ftp.brt.it')
-                ftp.login('0270443', 'neta1533')
-                ftp.cwd('IN')
                 name = now.strftime("%Y%m%d")
                 name1 = '%s%s.txt' % (prefix1, name)
                 name2 = '%s%s.txt' % (prefix2, name)
-
                 bio1 = io.BytesIO(base64.b64decode(self.manifest_file1))
                 ftp.storbinary('STOR %s' % name1, bio1)
                 sem1 = io.BytesIO(b'')
                 sem_name1 = '%s%s.chk' % (prefix1, name)
                 ftp.storbinary('STOR %s' % sem_name1, sem1)
-
                 bio2 = io.BytesIO(base64.b64decode(self.manifest_file2))
                 ftp.storbinary('STOR %s' % name2, bio2)
                 sem2 = io.BytesIO(b'')
                 sem_name2 = '%s%s.chk' % (prefix2, name)
                 ftp.storbinary('STOR %s' % sem_name2, sem2)
                 self.date_sent = now
-
             except Exception as e:
                 raise ValidationError(str(e))
-
         else:
             if self.manifest_file1 is False:
                 raise ValidationError("Non hai ancora creato il manifest")
             try:
-                now = datetime.datetime.now()
-                ftp = FTP('ftp.sda.it')
-                ftp.login('cli_c54566', 'inet54566')
-                ftp.cwd('recv')
                 bio = io.BytesIO(base64.b64decode(self.manifest_file1))
                 name = now.strftime("%Y%m%d%H%M")
                 ftp.storbinary('STOR %s.clidati.dat' % name, bio)
@@ -244,6 +269,12 @@ class NetaddictionManifest(models.Model):
 
         for delivery in self.delivery_ids:
             if delivery.delivery_read_manifest:
+                # Check delivery data
+                if not delivery.delivery_barcode:
+                    raise ValidationError(
+                        f"Definire un barcode per la "
+                        f"spedizione {delivery.name}"
+                        )
                 nation = delivery.sale_id.partner_shipping_id.country_id.code
 
                 payment = delivery.sale_order_payment_method
@@ -265,7 +296,7 @@ class NetaddictionManifest(models.Model):
                     riga += 'NETA30'
                 else:
                     riga += '      '
-                # FINE ESTERO                
+                # FINE ESTERO
 
                 riga += ' ' * 14
                 azienda = 'NetAddiction srl'
@@ -488,9 +519,13 @@ class NetaddictionManifest(models.Model):
                 riga += '\r\n'
                 file1.write(riga)
 
-        self.manifest_file1 = base64.b64encode(file1.getvalue().encode("utf8"))
-        self.manifest_file2 = None
-
+        self.write({
+            'manifest_file1': base64.b64encode(
+                file1.getvalue().encode("utf8")),
+            'manifest_file1_name': f'manifest-{self.id}-1.txt',
+            'manifest_file2': None,
+            'manifest_file2_name': '',
+            })
         file1.close()
 
     def create_manifest_bartolini(self):
@@ -513,6 +548,12 @@ class NetaddictionManifest(models.Model):
 
         for delivery in self.delivery_ids:
             if delivery.delivery_read_manifest:
+                # Check delivery data
+                if not delivery.delivery_barcode:
+                    raise ValidationError(
+                        f"Definire un barcode per la "
+                        f"spedizione {delivery.name}"
+                        )
                 payment = delivery.sale_order_payment_method
 
                 file1.write("  ")  # flag annullamento
@@ -542,9 +583,12 @@ class NetaddictionManifest(models.Model):
                 name = ''
                 if delivery.sale_id.partner_shipping_id.name:
                     name = delivery.sale_id.partner_shipping_id.name
+                '''
+                TODO: Replace `company_address` with correct info
                 if delivery.sale_id.partner_shipping_id.company_address:
                     name += delivery.sale_id.partner_shipping_id\
                         .company_address
+                '''
                 name = clean_win_chars(name)
                 name = replace_vowels(name)
 
@@ -672,7 +716,11 @@ class NetaddictionManifest(models.Model):
                 file1.write("   ")  # nazione
                 file1.write("\n")
 
-        self.manifest_file1 = base64.b64encode(file1.getvalue().encode("utf8"))
+        self.write({
+            'manifest_file1': base64.b64encode(
+                file1.getvalue().encode("utf8")),
+            'manifest_file1_name': f'manifest-{self.id}-1.txt',
+            })
         file1.close()
 
         file2 = io.StringIO()
@@ -735,5 +783,9 @@ class NetaddictionManifest(models.Model):
                 file2.write(" ")
                 file2.write("\n")
 
-        self.manifest_file2 = base64.b64encode(file2.getvalue().encode("utf8"))
+        self.write({
+            'manifest_file2': base64.b64encode(
+                file2.getvalue().encode("utf8")),
+            'manifest_file2_name': f'manifest-{self.id}-2.txt',
+            })
         file2.close()

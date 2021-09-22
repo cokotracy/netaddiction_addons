@@ -36,8 +36,8 @@
     <menuitem id="netaddiction_warehouse_manifest"
               name="Manifest"
               parent="stock.menu_stock_warehouse_mgmt"
-	      action="action_manifest"
-	      groups="base.group_user" />
+              action="netaddiction_warehouse_manifest_action"
+              groups="base.group_user" />
 
     <menuitem id="menu_netaddiction_products_movement"
               name="Ricarica/Sposta Prodotto"
