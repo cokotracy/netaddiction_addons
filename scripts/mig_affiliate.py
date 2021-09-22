@@ -36,6 +36,11 @@ def set_as_affiliate(user_id):
     )
 
 
+def get_affiliate_program_id(user_id):
+    partner = partner_model_14.browse(user_id)
+    return partner.affiliate_program_id.id if partner.affiliate_program_id else 1
+
+
 def set_affiliate_orders(affiliate_id, partner_id):
     order_history = odoo9.read(
         "netaddiction.partner.affiliate.order.history",
@@ -66,7 +71,7 @@ def set_affiliate_orders(affiliate_id, partner_id):
                         "type_name": line["product_id"][0],
                         "sales_order_line_id": line["id"],
                         "convert_date": line["create_date"],
-                        "affiliate_program_id": 1,
+                        "affiliate_program_id": get_affiliate_program_id(partner_id),
                         "product_quantity": line["product_uom_qty"],
                         "is_converted": True,
                         "commission_type": "d",
