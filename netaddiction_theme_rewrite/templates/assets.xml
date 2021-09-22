@@ -36,6 +36,11 @@
             </t>
 
             <!-- AGGIUNGE IN HEAD LA PAGINA ORDINI UTENTE -->
+            <t t-if="'/shop/payment' in current_url">
+                <link href="/netaddiction_theme_rewrite/static/src/css/shop_payment.css" rel="stylesheet"/>
+            </t>
+
+            <!-- AGGIUNGE IN HEAD LA PAGINA ORDINI UTENTE -->
             <t t-if="'/my/orders' in current_url">
                 <link href="/netaddiction_theme_rewrite/static/src/css/user_orders.css" rel="stylesheet"/>
             </t>

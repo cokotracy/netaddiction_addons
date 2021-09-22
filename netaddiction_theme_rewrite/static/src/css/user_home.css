@@ -5,7 +5,7 @@
 .badge-pill{
     background-color: var(--primary) !important;
 }
-.o_portal_my_details > h4 > a{
+.o_portal_my_details > h4 > a, .adress_edit, .details-btn{
     border:2px solid var(--primary);
     font-size: 13px;
     font-weight: bold;
