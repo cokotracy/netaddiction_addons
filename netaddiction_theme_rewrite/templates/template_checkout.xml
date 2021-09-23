@@ -93,7 +93,7 @@
 	</template>
 	<template id="custom_shipping_option" inherit_id="website_sale.payment">
 		<xpath expr="//div[@id='shipping_and_billing']" position="replace">
-			<div class="text-left mb-3 border-bottom">
+			<div class="text-left mb-3 p-3 border" style="box-shadow:0 4px 8px 0 rgb(156 156 156 / 10%), 0 6px 20px 0 rgb(156 156 156 / 10%) !important;">
 				<div id="shipping_and_billing">
 					<div class="d-block text-right pb-3">
 						<a class="adress_edit" href="/shop/checkout">
@@ -128,7 +128,7 @@
 	<template id="netaddition_order_payment_custom" inherit_id="netaddiction_orders.netaddition_order_payment">
 		<xpath expr="//div[hasclass('form-group')]" position="replace">
 			<div class="card mt-3">
-				<div class="text-left mb-3 border-bottom">
+				<div class="text-left">
 					<div class="form-group">
 						<h3>
 							Note
@@ -138,21 +138,23 @@
 						</textarea>
 					</div>
 				</div>
+			</div>
+			<div class="card mb-5">
 				<div class="custom-control custom-checkbox float-right mt-2">
-					<input type="checkbox" id="checkbox_cgv" class="custom-control-input" />
+					<input type="checkbox" id="checkbox_cgv" class="custom-control-input" checked="true"/>
 					<label for="checkbox_cgv" class="custom-control-label">
 						Accetto i
-						<a target="_BLANK" href="/shop/terms">
+						<a target="_BLANK" href="https://multiplayer.com/static/pdf/Condizioni-Generali-Multiplayer-Netaddiction.pdf?20210820">
 							termini di vendita
 						</a>
 					</label>
 				</div>
-			</div>
+			</div> 
 		</xpath>
 	</template>
 	<template id="order_info_custom" inherit_id="website_sale.short_cart_summary">
 		<xpath expr="//div[hasclass('js_cart_summary')]" position="replace">
-			<div class="card js_cart_summary" style="box-shadow:0 4px 8px 0 rgb(156 156 156 / 10%), 0 6px 20px 0 rgb(156 156 156 / 10%) !important;" t-if="website_sale_order and website_sale_order.website_order_line">
+			<div class="js_cart_summary border" style="box-shadow:0 4px 8px 0 rgb(156 156 156 / 10%), 0 6px 20px 0 rgb(156 156 156 / 10%) !important;" t-if="website_sale_order and website_sale_order.website_order_line">
 				<div class="card-body">
 					<h4 class="d-none d-xl-block">
 						Totale ordine
@@ -175,11 +177,11 @@
 
     <template id="cart_summary_custom" inherit_id="website_sale.cart_summary" priority="30">
         <xpath expr="//div[hasclass('card')]" position="replace">
-            <div class="card">
+            <div class="border" style="box-shadow:0 4px 8px 0 rgb(156 156 156 / 10%), 0 6px 20px 0 rgb(156 156 156 / 10%) !important;">
                 <div class="card-body p-xl-0">
                     <div class="toggle_summary d-xl-none">
-                        <b>Il tuo ordine: </b> <span id="amount_total_summary" class="monetary_field" t-field="website_sale_order.amount_total" t-options='{"widget": "monetary", "display_currency": website_sale_order.pricelist_id.currency_id}'/>
-                        <span class='fa fa-chevron-down fa-border float-right' role="img" aria-label="Details" title="Details"></span>
+                        <b>Il tuo ordine: </b> <span id="amount_total_summary" class="monetary_field text-primary" t-field="website_sale_order.amount_total" t-options='{"widget": "monetary", "display_currency": website_sale_order.pricelist_id.currency_id}'/>
+                        <span class='fa fa-chevron-down float-right text-primary' role="img" aria-label="Details" title="Details"></span>
                     </div>
                     <div t-if="not website_sale_order or not website_sale_order.website_order_line" class="alert alert-info">
                         <div class="container-fluid"> 
@@ -188,14 +190,14 @@
                             </div>
                         </div>
                     </div>
-                    <div class="toggle_summary_div d-none d-xl-block">
+                    <div class="toggle_summary_div d-none d-xl-block mt-4">
                         <table class="table table-striped table-sm" id="cart_products" t-if="website_sale_order and website_sale_order.website_order_line">
                             <thead>
                                 <tr>
-                                    <th class="border-top-0 td-img">Product</th>
+                                    <th class="border-top-0 td-img"><small class="text-primary">Prodotti</small></th>
                                     <th class="border-top-0"></th>
-                                    <th class="border-top-0 td-qty">Quantity</th>
-                                    <th class="border-top-0 text-center td-price">Price</th>
+                                    <th class="border-top-0 td-qty"><small class="text-primary">Quantità</small></th>
+                                    <th class="border-top-0 text-center td-price"><small class="text-primary">Prezzo</small></th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -209,10 +211,10 @@
                                             <small t-field="line.name_short" />
                                         </div>
                                     </td>
-                                    <td class='td-qty'>
+                                    <td class='td-qty text-center'>
                                         <div t-esc="line.product_uom_qty" />
                                     </td>
-                                    <td class="text-center td-price">
+                                    <td class="text-center td-price text-primary">
                                         <span t-field="line.price_reduce_taxexcl" style="white-space: nowrap;" t-options="{'widget': 'monetary', 'display_currency': website_sale_order.currency_id}" groups="account.group_show_line_subtotals_tax_excluded" />
                                         <span t-field="line.price_reduce_taxinc" style="white-space: nowrap;" t-options="{'widget': 'monetary', 'display_currency': website_sale_order.currency_id}" groups="account.group_show_line_subtotals_tax_included" />
                                     </td>
@@ -271,10 +273,10 @@
                                     <div class="clearfix" />
                                     <a role="button" href="/shop" class="btn btn-secondary mb32 d-none d-xl-inline-block">
                                         <span class="fa fa-chevron-left" />
-                                        <span class="">Continue Shopping</span>
+                                        <span class="">Continua lo shopping</span>
                                     </a>
                                     <a role="button" t-if="website_sale_order and website_sale_order.website_order_line" class="btn btn-primary float-right d-none d-xl-inline-block" href="/shop/checkout?express=1">
-                                        <span class="">Process Checkout</span>
+                                        <span class="">Vai al Checkout</span>
                                         <span class="fa fa-chevron-right" />
                                     </a>
                                     <div class="oe_structure" id="oe_structure_website_sale_cart_1"/>
@@ -300,4 +302,57 @@
         </xpath>
     </template>
 
+    <template id="reduction_code_ept" inherit_id="website_sale.reduction_code">
+        <xpath expr="//a[hasclass('show_coupon')]" position="replace">
+            <a role="button" class="mb-2 show_coupon te_show_cpn w-100 my-0 btn btn-outline-primary btn-lg d-sm-inline-block te_theme_button px-3 py-1 js_check_product a-submit" href="#">
+                Ho un codice promo
+            </a>
+        </xpath>
+    </template>
+    
+    <template id="voucher_code" inherit_id="website_sale.total" active="True" customize_show="True" name="Voucher Code">
+		<xpath expr="//div[hasclass('col-md-offset-7')]" position="replace">
+			
+		</xpath>
+	</template>
+	
+	<template id="website_wallet_on_payment_page" inherit_id="website_sale.payment" active="True" customize_show="True" name="Show Website Wallet">
+		<xpath expr="//div[@t-if='website_sale_order and website_sale_order.website_order_line']" position="replace"></xpath>
+
+		<xpath expr="//div[@id='payment_method']/h3" position="after">
+			<t t-set="no_footer" t-value="0"/>
+			<div t-if="website_sale_order and website_sale_order.website_order_line">
+				<t t-set="count" t-value="0"/>
+				<t t-foreach ="website_sale_order.website_order_line" t-as="line"> 
+				<div t-if ="line.product_id.id != website.wallet_product_id.id">
+					<t t-set="count" t-value="1"/>
+				</div>
+				</t>
+				<t t-if="count==1">
+					<div class="website-wallet border p-3" style="box-shadow:0 4px 8px 0 rgb(156 156 156 / 10%), 0 6px 20px 0 rgb(156 156 156 / 10%) !important;" t-if="website.wallet_product_id">
+						<div class="checkbox">
+							<t t-if="website_sale_order.is_wallet">
+								<div id="wallet_checked" style="font-size: 16px;margin-right: 5px;">
+									<span><i class="fa fa-check-square-o"></i></span>
+									<label class="text-primary" style="font-size: 18px;">Utilizza il credito del Wallet</label>
+								</div>
+								
+							</t>
+						</div>
+						<div>
+							<b>Disponi di: </b> 
+							<t t-set="partner_wallet" t-value="website.sudo().get_wallet_balance(website.currency_id)"/>
+							<span class="text-primary" style="font-size: 18px;" t-esc="partner_wallet"/>
+							<span class="text-primary" style="font-size: 18px;" t-esc="website.currency_id.symbol"/>
+							<br/><br/>
+							<small class="border-top pt-2">Selezionando questo metodo pagherai solo in caso ci fosse una differenza tra il tuo wallet e il prezzo dell'ordine.</small>
+						</div>
+					</div>
+				</t>
+			</div>
+		</xpath>    
+		<xpath expr="//div[@id='payment_method']/h3" position="replace">
+		
+		</xpath>
+	</template>
 </odoo>
