@@ -75,6 +75,33 @@
     padding:15px 20px 15px 20px !important;
 }
 
+#details h3, .o_portal_wrap .o_portal_navbar, .d-print-none, #introduction, .list-group-flush, .o_portal_submenu > li:last-child > span, .o_portal_submenu > .breadcrumb-item + .breadcrumb-item::before, .o_portal_submenu > li:not(.o_portal_submenu > li:last-child){
+    display: none !important;
+}
+
+.o_portal_submenu > li:last-child{
+    font-size: 18px !important;
+    font-weight: bold;
+    color:#ffffff !important;
+}
+
+.o_portal, .o_portal > div{
+    background-color: var(--secondary) !important;
+    margin-top:0 !important;
+    margin-bottom:0 !important;
+}
+
+#informations{
+    padding:15px !important;
+    box-shadow: 0 4px 8px 0 rgba(156, 156, 156, 0.1), 0 6px 20px 0 rgba(156, 156, 156, 0.1);
+    border:1px solid #ededed !important;
+}
+
+#sales_order_table{
+    box-shadow: 0 4px 8px 0 rgba(156, 156, 156, 0.1), 0 6px 20px 0 rgba(156, 156, 156, 0.1);
+    border:1px solid #ededed !important;
+}
+
 @media only screen and (min-width: 769px) {
     .o_portal_my_doc_table tr::after{
         display: none;

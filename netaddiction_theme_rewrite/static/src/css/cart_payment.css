@@ -1,0 +1,18 @@
+
+.te_checkout_prod_attr_lines{
+    display:none !important;
+}
+#cart_products > tbody > tr{
+    border-bottom:1px solid #ededed !important;
+}
+.payment_icon_list{
+    display: flex;
+}
+.o_payment_form > .card{
+    margin-bottom:50px !important;
+    border:1px solid #ededed !important;
+    box-shadow:0 4px 8px 0 rgb(156 156 156 / 10%), 0 6px 20px 0 rgb(156 156 156 / 10%) !important;
+}
+.oe_cart > br{
+    display: none;
+}
