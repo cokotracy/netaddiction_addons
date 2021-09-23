@@ -159,7 +159,7 @@ class NetaddictionOctopusProduct(models.Model):
                 '|', ('active', '=', False), ('active', '=', True)
             ])
             if product:
-                supplierinfo = product.seller_ids.search([
+                supplierinfo = product.seller_ids.filtered_domain([
                     ('name', '=', self.supplier_id.id),
                     ('product_code', '=', self.supplier_code),
                 ])
