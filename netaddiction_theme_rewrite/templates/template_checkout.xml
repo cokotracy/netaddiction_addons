@@ -104,10 +104,11 @@
 					<t t-set="same_shipping" t-value="bool(order.partner_shipping_id==order.partner_id or only_services)" />
 					<div>
 						<b>
-							<small class="text-primary"><i class="fa fa-map-marker mr-2"/>Indirizzo di Fatturazione</small>
-							<t t-if="same_shipping and not only_services">
-								&amp; Indirizzo di Spedizione
-							</t>
+							<small class="text-primary"><i class="fa fa-map-marker mr-2"/>Indirizzo di Fatturazione
+								<t t-if="same_shipping and not only_services">
+									&amp; Indirizzo di Spedizione
+								</t>
+							</small>
 						</b>
                         <br/>
 						<span t-esc="order.partner_id" t-options="dict(widget='contact', fields=['address'], no_marker=True, separator=', ')" class="address-inline" />
@@ -122,8 +123,7 @@
 				</div>
 			</div>
 		</xpath>
-		<xpath expr="//div[hasclass('oe_accept_cgv_button')]" position="replace">
-		</xpath>
+
 	</template>
 	<template id="netaddition_order_payment_custom" inherit_id="netaddiction_orders.netaddition_order_payment">
 		<xpath expr="//div[hasclass('form-group')]" position="replace">
@@ -331,12 +331,17 @@
 				<t t-if="count==1">
 					<div class="website-wallet border p-3" style="box-shadow:0 4px 8px 0 rgb(156 156 156 / 10%), 0 6px 20px 0 rgb(156 156 156 / 10%) !important;" t-if="website.wallet_product_id">
 						<div class="checkbox">
+							<t t-if="not website_sale_order.is_wallet">
+								<div id="not_wallet" style="font-size: 16px;margin-right: 5px;">
+									<span><i class="fa fa-square-o"></i></span>
+									<label class="text-primary" style="font-size: 18px;">Utilizza il credito del Wallet</label>
+								</div>
+							</t>
 							<t t-if="website_sale_order.is_wallet">
 								<div id="wallet_checked" style="font-size: 16px;margin-right: 5px;">
 									<span><i class="fa fa-check-square-o"></i></span>
 									<label class="text-primary" style="font-size: 18px;">Utilizza il credito del Wallet</label>
 								</div>
-								
 							</t>
 						</div>
 						<div>
@@ -354,5 +359,11 @@
 		<xpath expr="//div[@id='payment_method']/h3" position="replace">
 		
 		</xpath>
+	</template>
+
+	<template id="website_wallet_on_payment_page_custom" inherit_id="odoo_website_wallet.website_wallet_on_payment_page">
+		<xpath expr="//div[@t-if='website_sale_order and website_sale_order.website_order_line']" position="replace">
+	
+		</xpath>    
 	</template>
 </odoo>
