@@ -193,15 +193,6 @@
         </xpath>
     </template>
 
-    <template id="portal_home_gridview" inherit_id="portal.portal_my_home" priority="30">
-        <xpath expr="//div[hasclass('o_portal_docs')]" position="attributes">
-            <attribute name="id">portal_grid</attribute>
-        </xpath>
-        <xpath expr="//div[hasclass('o_portal_my_home')]/h3" position="replace">
-            <h3 class="page-header">Riepilogo</h3>
-        </xpath>
-    </template>
-
     <template id="product_shipping_info" inherit_id="website_sale.product_custom_text" priority="30">
         <!-- Shipping Information section  -->
         <xpath expr="//div[@id='product_details']/p[last()]" position="replace">
@@ -769,4 +760,5 @@
             <attribute name="class">row align-items-center bg-white no-gutters rounded-top mb16</attribute>
         </xpath>
     </template>
+
 </odoo>

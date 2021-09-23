@@ -4,9 +4,6 @@
 *{
     font-family: 'Montserrat' !important;
 }
-main > #wrap{
-    min-height:110vh;
-}
 :root {
     --primary: #f6842a !important;
     --light-primary: #f0af7d !important;
@@ -292,6 +289,48 @@ footer{
     height:27px;
 }
 
+/*rimuovo attributi da checkout*/
+.te_checkout_prod_attr_lines, .te_cart_prod_attr_lines{
+    display:none !important;
+}
+.js_cart_lines{
+    margin-top:30px;
+    margin-bottom: 0 !important;
+}
+.js_cart_lines tr{
+    margin-bottom:20px;
+    display:inline-table;
+    width:100%;
+}
+.js_cart_lines thead{
+    display:none;
+}
+.js_cart_lines tr .td-product_name{
+    width:70%;
+    margin-bottom:10px;
+}
+
+.te_cart_wizard_main{
+    display:none;
+}
+
+
+.button-rounded{
+    border:2px solid var(--primary);
+    color: var(--primary);
+    font-size: 16px;
+    font-weight: bold;
+    padding: 1em 1.5em;
+    border-radius: 10rem;
+    transition:0.2s;
+}
+
+
+header nav.navbar .header_middle{
+    position: relative !important;
+    z-index:1 !important;
+}
+
 @media only screen and (min-width: 768px) {
     #wrapwrap > main{
         margin-top:0px;
@@ -381,5 +420,11 @@ footer{
         width:275px;
         height: 45px;
         background-image:url(../img/logo.png);
+    }
+    .te_cart_wizard_main{
+        display:block;
+    }
+    .js_cart_lines{
+        margin-top:0px;
     }
 }

@@ -9,11 +9,11 @@
                             <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()" />
                             <div class="container-fluid"> 
                                 <div class="col-md-12 text-center">
-                                    <img class="img img-responsive col-xs-12 w-75 w-md-50 mt-3 mb-3" src="/netaddiction_theme_rewrite/static/src/img/pig-money.png"  alt="Odoo CMS - a big picture" style="max-width:100%"/>
+                                    <img class="img img-responsive col-xs-12 w-100 w-md-50 w-md-50 mt-3 mb-3" src="/netaddiction_theme_rewrite/static/src/img/pig-money.png"  alt="Odoo CMS - a big picture" style="max-width:100%"/>
                                     <h2>IL TUO SALDO</h2>
                                     <span class="currency" t-esc="wallet" t-options="{'widget': 'monetary', 'display_currency': website.currency_id}"/>
                                     <div id="submit_wallet" onClick="document.querySelector('#charge-form').classList.remove('d-none');" class="d-block mt-5 mb-5">
-                                        <a role="button" class="charge-coin" href="#">RICARICA IL TUO CONTO</a>
+                                        <a role="button" class="button-rounded" href="#">RICARICA IL TUO CONTO</a>
                                     </div>
                                     
                                     <div class="wrap d-none" id="charge-form">
