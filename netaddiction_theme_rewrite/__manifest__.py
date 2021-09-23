@@ -3,7 +3,7 @@
 {
     'name': 'Netaddiction Theme Rewrite',
     'category': 'eCommerce',
-    'version': '14.0.1.0.0',
+    'version': '14.0.2.0.0',
     'author': 'Netaddiction',
     'license': 'LGPL-3',
     'depends': [
@@ -17,7 +17,9 @@
         'product_bundle_pack',
         'advance_website_all_in_one',
         'website_all_in_one',
-        'product_template_tags'
+        'product_template_tags',
+        'wk_variant_search',
+        'website_seo_pro',
     ],
     'data': [
         'templates/assets.xml',

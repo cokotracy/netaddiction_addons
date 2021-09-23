@@ -10,5 +10,14 @@
 
 [submodule "saydigital/sale-workflow"]
 	path = saydigital/sale-workflow
-	url = https://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@github.com/saydigital/sale-workflow.git
+	url = git@github.com:saydigital/sale-workflow.git
+	branch = 14.0
+[submodule "saydigital/ecommerce"]
+	path = saydigital/ecommerce
+	url = git@github.com:saydigital/ecommerce.git
+	branch = 14.0
+
+[submodule "saydigital/website"]
+	path = saydigital/website
+	url = git@github.com:saydigital/website.git
 	branch = 14.0

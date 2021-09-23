@@ -1,6 +1,8 @@
 import requests
 import json
 
+from tqdm import tqdm
+
 
 def get_users(page):
     url = f"http://staging2.multiplayer.com/api/user/?page={page}"
@@ -10,10 +12,10 @@ def get_users(page):
 
 
 def create_user(users):
-    for user in users:
+    for count, user in enumerate(tqdm(users)):
         if not user["email"]:
             continue
-        if self.env["res.users"].search([("login", "=", user["email"])]):
+        if self.env["res.users"].search([("login", "=", user["email"]), ("active", "in", [True, False])]):
             continue
         res_partner = self.env["res.partner"].search([("id", "=", user["odoo_id"])])
         if not res_partner:
@@ -37,10 +39,16 @@ def create_user(users):
         try:
             user = self.env["res.users"].with_context(no_reset_password=True).create(args)
             print(f"User created: {user.email}")
-            self._cr.commit()
         except Exception as e:
             global _error_log
             _error_log.append(f"{user['email']}: {e}")
+
+        # Commit on DB every 500 users
+        if not count % 500:
+            self._cr.commit()
+
+    # Commit the remaining users
+    self._cr.commit()
 
 
 _error_log = []

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-	<template id="website_giftwrap_aa" inherit_id="website_sale.cart" active="True" customize_show="True" name="Gift Wraps">
+	<!-- <template id="website_giftwrap_aa" inherit_id="website_sale.cart" active="True" customize_show="True" name="Gift Wraps">
 		<xpath expr="//div[@id='wrap']" position="replace">
 			<div id="wrap">
                 <div class="container oe_website_sale py-2">
@@ -14,7 +14,7 @@
                         <div class="col-12 col-xl-8 oe_cart">
                             <div class="row">
                                 <div class="col-lg-12">
-                                    <div t-if="abandoned_proceed or access_token" class="mt8 mb8 alert alert-info" role="alert"> <!-- abandoned cart choices -->
+                                    <div t-if="abandoned_proceed or access_token" class="mt8 mb8 alert alert-info" role="alert">
                                         <t t-if="abandoned_proceed">
                                             <p>Your previous cart has already been completed.</p>
                                             <p t-if="website_sale_order">Please proceed your current cart.</p>
@@ -109,7 +109,7 @@
             </div>
 		</xpath>
 
-	</template>
+	</template> -->
 	
 			
 </odoo>
