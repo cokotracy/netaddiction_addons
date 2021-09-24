@@ -12,19 +12,19 @@
             <field name="state">code</field>
         </record>
         <record id="email_template_stock_notification" model="mail.template">
-            <field name="name">Stock notification : Send by email</field>
+            <field name="name">Stock notification: Send by email</field>
             <field name="model_id" ref="website_stock_notify.model_product_stock_notification"/>
-            <field name="subject">${object.product_id.name} Is Available</field>
-            <field name="email_from">${(object.user_id.email_formatted or user.email_formatted) | safe}</field>
+            <field name="subject">${object.product_id.name} è di nuovo disponibile!</field>
+            <field name="email_from">no-reply@multiplayer.com</field>
             <field name="partner_to">${object.user_id.id}</field>
             <field name="email_to">${object.email}</field>
             <field name="body_html" type="html">
-    <div style="margin: 0px; padding: 0px;">
-        <p style="margin: 0px; padding: 0px; font-size: 13px;">
-            Dear Customer<br/>
-            Your Product <strong>${object.product_id.name}</strong> Is Available Now.
-        </p>
-    </div>
+                <div style="margin: 0px; padding: 0px;">
+                    <p style="margin: 0px; padding: 0px; font-size: 13px;">
+                        Caro cliente,<br/>
+                        Un prodotto a cui eri interessato é di nuovo disponibile.
+                    </p>
+                </div>
             </field>
         </record>
     </data>
