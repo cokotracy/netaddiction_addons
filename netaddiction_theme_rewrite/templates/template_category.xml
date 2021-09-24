@@ -1,18 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-	<!-- BACKOFFICE -->
-	<!-- INSERISCO IL CAMPO DESCRIZIONE NEL BACKEND DELLA CATEGORIA -->
-	<record id="product_public_category_inherit" model="ir.ui.view">
-		<field name="name">product.public.category.inherit</field>
-		<field name="model">product.public.category</field>
-		<field name="inherit_id" ref="website_sale.product_public_category_form_view" />
-		<field name="arch" type="xml">
-			<field name="parent_id" position="after">
-				<field name="description" />
-			</field>
-		</field>
-	</record>
-	<!-- BACKOFFICE -->
 	<!-- FRONTEND -->
 	<template id="category_info" inherit_id="website_sale.products">
 		<!-- INSERISCO IL TITOLO DELLA CATEGORIA -->

@@ -66,13 +66,6 @@ class SiteCategories(Shop):
         return sup
 
 
-#SOSTITUISCE LA HOME
-class CustomHome(Controller):
-    @route('/', type='http', auth='public', website=True)
-    def controller(self, **post):
-        preorder_list = request.env["product.template"].sudo().search([('out_date', '>', date.today().strftime("%Y-%m-%d"))], limit=20)
-        return request.render("netaddiction_theme_rewrite.template_home_secondary", {'preorder_list':preorder_list})
-
 #AGGIUNGE LA PAGINA PRIVACY
 class CustomPrivacy(Controller):
     @route('/privacy/', type='http', auth='public', website=True)
@@ -86,11 +79,6 @@ class CustomShipping(Controller):
         return request.render("netaddiction_theme_rewrite.template_shipping_terms", {})
 
 
-#AGGIUNGE ALLA FORM DELLE CATEGORIE IL CAMPO DI INSERIMENTO DESCRIZIONE
-class CategoryDescriptionInherit(models.Model):
-    _inherit = 'product.public.category'
-    description = fields.Text(name='description')
-    
 #AGGIUNGE PAGINE DINAMICHE PER I TAG
 class CustomTagPage(Controller):
     @route(['/tag/<string:tag_name>'], type='http',auth='public',website=True) 
