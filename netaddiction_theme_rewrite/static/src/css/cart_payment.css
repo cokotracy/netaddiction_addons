@@ -15,3 +15,6 @@
 .oe_cart > br{
     display: none;
 }
+.oe_accept_cgv_button{
+    display: none !important;
+}

@@ -164,7 +164,7 @@
 						<t t-call="website_sale.total">
 							<t t-set="no_rowspan" t-value="1" />
 						</t>
-						<a role="button" t-if="website_sale_order and website_sale_order.website_order_line" class="btn btn-secondary float-right d-none d-xl-inline-block" href="/shop/checkout?express=1">
+						<a id="order_limit_net" role="button" t-if="website_sale_order and website_sale_order.website_order_line" class="btn btn-secondary float-right d-none d-xl-inline-block">
 							<span>
 								Vai al Checkout
 							</span>
@@ -275,7 +275,7 @@
                                         <span class="fa fa-chevron-left" />
                                         <span class="">Continua lo shopping</span>
                                     </a>
-                                    <a role="button" t-if="website_sale_order and website_sale_order.website_order_line" class="btn btn-primary float-right d-none d-xl-inline-block" href="/shop/checkout?express=1">
+                                    <a id="order_limit_net" role="button" t-if="website_sale_order and website_sale_order.website_order_line" class="btn btn-primary float-right d-none d-xl-inline-block">
                                         <span class="">Vai al Checkout</span>
                                         <span class="fa fa-chevron-right" />
                                     </a>
@@ -290,7 +290,7 @@
                                     <span class="fa fa-chevron-left" />
                                     <span class="d-none d-md-inline">Continua lo shopping</span>
                                 </a>
-                                <a role="button" t-if="website_sale_order and website_sale_order.website_order_line" class="btn btn-primary float-right" href="/shop/checkout?express=1">
+                                <a id="order_limit_net" role="button" t-if="website_sale_order and website_sale_order.website_order_line" class="btn btn-primary float-right">
                                     <span class="">Vai al Checkout</span>
                                     <span class="fa fa-chevron-right" />
                                 </a>
@@ -315,10 +315,8 @@
 			
 		</xpath>
 	</template>
-	
-	<template id="website_wallet_on_payment_page" inherit_id="website_sale.payment" active="True" customize_show="True" name="Show Website Wallet">
-		<xpath expr="//div[@t-if='website_sale_order and website_sale_order.website_order_line']" position="replace"></xpath>
 
+	<template id="website_wallet_on_payment_page" inherit_id="website_sale.payment">
 		<xpath expr="//div[@id='payment_method']/h3" position="after">
 			<t t-set="no_footer" t-value="0"/>
 			<div t-if="website_sale_order and website_sale_order.website_order_line">

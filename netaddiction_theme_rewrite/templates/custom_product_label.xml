@@ -16,50 +16,27 @@
             </t>
 
             <div class="product-label-container position-absolute">
-                <!--label novità-->
                 <t t-if="current_reduced &lt;= product.create_date">
-                    <t t-if="out_date">
-                        <t t-if="out_date &lt;= current">
-                            <strong class="label label-news">NOVITÀ</strong>
-                        </t>
-                    </t>
-                    <t t-else="">
-                        <strong class="label label-news">NOVITÀ</strong>
-                    </t>
+                    <strong class="label label-news">NOVITÀ</strong>
                 </t>
-                <!--label prenotazione-->
                 <t t-if="out_date">
                     <t t-if="out_date &gt; current">
                         <strong class="label label-preorder">PRENOTAZIONE</strong>
                     </t>
                 </t>
-
-                <t t-if="product.sudo().virtual_available &lt; 1 and product.inventory_availability in ['always', 'threshold']">
-                    <t t-if="out_date">
-                        <t t-if="out_date &lt;= current">
-                            <strong class="label label-out">OUT OF STOCK</strong>
-                        </t>
-                    </t>
-                    <t t-else="">
+                <t t-if="product.qty_available_now &lt;= 0 and product.qty_sum_suppliers &lt;= 0">
+                    <t t-if="not out_date || out_date &lt; current">
                         <strong class="label label-out">OUT OF STOCK</strong>
                     </t>
                 </t>
-                <t t-else="">
-                    <!--label disponibile-->
-                    <t t-if="product.qty_available &gt; 0">
-                        <t t-if="out_date">
-                            <t t-if="out_date &lt;= current">
-                                <strong class="label label-in">DISPONIBILE</strong>
-                            </t>
-                        </t>
-                        <t t-else="">
-                            <strong class="label label-in">DISPONIBILE</strong>
-                        </t>
-                    </t>
-                    <!--label ordinabile-->
-                    <t t-else="">
-                        <strong class="label label-request">ORDINABILE</strong>
-                    </t>
+                <t t-if="product.qty_available_now > 0">
+                    <strong class="label label-in">DISPONIBILE</strong>
+                </t>
+                <t t-if="product.qty_available_now &lt;= 0 and product.qty_sum_suppliers > 0">
+                    <strong class="label label-request">ORDINABILE</strong>
+                </t>
+                <t t-if="out_date > current and product.sale_ok = false">
+                    <strong class="label label-out">SOLD OUT</strong>
                 </t>
             </div>
         </t>

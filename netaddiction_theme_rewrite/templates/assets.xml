@@ -5,6 +5,9 @@
             <!-- AGGIUNGE IN HEAD IN TUTTO IL SITO --> 
             <link href="/netaddiction_theme_rewrite/static/src/css/global.css" rel="stylesheet"/>
         </xpath>
+        <xpath expr="//script[last()]" position="after">
+            <script type="text/javascript" src="/netaddiction_theme_rewrite/static/src/js/check_limit.js"/>
+        </xpath>
     </template>
     <template id="netaddiction_theme_rewrite_canonical" inherit_id="portal.frontend_layout">
         <xpath expr="//meta[last()]" position="after">

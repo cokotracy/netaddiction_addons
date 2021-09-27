@@ -152,14 +152,13 @@ header nav.navbar .header_middle .te_search_popover .input-group input.form-cont
     transform:skew(-0.06turn, 0deg);
 }
 .product-label-container > .label-news{
-    background-color: #dc3545;
+    background-color: #663399;
 }
 .product-label-container > .label-preorder{
     background-color: #007bff;
 }
 .product-label-container > .label-out{
-    background-color: #ffc107;
-    color:#000;
+    background-color: #dc3545;
 }
 .product-label-container > .label-in{
     background-color: #28a745;

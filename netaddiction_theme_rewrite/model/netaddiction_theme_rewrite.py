@@ -10,7 +10,27 @@ from odoo import models, fields, tools
 from odoo.addons.odoo_website_wallet.controllers.main import WebsiteWallet as Wallet
 from odoo.addons.website_sale.controllers.main import WebsiteSale as Shop
 from odoo.exceptions import ValidationError
+from odoo.addons.website.controllers.main import Website
 
+class WebsiteCustom(Website):
+    @route(['/shop/cart/check_limit_order'], type='json', auth="public", methods=['POST'], website=True, csrf=False)
+    def cart_update_json(self):
+        order = request.website.sale_get_order(force_create=1)
+        for order_line in order.order_line:
+            prod = order_line.product_id
+
+            if prod.qty_single_order > 0:
+                if order_line.product_qty > prod.qty_single_order:
+                    return {'order_limit':prod.qty_single_order, 'product_name':prod.name}
+
+            if prod.qty_limit > 0:
+                orders = request.env['sale.order.line'].search([('product_id', '=', prod.id)])
+                sold = 0
+                for order in orders:
+                    sold = sold + order.product_qty
+                
+                if (sold + order_line.product_qty) >= prod.qty_limit:
+                    return {'order_limit_total':prod.qty_limit, 'product_name':prod.name}
 
 class SiteCategories(Shop):
     @route([
@@ -131,7 +151,7 @@ class WalletPageOverride(Wallet):
         sup = super(WalletPageOverride, self).add_wallet_balance()
         return request.render("netaddiction_theme_rewrite.add_wallet_balance", sup.qcontext)
 
-    
+
 #CUSTOM ADDRESS TEMPLATE
 class WebsiteSaleCustomAddress(Controller):
     @route(['/shop/address-edit'], type='http', methods=['GET', 'POST'], auth="public", website=True, sitemap=False)
