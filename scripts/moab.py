@@ -80,23 +80,23 @@ def set_brand(name, product):
 def check_condition(product_cat, conditions, attributes):
     for condition in conditions:
         if type(condition) is str:
-            if condition in attributes:
+            if condition.lower() in attributes:
                 is_valid = True
             else:
                 return False
         if type(condition) is list:
-            if any(x in condition for x in attributes):
+            if any(x.lower() in condition for x in attributes):
                 is_valid = True
             else:
                 return False
         if type(condition) is dict:
             if "category" in condition and condition["category"]:
-                if product_cat.name in condition["category"]:
+                if product_cat.name.lower() in [c.lower() for c in condition["category"]]:
                     is_valid = True
                 else:
                     return False
             if "exclude" in condition and condition["exclude"]:
-                if product_cat.name in condition["exclude"]:
+                if product_cat.name.lower() in [c.lower() for c in condition["exclude"]]:
                     return False
     return is_valid
 
@@ -122,7 +122,7 @@ with open(RULES_FILE) as f:
 ts = time.time()
 products = self.env["product.product"].search([])
 for count, product in enumerate(tqdm(products)):
-    attribute_list = [a.name for a in product.product_template_attribute_value_ids]
+    attribute_list = [a.name.lower() for a in product.product_template_attribute_value_ids]
     for attribute in product.product_template_attribute_value_ids:
         current_type = attribute.attribute_id.display_name
         current_attribute = attribute.name
