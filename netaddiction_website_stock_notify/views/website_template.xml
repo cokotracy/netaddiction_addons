@@ -3,11 +3,11 @@
 
     <template id="assets_frontend" inherit_id="website_sale.assets_frontend">
         <xpath expr="script[last()]" position="after">
-            <script type="text/javascript" src="/website_stock_notify/static/src/js/website_sale_notify.js"></script>
+            <script type="text/javascript" src="/netaddiction_website_stock_notify/static/src/js/website_sale_notify.js"></script>
         </xpath>
     </template>
 
-    <template id="website_stock_notify_button" name='stock product notification' inherit_id="website_sale.product" priority="8">
+    <template id="netaddiction_website_stock_notify_button" name='stock product notification' inherit_id="website_sale.product" priority="8">
         <xpath expr="//a[@id='add_to_cart']" position="after">
             <t t-if="product.type == 'product' and product.inventory_availability in ('always', 'threshold')">
                 <div class="o_product_notify" style="margin: 10px 0px 30px 0px;" t-if="not cart_qty and not product.virtual_available > 0">

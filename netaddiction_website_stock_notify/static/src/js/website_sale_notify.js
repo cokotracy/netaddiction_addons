@@ -1,4 +1,4 @@
-odoo.define('website_stock_notify.notify', function (require) {
+odoo.define('netaddiction_website_stock_notify.notify', function (require) {
   'use strict';
 
   var publicWidget = require('web.public.widget');

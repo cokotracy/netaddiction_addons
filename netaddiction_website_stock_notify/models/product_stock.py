@@ -32,5 +32,5 @@ class ProductStockNotification(models.Model):
 
     def _send_product_stock_notification(self):
         """Send notification to registered email id"""
-        template = self.env.ref("website_stock_notify.email_template_stock_notification", False)
+        template = self.env.ref("netaddiction_website_stock_notify.email_template_stock_notification", False)
         template.send_mail(res_id=self.id, force_send=False)
