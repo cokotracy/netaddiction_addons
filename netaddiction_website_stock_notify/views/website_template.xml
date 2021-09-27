@@ -14,7 +14,8 @@
                     <div t-attf-class="input-group #{_classes}" style="margin-top: 10px;">
                         <input type="email" id="email" class="form-control" placeholder="Inserisci la tua email" t-att-value="user_id.email" />
                         <div class="input-group-append">
-                            <button type="submit" class="btn btn-primary submit-notify"><i class="fa fa-envelope"></i> Avvisami</button>
+                            <button type="submit" class="btn btn-primary submit-notify">
+                                <i class="fa fa-envelope"></i> Avvisami</button>
                         </div>
                     </div>
                     <div class="o_notify_message alert alert-info d-none" style="margin-top: 10px;"></div>
