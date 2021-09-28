@@ -334,6 +334,10 @@ header nav.navbar .header_middle{
     display:none !important;
 }
 
+#modal_message .modal-body .img-error > img{
+    width:90% !important;
+}
+
 @media only screen and (min-width: 768px) {
     #wrapwrap > main{
         margin-top:0px;

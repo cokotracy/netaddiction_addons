@@ -273,7 +273,7 @@
                                     <div class="clearfix" />
                                     <a role="button" href="/shop" class="btn btn-secondary mb32 d-none d-xl-inline-block">
                                         <span class="fa fa-chevron-left" />
-                                        <span class="">Continua lo shopping</span>
+                                        <span>Continua lo shopping</span>
                                     </a>
                                     <a id="order_limit_net" role="button" t-if="website_sale_order and website_sale_order.website_order_line" class="btn btn-primary float-right d-none d-xl-inline-block">
                                         <span class="">Vai al Checkout</span>
@@ -287,8 +287,7 @@
                             <t t-call="website_sale.short_cart_summary"/>
                             <div class="d-xl-none mt-4">
                                 <a role="button" href="/shop" class="btn btn-secondary mb32">
-                                    <span class="fa fa-chevron-left" />
-                                    <span class="d-none d-md-inline">Continua lo shopping</span>
+                                    <span class="d-md-inline">Torna allo Shop</span>
                                 </a>
                                 <a id="order_limit_net" role="button" t-if="website_sale_order and website_sale_order.website_order_line" class="btn btn-primary float-right">
                                     <span class="">Vai al Checkout</span>
@@ -299,6 +298,8 @@
                     </div>
                 </div>
             </t>
+			
+			<t t-call="netaddiction_theme_rewrite.error_modal" />
         </xpath>
     </template>
 
@@ -353,6 +354,7 @@
 					</div>
 				</t>
 			</div>
+			<t t-call="netaddiction_theme_rewrite.error_modal"/>
 		</xpath>    
 		<xpath expr="//div[@id='payment_method']/h3" position="replace">
 		
@@ -363,5 +365,36 @@
 		<xpath expr="//div[@t-if='website_sale_order and website_sale_order.website_order_line']" position="replace">
 	
 		</xpath>    
+	</template>
+
+	<template id="error_modal">
+		<button id="error_modal" type="button" class="btn btn-primary d-none" data-toggle="modal" data-target="#modal_message"></button>
+			<!-- Modal -->
+		<div class="modal fade" id="modal_message" tabindex="-1" role="dialog" aria-labelledby="modal_messageLabel" aria-hidden="true">
+			<div class="modal-dialog" role="document">
+				<div class="modal-content">
+				<div class="modal-header border-none">
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						<span class="fa fa-times"></span>
+					</button>
+				</div>
+				<div class="modal-body">
+					<div class="container-fluid">
+						<div class="row">
+							<div class="col-sm img-error">
+							
+							</div>
+							<div class="col-sm text-error">
+							
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary" data-dismiss="modal">Chiudi</button>
+				</div>
+				</div>
+			</div>
+		</div>
 	</template>
 </odoo>
