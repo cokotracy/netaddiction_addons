@@ -24,6 +24,7 @@ class WebsiteCustom(Website):
                         return {'order_limit':prod.qty_single_order, 'product_name':prod.name,'qty_available_now':prod.qty_available_now, "qty_sum_suppliers":prod.qty_sum_suppliers, "out_date":prod.out_date, "sale_ok":prod.sale_ok}
 
                 if prod.qty_limit > 0:
+                    #FIXME
                     orders = request.env['sale.order.line'].search([('product_id', '=', prod.id)])
                     sold = 0
                     for order in orders:

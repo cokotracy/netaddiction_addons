@@ -279,7 +279,6 @@ class ProductProduct(models.Model):
 
     def _get_qty_suppliers(self):
         for item in self:
-            #import pdb;pdb.set_trace()
             item.qty_sum_suppliers = sum(
                 [int(sup.avail_qty) for sup in item.seller_ids]
             )
