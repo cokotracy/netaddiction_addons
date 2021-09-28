@@ -21,9 +21,10 @@ odoo.define('netaddiction_theme_rewrite.check_order_limit', function (require) {
                         return alert('Non Puoi ordinare più di '+data['order_limit']+' unità per questo prodotto: '+data['product_name']);
                     else if(data['order_limit_total'] != null)
                         return alert('Questo prodotto non è più vendibile: '+data['product_name']);
+                    else if(data.out_of_stock)
+                        return alert('Questo prodotto non è più disponibile: '+data['product_name']);
                 }
-                else
-                    return window.location = '/shop/checkout?express=1';
+                return window.location = '/shop/checkout?express=1';
             });
         },
     });
@@ -52,16 +53,17 @@ odoo.define('netaddiction_theme_rewrite.limit_product_payment', function(require
                         return alert('Non Puoi ordinare più di '+data['order_limit']+' unità per questo prodotto: '+data['product_name']);
                     else if(data['order_limit_total'] != null)
                         return alert('Questo prodotto non è più vendibile: '+data['product_name']);
+                    else if(data.out_of_stock)
+                        return alert('Questo prodotto non è più disponibile: '+data['product_name']);
                 }
-                else{
-                    var button = $(ev.target).find('*[type="submit"]')[0]
-                    if (button.id === 'o_payment_form_pay') {
-                        return this.payEvent(ev);
-                    } else if (button.id === 'o_payment_form_add_pm') {
-                        return this.addPmEvent(ev);
-                    }
-                    return;
+                
+                var button = $(ev.target).find('*[type="submit"]')[0]
+                if (button.id === 'o_payment_form_pay') {
+                    return this.payEvent(ev);
+                } else if (button.id === 'o_payment_form_add_pm') {
+                    return this.addPmEvent(ev);
                 }
+                return;
             });
         }
     });

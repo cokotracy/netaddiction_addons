@@ -279,8 +279,9 @@ class ProductProduct(models.Model):
 
     def _get_qty_suppliers(self):
         for item in self:
+            #import pdb;pdb.set_trace()
             item.qty_sum_suppliers = sum(
-                [int(sup.avail_qty) for sup in self.seller_ids]
+                [int(sup.avail_qty) for sup in item.seller_ids]
             )
     # TODO this search attribute was removed, check if it's necessary
     def _search_available_now(self, operator, value):

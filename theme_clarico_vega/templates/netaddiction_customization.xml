@@ -32,9 +32,39 @@
         </xpath>
     </template>
 
+    <template id="custom_ajax_modal_add_to_cart" inherit_id="theme_clarico_vega.ajax_cart_success_template" priority="23">
+        <xpath expr="//div[hasclass('shopping-line')]" position="replace">
+            <div class="shopping-line">
+                <strong class="text-primary">Prodotto aggiunto al carrello!</strong>
+            </div>
+        </xpath>
+
+        <xpath expr="//div[hasclass('ajax-sucess-bottom')]" position="replace">
+            <div class="ajax-sucess-bottom">
+                <div class="container-fluid te_cart_btn">
+                    <div class="row">
+                        <div class="col-sm">
+                            <a role="button" style="font-size:14px;" href="javascript:void(0)"
+                            class="mx-1 btn btn-primary float-right d-xl-inline-block ajax-sucess-continue te_theme_button">
+                                <span>Vai allo Shop</span>
+                            </a>
+                        </div>
+                        <div class="col-sm">
+                            <a role="button"
+                                style="font-size:14px;"
+                                class="mx-1 btn btn-primary float-right d-xl-inline-block ajax-sucess-checkout te_theme_button"
+                                href="/shop/checkout?express=1">
+                                <span>Vai al Carrello</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </xpath>
+    </template>
+
     <template id="custom_label_check">
         <t t-if="product">
-            <t t-set="product_product" t-value="request.env['product.product'].sudo().search([('product_tmpl_id','=', product.id)])"/>
             <t t-set="current" t-value="datetime.datetime.now()"/>
             <t t-set="current_reduced" t-value="(datetime.datetime.now() - datetime.timedelta(days = 20))"/>
             <t t-if="product.out_date">
@@ -50,15 +80,15 @@
                         <strong class="label label-preorder">PRENOTAZIONE</strong>
                     </t>
                 </t>
-                <t t-if="product_product.qty_available_now &lt;= 0 and product_product.qty_sum_suppliers &lt;= 0">
+                <t t-if="product.product_variant_id.qty_available_now &lt;= 0 and product.product_variant_id.qty_sum_suppliers &lt;= 0">
                     <t t-if="not out_date or out_date &lt; current">
                         <strong class="label label-out">OUT OF STOCK</strong>
                     </t>
                 </t>
-                <t t-if="product_product.qty_available_now &gt; 0">
+                <t t-if="product.product_variant_id.qty_available_now &gt; 0">
                     <strong class="label label-in">DISPONIBILE</strong>
                 </t>
-                <t t-if="product_product.qty_available_now &lt;= 0 and product_product.qty_sum_suppliers &gt; 0">
+                <t t-if="product.product_variant_id.qty_available_now &lt;= 0 and product.product_variant_id.qty_sum_suppliers &gt; 0">
                     <strong class="label label-request">ORDINABILE</strong>
                 </t>
                 <t t-if="out_date and out_date &gt; current and product.sale_ok == false">

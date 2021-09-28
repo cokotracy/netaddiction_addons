@@ -18,20 +18,33 @@ class WebsiteCustom(Website):
         order = request.website.sale_get_order(force_create=1)
         for order_line in order.order_line:
             prod = order_line.product_id
+            if prod.id > 9:
+                if prod.qty_single_order > 0:
+                    if order_line.product_qty > prod.qty_single_order:
+                        return {'order_limit':prod.qty_single_order, 'product_name':prod.name,'qty_available_now':prod.qty_available_now, "qty_sum_suppliers":prod.qty_sum_suppliers, "out_date":prod.out_date, "sale_ok":prod.sale_ok}
 
-            if prod.qty_single_order > 0:
-                if order_line.product_qty > prod.qty_single_order:
-                    return {'order_limit':prod.qty_single_order, 'product_name':prod.name}
-
-            if prod.qty_limit > 0:
-                orders = request.env['sale.order.line'].search([('product_id', '=', prod.id)])
-                sold = 0
-                for order in orders:
-                    sold = sold + order.product_qty
+                if prod.qty_limit > 0:
+                    orders = request.env['sale.order.line'].search([('product_id', '=', prod.id)])
+                    sold = 0
+                    for order in orders:
+                        sold = sold + order.product_qty
+                    
+                    if (sold + order_line.product_qty) >= prod.qty_limit:
+                        return {'order_limit_total':prod.qty_limit, 'product_name':prod.name,'qty_available_now':prod.qty_available_now, "qty_sum_suppliers":prod.qty_sum_suppliers, "out_date":prod.out_date, "sale_ok":prod.sale_ok}
                 
-                if (sold + order_line.product_qty) >= prod.qty_limit:
-                    return {'order_limit_total':prod.qty_limit, 'product_name':prod.name}
+                if(prod.sale_ok == False or prod.qty_sum_suppliers <= 0 and prod.qty_available_now <= 0):
+                    if(not prod.out_date or prod.out_date < date.today() or prod.sale_ok == False):     
+                        return {'out_of_stock':True, 'product_name':prod.name}
+    
+    
+    @route(['/get_product_from_id'], type='json', auth="public", methods=['POST'], website=True, csrf=False)
+    def get_product_from_id(self, product_id=None):
+        prod = request.env['product.product'].search([('id', '=', product_id)])
 
+        return {"qty_sum_suppliers": prod.qty_sum_suppliers, "sale_ok":prod.sale_ok, "qty_available_now":prod.qty_available_now, "out_date":prod.out_date}
+        
+
+    
 class SiteCategories(Shop):
     @route([
         '/shop',
