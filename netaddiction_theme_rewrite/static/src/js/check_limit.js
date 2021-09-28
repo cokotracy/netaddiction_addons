@@ -60,15 +60,16 @@ odoo.define('netaddiction_theme_rewrite.check_order_limit', function (require) {
 //                 if(data != null){
 //                     var message;
 //                     if(data['order_limit'] != null)
-//                         message = 'Non Puoi ordinare più di '+data['order_limit']+' unità per questo prodotto: '+data['product_name'];
+//                         message = '<span class="text-primary mb-3 d-block">Non Puoi ordinare più di '+data['order_limit']+' unità per questo prodotto:</span> '+data['product_name'];
 //                     else if(data['order_limit_total'] != null)
-//                         message = 'Questo prodotto non è più vendibile: '+data['product_name'];
+//                         message = '<span class="text-primary mb-3 d-block">Questo prodotto non è più vendibile:</span> '+data['product_name'];
 //                     else if(data.out_of_stock)
-//                         message = 'Questo prodotto non è più disponibile: '+data['product_name'];
+//                         message = '<span class="text-primary mb-3 d-block">Questo prodotto non è più disponibile:</span> '+data['product_name'];
 
 //                     if (message != null){
 //                         var button = document.querySelector('#error_modal');
-//                         document.querySelector('#modal_message .modal-body').innerHTML = '<p>'+message+'</p>';
+//                         document.querySelector('#modal_message .modal-body .img-error').innerHTML = '<img src="data:image/png;base64,'+data.image+'"/>';
+//                         document.querySelector('#modal_message .modal-body .text-error').innerHTML = '<p class="h5">'+message+'</p>';
 //                         button.click();
 //                         return;
 //                     }
