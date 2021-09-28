@@ -28,11 +28,9 @@ class SaleOrderLine(models.Model):
                  'qty_delivered')
     def _compute_product_updatable(self):
         super()._compute_product_updatable()
+        # https://youtu.be/lDqlasyMJog?t=2
         for line in self:
-            if line.state == 'problem' or line.order_id.state == 'problem':
-                line.product_updatable = True
-            else:
-                line.product_updatable = False
+            line.product_updatable = True
 
     @api.onchange('product_uom', 'product_uom_qty')
     def product_uom_change(self):
