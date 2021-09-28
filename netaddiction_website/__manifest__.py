@@ -1,7 +1,7 @@
 {
-    "name": "Netaddiction Enhancement",
+    "name": "Netaddiction Website",
     "summary": """
-        Netaddiction Enhancement
+        Netaddiction Website
     """,
     "author": "Netaddiction",
     "category": "Custom Development",
@@ -15,7 +15,6 @@
         "views/web/product.xml",
         "views/web/homepage.xml",
     ],
-    # "qweb": ["static/src/xml/*.xml"],
     "installable": True,
     "application": False,
 }

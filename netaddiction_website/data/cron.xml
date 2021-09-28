@@ -6,7 +6,7 @@
             <field name="interval_number">1</field>
             <field name="interval_type">days</field>
             <field name="numbercall">-1</field>
-            <field name="model_id" ref="model_netaddiction_enhancement"/>
+            <field name="model_id" ref="model_netaddiction_website_preorder"/>
             <field name="code">model.cron_product_preorder_toggle()</field>
             <field name="state">code</field>
         </record>

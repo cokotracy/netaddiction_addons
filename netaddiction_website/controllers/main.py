@@ -11,4 +11,4 @@ class CustomHome(Controller):
             .sudo()
             .search([("out_date", ">", date.today().strftime("%Y-%m-%d"))], limit=20)
         )
-        return request.render("netaddiction_enhancement.template_home_secondary", {"preorder_list": preorder_list})
+        return request.render("netaddiction_website.template_home_secondary", {"preorder_list": preorder_list})
