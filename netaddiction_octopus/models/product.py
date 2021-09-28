@@ -129,6 +129,7 @@ class NetaddictionOctopusProduct(models.Model):
         return {
             'name': 'Importazione prodotti Octopus',
             'view_id': False,
+            'view_mode': 'form',
             'res_model': 'product.product',
             'type': 'ir.actions.act_window',
             'target': 'current',
@@ -169,7 +170,6 @@ class NetaddictionOctopusProduct(models.Model):
             if can_add:
                 self.is_new = True
 
-    '''
     def add(self, commit=True, active=True):
         image = None
         template_id = None
@@ -205,12 +205,13 @@ class NetaddictionOctopusProduct(models.Model):
             'out_date': self.date,
             'description': self.description,
             'categ_id': self.category_id.id,
-            'attribute_value_ids': [(4, attribute.id, None)
-                                    for attribute
-                                    in self.attribute_ids],
+            # TODO: We need `attribute_value_ids`?
+            # 'attribute_value_ids': [(4, attribute.id, None)
+            #                         for attribute
+            #                         in self.attribute_ids],
             'property_cost_method': 'real',
             'property_valuation': 'real_time',
-            'image': image,
+            'image_1920': image,
             'type': 'product',
             'taxes_id': [(4, self.sale_tax_id.id, None)],
             'supplier_taxes_id': [(4, self.purchase_tax_id.id, None)],
@@ -228,7 +229,6 @@ class NetaddictionOctopusProduct(models.Model):
         if commit:
             self.env.cr.commit()
         return product
-    '''
 
     def chain(self, product, commit=True):
         context = {}
