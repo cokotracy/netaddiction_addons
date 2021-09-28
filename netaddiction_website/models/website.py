@@ -5,15 +5,14 @@ from datetime import date
 from odoo import models, fields
 
 
-class NetaddictionEnhancement(models.Model):
-    _name = "netaddiction.enhancement"
+class NetaddictionWebsitePreorder(models.TransientModel):
+    _name = "netaddiction.website.preorder"
 
     def cron_product_preorder_toggle(self):
         products = self.env["product.product"].search(
             [("out_date", "<=", date.today()), ("inventory_availability", "!=", "always")]
         )
-        for product in products:
-            product.inventory_availability = "always"
+        products.inventory_availability = "always"
 
 
 class CategoryDescriptionInherit(models.Model):
