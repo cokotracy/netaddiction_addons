@@ -28,16 +28,34 @@
               <td valign="top" style="font-size:13px;">
                 <div>
                   <br />
-                  Gentile ${object.name},<br />
-                  dall'account collegato a questa e-mail è stata richiesta una reimpostazione della password. Per modificarla fare clic sul seguente pulsante, il link resterà valido per le prossime 24 ore:<br />
-                  <div style="margin:16px 0px 16px 0px;">
-                    <a href="${object.signup_url}" style="background-color:#f58220;padding: 8px 16px 8px 16px; text-decoration: none; color: #fff; border-radius: 5px; font-size:13px;">
-                      Modifica password
-                    </a>
-                  </div>
-                  Se non è stata effettuata alcuna richiesta, ignorare questa e-mail.<br /><br />
-                  Grazie,<br />
-                  ${user.signature | safe}<br /><br />
+                  Ordine Articoli da Multiplayer.com n. ordine <b>${object.id}</b> del <b>${datetime.date.today()}</b><br /><br />
+                  =================================================
+                  <br />
+                  % for line in object.order_line
+                    % set code = '***'
+                    % for seller in line.product_id.seller_ids
+                        % if seller.name.id == object.partner_id.id
+                            % set code = seller.product_code
+                        % endif
+                    % endfor
+                    ${line.product_qty|int} x ${code} - ${format_amount(line.price_unit, object.currency_id)} - ${line.product_id.display_name}
+                    <br/>
+                  % endfor
+                  =================================================
+                  <br /><br />
+                  Totale Ordine: ${format_amount(object.amount_untaxed, object.currency_id)}
+                  <br/><br/>
+
+                  Vi preghiamo di evadere quanto prima possibile tutti i prodotti disponibili e di mantenere in backorder eventuali prodotti in prenotazione o non disponibili.
+                  <br/>
+                  Chiediamo inoltre di volerci avvisare se in ordine dovessero esserci prodotti fuori catalogo o non reperibili.
+                  <br/>
+                  Questo ordine <b>NON</b> sostituisce i precedenti.
+                  <br/>
+                  Per qualsiasi evenienza potrete contattare la nostra logistica al numero <b>07442462131</b>.
+                  <br/><br/>
+                  Cordiali saluti,<br />
+                  ${user.signature | safe}<br />
                 </div>
               </td>
             </tr>

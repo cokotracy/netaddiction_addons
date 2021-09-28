@@ -28,16 +28,10 @@
               <td valign="top" style="font-size:13px;">
                 <div>
                   <br />
-                  Gentile ${object.name},<br />
-                  dall'account collegato a questa e-mail è stata richiesta una reimpostazione della password. Per modificarla fare clic sul seguente pulsante, il link resterà valido per le prossime 24 ore:<br />
-                  <div style="margin:16px 0px 16px 0px;">
-                    <a href="${object.signup_url}" style="background-color:#f58220;padding: 8px 16px 8px 16px; text-decoration: none; color: #fff; border-radius: 5px; font-size:13px;">
-                      Modifica password
-                    </a>
-                  </div>
-                  Se non è stata effettuata alcuna richiesta, ignorare questa e-mail.<br /><br />
-                  Grazie,<br />
-                  ${user.signature | safe}<br /><br />
+                  Gentile ${object.partner_id.name},<br />
+                  La ricarica del suo portafoglio di <b>${object.add_amount}€</b>, è stata eseguita con successo.<br /><br />
+                  Cordiali saluti,<br /><br />
+                  ${user.signature | safe}<br />
                 </div>
               </td>
             </tr>

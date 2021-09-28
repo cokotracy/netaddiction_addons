@@ -28,10 +28,15 @@
               <td valign="top" style="font-size:13px;">
                 <div>
                   <br />
-                  Gentile cliente,<br />
-                  La ricarica del suo portafoglio è stata eseguita con successo.<br /><br />
-                  Cordiali saluti,<br /><br />
-                  ${user.signature | safe}<br />
+                  % set invited_users = ctx['invited_users']
+                  Gentile ${object.name or ''},<br />
+                  Hai aggiunto i seguenti utenti al tuo database ma non si sono ancora registrati:<br />
+                  <ul>
+                    % for invited_user in invited_users:
+                      <li>${invited_user}</li>
+                    % endfor
+                  </ul><br />
+                  Seguili in modo che possano accedere al tuo database e iniziare a lavorare con te.<br /><br />
                 </div>
               </td>
             </tr>
