@@ -12,7 +12,7 @@
         'purchase',
         'netaddiction_products',
     ],
-    'version': '14.0.1.0.1',
+    'version': '14.0.1.0.2',
     'data': [
         'data/cron.xml',
         'views/octopus.xml',
