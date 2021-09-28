@@ -9,18 +9,27 @@
 
     <template id="netaddiction_website_stock_notify_button" name='stock product notification' inherit_id="website_sale.product" priority="8">
         <xpath expr="//a[@id='add_to_cart']" position="after">
-            <t t-if="product.type == 'product' and product.inventory_availability in ('always', 'threshold')">
-                <div class="o_product_notify" style="margin: 10px 0px 30px 0px;" t-if="not cart_qty and not product.virtual_available > 0">
-                    <div t-attf-class="input-group #{_classes}" style="margin-top: 10px;">
-                        <input type="email" id="email" class="form-control" placeholder="Inserisci la tua email" t-att-value="user_id.email" />
-                        <div class="input-group-append">
-                            <button type="submit" class="btn btn-primary submit-notify">
-                                <i class="fa fa-envelope"></i> Avvisami</button>
+
+            <t t-set="current" t-value="datetime.datetime.now()"/>
+            <t t-if="product.out_date">
+                <t t-set="out_date" t-value="datetime.datetime.strptime(str(product.out_date) + ' 00:00:00.00000', '%Y-%m-%d %H:%M:%S.%f')"/>
+            </t>
+
+            <t t-if="product.sale_ok == False or product.product_variant_id.qty_sum_suppliers &lt;= 0 and product.product_variant_id.qty_available_now &lt;= 0">
+                <t t-if="not out_date or out_date &lt; current or product.sale_ok == False">
+                    <div class="o_product_notify">
+                        <small class="text-primary mt-2">Avvisami quando è disponibile:</small>
+                        <div t-attf-class="mb-3 input-group #{_classes}">
+                            <input class="col-auto col-md-6 form-control d-block" type="email" id="email" placeholder="Inserisci la tua email" t-att-value="user_id.email" />
+                            <div class="input-group-append">
+                                <button type="submit" class="btn btn-primary submit-notify">
+                                    <i class="fa fa-envelope"></i> Avvisami</button>
+                            </div>
                         </div>
+                        <div class="o_notify_message alert alert-info d-none" style="margin-top: 10px;"></div>
+                        <div class="o_notify_alert_message alert alert-warning d-none" style="margin-top: 10px;"></div>
                     </div>
-                    <div class="o_notify_message alert alert-info d-none" style="margin-top: 10px;"></div>
-                    <div class="o_notify_alert_message alert alert-warning d-none" style="margin-top: 10px;"></div>
-                </div>
+                </t>
             </t>
         </xpath>
     </template>

@@ -347,8 +347,8 @@
 							<t t-set="partner_wallet" t-value="website.sudo().get_wallet_balance(website.currency_id)"/>
 							<span class="text-primary" style="font-size: 18px;" t-esc="partner_wallet"/>
 							<span class="text-primary" style="font-size: 18px;" t-esc="website.currency_id.symbol"/>
-							<br/><br/>
-							<small class="border-top pt-2">Selezionando questo metodo pagherai solo in caso ci fosse una differenza tra il tuo wallet e il prezzo dell'ordine.</small>
+							<hr/>
+							<small class="pt-2">Selezionando questo metodo pagherai solo in caso ci fosse una differenza tra il tuo wallet e il prezzo dell'ordine.</small>
 						</div>
 					</div>
 				</t>

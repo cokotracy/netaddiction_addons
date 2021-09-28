@@ -15,6 +15,7 @@
     display: inline-block;
     margin-top:0 !important;
     color: var(--primary) !important;
+    background-color: #ffffff !important;
 }
 .o_portal_my_details address i{
     position:static !important;
