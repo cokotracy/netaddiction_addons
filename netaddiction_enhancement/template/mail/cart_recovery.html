@@ -27,9 +27,9 @@
             <tr>
               <td valign="top" style="font-size:13px;"><br />
                 <div>
-                  <h1 style="color:#A9A9A9; font-size: 36px; text-align: center;">CI STAI ANCORA PENSANDO?</h1>
+                  <h1 style="color:#f58220; font-weight:bold; font-size: 36px; text-align: center;">CI STAI ANCORA PENSANDO?</h1>
                   <div style="text-align: center;">
-                    <span style="font-size:14px;font-style: inherit; font-variant-ligatures: inherit; font-variant-caps: inherit; font-weight: inherit; text-align: inherit;">
+                    <span style="margin-top:10px; font-size:14px;font-style: inherit; font-variant-ligatures: inherit; font-variant-caps: inherit; font-weight: inherit; text-align: inherit;">
                       Stiamo tenendo gli articoli nel tuo carrello per te, ma non aspettare troppo a lungo! <b>Ordina oggi stesso</b>.
                     </span>
                   </div><br />
@@ -42,7 +42,7 @@
                             <img src="/web/image/product.product/${line.product_id.id}/image_128" style="width:100px;height: 100px; object-fit: contain;" alt="Product image">
                           </td>
                           <td>
-                            <strong>${line.product_id.display_name}</strong><br>${line.name}
+                            <strong>${line.name}</strong><br>
                           </td>
                           <td width="100px" align="right">
                             ${(line.product_uom_qty) | int} ${(line.product_uom.name)}
@@ -52,13 +52,11 @@
                     % endfor
                     <hr>
                   % endif
-                  <div style="text-align:center;margin: 16px 0px 16px 0px; font-size: 14px;">
+                  <div style="text-align:center;margin: 25px 0px 30px 0px; font-size: 14px;">
                     <a href="${object.get_base_url()}/shop/cart?access_token=${object.access_token}" target="_blank" style="background-color:#f58220;padding: 8px 16px 8px 16px; text-decoration: none; color: #fff; border-radius: 5px; font-size:13px;">
                       VAI AL TUO CARRELLO
                     </a>
-                  </div><br/>
-                  Cordiali saluti,<br />
-                  ${user.signature | safe}<br />
+                  </div>
                 </div>
               </td>
             </tr>
@@ -75,10 +73,10 @@
                 <p style="font-size: 11px; color: #FFF;">Multiplayer.com
                   <span>è parte del gruppo editoriale NetAddiction s.r.l.</span>
                 </p>
-                <p style="font-size: 11px; color: #FFF;">0744 2462990
-                  | <a href="mailto:shopping@multiplayer.com" style="color: #FFF;">shopping@multiplayer.com</a>
+                <p style="font-size: 11px; color: #FFF;">
+                  <a href="mailto:shopping@multiplayer.com" style="color: #FFF;">shopping@multiplayer.com</a>
                   | <a href="//multiplayer.com" style="color: #FFF;">www.multiplayer.com</a>
-                </p>
+                </p><br /><br />
               </td>
             </tr>
           </tbody>
