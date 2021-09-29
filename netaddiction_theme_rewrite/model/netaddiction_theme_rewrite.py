@@ -26,7 +26,7 @@ class WebsiteCustom(Website):
 
                 if prod.qty_limit > 0:
                     #FIXME
-                    orders = request.env['sale.order.line'].search([('product_id', '=', prod.id)])
+                    orders = request.env['sale.order.line'].sudo().search([('product_id', '=', prod.id)])
                     sold = 0
                     for order in orders:
                         sold = sold + order.product_qty
@@ -34,8 +34,8 @@ class WebsiteCustom(Website):
                     if (sold + order_line.product_qty) >= prod.qty_limit:
                         return {'image':prod.image_512,'order_limit_total':prod.qty_limit, 'product_name':prod.name,'qty_available_now':prod.qty_available_now, "qty_sum_suppliers":prod.qty_sum_suppliers, "out_date":prod.out_date, "sale_ok":prod.sale_ok}
                 
-                if(prod.sale_ok == False or prod.qty_sum_suppliers <= 0 and prod.qty_available_now <= 0):
-                    if(not prod.out_date or prod.out_date < date.today() or prod.sale_ok == False):     
+                if(prod.sudo().sale_ok == False or prod.sudo().qty_sum_suppliers <= 0 and prod.qty_available_now <= 0):
+                    if(not prod.out_date or prod.out_date < date.today() or prod.sudo().sale_ok == False):     
                         return {'image':prod.image_512,'out_of_stock':True, 'product_name':prod.name}
     
     
@@ -43,7 +43,7 @@ class WebsiteCustom(Website):
     def get_product_from_id(self, product_id=None):
         prod = request.env['product.product'].search([('id', '=', product_id)])
 
-        return {"qty_sum_suppliers": prod.qty_sum_suppliers, "sale_ok":prod.sale_ok, "qty_available_now":prod.qty_available_now, "out_date":prod.out_date}
+        return {"qty_sum_suppliers": prod.sudo().qty_sum_suppliers, "sale_ok":prod.sudo().sale_ok, "qty_available_now":prod.qty_available_now, "out_date":prod.out_date}
         
 
     
