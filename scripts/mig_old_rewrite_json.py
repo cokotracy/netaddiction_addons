@@ -22,7 +22,7 @@ def migrate_from_json():
             {
                 "name": f"Redirect: {product.display_name}",
                 "redirect_type": "301",
-                "url_from": url["old_url"],
+                "url_from": f"/{url['old_url']}",
                 "url_rewrite": "custom_url",
                 "url_to": product.website_url,
             }
