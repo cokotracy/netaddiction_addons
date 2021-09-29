@@ -15,8 +15,8 @@
                 <t t-set="out_date" t-value="datetime.datetime.strptime(str(product.out_date) + ' 00:00:00.00000', '%Y-%m-%d %H:%M:%S.%f')"/>
             </t>
 
-            <t t-if="product.sudo().sale_ok == False or product.sudo().product_variant_id.qty_sum_suppliers &lt;= 0 and product.product_variant_id.qty_available_now &lt;= 0">
-                <t t-if="not out_date or out_date &lt; current or product.sudo().sale_ok == False">
+            <t t-if="product.sale_ok == False or product.sudo().product_variant_id.qty_sum_suppliers &lt;= 0 and product.product_variant_id.qty_available_now &lt;= 0">
+                <t t-if="not out_date or out_date &lt; current or product.sale_ok == False">
                     <div class="o_product_notify">
                         <small class="text-primary mt-2">Avvisami quando è disponibile:</small>
                         <div t-attf-class="mb-3 input-group #{_classes}">
