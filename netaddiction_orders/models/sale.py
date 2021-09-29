@@ -81,6 +81,10 @@ class SaleOrder(models.Model):
     )
 
     def write(self, values):
+        # When a note is set on the order (f.e. from the ecommerce)
+        # the order pass to state problem to highlight that it need attention
+        if values.get('note', '').strip():
+            values['state'] = 'problem'
         res = super().write(values)
         # If a picking linked to an order it's in a pickup,
         # it's possible only to write the state in `problem` or `cancel`
