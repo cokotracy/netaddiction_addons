@@ -18,7 +18,8 @@ class WebsiteCustom(Website):
         order = request.website.sale_get_order(force_create=1)
         for order_line in order.order_line:
             prod = order_line.product_id
-            if prod.id > 9:
+      
+            if prod.type != 'service':
                 if prod.qty_single_order > 0:
                     if order_line.product_qty > prod.qty_single_order:
                         return {'image':prod.image_512,'order_limit':prod.qty_single_order, 'product_name':prod.name,'qty_available_now':prod.qty_available_now, "qty_sum_suppliers":prod.qty_sum_suppliers, "out_date":prod.out_date, "sale_ok":prod.sale_ok}
@@ -66,11 +67,13 @@ class SiteCategories(Shop):
         if category:
             preorder_list = request.env["product.template"].sudo().search([
                 ('out_date', '>', date.today().strftime("%Y-%m-%d")),
+                ('type', '!=', 'service'),
                 ('public_categ_ids', 'in', category.id)], limit=20)
 
             newest_list = request.env["product.template"].sudo().search([
                 ('create_date', '>=', (date.today() - timedelta(days = 20)).strftime("%Y-%m-%d")),
                 ('create_date', '<=', date.today().strftime("%Y-%m-%d")),
+                ('type', '!=', 'service'),
                 ('public_categ_ids', 'in', category.id),
                 '|',
                 ('out_date', '<=', date.today().strftime("%Y-%m-%d")), ('out_date', '=', False)
@@ -81,7 +84,7 @@ class SiteCategories(Shop):
                     ('create_date', '>=', (date.today() - timedelta(days = 20)).strftime("%Y-%m-%d")),
                     ('create_date', '<=', date.today().strftime("%Y-%m-%d")),
                     ('qty_invoiced', '>', 0),
-                    ('product_id', '>', 9),
+                    ('type', '!=', 'service'),
                     ('product_id.product_tmpl_id.public_categ_ids', 'in', category.id)
                 ], fields=['product_id'], groupby=['product_id'], limit=20, orderby="qty_invoiced desc"
             )
