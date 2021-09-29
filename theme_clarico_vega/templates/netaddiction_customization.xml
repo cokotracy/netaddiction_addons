@@ -80,7 +80,7 @@
                         <strong class="label label-preorder">PRENOTAZIONE</strong>
                     </t>
                 </t>
-                <t t-if="product.product_variant_id.qty_available_now &lt;= 0 and product.product_variant_id.qty_sum_suppliers &lt;= 0">
+                <t t-if="product.product_variant_id.qty_available_now &lt;= 0 and product.sudo().product_variant_id.qty_sum_suppliers &lt;= 0">
                     <t t-if="not out_date or out_date &lt; current">
                         <strong class="label label-out">OUT OF STOCK</strong>
                     </t>
@@ -88,7 +88,7 @@
                 <t t-if="product.product_variant_id.qty_available_now &gt; 0">
                     <strong class="label label-in">DISPONIBILE</strong>
                 </t>
-                <t t-if="product.product_variant_id.qty_available_now &lt;= 0 and product.product_variant_id.qty_sum_suppliers &gt; 0">
+                <t t-if="product.product_variant_id.qty_available_now &lt;= 0 and product.sudo().product_variant_id.qty_sum_suppliers &gt; 0">
                     <strong class="label label-request">ORDINABILE</strong>
                 </t>
                 <t t-if="out_date and out_date &gt; current and product.sale_ok == false">
