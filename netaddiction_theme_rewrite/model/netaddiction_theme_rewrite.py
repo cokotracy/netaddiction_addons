@@ -10,8 +10,43 @@ from odoo import models, fields, tools
 from odoo.addons.odoo_website_wallet.controllers.main import WebsiteWallet as Wallet
 from odoo.addons.website_sale.controllers.main import WebsiteSale as Shop
 from odoo.exceptions import ValidationError
+from odoo.addons.website.controllers.main import Website
 
+class WebsiteCustom(Website):
+    @route(['/shop/cart/check_limit_order'], type='json', auth="public", methods=['POST'], website=True, csrf=False)
+    def cart_update_json(self):
+        order = request.website.sale_get_order(force_create=1)
+        for order_line in order.order_line:
+            prod = order_line.product_id
+      
+            if prod.type != 'service':
+                if prod.qty_single_order > 0:
+                    if order_line.product_qty > prod.qty_single_order:
+                        return {'image':prod.image_512,'order_limit':prod.qty_single_order, 'product_name':prod.name,'qty_available_now':prod.qty_available_now, "qty_sum_suppliers":prod.qty_sum_suppliers, "out_date":prod.out_date, "sale_ok":prod.sale_ok}
 
+                if prod.qty_limit > 0:
+                    #FIXME
+                    orders = request.env['sale.order.line'].search([('product_id', '=', prod.id)])
+                    sold = 0
+                    for order in orders:
+                        sold = sold + order.product_qty
+                    
+                    if (sold + order_line.product_qty) >= prod.qty_limit:
+                        return {'image':prod.image_512,'order_limit_total':prod.qty_limit, 'product_name':prod.name,'qty_available_now':prod.qty_available_now, "qty_sum_suppliers":prod.qty_sum_suppliers, "out_date":prod.out_date, "sale_ok":prod.sale_ok}
+                
+                if(prod.sale_ok == False or prod.qty_sum_suppliers <= 0 and prod.qty_available_now <= 0):
+                    if(not prod.out_date or prod.out_date < date.today() or prod.sale_ok == False):     
+                        return {'image':prod.image_512,'out_of_stock':True, 'product_name':prod.name}
+    
+    
+    @route(['/get_product_from_id'], type='json', auth="public", methods=['POST'], website=True, csrf=False)
+    def get_product_from_id(self, product_id=None):
+        prod = request.env['product.product'].search([('id', '=', product_id)])
+
+        return {"qty_sum_suppliers": prod.qty_sum_suppliers, "sale_ok":prod.sale_ok, "qty_available_now":prod.qty_available_now, "out_date":prod.out_date}
+        
+
+    
 class SiteCategories(Shop):
     @route([
         '/shop',
@@ -32,11 +67,13 @@ class SiteCategories(Shop):
         if category:
             preorder_list = request.env["product.template"].sudo().search([
                 ('out_date', '>', date.today().strftime("%Y-%m-%d")),
+                ('type', '!=', 'service'),
                 ('public_categ_ids', 'in', category.id)], limit=20)
 
             newest_list = request.env["product.template"].sudo().search([
                 ('create_date', '>=', (date.today() - timedelta(days = 20)).strftime("%Y-%m-%d")),
                 ('create_date', '<=', date.today().strftime("%Y-%m-%d")),
+                ('type', '!=', 'service'),
                 ('public_categ_ids', 'in', category.id),
                 '|',
                 ('out_date', '<=', date.today().strftime("%Y-%m-%d")), ('out_date', '=', False)
@@ -47,7 +84,7 @@ class SiteCategories(Shop):
                     ('create_date', '>=', (date.today() - timedelta(days = 20)).strftime("%Y-%m-%d")),
                     ('create_date', '<=', date.today().strftime("%Y-%m-%d")),
                     ('qty_invoiced', '>', 0),
-                    ('product_id', '>', 9),
+                    ('type', '!=', 'service'),
                     ('product_id.product_tmpl_id.public_categ_ids', 'in', category.id)
                 ], fields=['product_id'], groupby=['product_id'], limit=20, orderby="qty_invoiced desc"
             )
@@ -66,13 +103,6 @@ class SiteCategories(Shop):
         return sup
 
 
-#SOSTITUISCE LA HOME
-class CustomHome(Controller):
-    @route('/', type='http', auth='public', website=True)
-    def controller(self, **post):
-        preorder_list = request.env["product.template"].sudo().search([('out_date', '>', date.today().strftime("%Y-%m-%d"))], limit=20)
-        return request.render("netaddiction_theme_rewrite.template_home_secondary", {'preorder_list':preorder_list})
-
 #AGGIUNGE LA PAGINA PRIVACY
 class CustomPrivacy(Controller):
     @route('/privacy/', type='http', auth='public', website=True)
@@ -86,11 +116,6 @@ class CustomShipping(Controller):
         return request.render("netaddiction_theme_rewrite.template_shipping_terms", {})
 
 
-#AGGIUNGE ALLA FORM DELLE CATEGORIE IL CAMPO DI INSERIMENTO DESCRIZIONE
-class CategoryDescriptionInherit(models.Model):
-    _inherit = 'product.public.category'
-    description = fields.Text(name='description')
-    
 #AGGIUNGE PAGINE DINAMICHE PER I TAG
 class CustomTagPage(Controller):
     @route(['/tag/<string:tag_name>'], type='http',auth='public',website=True) 
@@ -143,7 +168,7 @@ class WalletPageOverride(Wallet):
         sup = super(WalletPageOverride, self).add_wallet_balance()
         return request.render("netaddiction_theme_rewrite.add_wallet_balance", sup.qcontext)
 
-    
+
 #CUSTOM ADDRESS TEMPLATE
 class WebsiteSaleCustomAddress(Controller):
     @route(['/shop/address-edit'], type='http', methods=['GET', 'POST'], auth="public", website=True, sitemap=False)

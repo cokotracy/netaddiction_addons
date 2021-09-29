@@ -1,18 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-	<!-- BACKOFFICE -->
-	<!-- INSERISCO IL CAMPO DESCRIZIONE NEL BACKEND DELLA CATEGORIA -->
-	<record id="product_public_category_inherit" model="ir.ui.view">
-		<field name="name">product.public.category.inherit</field>
-		<field name="model">product.public.category</field>
-		<field name="inherit_id" ref="website_sale.product_public_category_form_view" />
-		<field name="arch" type="xml">
-			<field name="parent_id" position="after">
-				<field name="description" />
-			</field>
-		</field>
-	</record>
-	<!-- BACKOFFICE -->
 	<!-- FRONTEND -->
 	<template id="category_info" inherit_id="website_sale.products">
 		<!-- INSERISCO IL TITOLO DELLA CATEGORIA -->
@@ -114,4 +101,31 @@
 			</t>
 		</xpath>
 	</template>
+
+	<template id="custom_prod_item" inherit_id="website_sale.products_item">
+		<xpath expr="//div[hasclass('oe_product_image')]" position="replace" priority="30">
+			<t t-set="image_holder" t-value="product._get_image_holder()"/>
+
+			<t t-if="product.product_variant_ids and category and len(product.product_variant_ids) &gt; 1">
+				<t t-set="variant_array" t-value="[]"/>
+				<t t-foreach="product.product_variant_ids" t-as="variant">
+					<t t-if="category in variant.public_categ_ids">
+						<t t-set="variant_array" t-value="variant_array+[variant]"/>
+					</t>
+				</t>
+				<t t-if="len(variant_array) == 1">
+					<t t-set="product_href" t-value="keep(variant_array[0].website_url, page=(pager['page']['num'] if pager['page']['num']&gt;1 else None))" />
+					<t t-set="image_holder" t-value="variant_array[0]._get_image_holder()"/>
+				</t>
+			</t>	
+			<div class="card-body p-1 oe_product_image">
+				<input type="hidden" name="csrf_token" t-att-value="request.csrf_token()" />
+				<a t-att-href="product_href" class="d-block h-100" itemprop="url">
+					<span t-field="image_holder.image_1920"
+						t-options="{'widget': 'image', 'preview_image': 'image_1024' if product_image_big else 'image_256', 'itemprop': 'image'}"
+						class="new_span d-flex h-100 justify-content-center align-items-center"/>
+				</a>
+			</div>
+		</xpath>
+    </template>
 </odoo>

@@ -15,3 +15,29 @@
 .oe_cart > br{
     display: none;
 }
+.oe_accept_cgv_button{
+    display: none !important;
+}
+
+
+#delivery_method{
+    box-shadow:0 4px 8px 0 rgb(156 156 156 / 10%), 0 6px 20px 0 rgb(156 156 156 / 10%) !important;
+    display: block;
+}
+
+#delivery_method > ul > li{
+    border-color:#ededed !important;
+}
+
+#delivery_method > ul > li .badge-secondary{
+    border:2px solid var(--primary);
+    font-size: 13px;
+    font-weight: bold;
+    padding-right: 0.6em;
+    padding-left: 0.6em;
+    border-radius: 10rem;
+    display: inline-block;
+    margin-top:0 !important;
+    color: var(--primary) !important;
+    background-color: #ffffff !important;
+}

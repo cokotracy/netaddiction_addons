@@ -36,7 +36,7 @@ odoo.define('website_all_in_one.submit_review', function (require) {
 
 			}).then(function (json_data) {
 				if(json_data){
-					alert("You can do a review only if you had at least one sale order in done state.!!");
+					alert("Non puoi recensire il prodotto se non hai completato l'acquisto!");
 					ev.preventDefault();
 					location.reload();
                		return false;

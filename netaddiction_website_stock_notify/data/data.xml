@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+
+        <record id="ir_cron_check_product_stock" model="ir.cron">
+            <field name="name">Check Website Product Stock</field>
+            <field name="interval_number">10</field>
+            <field name="interval_type">minutes</field>
+            <field name="numbercall">-1</field>
+            <field name="model_id" ref="model_product_stock_notification"/>
+            <field name="code">model.cron_product_stock_notification_check()</field>
+            <field name="state">code</field>
+        </record>
+        <record id="email_template_stock_notification" model="mail.template">
+            <field name="name">Stock notification: Send by email</field>
+            <field name="model_id" ref="netaddiction_website_stock_notify.model_product_stock_notification"/>
+            <field name="subject">${object.product_id.name} è di nuovo disponibile!</field>
+            <field name="email_from">no-reply@multiplayer.com</field>
+            <field name="partner_to">${object.user_id.id}</field>
+            <field name="email_to">${object.email}</field>
+            <field name="body_html" type="html">
+                <table border="0" cellpadding="0" cellspacing="0" style="padding-top:16px; padding-bottom:16px;background-color: #F1F1F1; font-family:Verdana, Arial,sans-serif; color: #454748; width: 100%; border-collapse:separate;">
+                    <tbody>
+                        <tr>
+                        <td align="center">
+                            <table border="0" cellpadding="0" cellspacing="0" width="622"
+                            style="background-color: black; padding: 10px; color: #454748; border-collapse:separate;">
+                            <tr>
+                                <td>
+                                <a href="https://multiplayer.com/" target="_blank">
+                                    <img src="https://s3-eu-west-1.amazonaws.com/topolio/uploads/614c6c5a69c71/1632398664.jpg" width="250"
+                                    alt="" />
+                                </a>
+                                </td>
+                                <td class="text-align:right;">
+                                <a href="https://t.me/multiplayershop" target="_blank" style="display: block; text-align: right;">
+                                    <img src="https://s3-eu-west-1.amazonaws.com/topolio/uploads/614c6c5a69c71/1632400337.jpg" width="300"
+                                    alt="" />
+                                </a>
+                                </td>
+                            </tr>
+                            </table>
+                        </td>
+                        </tr>
+                        <tr>
+                        <td align="center">
+                            <table border="0" cellpadding="0" cellspacing="0" width="590"
+                            style="padding:16px;background-color: white; color: #454748; border-collapse:separate;">
+                            <tbody>
+                                <tr>
+                                <td align="center" style="min-width:590px;">
+                                    <table border="0" cellpadding="0" cellspacing="0" width="590"
+                                    style="min-width:590px;background-color: white; padding: 0px 8px 0px 8px; border-collapse:separate;">
+                                    <tbody>
+                                        <tr>
+                                        <td valign="top" style="font-size:13px;">
+                                            <div>
+                                            <br /><span style="font-size: 16px">Gentile cliente,<br />
+                                                un prodotto a cui eri interessato é di nuovo disponibile</span><br /><br />
+                                            <table border="0" cellpadding="0" cellspacing="0" width="100%"
+                                                style="border-collapse:collpse; border:solid 1px rgb(230,230,230);">
+                                                <tr>
+                                                <td style="border-right: solid 1px rgb(230,230,230); width: 200px;">
+                                                    <div style="padding: 10px;">
+                                                    <img
+                                                        src="/web/image/product.product/${object.product_id.id}/image_256"
+                                                        style="width: 100%;" alt="" />
+                                                    </div>
+                                                </td>
+                                                <td style="border-right: none;">
+                                                    <div style="padding: 10px;"><span
+                                                        style="font-weight: bold;">${object.product_id.name}</span><br /><br />
+                                                    <a href="${object.product_id.website_url}"
+                                                        style="display:inline-block;font-weight:bold;background-color:#f58220;padding: 8px 16px 8px 16px; text-decoration: none; color: #fff; border-radius: 5px; font-size:16px;">Aggiungi
+                                                        al carrello</a>
+                                                    </div>
+                                                </td>
+                                                </tr>
+                                            </table>
+                                            </div>
+                                        </td>
+                                        </tr>
+                                    </tbody>
+                                    </table><br /><br />
+                                </td>
+                                </tr>
+                            </tbody>
+                            </table>
+                        </td>
+                        </tr>
+                        <tr>
+                        <td align="center">
+                            <table border="0" cellpadding="10" cellspacing="0" width="622"
+                            style="background-color: black; padding: 10px; color: #454748; border-collapse:separate;">
+                            <tr>
+                                <td>
+                                <p style="font-size: 11px; color: #FFF;">Multiplayer.com 
+                                    <span>è parte del gruppo editoriale NetAddiction s.r.l.</span>
+                                </p>
+                                <p style="font-size: 11px; color: #FFF;">
+                                    <a href="mailto:shopping@multiplayer.com" style="color: #FFF;">shopping@multiplayer.com</a>
+                                    | <a href="//multiplayer.com" style="color: #FFF;">www.multiplayer.com</a>
+                                </p>
+                                </td>
+                            </tr>
+                            </table>
+                        </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </field>
+        </record>
+    </data>
+</odoo>
