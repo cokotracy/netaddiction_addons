@@ -32,7 +32,7 @@ odoo.define('website_all_in_one.pay_multiple_partial_payment', function(require)
             {
                 document.getElementById("amount").value = null;
                 document.getElementById("amount").style.borderColor = "red";
-                alert('you can not pay more than amount');            
+                alert('Non puoi pagare più del prezzo totale!');            
             }
             else{
                 document.getElementById("amount").style.borderColor = null;
@@ -53,7 +53,7 @@ odoo.define('website_all_in_one.pay_multiple_partial_payment', function(require)
             {
                 document.getElementById("amount1").value = null;
                 document.getElementById("amount1").style.borderColor = "red";
-                alert('you can not pay more than amount');            
+                alert('Non puoi pagare più del prezzo totale!');            
             }
             else{
                 document.getElementById("amount1").style.borderColor = null;
