@@ -84,7 +84,6 @@ class SiteCategories(Shop):
                     ('create_date', '>=', (date.today() - timedelta(days = 20)).strftime("%Y-%m-%d")),
                     ('create_date', '<=', date.today().strftime("%Y-%m-%d")),
                     ('qty_invoiced', '>', 0),
-                    ('type', '!=', 'service'),
                     ('product_id.product_tmpl_id.public_categ_ids', 'in', category.id)
                 ], fields=['product_id'], groupby=['product_id'], limit=20, orderby="qty_invoiced desc"
             )
