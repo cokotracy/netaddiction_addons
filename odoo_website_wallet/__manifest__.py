@@ -116,7 +116,7 @@ This Module allow the seller to recharge wallet for the customer.
 
 """,
     'category': 'eCommerce',
-    'version': '14.0.0.2',
+    'version': '14.0.0.3',
     "website": "https://www.browseinfo.in",
     "price": 69,
     "currency": 'EUR',
