@@ -139,7 +139,7 @@ class StockPicking(models.Model):
             limit=1
         )
         if shipping_line:
-            shipping_line.write({
+            shipping_line.with_context(ignore_pickup_check=True).write({
                 'qty_delivered': 1,
                 'qty_to_invoice': 1
             })
