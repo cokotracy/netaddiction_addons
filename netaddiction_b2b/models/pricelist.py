@@ -180,48 +180,6 @@ class ProductPricelist(models.Model):
         for price in pricelist:
             price.create_csv_and_send_to_ftp(ftp=True)
 
-    def _compute_price_rule(self, products_qty_partner, date=False,
-                            uom_id=False):
-        results = super()._compute_price_rule(
-            products_qty_partner, date, uom_id)
-        # Please, don't touch this original comment because it's too epic!
-        '''
-        potrebbe essere richiesto lo stesso da un'altra pricelist,
-        se non ha il rigo corrispondente ritorna results
-        sennò fai un bordello
-        {295923: (9.99, False)}
-        '''
-        public_pricelist = self.env.user.company_id.public_pricelist_id
-        if self.id == public_pricelist.id:
-            return results
-        item_model = self.env['product.pricelist.item']
-        for product_id in results:
-            real_price = results[product_id][0]
-            item_id = results[product_id][1]
-            if not item_id:
-                continue
-            item = item_model.browse(item_id)
-            product = item.product_id
-            percentage = item.percent_price / 100
-            if item.typology == 'inflation':
-                purchase_price = item.purchase_price
-                percentage_price = purchase_price * percentage
-                real_price = purchase_price + percentage_price
-                # Price must includes taxes
-                real_price = product.supplier_taxes_id.compute_all(
-                    real_price)['total_included']
-            else:
-                percentage_price = product.final_price * percentage
-                real_price = product.final_price - percentage_price
-            # TODO offer_price field is inside module
-            #  netaddiction_special_offer version 9.0 ask to Andrea Colangelo
-            # real_price = product.offer_price \
-            #     if (product.offer_price > 0 and
-            #         product.offer_price < real_price) \
-            #     else real_price
-            results[product_id] = (real_price, item.id)
-        return results
-
     def delete_all_items(self):
         for pricelist in self:
             pricelist.item_ids.unlink()
