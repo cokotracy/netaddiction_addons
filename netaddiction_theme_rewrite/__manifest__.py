@@ -35,6 +35,7 @@
         'templates/template_account.xml',
         'templates/custom_product_label.xml',
         'templates/page_404.xml',
+        'templates/template_orders.xml',
         'templates/template_address.xml',
         'templates/google-snippet/product.xml'
     ],

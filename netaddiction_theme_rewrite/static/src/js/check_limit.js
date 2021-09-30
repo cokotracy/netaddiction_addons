@@ -39,50 +39,64 @@ odoo.define('netaddiction_theme_rewrite.check_order_limit', function (require) {
     });
 });
 
-//NON ELIMINARE é UN WORK IN PROGRESS
-// odoo.define('netaddiction_theme_rewrite.limit_product_payment', function(require) {
-//     "use strict";
-//     var PaymentForm = require('payment.payment_form');
-    
-//     require('web.dom_ready');
-    
-//     PaymentForm.include({
-//         events: _.extend({
-//             "submit": "onSubmit",
-//         }),
-//         onSubmit: function(ev) {
-//             ev.stopPropagation();
-//             ev.preventDefault();
 
-//             this._rpc({
-//                 route: "/shop/cart/check_limit_order",
-//             }).then(function (data) {
-//                 if(data != null){
-//                     var message;
-//                     if(data['order_limit'] != null)
-//                         message = '<span class="text-primary mb-3 d-block">Non Puoi ordinare più di '+data['order_limit']+' unità per questo prodotto:</span> '+data['product_name'];
-//                     else if(data['order_limit_total'] != null)
-//                         message = '<span class="text-primary mb-3 d-block">Questo prodotto non è più vendibile:</span> '+data['product_name'];
-//                     else if(data.out_of_stock)
-//                         message = '<span class="text-primary mb-3 d-block">Questo prodotto non è più disponibile:</span> '+data['product_name'];
-
-//                     if (message != null){
-//                         var button = document.querySelector('#error_modal');
-//                         document.querySelector('#modal_message .modal-body .img-error').innerHTML = '<img src="data:image/png;base64,'+data.image+'"/>';
-//                         document.querySelector('#modal_message .modal-body .text-error').innerHTML = '<p class="h5">'+message+'</p>';
-//                         button.click();
-//                         return;
-//                     }
-//                 }
+odoo.define('netaddiction_theme_rewrite.limit_product_payment', function(require) {
+    "use strict";
+    var PaymentForm = require('payment.payment_form');
+    
+    require('web.dom_ready');
+    
+    PaymentForm.include({
+        events: _.extend({
+            "submit": "_onSubmit",
+        }),
+        _onSubmit: function(ev) {
+            ev.stopPropagation();
+            ev.preventDefault();
+            var cgv = document.querySelector('#checkbox_cgv');
+            if(cgv.checked){
+                var message;
+                var self = this;
                 
-//                 var button = $(ev.target).find('*[type="submit"]')[0]
-//                 if (button.id === 'o_payment_form_pay') {
-//                     return this.payEvent(ev);
-//                 } else if (button.id === 'o_payment_form_add_pm') {
-//                     return this.addPmEvent(ev);
-//                 }
-//                 return;
-//             });
-//         }
-//     });
-// });
+                this._rpc({
+                    route: "/shop/cart/check_limit_order",
+                }).then(function (data) {
+                    if(data != null){
+                        
+                        if(data['order_limit'] != null)
+                            message = '<span class="text-primary mb-3 d-block">Non Puoi ordinare più di '+data['order_limit']+' unità per questo prodotto:</span> '+data['product_name'];
+                        else if(data['order_limit_total'] != null)
+                            message = '<span class="text-primary mb-3 d-block">Questo prodotto non è più vendibile:</span> '+data['product_name'];
+                        else if(data.out_of_stock)
+                            message = '<span class="text-primary mb-3 d-block">Questo prodotto non è più disponibile:</span> '+data['product_name'];
+
+                        if (message != null){
+                            var button = document.querySelector('#error_modal');
+                            document.querySelector('#modal_message .modal-body .img-error').innerHTML = '<img src="data:image/png;base64,'+data.image+'"/>';
+                            document.querySelector('#modal_message .modal-body .text-error').innerHTML = '<p class="h5">'+message+'</p>';
+                            button.click();
+                            
+                            var btnsClose = document.querySelectorAll(".close_modal_error")
+                            btnsClose.forEach(element => {
+                                element.addEventListener("click", function(){
+                                    window.location.href = '/shop/cart';
+                                });
+                            });
+                            
+                            return;
+                        }
+                    }
+
+                    self.onSubmit(ev);
+                });
+            }
+            else{
+                alert("Devi accettare le nostre condizioni di vendita prima di poter procedere all'acquisto");
+                document.querySelector('#note').scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start' 
+                });
+            }
+        }
+    });
+});

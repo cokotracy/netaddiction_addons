@@ -41,3 +41,35 @@
     color: var(--primary) !important;
     background-color: #ffffff !important;
 }
+
+
+input[data-provider=stripe] + span::after{
+    margin-left:10px;
+    position: relative;
+    font-family: FontAwesome;
+    display: inline-block;
+    color:var(--primary);
+    padding-bottom: 2px;
+    vertical-align: middle;
+    content: "\f05a";
+}
+
+input[data-provider=stripe] + span::before{
+    content: "Con questo metodo di spedizione pagherai solo quando la merce verrà spedita!";
+    background-color: #000;
+    color: #fff;
+    z-index: 2;
+    max-width: 80%;
+    position: absolute;
+    top: 35px;
+    padding: 10px;
+    border-radius: 5px;
+    font-size: 13px;
+    pointer-events: none;
+    transition:0.2s;
+    opacity:0;
+}
+
+input[data-provider=stripe] + span:hover:after, input[data-provider=stripe] + span:hover:before{
+    opacity:1;
+}
