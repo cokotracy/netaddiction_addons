@@ -18,7 +18,6 @@
                                 <td align="left" valign="top" style="font-family:Arial, Helvetica, sans-serif; font-size:12px; font-weight:bold; line-height:14px;">
                                     <table border="0" cellspacing="0" cellpadding="0" style="font-family:Arial, Helvetica, sans-serif; font-size:12px; font-weight:bold; line-height:14px; margin:0px; padding:0px; ">
                                         <tr>
-                                            <!-- <td width="215" align="left" valign="middle"><span t-field="o.company_id.logo" t-field-options="{'widget': 'image', 'class': 'img-rounded'}" /></td> -->
                                             <td width="274">
                                                 <table border="0" cellspacing="0" cellpadding="0" padding-right="3px">
                                                     <tr>
@@ -79,7 +78,7 @@
 
                                         <tr>
                                             <td width="215" height="21" align="left" valign="middle">
-                                                <span t-field="o.company_id.logo" t-field-options="{'widget': 'image', 'class': 'img-rounded'}" />
+                                                <img t-if="o.company_id.logo" t-att-src="image_data_uri(o.company_id.logo)" style="max-height: 45px;" alt="Logo"/>
                                             </td>
                                             <td width="110" height="21" align="right" valign="top">
 
