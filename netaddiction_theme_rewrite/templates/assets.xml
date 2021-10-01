@@ -11,6 +11,13 @@
         </xpath>
     </template>
     <template id="netaddiction_theme_rewrite_canonical" inherit_id="portal.frontend_layout">
+        <xpath expr="//script[last()]" position="after">
+            <script type="text/javascript">
+                var _iub = _iub || [];
+                _iub.csConfiguration = {"lang":"it","siteId":261457,"cookiePolicyId":489188, "banner":{ "position":"bottom" }};
+            </script>
+            <script type="text/javascript" src="//cdn.iubenda.com/cs/iubenda_cs.js" charset="UTF-8" async="async"></script>
+        </xpath>
         <xpath expr="//meta[last()]" position="after">
             <t t-if="request.website.id &gt; 1">
                 <meta name="robots" content="noindex, nofollow" />

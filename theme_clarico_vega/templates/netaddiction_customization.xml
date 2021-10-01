@@ -769,4 +769,42 @@
         </xpath>
     </template>
 
+
+    <template id="custom_popup_login" inherit_id="theme_clarico_vega.login_popup">
+        <xpath expr="//button[hasclass('te_login_button')]" position="before">
+            <div class="alert alert-danger" role="alert">
+                Il sito è stato aggiornato, vi chiediamo gentilmente di resettare la vostra password per poter accedere, Grazie.
+            </div>
+        </xpath>
+        <xpath expr="//t[@t-if='debug']" position="replace"></xpath>
+        <xpath expr="//div[hasclass('alert-success-error')]//p[hasclass('alert-success')]" position="replace">
+            <div class="alert-success-error">
+                <p class="alert alert-success d-none">Ti sei correttamente registrato!</p>
+                <p class="alert alert-danger d-none" />
+            </div>
+        </xpath>
+    </template>
+    <template id="custom_popup_register" inherit_id="theme_clarico_vega.register_popup">
+        <xpath expr="//div[hasclass('alert-success-error')]//p[hasclass('alert-success')]" position="replace">
+            <div class="alert-success-error">
+                <p class="alert alert-success d-none">Ti sei correttamente registrato!</p>
+                <p class="alert alert-danger d-none" />
+            </div>
+        </xpath>
+        <xpath expr="//button[hasclass('te_signup_button')]" position="replace">
+            <button type="submit" class="btn btn-primary btn-block te_theme_button te_signup_button">Registrati
+            </button>
+        </xpath>
+    </template>
+    
+    <template id="custom_login_register_tab" inherit_id="theme_clarico_vega.login_register_popup">
+        <xpath expr="//li[hasclass('login_register_tab')]" position="replace">
+            <li role="presentation" class="login_register_tab">
+                <a href="#registerPopup" aria-controls="registerPopup" role="tab" class=""
+                    data-toggle="tab">
+                    Registrati
+                </a>
+            </li>
+        </xpath>
+    </template>
 </odoo>
