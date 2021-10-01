@@ -215,7 +215,6 @@
                                         <div t-esc="line.product_uom_qty" />
                                     </td>
                                     <td class="text-center td-price text-primary">
-										<t t-esc="line.price_unit"/>
                                         <span t-field="line.price_reduce_taxexcl" style="white-space: nowrap;" t-options="{'widget': 'monetary', 'display_currency': website_sale_order.currency_id}" groups="account.group_show_line_subtotals_tax_excluded" />
                                         <span t-field="line.price_reduce_taxinc" style="white-space: nowrap;" t-options="{'widget': 'monetary', 'display_currency': website_sale_order.currency_id}" groups="account.group_show_line_subtotals_tax_included" />
                                     </td>
