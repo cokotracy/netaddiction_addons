@@ -28,8 +28,18 @@
 .te_product_media > .te_prod_desc{
     display: none;
 }
-#product_details{
+#product_details:not(.modal-body #product_details){
     height: fit-content !important;
+    box-shadow: 0 4px 8px 0 rgba(156, 156, 156, 0.1), 0 6px 20px 0 rgba(156, 156, 156, 0.1) !important;
+    padding-top:15px !important;
+    padding-bottom:15px !important;
+}
+#product_details .product_btns_right_block{
+    top:15px !important;
+}
+
+#product_details hr{
+    display:none !important;
 }
 
 .drift-zoom-pane img{
@@ -257,6 +267,17 @@ h1.te_product_name{
     font-size: 40px;
 }
 
+.js_categ_div, .prod_details_sticky_div .cat_name{
+    display:none !important;
+}
+
+.prod_details_sticky_div .prod_name > h1{
+    margin-top:15px !important;
+}
+
+.average_rating_view{
+    margin-top:15px;
+}
 
 @keyframes scale-in-center {
     0% {

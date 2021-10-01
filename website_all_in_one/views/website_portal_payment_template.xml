@@ -1,6 +1,6 @@
 <odoo>
 	
-	<template id="portals_payment_frontend" inherit_id="website.assets_frontend"
+	<!-- <template id="portals_payment_frontend" inherit_id="website.assets_frontend"
 		name="Payment Portal Frontend">
 		<xpath expr="." position="inside">
 			<script type="text/javascript"
@@ -79,10 +79,10 @@
                                                 <label class="control-label"> Invoices References : </label>
                                             </div>
                                             <div class="col-md-7">
-                                                <!-- <div style="border:1px solid"> -->
+                                            
                                                     <span t-esc="invoice_num" style="font-size: 20px;font-weight: 400;white-space: pre-wrap;word-break: break-word;" />
                                                     <input name="invoice_num" t-att-value="invoice_num" type="hidden"/>
-                                                <!-- </div> -->
+                                                
                                             </div>
                                         </div>
                                     </div>
@@ -123,9 +123,9 @@
                                     </div>
                                     <div class="row" style="padding-left: 10px;">
                                         
-                                        <!-- <t t-if="amount &lt; total_amount "> -->
+                                        
                                             <button type="submit" id="pay_partial_payment" class="btn btn-primary pull-right" style="max-height: 45px;">Pay Partial</button>
-                                        <!-- </t> -->
+                                     
                                     </div>                                          
                                 </div>
                             </div>
@@ -175,11 +175,11 @@
                                                     <label class="control-label"> Invoices References : </label>
                                                 </div>
                                                 <div class="col-md-7">
-                                                    <!-- <div style="border:1px solid"> -->
+                                                    
                                                         <span t-esc="id.name" style="font-size: 20px;" />
                                                         <input name="invoice_id" t-att-value="id" type="hidden"/>
                                                         <input name="invoice" t-att-value="invoice" type="hidden"/>
-                                                    <!-- </div> -->
+                                                   
                                                 </div>
                                             </div>
                                         </div>
@@ -220,9 +220,9 @@
                                         </div>
                                         <div class="row" style="padding-left: 10px;">
                                             
-                                            <!-- <t t-if="amount &lt; total_amount "> -->
+                                           
                                                 <button type="submit" id="pay_partial_payment" class="btn btn-primary pull-right" style="max-height: 45px;">Pay Partial</button>
-                                            <!-- </t> -->
+                                         
                                         </div>                                          
                                     </div>
                                 </div>
@@ -255,6 +255,6 @@
 				<div class="oe_structure" />
 			</div>
 		</t>
-	</template>
+	</template> -->
 
 </odoo>

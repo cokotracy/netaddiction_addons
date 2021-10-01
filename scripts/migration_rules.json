@@ -9848,11 +9848,6 @@
             },
             {
                 "new_type": "Tag",
-                "new_name": "Batterie e Caricabatterie per XBox Series X e S",
-                "conditions": []
-            },
-            {
-                "new_type": "Tag",
                 "new_name": "Cavi e Adattatori per XBox Series X e S",
                 "conditions": [
                     "Cavi / Adattatori",
@@ -9875,11 +9870,6 @@
                         "category": "VIDEOGIOCHI E CONSOLE"
                     }
                 ]
-            },
-            {
-                "new_type": "Tag",
-                "new_name": "Telecomandi e Telecamere per XBox Series X e S",
-                "conditions": []
             },
             {
                 "new_type": "Tag",

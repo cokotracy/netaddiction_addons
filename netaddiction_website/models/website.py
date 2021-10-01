@@ -1,14 +1,20 @@
 # -*- coding: utf-8 -*-
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
-from odoo import api, models
+
+from datetime import date
+from odoo import models, fields
 
 
-class netaddictionWebsite(models.Model):
-    _inherit = 'website'
+class NetaddictionWebsitePreorder(models.TransientModel):
+    _name = "netaddiction.website.preorder"
 
-    def website_product_category(self):
-        ProductCategory = self.env['product.public.category']
-        domain = [('parent_id', '=', False)] + self.website_domain()
-        return ProductCategory.search(domain)
+    def cron_product_preorder_toggle(self):
+        products = self.env["product.product"].search(
+            [("out_date", "<=", date.today()), ("inventory_availability", "!=", "always")]
+        )
+        products.inventory_availability = "always"
 
-        
+
+class CategoryDescriptionInherit(models.Model):
+    _inherit = "product.public.category"
+    description = fields.Text(name="description")

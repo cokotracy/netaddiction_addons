@@ -1,0 +1,75 @@
+.te_checkout_prod_attr_lines{
+    display:none !important;
+}
+#cart_products > tbody > tr{
+    border-bottom:1px solid #ededed !important;
+}
+.payment_icon_list{
+    display: flex;
+}
+.o_payment_form > .card{
+    margin-bottom:50px !important;
+    border:1px solid #ededed !important;
+    box-shadow:0 4px 8px 0 rgb(156 156 156 / 10%), 0 6px 20px 0 rgb(156 156 156 / 10%) !important;
+}
+.oe_cart > br{
+    display: none;
+}
+.oe_accept_cgv_button{
+    display: none !important;
+}
+
+
+#delivery_method{
+    box-shadow:0 4px 8px 0 rgb(156 156 156 / 10%), 0 6px 20px 0 rgb(156 156 156 / 10%) !important;
+    display: block;
+}
+
+#delivery_method > ul > li{
+    border-color:#ededed !important;
+}
+
+#delivery_method > ul > li .badge-secondary{
+    border:2px solid var(--primary);
+    font-size: 13px;
+    font-weight: bold;
+    padding-right: 0.6em;
+    padding-left: 0.6em;
+    border-radius: 10rem;
+    display: inline-block;
+    margin-top:0 !important;
+    color: var(--primary) !important;
+    background-color: #ffffff !important;
+}
+
+
+input[data-provider=stripe] + span::after{
+    margin-left:10px;
+    position: relative;
+    font-family: FontAwesome;
+    display: inline-block;
+    color:var(--primary);
+    padding-bottom: 2px;
+    vertical-align: middle;
+    content: "\f05a";
+}
+
+input[data-provider=stripe] + span::before{
+    content: "Con questo metodo di spedizione pagherai solo quando la merce verrà spedita!";
+    background-color: #000;
+    color: #fff;
+    z-index: 2;
+    max-width: 80%;
+    position: absolute;
+    top: 35px;
+    padding: 10px;
+    border-radius: 5px;
+    font-size: 13px;
+    pointer-events: none;
+    transition:0.2s;
+    opacity:0;
+}
+
+input[data-provider=stripe] + span:hover:after, input[data-provider=stripe] + span:hover:before{
+    opacity:1;
+}

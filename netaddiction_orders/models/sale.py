@@ -28,11 +28,9 @@ class SaleOrderLine(models.Model):
                  'qty_delivered')
     def _compute_product_updatable(self):
         super()._compute_product_updatable()
+        # https://youtu.be/lDqlasyMJog?t=2
         for line in self:
-            if line.state == 'problem' or line.order_id.state == 'problem':
-                line.product_updatable = True
-            else:
-                line.product_updatable = False
+            line.product_updatable = True
 
     @api.onchange('product_uom', 'product_uom_qty')
     def product_uom_change(self):
@@ -83,6 +81,10 @@ class SaleOrder(models.Model):
     )
 
     def write(self, values):
+        # When a note is set on the order (f.e. from the ecommerce)
+        # the order pass to state problem to highlight that it need attention
+        if values.get('note', '').strip():
+            values['state'] = 'problem'
         res = super().write(values)
         # If a picking linked to an order it's in a pickup,
         # it's possible only to write the state in `problem` or `cancel`

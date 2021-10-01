@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <!-- Add sitemap menu in all footer styles-->
-	<template id="link_sitemap" inherit_id="website.footer_custom" name="Link Footer ">
+	<!-- <template id="link_sitemap" inherit_id="website.footer_custom" name="Link Footer ">
 		<xpath expr="//div[hasclass('container')]//ul/li[last()]" position="after">
 			<li class="">
 				<a href="/page/sitemap">Sitemap</a>
@@ -41,8 +40,6 @@
 		</xpath>
 	</template>
 
-	
-	<!-- Sitemap Page -->
 	<template id="website_sitemap" name="Website Sitemap">
 		<t t-call="website.layout">
 			<section>
@@ -81,5 +78,5 @@
                 </div>
             </section>
 		</t>
-	</template>
+	</template> -->
 </odoo>

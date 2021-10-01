@@ -125,7 +125,8 @@ class StockPicking(models.Model):
         pick.button_validate()
 
         partial = any(p.state != 'done' for p in pick.sale_id.picking_ids)
-        pick.sale_id.state = 'partial_done' if partial else 'done'
+        pick.sale_id.with_context(ignore_pickup_check=True).state = \
+            'partial_done' if partial else 'done'
 
         # a questo punto metto spedita e da fatturare anche la riga spedizioni
         shipping_line = self.env['sale.order.line'].search(
@@ -138,7 +139,7 @@ class StockPicking(models.Model):
             limit=1
         )
         if shipping_line:
-            shipping_line.write({
+            shipping_line.with_context(ignore_pickup_check=True).write({
                 'qty_delivered': 1,
                 'qty_to_invoice': 1
             })

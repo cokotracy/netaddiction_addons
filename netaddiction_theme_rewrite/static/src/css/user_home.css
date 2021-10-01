@@ -5,17 +5,17 @@
 .badge-pill{
     background-color: var(--primary) !important;
 }
-.o_portal_my_details > h4 > a{
+.o_portal_my_details > h4 > a, .adress_edit, .details-btn{
     border:2px solid var(--primary);
     font-size: 13px;
     font-weight: bold;
     padding-right: 0.6em;
     padding-left: 0.6em;
     border-radius: 10rem;
-    transition:0.2s;
     display: inline-block;
     margin-top:0 !important;
     color: var(--primary) !important;
+    background-color: #ffffff !important;
 }
 .o_portal_my_details address i{
     position:static !important;

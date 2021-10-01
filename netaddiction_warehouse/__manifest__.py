@@ -4,7 +4,7 @@
     'author': "NetAddiction",
     'website': "http://www.netaddiction.it",
     'category': 'Warehouse Management',
-    'version': '14.0.1.1.0',
+    'version': '14.0.1.3.2',
     'depends': [
         'base',
         'delivery',
@@ -24,6 +24,8 @@
         'stock_picking_batch',
         'web',
         'web_onchange_enterkey',
+        'delay_payment',
+        'delay_payment_stock_picking_batch',
     ],
     'data': [
         'security/ir.model.access.csv',

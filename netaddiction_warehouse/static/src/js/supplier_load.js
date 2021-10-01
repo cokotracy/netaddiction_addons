@@ -310,21 +310,25 @@ odoo.define('netaddiction_warehouse.supplier_load', function (require) {
                         ],
                         domain: [
                             ['quantity_done', '>', 0],
-                            ['picking_id', 'in', ids]
+                            ['picking_id', 'in', ids],
+                            ['state', 'not in', ['cancel', 'draft']]
                         ],
-                    }).then(function (line) {
-                        var pqty = 0;
-
-                        for (let l in line) {
-                            this_cgo.pid[line[l].product_id[1]] = line[l].product_id[0];
-                            pqty = pqty + parseInt(line[l].product_uom_qty)
-                            if (line[l].product_id[1] in this_cgo.products) {
-                                this_cgo.products[line[l].product_id[1]] = parseInt(this_cgo.products[line[l].product_id[1]]) + line[l].quantity_done;
+                    }).then(function (lines) {
+                        for (let l in lines) {
+                            let line = lines[l]
+                            let product = line.product_id[1]
+                            let line_quantity = parseInt(line.product_uom_qty)
+                            this_cgo.pid[product] = line.product_id[0];
+                            if (product in this_cgo.products) {
+                                this_cgo.products[product] = parseInt(this_cgo.products[product]) + line.quantity_done;
                             } else {
-                                this_cgo.products[line[l].product_id[1]] = line[l].quantity_done;
+                                this_cgo.products[product] = line.quantity_done;
                             }
-                            this_cgo.products_ordered[line[l].product_id[1]] = pqty
-
+                            if (product in this_cgo.products_ordered) {
+                                this_cgo.products_ordered[product] += line_quantity
+                            } else {
+                                this_cgo.products_ordered[product] = line_quantity
+                            }
                         }
                         count_products(this_cgo)
                         list_products(this_cgo)

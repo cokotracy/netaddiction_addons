@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <data>
+    <!-- <data>
 
    		<record id="view_odoo_website_terms_conditions_form_view" model="ir.ui.view">
             <field name="name">odoo.website.terms.conditions.form.view</field>
@@ -11,7 +11,6 @@
                             <div name="button_box" class="oe_button_box">
 
                                 <button class="oe_stat_button" name="sample_product_publish_button" type="object" icon="fa-check-circle-o">
-                                    <!-- <i class="fa fa-fw o_button_icon fa-globe"></i> -->
                                     <field name="publish" widget="website_button"/>
                                 </button>
                             </div>
@@ -57,7 +56,6 @@
 		</template>
 		
 		<template id="website_sale.payment_sale_note" inherit_id="website_sale.payment" name="Accept Terms &amp; Conditions" customize_show="True" active="True">
-			<!-- Modal Popup Xpath -->
 			<xpath expr="//div[@id='payment_method']" position="before">	
 				<div t-if="website_sale_order and website_sale_order.website_order_line" class="col-lg-12">
 					<t t-set="website_terms_condition" t-value="website.get_website_terms_conditions()"/>
@@ -87,7 +85,6 @@
 								</t>
 							</div>	
 						</div>
-						<!-- Modal -->
 						<div t-if="terms.display_condition == 'model'" class="modal fade" id="myTerms" tabindex="-1" role="dialog" aria-labelledby="termsModalLabel" aria-hidden="true">
 						  <div class="modal-dialog" role="document">
 							<div class="modal-content">
@@ -117,5 +114,5 @@
 		
 		        
 		
-    </data>
+    </data> -->
 </odoo>

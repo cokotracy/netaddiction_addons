@@ -4,7 +4,6 @@
 *{
     font-family: 'Montserrat' !important;
 }
-
 :root {
     --primary: #f6842a !important;
     --light-primary: #f0af7d !important;
@@ -153,14 +152,13 @@ header nav.navbar .header_middle .te_search_popover .input-group input.form-cont
     transform:skew(-0.06turn, 0deg);
 }
 .product-label-container > .label-news{
-    background-color: #dc3545;
+    background-color: #663399;
 }
 .product-label-container > .label-preorder{
     background-color: #007bff;
 }
 .product-label-container > .label-out{
-    background-color: #ffc107;
-    color:#000;
+    background-color: #dc3545;
 }
 .product-label-container > .label-in{
     background-color: #28a745;
@@ -248,6 +246,10 @@ header nav.navbar .header_middle .te_search_popover .input-group input.form-cont
 footer{
     margin-top:50px;
 }
+.te_footer_inline_menu_t li > section > a {
+    display: block;
+    padding-bottom:0 !important;
+}
 
 
 /*RIMUOVO BOTTONE DI TROPPO SU CHECKOUT*/
@@ -288,6 +290,56 @@ footer{
 /*SOCIAL SIDEBAR*/
 .social-sidebar > a > img{
     height:27px;
+}
+
+/*rimuovo attributi da checkout*/
+.te_checkout_prod_attr_lines, .te_cart_prod_attr_lines{
+    display:none !important;
+}
+.js_cart_lines{
+    margin-top:30px;
+    margin-bottom: 0 !important;
+}
+.js_cart_lines tr{
+    margin-bottom:20px;
+    display:inline-table;
+    width:100%;
+}
+.js_cart_lines thead{
+    display:none;
+}
+.js_cart_lines tr .td-product_name{
+    width:70%;
+    margin-bottom:10px;
+}
+
+.te_cart_wizard_main{
+    display:none;
+}
+
+
+.button-rounded{
+    border:2px solid var(--primary);
+    color: var(--primary);
+    font-size: 16px;
+    font-weight: bold;
+    padding: 1em 1.5em;
+    border-radius: 10rem;
+    transition:0.2s;
+}
+
+
+header nav.navbar .header_middle{
+    position: relative !important;
+    z-index:1 !important;
+}
+
+.modal-body .preorder-info{
+    display:none !important;
+}
+
+#modal_message .modal-body .img-error > img{
+    width:90% !important;
 }
 
 @media only screen and (min-width: 768px) {
@@ -379,5 +431,11 @@ footer{
         width:275px;
         height: 45px;
         background-image:url(../img/logo.png);
+    }
+    .te_cart_wizard_main{
+        display:block;
+    }
+    .js_cart_lines{
+        margin-top:0px;
     }
 }

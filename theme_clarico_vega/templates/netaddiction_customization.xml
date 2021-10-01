@@ -32,6 +32,37 @@
         </xpath>
     </template>
 
+    <template id="custom_ajax_modal_add_to_cart" inherit_id="theme_clarico_vega.ajax_cart_success_template" priority="23">
+        <xpath expr="//div[hasclass('shopping-line')]" position="replace">
+            <div class="shopping-line">
+                <strong class="text-primary">Prodotto aggiunto al carrello!</strong>
+            </div>
+        </xpath>
+
+        <xpath expr="//div[hasclass('ajax-sucess-bottom')]" position="replace">
+            <div class="ajax-sucess-bottom">
+                <div class="container-fluid te_cart_btn">
+                    <div class="row">
+                        <div class="col-sm">
+                            <a role="button" style="font-size:14px;" href="javascript:void(0)"
+                            class="mx-1 btn btn-primary float-right d-xl-inline-block ajax-sucess-continue te_theme_button">
+                                <span>Vai allo Shop</span>
+                            </a>
+                        </div>
+                        <div class="col-sm">
+                            <a role="button"
+                                style="font-size:14px;"
+                                class="mx-1 btn btn-primary float-right d-xl-inline-block ajax-sucess-checkout te_theme_button"
+                                href="/shop/checkout?express=1">
+                                <span>Vai al Carrello</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </xpath>
+    </template>
+
     <template id="custom_label_check">
         <t t-if="product">
             <t t-set="current" t-value="datetime.datetime.now()"/>
@@ -41,50 +72,27 @@
             </t>
 
             <div class="product-label-container position-absolute">
-                <!--label novità-->
                 <t t-if="current_reduced &lt;= product.create_date">
-                    <t t-if="out_date">
-                        <t t-if="out_date &lt;= current">
-                            <strong class="label label-news">NOVITÀ</strong>
-                        </t>
-                    </t>
-                    <t t-else="">
-                        <strong class="label label-news">NOVITÀ</strong>
-                    </t>
+                    <strong class="label label-news">NOVITÀ</strong>
                 </t>
-                <!--label prenotazione-->
                 <t t-if="out_date">
                     <t t-if="out_date &gt; current">
                         <strong class="label label-preorder">PRENOTAZIONE</strong>
                     </t>
                 </t>
-
-                <t t-if="product.sudo().virtual_available &lt; 1 and product.inventory_availability in ['always', 'threshold']">
-                    <t t-if="out_date">
-                        <t t-if="out_date &lt;= current">
-                            <strong class="label label-out">OUT OF STOCK</strong>
-                        </t>
-                    </t>
-                    <t t-else="">
+                <t t-if="product.product_variant_id.qty_available_now &lt;= 0 and product.sudo().product_variant_id.qty_sum_suppliers &lt;= 0">
+                    <t t-if="not out_date or out_date &lt; current">
                         <strong class="label label-out">OUT OF STOCK</strong>
                     </t>
                 </t>
-                <t t-else="">
-                    <!--label disponibile-->
-                    <t t-if="product.qty_available &gt; 0">
-                        <t t-if="out_date">
-                            <t t-if="out_date &lt;= current">
-                                <strong class="label label-in">DISPONIBILE</strong>
-                            </t>
-                        </t>
-                        <t t-else="">
-                            <strong class="label label-in">DISPONIBILE</strong>
-                        </t>
-                    </t>
-                    <!--label ordinabile-->
-                    <t t-else="">
-                        <strong class="label label-request">ORDINABILE</strong>
-                    </t>
+                <t t-if="product.product_variant_id.qty_available_now &gt; 0">
+                    <strong class="label label-in">DISPONIBILE</strong>
+                </t>
+                <t t-if="product.product_variant_id.qty_available_now &lt;= 0 and product.sudo().product_variant_id.qty_sum_suppliers &gt; 0">
+                    <strong class="label label-request">ORDINABILE</strong>
+                </t>
+                <t t-if="out_date and out_date &gt; current and product.sale_ok == false">
+                    <strong class="label label-out">SOLD OUT</strong>
                 </t>
             </div>
         </t>
@@ -193,15 +201,6 @@
         </xpath>
     </template>
 
-    <template id="portal_home_gridview" inherit_id="portal.portal_my_home" priority="30">
-        <xpath expr="//div[hasclass('o_portal_docs')]" position="attributes">
-            <attribute name="id">portal_grid</attribute>
-        </xpath>
-        <xpath expr="//div[hasclass('o_portal_my_home')]/h3" position="replace">
-            <h3 class="page-header">Riepilogo</h3>
-        </xpath>
-    </template>
-
     <template id="product_shipping_info" inherit_id="website_sale.product_custom_text" priority="30">
         <!-- Shipping Information section  -->
         <xpath expr="//div[@id='product_details']/p[last()]" position="replace">
@@ -282,7 +281,7 @@
                                     t-attf-onClick="document.querySelector('#image-zoom-custom').style.display='flex'; document.querySelector('#image-zoom-custom > img').src='/web/image/#{product_image._name}/#{product_image.id}/image_1024';"
                                     />
                             </t>
-                            <div t-else="" t-field="product_image.image_1920" class=""
+                            <div t-else="" t-field="product_image.image_1920" t-attf-onClick="document.querySelector('#image-zoom-custom').style.display='flex'; document.querySelector('#image-zoom-custom > img').src='/web/image/#{product_image._name}/#{product_image.id}/image_1024';" class=""
                                  t-options='{"widget": "image", "preview_image": "image_1024", "class": "product_detail_img mh-100", "alt-field": "name", "zoom": product_image.can_image_1024_be_zoomed and "image_1920", "loading": "eager", "itemprop": "image"}'/>
                         </t>
                     </t>
@@ -767,6 +766,45 @@
         </xpath>
         <xpath expr="//div[hasclass('o_portal')]/div[hasclass('row')]" position="attributes">
             <attribute name="class">row align-items-center bg-white no-gutters rounded-top mb16</attribute>
+        </xpath>
+    </template>
+
+
+    <template id="custom_popup_login" inherit_id="theme_clarico_vega.login_popup">
+        <xpath expr="//button[hasclass('te_login_button')]" position="before">
+            <div class="alert alert-danger" role="alert">
+                Il sito è stato aggiornato, vi chiediamo gentilmente di resettare la vostra password per poter accedere, Grazie.
+            </div>
+        </xpath>
+        <xpath expr="//t[@t-if='debug']" position="replace"></xpath>
+        <xpath expr="//div[hasclass('alert-success-error')]//p[hasclass('alert-success')]" position="replace">
+            <div class="alert-success-error">
+                <p class="alert alert-success d-none">Ti sei correttamente registrato!</p>
+                <p class="alert alert-danger d-none" />
+            </div>
+        </xpath>
+    </template>
+    <template id="custom_popup_register" inherit_id="theme_clarico_vega.register_popup">
+        <xpath expr="//div[hasclass('alert-success-error')]//p[hasclass('alert-success')]" position="replace">
+            <div class="alert-success-error">
+                <p class="alert alert-success d-none">Ti sei correttamente registrato!</p>
+                <p class="alert alert-danger d-none" />
+            </div>
+        </xpath>
+        <xpath expr="//button[hasclass('te_signup_button')]" position="replace">
+            <button type="submit" class="btn btn-primary btn-block te_theme_button te_signup_button">Registrati
+            </button>
+        </xpath>
+    </template>
+    
+    <template id="custom_login_register_tab" inherit_id="theme_clarico_vega.login_register_popup">
+        <xpath expr="//li[hasclass('login_register_tab')]" position="replace">
+            <li role="presentation" class="login_register_tab">
+                <a href="#registerPopup" aria-controls="registerPopup" role="tab" class=""
+                    data-toggle="tab">
+                    Registrati
+                </a>
+            </li>
         </xpath>
     </template>
 </odoo>

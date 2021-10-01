@@ -173,7 +173,8 @@ class NetaddictionOctopusCron(models.Model):
             try:
                 product.deferred_update()
             except Exception as e:
-                _logger.error('Salvaggio del prodotto non riuscito (%s)' % e)
+                _logger.error(
+                    'Aggiornamento del prodotto non riuscito (%s)' % e)
 
     def kill(self, suppliers):
         _logger.info('Kill!')

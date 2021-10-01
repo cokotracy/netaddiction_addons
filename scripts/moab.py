@@ -2,7 +2,6 @@
 # Attention! Install: pip install tqdm
 
 import json
-import requests
 import time
 from datetime import date
 
@@ -27,8 +26,7 @@ def get_or_create_tag(name):
                 "write_date": date.today(),
             }
         )
-        self._cr.commit()
-        print(f"Tag -> Creato e salvato nel DB {tag.name}")
+        print(f"Tag -> Creato: {tag.name}")
     return tag
 
 
@@ -48,8 +46,7 @@ def get_or_create_brand(name):
                 "write_date": date.today(),
             }
         )
-        self._cr.commit()
-        print(f"Brand -> Creato e salvato nel DB {brand.name}")
+        print(f"Brand -> Creato: {brand.name}")
     return brand
 
 
@@ -59,8 +56,7 @@ def set_category(name, product):
         return
     if category.id not in product.public_categ_ids.ids:
         product.write({"public_categ_ids": [(4, category.id)]})
-        self._cr.commit()
-        print(f"Categoria -> Associazione con il prodotto salvata nel DB")
+        print(f"Categoria -> Associata con il prodotto")
     return category.id
 
 
@@ -70,8 +66,7 @@ def set_tag(name, product):
         print(f"Tag -> Errore per il brand: {name}")
     if tag.id not in product.tag_ids.ids:
         product.write({"tag_ids": [(4, tag.id)]})
-        self._cr.commit()
-        print(f"Tag -> Associazione con il prodotto salvata nel DB")
+        print(f"Tag -> Associato con il prodotto")
 
 
 def set_brand(name, product):
@@ -79,55 +74,29 @@ def set_brand(name, product):
     if not brand:
         print(f"Brand -> Errore per il brand: {name}")
     product.write({"product_brand_ept_id": brand.id})
-    self._cr.commit()
-    print(f"Brand -> Associazione con il prodotto salvata nel DB")
-
-
-def get_old_seo_url(product_id):
-    r = requests.get("http://staging2.multiplayer.com/api/product/", params={"odoo_id": product_id}, verify=False)
-    if r.status_code == requests.codes.ok:
-        return r.text.replace('"', "")
-
-
-def set_redirect(product):
-    if self.env["website.rewrite"].search([("url_to", "=", product.website_url)]):
-        return
-
-    old_url = get_old_seo_url(product.id)
-    if not old_url:
-        return
-    redirect = self.env["website.rewrite"].create(
-        {
-            "name": f"Redirect: {product.display_name}",
-            "redirect_type": "301",
-            "url_from": old_url,
-            "url_rewrite": "custom_url",
-            "url_to": product.website_url,
-        }
-    )
-    self._cr.commit()
+    print(f"Brand -> Associato con il prodotto")
 
 
 def check_condition(product_cat, conditions, attributes):
     for condition in conditions:
         if type(condition) is str:
-            if condition in attributes:
+            if condition.lower() in attributes:
                 is_valid = True
             else:
                 return False
         if type(condition) is list:
-            if any(x in condition for x in attributes):
+            if any(x.lower() in condition for x in attributes):
                 is_valid = True
             else:
                 return False
         if type(condition) is dict:
             if "category" in condition and condition["category"]:
-                if product_cat.name in condition["category"]:
+                if product_cat.name.lower() in [c.lower() for c in condition["category"]]:
                     is_valid = True
                 else:
                     return False
             if "exclude" in condition and condition["exclude"]:
-                if product_cat.name in condition["exclude"]:
+                if product_cat.name.lower() in [c.lower() for c in condition["exclude"]]:
                     return False
     return is_valid
 
@@ -142,10 +111,9 @@ def remove_duplicate_attributes(product):
             duplicate_list.append(attr)
     if duplicate_list:
         product.write({"product_template_attribute_value_ids": [(3, attr.id) for attr in duplicate_list]})
-        self._cr.commit()
 
 
-_error = {"rewrite": [], "tag": [], "category": [], "brand": []}
+_error = {"tag": [], "category": [], "brand": []}
 
 
 with open(RULES_FILE) as f:
@@ -153,13 +121,8 @@ with open(RULES_FILE) as f:
 
 ts = time.time()
 products = self.env["product.product"].search([])
-for product in tqdm(products):
-    try:
-        set_redirect(product)
-    except Exception as e:
-        _error["rewrite"].append(f"{product.id}: {e}")
-
-    attribute_list = [a.name for a in product.product_template_attribute_value_ids]
+for count, product in enumerate(tqdm(products)):
+    attribute_list = [a.name.lower() for a in product.product_template_attribute_value_ids]
     for attribute in product.product_template_attribute_value_ids:
         current_type = attribute.attribute_id.display_name
         current_attribute = attribute.name
@@ -189,13 +152,16 @@ for product in tqdm(products):
                             set_brand(operation["new_name"], product)
                         except Exception as e:
                             _error["brand"].append(f"{product.id}: {e}")
-    # try:
-    #     remove_duplicate_attributes(product)
-    # except Exception as e:
-    #     _error["duplicate_attrs"].append(f"{product.id}: {e}")
+
+    # Commit on DB every 100 products
+    if not count % 100:
+        self._cr.commit()
+
+# Commit the remaining products
+self._cr.commit()
 
 
-with open("error_migration.json", "w") as fp:
+with open("~/error_migration.json", "w") as fp:
     json.dump(_error, fp, sort_keys=True, indent=4, separators=(",", ": "))
 
 print("Time:", time.time() - ts)
