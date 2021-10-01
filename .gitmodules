@@ -24,3 +24,6 @@
 [submodule "OCA/website"]
 	path = OCA/website
 	url = https://github.com/OCA/website.git
+[submodule "OCA/server-ux"]
+	path = OCA/server-ux
+	url = https://github.com/OCA/server-ux
