@@ -101,7 +101,6 @@ class SiteCategories(Shop):
             
         return sup
 
-
 #AGGIUNGE LA PAGINA PRIVACY
 class CustomPrivacy(Controller):
     @route('/privacy/', type='http', auth='public', website=True)

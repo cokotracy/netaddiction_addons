@@ -12,6 +12,11 @@
     font-size:25px !important;
     color:var(--secondary);
 }
+
+.o_portal_my_doc_table{
+    margin-top:40px;
+}
+
 .o_portal_my_doc_table th, .o_portal_my_doc_table td{
     background-color:#ffffff !important;
     border:none !important;
@@ -29,49 +34,48 @@
     margin-bottom:10px;
     font-size:14px;
 }
-.o_portal_my_doc_table tr{
-    position: relative;
-}
-.o_portal_my_doc_table tr::after{
-    content:'dettagli';
-    position:absolute;
-    top:50%;
-    transform:translateY(-50%);
-    right:10px;
-    font-size: 10px;
-    font-weight: bold;
-    padding-right: 0.6em;
-    padding-left: 0.6em;
-    border-radius: 10rem;
-    border:2px solid var(--primary);
-    color: var(--primary);
-    pointer-events: none;
-}
+
 .o_portal_my_doc_table td > *{
     font-size:14px !important;
-}
-.o_portal_my_doc_table td > *{
     background-color:transparent !important;
     padding-left:0 !important;
 }
 .o_portal_my_doc_table td:nth-child(1) > *{
     font-weight: bold;
 }
-.o_portal_my_doc_table td:nth-child(1) a{
-    position:absolute;
-    width:90%;
-    height:80%;
-}
-.o_portal_my_doc_table td:nth-child(2){
-    margin-top:20px;
-}
 .o_portal_my_doc_table td:nth-child(4) > *{
     color:var(--primary) !important;
 }
-.o_portal_my_doc_table tr{
+
+.o_portal_my_doc_table .row_container_header{
+    border:1px solid #eee !important;
+    border-bottom:none !important;
+    padding:15px 20px 15px 20px !important;
+}
+.o_portal_my_doc_table .row_container_header > td{
+    max-width: 100% !important;
+}
+
+.order_product_image_container{
+    overflow-x:auto;
+    max-width: 75vw;
+}
+
+.order_product_image{
+    display: inline-flex;
+    width:60px;
+    height:60px;
+    align-items: center;
+    justify-content: center;
+    background-color: #ededed;
+}
+.order_product_image img{
+    object-fit: contain;
+}
+.o_portal_my_doc_table .row_container_footer{
     box-shadow: 0 4px 8px 0 rgba(156, 156, 156, 0.1), 0 6px 20px 0 rgba(156, 156, 156, 0.1);
-    margin-bottom:10px;
-    border:none !important;
+    margin-bottom:40px;
+    border:1px solid #eee !important;
     padding:15px 20px 15px 20px !important;
 }
 
@@ -108,10 +112,4 @@
 
 #sale_order_communication > #discussion{
     display:block !important;
-}
-
-@media only screen and (min-width: 769px) {
-    .o_portal_my_doc_table tr::after{
-        display: none;
-    }
 }

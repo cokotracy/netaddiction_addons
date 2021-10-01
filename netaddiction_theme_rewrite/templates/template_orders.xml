@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="portal_my_orders_custom" inherit_id="sale.portal_my_orders">
+        <xpath expr="//t[@t-foreach='orders']" position="replace">
+            <t t-foreach="orders" t-as="order">
+                <tr class="row_container_header">
+                    <td colspan="4">
+                        <div class="d-block mb-2 order_product_image_container">
+                            <t t-foreach="order.order_line" t-as="order_line">
+                                <t t-if="order_line.product_id.type != 'service'">
+                                    <div class="order_product_image mr-2">
+                                        <img t-attf-src="data:image/png;base64,{{order_line.product_id.image_128}}"/>
+                                    </div>
+                                </t>
+                            </t> 
+                        </div>
+                    </td>
+                </tr>
+                <tr class="row_container_footer border-bottom">
+                    <td>
+                        <a t-att-href="order.get_portal_url()">
+                            <t t-esc="order.name"/>
+                        </a>
+                    </td>
+                    <td class="text-right">
+                        <span t-field="order.date_order" t-options="{'widget': 'date'}"/>&amp;nbsp;
+                        <span class='d-none d-md-inline' t-field="order.date_order" t-options="{'time_only': True}"/>
+                    </td>
+                    <td class="text-center">
+                        <span t-if="order.state == 'done'"  class="badge badge-pill badge-success">
+                            <i class="fa fa-fw fa-check" role="img" aria-label="Done" title="Done"/>Done
+                        </span>
+                    </td>
+                    <td class="text-right"><span t-field="order.amount_total"/></td>
+                </tr>
+            </t>
+        </xpath>
+    </template>
+</odoo>
