@@ -21,3 +21,6 @@
 	path = saydigital/website
 	url = git@github.com:saydigital/website.git
 	branch = 14.0
+[submodule "OCA/website"]
+	path = OCA/website
+	url = https://github.com/OCA/website.git
