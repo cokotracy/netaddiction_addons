@@ -8,7 +8,7 @@ from tqdm import tqdm
 ssl._create_default_https_context = ssl._create_unverified_context
 
 URL14 = "http://127.0.0.1:8069"
-DB14 = "odoo_multiplayer_com"
+DB14 = "netaddiction"
 LOGIN14 = "ecommerce-servizio@netaddiction.it"
 PASSWORD14 = "2VBrhX^49Qh!"
 
@@ -102,7 +102,7 @@ def main():
         set_affiliate_orders(affiliate.id, affiliate.partner_id.id)
 
     if _error_logs:
-        with open("error_affiliate_migration.json", "w") as fp:
+        with open("~/error_affiliate_migration.json", "w") as fp:
             json.dump(_error_logs, fp, sort_keys=True, indent=4, separators=(",", ": "))
 
 

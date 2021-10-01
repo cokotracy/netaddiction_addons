@@ -33,5 +33,5 @@ for count, product in enumerate(products):
 self._cr.commit()
 
 if duplicates:
-    with open("duplicates_found.json", "w") as fp:
+    with open("~/duplicates_found.json", "w") as fp:
         json.dump(duplicates, fp, sort_keys=True, indent=4, separators=(",", ": "))

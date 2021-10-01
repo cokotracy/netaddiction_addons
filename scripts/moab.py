@@ -161,7 +161,7 @@ for count, product in enumerate(tqdm(products)):
 self._cr.commit()
 
 
-with open("error_migration.json", "w") as fp:
+with open("~/error_migration.json", "w") as fp:
     json.dump(_error, fp, sort_keys=True, indent=4, separators=(",", ": "))
 
 print("Time:", time.time() - ts)
