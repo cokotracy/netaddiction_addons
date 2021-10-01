@@ -5,8 +5,8 @@ from datetime import date
 from tqdm import tqdm
 
 # Change with correct path
-RULES_FILE = "/Users/matteoserafini/sviluppo/mcom_odoo/netaddiction_addons/scripts/migration_rules.json"
-DUPLICATES_FILE = "/Users/matteoserafini/sviluppo/mcom_odoo/netaddiction_addons/scripts/duplicates_attribute.json"
+RULES_FILE = "/opt/Rapsodoo/netaddiction_addons/scripts/migration_rules.json"
+DUPLICATES_FILE = "/opt/Rapsodoo/netaddiction_addons/scripts/duplicates_attribute.json"
 
 with open(RULES_FILE) as r:
     migrations = json.load(r)
@@ -151,7 +151,7 @@ for count, duplicate in enumerate(tqdm(duplicates_list)):
 self._cr.commit()
 
 
-with open("error_migration_duplicate.json", "w") as fp:
+with open("~/error_migration_duplicate.json", "w") as fp:
     json.dump(_error, fp, sort_keys=True, indent=4, separators=(",", ": "))
 
 print("Time:", time.time() - ts)

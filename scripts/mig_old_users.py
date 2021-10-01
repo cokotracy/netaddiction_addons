@@ -65,5 +65,5 @@ while next_page:
         break
 
 if _error_log:
-    with open("error_user_migration.json", "w") as fp:
+    with open("~/error_user_migration.json", "w") as fp:
         json.dump(_error_log, fp, sort_keys=True, indent=4, separators=(",", ": "))
