@@ -4,11 +4,7 @@
         <xpath expr="//div[@id='o_my_sidebar']/div[hasclass('o_portal_my_details')]"
                 position="after">
             <t t-set="user_id" t-value="request.env['res.users'].browse(request.env.uid)"/>
-            <t t-set="shippings" t-value="user_id.partner_id.search([
-                    ('id', 'child_of', user_id.partner_id.commercial_partner_id.ids),
-                    '|', ('type', 'in', ['delivery', 'other']), ('id', '=', user_id.partner_id.commercial_partner_id.id)
-                ], order='id desc')"/>
-
+            <t t-set="shippings" t-value="user_id.child_ids.search([('type', 'in', ['delivery'])])"/>
             <t t-if="not only_services" groups="sale.group_delivery_invoice_address">
                 <div class="row mt-4">
                     <div class="col-lg-12">
@@ -27,42 +23,33 @@
                                     </a>
                                 </form>
                             </div>
-                            <t t-foreach="shippings" t-as="ship">
-                                <t t-call="netaddiction_theme_rewrite.card_adress">
-                                    <t t-set="actual_partner" t-value="user_id.partner_id" />
-                                    <t t-set='contact' t-value="ship"/>
-                                    <!-- <t t-set='selected' t-value="user_id.partner_shipping_id==ship"/> -->
-                                    <t t-set='readonly' t-value="bool(len(shippings)==1)"/>
+                            <t t-if="shippings">
+                                <t t-foreach="shippings" t-as="ship">
+                                    <t t-call="netaddiction_theme_rewrite.card_adress">
+                                        <t t-set="actual_partner" t-value="user_id.partner_id" />
+                                        <t t-set="contact" t-value="ship"/>
+                                    </t>
                                 </t>
                             </t>
                         </div>
                     </div>
                 </div>
             </t>
-            <div class="py-4">
-                <div class="col-lg-12">
-                    <h3 class="o_page_header mt8">Indirizzo di Fatturazione</h3>
-                </div>
-                
-                <t t-call="netaddiction_theme_rewrite.card_adress">
-                    <t t-set='contact' t-value="user_id.partner_id"/>
-                    <t t-set='selected' t-value="1"/>
-                    <t t-set='readonly' t-value="1"/>
-                </t>
-            </div>
         </xpath>
     </template>
     <template id="card_adress">
-        <div class="text-left col-12 col-md-6" style="box-shadow:0 4px 8px 0 rgb(156 156 156 / 10%), 0 6px 20px 0 rgb(156 156 156 / 10%) !important;">
+        <div class="text-left col-12 col-md-6 mt-2" style="box-shadow:0 4px 8px 0 rgb(156 156 156 / 10%), 0 6px 20px 0 rgb(156 156 156 / 10%) !important;">
             <div class="card-body">
-                <form action="/shop/address-edit" method="POST">
-                    <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()" />
-                    <input type="hidden" name="partner_id" t-att-value="contact.id" />
-                    <input type="hidden" name="callback" value="/shop/address-edit?use_billing" />
-                    <div class="d-block text-right">
-                        <button type="submit" class="adress_edit text-primary"><i class="fa fa-pencil"/> Modifica</button>
-                    </div>
-                </form>
+                <t t-if="not user_id.partner_id.sale_order_ids.search([('partner_shipping_id', '=', contact.id)])">
+                    <form action="/shop/address-edit" method="POST">
+                        <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()" />
+                        <input type="hidden" name="partner_id" t-att-value="contact.id" />
+                        <input type="hidden" name="callback" value="/shop/address-edit?use_billing" />
+                        <div class="d-block text-right">
+                            <button type="submit" class="adress_edit text-primary"><i class="fa fa-pencil"/> Modifica</button>
+                        </div>
+                    </form>  
+                </t>
                 <p> <t t-esc="contact" t-options="dict(widget='contact', fields=['address'], no_marker=True)"/></p>
             </div>
         </div>
