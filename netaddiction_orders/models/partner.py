@@ -56,3 +56,12 @@ class ResPartner(models.Model):
                             [p.name for p in partners_on_orders]),
                     ))
         return super().write(values)
+
+    def generate_key(self):
+        res = super().generate_key()
+        # If partner hasn't a program, add it
+        if not self.affiliate_program_id:
+            affiliate_program = self.env['affiliate.program'].search(
+                [], limit=1)
+            self.affiliate_program_id = affiliate_program.id
+        return res
