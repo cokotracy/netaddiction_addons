@@ -246,6 +246,10 @@ header nav.navbar .header_middle .te_search_popover .input-group input.form-cont
 footer{
     margin-top:50px;
 }
+.te_footer_inline_menu_t li > section > a {
+    display: block;
+    padding-bottom:0 !important;
+}
 
 
 /*RIMUOVO BOTTONE DI TROPPO SU CHECKOUT*/
