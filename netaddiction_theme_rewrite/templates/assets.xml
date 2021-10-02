@@ -176,7 +176,7 @@
                 "/>
             <t t-if="product">
                  <t t-if="product.website_description and len(product.website_description) &gt; 20">
-                    <meta name="description" t-attf-content="{{product.website_description[:200] + '..'}}"/>
+                    <meta name="description" t-attf-content="{{product.website_description}}"/>
                 </t>
                 <t t-else="">
                     <meta name="description" t-attf-content="{{general_description}}"/>
