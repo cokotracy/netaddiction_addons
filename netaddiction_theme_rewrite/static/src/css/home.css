@@ -1,63 +1,13 @@
 /*
 * Copyright 2021 Netaddiction
 */  
-
-/*BIG SLIDER*/
-.s_carousel .carousel-control-prev, .s_quotes_carousel .carousel-control-prev, .s_carousel .carousel-control-next, .s_quotes_carousel .carousel-control-next{
-    height:78px;
-    width:78px !important;
-    background-color: var(--primary);
-    border-radius: 50%;
-    position:absolute;
-    top:50%;
-    margin:10px;
-    transform: translateY(-50%);
+.te_offer_div .te_offer_s3_heading{
+    display:none;
 }
 
-
-
-/*SPONSORIZZATI*/
-.o_colored_level .te_col_5_main > .o_colored_level > img, .o_colored_level .te_col_5_main img{
-    height:155px;
-    width:100%;
-    object-fit: cover;
+.box_home_img{
+    height: 350px;
 }
-
-/*SLIDER PREORDER*/
-.te_prod_cart_wish_4 button{
-    background-color: var(--primary) !important;
-}
-
-/*COMPOSIZIONE IMG HOME*/
-.te_offer_s7_img_big{
-    width:100% !important;
-}
-.te_offer_s7_img_small > img, .te_offer_s7_img_big > img{
-    object-fit:cover;
-    object-position: center;
-    height:350px;
-    cursor: pointer;
-    width:100% !important;
-    border:1px solid var(--light-gray);
-    outline: 1px solid var(--primary);
-    outline-offset: -10px;
-}
-.te_offer_big_img_content, .te_offer_small_img_content{
-    cursor: pointer;
-}
-
-.te_4_col_content{
-    border:1px solid var(--light-gray);
-}
-
-.te_4_col_content > .te_s_5_img{
-    display:none !important;
-}
-
-.te_4_col_content > .te_extra_btn, .o_colored_level > .te_extra_btn > a{
-    color:var(--primary) !important;
-}
-
 
 /*FLOATING BUTTON*/
 .fab-telegram {
@@ -164,13 +114,14 @@
 }
 
 @media only screen and (min-width: 920px) {
-    .big-category-cover{
-        height:445px !important;
-    }
-    .small-category-cover{
-        height:300px !important;
+    .te_offer_div .te_offer_s3_heading{
+        display:initial;
     }
 
+    .te_search_popover{
+        box-shadow: none;
+        background-color: #ffffff;
+    }
     .fab-telegram {
         right:30px;
         bottom:50px;
@@ -201,3 +152,8 @@
     }
 }
 
+@media only screen and (min-width: 1024px){
+    .box_home_img{
+        height: 500px;
+    }
+}
