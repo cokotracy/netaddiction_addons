@@ -169,17 +169,15 @@
             </t>
         </xpath>
         <xpath expr="//meta[@name='description']" position="replace">
-            <t t-set="general_description" t-value="Benvenuti su Multiplayer.com, negozio online totalmente Italiano attivo ormai da oltre 20 anni dove puoi trovare i migliori Videogiochi, Console, Funko Pop, Action Figure, Model Kit, Lego, Gadget, Statue, Peluche, Giocattoli e Carte Collezionabili e tanti altri tipi di merce da tutto il mondo al miglior prezzo. Inclusi nel nostro catalogo prodotti di genere Cinema, Film e Serie Tv, Giochi, Musica, Anime e Manga, Fumetti e Sport. Portiamo una varietà di prodotti per i collezionisti dai migliori produttori come Funko, Banpresto, Megahouse, Beast Kingdom, Iron Studios, Hasbro, Kotobukiya, Bandai, Mezco, Good Smile, McFarlane, Diamond, Dc, Dark Horse, Prime1, Furyu, Neca
-                Grazie ai nostri canali d’importazione cerchiamo sempre di portare in Italia i migliori prodotti e le migliori esclusive che sono presenti in altri mercati diverso dal nostro: Collector, Special e Limited Edition di videogiochi Import e non solo, Funko Pop esclusivi. Conoscendo i prodotti limitati che vi andiamo a vendere li spediamo proteggendoli nel miglior modo possibile
-                Nella home page e in ogni pagina di categoria, ti informiamo anche sulle ultime novità, i più venduti, i preordini e le offerte
-                In qualità di uno dei più antichi rivenditori Italiani di videogiochi, action figure e funko pop di importazione, siamo a vostra disposizione con la nostra esperienza via e-mail, Facebook e Instagram. Sei anche il benvenuto nel nostro canale Telegram, lasciati convincere dai nostri consigli e dalla nostra straordinaria selezione di articoli da collezione tutti Originali
-                "/>
             <t t-if="product">
                  <t t-if="product.website_description and len(product.website_description) &gt; 20">
-                    <meta name="description" t-attf-content="{{product.website_description}}"/>
+                    <meta name="description" content="{{product.website_description}}"/>
                 </t>
                 <t t-else="">
-                    <meta name="description" t-attf-content="{{general_description}}"/>
+                    <meta name="description" content="Benvenuti su Multiplayer.com, negozio online totalmente Italiano attivo ormai da oltre 20 anni dove puoi trovare i migliori Videogiochi, Console, Funko Pop, Action Figure, Model Kit, Lego, Gadget, Statue, Peluche, Giocattoli e Carte Collezionabili e tanti altri tipi di merce da tutto il mondo al miglior prezzo. Inclusi nel nostro catalogo prodotti di genere Cinema, Film e Serie Tv, Giochi, Musica, Anime e Manga, Fumetti e Sport. Portiamo una varietà di prodotti per i collezionisti dai migliori produttori come Funko, Banpresto, Megahouse, Beast Kingdom, Iron Studios, Hasbro, Kotobukiya, Bandai, Mezco, Good Smile, McFarlane, Diamond, Dc, Dark Horse, Prime1, Furyu, Neca
+                Grazie ai nostri canali d’importazione cerchiamo sempre di portare in Italia i migliori prodotti e le migliori esclusive che sono presenti in altri mercati diverso dal nostro: Collector, Special e Limited Edition di videogiochi Import e non solo, Funko Pop esclusivi. Conoscendo i prodotti limitati che vi andiamo a vendere li spediamo proteggendoli nel miglior modo possibile
+                Nella home page e in ogni pagina di categoria, ti informiamo anche sulle ultime novità, i più venduti, i preordini e le offerte
+                In qualità di uno dei più antichi rivenditori Italiani di videogiochi, action figure e funko pop di importazione, siamo a vostra disposizione con la nostra esperienza via e-mail, Facebook e Instagram. Sei anche il benvenuto nel nostro canale Telegram, lasciati convincere dai nostri consigli e dalla nostra straordinaria selezione di articoli da collezione tutti Originali"/>
                 </t>
             </t>
             <t t-if="category">
@@ -187,11 +185,17 @@
                     <meta name="description" t-attf-content="{{category.description}}"/>
                 </t>
                 <t t-else="">
-                    <meta name="description" t-attf-content="{{general_description}}"/>
+                    <meta name="description" content="Benvenuti su Multiplayer.com, negozio online totalmente Italiano attivo ormai da oltre 20 anni dove puoi trovare i migliori Videogiochi, Console, Funko Pop, Action Figure, Model Kit, Lego, Gadget, Statue, Peluche, Giocattoli e Carte Collezionabili e tanti altri tipi di merce da tutto il mondo al miglior prezzo. Inclusi nel nostro catalogo prodotti di genere Cinema, Film e Serie Tv, Giochi, Musica, Anime e Manga, Fumetti e Sport. Portiamo una varietà di prodotti per i collezionisti dai migliori produttori come Funko, Banpresto, Megahouse, Beast Kingdom, Iron Studios, Hasbro, Kotobukiya, Bandai, Mezco, Good Smile, McFarlane, Diamond, Dc, Dark Horse, Prime1, Furyu, Neca
+                Grazie ai nostri canali d’importazione cerchiamo sempre di portare in Italia i migliori prodotti e le migliori esclusive che sono presenti in altri mercati diverso dal nostro: Collector, Special e Limited Edition di videogiochi Import e non solo, Funko Pop esclusivi. Conoscendo i prodotti limitati che vi andiamo a vendere li spediamo proteggendoli nel miglior modo possibile
+                Nella home page e in ogni pagina di categoria, ti informiamo anche sulle ultime novità, i più venduti, i preordini e le offerte
+                In qualità di uno dei più antichi rivenditori Italiani di videogiochi, action figure e funko pop di importazione, siamo a vostra disposizione con la nostra esperienza via e-mail, Facebook e Instagram. Sei anche il benvenuto nel nostro canale Telegram, lasciati convincere dai nostri consigli e dalla nostra straordinaria selezione di articoli da collezione tutti Originali"/>
                 </t>
             </t>
             <t t-if="not category and not product">
-                <meta name="description" t-attf-content="{{general_description}}"/>
+                <meta name="description" content="Benvenuti su Multiplayer.com, negozio online totalmente Italiano attivo ormai da oltre 20 anni dove puoi trovare i migliori Videogiochi, Console, Funko Pop, Action Figure, Model Kit, Lego, Gadget, Statue, Peluche, Giocattoli e Carte Collezionabili e tanti altri tipi di merce da tutto il mondo al miglior prezzo. Inclusi nel nostro catalogo prodotti di genere Cinema, Film e Serie Tv, Giochi, Musica, Anime e Manga, Fumetti e Sport. Portiamo una varietà di prodotti per i collezionisti dai migliori produttori come Funko, Banpresto, Megahouse, Beast Kingdom, Iron Studios, Hasbro, Kotobukiya, Bandai, Mezco, Good Smile, McFarlane, Diamond, Dc, Dark Horse, Prime1, Furyu, Neca
+                Grazie ai nostri canali d’importazione cerchiamo sempre di portare in Italia i migliori prodotti e le migliori esclusive che sono presenti in altri mercati diverso dal nostro: Collector, Special e Limited Edition di videogiochi Import e non solo, Funko Pop esclusivi. Conoscendo i prodotti limitati che vi andiamo a vendere li spediamo proteggendoli nel miglior modo possibile
+                Nella home page e in ogni pagina di categoria, ti informiamo anche sulle ultime novità, i più venduti, i preordini e le offerte
+                In qualità di uno dei più antichi rivenditori Italiani di videogiochi, action figure e funko pop di importazione, siamo a vostra disposizione con la nostra esperienza via e-mail, Facebook e Instagram. Sei anche il benvenuto nel nostro canale Telegram, lasciati convincere dai nostri consigli e dalla nostra straordinaria selezione di articoli da collezione tutti Originali"/>
             </t>
         </xpath>
     </template>
