@@ -96,28 +96,27 @@
 				<section class="container px-0 my-5" data-snippet="2_column_style1" data-name="Style 1">
 					<div class="px-0 mx-auto col-12 col-md-10 d-flex flex-wrap">
 						<section class="box_home_img t_img_hover_1 te_img_effect2 te_2_col_bg mb-2 col-12 col-md-6">
-							<a href="#" class="col-12"><img style="object-fit:cover; max-height:none;" class="px-0 img col-12" src="/theme_clarico_vega/static/src/img/snippets/2_column/box2.jpg" loading="lazy"/></a>
+							<a href="#" class="col-12"><img style="object-fit:cover; max-height:none;" class="mx-auto px-0 img col-12" src="/theme_clarico_vega/static/src/img/snippets/2_column/box2.jpg" loading="lazy"/></a>
 						</section>
 						<section class="box_home_img t_img_hover_1 te_img_effect2 te_2_col_bg col-12 col-md-6">
-							<a href="#" class="col-12"><img style="object-fit:cover; max-height:none;" class="px-0 img col-12" src="/theme_clarico_vega/static/src/img/snippets/2_column/box2.jpg" loading="lazy"/></a>
+							<a href="#" class="col-12"><img style="object-fit:cover; max-height:none;" class="mx-auto px-0 img col-12" src="/theme_clarico_vega/static/src/img/snippets/2_column/box2.jpg" loading="lazy"/></a>
 						</section>
 					</div>
 				</section>
 				<!--DUAL BOX IMAGE-->
 			</div>
 			<div class="oe_structure oe_empty">
-				<!--PREORDINI-->
-				<div class="container pt-3 px-0">
+				<div class="container pt-3">
 					<h3 class="text-left o_default_snippet_text border-bottom">Preorder:</h3>
-					<section data-snippet="p_slider" data-name="Product Snippet Builder">
-						<t t-set="products_preorder_ids" t-value="''" />
-						<t t-foreach="preorder_list" t-as="product">
-							<t t-set="products_preorder_ids" t-value="products_preorder_ids + str(product['id']) + ','" />
-						</t>
-						<t t-set="products_preorder_ids" t-value="products_preorder_ids[:-1]" />
-						<div class="js_slider_snippet" name="manual-configuration" data-isemipro="true" data-name="manual-configuration" t-attf-data-item_ids="{{products_preorder_ids}}" data-style="6" data-ui_option="shopping_cart,wishlist,quick_view,sale_label,ratings" data-slider_type="slider" t-attf-data-limit="20" />
-					</section>
 				</div>
+				<section data-snippet="p_slider" data-name="Product Snippet Builder">
+					<t t-set="products_preorder_ids" t-value="''" />
+					<t t-foreach="preorder_list" t-as="product">
+						<t t-set="products_preorder_ids" t-value="products_preorder_ids + str(product['id']) + ','" />
+					</t>
+					<t t-set="products_preorder_ids" t-value="products_preorder_ids[:-1]" />
+					<div class="js_slider_snippet" name="manual-configuration" data-isemipro="true" data-name="manual-configuration" t-attf-data-item_ids="{{products_preorder_ids}}" data-style="6" data-ui_option="shopping_cart,wishlist,quick_view,sale_label,ratings" data-slider_type="slider" t-attf-data-limit="20" />
+				</section>
 				<!--PREORDINI-->
 			</div>
 			<div class="oe_structure oe_empty">

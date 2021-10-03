@@ -2,7 +2,7 @@
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 
 from datetime import date
-from odoo import models, fields
+from odoo import models
 
 
 class NetaddictionWebsitePreorder(models.TransientModel):
@@ -14,7 +14,3 @@ class NetaddictionWebsitePreorder(models.TransientModel):
         )
         products.inventory_availability = "always"
 
-
-class CategoryDescriptionInherit(models.Model):
-    _inherit = "product.public.category"
-    description = fields.Text(name="description")
