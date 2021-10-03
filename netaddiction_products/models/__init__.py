@@ -4,3 +4,4 @@
 from . import coupon
 from . import product
 from . import stats_function
+from . import product_public_category
