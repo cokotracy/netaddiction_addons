@@ -32,7 +32,7 @@
         <field name="arch" type="xml">
             <xpath expr="//div[@name='options']" position="before">
                 <label for="product_tmpl_id" />
-                <field name="product_tmpl_id" readonly="True" />
+                <field name="product_tmpl_id" readonly="True" required="False" />
             </xpath>
             <xpath expr="/form/sheet/notebook/page[@name='general_information']//group[@name='group_general']/field[@name='categ_id']"
                    position="before">
