@@ -31,7 +31,7 @@
                                                                     </t>
                                                                 </div>
                                                             </div>
-                                                            <div t-attf-class="col-12 col-md-6 form-group s_website_form_field #{error and 'name' in error and 'has-error' or ''} mx-auto">
+                                                            <!-- <div t-attf-class="col-12 col-md-6 form-group s_website_form_field #{error and 'name' in error and 'has-error' or ''} mx-auto">
                                                                 <form t-attf-action="/wallet/balance/confirm" method="post">
                                                                     <small class="d-block text-left font-weight-bold">Indica la cifra da caricare:</small>
                                                                     <input type="number" placeholder="scrivi la cifra.." class="form-control s_website_form_input" name="amount"	required="True" />
@@ -39,7 +39,7 @@
                                                                         Carica il tuo wallet
                                                                     </a>
                                                                 </form>
-                                                            </div> 
+                                                            </div>  -->
                                                         </div>
                                                     </form>
                                                 </div>

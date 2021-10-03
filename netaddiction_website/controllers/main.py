@@ -9,6 +9,6 @@ class CustomHome(Controller):
         preorder_list = (
             request.env["product.template"]
             .sudo()
-            .search([("out_date", ">", date.today().strftime("%Y-%m-%d"))], limit=20)
+            .search([("out_date", ">", date.today().strftime("%Y-%m-%d"))], limit=21)
         )
-        return request.render("netaddiction_website.template_home_secondary", {"preorder_list": preorder_list})
+        return request.render("netaddiction_website.template_home_primary", {"preorder_list": preorder_list})

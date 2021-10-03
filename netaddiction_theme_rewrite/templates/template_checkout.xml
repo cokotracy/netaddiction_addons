@@ -320,7 +320,7 @@
 	<template id="website_wallet_on_payment_page" inherit_id="website_sale.payment">
 		<xpath expr="//div[@id='payment_method']/h3" position="after">
 			<t t-set="no_footer" t-value="0"/>
-			<div t-if="website_sale_order and website_sale_order.website_order_line">
+			<!-- <div t-if="website_sale_order and website_sale_order.website_order_line">
 				<t t-set="count" t-value="0"/>
 				<t t-foreach ="website_sale_order.website_order_line" t-as="line"> 
 				<div t-if ="line.product_id.id != website.wallet_product_id.id">
@@ -353,7 +353,7 @@
 						</div>
 					</div>
 				</t>
-			</div>
+			</div> -->
 			<t t-call="netaddiction_theme_rewrite.error_modal"/>
 		</xpath>    
 		<xpath expr="//div[@id='payment_method']/h3" position="replace">

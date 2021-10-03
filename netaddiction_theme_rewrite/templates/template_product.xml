@@ -13,7 +13,7 @@
             </t>
             <!--MOSTRO UNA PICCOLA PARTE DELLA DESCRIZIONE-->
             <t t-if="product.website_description and len(product.website_description) > 20">
-                <div class="o_not_editable mt-2">
+                <div class="o_not_editable mt-2 small_description_info">
                     <p t-raw="(product.website_description[:200] + '.. ') if len(product.website_description) >= 200 else product.website_description" class="te_prod_desc text-muted small-description"></p>
                     <t t-if="len(product.website_description) >= 200">
                         <span
