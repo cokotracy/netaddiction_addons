@@ -9,6 +9,10 @@
     height: 350px;
 }
 
+.te_slider_style_7 .product-rows .te_product_ind form, .te_slider_style_8 .product-rows .te_product_ind form, .product_multiple_sliders .product_col_sm .owl-stage-outer{
+    border:none !important;
+}
+
 /*FLOATING BUTTON*/
 .fab-telegram {
     position:fixed;
