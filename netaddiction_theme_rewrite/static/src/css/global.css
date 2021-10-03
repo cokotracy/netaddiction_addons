@@ -50,6 +50,15 @@
     background-repeat: no-repeat;
     background-size: contain;
 }
+#top_menu_collapse #top_menu span#menu_label_tx_span{
+    bottom: 40px;
+    margin-left: -32px;
+    position: absolute;
+    width: 100px;
+}
+.header_bottom{
+    background-color:#3d3d3d;
+}
 .o_wsale_products_searchbar_form{
     width:calc(100% - 40px) !important;
     margin-left:40px;
@@ -67,9 +76,26 @@
 .nav-item > .active{
     color:var(--primary) !important;
 }
+.navbar-light .navbar-nav .nav-link{
+    color:#ffffff;
+}
+.navbar-light .navbar-nav .nav-link:hover{
+    color:var(--primary) !important;
+}
+.navbar-light .navbar-nav .nav-link:focus{
+    background-color:#3d3d3d !important;
+}
 .te_advanced_search_div{
     display: none;
 }
+.o_wsale_products_searchbar_form input{
+    border-radius:20px !important
+}
+
+.o_header_standard, .te_search_popover{
+    box-shadow: 0 6px 4px -4px rgb(0 0 0 / 20%);
+}
+
 header nav.navbar .header_middle .te_search_popover .input-group{
     border:none !important;
 }
@@ -90,7 +116,7 @@ header nav.navbar .header_middle .te_header_right_icon > div, header nav.navbar 
     display: none !important;
 }
 .te_search_popover{
-    background-color: var(--white);
+    background-color: #3d3d3d;
     visibility: visible !important;
     transform:translateY(-24px) !important;
     opacity: 1 !important;
@@ -257,36 +283,6 @@ footer{
     display:none !important;
 }
 
-
-/*TOGGLE MENU*/
-.header_menu_slide{
-    background-color:var(--secondary) !important;
-    height:100vh !important;
-    color:#ffffff !important;
-}
-.header_menu_slide ul li{
-    border-top:none !important;
-    margin-top:10px;
-    border-bottom:2px solid var(--primary);
-    box-sizing: border-box;
-    box-shadow: 0 0 var(--secondary), 6px 0 var(--secondary), 0 3px 0px -2px #ffffff;
-    margin:0 20px !important;
-}
-.header_menu_slide ul li a{
-    color:#ffffff !important;
-}
-.close_top_menu{
-    border:none !important;
-    font-size: 30px;
-}
-.header_menu_slide .dropdown-toggle:focus{
-    background-color:#2d2d2d !important;
-}
-.header_menu_slide .o_mega_menu{
-    background-color:#2d2d2d !important;
-    border:none !important;
-}
-
 /*SOCIAL SIDEBAR*/
 .social-sidebar > a > img{
     height:27px;
@@ -360,8 +356,8 @@ header nav.navbar .header_middle{
     .navbar-toggler-icon{
         display: none !important;
     }
-    header nav.navbar .header_middle .middle_first .te_bar_icon{
-        display: inherit !important;
+    .navbar .te_bar_icon{
+        display:inherit !important;
     }
     .navbar-toggler{
         position: inherit;
@@ -375,33 +371,15 @@ header nav.navbar .header_middle{
 
 
     /*TOGGLE MENU*/
-    .te_vertical_menu{
-        background-color:var(--secondary) !important;
-        color:#ffffff !important;
-    }
     .te_vertical_menu .te_content_text, .te_vertical_menu .te_sidenav_content{
         margin-top:30px !important;
-    }
-    .te_vertical_menu span{
-        color:#ffffff !important;
     }
     .te_vertical_menu ul{
         overflow: initial !important;
     }
-    .te_vertical_menu ul section{
-        margin-top:10px;
-        border-bottom:2px solid var(--primary);
-        transform:skew(-0.06turn, 0deg);
-        box-sizing: border-box;
-        box-shadow: -6px 0 var(--secondary), 6px 0 var(--secondary), 0 3px 0px -2px #ffffff;
-    }
-    .te_vertical_menu ul section > li > a{
-        color:#ffffff !important;
-        transform: skew(21deg, 0deg);
-    }
     .te_menu_btn_close{
         font-size: 30px !important;
-        color: #fff !important;
+        color: var(--secondary) !important;
         transition: 0.5s;
     }
     .te_menu_btn_close:hover{
@@ -425,10 +403,20 @@ header nav.navbar .header_middle{
     }
 }
 
+@media only screen and (min-width: 768px) {
+    .te_search_popover{
+        box-shadow: none;
+        background-color: transparent;
+    }
+}
+
 @media only screen and (min-width: 1024px){
+    header .middle_first{
+        display: initial !important;
+    }
     .navbar-brand{
-        margin-left:20px;
-        width:275px;
+        margin-left:30px;
+        width:310px;
         height: 45px;
         background-image:url(../img/logo.png);
     }
@@ -437,5 +425,9 @@ header nav.navbar .header_middle{
     }
     .js_cart_lines{
         margin-top:0px;
+    }
+
+    .navbar .te_bar_icon{
+        display:none !important;
     }
 }

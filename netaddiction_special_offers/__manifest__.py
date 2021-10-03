@@ -4,7 +4,7 @@
 {
     'name': 'Netaddiction Special Offers',
     'summary': "Offers and discount for multiplayer.com",
-    'version': '14.0.1.0.0',
+    'version': '14.0.1.0.1',
     'category': 'Sale',
     'website': 'http://www.netaddiction.it',
     'author': 'Netaddiction',
@@ -22,7 +22,9 @@
         # 'netaddiction_customer_care'
     ],
     'data': [
-        'data/mail_template.xml',
+        # FIXME This template raises errors. We are disabling it for the 
+        # go live, nevertheless it should be re-enabled ASAP
+        #'data/mail_template.xml',
         'security/ir.model.access.csv',
         'views/digital_bonus.xml',
         'views/coupon_program.xml',

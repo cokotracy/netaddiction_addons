@@ -299,7 +299,7 @@ class StockPicking(models.Model):
             for move_line in pick.move_line_ids:
                 products.append(move_line.product_id.id)
 
-            for inv in pick.payment_id.invoice_ids:
+            for inv in pick.payment_id.invoice_line_ids.move_id:
                 ref = inv._reverse_moves()
                 for line in ref.line_ids:
                     if line.product_id.id not in products:
@@ -327,7 +327,7 @@ class StockPicking(models.Model):
                 ref._compute_amount()
 
         for can in cancel:
-            can.invoice_ids.write({'state': 'cancel'})
+            can.invoice_line_ids.move_id.write({'state': 'cancel'})
             can.unlink()
 
         return super().action_cancel()
