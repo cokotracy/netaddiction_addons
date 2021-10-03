@@ -5,7 +5,7 @@
     """,
     "author": "Netaddiction",
     "category": "Custom Development",
-    "version": "1.0.0",
+    "version": "14.0.1.1.0",
     "description": """
         This module will enhance the odoo features
     """,
