@@ -35,6 +35,10 @@
                 <link href="/netaddiction_theme_rewrite/static/src/css/category.css" rel="stylesheet"/>
             </t>
 
+            <t t-if="'/lego-shop' in current_url">
+                <link href="/netaddiction_theme_rewrite/static/src/css/lego_shop.css" rel="stylesheet"/>
+            </t>
+
             <!-- AGGIUNGE IN HEAD PER I TAG --> 
             <t t-if="'/tag/' in current_url">
                 <link href="/netaddiction_theme_rewrite/static/src/css/tag.css" rel="stylesheet"/>

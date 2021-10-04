@@ -89,10 +89,13 @@ class SiteCategories(Shop):
             )
             
             bestseller_list = []
-
-            for prod in bestseller_list_temp:
-                bestseller_list.append(request.env['product.product'].sudo().search([('id', '=', prod['product_id'][0])]).product_tmpl_id)
-
+            for bs in bestseller_list_temp:
+                try:
+                    product = request.env['product.product'].sudo().search([('id', '=', bs['product_id'][0])])
+                    if product:
+                        bestseller_list.append(product.product_tmpl_id)
+                except Exception:
+                    pass
         
             sup.qcontext["category"] = category
             sup.qcontext["preorder_list"] = preorder_list
