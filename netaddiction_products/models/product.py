@@ -244,7 +244,7 @@ class ProductProduct(models.Model):
     def create(self, vals_list):
         res = super().create(vals_list)
         for product in res:
-            product.default_code = str(product.id)
+            product.default_code = str(product.id).rjust(7, '0')
         return res
 
     def _compute_seller_ids(self):
