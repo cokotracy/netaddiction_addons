@@ -40,10 +40,6 @@
                 <field name="out_date_approx_type" />
                 <field name="final_price" required="True" string="Prezzo Listino"/>
             </xpath>
-            <xpath expr="/form/sheet/notebook/page[@name='general_information']//group[@name='group_general']/field[@name='default_code']"
-                   position="after">
-                <field name="suppliers_codes" groups="base.group_no_one"/>
-            </xpath>
             <xpath expr="/form/sheet/notebook/page[@name='general_information']//group[@name='group_standard_price']/field[@name='company_id']"
                    position="after">
                 <field name="detax_price" readonly="True"/>
@@ -173,7 +169,10 @@
         <field name="arch" type="xml">
             <xpath expr="//field[@name='name']" position="before">
                 <field name="id" string="Riferimento"/>
-                <field name="suppliers_codes" string="Codice Fornitore"/>
+            </xpath>
+            <xpath expr="//field[@name='name']" position="after">
+                <field name="seller_ids" string="Codice Fornitore"
+                       filter_domain="[('seller_ids.product_code', 'ilike', self)]"/>
             </xpath>
         </field>
     </record>
