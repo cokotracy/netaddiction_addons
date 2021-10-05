@@ -14,10 +14,10 @@
             <!--MOSTRO UNA PICCOLA PARTE DELLA DESCRIZIONE-->
             <t t-if="product.website_description and len(product.website_description) > 20">
                 <div class="o_not_editable mt-2 small_description_info">
-                    <p t-raw="(product.website_description[:200] + '.. ') if len(product.website_description) >= 200 else product.website_description" class="te_prod_desc text-muted small-description"></p>
-                    <t t-if="len(product.website_description) >= 200">
-                        <span
-                            style="cursor:pointer; color:var(--primary);"
+                    <t t-set="short_description" t-value="(product.website_description[:200] + '.. ') if len(product.website_description) >= 200 else product.website_description"/>
+                    <t t-esc="env['ir.fields.converter'].text_from_html(short_description)"/>
+                    <t t-if="len(short_description) >= 200">
+                        <span class="text-primary d-block"
                             onclick="
                                 document.querySelector('#nav_tabs_link_description').click();
                                 document.querySelector('.product_tabs_ept').scrollIntoView({behavior: 'smooth'});" 
@@ -140,7 +140,12 @@
             <t t-if="out_date">
                 <t t-if="out_date &gt; current">
                     <div class="d-block mb-3">
-                        <small class="text-primary font-weight-bold">Prenota ora potresti riceverlo a <t t-esc="out_date.strftime('%B %Y')"/></small>
+                        <t t-if="product.out_date_approx_type != 'accurate'">
+                            <small class="text-primary font-weight-bold">Prenota ora potresti riceverlo a <t t-esc="out_date.strftime('%B %Y')"/></small>
+                        </t>
+                        <t t-else="">
+                            <small class="text-primary font-weight-bold">Prenota ora e lo ricevi il <t t-esc="out_date.strftime('%d/%m/%Y')"/></small>
+                        </t>
                         <div class="d-block mt-3 preorder-info">
                             <strong class="label" style="font-size:12px;"><i class="fa fa-info-circle mr-1 text-primary"></i>Prezzo Minimo Garantito</strong>
                             <br/>

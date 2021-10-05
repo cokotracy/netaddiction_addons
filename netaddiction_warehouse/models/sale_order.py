@@ -41,6 +41,19 @@ class SaleOrder(models.Model):
         string="Reversibile",
     )
 
+    def write(self, vals):
+        # To manage old order paid with credit card, we need to change only
+        # payment method in order to change it from `Credit Card` to 'Cash'.
+        # `netaddiction_order` checks that an order is in a pick up.
+        # We can bypass this check if we are writing only payment method value
+        if 'payment_method_id' in vals and len(vals.keys()) == 1:
+            return super(
+                SaleOrder,
+                self.with_context(ignore_pickup_check=True)
+                ).write(vals)
+        else:
+            return super().write(vals)
+
     def get_reverse_pickings(self):
         """
         Si prende i settings per i resi ['reverse_scrape','reverse_resale']

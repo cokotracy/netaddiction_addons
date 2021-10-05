@@ -285,22 +285,20 @@ class AdvanceCartSetting(WebsiteSale):
             payment_acquirer_obj = request.env['payment.acquirer'].sudo().search([('id','=', tx.acquirer_id.id)]) 
         
             order = request.website.sale_get_order()
-            product_obj = request.env['product.product'].browse()
-            extra_fees_product = request.env['ir.model.data'].get_object_reference('advance_website_all_in_one', 'product_product_fees')[1]
-            product_ids = product_obj.sudo().search([('product_tmpl_id.id', '=', extra_fees_product)])
-            
-            order_line_obj = request.env['sale.order.line'].sudo().search([])
-            
-            
-            flag = 0
-            for i in order_line_obj:
-                if i.product_id.id == product_ids.id and i.order_id.id == order.id:
-                    flag = flag + 1
-            
-            if flag == 0:
-                order_line_obj.sudo().create({
+            # FIXME: The original indian module uses a custom product for the COD payment.
+            # This custom product is not tracked on the courier's manifest, So we are
+            # hardcoding the tracked product so that the standard NA flow is happy.
+            # This product should be appointed from the COD payment system via a M2O
+            # instead of using the hardcoded ID.
+            # product_obj = request.env['product.product'].browse()
+            # extra_fees_product = request.env['ir.model.data'].get_object_reference('advance_website_all_in_one', 'product_product_fees')[1]
+            # product_ids = product_obj.sudo().search([('product_tmpl_id.id', '=', extra_fees_product)])
+            product_ids = request.env['product.product'].browse(3)
+
+            if not order.order_line.filtered(lambda l: l.product_id == product_ids):
+                request.env['sale.order.line'].sudo().create({
                         'product_id': product_ids.id,
-                        'name': 'Extra Fees',
+                        'name': 'Contrassegno',
                         'price_unit': payment_acquirer_obj.delivery_fees,
                         'order_id': order.id,
                         'product_uom':product_ids.uom_id.id,
@@ -311,6 +309,7 @@ class AdvanceCartSetting(WebsiteSale):
                     })              
             
             order.with_context(send_email=True).action_confirm()
+            order._send_order_confirmation_mail()
             request.website.sale_reset()
             return request.render("website_sale.confirmation", {'order': order})
 
@@ -346,10 +345,12 @@ class AdvanceCartSetting(WebsiteSale):
                             order.partner_id.update({
                                 'wallet_balance': order.partner_id.wallet_balance + order.order_line.price_unit * order.order_line.product_uom_qty})
                         order.with_context(send_email=True).action_confirm()
+                        order._send_order_confirmation_mail()
                         request.website.sale_reset()
         else:
             if order and not order.amount_total and not tx:
                 order.with_context(send_email=True).action_confirm()
+                order._send_order_confirmation_mail()
                 return request.redirect(order.get_portal_url())
 
         if (not order.amount_total and not tx) or tx.state in ['pending', 'done', 'authorized']:
@@ -357,6 +358,7 @@ class AdvanceCartSetting(WebsiteSale):
                 # Orders are confirmed by payment transactions, but there is none for free orders,
                 # (e.g. free events), so confirm immediately
                 order.with_context(send_email=True).action_confirm()
+                order._send_order_confirmation_mail()
         elif tx and tx.state == 'cancel':
             # cancel the quotation
             order.action_cancel()

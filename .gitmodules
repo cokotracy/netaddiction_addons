@@ -27,3 +27,7 @@
 [submodule "OCA/server-ux"]
 	path = OCA/server-ux
 	url = https://github.com/OCA/server-ux
+[submodule "OCA/server-tools"]
+	path = OCA/server-tools
+	url = https://github.com/OCA/server-tools.git
+	branch = 14.0

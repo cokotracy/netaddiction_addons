@@ -144,7 +144,7 @@
 					<input type="checkbox" id="checkbox_cgv" class="custom-control-input" checked="true"/>
 					<label for="checkbox_cgv" class="custom-control-label">
 						Accetto i
-						<a target="_BLANK" href="https://multiplayer.com/static/pdf/Condizioni-Generali-Multiplayer-Netaddiction.pdf?20210820">
+						<a target="_BLANK" href="/netaddiction_theme_rewrite/static/src/pdf/Condizioni-Generali-Multiplayer-Netaddiction.pdf">
 							termini di vendita
 						</a>
 					</label>

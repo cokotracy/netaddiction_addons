@@ -168,7 +168,7 @@
         <xpath expr="//div[@id='product_full_description']" position="replace">
             <t t-if="product.website_description and len(product.website_description) > 20">
                 <div id="real_description" class="col-12 col-md-8 mx-auto d-none">
-                    <t t-raw="product.website_description"/>
+                    <t t-esc="env['ir.fields.converter'].text_from_html(product.website_description)"/>
                     <div id="button-read-more" class="text-center d-block pt-3"> 
                         <button
                             style="font-size:14px;"
@@ -181,8 +181,9 @@
                     </div>
                 </div>
                 <div id="full-description" class="col-12 col-md-8 mx-auto">
-                    <p t-raw="(product.website_description[:500] + '.. ') if len(product.website_description) >= 500 else product.website_description" class="te_prod_desc text-muted small-description"></p>
-                    <t t-if="len(product.website_description) >= 500">
+                    <t t-set="full_description" t-value="(product.website_description[:500] + '.. ') if len(product.website_description) >= 500 else product.website_description"/>
+                    <t t-esc="env['ir.fields.converter'].text_from_html(full_description)"/>
+                    <t t-if="len(full_description) >= 500">
                         <div id="button-read-more" class="text-center d-block pt-3"> 
                             <button
                                 style="font-size:14px;"

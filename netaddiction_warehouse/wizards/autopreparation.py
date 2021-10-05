@@ -15,6 +15,8 @@ class AutoPreparation(models.TransientModel):
         # Non trovo il modello base e non ho idea di cosa faccia
         # exec_obj = self.env['netaddiction.positivity.executor']
         mail_obj = self.env['mail.message']
+        credit_card_payment_method = self.env.ref(
+            'netaddiction_payments.cc_journal')
 
         for pick in pickings:
             note = []
@@ -85,6 +87,18 @@ class AutoPreparation(models.TransientModel):
             #             except Exception as e:
             #                 error_stock.append(pick.id)
             #                 note.append(str(e) or repr(e))
+
+            # If a picking payment method is Credit Card, raise an error
+            # because we must manage original order payment manually
+            if pick.sale_id.payment_method_id == credit_card_payment_method:
+                error_stock.append(pick.id)
+                note.append(
+                    f'L\'ordine "{pick.sale_id.name}", '
+                    f'che ha generato la spedizione, '
+                    f'è stato pagato con "Carta di Credito". '
+                    f'Impossibile gestire la spedizione. '
+                    f'Correggere il pagamento nell\'ordine originale.'
+                )
 
             if note:
                 mail_obj.create({
