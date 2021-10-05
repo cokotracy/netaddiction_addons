@@ -51,6 +51,7 @@ class StockMove(models.Model):
             residual = int(op.product_uom_qty) - int(op.quantity_done)
             if residual >= to_remove:
                 op.quantity_done += to_remove
+                to_remove = 0
             elif residual < to_remove:
                 op.quantity_done += residual
                 to_remove -= residual
