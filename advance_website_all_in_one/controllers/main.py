@@ -295,16 +295,8 @@ class AdvanceCartSetting(WebsiteSale):
             # product_ids = product_obj.sudo().search([('product_tmpl_id.id', '=', extra_fees_product)])
             product_ids = request.env['product.product'].browse(3)
 
-            order_line_obj = request.env['sale.order.line'].sudo().search([])
-            
-            
-            flag = 0
-            for i in order_line_obj:
-                if i.product_id.id == product_ids.id and i.order_id.id == order.id:
-                    flag = flag + 1
-            
-            if flag == 0:
-                order_line_obj.sudo().create({
+            if not order.order_line.filtered(lambda l: l.product_id == product_ids):
+                request.env['sale.order.line'].sudo().create({
                         'product_id': product_ids.id,
                         'name': 'Contrassegno',
                         'price_unit': payment_acquirer_obj.delivery_fees,
@@ -317,6 +309,7 @@ class AdvanceCartSetting(WebsiteSale):
                     })              
             
             order.with_context(send_email=True).action_confirm()
+            order._send_order_confirmation_mail()
             request.website.sale_reset()
             return request.render("website_sale.confirmation", {'order': order})
 
@@ -352,10 +345,12 @@ class AdvanceCartSetting(WebsiteSale):
                             order.partner_id.update({
                                 'wallet_balance': order.partner_id.wallet_balance + order.order_line.price_unit * order.order_line.product_uom_qty})
                         order.with_context(send_email=True).action_confirm()
+                        order._send_order_confirmation_mail()
                         request.website.sale_reset()
         else:
             if order and not order.amount_total and not tx:
                 order.with_context(send_email=True).action_confirm()
+                order._send_order_confirmation_mail()
                 return request.redirect(order.get_portal_url())
 
         if (not order.amount_total and not tx) or tx.state in ['pending', 'done', 'authorized']:
@@ -363,6 +358,7 @@ class AdvanceCartSetting(WebsiteSale):
                 # Orders are confirmed by payment transactions, but there is none for free orders,
                 # (e.g. free events), so confirm immediately
                 order.with_context(send_email=True).action_confirm()
+                order._send_order_confirmation_mail()
         elif tx and tx.state == 'cancel':
             # cancel the quotation
             order.action_cancel()
