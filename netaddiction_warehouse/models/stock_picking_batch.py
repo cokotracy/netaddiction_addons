@@ -187,7 +187,7 @@ class StockPickingBatch(models.Model):
             for p in pick:
                 res = self.env['stock.picking'].search(
                     [('id', '=', p),
-                     ('state', '!=', 'done')]
+                     ('state', 'not in', ('done', 'cancel'))]
                 )
                 ids.extend(res.ids)
 
