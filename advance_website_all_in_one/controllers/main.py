@@ -295,16 +295,8 @@ class AdvanceCartSetting(WebsiteSale):
             # product_ids = product_obj.sudo().search([('product_tmpl_id.id', '=', extra_fees_product)])
             product_ids = request.env['product.product'].browse(3)
 
-            order_line_obj = request.env['sale.order.line'].sudo().search([])
-            
-            
-            flag = 0
-            for i in order_line_obj:
-                if i.product_id.id == product_ids.id and i.order_id.id == order.id:
-                    flag = flag + 1
-            
-            if flag == 0:
-                order_line_obj.sudo().create({
+            if not order.order_line.filtered(lambda l: l.product_id == product_ids):
+                request.env['sale.order.line'].sudo().create({
                         'product_id': product_ids.id,
                         'name': 'Contrassegno',
                         'price_unit': payment_acquirer_obj.delivery_fees,
