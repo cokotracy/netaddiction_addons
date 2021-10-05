@@ -309,6 +309,7 @@ class AdvanceCartSetting(WebsiteSale):
                     })              
             
             order.with_context(send_email=True).action_confirm()
+            order._send_order_confirmation_mail()
             request.website.sale_reset()
             return request.render("website_sale.confirmation", {'order': order})
 
@@ -344,10 +345,12 @@ class AdvanceCartSetting(WebsiteSale):
                             order.partner_id.update({
                                 'wallet_balance': order.partner_id.wallet_balance + order.order_line.price_unit * order.order_line.product_uom_qty})
                         order.with_context(send_email=True).action_confirm()
+                        order._send_order_confirmation_mail()
                         request.website.sale_reset()
         else:
             if order and not order.amount_total and not tx:
                 order.with_context(send_email=True).action_confirm()
+                order._send_order_confirmation_mail()
                 return request.redirect(order.get_portal_url())
 
         if (not order.amount_total and not tx) or tx.state in ['pending', 'done', 'authorized']:
@@ -355,6 +358,7 @@ class AdvanceCartSetting(WebsiteSale):
                 # Orders are confirmed by payment transactions, but there is none for free orders,
                 # (e.g. free events), so confirm immediately
                 order.with_context(send_email=True).action_confirm()
+                order._send_order_confirmation_mail()
         elif tx and tx.state == 'cancel':
             # cancel the quotation
             order.action_cancel()
