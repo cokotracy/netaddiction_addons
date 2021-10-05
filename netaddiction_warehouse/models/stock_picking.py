@@ -64,13 +64,10 @@ class StockPicking(models.Model):
         related='sale_id.payment_method_id',
     )
 
-    # TODO: Migrare
-    '''
     total_import = fields.Float(
         compute='_get_total_import',
         string="Importo",
     )
-    '''
 
     def _compute_date_of_shipping(self):
         for pick in self:
@@ -361,17 +358,13 @@ class StockPicking(models.Model):
             pp_aj = self.env.ref('netaddiction_payments.paypal_journal')
             sf_aj = self.env.ref('netaddiction_payments.sofort_journal')
 
-            # TODO AttributeError: 'stock.picking' object has no attribute
-            #  'payment_id' ask to Andrea Colangelo for more informations
-            # if pick.payment_id \
-            #         and pick.payment_id.journal_id not in (pp_aj, sf_aj):
-            #     pick.total_import = pick.payment_id.amount
-            #     continue
+            if pick.payment_id \
+                    and pick.payment_id.journal_id not in (pp_aj, sf_aj):
+                pick.total_import = pick.payment_id.amount
+                continue
 
-            # TODO AttributeError: 'procurement.group' object has no attribute
-            #  'procurement_ids' ask to Andrea Colangelo for more informations
-            # for line in pick.group_id.procurement_ids:
-            #     total += line.sale_line_id.price_subtotal + line.sale_line_id.price_tax
+            for line in pick.group_id.procurement_ids:
+                total += line.sale_line_id.price_subtotal + line.sale_line_id.price_tax
 
             res = self.carrier_id.product_id.taxes_id.compute_all(
                 self.carrier_price)
