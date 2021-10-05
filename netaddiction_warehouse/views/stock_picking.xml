@@ -179,7 +179,7 @@
         </field>
     </record>
 
-    <record id="netaddiction_stock_picking_new_field" model="ir.ui.view">
+    <record id="netaddiction_stock_picking_new_field_2" model="ir.ui.view">
         <field name="name">netaddiction.stock.picking.new.field</field>
         <field name="model">stock.picking</field>
         <field name="inherit_id" ref="stock.view_picking_form"/>
@@ -187,6 +187,10 @@
             <xpath expr="/form/sheet/group/group/field[@name='location_id']" position="after">
                  <!-- <field name="total_import" readonly="True"/> -->
                 <field name="sale_order_payment_method"/>
+            </xpath>
+            <xpath expr="/form/sheet//page[@name='extra']//group[@name='other_infos']/field[@name='group_id']"
+                   position="after">
+                <field name="batch_id"/>
             </xpath>
         </field>
     </record>
