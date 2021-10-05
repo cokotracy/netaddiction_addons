@@ -285,10 +285,16 @@ class AdvanceCartSetting(WebsiteSale):
             payment_acquirer_obj = request.env['payment.acquirer'].sudo().search([('id','=', tx.acquirer_id.id)]) 
         
             order = request.website.sale_get_order()
-            product_obj = request.env['product.product'].browse()
-            extra_fees_product = request.env['ir.model.data'].get_object_reference('advance_website_all_in_one', 'product_product_fees')[1]
-            product_ids = product_obj.sudo().search([('product_tmpl_id.id', '=', extra_fees_product)])
-            
+            # FIXME: The original indian module uses a custom product for the COD payment.
+            # This custom product is not tracked on the courier's manifest, So we are
+            # hardcoding the tracked product so that the standard NA flow is happy.
+            # This product should be appointed from the COD payment system via a M2O
+            # instead of using the hardcoded ID.
+            # product_obj = request.env['product.product'].browse()
+            # extra_fees_product = request.env['ir.model.data'].get_object_reference('advance_website_all_in_one', 'product_product_fees')[1]
+            # product_ids = product_obj.sudo().search([('product_tmpl_id.id', '=', extra_fees_product)])
+            product_ids = request.env['product.product'].browse(3)
+
             order_line_obj = request.env['sale.order.line'].sudo().search([])
             
             
@@ -300,7 +306,7 @@ class AdvanceCartSetting(WebsiteSale):
             if flag == 0:
                 order_line_obj.sudo().create({
                         'product_id': product_ids.id,
-                        'name': 'Extra Fees',
+                        'name': 'Contrassegno',
                         'price_unit': payment_acquirer_obj.delivery_fees,
                         'order_id': order.id,
                         'product_uom':product_ids.uom_id.id,
