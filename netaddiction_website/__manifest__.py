@@ -5,7 +5,7 @@
     """,
     "author": "Netaddiction",
     "category": "Custom Development",
-    "version": "14.0.1.2.0",
+    "version": "14.0.1.3.0",
     "description": """
         This module will enhance the odoo features
     """,
@@ -13,6 +13,7 @@
     "data": [
         "data/cron.xml",
         "views/web/homepage.xml",
+        "views/web/lego_shop.xml"
     ],
     "installable": True,
     "application": False,

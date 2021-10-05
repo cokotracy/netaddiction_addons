@@ -39,7 +39,7 @@ odoo.define('netaddiction_theme_rewrite.VariantMixin', function (require) {
             },
         }).then(function (data) {
             if(data != null && (data.sale_ok == false || (data.qty_sum_suppliers <= 0 && data.qty_available_now <= 0))){
-                if(data.out_date == null || new Date(data.out_date) < new Date() || data.sale_ok == false){
+                if(data.out_date == null || new Date(data.out_date) < new Date() || data.inventory_availability != 'never' || data.sale_ok == false){
                     if (combination.product_type === 'product' && _.contains(['always', 'threshold'], combination.inventory_availability)) {
                         combination.virtual_available -= parseInt(combination.cart_qty);
                         if (combination.virtual_available < 0) {
