@@ -50,11 +50,6 @@ class ProductTemplate(models.Model):
         string="Approssimazione Data",
     )
 
-    suppliers_codes = fields.Char(
-        compute='_compute_suppliers_codes',
-        store=True,
-    )
-
     def write(self, values):
         res = super().write(values)
         if 'sale_ok' in values.keys():
@@ -72,15 +67,6 @@ class ProductTemplate(models.Model):
             res._mail_check_visible()
         return res
 
-    @api.depends('seller_ids', 'seller_ids.name', 'seller_ids.name.ref')
-    def _compute_suppliers_codes(self):
-        for product in self:
-            product.suppliers_codes = '~'.join([
-                si.product_code
-                for si in product.seller_ids
-                if si.product_code
-                ])
-
     @api.model
     def name_search(self, name, args=None, operator="ilike", limit=100):
         """Search templates/products by supplier code, too"""
@@ -92,10 +78,17 @@ class ProductTemplate(models.Model):
         if not args:
             args = []
         if name and len(name) >= 3:
-            per_supplier_args = args + [('suppliers_codes', 'ilike', name)]
-            products_per_supplier = self.search(per_supplier_args, limit=available_limit)
-            if products_per_supplier:
-                res = res + products_per_supplier.name_get()
+            supplier_info = self.env['product.supplierinfo'].search([
+                ('product_tmpl_id', '!=', False),
+                ('product_code', 'ilike', name),
+                ])
+            if supplier_info:
+                product_ids = supplier_info.mapped('product_tmpl_id').ids
+                per_supplier_args = args + [('id', 'in', product_ids)]
+                products_per_supplier = self.search(per_supplier_args,
+                                                    limit=available_limit)
+                if products_per_supplier:
+                    res = res + products_per_supplier.name_get()
         return res
 
     def _mail_check_sale_ok(self):
@@ -235,12 +228,40 @@ class ProductProduct(models.Model):
         compute='_compute_product_coupon_programs_count',
     )
 
+    seller_ids = fields.Many2many(
+        'product.supplierinfo',
+        compute='_compute_seller_ids',
+        search='_search_seller_ids',
+        )
+
+    variant_seller_ids = fields.Many2many(
+        'product.supplierinfo',
+        compute='_compute_seller_ids',
+        search='_search_seller_ids',
+        )
+
     @api.model_create_multi
     def create(self, vals_list):
         res = super().create(vals_list)
         for product in res:
             product.default_code = str(product.id)
         return res
+
+    def _compute_seller_ids(self):
+        for product in self:
+            sellers = product.product_tmpl_id.seller_ids
+            product_sellers = sellers.filtered(
+                lambda s: not s.product_id or s.product_id == product)
+            product.seller_ids = product_sellers
+            product.variant_seller_ids = product_sellers
+
+    def _search_seller_ids(self, operator, value):
+        filter_ids = []
+        if value and value._result:
+            supplier_info = self.env['product.supplierinfo'].browse(
+                value._result)
+            filter_ids.extend(supplier_info.mapped('product_id').ids)
+        return [('id', 'in', filter_ids)]
 
     def _get_inventory_medium_value(self):
         stock = self.env.ref('stock.stock_location_stock').id
@@ -500,10 +521,17 @@ class ProductProduct(models.Model):
         if not args:
             args = []
         if name and len(name) >= 3:
-            per_supplier_args = args + [('suppliers_codes', 'ilike', name)]
-            products_per_supplier = self.search(per_supplier_args, limit=available_limit)
-            if products_per_supplier:
-                res = res + products_per_supplier.name_get()
+            supplier_info = self.env['product.supplierinfo'].search([
+                ('product_id', '!=', False),
+                ('product_code', 'ilike', name),
+                ])
+            if supplier_info:
+                product_ids = supplier_info.mapped('product_id').ids
+                per_supplier_args = args + [('id', 'in', product_ids)]
+                products_per_supplier = self.search(per_supplier_args,
+                                                    limit=available_limit)
+                if products_per_supplier:
+                    res = res + products_per_supplier.name_get()
         return res
 
     def _compute_product_coupon_programs_count(self):
