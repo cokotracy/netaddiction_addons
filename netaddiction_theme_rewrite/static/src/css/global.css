@@ -4,6 +4,31 @@
 *{
     font-family: 'Montserrat' !important;
 }
+
+.o_footer_copyright{
+    display:none !important;
+}
+
+div#footer{
+    position:relative;
+}
+
+div#footer::after {
+    content: 'Copyright © Netaddiction s.r.l';
+    background: #2e343a;
+    color:#f5f5f5;
+    width: 100%;
+    position: absolute;
+    text-align: center;
+    bottom: 0;
+    left: 0;
+    padding: 10px;
+}
+
+button[data-target='#wsale_products_categories_collapse']{
+    display:none;
+}
+
 :root {
     --primary: #f6842a !important;
     --light-primary: #f0af7d !important;

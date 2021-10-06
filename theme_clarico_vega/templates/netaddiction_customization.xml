@@ -234,14 +234,15 @@
             </t>
             
             <t t-if="related_category">
+                
                 <strong class="d-block">Filtra per:</strong>
                 <hr/>
                 <div class="border-bottom">
-                    <a class="d-block p-3 text-primary position-relative" data-toggle="collapse" href="#collapse_status" role="button" aria-expanded="false" aria-controls="collapseExample">
+                    <a class="d-block p-3 text-primary position-relative" data-toggle="collapse" href="#collapse_status" role="button" aria-expanded="true" aria-controls="collapseExample">
                         Stato
                         <i class="fa fa-sort-desc position-absolute" style="right:10px; top:50%; transform:translateY(-50%)"></i>
                     </a>
-                    <div class="collapse" id="collapse_status" style="max-height:400px; overflow:auto;">
+                    <div class="collapse show" id="collapse_status" style="max-height:400px; overflow:auto;">
                         <div class="card card-body" id="status_filter_list">
                             <div class="d-flex mb-2">
                                 <input style="margin-top:5px;" type="checkbox" id="status_1" value="1"/>
@@ -265,11 +266,11 @@
                             </div>
                         </div>
                     </div>
-                    <hr class="my-0"/>
+                    <!-- <hr class="my-0"/>
                     <a class="d-block p-3 text-primary position-relative" data-toggle="collapse" href="#collapse_tag" role="button" aria-expanded="false" aria-controls="collapseExample">
                         Tag
                         <i class="fa fa-sort-desc position-absolute" style="right:10px; top:50%; transform:translateY(-50%)"></i>
-                    </a>
+                    </a> -->
                     <div class="collapse" id="collapse_tag" style="max-height:400px; overflow:auto;">
                         <div class="card card-body" id="tag_filter_list">
                             <t t-set="tags" t-value="request.env['product.template.tag'].sudo().search([])"/>
@@ -281,7 +282,7 @@
                             </t>
                         </div>
                     </div>
-                    <button onclick="checkFilter()" class="w-100 d-block btn-primary">Filtra</button>
+                    <button onclick="checkFilter()" class="btn btn-primary btn-lg a-submit d-block d-sm-inline-block te_theme_button w-100">Filtra</button>
                 </div>
                 <ul class="list-unstyled mt-3">
                     <t t-foreach="related_category" t-as="cat">

@@ -156,12 +156,10 @@ class SiteCategories(WebsiteSale):
             if '3' in status_filter:
                 new_dom = [('create_date','>', (date.today() - timedelta(days = 20)))]
                 domain = expression.AND([new_dom, domain])
-
-            if '4' in status_filter:
-                new_dom = [('product_variant_ids.qty_sum_suppliers','>', 0)]
-                domain = expression.AND([new_dom, domain])
-                new_dom = [('product_variant_ids.qty_available_now','<=', 0)]
-                domain = expression.AND([new_dom, domain])
+                
+            # if '4' in status_filter:
+            #     new_dom = [('product_variant_ids.qty_sum_suppliers','>', 0),('product_variant_ids.qty_available_now','<=', 0)]
+            #     domain = expression.AND([new_dom, domain])
 
           
         if tag_filter:
@@ -173,7 +171,7 @@ class SiteCategories(WebsiteSale):
             domain = expression.AND([new_dom, domain])
         else:
             if not status_filter:
-                new_dom = [[('product_variant_ids.out_date','>', date.today())], [('product_variant_ids.qty_available_now','>', 0)]]
+                new_dom = ['|',('product_variant_ids.out_date','>', date.today()),('product_variant_ids.qty_available_now','>', 0)]
                 domain = expression.AND([new_dom, domain])
 
 
