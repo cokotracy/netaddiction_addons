@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="custom_portal_my_details">
+         <t t-call="portal.portal_layout">
+            <t t-set="breadcrumbs_searchbar" t-value="True"/>
+
+            <t t-call="portal.portal_searchbar">
+                <t t-set="title">I tuoi ordini</t>
+            </t>
+            <t t-if="orders">
+                <div class="container"> 
+                    <div class="col-md-10 text-center mx-auto">
+                        <img class="img img-responsive col-xs-12 w-100 w-md-50 mt-3 mb-3" src="/netaddiction_theme_rewrite/static/src/img/empty-orders.png"  alt="Odoo CMS - a big picture" style="max-width:100%"/>
+                        <h2>Attualmente non ci sono ordini nel tuo account!</h2>
+                        <a role="button" class="button-rounded mt-3 d-inline-block" href="/my/home">
+                            Torna al tuo account
+                        </a>
+                    </div>
+                </div>
+            </t>
+            <t t-if="not orders" t-call="portal.portal_table">
+                <thead>
+                    <tr class="active">
+                        <th>
+                            <span class='d-none d-md-inline'>Ordine #</span>
+                            <span class='d-block d-md-none'>Ref.</span>
+                        </th>
+                        <th class="text-right">Order Date</th>
+                        <th class="text-center"/>
+                        <th class="text-right">Total</th>
+                    </tr>
+                </thead>
+                <t t-foreach="orders" t-as="order">
+                    <tr>
+                        <td><a t-att-href="order.get_portal_url()"><t t-esc="order.name"/></a></td>
+                        <td class="text-right">
+                            <span t-field="order.date_order" t-options="{'widget': 'date'}"/>&amp;nbsp;
+                            <span class='d-none d-md-inline' t-field="order.date_order" t-options="{'time_only': True}"/>
+                        </td>
+                        <td class="text-center">
+                            <span t-if="order.state == 'done'"  class="badge badge-pill badge-success">
+                                <i class="fa fa-fw fa-check" role="img" aria-label="Done" title="Done"/>Done
+                            </span>
+                        </td>
+                        <td class="text-right"><span t-field="order.amount_total"/></td>
+                    </tr>
+                </t>
+            </t>
+        </t>
+    </template>
+</odoo>

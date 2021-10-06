@@ -6,13 +6,15 @@
 from werkzeug.exceptions import Forbidden, NotFound
 from datetime import date, timedelta
 from odoo.http import request, route, Controller
-from odoo import models, fields, tools
+from odoo import models, fields, tools, http
 from odoo.addons.odoo_website_wallet.controllers.main import WebsiteWallet as Wallet
 from odoo.addons.website_sale.controllers.main import WebsiteSale, TableCompute
 from odoo.exceptions import ValidationError
 from odoo.addons.website.controllers.main import Website
 from odoo.addons.website.controllers.main import QueryURL
 from odoo.addons.http_routing.models.ir_http import slug
+from odoo.addons.sale.controllers.portal import CustomerPortal
+
 from odoo.osv import expression
 
 
@@ -49,9 +51,7 @@ class WebsiteCustom(Website):
 
         return {"qty_sum_suppliers": prod.sudo().qty_sum_suppliers, "sale_ok":prod.sale_ok, "qty_available_now":prod.qty_available_now, "out_date":prod.out_date, "inventory_availability":prod.sudo().inventory_availability}
 
-
-
-    
+   
 class SiteCategories(WebsiteSale):
     @route([
         '''/shop''',
@@ -624,3 +624,11 @@ class WebsiteSaleCustomAddress(Controller):
             'countries': country.get_website_sale_countries(mode=mode[1]),
         }
         return res
+
+
+class CustomCustomerPortal(CustomerPortal):
+    @route(['/my/orders', '/my/orders/page/<int:page>'], type='http', auth="user", website=True)
+    def portal_my_orders(self, page=1, date_begin=None, date_end=None, sortby=None, **kw):
+        response = super(CustomCustomerPortal, self).portal_my_orders()
+        response = http.Response(template="netaddiction_theme_rewrite.custom_portal_my_details", qcontext=response.qcontext)
+        return response.render()

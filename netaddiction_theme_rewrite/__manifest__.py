@@ -24,6 +24,7 @@
     "data": [
         "templates/assets.xml",
         "templates/template_my_portal.xml",
+        "templates/template_my_orders.xml",
         "templates/template_category.xml",
         "templates/template_product.xml",
         "templates/template_privacy_policy.xml",
