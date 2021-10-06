@@ -6,7 +6,7 @@ from odoo.http import request, route, Controller
 class CustomHome(Controller):
     @route("/", type="http", auth="public", website=True)
     def controller(self, **post):
-        if request.website.id > 1:
+        if request.website.isB2B:
             return request.redirect('/shop')
 
         preorder_list = (

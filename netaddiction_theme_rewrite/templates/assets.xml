@@ -19,7 +19,7 @@
             <script type="text/javascript" src="//cdn.iubenda.com/cs/iubenda_cs.js" charset="UTF-8" async="async"></script>
         </xpath>
         <xpath expr="//meta[last()]" position="after">
-            <t t-if="request.website.id &gt; 1">
+            <t t-if="request.website.isB2B">
                 <meta name="robots" content="noindex, nofollow" />
             </t>
         
