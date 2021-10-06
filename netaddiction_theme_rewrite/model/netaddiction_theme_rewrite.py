@@ -8,9 +8,13 @@ from datetime import date, timedelta
 from odoo.http import request, route, Controller
 from odoo import models, fields, tools
 from odoo.addons.odoo_website_wallet.controllers.main import WebsiteWallet as Wallet
-from odoo.addons.website_sale.controllers.main import WebsiteSale as Shop
+from odoo.addons.website_sale.controllers.main import WebsiteSale, TableCompute
 from odoo.exceptions import ValidationError
 from odoo.addons.website.controllers.main import Website
+from odoo.addons.website.controllers.main import QueryURL
+from odoo.addons.http_routing.models.ir_http import slug
+from odoo.osv import expression
+
 
 class WebsiteCustom(Website):
     @route(['/shop/cart/check_limit_order'], type='json', auth="public", methods=['POST'], website=True, csrf=False)
@@ -44,26 +48,36 @@ class WebsiteCustom(Website):
         prod = request.env['product.product'].search([('id', '=', product_id)])
 
         return {"qty_sum_suppliers": prod.sudo().qty_sum_suppliers, "sale_ok":prod.sale_ok, "qty_available_now":prod.qty_available_now, "out_date":prod.out_date, "inventory_availability":prod.sudo().inventory_availability}
-        
+
+
 
     
-class SiteCategories(Shop):
+class SiteCategories(WebsiteSale):
     @route([
-        '/shop',
-        '/shop/page/<int:page>',
-        '/shop/category/<model("product.public.category"):category>',
-        '/shop/category/<model("product.public.category"):category>/page/<int:page>'
-    ], type='http', auth="public", website=True, sitemap=Shop.sitemap_shop)
+        '''/shop''',
+        '''/shop/page/<int:page>''',
+        '''/shop/category/<model("product.public.category"):category>''',
+        '''/shop/category/<model("product.public.category"):category>/page/<int:page>'''
+    ], type='http', auth="public", website=True, sitemap=WebsiteSale.sitemap_shop)
     def shop(self, page=0, category=None, search='', ppg=False, **post):
-        sup = super(SiteCategories, self).shop(page=page, category=category, search=search, **post)
+        add_qty = int(post.get('add_qty', 1))
+
+        status_filter = request.params.get('status-filter')
+        tag_filter = request.params.get('tag-filter')
+
         Category = request.env['product.public.category']
+
+        preorder_list = newest_list = bestseller_list = []
+        
+
         if category:
-            category = Category.sudo().search([('id', '=', int(category))], limit=1)
+            category = Category.search([('id', '=', int(category))], limit=1)
             if not category or not category.can_access_from_current_website():
                 raise NotFound()
         else:
             category = Category
 
+        
         if category:
             preorder_list = request.env["product.template"].sudo().search([
                 ('out_date', '>', date.today().strftime("%Y-%m-%d")),
@@ -88,7 +102,6 @@ class SiteCategories(Shop):
                 ], fields=['product_id'], groupby=['product_id'], limit=20, orderby="qty_invoiced desc"
             )
             
-            bestseller_list = []
             for bs in bestseller_list_temp:
                 try:
                     product = request.env['product.product'].sudo().search([('id', '=', bs['product_id'][0])])
@@ -97,12 +110,126 @@ class SiteCategories(Shop):
                 except Exception:
                     pass
         
-            sup.qcontext["category"] = category
-            sup.qcontext["preorder_list"] = preorder_list
-            sup.qcontext["newest_list"] = newest_list
-            sup.qcontext["bestseller_list"] = bestseller_list
+
+        if ppg:
+            try:
+                ppg = int(ppg)
+                post['ppg'] = ppg
+            except ValueError:
+                ppg = False
+        if not ppg:
+            ppg = request.env['website'].get_current_website().shop_ppg or 20
+
+        ppr = request.env['website'].get_current_website().shop_ppr or 4
+
+        attrib_list = request.httprequest.args.getlist('attrib')
+        attrib_values = [[int(x) for x in v.split("-")] for v in attrib_list if v]
+        attributes_ids = {v[0] for v in attrib_values}
+        attrib_set = {v[1] for v in attrib_values}
+
+        domain = self._get_search_domain(search, category, attrib_values)
+
+        keep = QueryURL('/shop', category=category and int(category), search=search, attrib=attrib_list, order=post.get('order'))
+
+        pricelist_context, pricelist = self._get_pricelist_context()
+
+        request.context = dict(request.context, pricelist=pricelist.id, partner=request.env.user.partner_id)
+
+        url = "/shop"
+        if search:
+            post["search"] = search
+        if attrib_list:
+            post['attrib'] = attrib_list
+
+        Product = request.env['product.template'].with_context(bin_size=True)
+
+        if status_filter:
+            status_filter = status_filter.split(',')
+            if '1' in status_filter:
+                new_dom = [('product_variant_ids.qty_available_now','>', 0)]
+                domain = expression.AND([new_dom, domain])
+
+            if '2' in status_filter:
+                new_dom = [('product_variant_ids.out_date','>', date.today())]
+                domain = expression.AND([new_dom, domain])
             
-        return sup
+            if '3' in status_filter:
+                new_dom = [('create_date','>', (date.today() - timedelta(days = 20)))]
+                domain = expression.AND([new_dom, domain])
+
+            if '4' in status_filter:
+                new_dom = [('product_variant_ids.qty_sum_suppliers','>', 0)]
+                domain = expression.AND([new_dom, domain])
+                new_dom = [('product_variant_ids.qty_available_now','<=', 0)]
+                domain = expression.AND([new_dom, domain])
+          
+        if tag_filter:
+            tag_filter = tag_filter.split(',')
+
+
+        search_product = Product.search(domain, order=self._get_search_order(post))
+        
+
+        website_domain = request.website.website_domain()
+        categs_domain = [('parent_id', '=', False)] + website_domain
+        if search:
+            search_categories = Category.search([('product_tmpl_ids', 'in', search_product.ids)] + website_domain).parents_and_self
+            categs_domain.append(('id', 'in', search_categories.ids))
+        else:
+            search_categories = Category
+        categs = Category.search(categs_domain)
+
+        if category:
+            url = "/shop/category/%s" % slug(category)
+
+        product_count = len(search_product)
+        pager = request.website.pager(url=url, total=product_count, page=page, step=ppg, scope=7, url_args=post)
+        offset = pager['offset']
+        products = search_product[offset: offset + ppg]
+
+        ProductAttribute = request.env['product.attribute']
+        if products:
+            # get all products without limit
+            attributes = ProductAttribute.search([('product_tmpl_ids', 'in', search_product.ids)])
+        else:
+            attributes = ProductAttribute.browse(attributes_ids)
+
+        layout_mode = request.session.get('website_sale_shop_layout_mode')
+        if not layout_mode:
+            if request.website.viewref('website_sale.products_list_view').active:
+                layout_mode = 'list'
+            else:
+                layout_mode = 'grid'
+
+        tableComp = TableCompute()
+        bins = tableComp.process(products, ppg, ppr)
+
+        values = {
+            'preorder_list':preorder_list,
+            'newest_list':newest_list,
+            'bestseller_list':bestseller_list,
+            'search': search,
+            'category': category,
+            'attrib_values': attrib_values,
+            'attrib_set': attrib_set,
+            'pager': pager,
+            'pricelist': pricelist,
+            'add_qty': add_qty,
+            'products': products,
+            'search_count': product_count,  # common for all searchbox
+            'bins': bins,
+            'ppg': ppg,
+            'ppr': ppr,
+            'categories': categs,
+            'attributes': attributes,
+            'keep': keep,
+            'search_categories_ids': search_categories.ids,
+            'layout_mode': layout_mode,
+        }
+        if category:
+            values['main_object'] = category
+        return request.render("website_sale.products", values)
+
 
 #AGGIUNGE LA PAGINA PRIVACY
 class CustomPrivacy(Controller):
