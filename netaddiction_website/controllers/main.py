@@ -6,6 +6,9 @@ from odoo.http import request, route, Controller
 class CustomHome(Controller):
     @route("/", type="http", auth="public", website=True)
     def controller(self, **post):
+        if request.website.id > 1:
+            return request.redirect('/shop')
+
         preorder_list = (
             request.env["product.template"]
             .sudo()

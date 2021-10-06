@@ -162,9 +162,21 @@ class SiteCategories(WebsiteSale):
                 domain = expression.AND([new_dom, domain])
                 new_dom = [('product_variant_ids.qty_available_now','<=', 0)]
                 domain = expression.AND([new_dom, domain])
+
           
         if tag_filter:
             tag_filter = tag_filter.split(',')
+
+        
+        if request.website.id > 1 and not status_filter:
+            new_dom = [('product_variant_ids.qty_available_now','>', 0)]
+            domain = expression.AND([new_dom, domain])
+        else:
+            if not status_filter:
+                new_dom = [('product_variant_ids.out_date','>', date.today())]
+                domain = expression.AND([new_dom, domain])
+                new_dom = [('product_variant_ids.qty_available_now','>', 0)]
+                domain = expression.AND([new_dom, domain])
 
 
         search_product = Product.search(domain, order=self._get_search_order(post))
