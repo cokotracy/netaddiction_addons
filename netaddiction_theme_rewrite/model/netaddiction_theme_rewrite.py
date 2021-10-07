@@ -210,7 +210,8 @@ class SiteCategories(WebsiteSale):
             ]
             domain = expression.AND([new_dom, domain])
 
-        domain = self._filters_pre_products(filters=status_filter, domain=domain)
+        if status_filter:
+            domain = self._filters_pre_products(filters=status_filter, domain=domain)
         search_product = Product.search(domain, order=self._get_search_order(post))
         if status_filter:
             search_product = self._filters_post_products(filters=status_filter, products=search_product)
