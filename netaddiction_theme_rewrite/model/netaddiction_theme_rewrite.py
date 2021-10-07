@@ -199,21 +199,78 @@ class SiteCategories(WebsiteSale):
 
         if status_filter:
             status_filter = status_filter.split(",")
-            if "1" in status_filter:
-                new_dom = [("product_variant_ids.qty_available_now", ">", 0)]
-                domain = expression.AND([new_dom, domain])
+            if len(status_filter) == 1:
+                if "1" in status_filter:
+                    new_dom = [("product_variant_ids.qty_available_now", ">", 0)]
+                    domain = expression.AND([new_dom, domain])
 
-            if "2" in status_filter:
-                new_dom = [("product_variant_ids.out_date", ">", date.today())]
-                domain = expression.AND([new_dom, domain])
+                if "2" in status_filter:
+                    new_dom = [("product_variant_ids.out_date", ">", date.today())]
+                    domain = expression.AND([new_dom, domain])
 
-            if "3" in status_filter:
-                new_dom = [("create_date", ">", (date.today() - timedelta(days=20)))]
-                domain = expression.AND([new_dom, domain])
+                if "3" in status_filter:
+                    new_dom = [("create_date", ">", (date.today() - timedelta(days=20)))]
+                    domain = expression.AND([new_dom, domain])
 
-            # if '4' in status_filter:
-            #     new_dom = [('product_variant_ids.qty_sum_suppliers','>', 0),('product_variant_ids.qty_available_now','<=', 0)]
-            #     domain = expression.AND([new_dom, domain])
+                # if '4' in status_filter:
+                #     domain = [
+                #     ('product_variant_id.qty_sum_suppliers','>', 0),
+                #     ('product_variant_ids.qty_available_now','<=', 0)]
+                #     domain = expression.AND([new_dom, domain])
+
+                # if '5' in status_filter:
+                #     new_dom = [
+                #         '&',
+                #         [
+                #             ('product_variant_ids.qty_sum_suppliers','<=', 0),
+                #             ('product_variant_ids.qty_available_now','<=', 0)
+                #         ],
+                #         [
+                #             '|',
+                #             ('product_variant_ids.out_date','=',''),
+                #             ('product_variant_ids.out_date','<', date.today())
+                #         ]
+                #     ]
+                #     domain = expression.AND([new_dom, domain])
+
+            else:
+                if len(status_filter) > 1:
+                    new_dom_1 = []
+                    if "1" in status_filter:
+                        new_dom_1 = [("product_variant_ids.qty_available_now", ">", 0)]
+
+                    new_dom_2 = []
+                    if "2" in status_filter:
+                        new_dom_2 = [("product_variant_ids.out_date", ">", date.today())]
+
+                    new_dom_3 = []
+                    if "3" in status_filter:
+                        new_dom_3 = [("create_date", ">", (date.today() - timedelta(days=20)))]
+
+                    # new_dom_4 = []
+                    # if '4' in status_filter:
+                    #     new_dom_4 = [
+                    #     '&',
+                    #     ('product_variant_ids.qty_sum_suppliers','>', 0),
+                    #     ('product_variant_ids.qty_available_now','<=', 0)]
+
+                    # new_dom_5 = []
+                    # if '5' in status_filter:
+                    #     new_dom_5 = [
+                    #     '&',
+                    #     [
+                    #         ('product_variant_ids.qty_sum_suppliers','<=', 0),
+                    #         ('product_variant_ids.qty_available_now','<=', 0)
+                    #     ],
+                    #     [
+                    #         '|',
+                    #         ('product_variant_ids.out_date','=',''),
+                    #         ('product_variant_ids.out_date','<', date.today())
+                    #     ]
+                    # ]
+
+                    domain = expression.OR([new_dom_1, new_dom_2, new_dom_3])
+                    # domain = expression.AND([new_dom, domain])
 
         if tag_filter:
             tag_filter = tag_filter.split(",")
@@ -796,31 +853,6 @@ class WebsiteSaleCustomAddress(Controller):
             "countries": country.get_website_sale_countries(mode=mode[1]),
         }
         return res
-
-
-# class WebsiteSaleCustomAddress(WebsiteSale):
-#     @route(
-#         ["/shop/address", "/my/home/address-edit"],
-#         type="http",
-#         methods=["GET", "POST"],
-#         auth="public",
-#         website=True,
-#         sitemap=False,
-#     )
-#     def address(self, **kw):
-#         response = super(WebsiteSaleCustomAddress, self).address()
-#         if request.httprequest.path == "/shop/address" and :
-
-#         response_template = (
-#             "template_checkout_address" if request.httprequest.path == "/shop/address" else "template_address"
-#         )
-#         response.template = (
-#             "netaddiction_theme_rewrite.custom_address_checkout"
-#             if request.httprequest.path == "/shop/address"
-#             else "netaddiction_theme_rewrite.address_custom"
-#         )
-#         response.qcontext.update(response_template=f"netaddiction_theme_rewrite.{response_template}")
-#         return response.render()
 
 
 class CustomCustomerPortal(CustomerPortal):

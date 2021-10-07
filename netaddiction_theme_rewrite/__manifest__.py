@@ -38,6 +38,7 @@
         "templates/custom_product_label.xml",
         "templates/page_404.xml",
         "templates/template_orders.xml",
+        "templates/login.xml",
         "templates/google-snippet/product.xml",
     ],
     # Technical
