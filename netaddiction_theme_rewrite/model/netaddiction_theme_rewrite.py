@@ -213,9 +213,8 @@ class SiteCategories(WebsiteSale):
                     domain = expression.AND([new_dom, domain])
 
                 # if '4' in status_filter:
-                #     domain = [
-                #     ('product_variant_id.qty_sum_suppliers','>', 0),
-                #     ('product_variant_ids.qty_available_now','<=', 0)]
+                #     new_dom = [('product_variant_ids.qty_sum_suppliers','>', 0)]
+                #     #domain = [('product_variant_ids.qty_sum_suppliers','>', 0),('product_variant_ids.qty_available_now','<=', 0)]
                 #     domain = expression.AND([new_dom, domain])
 
                 # if '5' in status_filter:
