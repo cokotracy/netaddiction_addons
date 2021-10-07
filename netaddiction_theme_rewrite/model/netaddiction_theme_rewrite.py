@@ -859,6 +859,6 @@ class CustomCustomerPortal(CustomerPortal):
     def portal_my_orders(self, page=1, date_begin=None, date_end=None, sortby=None, **kw):
         response = super(CustomCustomerPortal, self).portal_my_orders()
         response = http.Response(
-            template="netaddiction_theme_rewrite.custom_portal_my_details", qcontext=response.qcontext
+            template="netaddiction_theme_rewrite.custom_portal_my_orders", qcontext=response.qcontext
         )
         return response.render()
