@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <template id="custom_portal_my_details">
+    <template id="custom_portal_my_orders">
          <t t-call="portal.portal_layout">
             <t t-set="breadcrumbs_searchbar" t-value="True"/>
 
             <t t-call="portal.portal_searchbar">
                 <t t-set="title">I tuoi ordini</t>
             </t>
-            <t t-if="orders">
+            <t t-if="not orders">
                 <div class="container"> 
                     <div class="col-md-10 text-center mx-auto">
                         <img class="img img-responsive col-xs-12 w-100 w-md-50 mt-3 mb-3" src="/netaddiction_theme_rewrite/static/src/img/empty-orders.png"  alt="Odoo CMS - a big picture" style="max-width:100%"/>
@@ -18,7 +18,7 @@
                     </div>
                 </div>
             </t>
-            <t t-if="not orders" t-call="portal.portal_table">
+            <t t-if="orders" t-call="portal.portal_table">
                 <thead>
                     <tr class="active">
                         <th>
