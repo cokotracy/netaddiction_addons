@@ -144,7 +144,7 @@ class SaleOrder(models.Model):
 
     def action_confirm(self):
         for order in self:
-            if order.state not in ('draft', 'pending', 'problem'):
+            if order.state not in ('draft', 'pending'):
                 # se lo stato non  è draft è già stata chiamata action confirm
                 continue
 

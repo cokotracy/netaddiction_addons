@@ -1,9 +1,10 @@
-# Copyright 2019-TODAY Openforce Srls Unipersonale (www.openforce.it)
+# Copyright 2019-2020 Openforce Srls Unipersonale (www.openforce.it)
+# Copyright 2021-TODAY Rapsodoo Italia S.r.L. (www.rapsodoo.com)
 # License LGPL-3.0 or later (https://www.gnu.org/licenses/lgpl).
 
 {
     'name': 'Netaddiction Orders',
-    'version': '14.0.1.3.0',
+    'version': '14.0.1.3.4',
     'category': 'Sale',
     'author': 'Openforce',
     'license': 'LGPL-3',

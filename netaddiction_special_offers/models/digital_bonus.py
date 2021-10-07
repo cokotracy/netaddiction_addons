@@ -105,7 +105,7 @@ class SaleCouponProgramDigitalBonus(models.Model):
 
             orders = self.env["sale.order"].search(
                 [("order_line.product_id", "in", products.ids),
-                 ("state", "in", ("sale", "problem", "partial_done", "done"))],
+                 ("state", "in", ("sale", "partial_done", "done"))],
                 order="date_order")
             for order in orders:
                 codes_in_order = [code for code in order.digital_bonus_code_ids
