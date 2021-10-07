@@ -40,7 +40,7 @@ class Config(models.TransientModel):
         values.update({
             'bartolini_prefix_file1': getter('bartolini_prefix_file1') or '',
             'bartolini_prefix_file2': getter('bartolini_prefix_file2') or '',
-            'contrassegno_id': int(getter('contrassegno_id') or 0),
+            'contrassegno_id': int(getter('contrassegno_id.id') or 0),
             'hour_available': getter('hour_available') or "16:00",
             'hour_not_available': getter('hour_not_available') or "14:00",
             'shipping_days': int(getter('shipping_days') or 0),
