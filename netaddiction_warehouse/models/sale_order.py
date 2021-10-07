@@ -143,35 +143,19 @@ class SaleOrder(models.Model):
         return False
 
     def action_confirm(self):
-        for order in self:
-            if order.state not in ('draft', 'pending', 'problem'):
-                # se lo stato non  è draft è già stata chiamata action confirm
-                continue
-
-            if not order.order_line:
-                raise ValidationError(
-                    "Devi inserire almeno un prodotto nell'ordine"
-                )
-
-            '''
-            TODO: Check if we need it, again
-            if not self.env.context.get('no_check_limit_and_action', False):
-                if not order.parent_order:
-                    order.order_line.check_limit_and_action()
-            '''
-
         res = super().action_confirm()
 
         for order in self:
             if not order.picking_ids:
                 order.create_shipping()
                 order.set_delivery_price()
-                for pick in order.picking_ids:
-                    pick.generate_barcode()
             if not self.env.context.get('no_do_action_quantity', False):
                 for line in order.order_line:
                     if not order.parent_order:
                         line.product_id.do_action_quantity()
+
+            for pick in order.picking_ids:
+                pick.generate_barcode()
 
         return res
 
