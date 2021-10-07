@@ -23,8 +23,7 @@
     ],
     "data": [
         "templates/assets.xml",
-        "templates/template_my_portal.xml",
-        "templates/template_my_orders.xml",
+        "templates/template_my_address.xml",
         "templates/template_category.xml",
         "templates/template_product.xml",
         "templates/template_privacy_policy.xml",
@@ -33,12 +32,12 @@
         "templates/template_wallet.xml",
         "templates/template_add_wallet_balance.xml",
         "templates/template_checkout.xml",
+        "templates/template_checkout_address.xml",
         "templates/social_sidebar.xml",
         "templates/template_account.xml",
         "templates/custom_product_label.xml",
         "templates/page_404.xml",
         "templates/template_orders.xml",
-        "templates/template_address.xml",
         "templates/google-snippet/product.xml",
     ],
     # Technical

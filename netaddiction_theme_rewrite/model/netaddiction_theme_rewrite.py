@@ -370,7 +370,7 @@ class CustomCustomerPortal(Controller):
                 for field in set(["country_id", "state_id"]) & set(values.keys()):
                     try:
                         values[field] = int(values[field])
-                    except:
+                    except Exception:
                         values[field] = False
                 values.update({"zip": values.pop("zipcode", "")})
                 partner.sudo().write(values)
@@ -460,8 +460,90 @@ class WalletPageOverride(Wallet):
 
 # CUSTOM ADDRESS TEMPLATE
 class WebsiteSaleCustomAddress(Controller):
-    @route(["/shop/address-edit"], type="http", methods=["GET", "POST"], auth="public", website=True, sitemap=False)
+    @route(["/shop/address"], type="http", methods=["GET", "POST"], auth="public", website=True, sitemap=False)
     def address(self, **kw):
+        Partner = request.env["res.partner"].with_context(show_address=1).sudo()
+        order = request.website.sale_get_order()
+
+        redirection = self.checkout_redirection(order)
+        if redirection:
+            return redirection
+
+        mode = (False, False)
+        can_edit_vat = False
+        values, errors = {}, {}
+
+        partner_id = int(kw.get("partner_id", -1))
+
+        # IF PUBLIC ORDER
+        if order.partner_id.id == request.website.user_id.sudo().partner_id.id:
+            mode = ("new", "billing")
+            can_edit_vat = True
+        # IF ORDER LINKED TO A PARTNER
+        else:
+            if partner_id > 0:
+                if partner_id == order.partner_id.id:
+                    mode = ("edit", "billing")
+                    can_edit_vat = order.partner_id.can_edit_vat()
+                else:
+                    shippings = Partner.search([("id", "child_of", order.partner_id.commercial_partner_id.ids)])
+                    if order.partner_id.commercial_partner_id.id == partner_id:
+                        mode = ("new", "shipping")
+                        partner_id = -1
+                    elif partner_id in shippings.mapped("id"):
+                        mode = ("edit", "shipping")
+                    else:
+                        return Forbidden()
+                if mode and partner_id != -1:
+                    values = Partner.browse(partner_id)
+            elif partner_id == -1:
+                mode = ("new", "shipping")
+            else:  # no mode - refresh without post?
+                return request.redirect("/shop/checkout")
+
+        # IF POSTED
+        if "submitted" in kw:
+            pre_values = self.values_preprocess(order, mode, kw)
+            errors, error_msg = self.checkout_form_validate(mode, kw, pre_values)
+            post, errors, error_msg = self.values_postprocess(order, mode, pre_values, errors, error_msg)
+
+            if errors:
+                errors["error_message"] = error_msg
+                values = kw
+            else:
+                partner_id = self._checkout_form_save(mode, post, kw)
+                if mode[1] == "billing":
+                    order.partner_id = partner_id
+                    order.with_context(not_self_saleperson=True).onchange_partner_id()
+                    # This is the *only* thing that the front end user will see/edit anyway when choosing billing address
+                    order.partner_invoice_id = partner_id
+                    if not kw.get("use_same"):
+                        kw["callback"] = kw.get("callback") or (
+                            not order.only_services and (mode[0] == "edit" and "/shop/checkout" or "/shop/address")
+                        )
+                elif mode[1] == "shipping":
+                    order.partner_shipping_id = partner_id
+
+                # TDE FIXME: don't ever do this
+                order.message_partner_ids = [(4, partner_id), (3, request.website.partner_id.id)]
+                if not errors:
+                    return request.redirect(kw.get("callback") or "/shop/confirm_order")
+
+        render_values = {
+            "website_sale_order": order,
+            "partner_id": partner_id,
+            "mode": mode,
+            "checkout": values,
+            "can_edit_vat": can_edit_vat,
+            "error": errors,
+            "callback": kw.get("callback"),
+            "only_services": order and order.only_services,
+        }
+        render_values.update(self._get_country_related_render_values(kw, render_values))
+        return request.render("netaddiction_theme_rewrite.custom_address_checkout", render_values)
+
+    @route(["/my/home/address-edit"], type="http", methods=["GET", "POST"], auth="public", website=True, sitemap=False)
+    def address_edit(self, **kw):
         Partner = request.env["res.partner"].with_context(show_address=1).sudo()
         order = request.website.sale_get_order()
 
@@ -540,7 +622,7 @@ class WebsiteSaleCustomAddress(Controller):
             "only_services": order and order.only_services,
         }
         render_values.update(self._get_country_related_render_values(kw, render_values))
-        return request.render("netaddiction_theme_rewrite.address_custom", render_values)
+        return request.render("netaddiction_theme_rewrite.my_address_edit", render_values)
 
     def checkout_form_validate(self, mode, all_form_values, data):
         # mode: tuple ('new|edit', 'billing|shipping')
@@ -630,16 +712,36 @@ class WebsiteSaleCustomAddress(Controller):
                 Partner.browse(partner_id).sudo().write(checkout)
         return partner_id
 
-    def values_postprocess(self, order, mode, values, errors, error_msg):
+    def checkout_redirection(self, order):
+        # must have a draft sales order with lines at this point, otherwise reset
+        if not order or order.state != "draft":
+            request.session["sale_order_id"] = None
+            request.session["sale_transaction_id"] = None
+            return request.redirect("/shop")
+
+        if order and not order.order_line:
+            return request.redirect("/shop/cart")
+
+        # if transaction pending / done: redirect to confirmation
+        tx = request.env.context.get("website_sale_transaction")
+        if tx and tx.state != "draft":
+            return request.redirect("/shop/payment/confirmation/%s" % order.id)
+
+    def values_preprocess(self, order, mode, values):
+        # Convert the values for many2one fields to integer since they are used as IDs
+        partner_fields = request.env["res.partner"]._fields
+        return {
+            k: (bool(v) and int(v)) if k in partner_fields and partner_fields[k].type == "many2one" else v
+            for k, v in values.items()
+        }
+
+    def values_postprocess(self, order, mode, values, errors, error_msg, partner_id=None):
         new_values = {}
         authorized_fields = request.env["ir.model"]._get("res.partner")._get_form_writable_fields()
         for k, v in values.items():
             # don't drop empty value, it could be a field to reset
             if k in authorized_fields and v is not None:
                 new_values[k] = v
-            else:  # DEBUG ONLY
-                if k not in ("field_required", "partner_id", "callback", "submitted"):  # classic case
-                    _logger.debug("website_sale postprocess: %s value has been dropped (empty or not writable)" % k)
 
         new_values["team_id"] = request.website.salesteam_id and request.website.salesteam_id.id
         new_values["user_id"] = request.website.salesperson_id and request.website.salesperson_id.id
@@ -656,7 +758,10 @@ class WebsiteSaleCustomAddress(Controller):
         if mode == ("edit", "billing") and order.partner_id.type == "contact":
             new_values["type"] = "other"
         if mode[1] == "shipping":
-            new_values["parent_id"] = order.partner_id.commercial_partner_id.id
+            if order:
+                new_values["parent_id"] = order.partner_id.commercial_partner_id.id
+            else:
+                partner_id = partner_id
             new_values["type"] = "delivery"
 
         return new_values, errors, error_msg
@@ -691,6 +796,31 @@ class WebsiteSaleCustomAddress(Controller):
             "countries": country.get_website_sale_countries(mode=mode[1]),
         }
         return res
+
+
+# class WebsiteSaleCustomAddress(WebsiteSale):
+#     @route(
+#         ["/shop/address", "/my/home/address-edit"],
+#         type="http",
+#         methods=["GET", "POST"],
+#         auth="public",
+#         website=True,
+#         sitemap=False,
+#     )
+#     def address(self, **kw):
+#         response = super(WebsiteSaleCustomAddress, self).address()
+#         if request.httprequest.path == "/shop/address" and :
+
+#         response_template = (
+#             "template_checkout_address" if request.httprequest.path == "/shop/address" else "template_address"
+#         )
+#         response.template = (
+#             "netaddiction_theme_rewrite.custom_address_checkout"
+#             if request.httprequest.path == "/shop/address"
+#             else "netaddiction_theme_rewrite.address_custom"
+#         )
+#         response.qcontext.update(response_template=f"netaddiction_theme_rewrite.{response_template}")
+#         return response.render()
 
 
 class CustomCustomerPortal(CustomerPortal):
