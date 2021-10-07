@@ -225,6 +225,55 @@
 
     <template id="products_categories_ept" inherit_id="website_sale.products_categories" name="Ecommerce Categories" priority="30">     
         <xpath expr="//div[@id='wsale_products_categories_collapse']/ul" position="replace">
+            <strong class="d-block">Filtra per:</strong>
+            <hr class="my-2"/>
+            <div class="border-bottom">
+                <a class="d-block px-3 mb-2 text-primary position-relative" data-toggle="collapse" href="#collapse_status" role="button" aria-expanded="true" aria-controls="collapseExample">
+                    Stato
+                    <i class="fa fa-sort-desc position-absolute" style="right:10px; top:50%; transform:translateY(-50%) !important"></i>
+                </a>
+                <div class="collapse show" id="collapse_status" style="max-height:400px; overflow:auto;">
+                    <div class="card card-body pb-0" id="status_filter_list">
+                        <div class="d-flex mb-2">
+                            <input style="margin-top:5px;" type="checkbox" id="status_1" value="1"/>
+                            <label class="ml-1" for="status_1">Disponibile</label>
+                        </div>
+                        <div class="d-flex mb-2">
+                            <input style="margin-top:5px;" type="checkbox" id="status_2" value="2"/>
+                            <label class="ml-1" for="status_2">Prenotazione</label>
+                        </div>
+                        <div class="d-flex mb-2">
+                            <input style="margin-top:5px;" type="checkbox" id="status_3" value="3"/>
+                            <label class="ml-1" for="status_3">Novità</label>
+                        </div>
+                        <!-- <div class="d-flex mb-2">
+                            <input style="margin-top:5px;" type="checkbox" id="status_4" value="4"/>
+                            <label class="ml-1" for="status_4">Ordinabile</label>
+                        </div>
+                        <div class="d-flex mb-2">
+                            <input style="margin-top:5px;" type="checkbox" id="status_5" value="5"/>
+                            <label class="ml-1" for="status_5">Out of Stock</label>
+                        </div> -->
+                    </div>
+                </div>
+                <!-- <hr class="my-0"/>
+                <a class="d-block p-3 text-primary position-relative" data-toggle="collapse" href="#collapse_tag" role="button" aria-expanded="false" aria-controls="collapseExample">
+                    Tag
+                    <i class="fa fa-sort-desc position-absolute" style="right:10px; top:50%; transform:translateY(-50%)"></i>
+                </a> -->
+                <div class="collapse" id="collapse_tag" style="max-height:400px; overflow:auto;">
+                    <div class="card card-body" id="tag_filter_list">
+                        <t t-set="tags" t-value="request.env['product.template.tag'].sudo().search([])"/>
+                        <t t-foreach="tags" t-as="tag">
+                            <div class="d-flex mb-2">
+                                <input style="margin-top:5px;" type="checkbox" t-attf-id="tag_{{tag.id}}" t-attf-value="{{tag.id}}"/>
+                                <label class="ml-1" t-attf-for="tag_{{tag.id}}"><t t-esc="tag.name"/></label>
+                            </div>
+                        </t>
+                    </div>
+                </div>
+                <button onclick="checkFilter()" class="btn btn-primary btn-md a-submit d-block d-sm-inline-block te_theme_button w-100">Filtra</button>
+            </div>
             <t t-if="category.parent_id">
                 <t t-set="related_category" t-value="request.env['product.public.category'].sudo().search([('parent_id','=',category.parent_id.id)])"/>
             </t>
@@ -238,56 +287,6 @@
             </t>
             
             <t t-if="related_category">
-                
-                <strong class="d-block">Filtra per:</strong>
-                <hr/>
-                <div class="border-bottom">
-                    <a class="d-block p-3 text-primary position-relative" data-toggle="collapse" href="#collapse_status" role="button" aria-expanded="true" aria-controls="collapseExample">
-                        Stato
-                        <i class="fa fa-sort-desc position-absolute" style="right:10px; top:50%; transform:translateY(-50%)"></i>
-                    </a>
-                    <div class="collapse show" id="collapse_status" style="max-height:400px; overflow:auto;">
-                        <div class="card card-body pb-0" id="status_filter_list">
-                            <div class="d-flex mb-2">
-                                <input style="margin-top:5px;" type="checkbox" id="status_1" value="1"/>
-                                <label class="ml-1" for="status_1">Disponibile</label>
-                            </div>
-                            <div class="d-flex mb-2">
-                                <input style="margin-top:5px;" type="checkbox" id="status_2" value="2"/>
-                                <label class="ml-1" for="status_2">Prenotazione</label>
-                            </div>
-                            <div class="d-flex mb-2">
-                                <input style="margin-top:5px;" type="checkbox" id="status_3" value="3"/>
-                                <label class="ml-1" for="status_3">Novità</label>
-                            </div>
-                            <!-- <div class="d-flex mb-2">
-                                <input style="margin-top:5px;" type="checkbox" id="status_4" value="4"/>
-                                <label class="ml-1" for="status_4">Ordinabile</label>
-                            </div>
-                            <div class="d-flex mb-2">
-                                <input style="margin-top:5px;" type="checkbox" id="status_5" value="5"/>
-                                <label class="ml-1" for="status_5">Out of Stock</label>
-                            </div> -->
-                        </div>
-                    </div>
-                    <!-- <hr class="my-0"/>
-                    <a class="d-block p-3 text-primary position-relative" data-toggle="collapse" href="#collapse_tag" role="button" aria-expanded="false" aria-controls="collapseExample">
-                        Tag
-                        <i class="fa fa-sort-desc position-absolute" style="right:10px; top:50%; transform:translateY(-50%)"></i>
-                    </a> -->
-                    <div class="collapse" id="collapse_tag" style="max-height:400px; overflow:auto;">
-                        <div class="card card-body" id="tag_filter_list">
-                            <t t-set="tags" t-value="request.env['product.template.tag'].sudo().search([])"/>
-                            <t t-foreach="tags" t-as="tag">
-                                <div class="d-flex mb-2">
-                                    <input style="margin-top:5px;" type="checkbox" t-attf-id="tag_{{tag.id}}" t-attf-value="{{tag.id}}"/>
-                                    <label class="ml-1" t-attf-for="tag_{{tag.id}}"><t t-esc="tag.name"/></label>
-                                </div>
-                            </t>
-                        </div>
-                    </div>
-                    <button onclick="checkFilter()" class="btn btn-primary btn-md a-submit d-block d-sm-inline-block te_theme_button w-100">Filtra</button>
-                </div>
                 <ul class="list-unstyled mt-3">
                     <t t-foreach="related_category" t-as="cat">
                         <t t-set="subcat" t-value="request.env['product.public.category'].sudo().search([('parent_id','=',cat.id)])"/>
