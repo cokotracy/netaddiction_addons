@@ -431,7 +431,7 @@ class NetaddictionManifest(models.Model):
 
                 if payment:
                     if payment.id == payment_contrassegno:
-                        t = str(round(delivery.total_import, 2))
+                        t = str(round(delivery.sale_id.amount_total, 2))
                         split = t.split('.')
                         c = 2 - len(split[1])
                         total = split[0] + '.' + split[1] + '0' * c
@@ -665,7 +665,7 @@ class NetaddictionManifest(models.Model):
                 if payment:
                     if payment.id == payment_contrassegno:
                         file1.write(" ")
-                        t = str(round(delivery.total_import, 2))
+                        t = str(round(delivery.sale_id.amount_total, 2))
                         split = t.split('.')
                         c = 3 - len(split[1])
 
