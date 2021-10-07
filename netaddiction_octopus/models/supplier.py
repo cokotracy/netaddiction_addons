@@ -21,15 +21,10 @@ class NetaddictionOctopusSupplier(models.Model):
     )
 
     handler = fields.Selection([
-        ('adl', 'adl'),
         ('beegroup', 'beegroup'),
-        ('cidiverte', 'cidiverte'),
         ('cosmicgroup', 'cosmicgroup'),
         ('dbline', 'dbline'),
-        ('drako', 'drako'),
-        ('esprinet', 'esprinet'),
         ('gedistribuzione', 'gedistribuzione'),
-        ('promovideo', 'promovideo'),
         ('terminalvideo', 'terminalvideo'),
         ],
         string='Handler'
