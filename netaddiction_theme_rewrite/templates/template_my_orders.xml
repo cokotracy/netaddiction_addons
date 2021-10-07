@@ -19,32 +19,60 @@
                 </div>
             </t>
             <t t-if="orders" t-call="portal.portal_table">
-                <thead>
-                    <tr class="active">
-                        <th>
-                            <span class='d-none d-md-inline'>Ordine #</span>
-                            <span class='d-block d-md-none'>Ref.</span>
-                        </th>
-                        <th class="text-right">Order Date</th>
-                        <th class="text-center"/>
-                        <th class="text-right">Total</th>
-                    </tr>
-                </thead>
-                <t t-foreach="orders" t-as="order">
-                    <tr>
-                        <td><a t-att-href="order.get_portal_url()"><t t-esc="order.name"/></a></td>
-                        <td class="text-right">
-                            <span t-field="order.date_order" t-options="{'widget': 'date'}"/>&amp;nbsp;
-                            <span class='d-none d-md-inline' t-field="order.date_order" t-options="{'time_only': True}"/>
-                        </td>
-                        <td class="text-center">
-                            <span t-if="order.state == 'done'"  class="badge badge-pill badge-success">
-                                <i class="fa fa-fw fa-check" role="img" aria-label="Done" title="Done"/>Done
-                            </span>
-                        </td>
-                        <td class="text-right"><span t-field="order.amount_total"/></td>
-                    </tr>
-                </t>
+                <div class="my-5">
+                    <t t-foreach="orders" t-as="order">
+                        <div class="col-12 col-md-8 mx-auto mb-3 p-0">
+                            <div style="background-color:#ededed; border-radius:4px 4px 0 0;" class="py-2 px-3">
+                                <div class="d-flex">
+                                    <div class="w-50"><small class="mr-3">Numero ordine #</small> <t class="text-primary" t-esc="order.name"/></div>
+                                    <div class="w-50 text-right"><a class="order-details-btn" t-att-href="order.get_portal_url()">Dettagli</a></div>
+                                </div>
+                            </div>
+                            <div class="p-3 border" style="border-radius:0 0 4px 4px; box-shadow:0 4px 8px 0 rgb(156 156 156 / 10%), 0 6px 20px 0 rgb(156 156 156 / 10%)">
+                                <div class="d-flex flex-wrap text-center">
+                                    <div class="w-100 w-md-50">
+                                        <t t-foreach="order.order_line" t-as="line">
+                                            <img class="m-1" style="object-fit:contain; width:60px; height:60px;" t-attf-src="data:image/png;base64,{{line.product_id.image_128}}"/>
+                                        </t>
+                                    </div>
+                                    <div class="w-100 w-md-50 p-3">
+                                        <div class="text-left">
+                                            <div class="d-block mb-2 pt-2 border-top">
+                                                <small class="mr-2">Effettuato il: </small> <i style="font-size:13px;" t-field="order.date_order" t-options="{'widget': 'date', 'format':'dd/MM/YYYY'}"/>
+                                            </div>
+                                            <div class="d-block">
+                                                <t t-if="order.state == 'done'">
+                                                    <small class="mr-2">Stato ordine: </small>
+                                                    <span class="badge badge-pill badge-success">
+                                                        <i class="fa fa-fw fa-check"/>Completato
+                                                    </span>
+                                                </t>
+                                            </div>
+                                        </div>
+                                        <div class="text-right mt-2 pt-2 border-top d-block">
+                                            <small class="mr-2">TOTALE: </small><span class="text-primary" t-field="order.amount_total"/>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    
+
+                        <!-- <tr>
+                            <td><a t-att-href="order.get_portal_url()"><t t-esc="order.name"/></a></td>
+                            <td class="text-right">
+                                <span t-field="order.date_order" t-options="{'widget': 'date'}"/>&amp;nbsp;
+                                <span class='d-none d-md-inline' t-field="order.date_order" t-options="{'time_only': True}"/>
+                            </td>
+                            <td class="text-center">
+                                <span t-if="order.state == 'done'"  class="badge badge-pill badge-success">
+                                    <i class="fa fa-fw fa-check" role="img" aria-label="Done" title="Done"/>Done
+                                </span>
+                            </td>
+                            <td class="text-right"><span t-field="order.amount_total"/></td>
+                        </tr> -->
+                    </t>
+                </div>
             </t>
         </t>
     </template>
