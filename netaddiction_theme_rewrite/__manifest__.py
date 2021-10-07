@@ -39,6 +39,7 @@
         "templates/page_404.xml",
         "templates/template_orders.xml",
         "templates/template_address.xml",
+        "templates/login.xml",
         "templates/google-snippet/product.xml",
     ],
     # Technical

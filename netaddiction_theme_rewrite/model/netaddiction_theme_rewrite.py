@@ -198,23 +198,80 @@ class SiteCategories(WebsiteSale):
         Product = request.env["product.template"].with_context(bin_size=True)
 
         if status_filter:
-            status_filter = status_filter.split(",")
-            if "1" in status_filter:
-                new_dom = [("product_variant_ids.qty_available_now", ">", 0)]
-                domain = expression.AND([new_dom, domain])
+            status_filter = status_filter.split(',')
+            if len(status_filter) == 1:
+                if '1' in status_filter:
+                    new_dom = [('product_variant_ids.qty_available_now','>', 0)]
+                    domain = expression.AND([new_dom, domain])
 
-            if "2" in status_filter:
-                new_dom = [("product_variant_ids.out_date", ">", date.today())]
-                domain = expression.AND([new_dom, domain])
+                if '2' in status_filter:
+                    new_dom = [('product_variant_ids.out_date','>', date.today())]
+                    domain = expression.AND([new_dom, domain])
+                
+                if '3' in status_filter:
+                    new_dom = [('create_date','>', (date.today() - timedelta(days = 20)))]
+                    domain = expression.AND([new_dom, domain])
+                
+                # if '4' in status_filter:
+                #     domain = [
+                #     ('product_variant_id.qty_sum_suppliers','>', 0),
+                #     ('product_variant_ids.qty_available_now','<=', 0)]
+                #     domain = expression.AND([new_dom, domain])
 
-            if "3" in status_filter:
-                new_dom = [("create_date", ">", (date.today() - timedelta(days=20)))]
-                domain = expression.AND([new_dom, domain])
+                # if '5' in status_filter:
+                #     new_dom = [
+                #         '&',
+                #         [
+                #             ('product_variant_ids.qty_sum_suppliers','<=', 0),
+                #             ('product_variant_ids.qty_available_now','<=', 0)
+                #         ],
+                #         [
+                #             '|',
+                #             ('product_variant_ids.out_date','=',''),
+                #             ('product_variant_ids.out_date','<', date.today())
+                #         ]
+                #     ]
+                #     domain = expression.AND([new_dom, domain])
 
-            # if '4' in status_filter:
-            #     new_dom = [('product_variant_ids.qty_sum_suppliers','>', 0),('product_variant_ids.qty_available_now','<=', 0)]
-            #     domain = expression.AND([new_dom, domain])
+            else: 
+                if len(status_filter) > 1:
+                    new_dom_1 = []
+                    if '1' in status_filter:
+                        new_dom_1 = [('product_variant_ids.qty_available_now','>', 0)]
 
+                    new_dom_2 = []
+                    if '2' in status_filter:
+                        new_dom_2 = [('product_variant_ids.out_date','>', date.today())]  
+                    
+                    new_dom_3 = []
+                    if '3' in status_filter:
+                        new_dom_3 = [('create_date','>', (date.today() - timedelta(days = 20)))]
+
+                    # new_dom_4 = []
+                    # if '4' in status_filter:
+                    #     new_dom_4 = [
+                    #     '&',
+                    #     ('product_variant_ids.qty_sum_suppliers','>', 0),
+                    #     ('product_variant_ids.qty_available_now','<=', 0)]
+
+                    # new_dom_5 = []
+                    # if '5' in status_filter:
+                    #     new_dom_5 = [
+                    #     '&',
+                    #     [
+                    #         ('product_variant_ids.qty_sum_suppliers','<=', 0),
+                    #         ('product_variant_ids.qty_available_now','<=', 0)
+                    #     ],
+                    #     [
+                    #         '|',
+                    #         ('product_variant_ids.out_date','=',''),
+                    #         ('product_variant_ids.out_date','<', date.today())
+                    #     ]
+                    # ]
+                    
+                    domain = expression.OR([new_dom_1, new_dom_2,new_dom_3])
+                    #domain = expression.AND([new_dom, domain])
+        
         if tag_filter:
             tag_filter = tag_filter.split(",")
 
