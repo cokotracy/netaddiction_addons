@@ -113,3 +113,16 @@
 #sale_order_communication > #discussion{
     display:block !important;
 }
+
+.order-details-btn{
+    border:2px solid var(--primary);
+    font-size: 13px;
+    font-weight: bold;
+    padding-right: 0.6em;
+    padding-left: 0.6em;
+    border-radius: 10rem;
+    display: inline-block;
+    margin-top:0 !important;
+    color: var(--primary) !important;
+    background-color: #ffffff !important;
+}
