@@ -61,7 +61,7 @@ class ProductsStats(models.Model):
                                   date_start, date_finish,
                                   supplier=False, count_refund=False,
                                   order_states=[
-                                      'done', 'partial_done', 'sale', 'problem'
+                                      'done', 'partial_done', 'sale'
                                   ]):
         # ritorna la quantità, il valore, il numero degli ordini
         # [numero linee ordine] venduti nell'intervallo di tempo

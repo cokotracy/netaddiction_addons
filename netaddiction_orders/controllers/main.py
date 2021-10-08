@@ -21,5 +21,8 @@ class NetaddictionWebsiteSale(WebsiteSale):
             order = env.search(domain, limit=1)
         else:
             order = request.website.sale_get_order()
-        order.note = post.get('note', '')
+        note = post.get('note', '')
+        order.note = note
+        if note:
+            order.problem = True
         return True

@@ -245,7 +245,7 @@ odoo.define('netaddiction_purchase_orders.products_to_buy', function (require) {
                 views: [[false, 'list'], [false, 'search']],
                 target: 'new',
                 context: {},
-                domain: [['product_id', '=', parseInt(pid)], ['state', 'in', ['sale', 'partial_done', 'problem']]]
+                domain: [['product_id', '=', parseInt(pid)], ['state', 'in', ['sale', 'partial_done']]]
             });
         },
         doSelectAll: function (e) {
