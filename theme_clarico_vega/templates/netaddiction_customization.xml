@@ -88,7 +88,9 @@
                 </t>
                 <t t-if="out_date">
                     <t t-if="out_date &gt; current">
-                        <strong class="label label-preorder">PRENOTAZIONE</strong>
+                        <t t-if="product.product_variant_id.qty_available_now &lt;= 0 and product.sudo().product_variant_id.qty_sum_suppliers &lt;= 0">
+                            <strong class="label label-preorder">PRENOTAZIONE</strong>
+                        </t>
                     </t>
                 </t>
                 <t t-if="product.product_variant_id.qty_available_now &lt;= 0 and product.sudo().product_variant_id.qty_sum_suppliers &lt;= 0">
@@ -99,8 +101,10 @@
                 <t t-if="product.product_variant_id.qty_available_now &gt; 0">
                     <strong class="label label-in">DISPONIBILE</strong>
                 </t>
-                <t t-if="product.product_variant_id.qty_available_now &lt;= 0 and product.sudo().product_variant_id.qty_sum_suppliers &gt; 0">
-                    <strong class="label label-request">ORDINABILE</strong>
+                <t t-if="product.product_variant_id.qty_available_now &lt;= 0">
+                    <t t-if="product.product_variant_id.qty_available_now &lt;= 0 and product.sudo().product_variant_id.qty_sum_suppliers &gt; 0">
+                        <strong class="label label-request">ORDINABILE</strong>
+                    </t>
                 </t>
                 <t t-if="out_date and out_date &gt; current and product.sale_ok == false">
                     <strong class="label label-out">SOLD OUT</strong>
@@ -221,6 +225,55 @@
 
     <template id="products_categories_ept" inherit_id="website_sale.products_categories" name="Ecommerce Categories" priority="30">     
         <xpath expr="//div[@id='wsale_products_categories_collapse']/ul" position="replace">
+            <strong class="d-block">Filtra per:</strong>
+            <hr class="my-2"/>
+            <div class="border-bottom">
+                <a class="d-block px-3 mb-2 text-primary position-relative" data-toggle="collapse" href="#collapse_status" role="button" aria-expanded="true" aria-controls="collapseExample">
+                    Stato
+                    <i class="fa fa-sort-desc position-absolute" style="right:10px; top:50%; transform:translateY(-50%) !important"></i>
+                </a>
+                <div class="collapse show" id="collapse_status" style="max-height:400px; overflow:auto;">
+                    <div class="card card-body pb-0" id="status_filter_list">
+                        <div class="d-flex mb-2">
+                            <input style="margin-top:5px;" type="checkbox" id="status_stock" value="stock"/>
+                            <label class="ml-1" for="status_1">Disponibile</label>
+                        </div>
+                        <div class="d-flex mb-2">
+                            <input style="margin-top:5px;" type="checkbox" id="status_preorder" value="preorder"/>
+                            <label class="ml-1" for="status_2">Prenotazione</label>
+                        </div>
+                        <div class="d-flex mb-2">
+                            <input style="margin-top:5px;" type="checkbox" id="status_new" value="new"/>
+                            <label class="ml-1" for="status_3">Novità</label>
+                        </div>
+                        <div class="d-flex mb-2">
+                            <input style="margin-top:5px;" type="checkbox" id="status_order" value="order"/>
+                            <label class="ml-1" for="status_4">Ordinabile</label>
+                        </div>
+                        <div class="d-flex mb-2">
+                            <input style="margin-top:5px;" type="checkbox" id="status_unavailable" value="unavailable"/>
+                            <label class="ml-1" for="status_5">Out of Stock</label>
+                        </div>
+                    </div>
+                </div>
+                <!-- <hr class="my-0"/>
+                <a class="d-block p-3 text-primary position-relative" data-toggle="collapse" href="#collapse_tag" role="button" aria-expanded="false" aria-controls="collapseExample">
+                    Tag
+                    <i class="fa fa-sort-desc position-absolute" style="right:10px; top:50%; transform:translateY(-50%)"></i>
+                </a> -->
+                <div class="collapse" id="collapse_tag" style="max-height:400px; overflow:auto;">
+                    <div class="card card-body" id="tag_filter_list">
+                        <t t-set="tags" t-value="request.env['product.template.tag'].sudo().search([])"/>
+                        <t t-foreach="tags" t-as="tag">
+                            <div class="d-flex mb-2">
+                                <input style="margin-top:5px;" type="checkbox" t-attf-id="tag_{{tag.id}}" t-attf-value="{{tag.id}}"/>
+                                <label class="ml-1" t-attf-for="tag_{{tag.id}}"><t t-esc="tag.name"/></label>
+                            </div>
+                        </t>
+                    </div>
+                </div>
+                <button onclick="checkFilter()" class="btn btn-primary btn-md a-submit d-block d-sm-inline-block te_theme_button w-100">Filtra</button>
+            </div>
             <t t-if="category.parent_id">
                 <t t-set="related_category" t-value="request.env['product.public.category'].sudo().search([('parent_id','=',category.parent_id.id)])"/>
             </t>
@@ -265,6 +318,50 @@
                     </t>
                 </ul>
             </t>
+            <script type="text/javascript">
+
+                document.addEventListener("DOMContentLoaded", function() {
+                    var urlParams = new URLSearchParams(window.location.search);
+                    var myParam = urlParams.get('status-filter');
+                    if(myParam != null){
+                        var selected = myParam.split(',')
+                        selected.forEach(element =>{
+                            document.querySelector('#status_' + element).checked = true;
+                        });
+                    }
+                });
+                   
+
+                function checkFilter(){
+                    var url = new URL(window.location.href);
+
+                    var status_filter = ''
+                    var status_list = document.querySelectorAll('#status_filter_list > div > input:checked');
+                    status_list.forEach(element =>{
+                        status_filter += element.value + ','
+                    });
+                    url.searchParams.delete('status-filter')
+                    if(status_filter != ''){
+                        status_filter = status_filter.slice(0, -1);
+                        url.searchParams.append('status-filter', status_filter);
+                    }
+
+
+                    var tag_filter = ''
+                    var tag_list = document.querySelectorAll('#collapse_tag > div input:checked');
+                    tag_list.forEach(element =>{
+                        tag_filter += element.value + ','
+                    });
+
+                    url.searchParams.delete('tag-filter')
+                    if(tag_filter != ''){
+                        tag_filter = tag_filter.slice(0, -1);
+                        url.searchParams.append('tag-filter', tag_filter);
+                    }
+                
+                    window.location.href = url;
+                }
+            </script>        
         </xpath>
     </template>
 
@@ -972,6 +1069,43 @@
 
 
     <template id="custom_popup_login" inherit_id="theme_clarico_vega.login_popup">
+        <xpath expr="//input[@id='login']" position="replace">
+            <input type="email" placeholder="Email" name="login" t-att-value="login" id="login"
+                t-attf-class="form-control #{'form-control-sm' if form_small else ''}" required="required"
+                autofocus="autofocus" autocapitalize="off"/>
+        </xpath>
+
+        <xpath expr="//t[@t-if='not token']" position="replace">
+            <t t-if="not token">
+                <div class="form-group field-login">
+                    <label for="login" class="col-form-label">La tua E-mail</label>
+                    <input type="email" name="login" t-att-value="login" id="login" class="form-control"
+                           autofocus="autofocus" required="required" autocapitalize="off"/>
+                </div>
+            </t>
+        </xpath>
+
+        <xpath expr="//div[hasclass('o_auth_oauth_providers')]" position="replace">
+            <div class="o_auth_oauth_providers mt-1 mb-1 text-left">
+                Accedi con:
+                <a t-foreach="providers" t-as="p" class="list-group-item-action py-2"
+                    t-att-href="p['auth_link']">
+                    <i t-att-class="p['css_class']"/>
+                </a>
+            </div>
+        </xpath>
+
+        <xpath expr="//div[hasclass('oe_login_buttons')]" position="replace">
+            <div class="clearfix oe_login_buttons">
+                <div class="d-flex justify-content-between align-items-center small">
+                    <button type="submit" class="btn btn-primary te_theme_button">Conferma</button>
+                    <a class="back_login" t-if="not token" href="#loginPopup">Torna alla login</a>
+                    <a class="back_login" t-if="invalid_token" href="#loginPopup">Torna alla login</a>
+                </div>
+                <div class="o_login_auth"/>
+            </div>
+        </xpath>
+        
         <xpath expr="//button[hasclass('te_login_button')]" position="before">
             <div class="alert alert-danger" role="alert">
                 Il sito è stato aggiornato, vi chiediamo gentilmente di resettare la vostra password per poter accedere, Grazie.
@@ -981,7 +1115,6 @@
         <xpath expr="//div[hasclass('alert-success-error')]//p[hasclass('alert-success')]" position="replace">
             <div class="alert-success-error">
                 <p class="alert alert-success d-none">Ti sei correttamente registrato!</p>
-                <p class="alert alert-danger d-none" />
             </div>
         </xpath>
     </template>
@@ -1005,6 +1138,22 @@
             <button id="subscrive_user" disabled="true" type="submit" class="btn btn-primary btn-block te_theme_button te_signup_button">Registrati
             </button>
         </xpath>
+
+        <xpath expr="//div[hasclass('o_auth_oauth_providers')]" position="replace">
+            <div class="o_auth_oauth_providers mt-1 mb-1 text-left">
+                Accedi con:
+                <a t-foreach="providers" t-as="p" class="list-group-item-action py-2"
+                    t-att-href="p['auth_link']">
+                    <i t-att-class="p['css_class']"/>
+                </a>
+            </div>
+        </xpath>
+    </template>
+
+    <template id="product_ept_custom" inherit_id="theme_clarico_vega.product_ept">
+        <xpath expr="//a[@t-att-href='keep(category=0)']" position="replace">
+            <a t-att-href="keep(category=0)">Negozio</a>
+        </xpath>
     </template>
     
     <template id="custom_login_register_tab" inherit_id="theme_clarico_vega.login_register_popup">
@@ -1015,6 +1164,31 @@
                     Registrati
                 </a>
             </li>
+        </xpath>
+    </template>
+
+    <template id="custom_sticky_button" inherit_id="theme_clarico_vega.product_sticky_details_container">
+        <xpath expr="//div[hasclass('prod_details_sticky_right')]" position="replace">
+            <div class="prod_details_sticky_right">
+                <div class="prod_add_cart">
+                    <t t-set="buy_now_show"
+                        t-value="request.website.viewref('website_sale.product_buy_now').active"/>
+                    <a role="button" id="add_to_cart"
+                        t-attf-class="btn btn-primary btn-md mt16 a-submit te_theme_button te_add_to_cart #{'width-100' if not buy_now_show else 'width-50'}"
+                        href="#" style="font-size:12px;">
+                        <span class="fa fa-shopping-cart"/>
+                        Aggiungi al carrello
+                    </a>
+                    <t t-if="buy_now_show">
+                        <a role="button" id="buy_now"
+                            class="btn btn-outline-primary btn-md mt16 d-block d-sm-inline-block te_theme_button"
+                            href="#" style="font-size:12px;">
+                            <span class="fa fa-bolt"/>
+                            Acquista ora
+                        </a>
+                    </t>
+                </div>
+            </div>
         </xpath>
     </template>
 </odoo>

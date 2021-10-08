@@ -4,6 +4,31 @@
 *{
     font-family: 'Montserrat' !important;
 }
+
+.o_footer_copyright{
+    display:none !important;
+}
+
+div#footer{
+    position:relative;
+}
+
+div#footer::after {
+    content: 'Copyright © Netaddiction s.r.l';
+    background: #2e343a;
+    color:#f5f5f5;
+    width: 100%;
+    position: absolute;
+    text-align: center;
+    bottom: 0;
+    left: 0;
+    padding: 10px;
+}
+
+button[data-target='#wsale_products_categories_collapse']{
+    display:none;
+}
+
 :root {
     --primary: #f6842a !important;
     --light-primary: #f0af7d !important;
@@ -76,13 +101,13 @@
 .nav-item > .active{
     color:var(--primary) !important;
 }
-.navbar-light .navbar-nav .nav-link{
+.navbar-light .navbar-nav .nav-link:not(.s_mega_menu_multi_menus .nav-link){
     color:#ffffff;
 }
-.navbar-light .navbar-nav .nav-link:hover{
+.navbar-light .navbar-nav .nav-link:hover:not(.s_mega_menu_multi_menus .nav-link){
     color:var(--primary) !important;
 }
-.navbar-light .navbar-nav .nav-link:focus{
+.navbar-light .navbar-nav .nav-link:focus:not(.s_mega_menu_multi_menus .nav-link){
     background-color:#3d3d3d !important;
 }
 .te_advanced_search_div{
@@ -170,8 +195,8 @@ header nav.navbar .header_middle .te_search_popover .input-group input.form-cont
     justify-content: left;
 }
 .product-label-container > .label{
-    font-size:11px;
-    padding:5px;
+    font-size:10px;
+    padding:3px;
     color:var(--white);
     border-radius:3px;
     margin-bottom:5px;
