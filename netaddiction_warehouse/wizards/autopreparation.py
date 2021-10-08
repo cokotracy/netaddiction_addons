@@ -46,12 +46,15 @@ class AutoPreparation(models.TransientModel):
                 note.append('Rating cliente negativo')
                 pay = False
 
-            shipping_address = pick.sale_id.partner_shipping_id
+            shipping_address = pick.partner_id
             if not shipping_address.street \
                     or not shipping_address.street2 \
                     or not shipping_address.city:
                 error_stock.append(pick.id)
-                note.append('Mancano dati nell\'indirizzo di spedizione')
+                note.append(
+                    'Mancano dati nell\'indirizzo di spedizione. '
+                    'Controllare la via, il numero civico e la città.'
+                    )
                 # pay = False
 
             if pick.verify_quantity():
