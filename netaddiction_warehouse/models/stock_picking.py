@@ -91,12 +91,12 @@ class StockPicking(models.Model):
     def do_validate_orders(self, pick_id):
         pick = self.search([('id', '=', int(pick_id))])
 
-        if pick.sale_id.state in ['problem', 'cancel']:
+        if pick.sale_id.state == 'cancel' or pick.sale_id.problem:
             text = "La spedizione %s dell'ordine %s non può essere spedita" \
                    " perchè lo stato non è in lavorazione, l'ordine verrà" \
                    " tolto dalla lista. Ricordati di ricaricare i prodotti"\
                    % (pick.name, pick.sale_id.name)
-            if pick.sale_id.state == 'problem':
+            if pick.sale_id.problem:
                 pick.write({
                     'batch_id': False,
                     'move_line_ids': [
