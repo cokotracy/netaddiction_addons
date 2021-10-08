@@ -257,11 +257,17 @@ class ProductProduct(models.Model):
 
     def _search_seller_ids(self, operator, value):
         filter_ids = []
-        if value and value._result:
-            supplier_info = self.env['product.supplierinfo'].browse(
-                value._result)
-            filter_ids.extend(supplier_info.mapped('product_id').ids)
-        return [('id', 'in', filter_ids)]
+        if value:
+            # When value come from the search in backend interface
+            if hasattr(value, '_result'):
+                supplier_info = self.env['product.supplierinfo'].browse(
+                    value._result)
+                filter_ids.extend(supplier_info.mapped('product_id').ids)
+            # When value come from the calls from code
+            elif isinstance(value, list):
+                filter_ids.extend(value)
+        domain = [('id', 'in', filter_ids)]
+        return domain
 
     def _get_inventory_medium_value(self):
         stock = self.env.ref('stock.stock_location_stock').id
