@@ -289,14 +289,15 @@ class SiteCategories(WebsiteSale):
 
             if filter == "new":
                 domain = expression.AND([[("create_date", ">", (date.today() - timedelta(days=20)))], domain])
+
         return domain
 
     def _filters_post_products(self, filters, products):
         for filter in filters:
             if filter == "order":
-                products = products.filtered_domain([("product_variant_ids.qty_sum_suppliers", ">", 0)])
+                products = products.sudo().filtered_domain([("product_variant_ids.qty_sum_suppliers", ">", 0)])
             if filter == "unavailable":
-                products = products.filtered_domain(
+                products = products.sudo().filtered_domain(
                     [
                         ("product_variant_ids.qty_sum_suppliers", "<=", 0),
                         ("product_variant_ids.qty_available_now", "<=", 0),
