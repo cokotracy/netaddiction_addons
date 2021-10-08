@@ -91,7 +91,7 @@ def check_condition(product_cat, conditions, attributes):
                 return False
         if type(condition) is dict:
             if "category" in condition and condition["category"]:
-                if product_cat.name.lower() in [c.lower() for c in condition["category"]]:
+                if product_cat.name.lower() == condition["category"].lower():
                     is_valid = True
                 else:
                     return False

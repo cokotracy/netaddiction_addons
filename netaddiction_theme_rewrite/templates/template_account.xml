@@ -4,8 +4,10 @@
         <xpath expr="//div[@id='o_my_sidebar']/div[hasclass('o_portal_my_details')]"
                 position="after">
             <t t-set="user_id" t-value="request.env['res.users'].browse(request.env.uid)"/>
-            <t t-set="shippings" t-value="user_id.child_ids.search([('type', 'in', ['delivery'])])"/>
-            <t t-if="not only_services" groups="sale.group_delivery_invoice_address">
+            <t t-if="not user_id.has_group('base.group_system')">
+                <t t-set="shippings" t-value="user_id.child_ids.search([('type', 'in', ['delivery'])])"/>
+            </t>
+            <t t-if="not only_services and not user_id.has_group('base.group_system')" groups="sale.group_delivery_invoice_address">
                 <div class="row mt-4">
                     <div class="col-lg-12">
                         <h3 class="o_page_header mt16 mb4">Indirizzo/i di Spedizione</h3>
@@ -15,9 +17,9 @@
                     <div class="col-lg-12">
                         <div class="row mt8">
                             <div class="col-md-12 col-lg-12 one_kanban">
-                                <form action="/shop/address-edit" method="post" class=''>
+                                <form action="/my/home/address-edit" method="post" class=''>
                                     <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()" />
-                                    <a role="button" href="/shop/address-edit" class='a-submit btn btn-secondary mb16 btn-block'>
+                                    <a role="button" href="/my/home/address-edit" class='a-submit btn btn-secondary mb16 btn-block'>
                                         <i class="fa fa-plus-square"/>
                                         <span>Nuovo indirizzo</span>
                                     </a>
@@ -41,10 +43,10 @@
         <div class="text-left col-12 col-md-6 mt-2" style="box-shadow:0 4px 8px 0 rgb(156 156 156 / 10%), 0 6px 20px 0 rgb(156 156 156 / 10%) !important;">
             <div class="card-body">
                 <t t-if="not user_id.partner_id.sale_order_ids.search([('partner_shipping_id', '=', contact.id)])">
-                    <form action="/shop/address-edit" method="POST">
+                    <form action="/my/home/address-edit" method="POST">
                         <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()" />
                         <input type="hidden" name="partner_id" t-att-value="contact.id" />
-                        <input type="hidden" name="callback" value="/shop/address-edit?use_billing" />
+                        <input type="hidden" name="callback" value="/my/home/address-edit?use_billing" />
                         <div class="d-block text-right">
                             <button type="submit" class="adress_edit text-primary"><i class="fa fa-pencil"/> Modifica</button>
                         </div>
