@@ -3,7 +3,7 @@
 
 {
     'name': 'Netaddiction B2B',
-    'version': '14.0.1.2.2',
+    'version': '14.0.1.3.2',
     'category': 'Sale',
     'author': 'Openforce',
     'license': 'LGPL-3',

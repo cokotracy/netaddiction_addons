@@ -286,6 +286,14 @@ h1.te_product_name{
     max-width: 100% !important;
 }
 
+
+.te_s_variant_text{
+    display:none !important;
+}
+.js_add_cart_variants{
+    padding-left:0 !important;
+}
+
 @keyframes scale-in-center {
     0% {
       -webkit-transform: scale(0);
