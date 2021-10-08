@@ -159,6 +159,10 @@
                 <field name="out_date" />
                 <field name="out_date_approx_type" />
             </xpath>
+            <xpath expr="//div[@name='button_box']//field[@name='product_variant_count']/parent::button"
+                   position="attributes">
+                <attribute name="attrs">{'invisible': [('product_variant_count', '=', 0)]}</attribute>
+            </xpath>
         </field>
     </record>
 
