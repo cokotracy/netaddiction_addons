@@ -211,6 +211,7 @@ class SiteCategories(WebsiteSale):
             domain = expression.AND([new_dom, domain])
 
         if status_filter:
+            status_filter = status_filter.split(",")
             domain = self._filters_pre_products(filters=status_filter, domain=domain)
         search_product = Product.search(domain, order=self._get_search_order(post))
         if status_filter:
@@ -280,22 +281,21 @@ class SiteCategories(WebsiteSale):
 
     def _filters_pre_products(self, filters, domain):
         for filter in filters:
-            if filter == "1":
+            if filter == "stock":
                 domain = expression.AND([[("product_variant_ids.qty_available_now", ">", 0)], domain])
 
-            if filter == "2":
+            if filter == "preorder":
                 domain = expression.AND([[("product_variant_ids.out_date", ">", date.today())], domain])
 
-            if filter == "3":
+            if filter == "new":
                 domain = expression.AND([[("create_date", ">", (date.today() - timedelta(days=20)))], domain])
-
         return domain
 
     def _filters_post_products(self, filters, products):
         for filter in filters:
-            if filter == "4":
+            if filter == "order":
                 products = products.filtered_domain([("product_variant_ids.qty_sum_suppliers", ">", 0)])
-            if filter == "5":
+            if filter == "unavailable":
                 products = products.filtered_domain(
                     [
                         ("product_variant_ids.qty_sum_suppliers", "<=", 0),
