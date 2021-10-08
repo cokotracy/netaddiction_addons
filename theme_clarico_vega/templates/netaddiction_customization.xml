@@ -235,23 +235,23 @@
                 <div class="collapse show" id="collapse_status" style="max-height:400px; overflow:auto;">
                     <div class="card card-body pb-0" id="status_filter_list">
                         <div class="d-flex mb-2">
-                            <input style="margin-top:5px;" type="checkbox" id="status_1" value="1"/>
+                            <input style="margin-top:5px;" type="checkbox" id="status_stock" value="stock"/>
                             <label class="ml-1" for="status_1">Disponibile</label>
                         </div>
                         <div class="d-flex mb-2">
-                            <input style="margin-top:5px;" type="checkbox" id="status_2" value="2"/>
+                            <input style="margin-top:5px;" type="checkbox" id="status_preorder" value="preorder"/>
                             <label class="ml-1" for="status_2">Prenotazione</label>
                         </div>
                         <div class="d-flex mb-2">
-                            <input style="margin-top:5px;" type="checkbox" id="status_3" value="3"/>
+                            <input style="margin-top:5px;" type="checkbox" id="status_new" value="new"/>
                             <label class="ml-1" for="status_3">Novità</label>
                         </div>
                         <div class="d-flex mb-2">
-                            <input style="margin-top:5px;" type="checkbox" id="status_4" value="4"/>
+                            <input style="margin-top:5px;" type="checkbox" id="status_order" value="order"/>
                             <label class="ml-1" for="status_4">Ordinabile</label>
                         </div>
                         <div class="d-flex mb-2">
-                            <input style="margin-top:5px;" type="checkbox" id="status_5" value="5"/>
+                            <input style="margin-top:5px;" type="checkbox" id="status_unavailable" value="unavailable"/>
                             <label class="ml-1" for="status_5">Out of Stock</label>
                         </div>
                     </div>
