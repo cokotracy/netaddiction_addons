@@ -16,6 +16,7 @@ odoo.define('payment_netaddiction_stripe.payment_form', function (require) {
     selector: '.o_payment_form',
     events: _.extend({
       'change input[type=radio]': 'pmChangeEvent',
+      "submit": "_onSubmit",
     }),
 
     willStart: function () {
@@ -23,36 +24,56 @@ odoo.define('payment_netaddiction_stripe.payment_form', function (require) {
         return ajax.loadJS("https://js.stripe.com/v3/");
       })
     },
+
+    //--------------------------------------------------------------------------
+    // Private
+    //--------------------------------------------------------------------------
+
+    /**
+     * called to create setup payment method object for credit card/debit card.
+     *
+     * @private
+     * @param {Object} stripe
+     * @param {Object} formData
+     * @param {Object} card
+     * @returns {Promise}
+     */
+    _setupIntentMethod: function (stripe, formData, card) {
+      return this._rpc({
+        route: '/payment/netaddiction-stripe/create_setup_intent',
+        params: { 'acquirer_id': formData.acquirer_id }
+      }).then(function (intent_secret) {
+        return stripe.confirmCardSetup(intent_secret)
+      });
+    },
+
     /**
      * called when clicking on pay now or add payment event to create token for credit card/debit card.
      *
      * @private
      * @param {Event} ev
      * @param {DOMElement} checkedRadio
-     * @param {Boolean} addPmEvent
      */
-    _getOrCreateStripeToken: function (ev, $checkedRadio, addPmEvent) {
+    _getOrCreateStripeToken: function (ev, $checkedRadio) {
       var self = this;
       if (ev.type === 'submit') {
         var button = $(ev.target).find('*[type="submit"]')[0]
       } else {
         var button = ev.target;
       }
-      console.log("Chiamare Stripe");
       this.disableButton(button);
-      // var acquirerID = this.getAcquirerIdFromRadio($checkedRadio);
-      // var acquirerForm = this.$('#o_payment_add_token_acq_' + acquirerID);
-      // var inputsForm = $('input', acquirerForm);
-      // if (this.options.partnerId === undefined) {
-      //   console.warn('payment_form: unset partner_id when adding new token; things could go wrong');
-      // }
-
-      // var formData = self.getFormData(inputsForm);
-      // var stripe = this.stripe;
-      // var card = this.stripe_card_element;
-      // if (card._invalid) {
-      //   return;
-      // }
+      var acquirerID = this.getAcquirerIdFromRadio($checkedRadio);
+      var acquirerForm = this.$('#o_payment_add_token_acq_' + acquirerID);
+      var inputsForm = $('input', acquirerForm);
+      var formData = self.getFormData(inputsForm);
+      var stripe = this.stripe;
+      var card = this.stripe_card_element;
+      if (card._invalid) {
+        return;
+      }
+      this._setupIntentMethod(stripe, formData, card,).then(function (result) {
+        console.log("Risultato", result);
+      })
       // this._createPaymentMethod(stripe, formData, card, addPmEvent).then(function (result) {
       //   if (result.error) {
       //     return Promise.reject({ "message": { "data": { "arguments": [result.error.message] } } });
@@ -97,26 +118,27 @@ odoo.define('payment_netaddiction_stripe.payment_form', function (require) {
      * @param {DOMElement} checkedRadio
      */
     _bindStripeCard: function ($checkedRadio) {
-      // var acquirerID = this.getAcquirerIdFromRadio($checkedRadio);
-      // var acquirerForm = this.$('#o_payment_add_token_acq_' + acquirerID);
-      // var inputsForm = $('input', acquirerForm);
-      // var formData = this.getFormData(inputsForm);
-      // var stripe = Stripe(formData.stripe_key);
-      // var element = stripe.elements();
-      // var card = element.create('card', { hidePostalCode: true });
-      // card.mount('#card-element');
-      // card.on('ready', function (ev) {
-      //   card.focus();
-      // });
-      // card.addEventListener('change', function (event) {
-      //   var displayError = document.getElementById('card-errors');
-      //   displayError.textContent = '';
-      //   if (event.error) {
-      //     displayError.textContent = event.error.message;
-      //   }
-      // });
-      // this.stripe = stripe;
-      // this.stripe_card_element = card;
+      var acquirerID = this.getAcquirerIdFromRadio($checkedRadio);
+      var acquirerForm = this.$('#o_payment_add_token_acq_' + acquirerID);
+      $(acquirerForm).removeClass("d-none");
+      var inputsForm = $('input', acquirerForm);
+      var formData = this.getFormData(inputsForm);
+      var stripe = Stripe(formData.stripe_key);
+      var element = stripe.elements();
+      var card = element.create('card', { hidePostalCode: true });
+      card.mount('#card-element');
+      card.on('ready', function (ev) {
+        card.focus();
+      });
+      card.addEventListener('change', function (event) {
+        var displayError = document.getElementById('card-errors');
+        displayError.textContent = '';
+        if (event.error) {
+          displayError.textContent = event.error.message;
+        }
+      });
+      this.stripe = stripe;
+      this.stripe_card_element = card;
     },
     /**
      * destroys the card element and any stripe instance linked to the widget.
@@ -134,19 +156,48 @@ odoo.define('payment_netaddiction_stripe.payment_form', function (require) {
      * @override
      */
     updateNewPaymentDisplayStatus: function () {
-      var $checkedRadio = this.$('input[type="radio"]:checked');
-
+      var $checkedRadio = this.$('input[name="pm_id"][type="radio"]:checked');
+      // we hide all the acquirers form
+      this.$('[id*="o_payment_add_token_acq_"]').addClass('d-none');
+      this.$('[id*="o_payment_form_acq_"]').addClass('d-none');
       if ($checkedRadio.length !== 1) {
         return;
       }
-      var provider = $checkedRadio.data('provider')
+      $checkedRadio = $checkedRadio[0];
+      var acquirer_id = this.getAcquirerIdFromRadio($checkedRadio);
+
+      // if we clicked on an add new payment radio, display its form
+      if (this.isNewPaymentRadio($checkedRadio)) {
+        this.$('#o_payment_add_token_acq_' + acquirer_id).removeClass('d-none');
+      }
+      else if (this.isFormPaymentRadio($checkedRadio)) {
+        this.$('#o_payment_form_acq_' + acquirer_id).removeClass('d-none');
+      }
+
+      var provider = $checkedRadio.dataset.provider
       if (provider === 'netaddiction_stripe') {
         // always re-init stripe (in case of multiple acquirers for stripe, make sure the stripe instance is using the right key)
         this._unbindStripeCard();
         this._bindStripeCard($checkedRadio);
       }
-      return this._super.apply(this, arguments);
+
     },
+    /**
+     * @override
+     */
+    // updateNewPaymentDisplayStatus: function () {
+    //   this._super.apply(this, arguments);
+    //   var $checkedRadio = this.$('input[name="pm_id"][type="radio"]:checked');
+    //   if ($checkedRadio.length !== 1) {
+    //     return;
+    //   }
+    //   var provider = $checkedRadio.data('provider')
+    //   if (provider === 'netaddiction_stripe') {
+    //     // always re-init stripe (in case of multiple acquirers for stripe, make sure the stripe instance is using the right key)
+    //     this._unbindStripeCard();
+    //     this._bindStripeCard($checkedRadio);
+    //   }
+    // },
     //--------------------------------------------------------------------------
     // Handlers
     //--------------------------------------------------------------------------
@@ -154,9 +205,23 @@ odoo.define('payment_netaddiction_stripe.payment_form', function (require) {
     /**
      * @override
      */
+    onSubmit: function (ev) {
+      ev.stopPropagation();
+      ev.preventDefault();
+
+      var button = $(ev.target).find('*[type="submit"]')[0]
+      if (button.id === 'o_payment_form_pay') {
+        return this.payEvent(ev);
+      } else if (button.id === 'o_payment_form_add_pm') {
+        return this.addPmEvent(ev);
+      }
+      return;
+    },
+    /**
+    * @override
+    */
     payEvent: function (ev) {
       ev.preventDefault();
-      console.log('asdasdasdasda');
       var $checkedRadio = this.$('input[type="radio"]:checked');
       console.log($checkedRadio);
       if ($checkedRadio.length === 1 && $checkedRadio.data('provider') === 'netaddiction_stripe') {

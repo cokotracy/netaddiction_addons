@@ -24,3 +24,24 @@ class StripeAcquirer(models.Model):
     netaddiction_stripe_sk = fields.Char(
         string="Chiave privata Stripe", required_if_provider="netaddiction_stripe", groups="base.group_user"
     )
+
+    def get_or_create_customer(self, user):
+        pass
+        # stripe.api_key = self.sudo().netaddiction_stripe_sk
+
+        # customer = stripe.Customer.list(email=email)
+        # if not customer:
+        #     customer = stripe.Customer.create(name=name, email=email)
+        #     return customer["id"]
+        # else:
+        #     return customer.data[0]["id"]
+
+    def create_setup_intent(self, kwargs):
+        stripe.api_key = self.sudo().netaddiction_stripe_sk
+        print(kwargs)
+
+        # return stripe.SetupIntent.create(
+        #     customer=self.get_or_create_customer(),
+        #     payment_method="card_1HrKV7HprgG5j0TdUcVNSAdr",
+        #     payment_method_options={"card": {"request_three_d_secure": "any"}},
+        # )

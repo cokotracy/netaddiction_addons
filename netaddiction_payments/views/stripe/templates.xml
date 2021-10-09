@@ -108,9 +108,12 @@
             <div class="d-block text-center mt-3 p-2" id="btn-add-card">
                 <i><small style="color:#636262;">- Aggiungi Carta -</small></i>
             </div>
-            <div id="payment-form" class="d-none">
+            <div id="payment-form">
                 <div id="card-element" class="m-3"/>
                 <div id="card-errors" class="m-3 text-danger"/>
+                <div class="d-block text-center">
+                    <a id="stripeSaveCard" class="btn btn-primary">Salva Carta</a>
+                </div>
             </div>
         </template>
 
