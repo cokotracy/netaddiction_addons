@@ -32,7 +32,9 @@
                                 <div class="d-flex flex-wrap text-center">
                                     <div class="w-100 w-md-50">
                                         <t t-foreach="order.order_line" t-as="line">
-                                            <img class="m-1" style="object-fit:contain; width:60px; height:60px;" t-attf-src="data:image/png;base64,{{line.product_id.image_128}}"/>
+                                            <t t-if="line.product_id.type != 'service'">
+                                                <img class="m-1" style="object-fit:contain; width:60px; height:60px;" t-attf-src="data:image/png;base64,{{line.product_id.image_128}}"/>
+                                            </t>
                                         </t>
                                     </div>
                                     <div class="w-100 w-md-50 p-3">
@@ -56,21 +58,6 @@
                                 </div>
                             </div>
                         </div>
-                    
-
-                        <!-- <tr>
-                            <td><a t-att-href="order.get_portal_url()"><t t-esc="order.name"/></a></td>
-                            <td class="text-right">
-                                <span t-field="order.date_order" t-options="{'widget': 'date'}"/>&amp;nbsp;
-                                <span class='d-none d-md-inline' t-field="order.date_order" t-options="{'time_only': True}"/>
-                            </td>
-                            <td class="text-center">
-                                <span t-if="order.state == 'done'"  class="badge badge-pill badge-success">
-                                    <i class="fa fa-fw fa-check" role="img" aria-label="Done" title="Done"/>Done
-                                </span>
-                            </td>
-                            <td class="text-right"><span t-field="order.amount_total"/></td>
-                        </tr> -->
                     </t>
                 </div>
             </t>

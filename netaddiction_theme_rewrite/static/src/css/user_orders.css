@@ -101,6 +101,10 @@
     border:1px solid #ededed !important;
 }
 
+#informations .orders_label_text_align{
+    display: none;
+}
+
 #sales_order_table{
     box-shadow: 0 4px 8px 0 rgba(156, 156, 156, 0.1), 0 6px 20px 0 rgba(156, 156, 156, 0.1);
     border:1px solid #ededed !important;
@@ -108,6 +112,14 @@
 
 #informations > div:nth-child(2) > div:first-child{
     display:none;
+}
+
+.o_sale_stock_picking{
+    margin:20px 0;
+}
+
+#sale_order_communication{
+    display:none !important;
 }
 
 #sale_order_communication > #discussion{
