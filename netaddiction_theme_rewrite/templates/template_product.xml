@@ -186,11 +186,11 @@
                         <t t-else="">
                             <small class="text-primary font-weight-bold">Prenota ora e lo ricevi il <t t-esc="out_date.strftime('%d / %m / %Y')"/></small>
                         </t>
-                        <div class="d-block mt-3 preorder-info">
+                        <!-- <div class="d-block mt-3 preorder-info">
                             <strong class="label" style="font-size:12px;"><i class="fa fa-info-circle mr-1 text-primary"></i>Prezzo Minimo Garantito</strong>
                             <br/>
                             <small style="font-size:10px;">Prezzo e data di vendita non sono sempre confermati quindi: Se all'uscita costerà di più, il tuo prezzo di prenotazione resterà invariato. Se costerà di meno, ti rimborsiamo la differenza e pagherai il prezzo più basso!</small>
-                        </div>
+                        </div> -->
                     </div>
                 </t>
             </t>

@@ -55,7 +55,7 @@ input[data-provider=stripe] + span::after{
 }
 
 input[data-provider=stripe] + span::before{
-    content: "Con questo metodo di spedizione pagherai solo quando la merce verrà spedita!";
+    content: "Paghi solo quando la merce verrà spedita!";
     background-color: #000;
     color: #fff;
     z-index: 2;
