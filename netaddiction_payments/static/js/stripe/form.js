@@ -15,7 +15,7 @@ odoo.define('payment_netaddiction_stripe.payment_form', function (require) {
 
     selector: '.o_payment_form',
     events: _.extend({
-      'change input[type=radio]': 'pmChangeEvent',
+      'change input[name="pm_id"][type="radio"]': 'pmChangeEvent',
       "submit": "_onSubmit",
     }),
 
@@ -40,7 +40,7 @@ odoo.define('payment_netaddiction_stripe.payment_form', function (require) {
      */
     _setupIntentMethod: function (stripe, formData, card) {
       return this._rpc({
-        route: '/payment/netaddiction-stripe/create_setup_intent',
+        route: '/payment/netaddiction-stripe/create-setup-intent',
         params: { 'acquirer_id': formData.acquirer_id }
       }).then(function (intent_secret) {
         return stripe.confirmCardSetup(intent_secret)
@@ -182,22 +182,7 @@ odoo.define('payment_netaddiction_stripe.payment_form', function (require) {
       }
 
     },
-    /**
-     * @override
-     */
-    // updateNewPaymentDisplayStatus: function () {
-    //   this._super.apply(this, arguments);
-    //   var $checkedRadio = this.$('input[name="pm_id"][type="radio"]:checked');
-    //   if ($checkedRadio.length !== 1) {
-    //     return;
-    //   }
-    //   var provider = $checkedRadio.data('provider')
-    //   if (provider === 'netaddiction_stripe') {
-    //     // always re-init stripe (in case of multiple acquirers for stripe, make sure the stripe instance is using the right key)
-    //     this._unbindStripeCard();
-    //     this._bindStripeCard($checkedRadio);
-    //   }
-    // },
+
     //--------------------------------------------------------------------------
     // Handlers
     //--------------------------------------------------------------------------
@@ -222,8 +207,7 @@ odoo.define('payment_netaddiction_stripe.payment_form', function (require) {
     */
     payEvent: function (ev) {
       ev.preventDefault();
-      var $checkedRadio = this.$('input[type="radio"]:checked');
-      console.log($checkedRadio);
+      var $checkedRadio = this.$('input[name="pm_id"][type="radio"]:checked');
       if ($checkedRadio.length === 1 && $checkedRadio.data('provider') === 'netaddiction_stripe') {
         return this._getOrCreateStripeToken(ev, $checkedRadio);
       } else {
@@ -232,7 +216,7 @@ odoo.define('payment_netaddiction_stripe.payment_form', function (require) {
     },
 
     pmChangeEvent: function (ev) {
-      $(ev.currentTarget).find('input[type="radio"]').prop("checked", true);
+      $(ev.currentTarget).find('input[name="pm_id"][type="radio"]').prop("checked", true);
       this.updateNewPaymentDisplayStatus();
     },
 
