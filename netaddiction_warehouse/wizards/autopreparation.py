@@ -40,6 +40,14 @@ class AutoPreparation(models.TransientModel):
                 )
                 # pay = False
 
+            # Check we haven't problems in the order
+            if pick.sale_id.problem:
+                error_stock.append(pick.id)
+                note.append(
+                    f'L\'ordine {pick.sale_id.name} ha un problema '
+                    f'e quindi la spedizione non può essere processata'
+                )
+
             # controllo indirizzo e valutazione cliente
             if pick.sale_id.partner_id.rating == 0:
                 error_stock.append(pick.id)
