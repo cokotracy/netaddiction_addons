@@ -292,15 +292,30 @@ class SiteCategories(WebsiteSale):
         return "is_published desc, %s" % order
 
     def _filters_pre_products(self, filters, domain):
-        for filter in filters:
-            if filter == "stock":
-                domain = expression.AND([[("product_variant_ids.qty_available_now", ">", 0)], domain])
+        if len(filters) == 1:
+            for filter in filters:
+                if filter == "stock":
+                    domain = expression.AND([[("product_variant_ids.qty_available_now", ">", 0)], domain])
 
-            if filter == "preorder":
-                domain = expression.AND([[("product_variant_ids.out_date", ">", date.today())], domain])
+                if filter == "preorder":
+                    domain = expression.AND([[("product_variant_ids.out_date", ">", date.today())], domain])
 
-            if filter == "new":
-                domain = expression.AND([[("create_date", ">", (date.today() - timedelta(days=20)))], domain])
+                if filter == "new":
+                    domain = expression.AND([[("create_date", ">", (date.today() - timedelta(days=20)))], domain])
+        else:
+            if len(filters) > 1:
+                new_domain = ["|"]
+                for filter in filters:
+                    if filter == "stock":
+                        new_domain.append(("product_variant_ids.qty_available_now", ">", 0))
+
+                    if filter == "preorder":
+                        new_domain.append(("product_variant_ids.out_date", ">", date.today()))
+
+                    if filter == "new":
+                        new_domain.append(("create_date", ">", (date.today() - timedelta(days=20))))
+
+                domain = expression.AND([new_domain, domain])
 
         return domain
 
