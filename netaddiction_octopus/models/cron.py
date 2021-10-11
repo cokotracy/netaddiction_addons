@@ -125,6 +125,7 @@ class NetaddictionOctopusCron(models.Model):
                             and len(group) != len(set([str(p['attribute_ids'])
                                                        for p in group])):
                         for data in group:
+
                             datas[data['supplier_code']].update(
                                 {'group_key': None, 'group_name': None})
                 # Saving products

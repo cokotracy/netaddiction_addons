@@ -30,6 +30,8 @@ class CSVParser(Parser):
         self.linebreak = linebreak
 
     def parse(self, source, mapping, group_by=None):
+        if isinstance(source, bytes):
+            source = source.decode()
         source = StringIO(source)
         output = {}
         reader = csv.DictReader(

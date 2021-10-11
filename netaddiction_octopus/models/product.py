@@ -215,15 +215,8 @@ class NetaddictionOctopusProduct(models.Model):
             'type': 'product',
             'taxes_id': [(4, self.sale_tax_id.id, None)],
             'supplier_taxes_id': [(4, self.purchase_tax_id.id, None)],
-            'seller_ids': [(0, None, {
-                'company_id': self.company_id.id,
-                'name': self.supplier_id.id,
-                'product_name': name,
-                'product_code': self.supplier_code,
-                'avail_qty': self.supplier_quantity,
-                'price': self.supplier_price,
-            })],
         })
+        self.chain(product)
         if self.group_key and not template_id:
             product.product_tmpl_id.write({'octopus_group': self.group_key})
         if commit:
@@ -232,9 +225,10 @@ class NetaddictionOctopusProduct(models.Model):
 
     def chain(self, product, commit=True):
         context = {}
-        product.with_context(context).write({
-            'seller_ids': [(0, None, {
+        product.product_tmpl_id.with_context(context).write({
+            'seller_ids': [(0, 0, {
                 'company_id': self.company_id.id,
+                'product_id': product.id,
                 'name': self.supplier_id.id,
                 'product_name': self.name,
                 'product_code': self.supplier_code,
