@@ -10,6 +10,8 @@
                 <button name="action_problems" string="Problema" type="object"
                         class=" btn btn-danger fa fa-exclamation-triangle"
                         attrs="{'invisible': [('problem', '=', True)]}"/>
+                <button name="action_remove_problems" string="Rimuovi Problema" type="object"
+                        attrs="{'invisible': [('problem', '=', False)]}"/>
             </xpath>
             <xpath expr="//field[@name='order_line']//tree//field[@name='price_subtotal']" position="attributes">
                 <attribute name="groups" />
