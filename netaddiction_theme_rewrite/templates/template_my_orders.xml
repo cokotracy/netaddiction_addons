@@ -45,9 +45,8 @@
                                             <div class="d-block">
                                                 <t t-if="order.state == 'done'">
                                                     <small class="mr-2">Stato ordine: </small>
-                                                    <span class="badge badge-pill badge-success">
-                                                        <i class="fa fa-fw fa-check"/>Completato
-                                                    </span>
+                                                    <span t-if="order.state == 'done'" class="small badge badge-success orders_label_text_align" style="border-radius:3px;"><i class="fa fa-fw fa-truck"/> <b>Spedito</b></span>
+                                                    <span t-if="order.state == 'sale'" class="small badge badge-success orders_label_text_align" style="border-radius:3px;"><i class="fa fa-fw fa-check"/> <b>Confermato</b></span>
                                                 </t>
                                             </div>
                                         </div>

@@ -130,12 +130,8 @@
 			<div class="card mt-3">
 				<div class="text-left">
 					<div class="form-group">
-						<h3>
-							Note
-						</h3>
-						<textarea class="form-control" id="note" name="note" rows="3">
-							<t t-esc="note or ''" />
-						</textarea>
+						<h3>Note</h3>
+						<textarea class="form-control" id="note" name="note" rows="3"><t t-esc="note or ''" /></textarea>
 					</div>
 				</div>
 			</div>
