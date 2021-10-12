@@ -1,9 +1,12 @@
 # Copyright 2021 Netaddiction s.r.l. (netaddiction.it)
 # License LGPL-3.0 or later (https://www.gnu.org/licenses/lgpl).
 
+import logging
 import stripe
 
-from odoo import models, fields
+from odoo import api, models, fields
+
+_logger = logging.getLogger(__name__)
 
 
 class CardExist(Exception):
@@ -25,6 +28,9 @@ class StripeAcquirer(models.Model):
         string="Chiave privata Stripe", required_if_provider="netaddiction_stripe", groups="base.group_user"
     )
 
+    def netaddiction_stripe_get_form_action_url(self):
+        return "/netaddiction_stripe/payment/feedback"
+
     def get_or_create_customer(self, user):
         stripe.api_key = self.sudo().netaddiction_stripe_sk
         customer = stripe.Customer.list(email=user.partner_id.email)
@@ -43,3 +49,45 @@ class StripeAcquirer(models.Model):
             payment_method="card_1JiiAjHprgG5j0TdTQlCr44O",
             payment_method_options={"card": {"request_three_d_secure": "any"}},
         )
+
+    @api.model
+    def create_payment_token(self, data):
+        stripe.api_key = self.sudo().netaddiction_stripe_sk
+        res = stripe.PaymentMethod.retrieve(data.get("payment_method"))
+        token = (
+            self.env["payment.token"]
+            .sudo()
+            .search([("netaddiction_stripe_payment_method", "=", data.get("payment_method"))])
+        )
+        if token:
+            return token
+        card = res.get("card", {})
+        if card:
+            payment_token = (
+                self.env["payment.token"]
+                .sudo()
+                .create(
+                    {
+                        "acquirer_id": int(data["acquirer_id"]),
+                        "partner_id": int(data["partner_id"]),
+                        "netaddiction_stripe_payment_method": data.get("payment_method"),
+                        "name": f"XXXXXXXXXXXX{card.get('last4', '****')}",
+                        "brand": card.get("brand", ""),
+                        "acquirer_ref": f"stripe_{int(data['acquirer_id'])}",
+                        "active": False,
+                    }
+                )
+            )
+            return payment_token
+
+
+class StripePaymentTransaction(models.Model):
+    _inherit = "payment.transaction"
+
+
+class StripePaymentToken(models.Model):
+    _inherit = "payment.token"
+
+    netaddiction_stripe_payment_method = fields.Char("Payment Method ID")
+    default_payment = fields.Boolean("Carta predefinita ?", default=False)
+    brand = fields.Char("Brand della carta")

@@ -14,11 +14,11 @@
         </template>
 
         <template id="netaddiction_stripe_form">
-            <!-- <input type="hidden" name="data_set" value="/payment/stripe/s2s/create_json_3ds"/> -->
+            <input type="hidden" name="data_set" value="/payment/netaddiction-stripe/create-payment-token"/>
             <input type="hidden" name="acquirer_id" t-att-value="id"/>
             <input type="hidden" name="stripe_key" t-att-value="acq.sudo().netaddiction_stripe_pk"/>
             <input type="hidden" name="currency_id" t-att-value="currency_id"/>
-            <!-- <input t-if="return_url" type="hidden" name="return_url" t-att-value="return_url"/> -->
+            <input t-if="return_url" type="hidden" name="return_url" t-att-value="return_url"/>
             <input t-if="partner_id" type="hidden" name="partner_id" t-att-value="partner_id"/>
             <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
             <div id="card-wrapper">

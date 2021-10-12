@@ -30,7 +30,6 @@ odoo.define('payment_netaddiction_stripe.payment_form', function (require) {
     //--------------------------------------------------------------------------
 
     /**
-     * called to create setup payment method object for credit card/debit card.
      *
      * @private
      * @param {Object} stripe
@@ -48,7 +47,6 @@ odoo.define('payment_netaddiction_stripe.payment_form', function (require) {
     },
 
     /**
-     * called when clicking on pay now or add payment event to create token for credit card/debit card.
      *
      * @private
      * @param {Event} ev
@@ -72,47 +70,29 @@ odoo.define('payment_netaddiction_stripe.payment_form', function (require) {
         return;
       }
       this._setupIntentMethod(stripe, formData, card,).then(function (result) {
-        console.log("Risultato", result);
-      })
-      // this._createPaymentMethod(stripe, formData, card, addPmEvent).then(function (result) {
-      //   if (result.error) {
-      //     return Promise.reject({ "message": { "data": { "arguments": [result.error.message] } } });
-      //   } else {
-      //     const paymentMethod = addPmEvent ? result.setupIntent.payment_method : result.paymentMethod.id;
-      //     _.extend(formData, { "payment_method": paymentMethod });
-      //     return self._rpc({
-      //       route: formData.data_set,
-      //       params: formData,
-      //     });
-      //   }
-      // }).then(function (result) {
-      //   if (addPmEvent) {
-      //     if (formData.return_url) {
-      //       window.location = formData.return_url;
-      //     } else {
-      //       window.location.reload();
-      //     }
-      //   } else {
-      //     $checkedRadio.val(result.id);
-      //     self.el.submit();
-      //   }
-      // }).guardedCatch(function (error) {
-      //   // We don't want to open the Error dialog since
-      //   // we already have a container displaying the error
-      //   if (error.event) {
-      //     error.event.preventDefault();
-      //   }
-      //   // if the rpc fails, pretty obvious
-      //   self.enableButton(button);
-      //   self.displayError(
-      //     _t('Unable to save card'),
-      //     _t("We are not able to add your payment method at the moment. ") +
-      //     self._parseError(error)
-      //   );
-      // });
+        if (result.error) {
+          return Promise.reject({ "message": { "data": { "arguments": [result.error.message] } } });
+        } else {
+          _.extend(formData, { "payment_method": result.setupIntent.payment_method });
+          return self._rpc({
+            route: formData.data_set,
+            params: formData,
+          });
+        }
+      }).then(function (result) {
+        // $('input:first', acquirerForm).after(`<input type="hidden" name="pm_id" value="${result.id}">`)
+        $checkedRadio.val(result.id);
+        self.el.submit();
+      }).guardedCatch(function (error) {
+        if (error.event) {
+          error.event.preventDefault();
+        }
+        self.enableButton(button);
+        self._displayError("Impossibile utilizzare la seguente carta di credito/debito");
+      });
     },
+
     /**
-     * called when clicking a Stripe radio if configured for s2s flow; instanciates the card and bind it to the widget.
      *
      * @private
      * @param {DOMElement} checkedRadio
@@ -140,6 +120,7 @@ odoo.define('payment_netaddiction_stripe.payment_form', function (require) {
       this.stripe = stripe;
       this.stripe_card_element = card;
     },
+
     /**
      * destroys the card element and any stripe instance linked to the widget.
      *
@@ -152,6 +133,7 @@ odoo.define('payment_netaddiction_stripe.payment_form', function (require) {
       this.stripe = undefined;
       this.stripe_card_element = undefined;
     },
+
     /**
      * @override
      */
@@ -166,7 +148,6 @@ odoo.define('payment_netaddiction_stripe.payment_form', function (require) {
       $checkedRadio = $checkedRadio[0];
       var acquirer_id = this.getAcquirerIdFromRadio($checkedRadio);
 
-      // if we clicked on an add new payment radio, display its form
       if (this.isNewPaymentRadio($checkedRadio)) {
         this.$('#o_payment_add_token_acq_' + acquirer_id).removeClass('d-none');
       }
@@ -181,6 +162,16 @@ odoo.define('payment_netaddiction_stripe.payment_form', function (require) {
         this._bindStripeCard($checkedRadio);
       }
 
+    },
+
+    /**
+     * @param {String} message
+     * @override
+     */
+    _displayError: function (message) {
+      var wizard = $(qweb.render('stripe.error', { 'msg': message || _t('Payment error') }));
+      wizard.appendTo($('body')).modal({ 'keyboard': true });
+      $("#o_payment_form_pay").removeAttr('disabled');
     },
 
     //--------------------------------------------------------------------------
@@ -202,6 +193,7 @@ odoo.define('payment_netaddiction_stripe.payment_form', function (require) {
       }
       return;
     },
+
     /**
     * @override
     */
