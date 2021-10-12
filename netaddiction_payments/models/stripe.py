@@ -82,9 +82,13 @@ class StripeAcquirer(models.Model):
 
         customer = self._get_or_create_customer(partner)
         card = self._check_association_cc(card_token["id"], customer)
-        token = self.env["payment.token"].sudo().search([("netaddiction_stripe_payment_method", "=", card["id"])])
-        if token:
-            return token
+        if self.env["payment.token"].sudo().search([("netaddiction_stripe_payment_method", "=", card["id"])]):
+            return {
+                "result": False,
+                "error": {
+                    "message": "La seguente carta è già presente nella lista delle dei tuoi metodi di pagamento.",
+                },
+            }
         payment_token = (
             self.env["payment.token"]
             .sudo()
@@ -96,11 +100,14 @@ class StripeAcquirer(models.Model):
                     "name": f"XXXXXXXXXXXX{card.get('last4', '****')}",
                     "brand": card.get("brand", ""),
                     "acquirer_ref": customer,
-                    "active": False,
                 }
             )
         )
-        return payment_token
+        payment_token.validate()
+        return {
+            "result": True,
+            "token": payment_token.id,
+        }
 
     def _get_or_create_customer(self, partner):
         stripe.api_key = self.sudo().netaddiction_stripe_sk

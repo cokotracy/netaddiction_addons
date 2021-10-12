@@ -39,16 +39,14 @@ odoo.define('payment_netaddiction_stripe.payment_form', function (require) {
      * @returns {Promise}
      */
     _createCreditCard: function (stripe, formData, card) {
-      stripe.createToken(card).then((result) => {
-        if (result.error) {
-          console.log(result.error);
+      return stripe.createToken(card).then((data) => {
+        if (data.error) {
+          return data.error
         } else {
           return this._rpc({
             route: '/payment/netaddiction-stripe/create-payment-token',
-            params: { 'acquirer_id': formData.acquirer_id, 'token': result.token }
-          }).then(function (result) {
-            console.log(result);
-          });
+            params: { 'acquirer_id': formData.acquirer_id, 'token': data.token }
+          })
         }
       })
     },
@@ -89,7 +87,30 @@ odoo.define('payment_netaddiction_stripe.payment_form', function (require) {
       if (card._invalid) {
         return;
       }
-      this._createCreditCard(stripe, formData, card,)
+      this._createCreditCard(stripe, formData, card).then((result) => {
+        this.enableButton(button);
+        if (result.error) {
+          return Promise.reject({ "message": result.error.message });
+        } else {
+          this._unloadCardView()
+          this._loadCardView($checkedRadio)
+          $checkedRadio.val(result.token);
+          // _.extend(formData, { "payment_method": result.setupIntent.payment_method });
+          // return self._rpc({
+          //   route: formData.data_set,
+          //   params: formData,
+          // });
+        }
+      }).guardedCatch((error) => {
+        if (error.event) {
+          error.event.preventDefault();
+        }
+        if (error.message) {
+          this._displayError(error.message);
+        } else {
+          this._displayError("Impossibile salvare la seguente carta di credito/debito");
+        }
+      });
       // this._createCreditCard(stripe, formData, card,).then(function (result) {
       //   if (result.error) {
       //     return Promise.reject({ "message": { "data": { "arguments": [result.error.message] } } });
@@ -155,7 +176,6 @@ odoo.define('payment_netaddiction_stripe.payment_form', function (require) {
         route: '/payment/netaddiction-stripe/get-payments-token',
         params: { 'acquirer_id': acquirer_id }
       }).then(function (data) {
-        console.log(data);
         var cards = $(qweb.render('stripe.cards'));
         cards.appendTo($('#cards-list'));
       });
