@@ -78,6 +78,13 @@ class NetaddictionStripeController(http.Controller):
         res = acquirer.with_context(stripe_manual_payment=True).create_setup_intent(request.env.user)
         return res.get("client_secret")
 
+    @http.route(["/payment/netaddiction-stripe/get-payments-token"], type="json", auth="public", csrf=False)
+    def get_payments_token(self, **kwargs):
+        if not kwargs.get("partner_id"):
+            kwargs = dict(kwargs, partner_id=request.env.user.partner_id.id)
+        tokens = request.env["payment.acquirer"].browse(int(kwargs.get("acquirer_id"))).get_payments_token(kwargs)
+        return tokens
+
     @http.route(["/payment/netaddiction-stripe/create-payment-token"], type="json", auth="public", csrf=False)
     def create_payment_token(self, **kwargs):
         if not kwargs.get("partner_id"):

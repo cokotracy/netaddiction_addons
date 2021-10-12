@@ -12,7 +12,7 @@ odoo.define('payment_netaddiction_stripe.payment_form', function (require) {
   ajax.loadXML('/netaddiction_payments/static/xml/stripe/templates.xml', qweb);
 
   PaymentForm.include({
-
+    xmlDependencies: ['/netaddiction_payments/static/xml/stripe/templates.xml'],
     selector: '.o_payment_form',
     events: _.extend({
       'change input[name="pm_id"][type="radio"]': 'pmChangeEvent',
@@ -124,10 +124,18 @@ odoo.define('payment_netaddiction_stripe.payment_form', function (require) {
     /**
      *
      * @private
+     * @param {DOMElement} checkedRadio
      */
-    _loadCardView: function () {
-      var cards = $(qweb.render('stripe.cards'));
-      cards.appendTo($('#cards-list'));
+    _loadCardView: function ($checkedRadio) {
+      let acquirer_id = this.getAcquirerIdFromRadio($checkedRadio);
+      this._rpc({
+        route: '/payment/netaddiction-stripe/get-payments-token',
+        params: { 'acquirer_id': acquirer_id }
+      }).then(function (data) {
+        console.log(data);
+        var cards = $(qweb.render('stripe.cards'));
+        cards.appendTo($('#cards-list'));
+      });
     },
 
     /**
@@ -137,7 +145,7 @@ odoo.define('payment_netaddiction_stripe.payment_form', function (require) {
     _unloadCardView: function () {
       $('#cards-list').html('');
     },
-    
+
     /**
      * destroys the card element and any stripe instance linked to the widget.
      *
@@ -171,15 +179,15 @@ odoo.define('payment_netaddiction_stripe.payment_form', function (require) {
       else if (this.isFormPaymentRadio($checkedRadio)) {
         this.$('#o_payment_form_acq_' + acquirer_id).removeClass('d-none');
       }
-      
+
       var provider = $checkedRadio.dataset.provider
       if (provider === 'netaddiction_stripe') {
         // always re-init stripe (in case of multiple acquirers for stripe, make sure the stripe instance is using the right key)
-        this._unloadCardView();
         this._unbindStripeCard();
-        this._loadCardView();
+        this._unloadCardView();
         this._bindStripeCard($checkedRadio);
-        
+        this._loadCardView($checkedRadio);
+
       }
 
     },
