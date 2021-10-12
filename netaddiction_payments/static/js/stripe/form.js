@@ -122,6 +122,23 @@ odoo.define('payment_netaddiction_stripe.payment_form', function (require) {
     },
 
     /**
+     *
+     * @private
+     */
+    _loadCardView: function () {
+      var cards = $(qweb.render('stripe.cards'));
+      cards.appendTo($('#cards-list'));
+    },
+
+    /**
+     *
+     * @private
+     */
+    _unloadCardView: function () {
+      $('#cards-list').html('');
+    },
+    
+    /**
      * destroys the card element and any stripe instance linked to the widget.
      *
      * @private
@@ -154,12 +171,15 @@ odoo.define('payment_netaddiction_stripe.payment_form', function (require) {
       else if (this.isFormPaymentRadio($checkedRadio)) {
         this.$('#o_payment_form_acq_' + acquirer_id).removeClass('d-none');
       }
-
+      
       var provider = $checkedRadio.dataset.provider
       if (provider === 'netaddiction_stripe') {
         // always re-init stripe (in case of multiple acquirers for stripe, make sure the stripe instance is using the right key)
+        this._unloadCardView();
         this._unbindStripeCard();
+        this._loadCardView();
         this._bindStripeCard($checkedRadio);
+        
       }
 
     },
