@@ -132,48 +132,60 @@
 
     <template id="custom_order_consegna" inherit_id="sale_stock.sale_order_portal_content_inherit_sale_stock">
         <xpath expr="//div[hasclass('o_sale_stock_picking')]" position="replace">
-            <div class="d-flex flex-wrap align-items-center justify-content-between o_sale_stock_picking">
-                <div class="p-2">
-                    <a t-att-href="delivery_report_url">
-                        <span t-esc="i.name"/>
-                    </a>
-                </div>
-                <div class="p-2">
-                    <div class="small d-lg-inline-block">Data:
-                        <span class="text-muted" t-field="i.date_done" t-options="{'date_only': True}"/>
-                        <span t-if="i.state in ['draft', 'waiting', 'confirmed', 'assigned']" class="text-muted" t-field="i.scheduled_date" t-options="{'date_only': True}"/>
-                    </div>
-                </div>
-                <div t-if="i.carrier_tracking_ref" class="small d-lg-inline-block p-2">
-                    Tracking:
-                    <t t-set="multiple_carrier_tracking" t-value="i.get_multiple_carrier_tracking()"/>
-                    <t t-if="multiple_carrier_tracking">
-                        <t t-foreach="multiple_carrier_tracking" t-as="line">
-                            <a t-att-href="line[1]" target="_blank"><span t-esc="line[0]"/></a>
-                            <span t-if="not line_last"> + </span>
-                        </t>
-                    </t>
-                    <t t-else="">
-                        <t t-if="i.carrier_tracking_url">
-                            <a t-att-href="i.carrier_tracking_url" target="_blank"><span t-field="i.carrier_tracking_ref"/></a>
-                        </t>
-                        <t t-else="">
-                            <span t-field="i.carrier_id.name"/> <span t-field="i.carrier_tracking_ref"/>
-                        </t>
-                    </t>
-                    <!-- https://www.brt.it/it/tracking?OP=B&CD=3213232132313233213&Submit=CERCA -->
-                    <!-- https://www.sda.it/wps/portal/Servizi_online/dettaglio-spedizione?locale=it&tracing.letteraVettura=3244343432434323 -->
-                </div>
-                <t t-if="i.carrier_id.get_return_label_from_portal and i.return_label_ids">
-                    <div >
-                        <a class="ml-3"  t-attf-href="/web/content/#{i.return_label_ids[:1].id}" target="_blank">Print Return Label</a>
-                    </div>
-                </t>
-                <div class="p-2">
-                    <span t-if="i.state == 'done'" class="small badge badge-success orders_label_text_align" style="border-radius:3px;"><i class="fa fa-fw fa-truck"/> <b>Spedito</b></span>
-                    <span t-if="i.state == 'sale'" class="small badge badge-success orders_label_text_align" style="border-radius:3px;"><i class="fa fa-fw fa-check"/> <b>Confermato</b></span>
-                </div>
-            </div>
+            <table class="w-100 mt-3">
+                <tbody>
+                    <tr class="d-flex flex-wrap col-12 0 border-bottom mb-3">
+                        <td class="p-2">
+                            <a t-att-href="delivery_report_url">
+                                <span t-esc="i.name"/>
+                            </a>
+                        </td>
+                        <td class="p-2">
+                            <div class="small d-lg-inline-block">Data:
+                                <span class="text-muted" t-field="i.date_done" t-options="{'date_only': True}"/>
+                                <span t-if="i.state in ['draft', 'waiting', 'confirmed', 'assigned']" class="text-muted" t-field="i.scheduled_date" t-options="{'date_only': True}"/>
+                            </div>
+                        </td>
+                        <td class="p-2">
+                            <span t-if="i.state == 'done'" class="small badge badge-success orders_label_text_align" style="border-radius:3px;"><i class="fa fa-fw fa-truck"/> <b>Spedito</b></span>
+                            <span t-if="i.state == 'sale'" class="small badge badge-success orders_label_text_align" style="border-radius:3px;"><i class="fa fa-fw fa-check"/> <b>Confermato</b></span>
+                        </td>
+                        <td t-if="i.carrier_tracking_ref" class="small d-lg-inline-block p-2 col text-right">
+                            <t t-set="multiple_carrier_tracking" t-value="i.get_multiple_carrier_tracking()"/>
+                            <t t-if="multiple_carrier_tracking">
+                                <t t-foreach="multiple_carrier_tracking" t-as="line">
+                                    <t t-if="line.carrier_tracking_ref">
+                                        <t t-if="line.carrier_tracking_ref[:2] == 'CC'">
+                                            <a class="order-details-btn m-1" t-attf-href="https://as777.brt.it/vas/sped_det_show.hsm?referer=sped_numspe_par.htm&amp;ChiSono={{line.carrier_tracking_ref}}" target="_blank">
+                                                Traccia pacco
+                                            </a>
+                                        </t>
+                                        <t t-else="">
+                                            <a class="order-details-btn m-1" t-attf-href="https://www.mysda.it/SDAServiziEsterniWeb2/faces/SDAElencoSpedizioni.jsp?user=NETA20&amp;idritiro={{lline.carrier_tracking_ref}}" target="_blank">
+                                                Traccia pacco
+                                            </a>
+                                        </t>
+                                    </t>
+                                </t>
+                            </t>
+                            <t t-else="">
+                                <t t-if="i.carrier_tracking_ref">
+                                    <t t-if="i.carrier_tracking_ref[:2] == 'CC'">
+                                        <a class="order-details-btn" t-attf-href="https://as777.brt.it/vas/sped_det_show.hsm?referer=sped_numspe_par.htm&amp;ChiSono={{i.carrier_tracking_ref}}" target="_blank">
+                                            Traccia pacco
+                                        </a>
+                                    </t>
+                                    <t t-else="">
+                                        <a class="order-details-btn" t-attf-href="https://www.mysda.it/SDAServiziEsterniWeb2/faces/SDAElencoSpedizioni.jsp?user=NETA20&amp;idritiro={{i.carrier_tracking_ref}}" target="_blank">
+                                            Traccia pacco
+                                        </a>
+                                    </t>
+                                </t>
+                            </t>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
         </xpath>
     </template>
 
