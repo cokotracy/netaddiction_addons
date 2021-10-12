@@ -8,11 +8,10 @@
         <field name="arch" type="xml">
             <xpath expr="//header/button[@name='action_quotation_send']" position="before">
                 <button name="action_problems" string="Problema" type="object"
-                        states="sent,sale,processing,partial_done,draft"
-                        class=" btn btn-danger fa fa-exclamation-triangle"/>
-                <button name="action_cancel" string="Cancel" type="object" states="problem" />
-                <button name="action_confirm_problem" string="Confirm" type="object"
-                        states="problem" />
+                        class=" btn btn-danger fa fa-exclamation-triangle"
+                        attrs="{'invisible': [('problem', '=', True)]}"/>
+                <button name="action_remove_problems" string="Rimuovi Problema" type="object"
+                        attrs="{'invisible': [('problem', '=', False)]}"/>
             </xpath>
             <xpath expr="//field[@name='order_line']//tree//field[@name='price_subtotal']" position="attributes">
                 <attribute name="groups" />
@@ -22,6 +21,14 @@
             </xpath>
             <xpath expr="//field[@name='order_line']//tree//field[@name='price_unit']" position="attributes">
                 <attribute name="attrs">{'readonly': False}</attribute>
+            </xpath>
+            <xpath expr="//notebook/page[@name='other_information']//group[@name='sales_person']/field[@name='company_id']"
+                   position="after">
+                <field name="problem" readonly="1"/>
+            </xpath>
+            <xpath expr="//sheet/div[hasclass('oe_title')]/h1/field[@name='name']"
+                   position="after">
+                <b attrs="{'invisible' : [('problem', '=', False)]}" style="color:red"> in PROBLEMA</b>
             </xpath>
         </field>
     </record>
@@ -39,6 +46,7 @@
             </xpath>
             <xpath expr="//field[@name='company_id']" position="before">
                 <field name="payment_method_id"/>
+                <field name="problem"/>
             </xpath>
             <xpath expr="//tree" position="attributes">
                 <attribute name="decoration-warning">is_in_a_pickup</attribute>
@@ -53,6 +61,19 @@
         <field name="arch" type="xml">
             <xpath expr="//field[@name='company_id']" position="before">
                 <field name="payment_method_id"/>
+                <field name="problem"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="netaddiction_orders_view_sales_order_filter" model="ir.ui.view">
+        <field name="name">netaddiction.orders.sale.order.filter</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_sales_order_filter"/>
+        <field name="arch" type="xml">
+            <xpath expr="//filter[@name='activities_upcoming_all']" position="after">
+                <separator/>
+                <filter string="Problems" name="problems_filter" domain="[('problem', '=', True)]"/>
             </xpath>
         </field>
     </record>

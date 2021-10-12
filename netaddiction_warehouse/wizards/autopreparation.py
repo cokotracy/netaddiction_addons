@@ -40,18 +40,29 @@ class AutoPreparation(models.TransientModel):
                 )
                 # pay = False
 
+            # Check we haven't problems in the order
+            if pick.sale_id.problem:
+                error_stock.append(pick.id)
+                note.append(
+                    f'L\'ordine {pick.sale_id.name} ha un problema '
+                    f'e quindi la spedizione non può essere processata'
+                )
+
             # controllo indirizzo e valutazione cliente
             if pick.sale_id.partner_id.rating == 0:
                 error_stock.append(pick.id)
                 note.append('Rating cliente negativo')
                 pay = False
 
-            shipping_address = pick.sale_id.partner_shipping_id
+            shipping_address = pick.partner_id
             if not shipping_address.street \
                     or not shipping_address.street2 \
                     or not shipping_address.city:
                 error_stock.append(pick.id)
-                note.append('Mancano dati nell\'indirizzo di spedizione')
+                note.append(
+                    'Mancano dati nell\'indirizzo di spedizione. '
+                    'Controllare la via, il numero civico e la città.'
+                    )
                 # pay = False
 
             if pick.verify_quantity():

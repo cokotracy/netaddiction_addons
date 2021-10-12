@@ -186,7 +186,6 @@ odoo.define('netaddiction_purchase_orders.backorder', function (require) {
                 'sale': 'In Lavorazione',
                 'sent': 'Preventivo Inviato',
                 'partial_done': 'Parzialmente Completato',
-                'problem': 'Problema',
                 'pending': 'Pending'
             }
             this._rpc({

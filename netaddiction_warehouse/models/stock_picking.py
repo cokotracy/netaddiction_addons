@@ -91,12 +91,12 @@ class StockPicking(models.Model):
     def do_validate_orders(self, pick_id):
         pick = self.search([('id', '=', int(pick_id))])
 
-        if pick.sale_id.state in ['problem', 'cancel']:
+        if pick.sale_id.state == 'cancel' or pick.sale_id.problem:
             text = "La spedizione %s dell'ordine %s non può essere spedita" \
                    " perchè lo stato non è in lavorazione, l'ordine verrà" \
                    " tolto dalla lista. Ricordati di ricaricare i prodotti"\
                    % (pick.name, pick.sale_id.name)
-            if pick.sale_id.state == 'problem':
+            if pick.sale_id.problem:
                 pick.write({
                     'batch_id': False,
                     'move_line_ids': [
@@ -122,8 +122,8 @@ class StockPicking(models.Model):
         pick.button_validate()
 
         partial = any(p.state != 'done' for p in pick.sale_id.picking_ids)
-        pick.sale_id.with_context(ignore_pickup_check=True).state = \
-            'partial_done' if partial else 'done'
+        if not partial:
+            pick.sale_id.with_context(ignore_pickup_check=True).state = 'done'
 
         # a questo punto metto spedita e da fatturare anche la riga spedizioni
         shipping_line = self.env['sale.order.line'].search(
