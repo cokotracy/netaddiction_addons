@@ -93,16 +93,29 @@ class AutoPreparation(models.TransientModel):
 
             # If a picking payment method is Credit Card, raise an error
             # because we must manage original order payment manually
-            if pick.sale_id.payment_method_id == credit_card_payment_method:
+            # if pick.sale_id.payment_method_id == credit_card_payment_method:
+            #     error_stock.append(pick.id)
+            #     note.append(
+            #         f'L\'ordine "{pick.sale_id.name}", '
+            #         f'che ha generato la spedizione, '
+            #         f'è stato pagato con "Carta di Credito". '
+            #         f'Impossibile gestire la spedizione. '
+            #         f'Correggere il pagamento nell\'ordine originale.'
+            #     )
+            payment = self.env["payment.transaction"].get_payment_from_order(pick.sale_id)
+            if payment:
+                if not pick.payment_id:
+                    pick.write({"payment_id": payment.payment_id})
+                if payment.state != "posted" and payment.acquirer_id.provider == "netaddiction_stripe":
+                    tx = self.env["payment.transaction"].browse(payment.id)
+                    res = tx.ns_do_transaction()
+                    if not res:
+                        error_stock.append(pick.id)
+                        note.append("Stripe: Impossibile completare il pagamento")
+            else:
                 error_stock.append(pick.id)
-                note.append(
-                    f'L\'ordine "{pick.sale_id.name}", '
-                    f'che ha generato la spedizione, '
-                    f'è stato pagato con "Carta di Credito". '
-                    f'Impossibile gestire la spedizione. '
-                    f'Correggere il pagamento nell\'ordine originale.'
-                )
-
+                note.append("Impossibile recuperare il pagamento dell'ordine")
+                    
             if note:
                 mail_obj.create({
                     'subject': 'Errori autopreparazione',
