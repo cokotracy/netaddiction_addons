@@ -16,7 +16,8 @@ odoo.define('payment_netaddiction_stripe.payment_form', function (require) {
     selector: '.o_payment_form',
     events: _.extend({
       'change input[name="pm_id"][type="radio"]': 'pmChangeEvent',
-      "submit": "_onSubmit",
+      "click #stripeSaveCard": "stripeSaveCard",
+      "submit #o_payment_form_pay": "_onSubmit",
     }),
 
     willStart: function () {
@@ -28,6 +29,29 @@ odoo.define('payment_netaddiction_stripe.payment_form', function (require) {
     //--------------------------------------------------------------------------
     // Private
     //--------------------------------------------------------------------------
+
+    /**
+     *
+     * @private
+     * @param {Object} stripe
+     * @param {Object} formData
+     * @param {Object} card
+     * @returns {Promise}
+     */
+    _createCreditCard: function (stripe, formData, card) {
+      stripe.createToken(card).then((result) => {
+        if (result.error) {
+          console.log(result.error);
+        } else {
+          return this._rpc({
+            route: '/payment/netaddiction-stripe/create-payment-token',
+            params: { 'acquirer_id': formData.acquirer_id, 'token': result.token }
+          }).then(function (result) {
+            console.log(result);
+          });
+        }
+      })
+    },
 
     /**
      *
@@ -54,11 +78,7 @@ odoo.define('payment_netaddiction_stripe.payment_form', function (require) {
      */
     _getOrCreateStripeToken: function (ev, $checkedRadio) {
       var self = this;
-      if (ev.type === 'submit') {
-        var button = $(ev.target).find('*[type="submit"]')[0]
-      } else {
-        var button = ev.target;
-      }
+      var button = ev.target;
       this.disableButton(button);
       var acquirerID = this.getAcquirerIdFromRadio($checkedRadio);
       var acquirerForm = this.$('#o_payment_add_token_acq_' + acquirerID);
@@ -69,27 +89,30 @@ odoo.define('payment_netaddiction_stripe.payment_form', function (require) {
       if (card._invalid) {
         return;
       }
-      this._setupIntentMethod(stripe, formData, card,).then(function (result) {
-        if (result.error) {
-          return Promise.reject({ "message": { "data": { "arguments": [result.error.message] } } });
-        } else {
-          _.extend(formData, { "payment_method": result.setupIntent.payment_method });
-          return self._rpc({
-            route: formData.data_set,
-            params: formData,
-          });
-        }
-      }).then(function (result) {
-        // $('input:first', acquirerForm).after(`<input type="hidden" name="pm_id" value="${result.id}">`)
-        $checkedRadio.val(result.id);
-        self.el.submit();
-      }).guardedCatch(function (error) {
-        if (error.event) {
-          error.event.preventDefault();
-        }
-        self.enableButton(button);
-        self._displayError("Impossibile utilizzare la seguente carta di credito/debito");
-      });
+      this._createCreditCard(stripe, formData, card,)
+      // this._createCreditCard(stripe, formData, card,).then(function (result) {
+      //   if (result.error) {
+      //     return Promise.reject({ "message": { "data": { "arguments": [result.error.message] } } });
+      //   } else {
+      //     console.log(result);
+      //     // _.extend(formData, { "payment_method": result.setupIntent.payment_method });
+      //     // return self._rpc({
+      //     //   route: formData.data_set,
+      //     //   params: formData,
+      //     // });
+      //   }
+      // }
+      // }).then(function (result) {
+      //   // $('input:first', acquirerForm).after(`<input type="hidden" name="pm_id" value="${result.id}">`)
+      //   $checkedRadio.val(result.id);
+      //   self.el.submit();
+      // }).guardedCatch(function (error) {
+      //   if (error.event) {
+      //     error.event.preventDefault();
+      //   }
+      //   self.enableButton(button);
+      //   self._displayError("Impossibile utilizzare la seguente carta di credito/debito");
+      // });
     },
 
     /**
@@ -229,7 +252,8 @@ odoo.define('payment_netaddiction_stripe.payment_form', function (require) {
       ev.preventDefault();
       var $checkedRadio = this.$('input[name="pm_id"][type="radio"]:checked');
       if ($checkedRadio.length === 1 && $checkedRadio.data('provider') === 'netaddiction_stripe') {
-        return this._getOrCreateStripeToken(ev, $checkedRadio);
+        // return this._getOrCreateStripeToken(ev, $checkedRadio);
+        console.log("Pagamento con Stripe");
       } else {
         return this._super.apply(this, arguments);
       }
@@ -239,6 +263,12 @@ odoo.define('payment_netaddiction_stripe.payment_form', function (require) {
       $(ev.currentTarget).find('input[name="pm_id"][type="radio"]').prop("checked", true);
       this.updateNewPaymentDisplayStatus();
     },
+
+    stripeSaveCard: function (ev) {
+      ev.preventDefault();
+      var $checkedRadio = this.$('input[name="pm_id"][type="radio"]:checked');
+      this._getOrCreateStripeToken(ev, $checkedRadio);
+    }
 
   })
 

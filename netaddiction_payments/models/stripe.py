@@ -49,21 +49,11 @@ class StripeAcquirer(models.Model):
     def netaddiction_stripe_get_form_action_url(self):
         return "/netaddiction_stripe/payment/feedback"
 
-    def get_or_create_customer(self, partner):
-        stripe.api_key = self.sudo().netaddiction_stripe_sk
-        customer = stripe.Customer.list(email=partner.email)
-        if not customer:
-            c_name = partner.name if partner.name else partner.id
-            customer = stripe.Customer.create(name=c_name, email=partner.email)
-            return customer["id"]
-        else:
-            return customer.data[0]["id"]
-
     def create_setup_intent(self, user):
         stripe.api_key = self.sudo().netaddiction_stripe_sk
 
         return stripe.SetupIntent.create(
-            customer=self.get_or_create_customer(user.partner_id),
+            customer=self._get_or_create_customer(user.partner_id),
             payment_method="card_1JiiAjHprgG5j0TdTQlCr44O",
             payment_method_options={"card": {"request_three_d_secure": "any"}},
         )
@@ -87,32 +77,55 @@ class StripeAcquirer(models.Model):
     @api.model
     def create_payment_token(self, data):
         stripe.api_key = self.sudo().netaddiction_stripe_sk
-        res = stripe.PaymentMethod.retrieve(data.get("payment_method"))
-        token = (
-            self.env["payment.token"]
-            .sudo()
-            .search([("netaddiction_stripe_payment_method", "=", data.get("payment_method"))])
-        )
+        card_token = data.get("token")
+        partner = data.get("partner_id")
+
+        customer = self._get_or_create_customer(partner)
+        card = self._check_association_cc(card_token["id"], customer)
+        token = self.env["payment.token"].sudo().search([("netaddiction_stripe_payment_method", "=", card["id"])])
         if token:
             return token
-        card = res.get("card", {})
-        if card:
-            payment_token = (
-                self.env["payment.token"]
-                .sudo()
-                .create(
-                    {
-                        "acquirer_id": int(data["acquirer_id"]),
-                        "partner_id": int(data["partner_id"]),
-                        "netaddiction_stripe_payment_method": data.get("payment_method"),
-                        "name": f"XXXXXXXXXXXX{card.get('last4', '****')}",
-                        "brand": card.get("brand", ""),
-                        "acquirer_ref": self.get_or_create_customer(int(data["partner_id"])),
-                        "active": False,
-                    }
-                )
+        payment_token = (
+            self.env["payment.token"]
+            .sudo()
+            .create(
+                {
+                    "acquirer_id": int(data["acquirer_id"]),
+                    "partner_id": partner.id,
+                    "netaddiction_stripe_payment_method": card["id"],
+                    "name": f"XXXXXXXXXXXX{card.get('last4', '****')}",
+                    "brand": card.get("brand", ""),
+                    "acquirer_ref": customer,
+                    "active": False,
+                }
             )
-            return payment_token
+        )
+        return payment_token
+
+    def _get_or_create_customer(self, partner):
+        stripe.api_key = self.sudo().netaddiction_stripe_sk
+        customer = stripe.Customer.list(email=partner.email)
+        if not customer:
+            c_name = partner.name if partner.name else partner.id
+            customer = stripe.Customer.create(name=c_name, email=partner.email)
+            return customer["id"]
+        else:
+            return customer.data[0]["id"]
+
+    def _check_association_cc(self, token, customer_id):
+        stripe.api_key = self.sudo().netaddiction_stripe_sk
+        current_card = stripe.Token.retrieve(token)
+        cards = stripe.Customer.list_sources(customer_id, object="card")
+        source = None
+        for card in cards.data:
+            if card.fingerprint == current_card.card.fingerprint:
+                source = card
+        if not source:
+            source = stripe.Customer.create_source(
+                customer_id,
+                source=token,
+            )
+        return source
 
 
 class StripePaymentTransaction(models.Model):

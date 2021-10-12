@@ -88,7 +88,7 @@ class NetaddictionStripeController(http.Controller):
     @http.route(["/payment/netaddiction-stripe/create-payment-token"], type="json", auth="public", csrf=False)
     def create_payment_token(self, **kwargs):
         if not kwargs.get("partner_id"):
-            kwargs = dict(kwargs, partner_id=request.env.user.partner_id.id)
+            kwargs = dict(kwargs, partner_id=request.env.user.partner_id)
         token = (
             request.env["payment.acquirer"]
             .browse(int(kwargs.get("acquirer_id")))
