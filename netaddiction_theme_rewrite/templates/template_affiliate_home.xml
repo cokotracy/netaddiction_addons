@@ -5,7 +5,7 @@
             <t t-call="website.layout">
                 <t t-if="user_id.partner_id.is_affiliate">
                     <div class="container">
-                        <div class="navbar navbar-expand-md navbar-light bg-light">
+                        <div class="navbar navbar-expand-md navbar-light bg-light p-3">
                             <div>
                                 <ul class="navbar-nav">
                                     <li class="nav-item">
@@ -33,8 +33,8 @@
                             </div>
                         </div>
                     </div>
-                    <div class="container d-flex mt-4">
-                        <div class="col-12 col-md-6">
+                    <div class="container d-flex flex-wrap mt-4">
+                        <div class="col-12 col-md-7 mb-4 p-3 mx-auto" style="border-radius:5px; background-color:#ffffff; box-shadow:0 4px 8px 0 rgb(156 156 156 / 10%), 0 6px 20px 0 rgb(156 156 156 / 10%);">
                             <form>
                                 <label for="code">
                                     Il tuo codice di affiliazione:
@@ -66,7 +66,7 @@
                                 <br />
                             </div>
                         </div>
-                        <div class="col-12 col-md-6">
+                        <div class="col-12 col-md-7 mb-4 p-3 mx-auto" style="border-radius:5px; background-color:#ffffff; box-shadow:0 4px 8px 0 rgb(156 156 156 / 10%), 0 6px 20px 0 rgb(156 156 156 / 10%);">
                             <div class="col-md-5 text-center mx-auto">
                                 <strong>
                                     Credito in attesa:
