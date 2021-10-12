@@ -122,6 +122,21 @@ class SaleOrder(models.Model):
         for order in self:
             order.problem = True
 
+    def action_remove_problems(self):
+        message_model = self.env['mail.message']
+        subtype = self.env.ref('mail.mt_note')
+        for order in self:
+            order.problem = False
+            message_model.create({
+                    'subject': 'Problema risolto',
+                    'message_type': 'notification',
+                    'model': 'sale.order',
+                    'res_id': order.id,
+                    'body':
+                    f'Problema sull\'ordine risolto da {self.env.user.name}',
+                    'subtype_id': subtype.id
+                })
+
     def action_cancel(self):
         # Migrated from netaddiction_mail/models/sale v9.0
         # Send an internal mail for cancel order with paypal or sofort payment
