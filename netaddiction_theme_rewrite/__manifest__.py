@@ -19,6 +19,7 @@
         "website_all_in_one",
         "product_template_tags",
         "wk_variant_search",
+        "affiliate_management",
         "website_seo_pro",
     ],
     "data": [
@@ -40,6 +41,8 @@
         "templates/custom_product_label.xml",
         "templates/page_404.xml",
         "templates/template_orders.xml",
+        "templates/template_affiliate.xml",
+        "templates/template_affiliate_home.xml",
         "templates/login.xml",
         "templates/google-snippet/product.xml",
     ],

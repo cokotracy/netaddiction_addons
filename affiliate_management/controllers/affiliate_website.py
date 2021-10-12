@@ -77,7 +77,7 @@ class website_affiliate(Home):
         if aff:
             if (not aff.signup_valid) and (not aff.user_id):
                 aff.regenerate_token()
-                msg = "Thank you for registering with us, we have sent you the Signup mail at "+email+"."
+                msg = "Grazie per esserti registrato, riceverai un feedback non appena un admin visonerà la tua richiesta"
 
             else:
                 if aff.state == 'register' or aff.state == 'aproove':
@@ -90,7 +90,7 @@ class website_affiliate(Home):
             'name':email,
             'state':'draft',
             })
-            msg = "Thank you for registering with us, we have sent you the Signup mail at "+email
+            msg = "Grazie per esserti registrato, riceverai un feedback non appena un admin visonerà la tua richiesta"
         return msg
 
     @http.route('/affiliate/about',type='http', auth="user", website=True)

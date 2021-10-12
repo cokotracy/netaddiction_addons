@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+	<template id="affiliate_home" inherit_id="affiliate_management.affiliate">
+		<xpath expr="//t[@t-call='website.layout']" position="replace">
+			<t t-call="website.layout">
+				<div class="container">
+					<t t-set="title">
+						My Affilaite
+					</t>
+					<p class="alert alert-danger" t-if="error">
+						<t t-esc="error" />
+					</p>
+					<p class="alert alert-success" t-if="success">
+						<t t-esc="success" />
+					</p>
+					<div class="col-12 col-md-6 p-5 mx-auto border mt-4" style="border-radius:5px; background-color:#ffffff; box-shadow:0 4px 8px 0 rgb(156 156 156 / 10%), 0 6px 20px 0 rgb(156 156 156 / 10%);">
+						<t t-if="request.env.user.id == 3">
+							<p class="h4 mb-5">
+								Devi essere registrato per poter diventare un Affiliato.
+								Se non sei ancora registrato, puoi effettuare la registrazione qui.
+							</p>
+							<div class="d-flex col-12">
+								<div class="col-6 text-center px-2">
+									<a href="/web/signup" class="btn btn-primary te_theme_button">
+										Registrati
+									</a>
+								</div>
+								<div class="col-6 text-center px-2">
+									<a href="/web/login" class="btn btn-primary te_theme_button">
+										Accedi
+									</a>
+								</div>
+							</div>
+						</t>
+						<t t-else="">
+							<t t-if="request.env.user.affiliate_program_id">
+								<script>
+									document.addEventListener("DOMContentLoaded", function() {
+										window.location.href="/affiliate/about";
+									});
+								</script>
+							</t>
+							<t t-else="">
+								<t t-set="request_status" t-value="request.env['affiliate.request'].sudo().search([('name', '=', request.env.user.email)])"/>
+								<div class="aff_box" style="padding-bottom:15px;">
+									<t t-if="request_status.state == 'draft'">
+										<div class="alert_msg_banner_1" style="background-color:#ffffff !important;">
+											<p class="mb-5">
+												La tua richiesta è ancora sotto osservazione, otterrai un Feedback appena possibile.
+											</p>
+										</div>
+										<div style="margin-top:10px;">
+											<center>
+												<a href="/shop" class="btn btn-primary te_theme_button">
+													Torna allo shop
+												</a>
+											</center>
+										</div>
+									</t>
+									
+									<t t-if="request_status.state == 'cancel'">
+										<div class="alert_msg_banner_1" style="background-color:#ffffff !important;">
+											<p class="h4 mb-5">
+													La tua richiesta di Affiliazione è stata rifiutata.
+											</p>
+										</div>
+										<div style="margin-top:10px;">
+											<center>
+												<a href="/shop" class="btn btn-primary te_theme_button">
+													Torna allo shop
+												</a>
+											</center>
+										</div>
+									</t>
+									<t t-if="not request_status">
+										<p class="mb-5">
+											<strong>Cosa significa?</strong>
+											<br/>
+											L'affiliazione online è un servizio gratuito che permette al proprietario di un sito internet o un blog di guadagnare tramite la pubblicazione di banner e links del network di affiliazione che generano vendite.
+											<br/>
+											<br/>
+											<strong>Vantaggi?</strong>
+											<br/>
+											Poter guadagnare grazie alle commissioni sulle vendite.
+											<br/>
+											<br/>
+											<a target="_blank" href="/netaddiction_theme_rewrite/static/src/pdf/CGC_Affiliazione.pdf">
+												Info e Condizioni
+											</a>
+											<br/>
+											<a target="_blank" href="/netaddiction_theme_rewrite/static/src/pdf/Allegato_A.pdf">
+												Commissioni
+											</a>
+											<br/>
+											<br/>
+											<strong>Come fare?</strong>
+											<br/>
+											Ti basterà registrarti al nostro sito e inviare la richiesta.
+										</p>
+										<div class="d-block text-center mt-3">
+											<form role="form" class="form-inline justify-content-center">
+												<input class="d-none" type="email" name="email" t-attf-value="{{request.env.user.email}}" id="register_login" required="required"/>
+												<button type="submit" id="join-btn" class="btn btn-primary te_theme_button">
+													Diventa Affiliato!
+												</button>
+											</form>
+										</div>
+									</t>
+								</div>
+							</t>
+						</t>
+						<!-- message for the initial state -->
+						<div class="alert_msg_banner">
+							<center>
+									La tua richiesta di Affilizione è stata inoltrata con successo, un amministratore si occuperà di visionarla.
+							</center>
+						</div>
+					</div>
+				</div>
+			</t>
+		</xpath>
+	</template>
+</odoo>

@@ -9,7 +9,7 @@
 </template>
 
   <template id="show_sign_in" customize_show="True" inherit_id="website.layout" name="Show Sign In">
-
+<!-- 
       <xpath expr="//header" position="attributes">
 
         <attribute name="t-att-style">'display: none;' if affiliate_website and website.user_id == user_id else 'display:;' </attribute>
@@ -78,7 +78,7 @@
 
             </header>
           </t>
-        </xpath>
+        </xpath> -->
 
         <!-- <xpath expr="//header[@id='head_tem']" position="attributes">
           <attribute name="t-att-style">'display:none;' if website.user_id != user_id else '' </attribute>
