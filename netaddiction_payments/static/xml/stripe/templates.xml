@@ -22,7 +22,7 @@
         <div class="card_stripe col-6 col-md-4 mb-1 px-0 px-md-3" t-attf-id="card_template_{{id}}">
             <div class="w-100 mx-auto border p-3 position-relative" style="min-height:100px; cursor:pointer; font-size:0.8em; border-radius:6px; max-width:180px; box-shadow:0 4px 8px 0 rgb(156 156 156 / 10%), 0 6px 20px 0 rgb(156 156 156 / 10%); background-color:#3d3d3d; color:#ffffff;">
                 <img class="position-absolute" style="width:20px; top:3px; right:3px;" t-attf-src="/netaddiction_payments/static/img/{{brand}}.png"/>
-                <t t-if="isDefault == True">
+                <t t-if="isDefault">
                     <input class="position-absolute" style="top:50%; left:10px; transform:translateY(-50%)" type="radio" t-attf-id="card_{{id}}" t-attf-value="card_{{id}}" name="stripe_card" checked="checked"/>
                 </t>
                 <t t-else="">
