@@ -73,9 +73,10 @@ class NetaddictionStripeController(http.Controller):
         return werkzeug.utils.redirect(post.pop("return_url", "/"))
 
     @http.route("/payment/netaddiction-stripe/create-setup-intent", type="json", auth="public", csrf=False)
-    def create_setup_intent(self, acquirer_id):
-        acquirer = request.env["payment.acquirer"].browse(int(acquirer_id))
-        res = acquirer.with_context(stripe_manual_payment=True).create_setup_intent(request.env.user)
+    def create_setup_intent(self, **kwargs):
+        if not kwargs.get("partner_id"):
+            kwargs = dict(kwargs, partner_id=request.env.user.partner_id)
+        res = request.env["payment.acquirer"].browse(int(kwargs.get("acquirer_id"))).create_setup_intent(kwargs)
         return res.get("client_secret")
 
     @http.route(["/payment/netaddiction-stripe/get-payments-token"], type="json", auth="public", csrf=False)
@@ -89,10 +90,12 @@ class NetaddictionStripeController(http.Controller):
     def create_payment_token(self, **kwargs):
         if not kwargs.get("partner_id"):
             kwargs = dict(kwargs, partner_id=request.env.user.partner_id)
-        res = (
-            request.env["payment.acquirer"]
-            .browse(int(kwargs.get("acquirer_id")))
-            .with_context(stripe_manual_payment=True)
-            .create_payment_token(kwargs)
-        )
+        res = request.env["payment.acquirer"].browse(int(kwargs.get("acquirer_id"))).create_payment_token(kwargs)
+        return res
+
+    @http.route(["/payment/netaddiction-stripe/set-default-payment"], type="json", auth="public", csrf=False)
+    def set_default_payment(self, **kwargs):
+        if not kwargs.get("partner_id"):
+            kwargs = dict(kwargs, partner_id=request.env.user.partner_id)
+        res = request.env["payment.acquirer"].browse(int(kwargs.get("acquirer_id"))).set_default_payment(kwargs)
         return res
