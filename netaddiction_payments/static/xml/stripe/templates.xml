@@ -19,22 +19,27 @@
         </div>
     </t>
     <t t-name="stripe.cards">
-        <div class="col-6 col-md-4 mb-1 px-0 px-md-3">
-            <div class="w-100 mx-auto border p-3 position-relative" style="cursor:pointer; font-size:0.8em; border-radius:6px; max-width:180px; box-shadow:0 4px 8px 0 rgb(156 156 156 / 10%), 0 6px 20px 0 rgb(156 156 156 / 10%); background-color:#3d3d3d; color:#ffffff;">
-                <img class="position-absolute" style="width:20px; top:3px; right:3px;" src="http://localhost:8069/web/image/payment.icon/1/image_payment_form/VISA?unique=7a4f194"/>
-                <input class="position-absolute" style="top:50%; left:10px; transform:translateY(-50%)" type="radio" id="card_1" value="card_1" name="stripe_card" checked="checked"/>
+        <div class="card_stripe col-6 col-md-4 mb-1 px-0 px-md-3" t-attf-id="card_template_{{id}}">
+            <div class="w-100 mx-auto border p-3 position-relative" style="min-height:100px; cursor:pointer; font-size:0.8em; border-radius:6px; max-width:180px; box-shadow:0 4px 8px 0 rgb(156 156 156 / 10%), 0 6px 20px 0 rgb(156 156 156 / 10%); background-color:#3d3d3d; color:#ffffff;">
+                <img class="position-absolute" style="width:20px; top:3px; right:3px;" t-attf-src="/netaddiction_payments/static/img/{{brand}}.png"/>
+                <t t-if="isDefault == True">
+                    <input class="position-absolute" style="top:50%; left:10px; transform:translateY(-50%)" type="radio" t-attf-id="card_{{id}}" t-attf-value="card_{{id}}" name="stripe_card" checked="checked"/>
+                </t>
+                <t t-else="">
+                    <input class="position-absolute" style="top:50%; left:10px; transform:translateY(-50%)" type="radio" t-attf-id="card_{{id}}" t-attf-value="card_{{id}}" name="stripe_card"/>
+                </t>
                 <div class="position-absolute" style="background-color:#d8b54c; width:20px; height:15px; top:40%; right:24px; border-radius:3px;"></div>
                 <table>
                     <tbody>
                         <tr>
-                            <td>**** **** **** 1524</td>
+                            <td>**** **** **** <t t-esc="last4"/></td>
+                        </tr>
+                        <!-- <tr>
+                            <td class="text-center"><small>EXPIRE DATE</small></td>
                         </tr>
                         <tr>
-                            <td class="text-center"><small>10/24</small></td>
-                        </tr>
-                        <tr>
-                            <td><small>FILIPPONI FABIO</small></td>
-                        </tr>
+                            <td><small>NAME SURNAME</small></td>
+                        </tr> -->
                     </tbody>
                 </table>
             </div>

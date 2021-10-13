@@ -179,8 +179,24 @@ odoo.define('payment_netaddiction_stripe.payment_form', function (require) {
         route: '/payment/netaddiction-stripe/get-payments-token',
         params: { 'acquirer_id': acquirer_id }
       }).then(function (data) {
-        var cards = $(qweb.render('stripe.cards'));
-        cards.appendTo($('#cards-list'));
+        if(data != null){
+          data.map((card, index)=>{
+            var cards = $(qweb.render('stripe.cards', card));
+            cards.appendTo($('#cards-list'));
+
+            $(`#card_template_${card.id}`).click(function() {
+              $('#cards-list > .card_stripe').each(function (){
+                if(this.id == `card_template${card.id}`){
+                  $(this).find('input').prop('checked', true);
+                  $checkedRadio.val(card.id)
+                }
+                else{
+                  $(this).find('input').prop('checked', false);
+                }
+              });
+            });
+          })
+        }
       });
     },
 
