@@ -92,9 +92,14 @@ odoo.define('payment_netaddiction_stripe.payment_form', function (require) {
         if (result.error) {
           return Promise.reject({ "message": result.error.message });
         } else {
-          this._unloadCardView()
-          this._loadCardView($checkedRadio)
           $checkedRadio.val(result.token);
+          $(acquirerForm).slideUp(() => {
+            this._unloadCardView()
+            setTimeout(() => {
+              this._loadCardView($checkedRadio)
+              $(acquirerForm).slideDown("slow")
+            }, 1000);
+          });
           // _.extend(formData, { "payment_method": result.setupIntent.payment_method });
           // return self._rpc({
           //   route: formData.data_set,
@@ -106,9 +111,7 @@ odoo.define('payment_netaddiction_stripe.payment_form', function (require) {
           error.event.preventDefault();
         }
         if (error.message) {
-          this._displayError(error.message);
-        } else {
-          this._displayError("Impossibile salvare la seguente carta di credito/debito");
+          this._displayError("Impossibile aggiungere la carta di credito. Se il problema persiste contattare il servizio clienti");
         }
       });
       // this._createCreditCard(stripe, formData, card,).then(function (result) {
@@ -144,7 +147,7 @@ odoo.define('payment_netaddiction_stripe.payment_form', function (require) {
     _bindStripeCard: function ($checkedRadio) {
       var acquirerID = this.getAcquirerIdFromRadio($checkedRadio);
       var acquirerForm = this.$('#o_payment_add_token_acq_' + acquirerID);
-      $(acquirerForm).removeClass("d-none");
+      $(acquirerForm).hide().removeClass("d-none").slideDown();
       var inputsForm = $('input', acquirerForm);
       var formData = this.getFormData(inputsForm);
       var stripe = Stripe(formData.stripe_key);
