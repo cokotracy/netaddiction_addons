@@ -3,7 +3,6 @@ odoo.define('payment_netaddiction_stripe.payment_form', function (require) {
 
   var ajax = require('web.ajax');
   var core = require('web.core');
-  var Dialog = require('web.Dialog');
   var PaymentForm = require('payment.payment_form');
 
   var qweb = core.qweb;
@@ -13,13 +12,10 @@ odoo.define('payment_netaddiction_stripe.payment_form', function (require) {
 
   PaymentForm.include({
     xmlDependencies: ['/netaddiction_payments/static/xml/stripe/templates.xml'],
-    selector: '.o_payment_form',
-    events: _.extend({
-      'change input[name="pm_id"][type="radio"]': 'pmChangeEvent',
+    events: _.extend({}, PaymentForm.prototype.events, {
+      "change input[name='pm_id'][type='radio']": "pmChangeEvent",
       "click #stripeSaveCard": "stripeSaveCard",
-      "submit #o_payment_form_pay": "_onSubmit",
     }),
-
     willStart: function () {
       return this._super.apply(this, arguments).then(function () {
         return ajax.loadJS("https://js.stripe.com/v3/");
@@ -116,9 +112,11 @@ odoo.define('payment_netaddiction_stripe.payment_form', function (require) {
     /**
     *
     * @private
+    * @param {Event} ev
     * @param {DOMElement} checkedRadio
     */
-    _createIntentPayment: function ($checkedRadio) {
+    _createIntentPayment: function (ev, $checkedRadio) {
+      console.log(ev)
       var self = this;
       var stripe = this.stripe;
       var button = ev.target;
@@ -257,6 +255,9 @@ odoo.define('payment_netaddiction_stripe.payment_form', function (require) {
         this._bindStripeCard($checkedRadio);
         this._loadCardView($checkedRadio);
 
+      } else {
+        this._unbindStripeCard();
+        this._unloadCardView();
       }
 
     },
@@ -274,22 +275,6 @@ odoo.define('payment_netaddiction_stripe.payment_form', function (require) {
     //--------------------------------------------------------------------------
     // Handlers
     //--------------------------------------------------------------------------
-
-    /**
-     * @override
-     */
-    onSubmit: function (ev) {
-      ev.stopPropagation();
-      ev.preventDefault();
-
-      var button = $(ev.target).find('*[type="submit"]')[0]
-      if (button.id === 'o_payment_form_pay') {
-        return this.payEvent(ev);
-      } else if (button.id === 'o_payment_form_add_pm') {
-        return this.addPmEvent(ev);
-      }
-      return;
-    },
 
     /**
     * @override

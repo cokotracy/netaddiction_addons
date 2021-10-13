@@ -45,7 +45,6 @@
             </xpath>
             <xpath expr="script[last()]" position="after">
                 <script type="text/javascript" src="/netaddiction_payments/static/js/stripe/form.js"></script>
-                <script type="text/javascript" src="/netaddiction_payments/static/js/stripe/processing.js"></script>
             </xpath>
         </template>
     </data>
