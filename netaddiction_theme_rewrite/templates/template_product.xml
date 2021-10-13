@@ -161,7 +161,7 @@
                 </t>
                 <t t-if="product.product_variant_id.qty_available_now &lt;= 0 and product.sudo().product_variant_id.qty_sum_suppliers &lt;= 0">
                     <t t-if="not out_date or out_date &lt; current">
-                        <strong class="label label-out mr-2 mb-2 px-2">OUT OF STOCK</strong>
+                        <strong class="label label-out mr-2 mb-2 px-2">ESAURITO</strong>
                     </t>
                 </t>
                 <t t-if="product.product_variant_id.qty_available_now &lt;= 0">
