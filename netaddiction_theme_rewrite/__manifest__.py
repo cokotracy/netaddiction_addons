@@ -44,6 +44,7 @@
         "templates/template_affiliate.xml",
         "templates/template_affiliate_home.xml",
         "templates/login.xml",
+        "templates/wallet_custom_parts.xml",
         "templates/google-snippet/product.xml",
     ],
     # Technical

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="custom_wallet_message" inherit_id="website_sale.payment_confirmation_status">
+        <xpath expr="//t[@t-if='not order.get_portal_last_transaction()']" position="replace"></xpath>
+    </template>
+</odoo>

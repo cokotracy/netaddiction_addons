@@ -169,7 +169,7 @@
                         <strong class="label label-request mr-2 mb-2 px-2">ORDINABILE</strong>
                     </t>
                 </t>
-                <t t-if="out_date and out_date &gt; current and product.sale_ok == false">
+                <t t-if="out_date and out_date &gt; current and product.sudo().product_variant_id.inventory_availability in ['always', 'threshold']">
                     <strong class="label label-out mr-2 mb-2 px-2">SOLD OUT</strong>
                 </t>
             </div>
