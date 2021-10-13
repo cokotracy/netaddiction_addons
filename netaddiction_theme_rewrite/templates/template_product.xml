@@ -141,36 +141,38 @@
             </t>
 
             <div class="product-label-container d-inline-flex" style="max-width:100%;">
-                <t t-if="product.product_variant_id.qty_available_now &gt; 0" >
-                    <t t-if="product.product_variant_id.qty_available_now &lt; 10">
-                        <strong class="label label-in mr-2 mb-2 px-2">RESTANO POCHI PEZZI!</strong>
-                    </t>
-                    <t t-else="">
-                        <strong class="label label-in mr-2 mb-2 px-2">DISPONIBILE</strong>
-                    </t>
+                <t t-if="out_date and out_date &gt; current and product.sudo().product_variant_id.inventory_availability in ['always', 'threshold']">
+                    <strong class="label label-out">SOLD OUT</strong>
                 </t>
-                <t t-if="current_reduced &lt;= product.create_date">
-                    <strong class="label label-news mr-2 mb-2 px-2">NOVITÀ</strong>
-                </t>
-                <t t-if="out_date">
-                    <t t-if="out_date &gt; current">
-                        <t t-if="product.product_variant_id.qty_available_now &lt;= 0 and product.sudo().product_variant_id.qty_sum_suppliers &lt;= 0">
-                            <strong class="label label-preorder mr-2 mb-2 px-2">PRENOTAZIONE</strong>
+                <t t-else="">
+                    <t t-if="product.product_variant_id.qty_available_now &gt; 0" >
+                        <t t-if="product.product_variant_id.qty_available_now &lt; 10">
+                            <strong class="label label-in mr-2 mb-2 px-2">RESTANO POCHI PEZZI!</strong>
+                        </t>
+                        <t t-else="">
+                            <strong class="label label-in mr-2 mb-2 px-2">DISPONIBILE</strong>
                         </t>
                     </t>
-                </t>
-                <t t-if="product.product_variant_id.qty_available_now &lt;= 0 and product.sudo().product_variant_id.qty_sum_suppliers &lt;= 0">
-                    <t t-if="not out_date or out_date &lt; current">
-                        <strong class="label label-out mr-2 mb-2 px-2">ESAURITO</strong>
+                    <t t-if="current_reduced &lt;= product.create_date">
+                        <strong class="label label-news mr-2 mb-2 px-2">NOVITÀ</strong>
                     </t>
-                </t>
-                <t t-if="product.product_variant_id.qty_available_now &lt;= 0">
-                    <t t-if="product.product_variant_id.qty_available_now &lt;= 0 and product.sudo().product_variant_id.qty_sum_suppliers &gt; 0">
-                        <strong class="label label-request mr-2 mb-2 px-2">ORDINABILE</strong>
+                    <t t-if="out_date">
+                        <t t-if="out_date &gt; current">
+                            <t t-if="product.product_variant_id.qty_available_now &lt;= 0 and product.sudo().product_variant_id.qty_sum_suppliers &lt;= 0">
+                                <strong class="label label-preorder mr-2 mb-2 px-2">PRENOTAZIONE</strong>
+                            </t>
+                        </t>
                     </t>
-                </t>
-                <t t-if="out_date and out_date &gt; current and product.sudo().product_variant_id.inventory_availability in ['always', 'threshold']">
-                    <strong class="label label-out mr-2 mb-2 px-2">SOLD OUT</strong>
+                    <t t-if="product.product_variant_id.qty_available_now &lt;= 0 and product.sudo().product_variant_id.qty_sum_suppliers &lt;= 0">
+                        <t t-if="not out_date or out_date &lt; current">
+                            <strong class="label label-out mr-2 mb-2 px-2">ESAURITO</strong>
+                        </t>
+                    </t>
+                    <t t-if="product.product_variant_id.qty_available_now &lt;= 0">
+                        <t t-if="product.product_variant_id.qty_available_now &lt;= 0 and product.sudo().product_variant_id.qty_sum_suppliers &gt; 0">
+                            <strong class="label label-request mr-2 mb-2 px-2">ORDINABILE</strong>
+                        </t>
+                    </t>
                 </t>
             </div>
             <t t-set="current" t-value="datetime.datetime.now()"/>
