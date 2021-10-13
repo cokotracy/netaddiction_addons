@@ -49,14 +49,18 @@ class StripeAcquirer(models.Model):
     def netaddiction_stripe_get_form_action_url(self):
         return "/netaddiction_stripe/payment/feedback"
 
-    def create_setup_intent(self, user):
+    def create_setup_intent(self, data):
         stripe.api_key = self.sudo().netaddiction_stripe_sk
-
-        return stripe.SetupIntent.create(
-            customer=self._get_or_create_customer(user.partner_id),
-            payment_method="card_1JiiAjHprgG5j0TdTQlCr44O",
-            payment_method_options={"card": {"request_three_d_secure": "any"}},
-        )
+        card_token = data.get("token")
+        partner = data.get("partner_id")
+        payment_method = self._get_payment_method(card_token)
+        customer = self._get_or_create_customer(partner)
+        if payment_method:
+            return stripe.SetupIntent.create(
+                customer=customer,
+                payment_method=payment_method,
+                payment_method_options={"card": {"request_three_d_secure": "any"}},
+            )
 
     @api.model
     def get_payments_token(self, data):
@@ -67,7 +71,7 @@ class StripeAcquirer(models.Model):
             results.append(
                 {
                     "id": token.id,
-                    "brand": token.brand,
+                    "brand": token.brand.lower(),
                     "last4": token.name.strip("X"),
                     "isDefault": token.default_payment,
                 }
@@ -104,9 +108,30 @@ class StripeAcquirer(models.Model):
             )
         )
         payment_token.validate()
+
+        if (
+            not self.env["payment.token"]
+            .sudo()
+            .search([("partner_id", "=", partner.id), ("default_payment", "=", True)])
+        ):
+            payment_token.default_payment = True
+
         return {
             "result": True,
             "token": payment_token.id,
+        }
+
+    def set_default_payment(self, data):
+        partner = data.get("partner_id")
+        payment_token = data.get("token")
+        payments = (
+            self.env["payment.token"].sudo().search([("partner_id", "=", partner.id), ("default_payment", "=", True)])
+        )
+        payments.default_payment = False
+        self.env["payment.token"].sudo().search([("id", "=", payment_token)]).default_payment = True
+
+        return {
+            "result": True,
         }
 
     def _get_or_create_customer(self, partner):
@@ -133,6 +158,11 @@ class StripeAcquirer(models.Model):
                 source=token,
             )
         return source
+
+    def _get_payment_method(self, token):
+        payment = self.env["payment.token"].sudo().search([("id", "=", token)])
+        if payment:
+            return payment.netaddiction_stripe_payment_method
 
 
 class StripePaymentTransaction(models.Model):

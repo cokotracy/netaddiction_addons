@@ -56,13 +56,12 @@ odoo.define('payment_netaddiction_stripe.payment_form', function (require) {
      * @private
      * @param {Object} stripe
      * @param {Object} formData
-     * @param {Object} card
      * @returns {Promise}
      */
-    _setupIntentMethod: function (stripe, formData, card) {
+    _setupIntentMethod: function (stripe, acquirerID, token) {
       return this._rpc({
         route: '/payment/netaddiction-stripe/create-setup-intent',
-        params: { 'acquirer_id': formData.acquirer_id }
+        params: { 'acquirer_id': acquirerID, 'token': token }
       }).then(function (intent_secret) {
         return stripe.confirmCardSetup(intent_secret)
       });
@@ -74,7 +73,7 @@ odoo.define('payment_netaddiction_stripe.payment_form', function (require) {
      * @param {Event} ev
      * @param {DOMElement} checkedRadio
      */
-    _getOrCreateStripeToken: function (ev, $checkedRadio) {
+    _createStripeToken: function (ev, $checkedRadio) {
       var self = this;
       var button = ev.target;
       this.disableButton(button);
@@ -100,43 +99,45 @@ odoo.define('payment_netaddiction_stripe.payment_form', function (require) {
               $(acquirerForm).slideDown("slow")
             }, 1000);
           });
-          // _.extend(formData, { "payment_method": result.setupIntent.payment_method });
-          // return self._rpc({
-          //   route: formData.data_set,
-          //   params: formData,
-          // });
         }
       }).guardedCatch((error) => {
         if (error.event) {
           error.event.preventDefault();
         }
+        this.enableButton(button);
         if (error.message) {
           this._displayError("Impossibile aggiungere la carta di credito. Se il problema persiste contattare il servizio clienti");
         }
       });
-      // this._createCreditCard(stripe, formData, card,).then(function (result) {
-      //   if (result.error) {
-      //     return Promise.reject({ "message": { "data": { "arguments": [result.error.message] } } });
-      //   } else {
-      //     console.log(result);
-      //     // _.extend(formData, { "payment_method": result.setupIntent.payment_method });
-      //     // return self._rpc({
-      //     //   route: formData.data_set,
-      //     //   params: formData,
-      //     // });
-      //   }
-      // }
-      // }).then(function (result) {
-      //   // $('input:first', acquirerForm).after(`<input type="hidden" name="pm_id" value="${result.id}">`)
-      //   $checkedRadio.val(result.id);
-      //   self.el.submit();
-      // }).guardedCatch(function (error) {
-      //   if (error.event) {
-      //     error.event.preventDefault();
-      //   }
-      //   self.enableButton(button);
-      //   self._displayError("Impossibile utilizzare la seguente carta di credito/debito");
-      // });
+    },
+
+    /**
+    *
+    * @private
+    * @param {DOMElement} checkedRadio
+    */
+    _createIntentPayment: function ($checkedRadio) {
+      var self = this;
+      var stripe = this.stripe;
+      var button = ev.target;
+      var token = $checkedRadio.val()
+      this.disableButton(button);
+      var acquirerID = this.getAcquirerIdFromRadio($checkedRadio);
+      this._setupIntentMethod(stripe, acquirerID, token).then((result) => {
+        if (result.error) {
+          return Promise.reject({ "message": result.error.message });
+        } else {
+          self.el.submit();
+        }
+      }).guardedCatch((error) => {
+        if (error.event) {
+          error.event.preventDefault();
+        }
+        this.enableButton(button);
+        if (error.message) {
+          this._displayError("Impossibile aggiungere la carta di credito. Se il problema persiste contattare il servizio clienti");
+        }
+      });
     },
 
     /**
@@ -291,8 +292,7 @@ odoo.define('payment_netaddiction_stripe.payment_form', function (require) {
       ev.preventDefault();
       var $checkedRadio = this.$('input[name="pm_id"][type="radio"]:checked');
       if ($checkedRadio.length === 1 && $checkedRadio.data('provider') === 'netaddiction_stripe') {
-        // return this._getOrCreateStripeToken(ev, $checkedRadio);
-        console.log("Pagamento con Stripe");
+        return this._createIntentPayment(ev, $checkedRadio);
       } else {
         return this._super.apply(this, arguments);
       }
@@ -306,7 +306,7 @@ odoo.define('payment_netaddiction_stripe.payment_form', function (require) {
     stripeSaveCard: function (ev) {
       ev.preventDefault();
       var $checkedRadio = this.$('input[name="pm_id"][type="radio"]:checked');
-      this._getOrCreateStripeToken(ev, $checkedRadio);
+      this._createStripeToken(ev, $checkedRadio);
     }
 
   })
