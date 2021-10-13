@@ -175,8 +175,11 @@ odoo.define('payment_netaddiction_stripe.payment_form', function (require) {
      * @param {DOMElement} checkedRadio
      */
     _loadCardView: function ($checkedRadio) {
+      var self = this;
       var $checkedRadio = $checkedRadio
       let acquirer_id = this.getAcquirerIdFromRadio($checkedRadio);
+      var acquirerForm = this.$('#o_payment_add_token_acq_' + acquirer_id);
+    
       this._rpc({
         route: '/payment/netaddiction-stripe/get-payments-token',
         params: { 'acquirer_id': acquirer_id }
@@ -184,10 +187,27 @@ odoo.define('payment_netaddiction_stripe.payment_form', function (require) {
         if (data != null) {
           data.map((card, index) => {
             var cards = $(qweb.render('stripe.cards', card));
-            console.log(card)
             cards.appendTo($('#cards-list'));
             if (card.isDefault === true) {
               $checkedRadio.value = card.id;
+            }
+            else{
+              $(`#card_template_${card.id} .card_default_change`).click(function () {
+                self._rpc({
+                  route: '/payment/netaddiction-stripe/set-default-payment',
+                  params: {'acquirer_id': acquirer_id, 'token': card.id}
+                }).then(function (data) {
+                  $(acquirerForm).slideUp(() => {
+                    self._unloadCardView()
+                    self._unbindStripeCard();
+                    setTimeout(() => {
+                      self._bindStripeCard($checkedRadio);
+                      self._loadCardView($checkedRadio)
+                      $(acquirerForm).slideDown("slow")
+                    }, 1000);
+                  });
+                });
+              });
             }
             $(`#card_template_${card.id}`).click(function () {
               $('#cards-list > .card_stripe').each(function () {

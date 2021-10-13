@@ -43,6 +43,12 @@
                     </tbody>
                 </table>
             </div>
+            <t t-if="isDefault">
+                <a class="w-100 mx-auto p-3 text-center d-block"><i class="fa fa-check-square-o mr-1"/>Default</a>
+            </t>
+            <t t-else="">
+                <a href="javascript:void(0);" class="card_default_change w-100 mx-auto p-3 text-center d-block"><i class="fa fa-square-o mr-1"/>Default</a>
+            </t>
         </div>
     </t>
 </templates>
