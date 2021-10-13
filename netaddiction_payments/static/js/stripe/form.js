@@ -18,6 +18,10 @@ odoo.define('payment_netaddiction_stripe.payment_form', function (require) {
     }),
     willStart: function () {
       return this._super.apply(this, arguments).then(function () {
+        $('.card-body label span.payment_option_name').each(function () {
+          $(this).parent().parent().css('display', 'none');
+        })
+
         return ajax.loadJS("https://js.stripe.com/v3/");
       })
     },
@@ -116,10 +120,9 @@ odoo.define('payment_netaddiction_stripe.payment_form', function (require) {
     * @param {DOMElement} checkedRadio
     */
     _createIntentPayment: function (ev, $checkedRadio) {
-      console.log(ev)
       var self = this;
       var stripe = this.stripe;
-      var button = ev.target;
+      var button = $(ev.target).find('*[type="submit"]')[0];
       var token = $checkedRadio.val()
       this.disableButton(button);
       var acquirerID = this.getAcquirerIdFromRadio($checkedRadio);
@@ -151,7 +154,7 @@ odoo.define('payment_netaddiction_stripe.payment_form', function (require) {
       $(acquirerForm).hide().removeClass("d-none").slideDown();
       var inputsForm = $('input', acquirerForm);
       var formData = this.getFormData(inputsForm);
-      var stripe = Stripe(formData.stripe_key);
+      var stripe = Stripe(formData.stripe_key, { locale: 'it' });
       var element = stripe.elements();
       var card = element.create('card', { hidePostalCode: true });
       card.mount('#card-element');
@@ -179,7 +182,7 @@ odoo.define('payment_netaddiction_stripe.payment_form', function (require) {
       var $checkedRadio = $checkedRadio
       let acquirer_id = this.getAcquirerIdFromRadio($checkedRadio);
       var acquirerForm = this.$('#o_payment_add_token_acq_' + acquirer_id);
-    
+
       this._rpc({
         route: '/payment/netaddiction-stripe/get-payments-token',
         params: { 'acquirer_id': acquirer_id }
@@ -191,11 +194,11 @@ odoo.define('payment_netaddiction_stripe.payment_form', function (require) {
             if (card.isDefault === true) {
               $checkedRadio.value = card.id;
             }
-            else{
+            else {
               $(`#card_template_${card.id} .card_default_change`).click(function () {
                 self._rpc({
                   route: '/payment/netaddiction-stripe/set-default-payment',
-                  params: {'acquirer_id': acquirer_id, 'token': card.id}
+                  params: { 'acquirer_id': acquirer_id, 'token': card.id }
                 }).then(function (data) {
                   $(acquirerForm).slideUp(() => {
                     self._unloadCardView()

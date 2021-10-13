@@ -180,18 +180,24 @@ class StripePaymentTransaction(models.Model):
 
     def _ns_create_payment_intent(self):
         stripe.api_key = self.acquirer_id.sudo().netaddiction_stripe_sk
-        res = stripe.PaymentIntent.create(
-            amount=int(self.amount if self.currency_id.name in INT_CURRENCIES else float_round(self.amount * 100, 2)),
-            currency="eur",
-            off_session=True,
-            confirm=True,
-            payment_method=self.payment_token_id.netaddiction_stripe_payment_method,
-            customer=self.payment_token_id.acquirer_ref,
-            description=f"Ordine numero: {self.reference}",
-        )
-        if res.get("charges") and res.get("charges").get("total_count"):
-            res = res.get("charges").get("data")[0]
-        return res
+        try:
+            res = stripe.PaymentIntent.create(
+                amount=int(
+                    self.amount if self.currency_id.name in INT_CURRENCIES else float_round(self.amount * 100, 2)
+                ),
+                currency="eur",
+                off_session=True,
+                confirm=True,
+                payment_method=self.payment_token_id.netaddiction_stripe_payment_method,
+                customer=self.payment_token_id.acquirer_ref,
+                description=f"Ordine numero: {self.reference}",
+            )
+        except stripe.error.CardError as e:
+            return {"status": e.code, "failure_message": e.user_message}
+        else:
+            if res.get("charges") and res.get("charges").get("total_count"):
+                res = res.get("charges").get("data")[0]
+            return res
 
     def _ns_validate_response(self, response):
         self.ensure_one()
@@ -207,12 +213,12 @@ class StripePaymentTransaction(models.Model):
             self.write(vals)
             self._set_transaction_done()
             return True
-        if status in ("requires_action"):
+        if status == "requires_action":
             self.write(vals)
             self._set_transaction_error("Richiesta azione manuale")
             return False
         else:
-            error = response.get("failure_message") or response.get("error", {}).get("message")
+            error = response.get("failure_message")
             self._set_transaction_error(error)
             return False
 

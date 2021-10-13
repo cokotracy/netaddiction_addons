@@ -111,11 +111,12 @@ class AutoPreparation(models.TransientModel):
                     res = tx.ns_do_transaction()
                     if not res:
                         error_stock.append(pick.id)
-                        note.append("Stripe: Impossibile completare il pagamento")
+                        note.append(
+                            "Stripe: Impossibile completare il pagamento, per maggiori info, controllare nelle note della transazione."
+                        )
             else:
                 error_stock.append(pick.id)
                 note.append("Impossibile recuperare il pagamento dell'ordine")
-                    
             if note:
                 mail_obj.create({
                     'subject': 'Errori autopreparazione',
