@@ -26,7 +26,7 @@
                     <input class="position-absolute" style="top:50%; left:10px; transform:translateY(-50%)" type="radio" t-attf-id="card_{{id}}" t-attf-value="card_{{id}}" name="stripe_card" checked="checked"/>
                 </t>
                 <t t-else="">
-                    <input class="position-absolute" style="top:50%; left:10px; transform:translateY(-50%)" type="radio" t-attf-id="card_{{id}}" t-attf-value="card_{{id}}" name="stripe_card"/>
+                    <input class="position-absolute" style="pointer-events:none; top:50%; left:10px; transform:translateY(-50%)" type="radio" t-attf-id="card_{{id}}" t-attf-value="card_{{id}}" name="stripe_card"/>
                 </t>
                 <div class="position-absolute" style="background-color:#d8b54c; width:20px; height:15px; top:40%; right:24px; border-radius:3px;"></div>
                 <table>
