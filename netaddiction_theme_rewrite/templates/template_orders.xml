@@ -152,10 +152,11 @@
                         </td>
                         <td t-if="i.carrier_tracking_ref" class="small d-lg-inline-block p-2 col text-right">
                             <t t-set="multiple_carrier_tracking" t-value="i.get_multiple_carrier_tracking()"/>
+                            <t t-set="brt" t-value="request.env.ref('netaddiction_warehouse.carrier_brt').sudo().id"/>
                             <t t-if="multiple_carrier_tracking">
                                 <t t-foreach="multiple_carrier_tracking" t-as="line">
                                     <t t-if="line.carrier_tracking_ref">
-                                        <t t-if="line.carrier_tracking_ref[:2] == 'CC'">
+                                        <t t-if="line.carrier_id.id == brt">
                                             <a class="order-details-btn m-1" t-attf-href="https://as777.brt.it/vas/sped_det_show.hsm?referer=sped_numspe_par.htm&amp;ChiSono={{line.carrier_tracking_ref}}" target="_blank">
                                                 Traccia pacco
                                             </a>
@@ -170,7 +171,7 @@
                             </t>
                             <t t-else="">
                                 <t t-if="i.carrier_tracking_ref">
-                                    <t t-if="i.carrier_tracking_ref[:2] == 'CC'">
+                                    <t t-if="i.carrier_id.id == brt">
                                         <a class="order-details-btn" t-attf-href="https://as777.brt.it/vas/sped_det_show.hsm?referer=sped_numspe_par.htm&amp;ChiSono={{i.carrier_tracking_ref}}" target="_blank">
                                             Traccia pacco
                                         </a>
