@@ -21,3 +21,8 @@ class DeliveryCarrier(models.Model):
     manifest_ftp_password = fields.Char()
 
     manifest_ftp_path = fields.Char()
+
+    cash_on_delivery_payment_method_id = fields.Many2one(
+        'payment.acquirer',
+        string='Sistema di Pagamento Contrassegno',
+    )

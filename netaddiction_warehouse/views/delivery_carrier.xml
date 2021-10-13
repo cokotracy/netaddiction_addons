@@ -17,6 +17,9 @@
                         <field name="manifest_ftp_password" string="Password"/>
                         <field name="manifest_ftp_path" string="Path"/>
                     </group>
+                    <group name="payments" string="Payments">
+                        <field name="cash_on_delivery_payment_method_id"/>
+                    </group>
                 </page>
             </xpath>
         </field>

@@ -246,19 +246,46 @@ class NetaddictionManifest(models.Model):
             except Exception as e:
                 raise ValidationError(str(e))
 
+    @staticmethod
+    def _get_delivery_amount(delivery, payment=None):
+        amount = 0.0
+        if delivery:
+            amount += sum([
+                move.sale_line_id.price_total
+                for move
+                in delivery.move_ids_without_package
+                ])
+        if payment:
+            amount += payment.delivery_fees
+        return round(amount, 2)
+
     def create_manifest(self):
         self.ensure_one()
-        brt = self.env.ref('netaddiction_warehouse.carrier_brt').id
-        if brt == self.carrier_id.id:
+        brt = self.env.ref('netaddiction_warehouse.carrier_brt')
+        sda = self.env.ref('netaddiction_warehouse.carrier_sda')
+        if not self.carrier_id:
+            raise ValidationError("Nessun corriere definito")
+        elif self.carrier_id == brt:
             self.create_manifest_bartolini()
-        else:
+        elif self.carrier_id == sda:
             self.create_manifest_sda()
+        else:
+            raise ValidationError(
+                "Corriere sconosciuto. Impossibile creare il manifest")
 
     def create_manifest_sda(self):
         self.ensure_one()
 
         params = self.env['ir.config_parameter'].sudo()
         payment_contrassegno = int(params.get_param('contrassegno_id') or 0)
+        carrier_contrassegno = \
+            self.carrier_id.cash_on_delivery_payment_method_id
+
+        if not carrier_contrassegno:
+            raise ValidationError(
+                "Definire il `Sistema di Pagamento Contrassegno` "
+                "per il corriere"
+            )
 
         if not payment_contrassegno:
             raise ValidationError(
@@ -429,17 +456,18 @@ class NetaddictionManifest(models.Model):
                 riga += ' ' * 40
                 riga += 'EU'
 
-                if payment:
-                    if payment.id == payment_contrassegno:
-                        t = str(round(delivery.sale_id.amount_total, 2))
-                        split = t.split('.')
-                        c = 2 - len(split[1])
-                        total = split[0] + '.' + split[1] + '0' * c
-                        total = total.zfill(9)
-                        riga += total
-                        riga += 'CON'
-                    else:
-                        riga += ' ' * 12
+                if payment and payment.id == payment_contrassegno:
+                    amount = self._get_delivery_amount(
+                        delivery,
+                        carrier_contrassegno,
+                        )
+                    t = str(amount)
+                    split = t.split('.')
+                    c = 2 - len(split[1])
+                    total = split[0] + '.' + split[1] + '0' * c
+                    total = total.zfill(9)
+                    riga += total
+                    riga += 'CON'
                 else:
                     riga += ' ' * 12
 
@@ -536,6 +564,14 @@ class NetaddictionManifest(models.Model):
         prefix1 = params.get_param('bartolini_prefix_file1')
         prefix2 = params.get_param('bartolini_prefix_file2')
         payment_contrassegno = int(params.get_param('contrassegno_id') or 0)
+        carrier_contrassegno = \
+            self.carrier_id.cash_on_delivery_payment_method_id
+
+        if not carrier_contrassegno:
+            raise ValidationError(
+                "Definire il `Sistema di Pagamento Contrassegno` "
+                "per il corriere"
+            )
 
         if not (prefix1 and prefix2 and payment_contrassegno > 0):
             raise ValidationError(
@@ -662,24 +698,23 @@ class NetaddictionManifest(models.Model):
                 file1.write(" 00,000")  # volume
                 file1.write(" 0000000000,000")  # quantità da fatturare
 
-                if payment:
-                    if payment.id == payment_contrassegno:
-                        file1.write(" ")
-                        t = str(round(delivery.sale_id.amount_total, 2))
-                        split = t.split('.')
-                        c = 3 - len(split[1])
+                if payment and payment.id == payment_contrassegno:
+                    file1.write(" ")
+                    amount = self._get_delivery_amount(
+                        delivery,
+                        carrier_contrassegno,
+                        )
+                    t = str(amount)
+                    split = t.split('.')
+                    c = 3 - len(split[1])
 
-                        total = split[0] + ',' + split[1] + '0' * c
-                        count = 14 - len(total)
-                        zeros = '0' * count
-                        file1.write(zeros)
-                        file1.write(total)  # importo contrassegno
-                        file1.write("  ")  # tipo incasso contrassegno
-                        file1.write("EUR")  # currency
-                    else:
-                        file1.write(" 0000000000,000")  # importo
-                        file1.write("  ")  # tipo incasso contrassegno
-                        file1.write("   ")  # divisa contrassegno
+                    total = split[0] + ',' + split[1] + '0' * c
+                    count = 14 - len(total)
+                    zeros = '0' * count
+                    file1.write(zeros)
+                    file1.write(total)  # importo contrassegno
+                    file1.write("  ")  # tipo incasso contrassegno
+                    file1.write("EUR")  # currency
                 else:
                     file1.write(" 0000000000,000")  # importo
                     file1.write("  ")  # tipo incasso contrassegno
