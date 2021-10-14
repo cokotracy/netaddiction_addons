@@ -12,7 +12,7 @@
     "author": "Netaddiction",
     "website": "http://www.netaddiction.it",
     "category": "Technical Settings",
-    "version": "14.0.1.2.0",
+    "version": "14.0.2.2.0",
     "depends": [
         "account",
         "product",
