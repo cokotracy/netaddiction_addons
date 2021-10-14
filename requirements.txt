@@ -12,3 +12,4 @@ pysftp
 unicodecsv
 unidecode
 workalendar
+prettytable

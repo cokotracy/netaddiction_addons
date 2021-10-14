@@ -7,6 +7,7 @@ import base64
 import io
 
 from ftplib import FTP
+from prettytable import PrettyTable
 
 from odoo import api, fields, models
 from odoo.exceptions import ValidationError
@@ -173,6 +174,11 @@ class NetaddictionManifest(models.Model):
     )
 
     manifest_file1_name = fields.Char()
+
+    manifest_file1_check = fields.Html(
+        compute='compute_manifest_file1_check',
+        store=True,
+    )
 
     manifest_file2 = fields.Binary(
         attachment=True,
@@ -824,3 +830,82 @@ class NetaddictionManifest(models.Model):
             'manifest_file2_name': f'manifest-{self.id}-2.txt',
             })
         file2.close()
+
+    @api.depends('manifest_file1', 'carrier_id')
+    def compute_manifest_file1_check(self):
+        brt = self.env.ref('netaddiction_warehouse.carrier_brt')
+        sda = self.env.ref('netaddiction_warehouse.carrier_sda')
+        for manifest in self:
+            info_table = PrettyTable()
+            info_table.field_names = [
+                "Riga", "Totale", "Contrassegno", "Cliente"]
+            info_table.align["Riga"] = "r"
+            info_table.align["Totale"] = "r"
+            info_table.align["Contrassegno"] = "r"
+            info_table.align["Cliente"] = "l"
+            info_table.float_format["Totale"] = ".2"
+            info_table.float_format["Contrassegno"] = ".2"
+            info_table.format = True
+            carrier_contrassegno = \
+            self.carrier_id.cash_on_delivery_payment_method_id
+            contrassegno_fees = carrier_contrassegno.delivery_fees
+            check_text = ''
+            if manifest.manifest_file1 and manifest.carrier_id:
+                if manifest.carrier_id == brt:
+                    data_function = manifest._check_manifest_data_bartolini
+                elif manifest.carrier_id == sda:
+                    data_function = manifest._check_manifest_data_sda
+                try:
+                    file_content = io.BytesIO(
+                        base64.b64decode(self.manifest_file1)).read().decode()
+                    rows = file_content.split('\n')
+                    amount_total = 0.0
+                    cod_amount_total = 0.0
+                    # lines = []
+                    for count, row in enumerate(rows, start=1):
+                        if not row:
+                            continue
+                        data = data_function(row)
+                        line_amount = data['line_amount']
+                        amount_total += line_amount
+                        if line_amount:
+                            cod_amount_total += contrassegno_fees
+                        info_table.add_row([
+                            count, line_amount, contrassegno_fees,
+                            data['customer'],
+                            ])
+                    info_table.add_rows([
+                        ['-', '', '', ''],
+                        ['Tot.', amount_total, cod_amount_total, ''],
+                    ])
+                    check_text = info_table.get_html_string(
+                        attributes={
+                            'border': 1,
+                            'style':
+                            'border-width: 1px; border-collapse: collapse;'
+                            })
+                except Exception as error:
+                    check_text = f'**Error**\n\n{error}'
+            manifest.manifest_file1_check = check_text
+
+    def _check_manifest_data_bartolini(self, row):
+        line_amount = round(
+            float(
+                row[274:288].lstrip('0').replace(',', '.')),
+            2)
+        customer = row[40:110].strip()
+        return {
+            'line_amount': line_amount,
+            'customer': customer,
+        }
+
+    def _check_manifest_data_sda(self, row):
+        line_amount = round(
+            float(
+                row[501:510].lstrip('0').replace(',', '.')),
+            2)
+        customer = row[275:315].strip()
+        return {
+            'line_amount': line_amount,
+            'customer': customer,
+        }
