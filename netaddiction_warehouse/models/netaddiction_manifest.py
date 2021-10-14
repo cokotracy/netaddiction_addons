@@ -261,6 +261,12 @@ class NetaddictionManifest(models.Model):
                 for move
                 in delivery.move_ids_without_package
                 ])
+            shipping_cost = 0
+            shipping_line = delivery.sale_id.order_line.filtered(
+                lambda l: l.is_delivery).sorted(key=lambda l: l.price_total)
+            if shipping_line:
+                shipping_cost = shipping_line[-1].price_total
+            amount += shipping_cost
         if payment:
             amount += payment.delivery_fees
         return round(amount, 2)
