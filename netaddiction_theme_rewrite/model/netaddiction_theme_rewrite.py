@@ -81,7 +81,25 @@ class WebsiteCustom(Website):
         }
 
 
-class SiteCategories(WebsiteSale):
+class WebsiteSale(WebsiteSale):
+    @route(['/shop/payment'], type='http', auth="public", website=True)
+    def payment(self, **post):
+        prod_id = request.params.get("buynow")
+
+        # if prod_id:
+        #     order = request.env['sale.order'].create({
+        #         'partner_id': self.partner_id.id,
+        #         'website_id': self.website.id,
+        #     })
+
+        #     request.env['sale.order.line'].sudo().create({
+        #         "order_id":order.id,
+        #         "product_id":prod_id,
+        #         "product_uom_qty":1,
+        #     })
+
+        return super(WebsiteSale, self).payment(**post)
+
     @route(
         [
             """/shop""",

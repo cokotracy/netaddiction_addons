@@ -1189,14 +1189,12 @@
                         <span class="fa fa-shopping-cart"/>
                         Aggiungi al carrello
                     </a>
-                    <t t-if="buy_now_show">
-                        <a role="button" id="buy_now"
-                            class="btn btn-outline-primary btn-md mt16 d-block d-sm-inline-block te_theme_button"
-                            href="#" style="font-size:12px;">
-                            <span class="fa fa-bolt"/>
-                            Acquista ora
-                        </a>
-                    </t>
+                    <a role="button"
+                        class="btn btn-outline-primary btn-md mt16 d-block d-sm-inline-block te_theme_button"
+                        href="/shop/payment?buynow=12345" style="font-size:12px;">
+                        <span class="fa fa-bolt"/>
+                        Acquista ora
+                    </a>
                 </div>
             </div>
         </xpath>
