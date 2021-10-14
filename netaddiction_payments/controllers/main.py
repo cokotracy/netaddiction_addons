@@ -36,7 +36,7 @@ class NetaddictionStripeSuper(WebsiteSale):
             return request.redirect("/shop/?error=token_not_found")
 
         # Create transaction
-        vals = {"payment_token_id": pm_id, "return_url": "/shop/paymento/validato"}
+        vals = {"payment_token_id": pm_id, "return_url": "/shop/payment/validate"}
 
         tx = order._create_payment_transaction(vals)
         PaymentProcessing.add_payment_transaction(tx)
