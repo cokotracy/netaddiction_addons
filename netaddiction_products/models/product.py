@@ -50,6 +50,11 @@ class ProductTemplate(models.Model):
         string="Approssimazione Data",
     )
 
+    variant_seller_ids = fields.One2many(
+        'product.supplierinfo',
+        domain=[('product_active', '=', True)]
+    )
+
     def write(self, values):
         res = super().write(values)
         if 'sale_ok' in values.keys():
@@ -228,13 +233,13 @@ class ProductProduct(models.Model):
         compute='_compute_product_coupon_programs_count',
     )
 
-    seller_ids = fields.Many2many(
+    seller_ids = fields.One2many(
         'product.supplierinfo',
         compute='_compute_seller_ids',
         search='_search_seller_ids',
         )
 
-    variant_seller_ids = fields.Many2many(
+    variant_seller_ids = fields.One2many(
         'product.supplierinfo',
         compute='_compute_seller_ids',
         search='_search_seller_ids',
@@ -247,21 +252,41 @@ class ProductProduct(models.Model):
             product.default_code = str(product.id).rjust(7, '0')
         return res
 
+    def manage_product_seller_ids(self):
+        self.ensure_one()
+        action = self.env.ref(
+            'netaddiction_products.manage_product_seller_action').read()[0]
+        ctx = self.env.context.copy()
+        ctx['na_product_id'] = self.id
+        ctx['na_template_id'] = self.product_tmpl_id.id
+        action['context'] = ctx
+        return action
+
+    def _get_product_seller_ids(self):
+        self.ensure_one()
+        sellers = self.product_tmpl_id.seller_ids
+        return sellers.filtered(
+            lambda s: not s.product_id or s.product_id == self)
+
     def _compute_seller_ids(self):
         for product in self:
-            sellers = product.product_tmpl_id.seller_ids
-            product_sellers = sellers.filtered(
-                lambda s: not s.product_id or s.product_id == product)
+            product_sellers = product._get_product_seller_ids()
             product.seller_ids = product_sellers
             product.variant_seller_ids = product_sellers
 
     def _search_seller_ids(self, operator, value):
         filter_ids = []
-        if value and value._result:
-            supplier_info = self.env['product.supplierinfo'].browse(
-                value._result)
-            filter_ids.extend(supplier_info.mapped('product_id').ids)
-        return [('id', 'in', filter_ids)]
+        if value:
+            # When value come from the search in backend interface
+            if hasattr(value, '_result'):
+                supplier_info = self.env['product.supplierinfo'].browse(
+                    value._result)
+                filter_ids.extend(supplier_info.mapped('product_id').ids)
+            # When value come from the calls from code
+            elif isinstance(value, list):
+                filter_ids.extend(value)
+        domain = [('id', 'in', filter_ids)]
+        return domain
 
     def _get_inventory_medium_value(self):
         stock = self.env.ref('stock.stock_location_stock').id
@@ -569,6 +594,11 @@ class SupplierInfo(models.Model):
     detax_margin = fields.Float(
         string="Margine iva esclusa",
         compute="_calculate_margin_info"
+    )
+
+    product_active = fields.Boolean(
+        related='product_id.active',
+        string='Product Active',
     )
 
     def _calculate_margin_info(self):

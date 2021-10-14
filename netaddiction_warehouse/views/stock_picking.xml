@@ -192,6 +192,9 @@
                    position="after">
                 <field name="batch_id"/>
             </xpath>
+	    <xpath expr="//field[@name='carrier_tracking_ref']" position="before">
+                <button name="generate_barcode" attrs="{'invisible': [('carrier_tracking_ref', '!=', False)]}" string="Genera Rif.Monitoraggio Vettore" type="object" groups="base.group_user"/>
+            </xpath>
         </field>
     </record>
 

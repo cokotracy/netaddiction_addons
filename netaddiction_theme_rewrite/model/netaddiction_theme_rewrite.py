@@ -7,6 +7,7 @@ from werkzeug.exceptions import Forbidden, NotFound
 from datetime import date, timedelta
 from odoo.http import request, route, Controller
 from odoo import models, fields, tools, http
+from odoo.exceptions import AccessError
 from odoo.addons.odoo_website_wallet.controllers.main import WebsiteWallet as Wallet
 from odoo.addons.website_sale.controllers.main import WebsiteSale, TableCompute
 from odoo.exceptions import ValidationError
@@ -847,3 +848,21 @@ class CustomCustomerPortal(CustomerPortal):
             template="netaddiction_theme_rewrite.custom_portal_my_orders", qcontext=response.qcontext
         )
         return response.render()
+
+    @route(["/my/orders/<int:order_id>"], type="http", auth="public", website=True)
+    def portal_order_page(self, order_id, report_type=None, access_token=None, message=False, download=False, **kw):
+        try:
+            self._check_user_permission_order(order_id)
+        except (AccessError):
+            return request.redirect("/my")
+        response = super(CustomCustomerPortal, self).portal_order_page(order_id=order_id)
+        return response.render()
+
+    def _check_user_permission_order(self, order_id):
+        if request.env.user.has_group("base.group_user"):
+            return
+        if not request.session.uid:
+            raise AccessError("Non hai i permessi per visualizzare questa pagina")
+        order = request.env["sale.order"].browse([order_id])
+        if not order.with_user(request.session.uid).exists():
+            raise AccessError("Non hai i permessi per visualizzare questa pagina")
