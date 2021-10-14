@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <template id="netaddiction_stripe_frontend">
+            <input type="hidden" name="data_set" t-att-data-action-url="tx_url" data-remove-me=""/>
+            <input type='hidden' name='session_id' t-att-value='session_id'/>
+            <input type="hidden" name="stripe_key" t-att-value="acquirer.netaddiction_stripe_pk"/>
+            <script type="text/javascript">
+                odoo.define(function (require) {
+                    let ajax = require('web.ajax');
+                    ajax.loadJS("https://js.stripe.com/v3/");
+                });
+            </script>
+        </template>
+
+        <template id="netaddiction_stripe_form">
+            <input type="hidden" name="data_set" value="/payment/netaddiction-stripe/create-payment-token"/>
+            <input type="hidden" name="acquirer_id" t-att-value="id"/>
+            <input type="hidden" name="stripe_key" t-att-value="acq.sudo().netaddiction_stripe_pk"/>
+            <input type="hidden" name="currency_id" t-att-value="currency_id"/>
+            <input t-if="return_url" type="hidden" name="return_url" t-att-value="return_url"/>
+            <input t-if="partner_id" type="hidden" name="partner_id" t-att-value="partner_id"/>
+            <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+            <div id="card-wrapper">
+                <div class="d-flex flex-wrap px-3" id="cards-list">
+                    
+                </div>
+            </div>
+            <div class="d-block text-center mt-3 p-2" id="btn-add-card">
+                <i><small style="color:#636262;">- Oppure -</small></i>
+            </div>
+            <div id="payment-form" class="mt-3 mb-3 py-3 px-0 mx-auto col-12 col-md-8" style="background-color:#ffffff; border-radius:6px; box-shadow:0 4px 8px 0 rgb(156 156 156 / 10%), 0 6px 20px 0 rgb(156 156 156 / 10%);">
+                <div id="card-element" class="m-3"/>
+                <div id="card-errors" class="m-3 text-danger"/>
+                <hr/>
+                <div class="d-block text-center">
+                    <a id="stripeSaveCard" class="btn btn-primary">Salva Carta</a>
+                </div>
+            </div>
+        </template>
+
+        <template id="assets_frontend" inherit_id="web.assets_frontend">
+            <xpath expr="link[last()]" position="after">
+                <link rel="stylesheet" type="text/css" href="/netaddiction_payments/static/css/stripe.css"/>
+            </xpath>
+            <xpath expr="script[last()]" position="after">
+                <script type="text/javascript" src="/netaddiction_payments/static/js/stripe/form.js"></script>
+            </xpath>
+        </template>
+    </data>
+</odoo>

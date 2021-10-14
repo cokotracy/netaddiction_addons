@@ -34,7 +34,7 @@ class WebsiteCustom(Website):
                             "order_limit": prod.qty_single_order,
                             "product_name": prod.name,
                             "qty_available_now": prod.qty_available_now,
-                            "qty_sum_suppliers": prod.qty_sum_suppliers,
+                            "qty_sum_suppliers": prod.sudo().qty_sum_suppliers,
                             "out_date": prod.out_date,
                             "sale_ok": prod.sale_ok,
                         }
@@ -52,7 +52,7 @@ class WebsiteCustom(Website):
                             "order_limit_total": prod.qty_limit,
                             "product_name": prod.name,
                             "qty_available_now": prod.qty_available_now,
-                            "qty_sum_suppliers": prod.qty_sum_suppliers,
+                            "qty_sum_suppliers": prod.sudo().qty_sum_suppliers,
                             "out_date": prod.out_date,
                             "sale_ok": prod.sale_ok,
                         }
@@ -64,6 +64,9 @@ class WebsiteCustom(Website):
                         or prod.sudo().inventory_availability != "never"
                     ):
                         return {"image": prod.image_512, "out_of_stock": True, "product_name": prod.name}
+
+                if prod.sale_ok == False:
+                    return {"image": prod.image_512, "out_of_stock": True, "product_name": prod.name}
 
     @route(["/get_product_from_id"], type="json", auth="public", methods=["POST"], website=True, csrf=False)
     def get_product_from_id(self, product_id=None):
@@ -95,6 +98,7 @@ class SiteCategories(WebsiteSale):
         add_qty = int(post.get("add_qty", 1))
 
         status_filter = request.params.get("status-filter")
+        search = request.params.get("search")
         tag_filter = request.params.get("tag-filter")
 
         Category = request.env["product.public.category"]
@@ -181,6 +185,7 @@ class SiteCategories(WebsiteSale):
         attrib_set = {v[1] for v in attrib_values}
 
         domain = self._get_search_domain(search, category, attrib_values)
+        domain = expression.AND([[("type", "!=", "service")], domain])
 
         keep = QueryURL(
             "/shop", category=category and int(category), search=search, attrib=attrib_list, order=post.get("order")
@@ -201,20 +206,21 @@ class SiteCategories(WebsiteSale):
         if tag_filter:
             tag_filter = tag_filter.split(",")
 
-        if request.website.isB2B and not status_filter:
-            domain = expression.AND([[("product_variant_ids.qty_available_now", ">", 0)], domain])
-        elif not status_filter:
-            new_dom = [
-                "|",
-                ("product_variant_ids.out_date", ">", date.today()),
-                ("product_variant_ids.qty_available_now", ">", 0),
-            ]
-            domain = expression.AND([new_dom, domain])
+        if not search:
+            if request.website.isB2B and not status_filter:
+                domain = expression.AND([[("product_variant_ids.qty_available_now", ">", 0)], domain])
+            elif not status_filter:
+                new_dom = [
+                    "|",
+                    ("product_variant_ids.out_date", ">", date.today()),
+                    ("product_variant_ids.qty_available_now", ">", 0),
+                ]
+                domain = expression.AND([new_dom, domain])
 
         if status_filter:
             status_filter = status_filter.split(",")
             domain = self._filters_pre_products(filters=status_filter, domain=domain)
-        search_product = Product.search(domain, order=self._get_search_order(post))
+        search_product = Product.search(domain, order=self._custom_get_search_order(post))
         if status_filter:
             search_product = self._filters_post_products(filters=status_filter, products=search_product)
 
@@ -280,24 +286,46 @@ class SiteCategories(WebsiteSale):
             values["main_object"] = category
         return request.render("website_sale.products", values)
 
+    def _custom_get_search_order(self, post):
+        # OrderBy will be parsed in orm and so no direct sql injection
+        # id is added to be sure that order is a unique sort key
+        order = post.get("order") or "create_date desc"
+        return "is_published desc, %s" % order
+
     def _filters_pre_products(self, filters, domain):
-        for filter in filters:
-            if filter == "stock":
-                domain = expression.AND([[("product_variant_ids.qty_available_now", ">", 0)], domain])
+        if len(filters) == 1:
+            for filter in filters:
+                if filter == "stock":
+                    domain = expression.AND([[("product_variant_ids.qty_available_now", ">", 0)], domain])
 
-            if filter == "preorder":
-                domain = expression.AND([[("product_variant_ids.out_date", ">", date.today())], domain])
+                if filter == "preorder":
+                    domain = expression.AND([[("product_variant_ids.out_date", ">", date.today())], domain])
 
-            if filter == "new":
-                domain = expression.AND([[("create_date", ">", (date.today() - timedelta(days=20)))], domain])
+                if filter == "new":
+                    domain = expression.AND([[("create_date", ">", (date.today() - timedelta(days=20)))], domain])
+        else:
+            if len(filters) > 1:
+                new_domain = ["|"]
+                for filter in filters:
+                    if filter == "stock":
+                        new_domain.append(("product_variant_ids.qty_available_now", ">", 0))
+
+                    if filter == "preorder":
+                        new_domain.append(("product_variant_ids.out_date", ">", date.today()))
+
+                    if filter == "new":
+                        new_domain.append(("create_date", ">", (date.today() - timedelta(days=20))))
+
+                domain = expression.AND([new_domain, domain])
+
         return domain
 
     def _filters_post_products(self, filters, products):
         for filter in filters:
             if filter == "order":
-                products = products.filtered_domain([("product_variant_ids.qty_sum_suppliers", ">", 0)])
+                products = products.sudo().filtered_domain([("product_variant_ids.qty_sum_suppliers", ">", 0)])
             if filter == "unavailable":
-                products = products.filtered_domain(
+                products = products.sudo().filtered_domain(
                     [
                         ("product_variant_ids.qty_sum_suppliers", "<=", 0),
                         ("product_variant_ids.qty_available_now", "<=", 0),
