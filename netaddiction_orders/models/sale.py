@@ -81,6 +81,10 @@ class SaleOrder(models.Model):
         store=True,
     )
 
+    date_done = fields.Datetime(
+        string="Data messo in completato",
+        )
+
     def write(self, values):
         # When a note is set on the order (f.e. from the ecommerce)
         # the order pass to state problem to highlight that it need attention
@@ -156,3 +160,8 @@ class SaleOrder(models.Model):
                 template.send_mail(
                     sale.id, force_send=False, raise_exception=True)
         return super().action_cancel()
+
+    def action_done(self):
+        res = super().action_done()
+        self.write({'date_done': fields.Datetime.now()})
+        return res
