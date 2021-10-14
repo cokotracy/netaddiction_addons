@@ -25,7 +25,7 @@
                             <div style="background-color:#ededed; border-radius:4px 4px 0 0;" class="py-2 px-3">
                                 <div class="d-flex">
                                     <div class="w-50"><small class="mr-3">Numero ordine #</small> <t class="text-primary" t-esc="order.name"/></div>
-                                    <div class="w-50 text-right"><a class="order-details-btn" t-att-href="order.get_portal_url()">Dettagli</a></div>
+                                    <div class="w-50 text-right"><a class="order-details-btn" t-attf-href="/my/orders/{{order.id}}">Dettagli</a></div>
                                 </div>
                             </div>
                             <div class="p-3 border" style="border-radius:0 0 4px 4px; box-shadow:0 4px 8px 0 rgb(156 156 156 / 10%), 0 6px 20px 0 rgb(156 156 156 / 10%)">

@@ -150,36 +150,39 @@
                             <span t-if="i.state == 'done'" class="small badge badge-success orders_label_text_align" style="border-radius:3px;"><i class="fa fa-fw fa-truck"/> <b>Spedito</b></span>
                             <span t-if="i.state == 'sale'" class="small badge badge-success orders_label_text_align" style="border-radius:3px;"><i class="fa fa-fw fa-check"/> <b>Confermato</b></span>
                         </td>
+                    
                         <td t-if="i.carrier_tracking_ref" class="small d-lg-inline-block p-2 col text-right">
-                            <t t-set="multiple_carrier_tracking" t-value="i.get_multiple_carrier_tracking()"/>
-                            <t t-set="brt" t-value="request.env.ref('netaddiction_warehouse.carrier_brt').sudo().id"/>
-                            <t t-if="multiple_carrier_tracking">
-                                <t t-foreach="multiple_carrier_tracking" t-as="line">
-                                    <t t-if="line.carrier_tracking_ref">
-                                        <t t-if="line.carrier_id.id == brt">
-                                            <a class="order-details-btn m-1" t-attf-href="https://as777.brt.it/vas/sped_det_show.hsm?referer=sped_numspe_par.htm&amp;ChiSono={{line.carrier_tracking_ref}}" target="_blank">
+                            <t t-if="sale_order.sudo().is_in_a_pickup">
+                                <t t-set="multiple_carrier_tracking" t-value="i.get_multiple_carrier_tracking()"/>
+                                <t t-set="brt" t-value="request.env.ref('netaddiction_warehouse.carrier_brt').sudo().id"/>
+                                <t t-if="multiple_carrier_tracking">
+                                    <t t-foreach="multiple_carrier_tracking" t-as="line">
+                                        <t t-if="line.carrier_tracking_ref">
+                                            <t t-if="line.carrier_id.id == brt">
+                                                <a class="order-details-btn m-1" t-attf-href="https://as777.brt.it/vas/sped_det_show.hsm?referer=sped_numspe_par.htm&amp;ChiSono={{line.carrier_tracking_ref}}" target="_blank">
+                                                    Traccia pacco
+                                                </a>
+                                            </t>
+                                            <t t-else="">
+                                                <a class="order-details-btn m-1" t-attf-href="https://www.mysda.it/SDAServiziEsterniWeb2/faces/SDAElencoSpedizioni.jsp?user=NETA20&amp;idritiro={{lline.carrier_tracking_ref}}" target="_blank">
+                                                    Traccia pacco
+                                                </a>
+                                            </t>
+                                        </t>
+                                    </t>
+                                </t>
+                                <t t-else="">
+                                    <t t-if="i.carrier_tracking_ref">
+                                        <t t-if="i.carrier_id.id == brt">
+                                            <a class="order-details-btn" t-attf-href="https://as777.brt.it/vas/sped_det_show.hsm?referer=sped_numspe_par.htm&amp;ChiSono={{i.carrier_tracking_ref}}" target="_blank">
                                                 Traccia pacco
                                             </a>
                                         </t>
                                         <t t-else="">
-                                            <a class="order-details-btn m-1" t-attf-href="https://www.mysda.it/SDAServiziEsterniWeb2/faces/SDAElencoSpedizioni.jsp?user=NETA20&amp;idritiro={{lline.carrier_tracking_ref}}" target="_blank">
+                                            <a class="order-details-btn" t-attf-href="https://www.mysda.it/SDAServiziEsterniWeb2/faces/SDAElencoSpedizioni.jsp?user=NETA20&amp;idritiro={{i.carrier_tracking_ref}}" target="_blank">
                                                 Traccia pacco
                                             </a>
                                         </t>
-                                    </t>
-                                </t>
-                            </t>
-                            <t t-else="">
-                                <t t-if="i.carrier_tracking_ref">
-                                    <t t-if="i.carrier_id.id == brt">
-                                        <a class="order-details-btn" t-attf-href="https://as777.brt.it/vas/sped_det_show.hsm?referer=sped_numspe_par.htm&amp;ChiSono={{i.carrier_tracking_ref}}" target="_blank">
-                                            Traccia pacco
-                                        </a>
-                                    </t>
-                                    <t t-else="">
-                                        <a class="order-details-btn" t-attf-href="https://www.mysda.it/SDAServiziEsterniWeb2/faces/SDAElencoSpedizioni.jsp?user=NETA20&amp;idritiro={{i.carrier_tracking_ref}}" target="_blank">
-                                            Traccia pacco
-                                        </a>
                                     </t>
                                 </t>
                             </t>
