@@ -12,7 +12,7 @@
 						<t t-esc="success" />
 					</p>
 					<div class="col-12 col-md-6 p-5 mx-auto border mt-4" style="border-radius:5px; background-color:#ffffff; box-shadow:0 4px 8px 0 rgb(156 156 156 / 10%), 0 6px 20px 0 rgb(156 156 156 / 10%);">
-						<t t-if="request.env.user.id == 3">
+						<t t-if="request.env.user.id == request.env.ref('base.public_user').id">
 							<p class="h4 mb-5">
 								Devi essere registrato per poter diventare un Affiliato.
 								Se non sei ancora registrato, puoi effettuare la registrazione qui.
