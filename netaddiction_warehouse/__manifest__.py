@@ -4,9 +4,10 @@
     'author': "NetAddiction",
     'website': "http://www.netaddiction.it",
     'category': 'Warehouse Management',
-    'version': '14.0.1.6.3',
+    'version': '14.0.1.8.0',
     'depends': [
         'base',
+        'advance_website_all_in_one',
         'delivery',
         # 'mrp',
         # 'netaddiction_customer',          TODO: will it be migrated?

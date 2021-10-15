@@ -1,14 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <odoo>
 
-    <record id="netaddiction_view_partner_priority" model="ir.ui.view">
-        <field name="name">res.partner.netaddiction.supplier.priority</field>
+    <record id="netaddiction_view_partner_priority_2" model="ir.ui.view">
+        <field name="name">res.partner.netaddiction.supplier.priority.2</field>
         <field name="model">res.partner</field>
         <field name="inherit_id" ref="base.view_partner_form"/>
         <field name="arch" type="xml">
-            <xpath expr="//page[@name='sales_purchases']/group/group[@name='purchase']" position="inside">
-                <field name="supplier_priority"/>
-                <field name="supplier_delivery_time"/>
+            <xpath expr="//page[@name='sales_purchases']//group[@name='purchase']" position="inside">
+                <field name="supplier_priority"
+                       attrs="{'invisible':[('is_supplier', '=', False)]}" />
+                <field name="supplier_delivery_time"
+                       attrs="{'invisible':[('is_supplier', '=', False)]}" />
             </xpath>
         </field>
     </record>
