@@ -5,8 +5,8 @@ odoo.define('netaddiction_theme_rewrite.VariantMixin', function (require) {
   var ajax = require('web.ajax');
   var core = require('web.core');
   var QWeb = core.qweb;
-  var xml_load = ajax.loadXML('/website_sale_stock/static/src/xml/website_sale_stock_product_availability.xml',QWeb);
-  var xml_load_label = ajax.loadXML('/netaddiction_theme_rewrite/static/src/xml/template_label.xml',QWeb);
+  var xml_load = ajax.loadXML('/website_sale_stock/static/src/xml/website_sale_stock_product_availability.xml', QWeb);
+  var xml_load_label = ajax.loadXML('/netaddiction_theme_rewrite/static/src/xml/template_label.xml', QWeb);
 
   VariantMixin.xmlDependencies = ['/netaddiction_theme_rewrite/static/src/xml/template_label.xml'];
   VariantMixin._onChangeCombinationStock = function (ev, $parent, combination) {
@@ -37,12 +37,8 @@ odoo.define('netaddiction_theme_rewrite.VariantMixin', function (require) {
       },
     }).then(function (data) {
       if (data != null) {
-        console.log('cutom function!!!');
-        $('a#buy_now').each(function (){
-          this.addEventListener("click", function(e){
-            e.preventDefault();
-            document.location.href="/shop/payment?buynow=" + combination.product_id
-          });
+        $('a#buy_now').each(function () {
+          this.dataset.product = combination.product_id
         })
 
         xml_load_label.then(function () {
@@ -70,7 +66,7 @@ odoo.define('netaddiction_theme_rewrite.VariantMixin', function (require) {
             $parent.find('#add_to_cart').removeClass('disabled out_of_stock');
             $parent.find('#buy_now').removeClass('disabled out_of_stock');
           } else {
-            $('a#buy_now').each(function (){
+            $('a#buy_now').each(function () {
               this.removeEventListener("click", {});
             })
             $parent.find('#add_to_cart').addClass('disabled out_of_stock');
