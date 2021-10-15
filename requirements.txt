@@ -13,3 +13,4 @@ unicodecsv
 unidecode
 workalendar
 prettytable
+stripe

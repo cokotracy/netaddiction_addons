@@ -293,6 +293,9 @@ h1.te_product_name{
 .js_add_cart_variants{
     padding-left:0 !important;
 }
+.availability_messages{
+    display: none;
+}
 
 @keyframes scale-in-center {
     0% {

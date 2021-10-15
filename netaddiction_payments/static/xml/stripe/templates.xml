@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates id="template" xml:space="preserve">
+    <t t-name="stripe.error">
+        <div role="dialog" class="modal fade">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <header class="modal-header">
+                        <h4 class="modal-title">Errore</h4>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">×</button>
+                    </header>
+                    <main class="modal-body">
+                        <t t-esc="msg"></t>
+                    </main>
+                    <footer class="modal-footer">
+                        <a role="button" href="#" class="btn btn-link btn-sm" data-dismiss="modal">Chiudi</a>
+                    </footer>
+                </div>
+            </div>
+        </div>
+    </t>
+    <t t-name="stripe.cards">
+        <div class="card_stripe col-6 col-md-4 mb-1 px-0 px-md-3" t-attf-id="card_template_{{id}}">
+            <div class="w-100 mx-auto border p-3 position-relative" style="min-height:100px; cursor:pointer; font-size:0.8em; border-radius:6px; max-width:180px; box-shadow:0 4px 8px 0 rgb(156 156 156 / 10%), 0 6px 20px 0 rgb(156 156 156 / 10%); background-color:#3d3d3d; color:#ffffff;">
+                <img class="position-absolute" style="width:20px; top:3px; right:3px;" t-attf-src="/netaddiction_payments/static/img/{{brand}}.png"/>
+                <t t-if="isDefault">
+                    <input class="position-absolute" style="top:50%; left:10px; transform:translateY(-50%)" type="radio" t-attf-id="card_{{id}}" t-attf-value="card_{{id}}" name="stripe_card" checked="checked"/>
+                </t>
+                <t t-else="">
+                    <input class="position-absolute" style="pointer-events:none; top:50%; left:10px; transform:translateY(-50%)" type="radio" t-attf-id="card_{{id}}" t-attf-value="card_{{id}}" name="stripe_card"/>
+                </t>
+                <div class="position-absolute" style="background-color:#d8b54c; width:20px; height:15px; top:40%; right:24px; border-radius:3px;"></div>
+                <table>
+                    <tbody>
+                        <tr>
+                            <td>**** **** **** <t t-esc="last4"/></td>
+                        </tr>
+                        <!-- <tr>
+                            <td class="text-center"><small>EXPIRE DATE</small></td>
+                        </tr>
+                        <tr>
+                            <td><small>NAME SURNAME</small></td>
+                        </tr> -->
+                    </tbody>
+                </table>
+            </div>
+            <t t-if="isDefault">
+                <a class="w-100 mx-auto p-3 text-center d-block"><i class="fa fa-check-square-o mr-1"/>Default</a>
+            </t>
+            <t t-else="">
+                <a href="javascript:void(0);" class="card_default_change w-100 mx-auto p-3 text-center d-block"><i class="fa fa-square-o mr-1"/>Default</a>
+            </t>
+        </div>
+    </t>
+</templates>

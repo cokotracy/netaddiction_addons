@@ -110,6 +110,14 @@
     display:none;
 }
 
+.o_sale_stock_picking{
+    margin:20px 0;
+}
+
+#sale_order_communication{
+    display:none !important;
+}
+
 #sale_order_communication > #discussion{
     display:block !important;
 }

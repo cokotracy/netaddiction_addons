@@ -43,7 +43,7 @@
 }
 
 
-input[data-provider=stripe] + span::after{
+input[data-provider=netaddiction_stripe] + span::after{
     margin-left:10px;
     position: relative;
     font-family: FontAwesome;
@@ -54,8 +54,8 @@ input[data-provider=stripe] + span::after{
     content: "\f05a";
 }
 
-input[data-provider=stripe] + span::before{
-    content: "Con questo metodo di spedizione pagherai solo quando la merce verrà spedita!";
+input[data-provider=netaddiction_stripe] + span::before{
+    content: "Paghi solo quando la merce verrà spedita!";
     background-color: #000;
     color: #fff;
     z-index: 2;
@@ -70,6 +70,6 @@ input[data-provider=stripe] + span::before{
     opacity:0;
 }
 
-input[data-provider=stripe] + span:hover:after, input[data-provider=stripe] + span:hover:before{
+input[data-provider=netaddiction_stripe] + span:hover:after, input[data-provider=netaddiction_stripe] + span:hover:before{
     opacity:1;
 }
