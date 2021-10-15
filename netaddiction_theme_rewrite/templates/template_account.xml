@@ -108,4 +108,10 @@
             </div>
         </xpath>
     </template>
+
+    <template id="footer_on_address" inherit_id="website_sale.checkout" priority="30">
+        <xpath expr="//div[@id='wrap']" position="after">
+            <t t-set="no_footer" t-value="0"/>
+        </xpath>
+    </template>
 </odoo>

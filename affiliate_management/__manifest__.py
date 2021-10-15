@@ -17,7 +17,7 @@
   "name"                 :  "Odoo Affiliate Management",
   "summary"              :  """Affiliate extension for odoo E-commerce store""",
   "category"             :  "Website",
-  "version"              :  "1.0.0",
+  "version"              :  "14.0.1.2.0",
   "sequence"             :  1,
   "author"               :  "Webkul Software Pvt. Ltd.",
   "license"              :  "Other proprietary",

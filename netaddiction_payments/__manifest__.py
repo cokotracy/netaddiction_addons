@@ -4,26 +4,26 @@
 
 
 {
-    'name': "NetAddiction Payments",
-    'summary': "Nuova Gestione Pagamenti",
-
-    'description': """
+    "name": "NetAddiction Payments",
+    "summary": "Nuova Gestione Pagamenti",
+    "description": """
     Modulo della gestione degi pagamenti
     """,
-    'author': "Netaddiction",
-
-    'website': "http://www.netaddiction.it",
-    'category': 'Technical Settings',
-    'version': '14.0.1.2.0',
-    'depends': [
-        'account',
-        'product',
-        'sale',
+    "author": "Netaddiction",
+    "website": "http://www.netaddiction.it",
+    "category": "Technical Settings",
+    "version": "14.0.2.2.0",
+    "depends": [
+        "account",
+        "product",
+        "sale",
     ],
-    'data': [
-        'data/account_journal.xml',
-        'data/cash_on_delivery.xml',
-        'views/sale_order.xml',
-        'views/stock_picking.xml',
-    ]
+    "data": [
+        "data/account_journal.xml",
+        "data/cash_on_delivery.xml",
+        "views/sale_order.xml",
+        "views/stock_picking.xml",
+        "views/stripe/templates.xml",
+        "views/stripe/payment_views.xml",
+    ],
 }

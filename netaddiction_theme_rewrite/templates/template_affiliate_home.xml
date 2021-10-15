@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="affiliate_homepage" inherit_id="affiliate_management.about" priority="30">
+        <xpath expr="//t[@t-call='website.layout']" position="replace">
+            <t t-call="website.layout">
+                <t t-if="user_id.partner_id.is_affiliate">
+                    <div class="container">
+                        <div class="navbar navbar-expand-md navbar-light bg-light p-3">
+                            <div>
+                                <ul class="navbar-nav">
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="/affiliate/about" style="color:#005452;">
+                                            <i class="fa fa-home fa-2x">
+                                            </i>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="/affiliate/report" style="color:#00A09D;">
+                                            Report
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="/affiliate/payment" style="color:#00A09D;">
+                                            Lista movimenti
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="/affiliate/tool" style="color:#00A09D;">
+                                            Strumenti
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="container d-flex flex-wrap mt-4">
+                        <div class="col-12 col-md-7 mb-4 p-3 mx-auto" style="border-radius:5px; background-color:#ffffff; box-shadow:0 4px 8px 0 rgb(156 156 156 / 10%), 0 6px 20px 0 rgb(156 156 156 / 10%);">
+                            <form>
+                                <label for="code">
+                                    Il tuo codice di affiliazione:
+                                </label>
+                                <br/>
+                                <input type="text" class="form-control" id="usr_aff_code" name="code" t-att-value="affiliate_key" readonly="1" />
+                                <br />
+                                <button type="copy" class="btn btn-primary te_theme_button" id="cpy_cde" style="top:12px;">
+                                    copia
+                                </button>
+                            </form>
+                            <br />
+                            <b>
+                                <a href="" id="url_anchor">
+                                    <small>Ottieni il link completo</small>
+                                </a>
+                            </b>
+
+                            <div id="affiliate_url_inp" style="display:none;" class="mt-4">
+                                <form>
+                                    <div class="form-group">
+                                        <input type="link" class="form-control" id="usr_aff_url" name="aff_link" t-att-value="url" readonly="1" />
+                                    </div>
+                                    <br/>
+                                    <button type="copy" class="btn btn-primary te_theme_button" id="cpy_url">
+                                        copia
+                                    </button>
+                                </form>
+                                <br />
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-7 mb-4 p-3 mx-auto" style="border-radius:5px; background-color:#ffffff; box-shadow:0 4px 8px 0 rgb(156 156 156 / 10%), 0 6px 20px 0 rgb(156 156 156 / 10%);">
+                            <div class="col-md-5 text-center mx-auto">
+                                <strong>
+                                    Credito in attesa:
+                                </strong>
+                                <br/>
+                                <span class="text-primary" style="font-size:25px;">
+                                    <t t-esc="currency_id.symbol" />
+                                    <t t-esc="pending_amt" />
+                                </span>
+                                <br/><br/>
+                                <strong>
+                                    Credito approvato:
+                                </strong>
+                                <br/>
+                                <span class="text-primary" style="font-size:25px;">
+                                    <t t-esc="currency_id.symbol" />
+                                    <t t-esc="approved_amt" />
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </t>
+            </t>
+        </xpath>
+    </template>
+</odoo>
+<!--  -->
