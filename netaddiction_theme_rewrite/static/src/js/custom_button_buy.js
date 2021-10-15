@@ -37,9 +37,9 @@ odoo.define('netaddiction_theme_rewrite.VariantMixin', function (require) {
       },
     }).then(function (data) {
       if (data != null) {
-        $('a#buy_now').each(function () {
-          this.dataset.product = combination.product_id
-        })
+        // $('a#buy_now').each(function () {
+        //   this.dataset.product = combination.product_id
+        // })
 
         xml_load_label.then(function () {
           var $infoLabel = $(QWeb.render(

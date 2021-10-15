@@ -94,34 +94,34 @@ class WebsiteCustom(Website):
 
 
 class WebsiteSaleCustom(WebsiteSale):
-    @route(['/shop/payment'], type='http', auth="public", website=True)
-    def payment(self, **post):
-        prod_id = request.params.get("buynow")
+#     @route(['/shop/payment'], type='http', auth="public", website=True)
+#     def payment(self, **post):
+#         prod_id = request.params.get("buynow")
 
-        if prod_id:
-            if request.env.user.id == request.env.ref('base.public_user').id:
-                return request.redirect('/web/login')
+#         if prod_id:
+#             if request.env.user.id == request.env.ref('base.public_user').id:
+#                 return request.redirect('/web/login')
 
-            order = request.env['sale.order'].sudo().create({
-                'partner_id': request.env.user.id,
-                'website_id': request.website.id,
-            })
-            request.env['sale.order.line'].sudo().create({
-                "order_id":order.id,
-                "product_id":int(prod_id),
-                "product_uom_qty":1,
-            })
+#             order = request.env['sale.order'].sudo().create({
+#                 'partner_id': request.env.user.id,
+#                 'website_id': request.website.id,
+#             })
+#             request.env['sale.order.line'].sudo().create({
+#                 "order_id":order.id,
+#                 "product_id":int(prod_id),
+#                 "product_uom_qty":1,
+#             })
             
-            render_values = self._get_shop_payment_values(order, **post)
-            render_values['only_services'] = order and order.only_services or False
+#             render_values = self._get_shop_payment_values(order, **post)
+#             render_values['only_services'] = order and order.only_services or False
 
-            if render_values['errors']:
-                render_values.pop('acquirers', '')
-                render_values.pop('tokens', '')
+#             if render_values['errors']:
+#                 render_values.pop('acquirers', '')
+#                 render_values.pop('tokens', '')
 
-            return request.render("website_sale.payment", render_values)
+#             return request.render("website_sale.payment", render_values)
 
-        return super(WebsiteSaleCustom, self).payment(**post)
+#         return super(WebsiteSaleCustom, self).payment(**post)
 
     @route(
         [
