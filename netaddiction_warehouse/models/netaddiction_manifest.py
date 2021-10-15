@@ -7,6 +7,7 @@ import base64
 import io
 
 from ftplib import FTP
+from prettytable import PrettyTable
 
 from odoo import api, fields, models
 from odoo.exceptions import ValidationError
@@ -174,6 +175,11 @@ class NetaddictionManifest(models.Model):
 
     manifest_file1_name = fields.Char()
 
+    manifest_file1_check = fields.Html(
+        compute='compute_manifest_file1_check',
+        store=True,
+    )
+
     manifest_file2 = fields.Binary(
         attachment=True,
         string="File2",
@@ -246,19 +252,52 @@ class NetaddictionManifest(models.Model):
             except Exception as e:
                 raise ValidationError(str(e))
 
+    @staticmethod
+    def _get_delivery_amount(delivery, payment=None):
+        amount = 0.0
+        if delivery:
+            amount += sum([
+                move.sale_line_id.price_total
+                for move
+                in delivery.move_ids_without_package
+                ])
+            shipping_cost = 0
+            shipping_line = delivery.sale_id.order_line.filtered(
+                lambda l: l.is_delivery).sorted(key=lambda l: l.price_total)
+            if shipping_line:
+                shipping_cost = shipping_line[-1].price_total
+            amount += shipping_cost
+        if payment:
+            amount += payment.delivery_fees
+        return round(amount, 2)
+
     def create_manifest(self):
         self.ensure_one()
-        brt = self.env.ref('netaddiction_warehouse.carrier_brt').id
-        if brt == self.carrier_id.id:
+        brt = self.env.ref('netaddiction_warehouse.carrier_brt')
+        sda = self.env.ref('netaddiction_warehouse.carrier_sda')
+        if not self.carrier_id:
+            raise ValidationError("Nessun corriere definito")
+        elif self.carrier_id == brt:
             self.create_manifest_bartolini()
-        else:
+        elif self.carrier_id == sda:
             self.create_manifest_sda()
+        else:
+            raise ValidationError(
+                "Corriere sconosciuto. Impossibile creare il manifest")
 
     def create_manifest_sda(self):
         self.ensure_one()
 
         params = self.env['ir.config_parameter'].sudo()
         payment_contrassegno = int(params.get_param('contrassegno_id') or 0)
+        carrier_contrassegno = \
+            self.carrier_id.cash_on_delivery_payment_method_id
+
+        if not carrier_contrassegno:
+            raise ValidationError(
+                "Definire il `Sistema di Pagamento Contrassegno` "
+                "per il corriere"
+            )
 
         if not payment_contrassegno:
             raise ValidationError(
@@ -429,17 +468,18 @@ class NetaddictionManifest(models.Model):
                 riga += ' ' * 40
                 riga += 'EU'
 
-                if payment:
-                    if payment.id == payment_contrassegno:
-                        t = str(round(delivery.sale_id.amount_total, 2))
-                        split = t.split('.')
-                        c = 2 - len(split[1])
-                        total = split[0] + '.' + split[1] + '0' * c
-                        total = total.zfill(9)
-                        riga += total
-                        riga += 'CON'
-                    else:
-                        riga += ' ' * 12
+                if payment and payment.id == payment_contrassegno:
+                    amount = self._get_delivery_amount(
+                        delivery,
+                        carrier_contrassegno,
+                        )
+                    t = str(amount)
+                    split = t.split('.')
+                    c = 2 - len(split[1])
+                    total = split[0] + '.' + split[1] + '0' * c
+                    total = total.zfill(9)
+                    riga += total
+                    riga += 'CON'
                 else:
                     riga += ' ' * 12
 
@@ -536,6 +576,14 @@ class NetaddictionManifest(models.Model):
         prefix1 = params.get_param('bartolini_prefix_file1')
         prefix2 = params.get_param('bartolini_prefix_file2')
         payment_contrassegno = int(params.get_param('contrassegno_id') or 0)
+        carrier_contrassegno = \
+            self.carrier_id.cash_on_delivery_payment_method_id
+
+        if not carrier_contrassegno:
+            raise ValidationError(
+                "Definire il `Sistema di Pagamento Contrassegno` "
+                "per il corriere"
+            )
 
         if not (prefix1 and prefix2 and payment_contrassegno > 0):
             raise ValidationError(
@@ -662,24 +710,23 @@ class NetaddictionManifest(models.Model):
                 file1.write(" 00,000")  # volume
                 file1.write(" 0000000000,000")  # quantità da fatturare
 
-                if payment:
-                    if payment.id == payment_contrassegno:
-                        file1.write(" ")
-                        t = str(round(delivery.sale_id.amount_total, 2))
-                        split = t.split('.')
-                        c = 3 - len(split[1])
+                if payment and payment.id == payment_contrassegno:
+                    file1.write(" ")
+                    amount = self._get_delivery_amount(
+                        delivery,
+                        carrier_contrassegno,
+                        )
+                    t = str(amount)
+                    split = t.split('.')
+                    c = 3 - len(split[1])
 
-                        total = split[0] + ',' + split[1] + '0' * c
-                        count = 14 - len(total)
-                        zeros = '0' * count
-                        file1.write(zeros)
-                        file1.write(total)  # importo contrassegno
-                        file1.write("  ")  # tipo incasso contrassegno
-                        file1.write("EUR")  # currency
-                    else:
-                        file1.write(" 0000000000,000")  # importo
-                        file1.write("  ")  # tipo incasso contrassegno
-                        file1.write("   ")  # divisa contrassegno
+                    total = split[0] + ',' + split[1] + '0' * c
+                    count = 14 - len(total)
+                    zeros = '0' * count
+                    file1.write(zeros)
+                    file1.write(total)  # importo contrassegno
+                    file1.write("  ")  # tipo incasso contrassegno
+                    file1.write("EUR")  # currency
                 else:
                     file1.write(" 0000000000,000")  # importo
                     file1.write("  ")  # tipo incasso contrassegno
@@ -789,3 +836,82 @@ class NetaddictionManifest(models.Model):
             'manifest_file2_name': f'manifest-{self.id}-2.txt',
             })
         file2.close()
+
+    @api.depends('manifest_file1', 'carrier_id')
+    def compute_manifest_file1_check(self):
+        brt = self.env.ref('netaddiction_warehouse.carrier_brt')
+        sda = self.env.ref('netaddiction_warehouse.carrier_sda')
+        for manifest in self:
+            info_table = PrettyTable()
+            info_table.field_names = [
+                "Riga", "Totale", "Contrassegno", "Cliente"]
+            info_table.align["Riga"] = "r"
+            info_table.align["Totale"] = "r"
+            info_table.align["Contrassegno"] = "r"
+            info_table.align["Cliente"] = "l"
+            info_table.float_format["Totale"] = ".2"
+            info_table.float_format["Contrassegno"] = ".2"
+            info_table.format = True
+            carrier_contrassegno = \
+            self.carrier_id.cash_on_delivery_payment_method_id
+            contrassegno_fees = carrier_contrassegno.delivery_fees
+            check_text = ''
+            if manifest.manifest_file1 and manifest.carrier_id:
+                if manifest.carrier_id == brt:
+                    data_function = manifest._check_manifest_data_bartolini
+                elif manifest.carrier_id == sda:
+                    data_function = manifest._check_manifest_data_sda
+                try:
+                    file_content = io.BytesIO(
+                        base64.b64decode(self.manifest_file1)).read().decode()
+                    rows = file_content.split('\n')
+                    amount_total = 0.0
+                    cod_amount_total = 0.0
+                    # lines = []
+                    for count, row in enumerate(rows, start=1):
+                        if not row:
+                            continue
+                        data = data_function(row)
+                        line_amount = data['line_amount']
+                        amount_total += line_amount
+                        if line_amount:
+                            cod_amount_total += contrassegno_fees
+                        info_table.add_row([
+                            count, line_amount, contrassegno_fees,
+                            data['customer'],
+                            ])
+                    info_table.add_rows([
+                        ['-', '', '', ''],
+                        ['Tot.', amount_total, cod_amount_total, ''],
+                    ])
+                    check_text = info_table.get_html_string(
+                        attributes={
+                            'border': 1,
+                            'style':
+                            'border-width: 1px; border-collapse: collapse;'
+                            })
+                except Exception as error:
+                    check_text = f'**Error**\n\n{error}'
+            manifest.manifest_file1_check = check_text
+
+    def _check_manifest_data_bartolini(self, row):
+        line_amount = round(
+            float(
+                row[274:288].lstrip('0').replace(',', '.')),
+            2)
+        customer = row[40:110].strip()
+        return {
+            'line_amount': line_amount,
+            'customer': customer,
+        }
+
+    def _check_manifest_data_sda(self, row):
+        line_amount = round(
+            float(
+                row[501:510].lstrip('0').replace(',', '.')),
+            2)
+        customer = row[275:315].strip()
+        return {
+            'line_amount': line_amount,
+            'customer': customer,
+        }

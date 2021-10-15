@@ -22,6 +22,7 @@
                 <header>
                     <button name="send_manifest" class="btn-primary" type="object" string="Invia Manifest" />
                     <button name="create_manifest" class="btn-primary" type="object" string="Crea Manifest" />
+                    <button name="compute_manifest_file1_check" type="object" string="Force Manifest Check"/>
                 </header>
                 <sheet>
                     <group col="3">
@@ -49,19 +50,27 @@
                             <field name="manifest_file2_name" invisible="1"/>
                         </group>
                     </group>
-                    <group>
-                        <field name="delivery_ids" nolabel="1">
-                            <tree name="delivery" >
-                                <field name="name"/>
-                                <field name="origin"/>
-                                <field name="partner_id"/>
-                                <field name="carrier_id"/>
-                                <field name="delivery_barcode"/>
-                                <field name="delivery_read_manifest"/>
-                                <field name="state"/>
-                            </tree>
-                        </field>
-                    </group>
+                    <notebook>
+                        <page name="deliveries" string="Deliveries">
+                            <field name="delivery_ids" nolabel="1">
+                                <tree name="delivery" >
+                                    <field name="name"/>
+                                    <field name="origin"/>
+                                    <field name="partner_id"/>
+                                    <field name="carrier_id"/>
+                                    <field name="delivery_barcode"/>
+                                    <field name="delivery_read_manifest"/>
+                                    <field name="state"/>
+                                </tree>
+                            </field>
+                        </page>
+                        <page name="check_manifest_1" string="Check Manifest"
+                              attrd="{'invisible': [('manifest_file1', '=', False)]}">
+                            <field name="manifest_file1_check" nolabel="1"
+                                   style="font-family: monospace, monospace;"
+                                   />
+                        </page>
+                    </notebook>
                 </sheet>
             </form>
         </field>
