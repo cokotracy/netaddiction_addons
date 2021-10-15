@@ -7,6 +7,7 @@
     'version': '14.0.1.8.0',
     'depends': [
         'base',
+        'advance_website_all_in_one',
         'delivery',
         # 'mrp',
         # 'netaddiction_customer',          TODO: will it be migrated?
