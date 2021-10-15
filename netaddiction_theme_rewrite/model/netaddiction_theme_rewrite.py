@@ -74,11 +74,11 @@ class WebsiteCustom(Website):
     @route(["/get_product_from_id"], type="json", auth="public", methods=["POST"], website=True, csrf=False)
     def get_product_from_id(self, product_id=None):
         prod = request.env["product.product"].search([("id", "=", product_id)])
-        current =  datetime.now()
-        current_reduced =  datetime.now() - timedelta(days = 20)
+        current =  date.today()
+        current_reduced =  date.today() - timedelta(days = 20)
         prod_out_date = ''
         if prod.out_date:
-            prod_out_date = datetime.strptime(str(prod.out_date) + ' 00:00:00.00000', '%Y-%m-%d %H:%M:%S.%f')
+            prod_out_date = prod.out_date
        
         return {
             "current":current,

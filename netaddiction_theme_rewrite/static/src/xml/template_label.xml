@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <templates>
     <t t-name="netaddiction_theme_rewrite.product_label_info">
-        <t t-if="prod_out_date and prod_out_date &gt; current and inventory_availability in ['always', 'threshold']">
+        <t t-if="prod_out_date != '' and prod_out_date &gt; current and inventory_availability in ['always', 'threshold']">
             <strong class="label label-out">SOLD OUT</strong>
         </t>
         <t t-else="">
