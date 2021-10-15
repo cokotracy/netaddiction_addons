@@ -30,6 +30,10 @@
                    position="after">
                 <b attrs="{'invisible' : [('problem', '=', False)]}" style="color:red"> in PROBLEMA</b>
             </xpath>
+            <xpath expr="//sheet//group[@name='order_details']/field[@name='show_update_pricelist']"
+                   position="before">
+                <field name="date_done" readonly="1" attrs="{'invisible': [('state', '!=', 'done')]}"/>
+            </xpath>
         </field>
     </record>
 
