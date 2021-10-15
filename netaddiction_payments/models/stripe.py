@@ -173,7 +173,7 @@ class StripePaymentTransaction(models.Model):
         result = self._ns_create_payment_intent()
         return self._ns_validate_response(result)
 
-    def get_payment_from_order(self, order):
+    def get_ns_payment_from_order(self, order):
         for payment in order.transaction_ids:
             if payment.payment_id.state != "posted" and payment.acquirer_id.provider == "netaddiction_stripe":
                 return payment
