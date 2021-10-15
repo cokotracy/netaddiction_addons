@@ -22,6 +22,9 @@ from odoo.osv import expression
 class WebsiteCustom(Website):
     @route(["/shop/cart/check_limit_order"], type="json", auth="public", methods=["POST"], website=True, csrf=False)
     def cart_update_json(self):
+        if request.env.user.id == request.env.ref('base.public_user').id:
+            return request.redirect('/web/login')
+            
         order = request.website.sale_get_order(force_create=1)
         for order_line in order.order_line:
             prod = order_line.product_id
@@ -542,6 +545,9 @@ class WalletPageOverride(Wallet):
 class WebsiteSaleCustomAddress(Controller):
     @route(["/shop/address"], type="http", methods=["GET", "POST"], auth="public", website=True, sitemap=False)
     def address(self, **kw):
+        if request.env.user.id == request.env.ref('base.public_user').id:
+            return request.redirect('/web/login')
+            
         Partner = request.env["res.partner"].with_context(show_address=1).sudo()
         order = request.website.sale_get_order()
 

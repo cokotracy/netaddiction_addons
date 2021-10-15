@@ -30,7 +30,6 @@ odoo.define('netaddiction_theme_rewrite.VariantMixin', function (require) {
     $parent.find('#add_to_cart').removeClass('out_of_stock');
     $parent.find('#buy_now').removeClass('out_of_stock');
 
-
     this._rpc({
       route: "/get_product_from_id",
       params: {
@@ -38,11 +37,13 @@ odoo.define('netaddiction_theme_rewrite.VariantMixin', function (require) {
       },
     }).then(function (data) {
       if (data != null) {
+        console.log('cutom function!!!');
         $('a#buy_now').each(function (){
-          this.removeEventListener("click", {});
-          this.addEventListener("click", function(){document.location.href="/shop/payment?buynow=" + combination.product_id});
+          this.addEventListener("click", function(e){
+            e.preventDefault();
+            document.location.href="/shop/payment?buynow=" + combination.product_id
+          });
         })
-
 
         xml_load_label.then(function () {
           var $infoLabel = $(QWeb.render(
