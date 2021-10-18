@@ -4,7 +4,7 @@
 # https://www.odoo.com/documentation/12.0/reference/http.html
 
 from werkzeug.exceptions import Forbidden, NotFound
-from datetime import date, timedelta
+from datetime import date, timedelta, datetime
 from odoo.http import request, route, Controller
 from odoo import models, fields, tools, http
 from odoo.exceptions import AccessError
@@ -22,6 +22,9 @@ from odoo.osv import expression
 class WebsiteCustom(Website):
     @route(["/shop/cart/check_limit_order"], type="json", auth="public", methods=["POST"], website=True, csrf=False)
     def cart_update_json(self):
+        if request.env.user.id == request.env.ref('base.public_user').id:
+            return request.redirect('/web/login')
+            
         order = request.website.sale_get_order(force_create=1)
         for order_line in order.order_line:
             prod = order_line.product_id
@@ -71,17 +74,55 @@ class WebsiteCustom(Website):
     @route(["/get_product_from_id"], type="json", auth="public", methods=["POST"], website=True, csrf=False)
     def get_product_from_id(self, product_id=None):
         prod = request.env["product.product"].search([("id", "=", product_id)])
-
+        current =  date.today()
+        current_reduced =  date.today() - timedelta(days = 20)
+        prod_out_date = ''
+        if prod.out_date:
+            prod_out_date = prod.out_date
+       
         return {
+            "current":current,
+            "current_reduced":current_reduced,
+            "prod_out_date":prod_out_date,
             "qty_sum_suppliers": prod.sudo().qty_sum_suppliers,
             "sale_ok": prod.sale_ok,
             "qty_available_now": prod.qty_available_now,
             "out_date": prod.out_date,
+            "create_date": prod.out_date,
             "inventory_availability": prod.sudo().inventory_availability,
         }
 
 
-class SiteCategories(WebsiteSale):
+class WebsiteSaleCustom(WebsiteSale):
+#     @route(['/shop/payment'], type='http', auth="public", website=True)
+#     def payment(self, **post):
+#         prod_id = request.params.get("buynow")
+
+#         if prod_id:
+#             if request.env.user.id == request.env.ref('base.public_user').id:
+#                 return request.redirect('/web/login')
+
+#             order = request.env['sale.order'].sudo().create({
+#                 'partner_id': request.env.user.id,
+#                 'website_id': request.website.id,
+#             })
+#             request.env['sale.order.line'].sudo().create({
+#                 "order_id":order.id,
+#                 "product_id":int(prod_id),
+#                 "product_uom_qty":1,
+#             })
+            
+#             render_values = self._get_shop_payment_values(order, **post)
+#             render_values['only_services'] = order and order.only_services or False
+
+#             if render_values['errors']:
+#                 render_values.pop('acquirers', '')
+#                 render_values.pop('tokens', '')
+
+#             return request.render("website_sale.payment", render_values)
+
+#         return super(WebsiteSaleCustom, self).payment(**post)
+
     @route(
         [
             """/shop""",
@@ -504,6 +545,9 @@ class WalletPageOverride(Wallet):
 class WebsiteSaleCustomAddress(Controller):
     @route(["/shop/address"], type="http", methods=["GET", "POST"], auth="public", website=True, sitemap=False)
     def address(self, **kw):
+        if request.env.user.id == request.env.ref('base.public_user').id:
+            return request.redirect('/web/login')
+            
         Partner = request.env["res.partner"].with_context(show_address=1).sudo()
         order = request.website.sale_get_order()
 

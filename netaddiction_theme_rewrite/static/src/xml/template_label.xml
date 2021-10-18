@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates>
+    <t t-name="netaddiction_theme_rewrite.product_label_info">
+        <t t-if="prod_out_date != '' and prod_out_date &gt; current and inventory_availability == 'always' or inventory_availability == 'threshold'">
+            <strong class="label label-out">SOLD OUT</strong>
+        </t>
+        <t t-else="">
+            <t t-if="qty_available_now &gt; 0" >
+                <t t-if="qty_available_now &lt; 10">
+                    <strong class="label label-in mr-2 mb-2 px-2">RESTANO POCHI PEZZI!</strong>
+                </t>
+                <t t-else="">
+                    <strong class="label label-in mr-2 mb-2 px-2">DISPONIBILE</strong>
+                </t>
+            </t>
+            <t t-if="current_reduced &lt;= create_date">
+                <strong class="label label-news mr-2 mb-2 px-2">NOVITÀ</strong>
+            </t>
+            <t t-if="prod_out_date != ''">
+                <t t-if="prod_out_date &gt; current">
+                    <t t-if="qty_available_now &lt;= 0 and qty_sum_suppliers &lt;= 0">
+                        <strong class="label label-preorder mr-2 mb-2 px-2">PRENOTAZIONE</strong>
+                    </t>
+                </t>
+            </t>
+            <t t-if="qty_available_now &lt;= 0 and qty_sum_suppliers &lt;= 0">
+                <t t-if="prod_out_date = '' or prod_out_date &lt; current">
+                    <strong class="label label-out mr-2 mb-2 px-2">ESAURITO</strong>
+                </t>
+            </t>
+            <t t-if="qty_available_now &lt;= 0">
+                <t t-if="qty_available_now &lt;= 0 and qty_sum_suppliers &gt; 0">
+                    <strong class="label label-request mr-2 mb-2 px-2">ORDINABILE</strong>
+                </t>
+            </t>
+        </t>
+    </t>
+</templates>
