@@ -596,14 +596,14 @@ class WebsiteSale(http.Controller):
         # id is added to be sure that order is a unique sort key
         return 'is_published desc,%s , id desc' % post.get('order', 'website_sequence desc')
 
-    def _get_search_domain(self, search, category, attrib_values, filter_values, brand_set):
+    def _get_search_domain(self, search, category, attrib_values, filter_values):
         domain = request.website.sale_product_domain()
         if search:
             for srch in search.split(" "):
                 domain += [
-                    '|', '|', '|', '|',('name', 'ilike', srch), ('description', 'ilike', srch),
+                    '|', '|', '|', ('name', 'ilike', srch), ('description', 'ilike', srch),
                     ('description_sale', 'ilike', srch), ('product_variant_ids.default_code', 'ilike', srch),
-                    ('brand_id.name', 'ilike', srch)]
+                    ]
 
         if category:
             domain += [('public_categ_ids', 'child_of', int(category))]
@@ -640,13 +640,6 @@ class WebsiteSale(http.Controller):
                     ids = [value[1]]
             if filter:
                 domain += [('filter_ids.filter_value_ids', 'in', ids)]
-
-        if brand_set:
-            brand = None
-            ids = []
-            for value in brand_set:
-                ids.append(value)
-                domain += [('brand_id', 'in', ids)]
 
         return domain
 
