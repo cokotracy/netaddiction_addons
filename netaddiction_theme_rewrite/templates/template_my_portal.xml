@@ -91,4 +91,8 @@
             </form>
         </t>
     </template>
+
+    <template id="payment.pay_meth_link" inherit_id="portal.portal_layout">
+        
+    </template>
 </odoo>

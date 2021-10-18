@@ -56,7 +56,11 @@
                                         </div>
                                         <div class="p-1">
                                             <a target="_blank" t-attf-href="{{line.product_id.website_url}}"><small t-esc="line.product_id.name[:50] + '..'"/></a>
+                                            <t t-set="current" t-value="datetime.date.today()"/>
                                             <t t-if="line.product_id.out_date">
+                                                <t t-set="out_date" t-value="line.product_id.out_date"/>
+                                            </t>
+                                            <t t-if="out_date and out_date &gt; current">
                                                 <br/>
                                                 <div class="mt-2">
                                                     <small>Uscita prevista:</small>
@@ -135,13 +139,9 @@
             <table class="w-100 mt-3">
                 <tbody>
                     <tr class="d-flex flex-wrap col-12 0 border-bottom mb-3">
+                        <td class="p-2"><strong class="text-primarys"><span t-esc="i.name"/></strong></td>
                         <td class="p-2">
-                            <a t-att-href="delivery_report_url">
-                                <span t-esc="i.name"/>
-                            </a>
-                        </td>
-                        <td class="p-2">
-                            <div class="small d-lg-inline-block">Data:
+                            <div class="small d-lg-inline-block">Spedizione pianificata il:
                                 <span class="text-muted" t-field="i.date_done" t-options="{'date_only': True}"/>
                                 <span t-if="i.state in ['draft', 'waiting', 'confirmed', 'assigned']" class="text-muted" t-field="i.scheduled_date" t-options="{'date_only': True}"/>
                             </div>

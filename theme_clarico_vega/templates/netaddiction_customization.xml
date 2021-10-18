@@ -1177,7 +1177,7 @@
         </xpath>
     </template>
 
-    <template id="custom_sticky_button" inherit_id="theme_clarico_vega.product_sticky_details_container">
+    <template id="custom_product_sticky_details_container" inherit_id="theme_clarico_vega.product_sticky_details_container">
         <xpath expr="//div[hasclass('prod_details_sticky_right')]" position="replace">
             <div class="prod_details_sticky_right">
                 <div class="prod_add_cart">
@@ -1190,9 +1190,10 @@
                         Aggiungi al carrello
                     </a>
                     <t t-if="buy_now_show">
-                        <a role="button" id="buy_now"
+                        <a role="button"
+                            href="#"
                             class="btn btn-outline-primary btn-md mt16 d-block d-sm-inline-block te_theme_button"
-                            href="#" style="font-size:12px;">
+                            id="buy_now" style="font-size:12px;">
                             <span class="fa fa-bolt"/>
                             Acquista ora
                         </a>
@@ -1202,6 +1203,34 @@
         </xpath>
     </template>
 
+
+    <template id="custom_ajax_cart_template" inherit_id="theme_clarico_vega.ajax_cart_template">
+        <xpath expr="//t[@t-if='buy_now_show']" position="replace">
+            <t t-if="buy_now_show">
+                <a role="button"
+                    href="#"
+                    class="btn btn-outline-primary btn-lg mt16 d-block d-sm-inline-block te_theme_button"
+                    id="buy_now">
+                    <span class="fa fa-bolt"/>
+                    Acquista ora
+                </a>
+            </t>
+        </xpath>
+    </template>
+
+    <template id="custom_quick_view_template" inherit_id="theme_clarico_vega.quick_view_template">
+        <xpath expr="//t[@t-if='buy_now_show']" position="replace">
+            <t t-if="buy_now_show">
+                <a role="button"
+                    href="#"
+                    class="btn btn-outline-primary btn-lg mt16 d-block d-sm-inline-block te_theme_button"
+                    id="buy_now">
+                    <span class="fa fa-bolt"/>
+                    Acquista ora
+                </a>
+            </t>
+        </xpath>
+    </template>
 
     <template id="custom_product_wishlist" inherit_id="theme_clarico_vega.product_wishlist_ept" priority="30">
         <xpath expr="//section[hasclass('wishlist-section')]" position="replace">
