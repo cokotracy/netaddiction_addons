@@ -120,6 +120,22 @@ class SaleOrder(models.Model):
             self.with_context(ignore_pickup_check=True)
         )._get_invoiced()
 
+    def action_problem_to_sale(self):
+        # TODO: Remove this function when `problem` state will be removed
+        message_model = self.env['mail.message']
+        subtype = self.env.ref('mail.mt_note')
+        for order in self:
+            order.state = 'sale'
+            message_model.create({
+                'subject': 'Ordine in Stato Problema risolto',
+                'message_type': 'notification',
+                'model': 'sale.order',
+                'res_id': order.id,
+                'body':
+                f'Problema sull\'ordine risolto da {self.env.user.name}',
+                'subtype_id': subtype.id
+                })
+
     def action_problems(self):
         # Migrated from netaddiction_mail/models/sale v9.0
         # Set order to `problem`
@@ -132,13 +148,13 @@ class SaleOrder(models.Model):
         for order in self:
             order.problem = False
             message_model.create({
-                    'subject': 'Problema risolto',
-                    'message_type': 'notification',
-                    'model': 'sale.order',
-                    'res_id': order.id,
-                    'body':
-                    f'Problema sull\'ordine risolto da {self.env.user.name}',
-                    'subtype_id': subtype.id
+                'subject': 'Problema risolto',
+                'message_type': 'notification',
+                'model': 'sale.order',
+                'res_id': order.id,
+                'body':
+                f'Problema sull\'ordine risolto da {self.env.user.name}',
+                'subtype_id': subtype.id
                 })
 
     def action_cancel(self):
