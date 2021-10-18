@@ -75,10 +75,24 @@ class WebsiteCustom(Website):
     def get_product_from_id(self, product_id=None):
         prod = request.env["product.product"].search([("id", "=", product_id)])
         current =  date.today()
-        current_reduced =  date.today() - timedelta(days = 20)
+        current_reduced =  datetime.now() - timedelta(days = 20)
         prod_out_date = ''
+        email = request.env.ref('base.public_user')
+        out_over_current = False
+        its_new = False 
+
         if prod.out_date:
             prod_out_date = prod.out_date
+            if prod_out_date > current:
+                out_over_current = True
+
+        if not email:
+            email = ''
+
+
+        if current_reduced <= prod.create_date:
+            its_new=True
+
        
         return {
             "current":current,
@@ -88,8 +102,11 @@ class WebsiteCustom(Website):
             "sale_ok": prod.sale_ok,
             "qty_available_now": prod.qty_available_now,
             "out_date": prod.out_date,
-            "create_date": prod.out_date,
+            "create_date": prod.create_date,
             "inventory_availability": prod.sudo().inventory_availability,
+            "user_email":email,
+            "out_over_current":out_over_current,
+            "its_new":its_new
         }
 
 
