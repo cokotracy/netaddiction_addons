@@ -7,8 +7,8 @@ odoo.define('netaddiction_theme_rewrite.VariantMixin', function (require) {
   var QWeb = core.qweb;
   var xml_load = ajax.loadXML('/website_sale_stock/static/src/xml/website_sale_stock_product_availability.xml', QWeb);
   var xml_load_label = ajax.loadXML('/netaddiction_theme_rewrite/static/src/xml/template_label.xml', QWeb);
-
   VariantMixin.xmlDependencies = ['/netaddiction_theme_rewrite/static/src/xml/template_label.xml'];
+
   VariantMixin._onChangeCombinationStock = function (ev, $parent, combination) {
     var product_id = 0;
     // needed for list view of variants
@@ -47,6 +47,12 @@ odoo.define('netaddiction_theme_rewrite.VariantMixin', function (require) {
             data
           ));
           $('div#label_info_product').html($infoLabel);
+
+          var $notifyField = $(QWeb.render(
+            'netaddiction_theme_rewrite.product_notify',
+            data
+          ));
+          $('div#notify-my-mail').html($notifyField);
         });
 
         if (data.qty_sum_suppliers > 0 || data.qty_available_now > 0) return;

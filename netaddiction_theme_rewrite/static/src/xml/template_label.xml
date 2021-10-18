@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <templates>
     <t t-name="netaddiction_theme_rewrite.product_label_info">
-        <t t-if="prod_out_date != '' and prod_out_date &gt; current and inventory_availability == 'always' or inventory_availability == 'threshold'">
+        <t t-if="qty_available_now &lt;= 0 and prod_out_date != '' and prod_out_date &gt; current and inventory_availability == 'always' or inventory_availability == 'threshold'">
             <strong class="label label-out">SOLD OUT</strong>
         </t>
         <t t-else="">
             <t t-if="qty_available_now &gt; 0" >
                 <t t-if="qty_available_now &lt; 10">
-                    <strong class="label label-in mr-2 mb-2 px-2">RESTANO POCHI PEZZI!</strong>
+                    <strong class="label label-in mr-2 mb-2 px-2">POCHI PEZZI RIMASTI!</strong>
                 </t>
                 <t t-else="">
                     <strong class="label label-in mr-2 mb-2 px-2">DISPONIBILE</strong>
@@ -32,6 +32,25 @@
                 <t t-if="qty_available_now &lt;= 0 and qty_sum_suppliers &gt; 0">
                     <strong class="label label-request mr-2 mb-2 px-2">ORDINABILE</strong>
                 </t>
+            </t>
+        </t>
+    </t>
+
+    <t t-name="netaddiction_theme_rewrite.product_notify">
+        <t t-if="qty_available_now &lt;= 0 and qty_sum_suppliers &lt;= 0">
+            <t t-if="prod_out_date = '' or prod_out_date &lt; current">
+                <div class="o_product_notify">
+                    <small class="text-primary mt-2">Avvisami quando è disponibile:</small>
+                    <div t-attf-class="mb-3 input-group #{_classes}">
+                        <input class="col-auto col-md-6 form-control d-block" type="email" id="email" placeholder="Inserisci la tua email" t-att-value="user_id.email" />
+                        <div class="input-group-append">
+                            <button type="submit" class="btn btn-primary submit-notify">
+                                <i class="fa fa-envelope"></i> Avvisami</button>
+                        </div>
+                    </div>
+                    <div class="o_notify_message alert alert-info d-none" style="margin-top: 10px;"></div>
+                    <div class="o_notify_alert_message alert alert-warning d-none" style="margin-top: 10px;"></div>
+                </div>
             </t>
         </t>
     </t>

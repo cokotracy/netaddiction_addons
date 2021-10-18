@@ -53,16 +53,6 @@ h1.te_product_name{
     font-weight:800;
 }
 
-/*PREZZO*/
-.js_product .oe_price_h4 .oe_price{
-    font-size: 40px !important;
-    font-weight: 600;
-}
-.js_product .oe_price_h4 .oe_default_price{
-    font-size: 25px !important;
-    font-weight: 400;
-}
-
 /*REVIEWS*/
 #shop_rate_star{
     display:none !important;
