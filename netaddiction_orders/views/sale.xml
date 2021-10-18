@@ -12,6 +12,8 @@
                         attrs="{'invisible': [('problem', '=', True)]}"/>
                 <button name="action_remove_problems" string="Rimuovi Problema" type="object"
                         attrs="{'invisible': [('problem', '=', False)]}"/>
+                <button name="action_problem_to_sale" string="Rimuovi Problema" type="object"
+                        state="problem"/>
             </xpath>
             <xpath expr="//field[@name='order_line']//tree//field[@name='price_subtotal']" position="attributes">
                 <attribute name="groups" />
