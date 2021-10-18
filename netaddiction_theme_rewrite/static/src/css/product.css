@@ -29,6 +29,7 @@
     display: none;
 }
 #product_details:not(.modal-body #product_details){
+    display: inline-table;
     height: fit-content !important;
     box-shadow: 0 4px 8px 0 rgba(156, 156, 156, 0.1), 0 6px 20px 0 rgba(156, 156, 156, 0.1) !important;
     padding-top:15px !important;
@@ -295,6 +296,10 @@ h1.te_product_name{
 }
 .availability_messages{
     display: none;
+}
+
+.te_product_brand_img{
+    max-width:70px !important;
 }
 
 @keyframes scale-in-center {

@@ -1304,4 +1304,26 @@
             </table>
         </xpath>
     </template>
+
+    <template id="theme_clarico_vega.product_brand_container">
+        <t t-if="product.product_brand_ept_id.logo or product.product_brand_ept_id.description">
+            <div class="row border-top mt-3"
+                 t-if="product.product_brand_ept_id and product.product_brand_ept_id.website_id.id == request.website.id or not product.product_brand_ept_id.website_id.id">
+                <a t-att-href="'/shop?attrib=0-%s' %(product.product_brand_ept_id.id)">
+                    <div class="te_brand_img  col-xl-3 col-lg-4" t-if="product.product_brand_ept_id.logo"
+                         t-field="product.product_brand_ept_id.logo"
+                         t-options="{'widget': 'image','class':'te_product_brand_img'}"/>
+                </a>
+                <div class=" col-xl-9 col-lg-8 col-sm col d-flex" style="align-items:center;">
+                    <a t-att-href="'/shop?attrib=0-%s' %(product.product_brand_ept_id.id)">
+                        <strong>
+                            <p class="te_product_brand_desc" t-if="product.product_brand_ept_id.description"
+                            t-field="product.product_brand_ept_id.description"/>
+                        </strong>
+                    </a>
+                </div>
+            </div>
+            <hr class="te_s_hr_line"/>
+        </t>
+    </template>
 </odoo>

@@ -189,7 +189,7 @@ header nav.navbar .header_middle .te_search_popover .input-group input.form-cont
 .product-label-container{
     top:0;
     left:-5px;
-    max-width:110px;
+    max-width:100px;
     display: flex;
     flex-wrap: wrap;
     justify-content: left;
@@ -414,6 +414,11 @@ header nav.navbar .header_middle{
 
 .o_portal_my_details address i{
     display: contents !important;
+}
+
+.prod_add_cart a, #add_to_cart, #buy_now{
+    background-color:var(--primary) !important;
+    color:#ffffff !important;
 }
 
 @media only screen and (min-width: 768px) and (max-width: 1023px){
