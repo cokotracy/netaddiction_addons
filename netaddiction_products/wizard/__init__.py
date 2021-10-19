@@ -3,3 +3,4 @@
 
 from . import massive_product_price_change
 from . import manage_product_sellers
+from . import product_variant_change
