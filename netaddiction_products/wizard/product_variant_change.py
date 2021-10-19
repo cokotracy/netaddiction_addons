@@ -6,7 +6,7 @@ class ProductVariantChange(models.TransientModel):
     _name = "product.variant.change"
     _description = "Modello Transient per aggiungere/rimuovere gli attributi nelle varianti."
 
-    variant = fields.Many2one(
+    variant_id = fields.Many2one(
         "product.product",
         string="Varianti Prodotto",
         domain=lambda self: f"[('product_tmpl_id', 'in', {self.env.context.get('active_ids', [])})]",
@@ -18,21 +18,23 @@ class ProductVariantChange(models.TransientModel):
         default="add",
         string="Operazione",
     )
-    attribute = fields.Many2one("product.attribute.value", string="Attributi Valore", required=True)
+    attribute_id = fields.Many2one("product.attribute.value", string="Attributi Valore", required=True)
 
     def _get_combination_id(self):
-        q = f"""SELECT ptav.id
+        self.env.cr.execute(
+            """SELECT ptav.id
                 FROM
                     product_template_attribute_value ptav
                     JOIN
                         product_product pp
                         ON pp.product_tmpl_id = ptav.product_tmpl_id
                 WHERE
-                    product_attribute_value_id = {self.attribute.id}
-                    AND ptav.product_tmpl_id = {self.variant.product_tmpl_id.id}
-                    AND pp.id = {self.variant.id};
-            """
-        self.env.cr.execute(q)
+                    product_attribute_value_id = %s
+                    AND ptav.product_tmpl_id = %s
+                    AND pp.id = %s;
+            """,
+            (self.attribute_id.id, self.variant_id.product_tmpl_id.id, self.variant_id.id),
+        )
         try:
             return self.env.cr.fetchone()[0]
         except Exception:
@@ -41,9 +43,12 @@ class ProductVariantChange(models.TransientModel):
     def do_action(self):
         comb_id = self._get_combination_id()
         if self.operation == "add":
-            self.env.cr.execute(f"INSERT INTO product_variant_combination VALUES({comb_id}, {self.variant.id});")
-        if self.operation == "remove":
             self.env.cr.execute(
-                f"DELETE FROM product_variant_combination WHERE product_template_attribute_value_id={comb_id} AND product_product_id={self.variant.id};"
+                "INSERT INTO product_variant_combination VALUES(%s, %s);", (comb_id, self.variant_id.id)
             )
-        self.env["product.product"].browse(self.variant.id)._compute_combination_indices()
+        elif self.operation == "remove":
+            self.env.cr.execute(
+                "DELETE FROM product_variant_combination WHERE product_template_attribute_value_id=%s AND product_product_id=%s;",
+                (comb_id, self.variant_id.id),
+            )
+        self.env["product.product"].browse(self.variant_id.id)._compute_combination_indices()

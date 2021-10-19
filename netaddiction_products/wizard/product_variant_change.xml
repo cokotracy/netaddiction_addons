@@ -6,13 +6,13 @@
         <field name="arch" type="xml">
             <form>
                 <group>
-                    <field name="variant" create="0"/>
+                    <field name="variant_id" create="0"/>
                 </group>
                 <group>
                     <field name="operation" create="0" ></field>
                 </group>
                 <group>
-                    <field name="attribute" create="0" ></field>
+                    <field name="attribute_id" create="0" ></field>
                 </group>
                 <footer>
                     <button string="Conferma" name="do_action" type="object" class="oe_highlight"/>
