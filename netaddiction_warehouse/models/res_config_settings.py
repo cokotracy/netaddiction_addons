@@ -9,65 +9,33 @@ class Config(models.TransientModel):
 
     bartolini_prefix_file1 = fields.Char(
         string="Prefisso File1 Bartolini",
+        config_parameter="bartolini_prefix_file1",
     )
 
     bartolini_prefix_file2 = fields.Char(
         string="Prefisso File2 Bartolini",
+        config_parameter="bartolini_prefix_file2",
     )
 
     contrassegno_id = fields.Many2one(
         'account.journal',
         string="Metodo di pagamento per contrassegno",
+        config_parameter="contrassegno_id",
     )
 
     hour_available = fields.Char(
         string="Ora oltre la quale la spedizione di prodotti presenti"
                " slitta a domani",
+        config_parameter="hour_available",
     )
 
     hour_not_available = fields.Char(
         string="Ora oltre la quale la spedizione di prodotti non presenti"
                " slitta a domani",
+        config_parameter="hour_not_available",
     )
 
     shipping_days = fields.Integer(
-        string="Giorni di spedizione di default (può essere anche una media)"
+        string="Giorni di spedizione di default (può essere anche una media)",
+        config_parameter="shipping_days",
     )
-
-    def get_values(self):
-        values = dict(super().get_values() or [])
-        getter = self.env['ir.config_parameter'].sudo().get_param
-        values.update({
-            'bartolini_prefix_file1': getter('bartolini_prefix_file1') or '',
-            'bartolini_prefix_file2': getter('bartolini_prefix_file2') or '',
-            'contrassegno_id': int(getter('contrassegno_id.id') or 0),
-            'hour_available': getter('hour_available') or "16:00",
-            'hour_not_available': getter('hour_not_available') or "14:00",
-            'shipping_days': int(getter('shipping_days') or 0),
-        })
-        return values
-
-    def set_values(self):
-        if self.hour_available:
-            try:
-                datetime.strptime(self.hour_available, '%H:%M')
-            except ValueError:
-                raise ValidationError(
-                    "Formato orario non valido. Usare il formato 'HH:MM'."
-                )
-        if self.hour_not_available:
-            try:
-                datetime.strptime(self.hour_not_available, '%H:%M')
-            except ValueError:
-                raise ValidationError(
-                    "Formato orario non valido. Usare il formato 'HH:MM'."
-                )
-        res = super().set_values()
-        setter = self.env['ir.config_parameter'].sudo().set_param
-        setter('bartolini_prefix_file1', self.bartolini_prefix_file1)
-        setter('bartolini_prefix_file2', self.bartolini_prefix_file2)
-        setter('contrassegno_id', str(self.contrassegno_id or 0))
-        setter('hour_available', self.hour_available)
-        setter('hour_not_available', self.hour_not_available)
-        setter('shipping_days', str(self.shipping_days or 0))
-        return res
