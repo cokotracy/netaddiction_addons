@@ -277,7 +277,7 @@
                 <button onclick="checkFilter()" class="btn btn-primary btn-md a-submit d-block d-sm-inline-block te_theme_button w-100">Filtra</button>
             </div>
             <t t-set="current_url" t-value="website._get_canonical_url(canonical_params=canonical_params).replace('/it_IT/', '/')"/>
-            <t t-if="not '/tool/' in current_url">
+            <t t-if="not '/tool/' in current_url and not '/search/' in current_url">
                 <t t-if="category.parent_id">
                     <t t-set="related_category" t-value="request.env['product.public.category'].sudo().search([('parent_id','=',category.parent_id.id)])"/>
                 </t>
@@ -383,7 +383,7 @@
                     </t>
                     <!-- Menu -->
                     <t t-set="current_url" t-value="website._get_canonical_url(canonical_params=canonical_params).replace('/it_IT/', '/')"/>
-                    <t t-if="not '/tool/' in current_url">
+                    <t t-if="not '/tool/' in current_url and not '/search/' in current_url">
                         <div class="px-3 d-block d-lg-none">
                             <t t-if="category">
                                 <t t-if="category.parent_id">
@@ -471,7 +471,7 @@
             <section class="s_rating menu_vertical_option">
                 <div class="te_side_bar">
                     <t t-set="current_url" t-value="website._get_canonical_url(canonical_params=canonical_params).replace('/it_IT/', '/')"/>
-                    <t t-if="not '/tool/' in current_url">
+                    <t t-if="not '/tool/' in current_url and not '/search/' in current_url">
                         <t t-if="category">
                             <t t-if="category.parent_id">
                                 <t t-set="related_category" t-value="request.env['product.public.category'].sudo().search([('parent_id','=',category.parent_id.id)])"/>

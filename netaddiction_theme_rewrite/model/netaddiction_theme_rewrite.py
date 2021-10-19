@@ -895,7 +895,7 @@ class WebsiteSaleCustomAddress(Controller):
 class CustomCustomerPortal(CustomerPortal):
     @route(["/my/orders", "/my/orders/page/<int:page>"], type="http", auth="user", website=True)
     def portal_my_orders(self, page=1, date_begin=None, date_end=None, sortby=None, **kw):
-        response = super(CustomCustomerPortal, self).portal_my_orders()
+        response = super(CustomCustomerPortal, self).portal_my_orders(page,date_begin,date_end,sortby)
         response = http.Response(
             template="netaddiction_theme_rewrite.custom_portal_my_orders", qcontext=response.qcontext
         )

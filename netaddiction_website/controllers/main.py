@@ -14,9 +14,7 @@ class CustomHome(Controller):
             .sudo()
             .search([("out_date", ">", date.today())], limit=21, order="create_date desc")
         )
-
-        for preorder in preorder_list:
-            print(preorder.out_date)
+        
         return request.render("netaddiction_website.template_home_primary", {"preorder_list": preorder_list})
 
 class CustomCategoryPage(Controller):
