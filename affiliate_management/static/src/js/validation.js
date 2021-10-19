@@ -22,7 +22,6 @@ odoo.define('affiliate_management.validation', function (require) {
   $(document).ready(function () {
     $('.signup-btn').on('click', function () {
       var c = $('#tc-signup-checkbox').is(':checked');
-      console.log(c);
       if (c == false) {
 
         $('#term_condition_error').show();
@@ -35,7 +34,6 @@ odoo.define('affiliate_management.validation', function (require) {
     $(".button_image_generate_url").hide();
     $('.o_form_radio').on('click', function () {
       $('[id^=product-text_]').hide();
-      console.log(this.getAttribute('id').split("_")[1])
       var radio_id = this.getAttribute('id').split("_")[1];
       $(".button_image_generate_url").hide();
       $('#image_' + radio_id).show();
@@ -53,14 +51,11 @@ odoo.define('affiliate_management.validation', function (require) {
     var input
 
     $('[id^=copy-btn_]').on('click', function () {
-      console.log("start")
       copyBtn = this;
       input = $("#copy-me_" + this.id.split("_")[1]);
-      console.log("input", input)
       copyToClipboard();
       $('[id^=copy-btn_]').text('Copy to Clipboard')
       $(this).text('copied');
-      console.log("copy button clicked")
     });
 
     function copyToClipboardFF(text) {
@@ -74,7 +69,6 @@ odoo.define('affiliate_management.validation', function (require) {
 
       // For IE.
       if (window.clipboardData) {
-        console.log("clipboard")
         window.clipboardData.setData("Text", input.val());
       } else {
         // Create a temporary element off screen.
@@ -86,14 +80,11 @@ odoo.define('affiliate_management.validation', function (require) {
         });
         // Add the input value to the temp element.
         tmpElem.text(input.val());
-        console.log("tmpElem", tmpElem)
         $("body").append(tmpElem);
         // Select temp element.
         range.selectNodeContents(tmpElem.get(0));
-        console.log("range", range)
         selection = window.getSelection();
         selection.removeAllRanges();
-        console.log("remove range")
         selection.addRange(range);
         // Lets copy.
         try {
@@ -145,7 +136,6 @@ odoo.define('affiliate_management.validation', function (require) {
     $('[id^=yes_btn_uid_]').on('click', function () {
       var uid = this.id.split("_")[3];
       ajax.jsonRpc("/affiliate/request", 'call', { 'user_id': uid }).then(function (result) {
-        console.log(result);
         if (result) {
           // $("#aff_req_btn").replaceWith( "<p class='alert alert-success'>Your Request has been submitted sucessfully. Soon you will be notify by email.</p>");
           $("#aff_req_btn").hide();
@@ -185,7 +175,6 @@ odoo.define('affiliate_management.validation', function (require) {
         $('.affiliate_loader').hide();
         return false;
       } else {
-        console.log("wrong email");
         alert("Invalid Email type");
         return false;
       }
