@@ -6,10 +6,16 @@ class ProductVariantChange(models.TransientModel):
     _name = "product.variant.change"
     _description = "Modello Transient per aggiungere/rimuovere gli attributi nelle varianti."
 
+    def default_product_id(self):
+        active_ids = self.env.context.get("active_ids", [])
+        domain = [("id", "in", active_ids)]
+        return self.env["product.product"].search(domain).id
+
     variant_id = fields.Many2one(
         "product.product",
         string="Varianti Prodotto",
-        domain=lambda self: f"[('product_tmpl_id', 'in', {self.env.context.get('active_ids', [])})]",
+        domain=lambda self: f"[('id', 'in', {self.env.context.get('active_ids', [])})]",
+        default=default_product_id,
         required=True,
     )
     operation = fields.Selection(
