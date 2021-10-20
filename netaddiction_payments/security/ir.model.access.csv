@@ -1,0 +1,3 @@
+"id","name","model_id:id","group_id:id","perm_read","perm_write","perm_create","perm_unlink"
+access_stripe_create_payment_transaction,netaddiction_payments.stripe.create.payment.transaction,model_stripe_create_payment_transaction,base.group_user,1,1,1,1
+
