@@ -34,3 +34,7 @@
 [submodule "OCA/server-auth"]
 	path = OCA/server-auth
 	url = https://github.com/OCA/server-auth.git
+[submodule "odoo_business_relationships"]
+	path = odoo_business_relationships
+	url = https://github.com/ayudoo/odoo_business_relationships.git
+	branch = main
