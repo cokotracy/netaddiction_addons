@@ -11,24 +11,13 @@
 					<p class="alert alert-success" t-if="success">
 						<t t-esc="success" />
 					</p>
-					<div class="col-12 col-md-6 p-5 mx-auto border mt-4" style="border-radius:5px; background-color:#ffffff; box-shadow:0 4px 8px 0 rgb(156 156 156 / 10%), 0 6px 20px 0 rgb(156 156 156 / 10%);">
+					<div class="col-12 col-md-6 p-3 mx-auto border mt-4" style="border-radius:5px; background-color:#ffffff; box-shadow:0 4px 8px 0 rgb(156 156 156 / 10%), 0 6px 20px 0 rgb(156 156 156 / 10%);">
 						<t t-if="request.env.user.id == request.env.ref('base.public_user').id">
-							<p class="h4 mb-5">
-								Devi essere registrato per poter diventare un Affiliato.
-								Se non sei ancora registrato, puoi effettuare la registrazione qui.
-							</p>
-							<div class="d-flex col-12">
-								<div class="col-6 text-center px-2">
-									<a href="/web/signup" class="btn btn-primary te_theme_button">
-										Registrati
-									</a>
-								</div>
-								<div class="col-6 text-center px-2">
-									<a href="/web/login" class="btn btn-primary te_theme_button">
-										Accedi
-									</a>
-								</div>
-							</div>
+							<script>
+								document.addEventListener("DOMContentLoaded", function() {
+									window.location.href="/web/login?redirect=/affiliate";
+								});
+							</script>
 						</t>
 						<t t-else="">
 							<t t-if="request.env.user.affiliate_program_id">
@@ -71,6 +60,7 @@
 										</div>
 									</t>
 									<t t-if="not request_status">
+										<img src="/netaddiction_theme_rewrite/static/src/img/affiliati.jpg" style="object-fit:contain;" class="w-100 mb-3"/>
 										<p class="mb-5">
 											<strong>Cosa significa?</strong>
 											<br/>

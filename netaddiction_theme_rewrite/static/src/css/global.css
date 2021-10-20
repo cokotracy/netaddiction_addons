@@ -189,7 +189,7 @@ header nav.navbar .header_middle .te_search_popover .input-group input.form-cont
 .product-label-container{
     top:0;
     left:-5px;
-    max-width:110px;
+    max-width:100px;
     display: flex;
     flex-wrap: wrap;
     justify-content: left;
@@ -363,6 +363,35 @@ header nav.navbar .header_middle{
     width:90% !important;
 }
 
+
+.quick_view_modal .image-zoom-custom{
+    display: none;
+}
+
+.quick_view_modal #mainSlider .active{
+    pointer-events:none;
+}
+
+/*PREZZO*/
+.js_product .oe_price_h4 .oe_price{
+    font-size: 40px !important;
+    font-weight: 600;
+}
+.js_product .oe_price_h4 .oe_default_price{
+    font-size: 25px !important;
+    font-weight: 400;
+}
+
+.te_view_full_des_link{
+    display:none;
+}
+
+.ajax_cart_content #product_detail .col-right-details{
+    top:0 !important;
+    position:relative !important;
+    transform: translateY(0%) !important; 
+}
+
 @media only screen and (min-width: 768px) {
     #wrapwrap > main{
         margin-top:0px;
@@ -414,6 +443,11 @@ header nav.navbar .header_middle{
 
 .o_portal_my_details address i{
     display: contents !important;
+}
+
+.prod_add_cart a, #add_to_cart, #buy_now{
+    background-color:var(--primary) !important;
+    color:#ffffff !important;
 }
 
 @media only screen and (min-width: 768px) and (max-width: 1023px){
