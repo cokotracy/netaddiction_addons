@@ -12,6 +12,5 @@ from . import website_sale_product_stock
 from . import giftwrap
 from . import product_template
 from . import product
-from . import product_brand
 from . import profile
 from . import mail
