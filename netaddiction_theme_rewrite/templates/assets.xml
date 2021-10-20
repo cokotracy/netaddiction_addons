@@ -154,7 +154,7 @@
         </xpath>
         <xpath expr="//title" position="replace">
             <t t-set="current_url" t-value="website._get_canonical_url(canonical_params=canonical_params).replace('/it_IT/', '/')"/>
-            <t t-if="not '/tool/' in current_url">
+            <t t-if="not '/tool/' in current_url and not '/search/' in current_url">
                 <t t-if="product">
                     <t t-if="product.name">
                         <title><t t-esc="product.name"/> | Multiplayer.com</title>
@@ -178,7 +178,7 @@
         </xpath>
         <xpath expr="//meta[@name='description']" position="replace">
             <t t-set="current_url" t-value="website._get_canonical_url(canonical_params=canonical_params).replace('/it_IT/', '/')"/>
-            <t t-if="not '/tool/' in current_url">
+            <t t-if="not '/tool/' in current_url and not '/search/' in current_url">
                 <t t-if="product">
                     <t t-if="product.website_description and len(product.website_description) &gt; 20">
                         <t t-set="description" t-value="product.website_description"/>

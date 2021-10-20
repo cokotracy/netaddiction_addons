@@ -83,7 +83,7 @@
             </t>
 
             <div class="product-label-container position-absolute">
-                <t t-if="out_date and out_date &gt; current and product.sudo().product_variant_id.inventory_availability in ['always', 'threshold']">
+                <t t-if="product.product_variant_id.qty_available_now &lt;= 0 and out_date and out_date &gt; current and product.sudo().product_variant_id.inventory_availability in ['always', 'threshold']">
                     <strong class="label label-out">SOLD OUT</strong>
                 </t>
                 <t t-else="">
@@ -277,7 +277,7 @@
                 <button onclick="checkFilter()" class="btn btn-primary btn-md a-submit d-block d-sm-inline-block te_theme_button w-100">Filtra</button>
             </div>
             <t t-set="current_url" t-value="website._get_canonical_url(canonical_params=canonical_params).replace('/it_IT/', '/')"/>
-            <t t-if="not '/tool/' in current_url">
+            <t t-if="not '/tool/' in current_url and not '/search/' in current_url">
                 <t t-if="category.parent_id">
                     <t t-set="related_category" t-value="request.env['product.public.category'].sudo().search([('parent_id','=',category.parent_id.id)])"/>
                 </t>
@@ -383,7 +383,7 @@
                     </t>
                     <!-- Menu -->
                     <t t-set="current_url" t-value="website._get_canonical_url(canonical_params=canonical_params).replace('/it_IT/', '/')"/>
-                    <t t-if="not '/tool/' in current_url">
+                    <t t-if="not '/tool/' in current_url and not '/search/' in current_url">
                         <div class="px-3 d-block d-lg-none">
                             <t t-if="category">
                                 <t t-if="category.parent_id">
@@ -471,7 +471,7 @@
             <section class="s_rating menu_vertical_option">
                 <div class="te_side_bar">
                     <t t-set="current_url" t-value="website._get_canonical_url(canonical_params=canonical_params).replace('/it_IT/', '/')"/>
-                    <t t-if="not '/tool/' in current_url">
+                    <t t-if="not '/tool/' in current_url and not '/search/' in current_url">
                         <t t-if="category">
                             <t t-if="category.parent_id">
                                 <t t-set="related_category" t-value="request.env['product.public.category'].sudo().search([('parent_id','=',category.parent_id.id)])"/>
@@ -1303,5 +1303,27 @@
                 </tbody>
             </table>
         </xpath>
+    </template>
+
+    <template id="theme_clarico_vega.product_brand_container">
+        <t t-if="product.product_brand_ept_id.logo or product.product_brand_ept_id.description">
+            <div class="row border-top mt-3"
+                 t-if="product.product_brand_ept_id and product.product_brand_ept_id.website_id.id == request.website.id or not product.product_brand_ept_id.website_id.id">
+                <a t-att-href="'/shop?attrib=0-%s' %(product.product_brand_ept_id.id)">
+                    <div class="te_brand_img  col-xl-3 col-lg-4" t-if="product.product_brand_ept_id.logo"
+                         t-field="product.product_brand_ept_id.logo"
+                         t-options="{'widget': 'image','class':'te_product_brand_img'}"/>
+                </a>
+                <div class=" col-xl-9 col-lg-8 col-sm col d-flex" style="align-items:center;">
+                    <a t-att-href="'/shop?attrib=0-%s' %(product.product_brand_ept_id.id)">
+                        <strong>
+                            <p class="te_product_brand_desc" t-if="product.product_brand_ept_id.description"
+                            t-field="product.product_brand_ept_id.description"/>
+                        </strong>
+                    </a>
+                </div>
+            </div>
+            <hr class="te_s_hr_line"/>
+        </t>
     </template>
 </odoo>

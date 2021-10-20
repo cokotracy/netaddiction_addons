@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+	<template id="affiliate_affiliate_traffic" inherit_id="affiliate_management.affiliate_traffic">
+		<xpath expr="//t[@t-call='website.layout']" position="replace">
+			<t t-call="website.layout">
+				<t t-if="user_id.partner_id.is_affiliate">
+					<t t-call="netaddiction_theme_rewrite.affiliate_menu" />
+					<div class="container mt16">
+						<h3 class="page-header">
+							Ordini Adv
+						</h3>
+						<t t-if="not traffic">
+							<p>
+								Non ci sono ordini provenienti da annunci pubblicitari.
+							</p>
+						</t>
+						<t t-if="traffic">
+							<table class="table table-hover o_my_status_table">
+								<thead>
+									<tr class="active">
+										<th>
+											Vedi dettagli
+										</th>
+										<th>
+											Nome prodotto
+										</th>
+										<th>
+											Tipologia
+										</th>
+										<th>
+											Data
+										</th>
+										<th>
+											Commissioni
+										</th>
+										<th>
+											Stato
+										</th>
+									</tr>
+								</thead>
+								<t t-foreach="traffic" t-as="t">
+									<tr>
+										<td>
+											<a t-attf-href="/my/traffic/{{t.id}}?{{keep_query()}}">
+												<t t-esc="t.name" />
+											</a>
+										</td>
+										<td>
+											<t t-if="t.affiliate_type == 'product'">
+												<a t-attf-href="/shop/product/{{t.type_id}}?{{keep_query()}}">
+													<t t-esc="t.type_name" />
+												</a>
+											</t>
+											<t t-if="t.affiliate_type == 'category'">
+												<a t-attf-href="/shop/category/{{t.type_id}}?{{keep_query()}}">
+													<t t-esc="t.type_name" />
+												</a>
+											</t>
+										</td>
+										<td>
+											<span t-field="t.affiliate_type" />
+										</td>
+										<td>
+											<span t-field="t.convert_date" />
+										</td>
+										<td>
+											<span t-field="t.commission_amt" t-options="{'widget': 'monetary', 'display_currency': t.currency_id}" />
+										</td>
+										<td>
+											<span t-field="t.state" />
+										</td>
+									</tr>
+								</t>
+							</table>
+							<div t-if="pager" class="o_portal_pager text-center">
+								<t t-call="website.pager" />
+							</div>
+						</t>
+					</div>
+				</t>
+			</t>
+		</xpath>
+	</template>
+</odoo>

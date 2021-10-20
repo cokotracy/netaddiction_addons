@@ -22,9 +22,9 @@ from odoo.osv import expression
 class WebsiteCustom(Website):
     @route(["/shop/cart/check_limit_order"], type="json", auth="public", methods=["POST"], website=True, csrf=False)
     def cart_update_json(self):
-        if request.env.user.id == request.env.ref('base.public_user').id:
-            return request.redirect('/web/login')
-            
+        if request.env.user.id == request.env.ref("base.public_user").id:
+            return request.redirect("/web/login")
+
         order = request.website.sale_get_order(force_create=1)
         for order_line in order.order_line:
             prod = order_line.product_id
@@ -71,57 +71,65 @@ class WebsiteCustom(Website):
                 if prod.sale_ok == False:
                     return {"image": prod.image_512, "out_of_stock": True, "product_name": prod.name}
 
-    @route(["/get_product_from_id"], type="json", auth="public", methods=["POST"], website=True, csrf=False)
+    @route(["/get_product_from_id"], type="json", auth="public", website=True, csrf=False)
     def get_product_from_id(self, product_id=None):
         prod = request.env["product.product"].search([("id", "=", product_id)])
-        current =  date.today()
-        current_reduced =  date.today() - timedelta(days = 20)
-        prod_out_date = ''
+        current = date.today()
+        current_reduced = datetime.now() - timedelta(days=20)
+        prod_out_date = ""
+        out_over_current = False
+        its_new = False
+
         if prod.out_date:
             prod_out_date = prod.out_date
-       
+            if prod_out_date > current:
+                out_over_current = True
+
         return {
-            "current":current,
-            "current_reduced":current_reduced,
-            "prod_out_date":prod_out_date,
+            "current": current,
+            "current_reduced": (current_reduced <= prod.create_date),
+            "prod_out_date": prod_out_date,
             "qty_sum_suppliers": prod.sudo().qty_sum_suppliers,
             "sale_ok": prod.sale_ok,
             "qty_available_now": prod.qty_available_now,
             "out_date": prod.out_date,
-            "create_date": prod.out_date,
+            "create_date": prod.create_date,
             "inventory_availability": prod.sudo().inventory_availability,
+            "user_email": "" if not request.env.user.email else request.env.user.email,
+            "out_over_current": out_over_current,
+            "its_new": its_new,
         }
 
 
 class WebsiteSaleCustom(WebsiteSale):
-#     @route(['/shop/payment'], type='http', auth="public", website=True)
-#     def payment(self, **post):
-#         prod_id = request.params.get("buynow")
+    #     @route(['/shop/payment'], type='http', auth="public", website=True)
+    #     def payment(self, **post):
+    #         prod_id = request.params.get("buynow")
 
-#         if prod_id:
-#             if request.env.user.id == request.env.ref('base.public_user').id:
-#                 return request.redirect('/web/login')
+    #         if prod_id:
+    #             if request.env.user.id == request.env.ref('base.public_user').id:
+    #                 return request.redirect('/web/login')
 
-#             order = request.env['sale.order'].sudo().create({
-#                 'partner_id': request.env.user.id,
-#                 'website_id': request.website.id,
-#             })
-#             request.env['sale.order.line'].sudo().create({
-#                 "order_id":order.id,
-#                 "product_id":int(prod_id),
-#                 "product_uom_qty":1,
-#             })
-            
-#             render_values = self._get_shop_payment_values(order, **post)
-#             render_values['only_services'] = order and order.only_services or False
+    #             order = request.env['sale.order'].sudo().create({
+    #                 'partner_id': request.env.user.id,
+    #                 'website_id': request.website.id,
+    #             })
+    #             request.env['sale.order.line'].sudo().create({
+    #                 "order_id":order.id,
+    #                 "product_id":int(prod_id),
+    #                 "product_uom_qty":1,
+    #             })
 
-#             if render_values['errors']:
-#                 render_values.pop('acquirers', '')
-#                 render_values.pop('tokens', '')
+    #             render_values = self._get_shop_payment_values(order, **post)
+    #             render_values['only_services'] = order and order.only_services or False
 
-#             return request.render("website_sale.payment", render_values)
+    #             if render_values['errors']:
+    #                 render_values.pop('acquirers', '')
+    #                 render_values.pop('tokens', '')
 
-#         return super(WebsiteSaleCustom, self).payment(**post)
+    #             return request.render("website_sale.payment", render_values)
+
+    #         return super(WebsiteSaleCustom, self).payment(**post)
 
     @route(
         [
@@ -545,9 +553,9 @@ class WalletPageOverride(Wallet):
 class WebsiteSaleCustomAddress(Controller):
     @route(["/shop/address"], type="http", methods=["GET", "POST"], auth="public", website=True, sitemap=False)
     def address(self, **kw):
-        if request.env.user.id == request.env.ref('base.public_user').id:
-            return request.redirect('/web/login')
-            
+        if request.env.user.id == request.env.ref("base.public_user").id:
+            return request.redirect("/web/login")
+
         Partner = request.env["res.partner"].with_context(show_address=1).sudo()
         order = request.website.sale_get_order()
 
@@ -887,7 +895,7 @@ class WebsiteSaleCustomAddress(Controller):
 class CustomCustomerPortal(CustomerPortal):
     @route(["/my/orders", "/my/orders/page/<int:page>"], type="http", auth="user", website=True)
     def portal_my_orders(self, page=1, date_begin=None, date_end=None, sortby=None, **kw):
-        response = super(CustomCustomerPortal, self).portal_my_orders()
+        response = super(CustomCustomerPortal, self).portal_my_orders(page,date_begin,date_end,sortby)
         response = http.Response(
             template="netaddiction_theme_rewrite.custom_portal_my_orders", qcontext=response.qcontext
         )

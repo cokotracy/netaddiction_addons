@@ -6,7 +6,7 @@
     """,
     "author": "Netaddiction",
     "category": "Custom Development",
-    "version": "1.0.0",
+    "version": "14.0.0.1.0",
     "description": """
         This module will add feature on ecommerce 'notify me when product will be available.'
         Credit: OCA

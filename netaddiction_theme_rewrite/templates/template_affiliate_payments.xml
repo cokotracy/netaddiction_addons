@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="affiliate_payment_list" inherit_id="affiliate_management.payment_tree">
+        <xpath expr="//t[@t-call='website.layout']" position="replace">
+            <t t-call="website.layout">
+                <t t-if="user_id.partner_id.is_affiliate">
+                    <t t-call="netaddiction_theme_rewrite.affiliate_menu"/>
+                    <!-- add form here tree view -->
+                    <div class="container mt16">
+                        <h3 class="page-header">
+                            Elenco movimenti
+                        </h3>
+                        <t t-if="not invoices">
+                            <p>
+                                Non ci sono ancora movimenti da mostrare.
+                            </p>
+                        </t>
+                        <t t-if="invoices">
+                            <table class="table table-hover o_my_status_table">
+                                <thead>
+                                    <tr class="active">
+                                        <th>
+                                            Codice
+                                        </th>
+                                        <th>
+                                            Valore
+                                        </th>
+                                        <th>
+                                            Data
+                                        </th>
+                                        <th>
+                                            Stato
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <t t-foreach="invoices" t-as="i">
+                                    <tr>
+                                        <td>
+                                            <a t-attf-href="/my/invoice/{{i.id}}?{{keep_query()}}">
+                                                <t t-esc="i.name" />
+                                            </a>
+                                        </td>
+                                        <td>
+                                            <span t-field="i.amount_total" />
+                                        </td>
+                                        <td>
+                                            <span t-field="i.invoice_date" />
+                                        </td>
+                                        <td>
+                                            <span t-field="i.payment_state" />
+                                        </td>
+                                    </tr>
+                                </t>
+                            </table>
+                            <div t-if="pager" class="o_portal_pager text-center">
+                                <t t-call="website.pager" />
+                            </div>
+                        </t>
+                    </div>
+                </t>
+            </t>
+        </xpath>
+    </template>
+</odoo>
