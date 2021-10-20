@@ -10,10 +10,12 @@ def get_user_token(page, social):
         return r.json()
 
 
-def create_user(users, social):
+def migrate_user_token(users, social):
     for count, user in enumerate(tqdm(users)):
         res_user = self.env["res.users"].search([("partner_id", "=", user["odoo_id"])])
         if not res_user:
+            continue
+        if res_user.id in [59475, 58689, 38598, 43997, 46400]:
             continue
         args = {}
         args["oauth_access_token"] = ""
@@ -43,7 +45,7 @@ def migrate_token(social):
         response = get_user_token(page, social)
         if response:
             next_page = True if "next" in response else False
-            create_user(response.get("results", []), social)
+            migrate_user_token(response.get("results", []), social)
             page += 1
         else:
             break
