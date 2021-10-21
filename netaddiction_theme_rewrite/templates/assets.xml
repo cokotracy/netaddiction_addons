@@ -42,7 +42,10 @@
 
             <!-- AGGIUNGE IN HEAD PER I TAG --> 
             <t t-if="'/tag/' in current_url">
-                <link href="/netaddiction_theme_rewrite/static/src/css/tag.css" rel="stylesheet"/>
+                <link href="/netaddiction_theme_rewrite/static/src/css/custom_list.css" rel="stylesheet"/>
+            </t>
+            <t t-if="'/offerte/' in current_url">
+                <link href="/netaddiction_theme_rewrite/static/src/css/custom_list.css" rel="stylesheet"/>
             </t>
 
             <!-- AGGIUNGE IN HEAD PER I TERMINI DI SPEDIZIONE -->
