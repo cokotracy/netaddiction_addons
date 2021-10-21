@@ -332,7 +332,7 @@
 									<label class="text-primary" style="font-size: 18px;">Utilizza il credito del Wallet</label>
 								</div>
 							</t>
-							<t t-if="website_sale_order.is_wallet">
+							<t t-else="">
 								<div id="wallet_checked" style="font-size: 16px;margin-right: 5px;">
 									<span><i class="fa fa-check-square-o"></i></span>
 									<label class="text-primary" style="font-size: 18px;">Utilizza il credito del Wallet</label>
