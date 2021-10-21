@@ -120,11 +120,11 @@
     <!--MENU HEADER-->
     <template id="custom_menu_dropdown" inherit_id="theme_clarico_vega.customize_header_style_10" priority="23" active="True">
         <xpath expr="//div[hasclass('js_usermenu')]" position="inside">
-            <!-- <a href="/wallet" role="menuitem" class="dropdown-item">
+            <a href="/wallet" role="menuitem" class="dropdown-item">
                 <span class="fa fa-money"/>
                 <span class="te_user_drop_item">Wallet
                 </span>
-            </a> -->
+            </a>
         </xpath>
         <xpath expr="//div[hasclass('close_top_menu')]" position="replace">
             <div class="close_top_menu"><i class="fa fa-times-circle te_menu_icon_close"></i></div>
