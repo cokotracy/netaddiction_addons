@@ -15,6 +15,7 @@ from odoo.addons.website.controllers.main import Website
 from odoo.addons.website.controllers.main import QueryURL
 from odoo.addons.http_routing.models.ir_http import slug
 from odoo.addons.sale.controllers.portal import CustomerPortal
+import ast
 
 from odoo.osv import expression
 
@@ -495,46 +496,154 @@ class CustomShipping(Controller):
     def controller(self, **post):
         return request.render("netaddiction_theme_rewrite.template_shipping_terms", {})
 
-
 # AGGIUNGE PAGINE DINAMICHE PER I TAG
-class CustomTagPage(Controller):
-    @route(["/tag/<string:tag_name>"], type="http", auth="public", website=True)
-    def controller(self, tag_name, **kw):
+class CustomListPage(Controller):
+    @route(["/offerte/<string:offer_name>"], type="http", auth="public", website=True)
+    def controllerOffer(self, offer_name, **kw):
 
-        tag = request.env["product.template.tag"].sudo().search([("name", "=", tag_name)])
+        status_filter = request.params.get("status-filter")
+        tag_filter = request.params.get("tag-filter")
+
+        offer = request.env["coupon.program"].sudo().search([("name", "=ilike", offer_name)],limit=1)
+
+        if not offer.id:
+            page = request.website.is_publisher() and "website.page_404" or "http_routing.404"
+            return request.render(page, {})
+
+        else:
+            domain = ast.literal_eval(offer.rule_id.rule_products_domain)
+            if tag_filter:
+                tag_filter = tag_filter.split(",")
+
+            if not status_filter:
+                new_dom = [
+                    "|",
+                    ("product_variant_ids.out_date", ">", date.today()),
+                    ("product_variant_ids.qty_available_now", ">", 0),
+                ]
+                domain = expression.AND([new_dom, domain])
+
+            else:
+                status_filter = status_filter.split(",")
+                domain = self._filters_pre_products(filters=status_filter, domain=domain)
+        
+        if domain:
+            page_size = 19
+            start_element = 0
+            current_page = 0
+
+            if kw.get("page"):
+                current_page = int(kw.get("page")) - 1
+                start_element = page_size * (int(kw.get("page")) - 1)
+
+            product_count = request.env["product.template"].sudo().search_count(domain)
+
+            product_list_id = (
+                request.env["product.template"]
+                .sudo()
+                .search(domain, limit=page_size, offset=start_element)
+            )
+            page_number = product_count / page_size
+
+            if page_number > int(page_number):
+                page_number = page_number + 1
+
+            values = {
+                "offer_name": offer_name,
+                "page_number": int(page_number),
+                "current_page": current_page,
+                "page_size": page_size,
+                "product_list_id": product_list_id,
+            }
+            return request.render("netaddiction_theme_rewrite.offer_template", values)
+
+        else:
+            if not offer.id:
+                page = request.website.is_publisher() and "website.page_404" or "http_routing.404"
+                return request.render(page, {})
+
+
+    @route(["/tag/<string:tag_name>"], type="http", auth="public", website=True)
+    def controllerTag(self, tag_name, **kw):
+
+        status_filter = request.params.get("status-filter")
+        tag = request.env["product.template.tag"].sudo().search([("name", "=", tag_name)], limit=1)
+        domain = [("tag_ids", "=", tag.id)]
 
         if not tag.id:
             page = request.website.is_publisher() and "website.page_404" or "http_routing.404"
             return request.render(page, {})
 
-        page_size = 15
-        start_element = 0
-        current_page = 0
+        else:
+            if not status_filter:
+                new_dom = [
+                    "|",
+                    ("product_variant_ids.out_date", ">", date.today()),
+                    ("product_variant_ids.qty_available_now", ">", 0),
+                ]
+                domain = expression.AND([new_dom, domain])
+            else:
+                status_filter = status_filter.split(",")
+                domain = self._filters_pre_products(filters=status_filter, domain=domain)
 
-        if kw.get("page"):
-            current_page = int(kw.get("page")) - 1
-            start_element = page_size * (int(kw.get("page")) - 1)
+            page_size = 19
+            start_element = 0
+            current_page = 0
 
-        product_count = request.env["product.template"].sudo().search_count([("tag_ids", "=", tag.id)])
-        product_list_id = (
-            request.env["product.template"]
-            .sudo()
-            .search([("tag_ids", "=", tag.id)], limit=page_size, offset=start_element)
-        )
-        page_number = product_count / page_size
+            if kw.get("page"):
+                current_page = int(kw.get("page")) - 1
+                start_element = page_size * (int(kw.get("page")) - 1)
+   
+            product_count = request.env["product.template"].sudo().search_count(domain)
+            
+            product_list_id = (
+                request.env["product.template"]
+                .sudo()
+                .search(domain, limit=page_size, offset=start_element)
+            )
 
-        if page_number > int(page_number):
-            page_number = page_number + 1
+            page_number = product_count / page_size
 
-        values = {
-            "tag_name": tag_name,
-            "page_number": int(page_number),
-            "current_page": current_page,
-            "page_size": page_size,
-            "product_list_id": product_list_id,
-        }
-        return request.render("netaddiction_theme_rewrite.template_tag", values)
+            if page_number > int(page_number):
+                page_number = page_number + 1
 
+            values = {
+                "tag_name": tag_name,
+                "page_number": int(page_number),
+                "current_page": current_page,
+                "page_size": page_size,
+                "product_list_id": product_list_id,
+            }
+            return request.render("netaddiction_theme_rewrite.template_tag", values)
+
+
+    def _filters_pre_products(self, filters, domain):
+        if len(filters) == 1:
+            for filter in filters:
+                if filter == "stock":
+                    domain = expression.AND([[("product_variant_ids.qty_available_now", ">", 0)], domain])
+
+                if filter == "preorder":
+                    domain = expression.AND([[("product_variant_ids.out_date", ">", date.today())], domain])
+
+                if filter == "new":
+                    domain = expression.AND([[("create_date", ">", (date.today() - timedelta(days=20)))], domain])
+        else:
+            if len(filters) > 1:
+                new_domain = ["|"]
+                for filter in filters:
+                    if filter == "stock":
+                        new_domain.append(("product_variant_ids.qty_available_now", ">", 0))
+
+                    if filter == "preorder":
+                        new_domain.append(("product_variant_ids.out_date", ">", date.today()))
+
+                    if filter == "new":
+                        new_domain.append(("create_date", ">", (date.today() - timedelta(days=20))))
+
+                domain = expression.AND([new_domain, domain])
+
+        return domain
 
 # ESTENDE LA WALLET BALANCE PAGE
 class WalletPageOverride(Wallet):
