@@ -33,7 +33,17 @@ class ResPartner(models.Model):
     def write(self, values):
         if self.env.context.get('skip_reduplicate_partner', False):
             return super().write(values)
-        changed_fields = set(values).intersection(self.FIELDS_FREEZE)
+        # TODO: FIXME The best way to execute this kind of check is to keep
+        # values before and after the write and raise an error
+        # only if values are changed.
+        # In a write is possibile to send the some data again to the record
+        # but this not means that them are changed.
+        # Delete empty value from values to check
+        values_to_check = values.copy()
+        for val_key, val_value in values.items():
+            if not val_value:
+                del values_to_check[val_key]
+        changed_fields = set(values_to_check).intersection(self.FIELDS_FREEZE)
         if changed_fields:
             partners_on_orders = []
             order_model = self.env['sale.order']

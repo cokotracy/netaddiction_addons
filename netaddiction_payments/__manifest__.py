@@ -12,7 +12,7 @@
     "author": "Netaddiction",
     "website": "http://www.netaddiction.it",
     "category": "Technical Settings",
-    "version": "14.0.2.2.1",
+    "version": "14.0.2.3.1",
     "depends": [
         "account",
         "product",
@@ -25,5 +25,7 @@
         "views/stock_picking.xml",
         "views/stripe/templates.xml",
         "views/stripe/payment_views.xml",
+        "wizard/stripe_payment_transaction.xml",
+        "security/ir.model.access.csv",
     ],
 }
