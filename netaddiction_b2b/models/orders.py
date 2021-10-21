@@ -10,9 +10,11 @@ class SaleOrder(models.Model):
     _inherit = 'sale.order'
 
     is_b2b = fields.Boolean(
-        string="Is a B2B"
+        string="Is a B2B",
+        compute='_get_partner_data_b2b',
     )
 
+    @api.depends('partner_id')
     @api.onchange('partner_id')
     def _get_partner_data_b2b(self):
         for order in self:
@@ -20,3 +22,4 @@ class SaleOrder(models.Model):
                 order.partner_id.is_b2b \
                 if order.partner_id \
                 else False
+

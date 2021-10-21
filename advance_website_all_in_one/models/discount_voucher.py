@@ -20,6 +20,7 @@ class sale_order(models.Model):
 	def _cart_update(self, product_id=None, line_id=None, add_qty=0, set_qty=0, **kwargs):
 		""" Add or set product quantity, add_qty can be negative """
 		self.ensure_one()
+		self = self.with_context(is_cart_update=True)
 		product_context = dict(self.env.context)
 		product_context.setdefault('lang', self.sudo().partner_id.lang)
 		SaleOrderLineSudo = self.env['sale.order.line'].sudo().with_context(product_context)
