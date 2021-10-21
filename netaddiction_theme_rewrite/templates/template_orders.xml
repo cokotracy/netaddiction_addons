@@ -64,7 +64,9 @@
                                                 <br/>
                                                 <div class="mt-2">
                                                     <small>Uscita prevista:</small>
-                                                    <small style="font-size:11px;" class="order-details-btn mx-auto"><t t-esc="line.product_id.out_date.strftime('%d / %m / %Y')"/></small>
+                                                    <t t-if="line.product_id.out_date">
+                                                        <small style="font-size:11px;" class="order-details-btn mx-auto"><t t-esc="line.product_id.out_date.strftime('%d / %m / %Y')"/></small>
+                                                    </t>
                                                 </div>
                                             </t>
                                         </div>
