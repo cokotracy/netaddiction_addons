@@ -17,8 +17,6 @@ from odoo.addons.website.controllers.main import QueryURL
 from odoo.addons.http_routing.models.ir_http import slug
 from odoo.addons.sale.controllers.portal import CustomerPortal
 import ast
-import types
-
 from odoo.osv import expression
 
 
