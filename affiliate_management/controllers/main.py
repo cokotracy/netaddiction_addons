@@ -63,7 +63,7 @@ class WebsiteSale(WebsiteSale):
             expire = self.calc_cookie_expire_date()
             path = request.httprequest.full_path
             partner_id = request.env['res.partner'].sudo().search([('res_affiliate_key','=',aff_key),('is_affiliate','=',True)])
-            vals = self.create_affiliate_visit(aff_key,partner_id,category)
+            vals = self._create_affiliate_visit(aff_key,partner_id,category)
             vals.update({'affiliate_type':'category'})
             if ( len(partner_id) == 1):
                 affiliate_visit = self.create_aff_visit_entry(vals) if enable_ppc else False
@@ -79,30 +79,27 @@ class WebsiteSale(WebsiteSale):
         return result
 
 
-    @http.route(['/shop/product/<model("product.template"):product>'], type='http', auth="public", website=True)
-    def old_product(self, product, category='', search='', **kwargs):
-      _logger.info("=====product page=========")
-      _logger.info("=====product page aff_key==%r=========",request.httprequest.args)
-      enable_ppc = request.env['res.config.settings'].sudo().website_constant().get('enable_ppc')
-      expire = self.calc_cookie_expire_date()
+    @http.route(['/shop/<model("product.template"):product>'], type="http", auth="public", website=True)
+    def product(self, product, category="", search="", **kwargs):
+        enable_ppc = request.env["res.config.settings"].sudo().website_constant().get("enable_ppc")
+        expire = self.calc_cookie_expire_date()
 
-      result = super(WebsiteSale,self).old_product(product=product, category=category, search=search, **kwargs)
-      if request.httprequest.args.get('aff_key'):
-        # path is the complete url with url = xxxx?aff_key=XXXXXXXX
-        path = request.httprequest.full_path
-        # aff_key is fetch from url
-        aff_key = request.httprequest.args.get('aff_key')
-        partner_id = request.env['res.partner'].sudo().search([('res_affiliate_key','=',aff_key),('is_affiliate','=',True)])
-        vals = self.create_affiliate_visit(aff_key,partner_id,product)
-        vals.update({'affiliate_type':'product'})
-        if ( len(partner_id) == 1  and 'product' in path):
-          affiliate_visit = self.create_aff_visit_entry(vals) if enable_ppc else False
-          # "create_aff_visit_entry " this methods check weather the visit is already created or not or if created return the no. of existing record in object
-          result.set_cookie(key='affkey_%s'%(aff_key),value='product_%s'%(product.id),expires=expire)
-          _logger.info("============affiliate_visit created by product==%r=======",affiliate_visit)
-        else:
-          _logger.info("=====affiliate_visit not created by product===========%s %s"%(aff_key,partner_id))
-      return result
+        result = super(WebsiteSale, self).product(product=product, category=category, search=search, **kwargs)
+        if request.httprequest.args.get("aff_key"):
+            # aff_key is fetch from url
+            aff_key = request.httprequest.args.get("aff_key")
+            partner_id = (
+                request.env["res.partner"]
+                .sudo()
+                .search([("res_affiliate_key", "=", aff_key), ("is_affiliate", "=", True)])
+            )
+            if len(partner_id) > 1:
+                partner_id = partner_id[0]
+            vals = self._create_affiliate_visit(aff_key, partner_id, product)
+            vals.update({"affiliate_type": "product"})
+            self.create_aff_visit_entry(vals) if enable_ppc else False
+            result.set_cookie(key="affkey_%s" % (aff_key), value="product_%s" % (product.id), expires=expire)
+        return result
 
 
 
@@ -112,10 +109,10 @@ class WebsiteSale(WebsiteSale):
       result = super(WebsiteSale,self).payment_confirmation(**post)
       # here result id http.render argument is http.render{ http.render(template, qcontext=None, lazy=True, **kw) }
       sale_order_id = result.qcontext.get('order')
-      return self.update_affiliate_visit_cookies( sale_order_id,result )
+      return self._update_affiliate_visit_cookies( sale_order_id,result )
 
 
-    def create_affiliate_visit(self,aff_key,partner_id,type_id):
+    def _create_affiliate_visit(self,aff_key,partner_id,type_id):
       """ method to  delete the cookie after update function on id"""
       vals = {
             'affiliate_method':'ppc',
@@ -129,7 +126,7 @@ class WebsiteSale(WebsiteSale):
         }
       return vals
 
-    def update_affiliate_visit_cookies(self , sale_order_id ,result):
+    def _update_affiliate_visit_cookies(self , sale_order_id ,result):
       """update affiliate.visit from cokkies data i.e created in product and shop method"""
       cookies = dict(request.httprequest.cookies)
       visit = request.env['affiliate.visit']
@@ -140,7 +137,7 @@ class WebsiteSale(WebsiteSale):
       if arr:
           partner_id = request.env['res.partner'].sudo().search([('res_affiliate_key','=',arr[0]),('is_affiliate','=',True)])
           for s in sale_order_id.order_line:
-            if len(arr)>0 and partner_id:
+            if s.product_id.type != "service" and len(arr)>0 and partner_id:
               product_tmpl_id = s.product_id.product_tmpl_id.id
               aff_visit = visit.sudo().create({
                 'affiliate_method':'pps',
