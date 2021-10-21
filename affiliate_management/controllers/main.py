@@ -93,8 +93,8 @@ class WebsiteSale(WebsiteSale):
                 .sudo()
                 .search([("res_affiliate_key", "=", aff_key), ("is_affiliate", "=", True)])
             )
-            if len(partner_id) != 1:
-                return
+            if len(partner_id) > 1:
+                partner_id = partner_id[0]
             vals = self._create_affiliate_visit(aff_key, partner_id, product)
             vals.update({"affiliate_type": "product"})
             self.create_aff_visit_entry(vals) if enable_ppc else False
