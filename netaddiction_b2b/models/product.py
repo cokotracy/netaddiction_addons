@@ -4,6 +4,14 @@
 from odoo import api, fields, models
 
 
+class ProductTemplate(models.Model):
+    _inherit = 'product.template'
+
+    sale_b2b_ko = fields.Boolean(
+        string="Escludi dal B2B",
+    )
+
+
 class Products(models.Model):
 
     _inherit = 'product.product'
