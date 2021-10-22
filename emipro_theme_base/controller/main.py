@@ -317,9 +317,9 @@ class Website(Website):
                                                        request.params['password'])
                     user = request.env['res.users'].browse(uid)
                     redirect = '1'
-                    if user.totp_enabled:
-                        redirect = request.env(user=uid)['res.users'].browse(uid)._mfa_url()
-                        return json.dumps({'redirect': redirect, 'login_success': True, 'hide_msg': True})
+                    # if user.totp_enabled:
+                    #     redirect = request.env(user=uid)['res.users'].browse(uid)._mfa_url()
+                    #     return json.dumps({'redirect': redirect, 'login_success': True, 'hide_msg': True})
                     if user.has_group('base.group_user'):
                         redirect = b'/web?' + request.httprequest.query_string
                         redirect = redirect.decode('utf-8')
