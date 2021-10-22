@@ -9,3 +9,4 @@ from . import pricelist
 from . import orders
 from . import partner
 from . import picking
+from . import account_tax
