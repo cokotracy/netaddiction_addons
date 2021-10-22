@@ -49,7 +49,7 @@
 										</td>
 										<td>
 											<!-- <span t-field="t.type_name"/> -->
-											<a t-attf-href="/shop/product/{{t.type_id}}?{{keep_query()}}">
+											<a t-attf-href="/shop/{{t.type_id}}?{{keep_query()}}">
 												<t t-esc="t.type_name" />
 											</a>
 										</td>

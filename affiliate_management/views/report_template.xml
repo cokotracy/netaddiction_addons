@@ -166,7 +166,7 @@
                                       </td>
                                       <td>
                                           <t t-if="t.affiliate_type == 'product'">
-                                              <a t-attf-href="/shop/product/{{t.type_id}}?{{keep_query()}}"> <t t-esc="t.type_name"/></a>
+                                              <a t-attf-href="/shop/{{t.type_id}}?{{keep_query()}}"> <t t-esc="t.type_name"/></a>
                                           </t>
                                           <t t-if="t.affiliate_type == 'category'">
                                               <a t-attf-href="/shop/category/{{t.type_id}}?{{keep_query()}}"> <t t-esc="t.type_name"/></a>
@@ -448,7 +448,7 @@
 
                                       <td>
                                         <!-- <span t-field="t.type_name"/> -->
-                                        <a t-attf-href="/shop/product/{{t.type_id}}?{{keep_query()}}"> <t t-esc="t.type_name"/></a>
+                                        <a t-attf-href="/shop/{{t.type_id}}?{{keep_query()}}"> <t t-esc="t.type_name"/></a>
                                       </td>
                                       <td>
                                           <span t-field="t.affiliate_type"/>

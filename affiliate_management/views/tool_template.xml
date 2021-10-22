@@ -114,7 +114,7 @@
                                   <div class="container">
                                     <form role="form" class="form-inline" t-attf-action="/tool/create_link" method="post">
                                          <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
-                                          <input type="link" name="link" t-att-value="link" id="link" class="form-control" required="required" autofocus="autofocus" placeholder="eg. www.localhost:8069/shop/product/e-com10-apple-wireless-keyboard-16" style="width:550px"/>
+                                          <input type="link" name="link" t-att-value="link" id="link" class="form-control" required="required" autofocus="autofocus" placeholder="eg. www.localhost:8069/shop/e-com10-apple-wireless-keyboard-16" style="width:550px"/>
                                           <button type="submit" class="btn btn-primary">Generate</button>
                                       </form>
                                   </div>
