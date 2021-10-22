@@ -12,6 +12,7 @@ class SaleOrder(models.Model):
     is_b2b = fields.Boolean(
         string="Is a B2B",
         compute='_get_partner_data_b2b',
+        store=True,
     )
 
     @api.depends('partner_id')
