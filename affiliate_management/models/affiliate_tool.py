@@ -29,7 +29,7 @@ class AffiliateTool(models.TransientModel):
                 key = self.env['res.users'].browse(self.env.uid).res_affiliate_key
             type_url = ""
             if self.entity == 'product':
-                type_url = '/shop/product/'+str(self.aff_product_id.id)
+                type_url = '/shop/'+str(self.aff_product_id.id)
             if self.entity == 'category':
                 type_url = '/shop/category/'+str(self.aff_category_id.id)
             base_url = self.env['ir.config_parameter'].get_param('web.base.url')
