@@ -173,6 +173,21 @@ class WebsiteSaleCustom(WebsiteSale):
         sitemap=WebsiteSale.sitemap_shop,
     )
     def shop(self, page=0, category=None, search="", ppg=False, **post):
+        current_website = request.website
+        current_url = request.httprequest.full_path
+
+        if not "/web/login" in current_url:
+            if current_website.isB2B and request.env.user.id == request.env.ref("base.public_user").id:
+                return request.redirect("/web/login")
+            else:
+                if (
+                    current_website.isB2B
+                    and not request.env.user.is_b2b
+                    and not request.env.user.has_group("base.group_user")
+                ):
+                    request.session.logout()
+                    return request.redirect("https//multiplayer.com")
+
         add_qty = int(post.get("add_qty", 1))
 
         status_filter = request.params.get("status-filter")
@@ -419,6 +434,21 @@ class WebsiteSaleCustom(WebsiteSale):
 class CustomPrivacy(Controller):
     @route("/privacy/", type="http", auth="public", website=True)
     def controller(self, **post):
+        current_website = request.website
+        current_url = request.httprequest.full_path
+
+        if not "/web/login" in current_url:
+            if current_website.isB2B and request.env.user.id == request.env.ref("base.public_user").id:
+                return request.redirect("/web/login")
+            else:
+                if (
+                    current_website.isB2B
+                    and not request.env.user.is_b2b
+                    and not request.env.user.has_group("base.group_user")
+                ):
+                    request.session.logout()
+                    return request.redirect("https//multiplayer.com")
+
         return request.render("netaddiction_theme_rewrite.template_privacy_policy", {})
 
 
@@ -522,6 +552,21 @@ class CustomCustomerPortal(Controller):
 class CustomShipping(Controller):
     @route("/costi-metodi-spedizione/", type="http", auth="public", website=True)
     def controller(self, **post):
+        current_website = request.website
+        current_url = request.httprequest.full_path
+
+        if not "/web/login" in current_url:
+            if current_website.isB2B and request.env.user.id == request.env.ref("base.public_user").id:
+                return request.redirect("/web/login")
+            else:
+                if (
+                    current_website.isB2B
+                    and not request.env.user.is_b2b
+                    and not request.env.user.has_group("base.group_user")
+                ):
+                    request.session.logout()
+                    return request.redirect("https//multiplayer.com")
+
         return request.render("netaddiction_theme_rewrite.template_shipping_terms", {})
 
 
@@ -529,6 +574,20 @@ class CustomShipping(Controller):
 class CustomListPage(Controller):
     @route(["/offerte/<string:offer_name>"], type="http", auth="public", website=True)
     def controllerOffer(self, offer_name, **kw):
+        current_website = request.website
+        current_url = request.httprequest.full_path
+
+        if not "/web/login" in current_url:
+            if current_website.isB2B and request.env.user.id == request.env.ref("base.public_user").id:
+                return request.redirect("/web/login")
+            else:
+                if (
+                    current_website.isB2B
+                    and not request.env.user.is_b2b
+                    and not request.env.user.has_group("base.group_user")
+                ):
+                    request.session.logout()
+                    return request.redirect("https//multiplayer.com")
 
         status_filter = request.params.get("status-filter")
         tag_filter = request.params.get("tag-filter")
@@ -591,6 +650,20 @@ class CustomListPage(Controller):
 
     @route(["/tag/<string:tag_name>"], type="http", auth="public", website=True)
     def controllerTag(self, tag_name, **kw):
+        current_website = request.website
+        current_url = request.httprequest.full_path
+
+        if not "/web/login" in current_url:
+            if current_website.isB2B and request.env.user.id == request.env.ref("base.public_user").id:
+                return request.redirect("/web/login")
+            else:
+                if (
+                    current_website.isB2B
+                    and not request.env.user.is_b2b
+                    and not request.env.user.has_group("base.group_user")
+                ):
+                    request.session.logout()
+                    return request.redirect("https//multiplayer.com")
 
         status_filter = request.params.get("status-filter")
         tag = request.env["product.template.tag"].sudo().search([("name", "=", tag_name)], limit=1)
@@ -673,11 +746,41 @@ class CustomListPage(Controller):
 class WalletPageOverride(Wallet):
     @route(["/wallet"], type="http", auth="public", website=True)
     def wallet_balance(self, **post):
+        current_website = request.website
+        current_url = request.httprequest.full_path
+
+        if not "/web/login" in current_url:
+            if current_website.isB2B and request.env.user.id == request.env.ref("base.public_user").id:
+                return request.redirect("/web/login")
+            else:
+                if (
+                    current_website.isB2B
+                    and not request.env.user.is_b2b
+                    and not request.env.user.has_group("base.group_user")
+                ):
+                    request.session.logout()
+                    return request.redirect("https//multiplayer.com")
+
         sup = super(WalletPageOverride, self).wallet_balance()
         return request.render("netaddiction_theme_rewrite.wallet_balance", sup.qcontext)
 
     @route(["/add/wallet/balance"], type="http", auth="public", website=True)
     def add_wallet_balance(self, **post):
+        current_website = request.website
+        current_url = request.httprequest.full_path
+
+        if not "/web/login" in current_url:
+            if current_website.isB2B and request.env.user.id == request.env.ref("base.public_user").id:
+                return request.redirect("/web/login")
+            else:
+                if (
+                    current_website.isB2B
+                    and not request.env.user.is_b2b
+                    and not request.env.user.has_group("base.group_user")
+                ):
+                    request.session.logout()
+                    return request.redirect("https//multiplayer.com")
+
         sup = super(WalletPageOverride, self).add_wallet_balance()
         return request.render("netaddiction_theme_rewrite.add_wallet_balance", sup.qcontext)
 
@@ -686,8 +789,23 @@ class WalletPageOverride(Wallet):
 class WebsiteSaleCustomAddress(Controller):
     @route(["/shop/address"], type="http", methods=["GET", "POST"], auth="public", website=True, sitemap=False)
     def address(self, **kw):
-        if request.env.user.id == request.env.ref("base.public_user").id:
-            return request.redirect("/web/login")
+        current_website = request.website
+        current_url = request.httprequest.full_path
+
+        if not "/web/login" in current_url:
+            if current_website.isB2B and request.env.user.id == request.env.ref("base.public_user").id:
+                return request.redirect("/web/login")
+            else:
+                if (
+                    current_website.isB2B
+                    and not request.env.user.is_b2b
+                    and not request.env.user.has_group("base.group_user")
+                ):
+                    request.session.logout()
+                    return request.redirect("https//multiplayer.com")
+
+            if request.env.user.id == request.env.ref("base.public_user").id:
+                return request.redirect("/web/login")
 
         Partner = request.env["res.partner"].with_context(show_address=1).sudo()
         order = request.website.sale_get_order()
@@ -771,6 +889,21 @@ class WebsiteSaleCustomAddress(Controller):
 
     @route(["/my/home/address-edit"], type="http", methods=["GET", "POST"], auth="public", website=True, sitemap=False)
     def address_edit(self, **kw):
+        current_website = request.website
+        current_url = request.httprequest.full_path
+
+        if not "/web/login" in current_url:
+            if current_website.isB2B and request.env.user.id == request.env.ref("base.public_user").id:
+                return request.redirect("/web/login")
+            else:
+                if (
+                    current_website.isB2B
+                    and not request.env.user.is_b2b
+                    and not request.env.user.has_group("base.group_user")
+                ):
+                    request.session.logout()
+                    return request.redirect("https//multiplayer.com")
+
         Partner = request.env["res.partner"].with_context(show_address=1).sudo()
         order = request.website.sale_get_order()
 
