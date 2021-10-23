@@ -255,7 +255,7 @@ class ProductPriceItems(models.Model):
             try:
                 prid = item.pricelist_id.id
                 item.b2b_real_price = item.product_id.taxes_id.compute_all(
-                    price[item.pricelist_id.id][0])['total_excluded']
+                    price[item.pricelist_id.id][0])['total_included']
             except:
                 item.b2b_real_price = 0.0
 
