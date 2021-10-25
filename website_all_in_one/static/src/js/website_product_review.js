@@ -32,7 +32,8 @@ function() {
 	var p=product_rate_value.toFixed(2);
 	
 	if(total_reviews){
-		document.getElementById('rate_tooltip').title= p + ' Average Review from ' + total_reviews.value+' Reviews';
+    if(!isNaN(p))
+      document.getElementById('rate_tooltip').title= p + ' Average Review from ' + total_reviews.value+' Reviews';
 	}
 	
 	$(this).html($('<span />').width(Math.max(0, (Math.min(5, product_rate_value))) * 16.8));

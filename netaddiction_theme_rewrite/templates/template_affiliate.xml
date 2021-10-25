@@ -15,7 +15,7 @@
 						<t t-if="request.env.user.id == request.env.ref('base.public_user').id">
 							<script>
 								document.addEventListener("DOMContentLoaded", function() {
-									window.location.href="/web/login?redirect=/affiliate";
+									window.location.href="/web/login";
 								});
 							</script>
 						</t>
