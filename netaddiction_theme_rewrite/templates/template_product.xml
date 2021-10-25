@@ -164,4 +164,10 @@
             </t>
         </xpath>
     </template>
+
+    <template id="recently_view_custop" inherit_id="website_sale.s_products_recently_viewed">
+        <xpath expr="//h3[hasclass('text-center')]" position="replace">
+            <h3 class="text-center mb32">Visti di recente</h3>
+        </xpath>
+    </template>
 </odoo>

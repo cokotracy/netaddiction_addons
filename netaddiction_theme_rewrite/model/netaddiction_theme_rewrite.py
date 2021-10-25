@@ -186,7 +186,7 @@ class WebsiteSaleCustom(WebsiteSale):
                     and not request.env.user.has_group("base.group_user")
                 ):
                     request.session.logout()
-                    return request.redirect("https//multiplayer.com")
+                    return request.redirect("https://multiplayer.com")
 
         add_qty = int(post.get("add_qty", 1))
 
@@ -447,7 +447,7 @@ class CustomPrivacy(Controller):
                     and not request.env.user.has_group("base.group_user")
                 ):
                     request.session.logout()
-                    return request.redirect("https//multiplayer.com")
+                    return request.redirect("https://multiplayer.com")
 
         return request.render("netaddiction_theme_rewrite.template_privacy_policy", {})
 
@@ -565,7 +565,7 @@ class CustomShipping(Controller):
                     and not request.env.user.has_group("base.group_user")
                 ):
                     request.session.logout()
-                    return request.redirect("https//multiplayer.com")
+                    return request.redirect("https://multiplayer.com")
 
         return request.render("netaddiction_theme_rewrite.template_shipping_terms", {})
 
@@ -587,7 +587,7 @@ class CustomListPage(Controller):
                     and not request.env.user.has_group("base.group_user")
                 ):
                     request.session.logout()
-                    return request.redirect("https//multiplayer.com")
+                    return request.redirect("https://multiplayer.com")
 
         status_filter = request.params.get("status-filter")
         tag_filter = request.params.get("tag-filter")
@@ -663,7 +663,7 @@ class CustomListPage(Controller):
                     and not request.env.user.has_group("base.group_user")
                 ):
                     request.session.logout()
-                    return request.redirect("https//multiplayer.com")
+                    return request.redirect("https://multiplayer.com")
 
         status_filter = request.params.get("status-filter")
         tag = request.env["product.template.tag"].sudo().search([("name", "=", tag_name)], limit=1)
@@ -759,7 +759,7 @@ class WalletPageOverride(Wallet):
                     and not request.env.user.has_group("base.group_user")
                 ):
                     request.session.logout()
-                    return request.redirect("https//multiplayer.com")
+                    return request.redirect("https://multiplayer.com")
 
         sup = super(WalletPageOverride, self).wallet_balance()
         return request.render("netaddiction_theme_rewrite.wallet_balance", sup.qcontext)
@@ -779,7 +779,7 @@ class WalletPageOverride(Wallet):
                     and not request.env.user.has_group("base.group_user")
                 ):
                     request.session.logout()
-                    return request.redirect("https//multiplayer.com")
+                    return request.redirect("https://multiplayer.com")
 
         sup = super(WalletPageOverride, self).add_wallet_balance()
         return request.render("netaddiction_theme_rewrite.add_wallet_balance", sup.qcontext)
@@ -802,7 +802,7 @@ class WebsiteSaleCustomAddress(Controller):
                     and not request.env.user.has_group("base.group_user")
                 ):
                     request.session.logout()
-                    return request.redirect("https//multiplayer.com")
+                    return request.redirect("https://multiplayer.com")
 
             if request.env.user.id == request.env.ref("base.public_user").id:
                 return request.redirect("/web/login")
@@ -902,7 +902,7 @@ class WebsiteSaleCustomAddress(Controller):
                     and not request.env.user.has_group("base.group_user")
                 ):
                     request.session.logout()
-                    return request.redirect("https//multiplayer.com")
+                    return request.redirect("https://multiplayer.com")
 
         Partner = request.env["res.partner"].with_context(show_address=1).sudo()
         order = request.website.sale_get_order()

@@ -3,7 +3,7 @@
 
 {
     "name" : "Website eCommerce All in One Features/Bundle - Odoo",
-    "version" : "14.0.1.0.4",
+    "version" : "14.0.1.1.4",
     "category" : "Website",
     "depends" : ['base', 'sale','sale_management','stock', 'web','website', 'website_sale', 'portal','account','sale_product_configurator','theme_clarico_vega'],
     "author": "BrowseInfo",
