@@ -83,7 +83,6 @@ class StripeAcquirer(models.Model):
         stripe.api_key = self.sudo().netaddiction_stripe_sk
         card_token = data.get("token")
         partner = data.get("partner_id")
-
         customer = self._get_or_create_customer(partner)
         card = self._check_association_cc(card_token["id"], customer)
         if self.env["payment.token"].sudo().search([("netaddiction_stripe_payment_method", "=", card["id"])]):
@@ -107,7 +106,7 @@ class StripeAcquirer(models.Model):
                 }
             )
         )
-        payment_token.validate()
+        payment_token.verified = True
 
         if (
             not self.env["payment.token"]

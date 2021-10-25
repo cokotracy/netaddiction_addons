@@ -5,7 +5,7 @@ import logging
 import pprint
 import werkzeug
 import json
-from odoo import SUPERUSER_ID, http, tools, _
+from odoo import SUPERUSER_ID, http, tools, _, fields
 from odoo.http import request
 from datetime import datetime, timedelta, date
 from odoo.addons.website_sale.controllers.main import WebsiteSale
@@ -311,7 +311,11 @@ class AdvanceCartSetting(WebsiteSale):
             order.with_context(send_email=True).action_confirm()
             order._send_order_confirmation_mail()
             request.website.sale_reset()
-            return request.render("website_sale.confirmation", {'order': order})
+            result = request.render("website_sale.confirmation", {'order': order})
+            affiliate_module = request.env['ir.module.module'].sudo().search([('name', '=', 'affiliate_management')])
+            if affiliate_module and affiliate_module.state == 'installed':
+                return self._update_affiliate_visit_cookies(order, result)
+            return result
 
         if 'wallet_product_id' in request.env['website']._fields:
             product = request.website.wallet_product_id
@@ -370,6 +374,47 @@ class AdvanceCartSetting(WebsiteSale):
 
         PaymentProcessing.remove_payment_transaction(tx)
         return request.redirect('/shop/confirmation')
+
+    def _update_affiliate_visit_cookies(self, sale_order_id, result):
+        """update affiliate.visit from cokkies data i.e created in product and shop method"""
+        cookies = dict(request.httprequest.cookies)
+        visit = request.env["affiliate.visit"]
+        arr = []  # contains cookies product_id
+        for k, v in cookies.items():
+            if "affkey_" in k:
+                arr.append(k.split("_")[1])
+        if arr:
+            partner_id = (
+                request.env["res.partner"]
+                .sudo()
+                .search([("res_affiliate_key", "=", arr[0]), ("is_affiliate", "=", True)])
+            )
+            for s in sale_order_id.order_line:
+                if s.product_id.type != "service" and len(arr) > 0 and partner_id:
+                    product_tmpl_id = s.product_id.product_tmpl_id.id
+                    aff_visit = visit.sudo().create(
+                        {
+                            "affiliate_method": "pps",
+                            "affiliate_key": arr[0],
+                            "affiliate_partner_id": partner_id.id,
+                            "url": "",
+                            "ip_address": request.httprequest.environ["REMOTE_ADDR"],
+                            "type_id": product_tmpl_id,
+                            "affiliate_type": "product",
+                            "type_name": s.product_id.id,
+                            "sales_order_line_id": s.id,
+                            "convert_date": fields.datetime.now(),
+                            "affiliate_program_id": partner_id.affiliate_program_id.id,
+                            "product_quantity": s.product_uom_qty,
+                            "is_converted": True,
+                        }
+                    )
+            # delete cookie after first sale occur
+            cookie_del_status = False
+            for k, v in cookies.items():
+                if "affkey_" in k:
+                    cookie_del_status = result.delete_cookie(key=k)
+        return result
 
     def _apply_coupon(self,arg):
         partner_record_id = request.env['res.users'].browse(request._uid).partner_id.id
