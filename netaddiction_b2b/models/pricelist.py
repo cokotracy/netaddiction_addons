@@ -255,6 +255,25 @@ class ProductPriceItems(models.Model):
             try:
                 prid = item.pricelist_id.id
                 item.b2b_real_price = item.product_id.taxes_id.compute_all(
-                    price[item.pricelist_id.id][0])['total_excluded']
+                    price[item.pricelist_id.id][0])['total_included']
             except:
                 item.b2b_real_price = 0.0
+
+
+class ProductPricelistDynamicDomain(models.Model):
+
+    _inherit = 'product.pricelist.dynamic.domain'
+
+    def _get_item_data(self):
+        item_data = super()._get_item_data()
+        if self.pricelist_id.is_b2b and \
+                item_data.get('compute_price', '') == 'percentage':
+            value = item_data.get('percent_price', 0.0)
+            # For B2B pricelist, we need to remove the vat percentage.
+            # We simulate a double discount to remove vat and apply
+            # the real discount
+            b2b_vat_percentage = 18.03
+            value = (1 - (b2b_vat_percentage/100.0)) * (1 - (value/100.0))
+            value = 100 - (value * 100)
+            item_data['percent_price'] = round(value, 2)
+        return item_data

@@ -131,7 +131,7 @@
                               <!-- <div class="ribbon-wrapper">
                                 <a href="#" role="button" class="ribbon btn btn-danger">Sale</a>
                               </div> -->
-                              <a  t-attf-href="/shop/product/{{td_product.get('product').id}}?{{keep_query()}}" class="d-block h-100" itemprop="url">
+                              <a  t-attf-href="/shop/{{td_product.get('product').id}}?{{keep_query()}}" class="d-block h-100" itemprop="url">
                                 <span class="d-flex h-100 justify-content-center align-items-center" t-field="product.image_1920"
                                   t-options="{'widget': 'image', 'preview_image': 'image_1024' if product_image_big else 'image_256'}"
                                   />
@@ -140,7 +140,7 @@
                             <div t-attf-class="card-body p-0 o_wsale_product_information {{'card_large_product' if product_image_big else 'text-center'}}">
                               <div class="p-2 o_wsale_product_information_text">
                                 <h6 class="o_wsale_products_item_title">
-                                  <a itemprop="name" t-attf-href="/shop/product/{{td_product.get('product').id}}?{{keep_query()}}" t-att-content="product.name" t-field="product.name" />
+                                  <a itemprop="name" t-attf-href="/shop/{{td_product.get('product').id}}?{{keep_query()}}" t-att-content="product.name" t-field="product.name" />
                                 </h6>
                                 <div class="product_price" itemprop="offers" itemscope="itemscope" itemtype="http://schema.org/Offer">
                                   <del t-attf-class="text-danger mr-2 {{'' if combination_info['has_discounted_price'] else 'd-none'}}" style="white-space: nowrap;" t-esc="combination_info['list_price']" t-options="{'widget': 'monetary', 'display_currency': website.currency_id}" />
@@ -167,7 +167,7 @@
                                 <div class="col-md-6">
                                  <div class="copy button" >
 
-                                 <input type="text" name="Element To Be Copied" t-att-id="'copy-me_%s'%(td_product.get('product').id)" t-att-value="'%s/shop/product/%s?aff_key=%s'%(base_url,int(td_product.get('product').id),partner_key)" style="display:none"/>
+                                 <input type="text" name="Element To Be Copied" t-att-id="'copy-me_%s'%(td_product.get('product').id)" t-att-value="'%s/shop/%s?aff_key=%s'%(base_url,int(td_product.get('product').id),partner_key)" style="display:none"/>
 
                                  <button class="btn btn-success" t-att-id="'copy-btn_%s'%(td_product.get('product').id)" >Copy to Clipboard</button>
                                </div>
@@ -293,7 +293,7 @@
                                       <input class="o_form_radio_product" type="radio" t-att-id="'product_%s'%(product.id)" name="choose_banner" t-att-value="'product_%s'%(product.id)" checked="True"/>
 
                                       <label class="o_form_label" t-att-for="product.id">
-                                        <a t-attf-href="/shop/product/{{product.id}}?{{keep_query()}}"> <t t-esc="product.name"/></a>
+                                        <a t-attf-href="/shop/{{product.id}}?{{keep_query()}}"> <t t-esc="product.name"/></a>
                                       </label>
 
 
@@ -395,13 +395,13 @@
                         <textarea class="form-control" rows="5" readonly="1" id="banner_html_code">
                           <t t-if="button">
 
-                              <a t-attf-href="{{ base_url }}/shop/product/{{ product_id }}?aff_key={{ partner_key }}">
+                              <a t-attf-href="{{ base_url }}/shop/{{ product_id }}?aff_key={{ partner_key }}">
                                   <img t-attf-src="{{ base_url }}/web/image/affiliate.image/{{button.id}}/image" style="width:400px;height:200px" />
                               </a>
 
                           </t>
                           <t t-if="is_product">
-                              <a t-attf-href="{{ base_url }}/shop/product/{{ product_id }}?aff_key={{ partner_key }}">
+                              <a t-attf-href="{{ base_url }}/shop/{{ product_id }}?aff_key={{ partner_key }}">
                                   <img t-attf-src="{{ base_url }}/web/image/product.template/{{product_id}}/image" style="width:400px;height:200px" />
                               </a>
 

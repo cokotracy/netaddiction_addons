@@ -47,7 +47,7 @@
 										</td>
 										<td>
 											<t t-if="t.affiliate_type == 'product'">
-												<a t-attf-href="/shop/product/{{t.type_id}}?{{keep_query()}}">
+												<a t-attf-href="/shop/{{t.type_id}}?{{keep_query()}}">
 													<t t-esc="t.type_name" />
 												</a>
 											</t>
