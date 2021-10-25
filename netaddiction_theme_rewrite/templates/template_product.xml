@@ -20,8 +20,8 @@
                         <span class="text-primary d-block"
                             style="cursor:pointer;"
                             onclick="
-                                document.querySelector('#nav_tabs_link_description').click();
-                                document.querySelector('.product_tabs_ept').scrollIntoView({behavior: 'smooth'});" 
+                                document.querySelector('#description-tab').click();
+                                document.querySelector('#description-tab').scrollIntoView({behavior: 'smooth'});" 
                         >Leggi tutto</span>
                     </t>
                 </div>
