@@ -214,7 +214,7 @@ class CustomSupplier(supplier.Supplier):
                     item['_file'], item['Formato'],
                     item['Genere principale'], group_name, extra])
                 group_key = re.sub(r' +', ' ', group_key)
-                group_key = md5(group_key).hexdigest()
+                group_key = md5(group_key.encode()).hexdigest()
 
                 return group_key, group_name
 
@@ -222,6 +222,6 @@ class CustomSupplier(supplier.Supplier):
             group_key = ''.join(
                 [item['_file'], item['Genere principale'], group_name])
             group_key = re.sub(r' +', ' ', group_key)
-            group_key = md5(group_key).hexdigest()
+            group_key = md5(group_key.encode()).hexdigest()
 
             return group_key, group_name

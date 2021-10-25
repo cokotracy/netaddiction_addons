@@ -20,8 +20,8 @@
                         <span class="text-primary d-block"
                             style="cursor:pointer;"
                             onclick="
-                                document.querySelector('#nav_tabs_link_description').click();
-                                document.querySelector('.product_tabs_ept').scrollIntoView({behavior: 'smooth'});" 
+                                document.querySelector('#description-tab').click();
+                                document.querySelector('#description-tab').scrollIntoView({behavior: 'smooth'});" 
                         >Leggi tutto</span>
                     </t>
                 </div>
@@ -162,6 +162,12 @@
                     </div>
                 </t>
             </t>
+        </xpath>
+    </template>
+
+    <template id="recently_view_custop" inherit_id="website_sale.s_products_recently_viewed">
+        <xpath expr="//h3[hasclass('text-center')]" position="replace">
+            <h3 class="text-center mb32">Visti di recente</h3>
         </xpath>
     </template>
 </odoo>

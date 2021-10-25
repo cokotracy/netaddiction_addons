@@ -170,11 +170,11 @@
         </xpath>
     </template>
 
-    <template id="custom_full_description" inherit_id="theme_clarico_vega.html_content_tabs_ept">
+    <!-- <template id="custom_full_description" inherit_id="theme_clarico_vega.html_content_tabs_ept">
         <xpath expr="//div[@id='product_full_description']" position="replace">
             <t t-if="product.website_description and len(product.website_description) > 20">
                 <div id="real_description" class="col-12 col-md-8 mx-auto d-none">
-                    <t t-esc="env['ir.fields.converter'].text_from_html(product.website_description)"/>
+                    <t t-raw="product.website_description"/>
                     <div id="button-read-more" class="text-center d-block pt-3"> 
                         <button
                             style="font-size:14px;"
@@ -188,7 +188,7 @@
                 </div>
                 <div id="full-description" class="col-12 col-md-8 mx-auto">
                     <t t-set="full_description" t-value="(product.website_description[:500] + '.. ') if len(product.website_description) >= 500 else product.website_description"/>
-                    <t t-esc="env['ir.fields.converter'].text_from_html(full_description)"/>
+                    <t t-raw="full_description"/>
                     <t t-if="len(full_description) >= 500">
                         <div id="button-read-more" class="text-center d-block pt-3"> 
                             <button
@@ -204,7 +204,243 @@
                 </div>
             </t>
         </xpath>
+    </template> -->
+
+    <template id="custom_review_area">
+         <!-- Browseinfo modification -->
+        <t t-if="request.website.viewref('website_all_in_one.website_sale_product_comment').active">
+            <div class="tab-pane o_not_editable py-3"
+                id="nav_tabs_content_ratings_reviews"
+                role="tabpanel"
+                aria-labelledby="nav_tabs_link_ratings_reviews">
+                <ul class="media-list pl-0" id="comments-list">
+                    <div id="paginationdemo" class="demo">
+                        <t t-set="total_pages" t-value="int(len(product.reviews_ids)/10)" />
+                        <t t-foreach="total_pages+1" t-as="page">
+                            <t t-set="page_next" t-value="page+1" />
+                            <div t-att-id="'p%s' %page_next" class="pagedemo _current">
+                                <li t-foreach="product.reviews_ids[(page*10):(((page_next)*10))]"
+                                    t-as="ratings" class="medianew">
+
+                                    <div class="media-body oe_msg">
+                                        <div class="media-body oe_msg_content">
+                                            <t t-call="website.publish_short">
+                                                <t t-set="object" t-value="ratings" />
+                                            </t>
+                                            <input t-att-id="'product-actual-rate-%s' %ratings.id" t-att-value="ratings.message_rate" name="message_rate" type="hidden" />
+
+
+                                            <input t-att-id="'actual-rate-%s' %ratings.id" t-att-value="ratings.message_rate" name="message_rate" type="hidden" />
+                                            <t t-if="ratings.message_rate >=0">
+                                            <input id="message_id" t-att-value="ratings.id" name="message_id" type="hidden" />
+                                            <div class="starRating1">
+                                                <div>
+                                                    <div>
+                                                        <div>
+                                                            <div>
+                                                                <input t-att-id="'rate1-%s' %ratings.id" type="radio"
+                                                                    t-att-name="'rate-%s' %ratings.id" value="1">
+                                                                    <label for="rating1">
+                                                                        <span>1</span>
+                                                                    </label>
+                                                                </input>
+                                                            </div>
+                                                            <input t-att-id="'rate2-%s' %ratings.id" type="radio"
+                                                                t-att-name="'rate-%s' %ratings.id" value="2">
+                                                                <label for="rating2">
+                                                                    <span>2</span>
+                                                                </label>
+                                                            </input>
+                                                        </div>
+                                                        <input t-att-id="'rate3-%s' %ratings.id" type="radio"
+                                                            t-att-name="'rate-%s' %ratings.id" value="3">
+                                                            <label for="rating3">
+                                                                <span>3</span>
+                                                            </label>
+                                                        </input>
+                                                    </div>
+                                                    <input t-att-id="'rate4-%s' %ratings.id" type="radio"
+                                                        t-att-name="'rate-%s' %ratings.id" value="4">
+                                                        <label for="rating4">
+                                                            <span>4</span>
+                                                        </label>
+                                                    </input>
+                                                </div>
+                                                <input t-att-id="'rate5-%s' %ratings.id" type="radio"
+                                                    t-att-name="'rate-%s' %ratings.id" value="5">
+                                                    <label for="rating5">
+                                                        <span>5</span>
+                                                    </label>
+                                                </input>
+                                            </div>
+                                            </t>
+
+
+                                            <t t-if="ratings.message_rate > 0">
+                                                <input id="product_message_id" t-att-value="ratings.id"
+                                                    name="product_message_id" type="hidden" />
+
+                                            </t>
+                                            <div class="product_short" t-field="ratings.short_desc" />
+                                            <h5 class="media-heading"
+                                                style="display:inline;margin-left:6px !important;color:antiquewhite;">
+
+                                                <span class="review_class_rating">Recensito da: </span>
+                                                <span t-field="ratings.customer_id"></span>
+
+                                            </h5>
+
+                                            <div>
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </li>
+                            </div>
+                        </t>
+                        <div id="demo5">
+                        </div>
+                    </div>
+                    <p class="post_your_review">Scrivi qui la tua recensione:</p>
+
+                </ul>
+
+                <hr class="mb32" />
+                <t t-if="website.user_id == user_id">
+                    <p style="margin-top: 48px !important; margin-bottom: -10px;">
+                        Devi registrarti prima di recensire il prodotto!
+                        <a t-attf-href="/web/login?redirect=/shop/product/#{slug(product)}">Registrati</a>
+                    </p>
+                    <br/>
+                    <form id="comment" t-attf-action="/shop/product/comment/#{product.id}"
+                        method="POST">
+                        <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                        
+                        <div class="media">
+                            <div class="media-body">
+                                <div class="message_rate">
+                                    <div class="cancel_rating_class" title="Cancel Rating">
+                                        <a title="Cancel Rating"></a>
+                                    </div>
+                                    <input id="message_rate" name="message_rate" class="form-control"
+                                        type="hidden" />
+
+                                    <div class="starRating" id="star">
+                                        <div>
+                                            <div>
+                                                <div>
+                                                    <div>
+                                                        <input id="rating11" type="radio" name="rating"
+                                                            value="1">
+                                                            <label for="rating11">
+                                                                <span>1</span>
+                                                            </label>
+                                                        </input>
+                                                    </div>
+                                                    <input id="rating12" type="radio" name="rating"
+                                                        value="2">
+                                                        <label for="rating12">
+                                                            <span>2</span>
+                                                        </label>
+                                                    </input>
+                                                </div>
+                                                <input id="rating13" type="radio" name="rating" value="3">
+                                                    <label for="rating13">
+                                                        <span>3</span>
+                                                    </label>
+                                                </input>
+                                            </div>
+                                            <input id="rating14" type="radio" name="rating" value="4">
+                                                <label for="rating14">
+                                                    <span>4</span>
+                                                </label>
+                                            </input>
+                                        </div>
+                                        <input id="rating15" type="radio" name="rating" value="5">
+                                            <label for="rating15">
+                                                <span>5</span>
+                                            </label>
+                                        </input>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                        <div class="pull-left mb32 w-100 w-md-75">
+                            <input type="text" rows="1" readonly="true" name="short_description"
+                                style="margin-bottom:10px;" class="form-control"
+                                placeholder="Titolo della recensione.."></input>
+                            <textarea rows="3" name="comment" readonly="true"
+                                class="form-control" placeholder="Inserisci la tua opinione.."></textarea>
+                            <a t-if="website.user_id != user_id" disabled="disabled" class="btn btn-primary mt8 a-submit">
+                                Crea Recensione
+                            </a>
+                        </div>
+                    </form>
+                </t>
+                <t t-if="website.user_id != user_id">
+                    <form id="comment" t-attf-action="/shop/product/comment/#{product.id}"
+                        method="POST">
+                        <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                        <!--<span t-esc="product.id"/>-->
+                        <div class="pull-left mb32 w-100 w-md-75">
+                            <div class="set_star">
+                                <div class="cancel_rating_class" title="Cancel Rating">
+                                    <a title="Cancel Rating"></a>
+                                </div>
+
+                                <div class="starRating" id="star">
+                                    <div>
+                                        <div>
+                                            <div>
+                                                <div>
+                                                    <input id="rating21" type="radio" name="review"
+                                                        value="1">
+                                                        <label for="rating21">
+                                                            <span>1</span>
+                                                        </label>
+                                                    </input>
+                                                </div>
+                                                <input id="rating22" type="radio" name="review" value="2">
+                                                    <label for="rating22">
+                                                        <span>2</span>
+                                                    </label>
+                                                </input>
+                                            </div>
+                                            <input id="rating23" type="radio" name="review" value="3">
+                                                <label for="rating23">
+                                                    <span>3</span>
+                                                </label>
+                                            </input>
+                                        </div>
+                                        <input id="rating24" type="radio" name="review" value="4">
+                                            <label for="rating24">
+                                                <span>4</span>
+                                            </label>
+                                        </input>
+                                    </div>
+                                    <input id="rating25" type="radio" name="review" value="5">
+                                        <label for="rating25">
+                                            <span>5</span>
+                                        </label>
+                                    </input>
+                                </div>
+
+                            </div>
+                            <input type="hidden" id="blog_post_id" name="message_rate"
+                                class="form-control" style="margin-bottom:10px;" />
+                            <input type="text" rows="1" name="short_description" class="form-control"
+                                placeholder="Titolo della recensione.."></input>
+                            <textarea rows="3" name="comment" class="form-control col-12"
+                                placeholder="Inserisci la tua opinione.."></textarea>
+                            <input class="btn btn-primary mt8 a-submit" type="submit" value="Crea Recensione" id="submit_review"/>
+                        </div>
+                    </form>
+                </t>
+            </div>
+        </t>
     </template>
+
 
     <template id="cart_popover_ept_custom" inherit_id="theme_clarico_vega.cart_popover_ept">
         <xpath expr="//div[hasclass('te_cart_btn')]" position="replace">
@@ -630,8 +866,9 @@
 
 
     <!--=================== Product Tabs ========================-->
+    
     <template id="html_content_tabs_ept" name="Product Tabs" priority="30">
-        <section class="product_tabs_ept s_tabs">
+        <!-- <section class="product_tabs_ept s_tabs">
             <div class="container tabs_container_main">
                 <div class="row s_col_no_bgcolor">
                     <div class="col-lg-12">
@@ -649,7 +886,7 @@
                                             aria-controls="nav_tabs_content_description"
                                             aria-selected="true">
                                                 <span class="fa fa-sliders mr-2"></span>
-                                                <span class="nav_tab_title">Description</span>
+                                                <span class="nav_tab_title">Descrizione</span>
                                             </a>
                                         </li>
                                     </t>
@@ -670,7 +907,6 @@
                                             </a>
                                         </li>
                                     </t>
-                                    <!-- Browseinfo modification -->
                                     <t t-if="request.website.viewref('website_all_in_one.website_sale_product_comment').active">
                                         <li class="nav-item">
                                             <a class="nav-link te_tab_mb_nav_link"
@@ -753,252 +989,47 @@
                                         </div>
                                     </t>
                                 </t>
-                                
-                                <!-- Browseinfo modification -->
-                                <t t-if="request.website.viewref('website_all_in_one.website_sale_product_comment').active">
-                                    <div class="tab-pane fade o_not_editable py-3"
-                                        id="nav_tabs_content_ratings_reviews"
-                                        role="tabpanel"
-                                        aria-labelledby="nav_tabs_link_ratings_reviews">
-                                        <ul class="media-list pl-0" id="comments-list">
-                                            <div id="paginationdemo" class="demo">
-                                                <t t-set="total_pages" t-value="int(len(product.reviews_ids)/10)" />
-                                                <t t-foreach="total_pages+1" t-as="page">
-                                                    <t t-set="page_next" t-value="page+1" />
-                                                    <div t-att-id="'p%s' %page_next" class="pagedemo _current">
-                                                        <li t-foreach="product.reviews_ids[(page*10):(((page_next)*10))]"
-                                                            t-as="ratings" class="medianew">
-                                                            <span class="pull-left">
-                                                                <img class="media-object img img-circle" t-att-src="website.image_url(ratings, 'author_avatar')"
-                                                                    style="width: 30px" alt="Avatar"/>
-                                                            </span>
-
-                                                            <div class="media-body oe_msg">
-                                                                <div class="media-body oe_msg_content">
-                                                                    <t t-call="website.publish_short">
-                                                                        <t t-set="object" t-value="ratings" />
-                                                                    </t>
-                                                                    <input t-att-id="'product-actual-rate-%s' %ratings.id" t-att-value="ratings.message_rate" name="message_rate" type="hidden" />
-
-
-                                                                    <input t-att-id="'actual-rate-%s' %ratings.id" t-att-value="ratings.message_rate" name="message_rate" type="hidden" />
-                                                                    <t t-if="ratings.message_rate >=0">
-                                                                    <input id="message_id" t-att-value="ratings.id" name="message_id" type="hidden" />
-                                                                    <div class="starRating1">
-                                                                        <div>
-                                                                            <div>
-                                                                                <div>
-                                                                                    <div>
-                                                                                        <input t-att-id="'rate1-%s' %ratings.id" type="radio"
-                                                                                            t-att-name="'rate-%s' %ratings.id" value="1">
-                                                                                            <label for="rating1">
-                                                                                                <span>1</span>
-                                                                                            </label>
-                                                                                        </input>
-                                                                                    </div>
-                                                                                    <input t-att-id="'rate2-%s' %ratings.id" type="radio"
-                                                                                        t-att-name="'rate-%s' %ratings.id" value="2">
-                                                                                        <label for="rating2">
-                                                                                            <span>2</span>
-                                                                                        </label>
-                                                                                    </input>
-                                                                                </div>
-                                                                                <input t-att-id="'rate3-%s' %ratings.id" type="radio"
-                                                                                    t-att-name="'rate-%s' %ratings.id" value="3">
-                                                                                    <label for="rating3">
-                                                                                        <span>3</span>
-                                                                                    </label>
-                                                                                </input>
-                                                                            </div>
-                                                                            <input t-att-id="'rate4-%s' %ratings.id" type="radio"
-                                                                                t-att-name="'rate-%s' %ratings.id" value="4">
-                                                                                <label for="rating4">
-                                                                                    <span>4</span>
-                                                                                </label>
-                                                                            </input>
-                                                                        </div>
-                                                                        <input t-att-id="'rate5-%s' %ratings.id" type="radio"
-                                                                            t-att-name="'rate-%s' %ratings.id" value="5">
-                                                                            <label for="rating5">
-                                                                                <span>5</span>
-                                                                            </label>
-                                                                        </input>
-                                                                    </div>
-                                                                    </t>
-
-
-                                                                    <t t-if="ratings.message_rate > 0">
-                                                                        <input id="product_message_id" t-att-value="ratings.id"
-                                                                            name="product_message_id" type="hidden" />
-
-                                                                    </t>
-                                                                    <div class="product_short" t-field="ratings.short_desc" />
-                                                                    <h5 class="media-heading"
-                                                                        style="display:inline;margin-left:6px !important;color:antiquewhite;">
-
-                                                                        <span class="review_class_rating">Recensito da: </span>
-                                                                        <span t-field="ratings.customer_id"></span>
-
-                                                                    </h5>
-
-                                                                    <div>
-
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </li>
-                                                    </div>
-                                                </t>
-                                                <div id="demo5">
-                                                </div>
-                                            </div>
-                                            <p class="post_your_review">Scrivi qui la tua recensione:</p>
-
-                                        </ul>
-
-                                        <hr class="mb32" />
-                                        <t t-if="website.user_id == user_id">
-                                            <p style="margin-top: 48px !important; margin-bottom: -10px;">
-                                                Devi registrarti prima di recensire il prodotto!
-                                                <a t-attf-href="/web/login?redirect=/shop/product/#{slug(product)}">Registrati</a>
-                                            </p>
-                                            <br/>
-                                            <form id="comment" t-attf-action="/shop/product/comment/#{product.id}"
-                                                method="POST">
-                                                <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
-                                                
-                                                <div class="media">
-                                                    <span class="pull-left">
-                                                        <img class="img img-circle media-object"
-                                                            t-att-src="website.image_url(user_id.partner_id, 'image_small')"
-                                                            style="width: 30px" />
-                                                    </span>
-                                                    <div class="media-body">
-                                                        <div class="message_rate">
-                                                            <div class="cancel_rating_class" title="Cancel Rating">
-                                                                <a title="Cancel Rating"></a>
-                                                            </div>
-                                                            <input id="message_rate" name="message_rate" class="form-control"
-                                                                type="hidden" />
-
-                                                            <div class="starRating" id="star">
-                                                                <div>
-                                                                    <div>
-                                                                        <div>
-                                                                            <div>
-                                                                                <input id="rating11" type="radio" name="rating"
-                                                                                    value="1">
-                                                                                    <label for="rating11">
-                                                                                        <span>1</span>
-                                                                                    </label>
-                                                                                </input>
-                                                                            </div>
-                                                                            <input id="rating12" type="radio" name="rating"
-                                                                                value="2">
-                                                                                <label for="rating12">
-                                                                                    <span>2</span>
-                                                                                </label>
-                                                                            </input>
-                                                                        </div>
-                                                                        <input id="rating13" type="radio" name="rating" value="3">
-                                                                            <label for="rating13">
-                                                                                <span>3</span>
-                                                                            </label>
-                                                                        </input>
-                                                                    </div>
-                                                                    <input id="rating14" type="radio" name="rating" value="4">
-                                                                        <label for="rating14">
-                                                                            <span>4</span>
-                                                                        </label>
-                                                                    </input>
-                                                                </div>
-                                                                <input id="rating15" type="radio" name="rating" value="5">
-                                                                    <label for="rating15">
-                                                                        <span>5</span>
-                                                                    </label>
-                                                                </input>
-                                                            </div>
-                                                        </div>
-
-                                                    </div>
-                                                </div>
-                                                <div class="pull-left mb32 w-100 w-md-75">
-                                                    <input type="text" rows="1" readonly="true" name="short_description"
-                                                        style="margin-bottom:10px;" class="form-control"
-                                                        placeholder="Titolo della recensione.."></input>
-                                                    <textarea rows="3" name="comment" readonly="true"
-                                                        class="form-control" placeholder="Inserisci la tua opinione.."></textarea>
-                                                    <a t-if="website.user_id != user_id" disabled="disabled" class="btn btn-primary mt8 a-submit">
-                                                        Crea Recensione
-                                                    </a>
-                                                </div>
-                                            </form>
-                                        </t>
-                                        <t t-if="website.user_id != user_id">
-                                            <form id="comment" t-attf-action="/shop/product/comment/#{product.id}"
-                                                method="POST">
-                                                <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
-                                                <!--<span t-esc="product.id"/>-->
-                                                <div class="pull-left mb32 w-100 w-md-75">
-                                                    <div class="set_star">
-                                                        <div class="cancel_rating_class" title="Cancel Rating">
-                                                            <a title="Cancel Rating"></a>
-                                                        </div>
-
-                                                        <div class="starRating" id="star">
-                                                            <div>
-                                                                <div>
-                                                                    <div>
-                                                                        <div>
-                                                                            <input id="rating21" type="radio" name="review"
-                                                                                value="1">
-                                                                                <label for="rating21">
-                                                                                    <span>1</span>
-                                                                                </label>
-                                                                            </input>
-                                                                        </div>
-                                                                        <input id="rating22" type="radio" name="review" value="2">
-                                                                            <label for="rating22">
-                                                                                <span>2</span>
-                                                                            </label>
-                                                                        </input>
-                                                                    </div>
-                                                                    <input id="rating23" type="radio" name="review" value="3">
-                                                                        <label for="rating23">
-                                                                            <span>3</span>
-                                                                        </label>
-                                                                    </input>
-                                                                </div>
-                                                                <input id="rating24" type="radio" name="review" value="4">
-                                                                    <label for="rating24">
-                                                                        <span>4</span>
-                                                                    </label>
-                                                                </input>
-                                                            </div>
-                                                            <input id="rating25" type="radio" name="review" value="5">
-                                                                <label for="rating25">
-                                                                    <span>5</span>
-                                                                </label>
-                                                            </input>
-                                                        </div>
-
-                                                    </div>
-                                                    <input type="hidden" id="blog_post_id" name="message_rate"
-                                                        class="form-control" style="margin-bottom:10px;" />
-                                                    <input type="text" rows="1" name="short_description" class="form-control"
-                                                        placeholder="Titolo della recensione.."></input>
-                                                    <textarea rows="3" name="comment" class="form-control col-12"
-                                                        placeholder="Inserisci la tua opinione.."></textarea>
-                                                    <input class="btn btn-primary mt8 a-submit" type="submit" value="Crea Recensione" id="submit_review"/>
-                                                </div>
-                                            </form>
-                                        </t>
-                                    </div>
-                                </t>
                             </div>
                         </div>
                     </div>
                 </div>
+            </div>
+        </section> -->
+        <section class="product_tabs_ept s_tabs container">
+            <t t-set="review_active" t-value="'false'"/>
+            <t t-set="review_active_tab" t-value="''"/>
+            <t t-set="review_active_body" t-value="''"/>
+            <t t-if="product.website_description and len(product.website_description) &lt; 20">
+                <t t-set="review_active" t-value="'true'"/>
+                <t t-set="review_active_tab" t-value="'active'"/>
+                <t t-set="review_active_body" t-value="'active show'"/>
+            </t>
+
+            <ul class="nav nav-tabs mt-3" id="myTab" role="tablist">
+                <t t-if="product.website_description and len(product.website_description) &gt; 20">
+                    <li class="nav-item" role="presentation">
+                        <a style="color:#000;" t-attf-class="nav-link active" id="description-tab" data-toggle="tab" href="#description" role="tab" aria-controls="description" aria-selected="true"><span class="fa fa-sliders mr-2"></span> Descrizione</a>
+                    </li>
+                </t>
+                <t t-if="request.website.viewref('website_all_in_one.website_sale_product_comment').active">
+                    <li class="nav-item" role="presentation">
+                        <a style="color:#000;" t-attf-class="nav-link {{review_active_body}}" id="review-tab" data-toggle="tab" href="#review" role="tab" aria-controls="review" t-attf-aria-selected="{{review_active}}"><span class="fa fa-star mr-2"></span> Recensioni</a>
+                    </li>
+                </t>
+            </ul>
+            <div class="tab-content py-3" id="myTabContent">
+                <t t-if="product.website_description and len(product.website_description) &gt; 20">
+                    <div class="tab-pane fade show active" id="description" role="tabpanel" aria-labelledby="description-tab">
+                        <div id="product_full_description" class="mx-auto d-block">
+                            <t t-raw="product.website_description"/>
+                        </div>
+                    </div>
+                </t>
+                <t t-if="request.website.viewref('website_all_in_one.website_sale_product_comment').active">
+                    <div t-attf-class="tab-pane fade {{review_active_body}}" id="review" role="tabpanel" aria-labelledby="review-tab">
+                        <t t-call="theme_clarico_vega.custom_review_area"/>
+                    </div>
+                </t>
             </div>
         </section>
     </template>
@@ -1130,10 +1161,7 @@
     </template>
     <template id="custom_popup_register" inherit_id="theme_clarico_vega.register_popup">
         <xpath expr="//div[hasclass('alert-success-error')]//p[hasclass('alert-success')]" position="replace">
-            <div class="alert-success-error">
-                <p class="alert alert-success d-none">Ti sei correttamente registrato!</p>
-                <p class="alert alert-danger d-none" />
-            </div>
+            <p class="alert alert-success d-none">Ti sei correttamente registrato!</p>
         </xpath>
         <xpath expr="//button[hasclass('te_signup_button')]" position="replace">
             <div class="custom-control custom-checkbox my-3">
@@ -1163,6 +1191,9 @@
     <template id="product_ept_custom" inherit_id="theme_clarico_vega.product_ept">
         <xpath expr="//a[@t-att-href='keep(category=0)']" position="replace">
             <a t-att-href="keep(category=0)">Negozio</a>
+        </xpath>
+        <xpath expr="//h3[hasclass('te_product_alt_h3')]" position="replace">
+            <h3 class="te_product_alt_h3">Prodotti Alternativi</h3>
         </xpath>
     </template>
     
