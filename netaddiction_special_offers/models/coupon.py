@@ -1,7 +1,10 @@
 # Copyright 2020 Openforce Srls Unipersonale (www.openforce.it)
 # License LGPL-3.0 or later (https://www.gnu.org/licenses/lgpl).
 
+import ast
+
 from odoo import _, api, fields, models
+from odoo.exceptions import UserError
 
 
 class CouponProgram(models.Model):
@@ -40,6 +43,16 @@ class CouponProgram(models.Model):
                     item.digital_bonus_id.active = False
             super().write(vals)
         return True
+
+    def do_action(self):
+        if self.rule_products_domain:
+            if not self.discount_apply_on == "specific_products":
+                raise UserError("Il campo 'Sconto applicato' non è impostato in 'Su prodotti specifici'")
+            domain = ast.literal_eval(self.rule_products_domain)
+            products = self.env["product.product"].sudo().search(domain)
+            if not products:
+                raise UserError("Nessun prodotto trovato per il seguente")
+            self.write({'discount_specific_product_ids': [(6, 0, [p.id for p in products])]})
 
 
 class SaleCouponReward(models.Model):

@@ -29,6 +29,7 @@
         'views/digital_bonus.xml',
         'views/coupon_program.xml',
         'views/sale_order.xml',
+        'views/populate_product.xml',
         # 'views/minimum.xml',
         # 'data/acl_minimum.xml'
     ],
