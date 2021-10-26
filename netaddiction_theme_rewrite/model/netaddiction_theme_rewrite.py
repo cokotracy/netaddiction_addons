@@ -625,6 +625,7 @@ class CustomListPage(Controller):
                     page_number = page_number + 1
 
                 values = {
+                    "offer_id": pricelist.id,
                     "offer_name": pricelist.name,
                     "page_number": int(page_number),
                     "current_page": current_page,

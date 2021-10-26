@@ -70,10 +70,10 @@
 				</t>
 				<li t-attf-class="page-item {{active_prev}}">
 					<t t-if="status_filter">
-						<t t-set="link_prev" t-value="'/offerte/' + offer_name + '?status-filter=' + status_filter" />
+						<t t-set="link_prev" t-value="'/offerte/' + str(offer_id) + '?status-filter=' + status_filter" />
 					</t>
 					<t t-else="">
-						<t t-set="link_prev" t-value="'/offerte/' + offer_name" />
+						<t t-set="link_prev" t-value="'/offerte/' + str(offer_id)" />
 					</t>
 					<t t-if="current_page > 1">
 						<t t-if="status_filter">
@@ -99,18 +99,18 @@
 						<li t-attf-class="page-item {{active_link}}">
 							<t t-if="row_index == 0">
 								<t t-if="status_filter">
-									<a t-attf-href="/offerte/#{offer_name}?status-filter={{status_filter}}" class="page-link" t-esc="(row_index + 1)"></a>
+									<a t-attf-href="/offerte/#{str(offer_id)}?status-filter={{status_filter}}" class="page-link" t-esc="(row_index + 1)"></a>
 								</t>
 								<t t-else="">
-									<a t-attf-href="/offerte/#{offer_name}" class="page-link" t-esc="(row_index + 1)"></a>
+									<a t-attf-href="/offerte/#{str(offer_id)}" class="page-link" t-esc="(row_index + 1)"></a>
 								</t>
 							</t>
 							<t t-else="">
 								<t t-if="status_filter">
-									<a t-attf-href="/offerte/#{offer_name}?page=#{(row_index + 1)}&amp;&amp;status-filter={{status_filter}}" class="page-link" t-esc="(row_index + 1)"></a>
+									<a t-attf-href="/offerte/#{str(offer_id)}?page=#{(row_index + 1)}&amp;&amp;status-filter={{status_filter}}" class="page-link" t-esc="(row_index + 1)"></a>
 								</t>
 								<t t-else="">
-									<a t-attf-href="/offerte/#{offer_name}?page=#{(row_index + 1)}" class="page-link" t-esc="(row_index + 1)"></a>
+									<a t-attf-href="/offerte/#{str(offer_id)}?page=#{(row_index + 1)}" class="page-link" t-esc="(row_index + 1)"></a>
 								</t>
 							</t>
 						</li>
@@ -124,10 +124,10 @@
 					<t t-set="link_next" t-value="" />
 					<t t-if="current_page &lt; page_number">
 						<t t-if="status_filter">
-							<t t-set="link_next" t-value="'/offerte/' + offer_name + '?page=' + str(current_page + 2) + '&amp;&amp;status-filter=' + status_filter" />
+							<t t-set="link_next" t-value="'/offerte/' + str(offer_id) + '?page=' + str(current_page + 2) + '&amp;&amp;status-filter=' + status_filter" />
 						</t>
 						<t t-else="">
-							<t t-set="link_next" t-value="'/offerte/' + offer_name + '?page=' + str(current_page + 2)" />
+							<t t-set="link_next" t-value="'/offerte/' + str(offer_id) + '?page=' + str(current_page + 2)" />
 						</t>
 					</t>
 					<a data-oe-model="ir.ui.view" data-oe-id="1332" data-oe-field="arch" data-oe-xpath="/t[1]/ul[1]/li[2]/a[1]" t-attf-href="{{link_next}}" class="page-link ">
