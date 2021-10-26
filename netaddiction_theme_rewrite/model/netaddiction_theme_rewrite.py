@@ -299,7 +299,6 @@ class WebsiteSaleCustom(WebsiteSale):
         if tag_filter:
             tag_filter = tag_filter.split(",")
 
-        # if not search:
         if request.website.isB2B and not status_filter:
             domain = expression.AND([[("product_variant_ids.qty_available_now", ">", 0)], domain])
         elif not status_filter:
@@ -576,8 +575,6 @@ class CustomListPage(Controller):
         current_website = request.website
         current_url = request.httprequest.full_path
 
-        offer = None
-
         if not "/web/login" in current_url:
             if current_website.isB2B and request.env.user.id == request.env.ref("base.public_user").id:
                 return request.redirect("/web/login")
@@ -590,22 +587,24 @@ class CustomListPage(Controller):
                     request.session.logout()
                     return request.redirect("https://multiplayer.com")
 
-        pricelist = request.env["product.pricelist"].sudo().search([("name", "=ilike", "listino pubblico")], limit=1)
+        pricelist = (
+            request.env["product.pricelist.dynamic.domain"].sudo().search([("name", "=ilike", offer_name)], limit=1)
+        )
 
-        for off in pricelist.dynamic_domain_ids:
-            if offer_name.lower() == off.name.lower():
-                offer = off
-
-        if not offer:
+        if not pricelist:
             page = request.website.is_publisher() and "website.page_404" or "http_routing.404"
             return request.render(page, {})
 
         else:
+            if pricelist.pricelist_id.is_b2b and not request.env.user.is_b2b:
+                page = request.website.is_publisher() and "website.page_404" or "http_routing.404"
+                return request.render(page, {})
+
             page_size = 21
             start_element = 0
             current_page = 0
 
-            domain = offer.complete_products_domain
+            domain = pricelist.complete_products_domain
 
             if domain:
                 if kw.get("page"):
@@ -614,32 +613,15 @@ class CustomListPage(Controller):
 
                 domain = ast.literal_eval(domain)
 
-                product = (
+                product_count = request.env["product.product"].sudo().search_count(domain)
+                product_list_id = (
                     request.env["product.product"]
                     .sudo()
-                    .read_group(
-                        domain=domain,
-                        fields=["product_tmpl_id"],
-                        groupby=["product_tmpl_id"],
-                    )
-                )
-                product_filter = (
-                    request.env["product.product"]
-                    .sudo()
-                    .read_group(
-                        domain=domain,
-                        fields=["product_tmpl_id"],
-                        groupby=["product_tmpl_id"],
-                        offset=start_element,
-                        limit=page_size,
-                    )
+                    .search(domain, limit=page_size, offset=start_element)
+                    .product_tmpl_id
                 )
 
-                product_count = len(product)
-                product_list_id = []
-
-                for prod in product_filter:
-                    product_list_id.append(prod["product_tmpl_id"][0])
+                print(product_list_id)
 
                 page_number = product_count / page_size
 
@@ -647,7 +629,7 @@ class CustomListPage(Controller):
                     page_number = page_number + 1
 
                 values = {
-                    "offer_name": offer_name,
+                    "offer_name": pricelist.name,
                     "page_number": int(page_number),
                     "current_page": current_page,
                     "page_size": page_size,
