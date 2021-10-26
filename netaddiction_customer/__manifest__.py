@@ -7,6 +7,7 @@
     'version': '14.0.1.2.0',
     'depends': [
         'base',
+        'affiliate_management',
     ],
     'data': [
         'data/cron.xml',
