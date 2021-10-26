@@ -596,7 +596,7 @@ class CustomListPage(Controller):
             return request.render(page, {})
 
         else:
-            if pricelist.pricelist_id.is_b2b and not request.env.user.is_b2b:
+            if pricelist.pricelist_id.is_b2b and (not request.env.user.is_b2b or not request.env.user.has_group("base.group_user")):
                 page = request.website.is_publisher() and "website.page_404" or "http_routing.404"
                 return request.render(page, {})
 
@@ -620,8 +620,6 @@ class CustomListPage(Controller):
                     .search(domain, limit=page_size, offset=start_element)
                     .product_tmpl_id
                 )
-
-                print(product_list_id)
 
                 page_number = product_count / page_size
 
