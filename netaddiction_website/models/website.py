@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 
-from datetime import date
-from odoo import models
+from datetime import date, datetime
+from odoo import models, fields
 
 
 class NetaddictionWebsitePreorder(models.TransientModel):
@@ -13,4 +13,3 @@ class NetaddictionWebsitePreorder(models.TransientModel):
             [("out_date", "<=", date.today()), ("inventory_availability", "!=", "always")]
         )
         products.inventory_availability = "always"
-
