@@ -39,6 +39,7 @@ button[data-target='#wsale_products_categories_collapse']{
     --extra-light-gray:#f5f5f5;
 }
 
+
 /*SCROLLBAR CUSTOM*/
 ::-webkit-scrollbar {
     width: 10px;
@@ -222,7 +223,7 @@ header nav.navbar .header_middle .te_search_popover .input-group input.form-cont
     font-size: 28px;
 }
 .te_prod_info_sub .product_price span, .o_carousel_product_card_footer .font-weight-bold{
-    color:var(--primary) !important;
+    color:var(--primary);
     font-weight: 400 !important;
 }
 
@@ -399,6 +400,32 @@ header nav.navbar .header_middle{
     top:0 !important;
     position:relative !important;
     transform: translateY(0%) !important; 
+}
+
+.o_wsale_layout_list .o_wsale_product_btn {
+    flex-flow: initial !important;
+    display: flex !important;
+}
+.product_price del > span{
+    color:#969696 !important;
+    font-size:15px !important;
+}
+
+.product_price .te_discount{
+    display:none;
+}
+
+.special_price_label_container{
+    position: absolute;
+    top: -5px;
+    right: 10px;
+}
+.special_price_label{
+    padding:2px 5px;
+    font-weight: bold;
+    color:#ffffff;
+    background-color:var(--primary);
+    border-radius:3px;
 }
 
 @media only screen and (min-width: 768px) {

@@ -31,44 +31,6 @@
 				<div id="products_grid_before" class="d-none d-lg-block col-lg-3 te_product_sticky_sidebar te_product_sidebar_scrollbar sticky-media mCustomScrollbar _mCS_1" style="position: sticky; top:110px; height: 781px;">
 					<div id="mCSB_1" class="mCustomScrollBox mCS-dark-thin mCSB_vertical mCSB_inside" style="max-height: none; overflow:auto;" tabindex="0">
 						<div id="mCSB_1_container" class="mCSB_container" style="position: relative; top: 0px; left: 0px;" dir="ltr">
-							<div class="collapse d-lg-block border-0" id="wsale_products_categories_collapse">
-								<strong class="d-block">
-									Filtra per:
-								</strong>
-								<hr class="my-2" />
-								<div class="border-bottom">
-									<a class="d-block px-3 mb-2 text-primary position-relative" data-toggle="collapse" href="#collapse_status" role="button" aria-expanded="true" aria-controls="collapseExample">
-										Stato
-										<i class="fa fa-sort-desc position-absolute" style="right:10px; top:50%; transform:translateY(-50%) !important">
-										</i>
-									</a>
-									<div class="collapse show" id="collapse_status" style="max-height:400px; overflow:auto;">
-										<div class="card card-body pb-0" id="status_filter_list">
-											<div class="d-flex mb-2">
-												<input style="margin-top:5px;" type="checkbox" id="status_stock" value="stock" />
-												<label class="ml-1" for="status_1">
-													Disponibile
-												</label>
-											</div>
-											<div class="d-flex mb-2">
-												<input style="margin-top:5px;" type="checkbox" id="status_preorder" value="preorder" />
-												<label class="ml-1" for="status_2">
-													Prenotazione
-												</label>
-											</div>
-											<div class="d-flex mb-2">
-												<input style="margin-top:5px;" type="checkbox" id="status_new" value="new" />
-												<label class="ml-1" for="status_3">
-													Novità
-												</label>
-											</div>
-										</div>
-									</div>
-								</div>
-								<button onclick="checkFilter()" class="btn btn-primary btn-md a-submit d-block d-sm-inline-block te_theme_button w-100">
-									Filtra
-								</button>
-							</div>
 							<ul class="list-unstyled mt-3">
 								<t t-set="custom_category" t-value="request.env['product.public.category'].sudo().search([('parent_id','=',1)])" />
 								<t t-foreach="custom_category" t-as="cat">
@@ -80,56 +42,13 @@
 									</li>
 								</t>
 							</ul>
-							<script type="text/javascript">
-								document.addEventListener("DOMContentLoaded", function() {
-								var urlParams = new URLSearchParams(window.location.search);
-								var myParam = urlParams.get('status-filter');
-								if(myParam != null){
-								var selected = myParam.split(',')
-								selected.forEach(element =>{
-								document.querySelector('#status_' + element).checked = true;
-								});
-								}
-								});
-								
-								
-								function checkFilter(){
-								var url = new URL(window.location.href);
-								
-								var status_filter = ''
-								var status_list = document.querySelectorAll('#status_filter_list > div > input:checked');
-								status_list.forEach(element =>{
-								status_filter += element.value + ','
-								});
-								url.searchParams.delete('status-filter')
-								if(status_filter != ''){
-								status_filter = status_filter.slice(0, -1);
-								url.searchParams.append('status-filter', status_filter);
-								}
-								
-								
-								var tag_filter = ''
-								var tag_list = document.querySelectorAll('#collapse_tag > div input:checked');
-								tag_list.forEach(element =>{
-								tag_filter += element.value + ','
-								});
-								
-								url.searchParams.delete('tag-filter')
-								if(tag_filter != ''){
-								tag_filter = tag_filter.slice(0, -1);
-								url.searchParams.append('tag-filter', tag_filter);
-								}
-								
-								window.location.href = url;
-								}
-							</script>
 						</div>
 					</div>
 				</div>
 				<section class="container">
 					<t t-set="products_ids" t-value="''" />
-					<t t-foreach="product_list_id" t-as="product">
-						<t t-set="products_ids" t-value="products_ids + str(product['id']) + ','" />
+					<t t-foreach="product_list_id" t-as="prod">
+						<t t-set="products_ids" t-value="products_ids + str(prod) + ','" />
 					</t>
 					<t t-set="products_ids" t-value="products_ids[:-1]" />
 					<section class="pt8 pb8 o_colored_level offer_product_list" data-snippet="p_slider" data-name="Product Snippet Builder">
