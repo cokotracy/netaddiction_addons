@@ -570,8 +570,8 @@ class CustomShipping(Controller):
 
 
 class CustomListPage(Controller):
-    @route(["/offerte/<string:offer_name>"], type="http", auth="public", website=True)
-    def controllerOffer(self, offer_name, **kw):
+    @route(['/offerte/<model("product.pricelist.dynamic.domain"):pricelist>'], type="http", auth="public", website=True)
+    def controllerOffer(self, pricelist, **kw):
         current_website = request.website
         current_url = request.httprequest.full_path
 
@@ -587,16 +587,14 @@ class CustomListPage(Controller):
                     request.session.logout()
                     return request.redirect("https://multiplayer.com")
 
-        pricelist = (
-            request.env["product.pricelist.dynamic.domain"].sudo().search([("name", "=ilike", offer_name)], limit=1)
-        )
-
         if not pricelist:
             page = request.website.is_publisher() and "website.page_404" or "http_routing.404"
             return request.render(page, {})
 
         else:
-            if pricelist.pricelist_id.is_b2b and (not request.env.user.is_b2b or not request.env.user.has_group("base.group_user")):
+            if pricelist.pricelist_id.is_b2b and (
+                not request.env.user.is_b2b or not request.env.user.has_group("base.group_user")
+            ):
                 page = request.website.is_publisher() and "website.page_404" or "http_routing.404"
                 return request.render(page, {})
 
