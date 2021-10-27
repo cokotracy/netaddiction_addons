@@ -19,6 +19,13 @@ class CouponProgram(models.Model):
         string="Digital Bonus",
         readonly=True
     )
+    # Web
+    description = fields.Char("Descrizione")
+    desktop_image = fields.Image("Immagine Desktop")
+    mobile_image = fields.Image("Immagine Mobile")
+    active_frontend_filter = fields.Boolean(
+        "Attivare i filtri?", default=True, help="Attiva la barra laterale dei filtri nella pagina frontend dela tag"
+    )
 
     def create_digital_bonus(self, name):
         return self.env['sale.coupon.program.digital.bonus'].create({
