@@ -384,8 +384,11 @@ odoo.define('netaddiction_warehouse.inventory_reports', function (require) {
         },
         get_products: function(){
             var self=this;
-            var fields = ['id', 'barcode', 'display_name', 'categ_id', 'med_inventory_value', 'med_inventory_value_intax', 'qty_available', 'qty_available_now', 'product_wh_location_line_ids', 'intax_price', 'offer_price'];
-            var filter = [['product_wh_location_line_ids','!=',false],['company_id','=',self.company_id]];
+            // var fields = ['id', 'barcode', 'display_name', 'categ_id', 'med_inventory_value', 'med_inventory_value_intax', 'qty_available', 'qty_available_now', 'product_wh_location_line_ids', 'intax_price', 'offer_price'];
+            var fields = ['id', 'barcode', 'display_name', 'categ_id', 'med_inventory_value', 'med_inventory_value_intax', 'qty_available', 'qty_available_now'];
+            // var filter = [['product_wh_location_line_ids','!=',false],['company_id','=',self.company_id]];
+            // var fields = ['id', 'barcode', 'display_name', 'categ_id']
+            var filter = [['active', '=', true]]
             /**mi immetto qua per cambiare i filtri per i prodotti problematici**/
             if(self.available_deactive){
                 var text = 'Prodotti Problematici - In Magazzino, Spenti';
@@ -432,11 +435,12 @@ odoo.define('netaddiction_warehouse.inventory_reports', function (require) {
                         $.each(products, function(i,product){
                             product['total_inventory'] = (product.med_inventory_value * product.qty_available).toLocaleString();
                             product.med_inventory_value = product.med_inventory_value.toLocaleString();
-                            if(product.offer_price){
-                                product.price = product.offer_price.toLocaleString();
-                            }else{
-                                product.price = product.intax_price.toLocaleString();
-                            }
+                            // if(product.offer_price){
+                            //     product.price = product.offer_price.toLocaleString();
+                            // }else{
+                            //     product.price = product.intax_price.toLocaleString();
+                            // }
+                            product.price = "0";
                             if(self.suppliers_pids){
                                 product.qty_available = self.suppliers_results[self.supplier]['products'][product.id]['qty'];
                                 product['total_inventory'] = self.suppliers_results[self.supplier]['products'][product.id]['inventory_value'].toLocaleString();
@@ -457,17 +461,18 @@ odoo.define('netaddiction_warehouse.inventory_reports', function (require) {
                     domain: filter,
                     offset: self.offset,
                     limit: self.limit,
-                    orderBy: self.order_by,
+                    //orderBy: self.order_by,
                 }).then(function (products) {
                     var new_products = [];
                     $.each(products, function(i,product){
                         product['total_inventory'] = (product.med_inventory_value * product.qty_available).toLocaleString();
                         product.med_inventory_value = product.med_inventory_value.toLocaleString();
-                        if(product.offer_price){
-                            product.price = product.offer_price.toLocaleString();
-                        }else{
-                            product.price = product.intax_price.toLocaleString();
-                        }
+                        // if(product.offer_price){
+                        //     product.price = product.offer_price.toLocaleString();
+                        // }else{
+                        //     product.price = product.intax_price.toLocaleString();
+                        // }
+                        product.price = "0";
                         if(self.suppliers_pids){
                             product.qty_available = self.suppliers_results[self.supplier]['products'][product.id]['qty'];
                             product['total_inventory'] = self.suppliers_results[self.supplier]['products'][product.id]['inventory_value'].toLocaleString();
@@ -512,7 +517,7 @@ odoo.define('netaddiction_warehouse.inventory_reports', function (require) {
                 model: 'product.category',
                 method: 'search_read',
                 domain: [
-                    ['company_id', '=', self.company_id]
+                    ['id', '!=', 0]
                 ],
             }).then(function (categories) {
                 self.$el.find('#categories').html(
@@ -551,12 +556,12 @@ odoo.define('netaddiction_warehouse.inventory_reports', function (require) {
                     'display_name'
                 ],
                 domain: [
-                    ['company_id','=',self.company_id]
+                    ['id','!=',0]
                 ],
-                orderBy: [
-                    'attribute_id',
-                    'name'
-                ],
+                // orderBy: [
+                //     'attribute_id',
+                //     'name'
+                // ],
             }).then(function (attributes) {
                 self.$el.find('#attributes').html(
                     QWeb.render("AttributesSelect", {attributes: attributes})
