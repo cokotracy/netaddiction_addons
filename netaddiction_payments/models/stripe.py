@@ -193,6 +193,8 @@ class StripePaymentTransaction(models.Model):
             )
         except stripe.error.CardError as e:
             return {"status": e.code, "failure_message": e.user_message}
+        except Exception:
+            return {"status": "error", "failure_message": "Errore generico"}
         else:
             if res.get("charges") and res.get("charges").get("total_count"):
                 res = res.get("charges").get("data")[0]
