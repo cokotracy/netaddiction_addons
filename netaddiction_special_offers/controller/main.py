@@ -1,6 +1,6 @@
 from odoo.http import request, Controller
 from odoo import  http
-from datetime import date
+from datetime import date, datetime
 import ast
 
 
@@ -90,8 +90,9 @@ class CustomPageOffer(Controller):
         if not promotion:
             page = request.website.is_publisher() and "website.page_404" or "http_routing.404"
             return request.render(page, {})
+  
+        if promotion.active and promotion.rule_date_from <= datetime.now() and promotion.rule_date_to >= datetime.now():   
 
-        else:
             page_size = 21
             start_element = 0
             current_page = 0
@@ -105,13 +106,20 @@ class CustomPageOffer(Controller):
 
                 domain = ast.literal_eval(domain)
 
-                product_count = request.env["product.product"].sudo().search_count(domain)
-                product_list_id = (
-                    request.env["product.product"]
-                    .sudo()
-                    .search(domain, limit=page_size, offset=start_element)
-                    .product_tmpl_id
-                )
+                if promotion.discount_specific_product_ids:
+                    product_count = len(promotion.discount_specific_product_ids)
+                    end = page_size*(current_page + 1)
+                    if(end > product_count):
+                        end = (product_count - 1)
+                    product_list_id = promotion.discount_specific_product_ids[start_element:end]
+                else:
+                    product_count = request.env["product.product"].sudo().search_count(domain)
+                    product_list_id = (
+                        request.env["product.product"]
+                        .sudo()
+                        .search(domain, limit=page_size, offset=start_element)
+                        .product_tmpl_id
+                    )
 
                 page_number = product_count / page_size
 
@@ -127,3 +135,6 @@ class CustomPageOffer(Controller):
                     "product_list_id": product_list_id,
                 }
                 return request.render("netaddiction_special_offers.promotion_template", values)
+        else:
+            page = request.website.is_publisher() and "website.page_404" or "http_routing.404"
+            return request.render(page, {})
