@@ -20,6 +20,7 @@ class CouponProgram(models.Model):
         readonly=True
     )
     # Web
+    website_url = fields.Char('Website URL', compute='_website_url', help='The full URL to access the document through the website.')
     description = fields.Char("Descrizione")
     desktop_image = fields.Image("Immagine Desktop")
     mobile_image = fields.Image("Immagine Mobile")
@@ -55,6 +56,13 @@ class CouponProgram(models.Model):
             super().write(vals)
         return True
 
+    def open_website_url(self):
+        return {
+            'type': 'ir.actions.act_url',
+            'url': self.website_url,
+            'target': 'self',
+        }
+
     def update_products_ids(self):
         if self.rule_products_domain:
             if not self.discount_apply_on == "specific_products":
@@ -71,6 +79,11 @@ class CouponProgram(models.Model):
                 program.update_products_ids()
             except Exception:
                 _logger.error(f"Impossibile aggiornare i prodotti per il programma: {program.name}")
+
+    def _website_url(self):
+        for program in self:
+            program.website_url = f"/promozioni/{self.id}"
+
 
 class SaleCouponReward(models.Model):
     _inherit = 'coupon.reward'

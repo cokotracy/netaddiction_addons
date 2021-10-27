@@ -7,6 +7,7 @@
         <field name="arch" type="xml">
             <xpath expr="//form//sheet" position="before">
                 <button name="update_products_ids" string="Aggiorna prodotti" type="object" class="btn btn-primary m-4 oe_read_only" attrs="{'invisible': ['|', '|', ('discount_apply_on', '!=', 'specific_products'),('discount_type', '!=', 'percentage'), ('reward_type', 'in', ('product', 'gift'))], 'required': [('reward_type', '=', 'discount'),('discount_apply_on', '=', 'specific_products'),('discount_type', '=', 'percentage')]}" />
+                <button type="object" name="open_website_url" class="btn btn-primary oe_read_only" icon='fa-globe' string="Vai al Sito" attrs="{'invisible': [('active','=',False)]}" />
             </xpath>
             <xpath expr="/form/sheet/group/group[@name='conditions']" position="before">
                 <group name="web" string="Pagina Web">
