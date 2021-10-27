@@ -2,9 +2,13 @@
 # License LGPL-3.0 or later (https://www.gnu.org/licenses/lgpl).
 
 import ast
+import logging
+from datetime import datetime
 
 from odoo import _, api, fields, models
 from odoo.exceptions import UserError
+
+_logger = logging.getLogger(__name__)
 
 
 class CouponProgram(models.Model):
@@ -44,16 +48,22 @@ class CouponProgram(models.Model):
             super().write(vals)
         return True
 
-    def do_action(self):
+    def update_products_ids(self):
         if self.rule_products_domain:
             if not self.discount_apply_on == "specific_products":
                 raise UserError("Il campo 'Sconto applicato' non è impostato in 'Su prodotti specifici'")
             domain = ast.literal_eval(self.rule_products_domain)
             products = self.env["product.product"].sudo().search(domain)
             if not products:
-                raise UserError("Nessun prodotto trovato per il seguente")
+                raise UserError("Nessun prodotto trovato per il seguente dominio")
             self.write({'discount_specific_product_ids': [(6, 0, [p.id for p in products])]})
 
+    def cron_update_products_ids(self):
+        for program in self.search([("active", "=", True), ("rule_date_from", "<=", datetime.now()), ("rule_date_to", ">=", datetime.now())]):
+            try:
+                program.update_products_ids()
+            except Exception:
+                _logger.error(f"Impossibile aggiornare i prodotti per il programma: {program.name}")
 
 class SaleCouponReward(models.Model):
     _inherit = 'coupon.reward'
