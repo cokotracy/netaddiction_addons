@@ -607,7 +607,7 @@ class CustomListPage(Controller):
                 status_filter = status_filter.split(",")
                 domain = self._filters_pre_products(filters=status_filter, domain=domain)
 
-            page_size = 19
+            page_size = 24
             start_element = 0
             current_page = 0
 
