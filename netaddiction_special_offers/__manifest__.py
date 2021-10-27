@@ -4,7 +4,7 @@
 {
     'name': 'Netaddiction Special Offers',
     'summary': "Offers and discount for multiplayer.com",
-    'version': '14.0.1.1.1',
+    'version': '14.0.1.1.0',
     'category': 'Sale',
     'website': 'http://www.netaddiction.it',
     'author': 'Netaddiction',
