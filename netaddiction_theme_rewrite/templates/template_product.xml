@@ -145,21 +145,23 @@
             <t t-if="product.out_date">
                 <t t-set="out_date" t-value="datetime.datetime.strptime(str(product.out_date) + ' 00:00:00.00000', '%Y-%m-%d %H:%M:%S.%f')"/>
             </t>
-            <t t-if="out_date">
-                <t t-if="out_date &gt; current">
-                    <div class="d-block mb-3">
-                        <t t-if="product.product_variant_id.out_date_approx_type != 'accurate'">
-                            <small class="text-primary font-weight-bold">Prenota ora potresti riceverlo a <t t-esc="out_date.strftime('%B %Y')"/></small>
-                        </t>
-                        <t t-else="">
-                            <small class="text-primary font-weight-bold">Prenota ora e lo ricevi il <t t-esc="out_date.strftime('%d / %m / %Y')"/></small>
-                        </t>
-                        <!-- <div class="d-block mt-3 preorder-info">
-                            <strong class="label" style="font-size:12px;"><i class="fa fa-info-circle mr-1 text-primary"></i>Prezzo Minimo Garantito</strong>
-                            <br/>
-                            <small style="font-size:10px;">Prezzo e data di vendita non sono sempre confermati quindi: Se all'uscita costerà di più, il tuo prezzo di prenotazione resterà invariato. Se costerà di meno, ti rimborsiamo la differenza e pagherai il prezzo più basso!</small>
-                        </div> -->
-                    </div>
+            <t t-if="product.product_variant_id.qty_available_now &lt;= 0">
+                <t t-if="out_date">
+                    <t t-if="out_date &gt; current">
+                        <div class="d-block mb-3">
+                            <t t-if="product.product_variant_id.out_date_approx_type != 'accurate'">
+                                <small class="text-primary font-weight-bold">Prenota ora potresti riceverlo a <t t-esc="out_date.strftime('%B %Y')"/></small>
+                            </t>
+                            <t t-else="">
+                                <small class="text-primary font-weight-bold">Prenota ora e lo ricevi il <t t-esc="out_date.strftime('%d / %m / %Y')"/></small>
+                            </t>
+                            <!-- <div class="d-block mt-3 preorder-info">
+                                <strong class="label" style="font-size:12px;"><i class="fa fa-info-circle mr-1 text-primary"></i>Prezzo Minimo Garantito</strong>
+                                <br/>
+                                <small style="font-size:10px;">Prezzo e data di vendita non sono sempre confermati quindi: Se all'uscita costerà di più, il tuo prezzo di prenotazione resterà invariato. Se costerà di meno, ti rimborsiamo la differenza e pagherai il prezzo più basso!</small>
+                            </div> -->
+                        </div>
+                    </t>
                 </t>
             </t>
         </xpath>
