@@ -52,7 +52,6 @@
         "templates/login.xml",
         "templates/wallet_custom_parts.xml",
         "templates/google-snippet/product.xml",
-        "templates/template_offers.xml",
     ],
     # Technical
     "installable": True,

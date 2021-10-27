@@ -30,6 +30,8 @@
         'views/digital_bonus.xml',
         'views/coupon_program.xml',
         'views/sale_order.xml',
+        'templates/template_offers.xml',
+        'templates/template_promotion.xml',
         # 'views/minimum.xml',
         # 'data/acl_minimum.xml'
     ],
