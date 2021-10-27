@@ -118,8 +118,8 @@ class AutoPreparation(models.TransientModel):
                     pick.write({"payment_id": stripe_payment.payment_id})
                 if stripe_payment.state != "posted" and stripe_payment.acquirer_id.provider == "netaddiction_stripe":
                     tx = self.env["payment.transaction"].browse(stripe_payment.id)
-                    res = tx.ns_do_transaction()
-                    if not res:
+                    tx.ns_do_transaction()
+                    if tx.state != "done":
                         error_stock.append(pick.id)
                         note.append(
                             "Stripe: Impossibile completare il pagamento, per maggiori info, controllare nelle note della transazione."

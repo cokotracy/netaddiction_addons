@@ -299,16 +299,15 @@ class WebsiteSaleCustom(WebsiteSale):
         if tag_filter:
             tag_filter = tag_filter.split(",")
 
-        if not search:
-            if request.website.isB2B and not status_filter:
-                domain = expression.AND([[("product_variant_ids.qty_available_now", ">", 0)], domain])
-            elif not status_filter:
-                new_dom = [
-                    "|",
-                    ("product_variant_ids.out_date", ">", date.today()),
-                    ("product_variant_ids.qty_available_now", ">", 0),
-                ]
-                domain = expression.AND([new_dom, domain])
+        if request.website.isB2B and not status_filter:
+            domain = expression.AND([[("product_variant_ids.qty_available_now", ">", 0)], domain])
+        elif not status_filter:
+            new_dom = [
+                "|",
+                ("product_variant_ids.out_date", ">", date.today()),
+                ("product_variant_ids.qty_available_now", ">", 0),
+            ]
+            domain = expression.AND([new_dom, domain])
 
         if status_filter:
             status_filter = status_filter.split(",")
@@ -570,10 +569,9 @@ class CustomShipping(Controller):
         return request.render("netaddiction_theme_rewrite.template_shipping_terms", {})
 
 
-# AGGIUNGE PAGINE DINAMICHE PER I TAG
 class CustomListPage(Controller):
-    @route(["/offerte/<string:offer_name>"], type="http", auth="public", website=True)
-    def controllerOffer(self, offer_name, **kw):
+    @route(['/offerte/<model("product.pricelist.dynamic.domain"):pricelist>'], type="http", auth="public", website=True)
+    def controllerOffer(self, pricelist, **kw):
         current_website = request.website
         current_url = request.httprequest.full_path
 
@@ -589,64 +587,52 @@ class CustomListPage(Controller):
                     request.session.logout()
                     return request.redirect("https://multiplayer.com")
 
-        status_filter = request.params.get("status-filter")
-        tag_filter = request.params.get("tag-filter")
-
-        offer = request.env["coupon.program"].sudo().search([("name", "=ilike", offer_name)], limit=1)
-
-        if not offer.id:
+        if not pricelist:
             page = request.website.is_publisher() and "website.page_404" or "http_routing.404"
             return request.render(page, {})
 
         else:
-            domain = ast.literal_eval(offer.rule_id.rule_products_domain)
-            if tag_filter:
-                tag_filter = tag_filter.split(",")
+            if pricelist.pricelist_id.is_b2b and (
+                not request.env.user.is_b2b or not request.env.user.has_group("base.group_user")
+            ):
+                page = request.website.is_publisher() and "website.page_404" or "http_routing.404"
+                return request.render(page, {})
 
-            if not status_filter:
-                new_dom = [
-                    "|",
-                    ("product_variant_ids.out_date", ">", date.today()),
-                    ("product_variant_ids.qty_available_now", ">", 0),
-                ]
-                domain = expression.AND([new_dom, domain])
-
-            else:
-                status_filter = status_filter.split(",")
-                domain = self._filters_pre_products(filters=status_filter, domain=domain)
-
-        if domain:
-            page_size = 19
+            page_size = 21
             start_element = 0
             current_page = 0
 
-            if kw.get("page"):
-                current_page = int(kw.get("page")) - 1
-                start_element = page_size * (int(kw.get("page")) - 1)
+            domain = pricelist.complete_products_domain
 
-            product_count = request.env["product.template"].sudo().search_count(domain)
+            if domain:
+                if kw.get("page"):
+                    current_page = int(kw.get("page")) - 1
+                    start_element = page_size * (int(kw.get("page")) - 1)
 
-            product_list_id = (
-                request.env["product.template"].sudo().search(domain, limit=page_size, offset=start_element)
-            )
-            page_number = product_count / page_size
+                domain = ast.literal_eval(domain)
 
-            if page_number > int(page_number):
-                page_number = page_number + 1
+                product_count = request.env["product.product"].sudo().search_count(domain)
+                product_list_id = (
+                    request.env["product.product"]
+                    .sudo()
+                    .search(domain, limit=page_size, offset=start_element)
+                    .product_tmpl_id
+                )
 
-            values = {
-                "offer_name": offer_name,
-                "page_number": int(page_number),
-                "current_page": current_page,
-                "page_size": page_size,
-                "product_list_id": product_list_id,
-            }
-            return request.render("netaddiction_theme_rewrite.offer_template", values)
+                page_number = product_count / page_size
 
-        else:
-            if not offer.id:
-                page = request.website.is_publisher() and "website.page_404" or "http_routing.404"
-                return request.render(page, {})
+                if page_number > int(page_number):
+                    page_number = page_number + 1
+
+                values = {
+                    "offer_id": pricelist.id,
+                    "offer_name": pricelist.name,
+                    "page_number": int(page_number),
+                    "current_page": current_page,
+                    "page_size": page_size,
+                    "product_list_id": product_list_id,
+                }
+                return request.render("netaddiction_theme_rewrite.offer_template", values)
 
     @route(["/tag/<string:tag_name>"], type="http", auth="public", website=True)
     def controllerTag(self, tag_name, **kw):
