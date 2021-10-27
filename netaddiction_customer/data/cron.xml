@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <record id="ir_cron_confirm_affiliate_visit" model="ir.cron">
+            <field name="name">Confirm Affiliate Visit</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">hours</field>
+            <field name="numbercall">-1</field>
+            <field name="model_id" ref="model_netaddiction_affiliate_visit"/>
+            <field name="code">model.cron_confirm_affiliate_visit()</field>
+            <field name="state">code</field>
+        </record>
+
+        <record id="ir_cron_affiliate_add_money_wallet" model="ir.cron">
+            <field name="name">Pay affiliate via wallet</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <field name="numbercall">-1</field>
+            <field name="model_id" ref="model_netaddiction_affiliate_visit"/>
+            <field name="code">model.cron_affiliate_add_money_wallet()</field>
+            <field name="state">code</field>
+        </record>
+    </data>
+</odoo>

@@ -13,4 +13,3 @@ class NetaddictionWebsitePreorder(models.TransientModel):
             [("out_date", "<=", date.today()), ("inventory_availability", "!=", "always")]
         )
         products.inventory_availability = "always"
-
