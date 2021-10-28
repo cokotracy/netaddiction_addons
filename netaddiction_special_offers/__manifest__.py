@@ -14,6 +14,7 @@
         'sale_coupon',
         'sale',
         'product',
+        'pricelist_dynamic_domain',
         # 'base',
         # 'purchase',
         # 'mrp',

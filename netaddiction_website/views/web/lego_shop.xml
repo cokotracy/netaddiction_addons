@@ -3,8 +3,7 @@
 	<template id="template_lego_shop" name="Negozio ufficiale LEGO | Multiplayer.com">
 		<t t-call="website.layout">
 			<div class="oe_structure oe_empty">
-				
-            </div>
-	    </t>
+			</div>
+		</t>
 	</template>
 </odoo>
