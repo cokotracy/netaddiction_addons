@@ -164,6 +164,13 @@
                     </t>
                 </t>
             </t>
+            <t t-else="">
+                <div class="d-block mb-3">
+                    <t t-if="product.product_variant_id.out_date_approx_type != 'accurate'">
+                        <small class="text-primary font-weight-bold">Ordina entro le 16 per la spedizione IMMEDIATA</small>
+                    </t>
+                </div>
+            </t>
         </xpath>
     </template>
 
