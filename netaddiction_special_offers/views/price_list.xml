@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="netaddiction_special_offers_product_pricelist_view" model="ir.ui.view">
+        <field name="name">netaddiction.special_offers.product.pricelist.form</field>
+        <field name="model">product.pricelist.dynamic.domain</field>
+        <field name="inherit_id" ref="pricelist_dynamic_domain.product_pricelist_dynamic_domain_form"/>
+        <field name="arch" type="xml">
+            <!-- <xpath expr="//div[hasclass('oe_button_box')]" position="inside">
+                <button type="object" name="open_website_url" class="oe_read_only" icon='fa-globe' attrs="{'invisible': [('active','=',False)]}" >Vai al Sito</button>
+            </xpath> -->
+            <xpath expr="//form/sheet/group[@name='values']" position="after">
+                <group name="web" string="Pagina Web">
+                    <field name="description" widget="text"/>
+                    <field name="active_frontend_filter"/>
+                    <field name="desktop_image" widget="image" options="{'accepted_file_extensions': '.png,.jpeg'}"/>
+                    <field name="mobile_image" widget="image" options="{'accepted_file_extensions': '.png,.jpeg'}"/>
+                </group>
+            </xpath>
+        </field>
+    </record>
+</odoo>
