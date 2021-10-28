@@ -3,7 +3,7 @@
 <templates id="template_inventory_reports" xml:space="preserve">
     <t t-name="inventory_reports_base">
         <div class="o_control_panel" id="inventory_top_block">
-            <div class="container-fluid">
+            <!-- <div class="container-fluid"> -->
                 <div class="row">
                     <div class="col-md-6 oe-cp-title">
                         <t t-if="is_problematic">
@@ -25,7 +25,7 @@
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col-md-2 oe-button-column">
+                    <div class="col-4 oe-button-column">
                         <t t-if="!is_problematic">
                             <b>Valore: </b>
                             <span id="inventory_value">
@@ -33,7 +33,7 @@
                             </span>
                         </t>
                     </div>
-                    <div class="col-md-10 oe-button-column">
+                    <div class="col-8 oe-button-column">
                         <select id="attributes" style="margin-right:10px"></select>
                         <t t-if="!is_problematic">
                             <select id="suppliers" style="margin-right:10px"></select>
@@ -52,7 +52,7 @@
                         </span>
                     </div>
                 </div>
-            </div>
+            <!-- </div> -->
         </div>
         <div id="inventory_table">
             <!-- Template InventoryTableProducts will be render here -->
