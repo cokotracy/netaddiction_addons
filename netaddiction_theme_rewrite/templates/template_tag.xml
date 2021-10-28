@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <template id="template_tag" t-attf-name="Tag | Multiplayer.com">
+    <template id="template_tag" name="Tag | Multiplayer.com">
         <t t-call="website.layout">
             <div>
 				<t t-if="tag_name">
