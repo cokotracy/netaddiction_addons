@@ -495,7 +495,7 @@
                         </div>
                         <div class="d-flex mb-2">
                             <input style="margin-top:5px;" type="checkbox" id="status_order" value="order"/>
-                            <label class="ml-1" for="status_4">Ordinabile</label>
+                            <label class="ml-1" for="status_4">Spedito in 72 ore</label>
                         </div>
                         <div class="d-flex mb-2">
                             <input style="margin-top:5px;" type="checkbox" id="status_unavailable" value="unavailable"/>
