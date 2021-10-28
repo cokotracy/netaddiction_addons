@@ -107,9 +107,8 @@ odoo.define('payment_netaddiction_stripe.payment_form', function (require) {
           error.event.preventDefault();
         }
         this.enableButton(button);
-        if (error.message) {
-          this._displayError("Impossibile aggiungere la carta di credito. Se il problema persiste contattare il servizio clienti");
-        }
+        let error_message = (error.message !== "") ? error.message : "Impossibile aggiungere la carta di credito."
+        this._displayError(`${error_message} Se il problema persiste contattare il servizio clienti`);
       });
     },
 

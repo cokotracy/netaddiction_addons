@@ -7,6 +7,17 @@ import stripe
 from odoo import api, models, fields
 from odoo.tools.float_utils import float_round
 
+_logger = logging.getLogger(__name__)
+
+
+STRIPE_DEFAULT_DECLINE_MESSAGE = "La sua carta non è stata autorizzata dal circuito bancario. Assicurati che nella carta ci sia almeno 1 euro di disponibilità."
+STRIPE_CARD_DECLINE_MESSAGE = {
+    "transaction_not_allowed": "La sua carta non supporta questo tipo di acquisto.",
+    "incorrect_number": "Il numero della sua carta non è corretto.",
+    "insufficient_funds": "La sua carta non ha fondi sufficienti.",
+    "expired_card": "La sua carta è scaduta.",
+    "do_not_honor": "La sua carta non è stata autorizzata dal circuito bancario.",
+}
 
 INT_CURRENCIES = [
     "BIF",
@@ -84,7 +95,23 @@ class StripeAcquirer(models.Model):
         card_token = data.get("token")
         partner = data.get("partner_id")
         customer = self._get_or_create_customer(partner)
-        card = self._check_association_cc(card_token["id"], customer)
+        try:
+            card = self._get_or_create_association_cc(card_token["id"], customer)
+        except stripe.error.CardError as e:
+            _logger.error(f"Stripe Card Error: A error encountered : {e.user_message}")
+            return {
+                "result": False,
+                "error": {"message": self._get_translated_message(e.error.get("decline_code", ""))},
+            }
+        except Exception as e:
+            _logger.error(f"Stripe Generic Error: A error encountered : {e}")
+            return {
+                "result": False,
+                "error": {
+                    "message": "Impossibile aggiungere la carta di credito.",
+                },
+            }
+
         if self.env["payment.token"].sudo().search([("netaddiction_stripe_payment_method", "=", card["id"])]):
             return {
                 "result": False,
@@ -143,7 +170,7 @@ class StripeAcquirer(models.Model):
         else:
             return customer.data[0]["id"]
 
-    def _check_association_cc(self, token, customer_id):
+    def _get_or_create_association_cc(self, token, customer_id):
         stripe.api_key = self.sudo().netaddiction_stripe_sk
         current_card = stripe.Token.retrieve(token)
         cards = stripe.Customer.list_sources(customer_id, object="card")
@@ -162,6 +189,9 @@ class StripeAcquirer(models.Model):
         payment = self.env["payment.token"].sudo().search([("id", "=", token)])
         if payment:
             return payment.netaddiction_stripe_payment_method
+
+    def _get_translated_message(self, decline_code):
+        return STRIPE_CARD_DECLINE_MESSAGE.get(decline_code, STRIPE_DEFAULT_DECLINE_MESSAGE)
 
 
 class StripePaymentTransaction(models.Model):
@@ -192,8 +222,10 @@ class StripePaymentTransaction(models.Model):
                 description=f"Ordine numero: {self.reference}",
             )
         except stripe.error.CardError as e:
+            _logger.error(f"Stripe Card Error: A error encountered : {e.user_message}")
             return {"status": e.code, "failure_message": e.user_message}
-        except Exception:
+        except Exception as e:
+            _logger.error(f"Stripe Generic Error: A error encountered : {e}")
             return {"status": "error", "failure_message": "Errore generico"}
         else:
             if res.get("charges") and res.get("charges").get("total_count"):
