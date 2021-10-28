@@ -47,6 +47,9 @@
             <t t-if="'/offerte/' in current_url">
                 <link href="/netaddiction_theme_rewrite/static/src/css/custom_list.css" rel="stylesheet"/>
             </t>
+            <t t-if="'/promozioni/' in current_url">
+                <link href="/netaddiction_theme_rewrite/static/src/css/custom_list.css" rel="stylesheet"/>
+            </t>
 
             <!-- AGGIUNGE IN HEAD PER I TERMINI DI SPEDIZIONE -->
             <t t-if="'/costi-metodi-spedizione/' in current_url">

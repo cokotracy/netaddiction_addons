@@ -10,7 +10,7 @@
     justify-content: center;
 }
 .custom_card img{
-    height:300px !important;
+    height:240px !important;
 }
 
 .product_name{
@@ -18,6 +18,9 @@
 }
 
 @media only screen and (min-width: 768px){
+    .custom_card img{
+        height:300px !important;
+    }
     .custom_pager{
         justify-content: flex-end;
     }

@@ -15,10 +15,6 @@
     justify-content: center !important;
 }
 
-#products_grid .table .o_wsale_product_grid_wrapper{
-    border:none !important;
-}
-
 .te_title_sub_div > h1{
     font-size: 1.7rem !important;
     font-weight: 600;

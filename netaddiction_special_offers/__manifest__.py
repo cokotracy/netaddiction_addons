@@ -4,7 +4,7 @@
 {
     'name': 'Netaddiction Special Offers',
     'summary': "Offers and discount for multiplayer.com",
-    'version': '14.0.1.0.1',
+    'version': '14.0.1.2.0',
     'category': 'Sale',
     'website': 'http://www.netaddiction.it',
     'author': 'Netaddiction',
@@ -25,10 +25,13 @@
         # FIXME This template raises errors. We are disabling it for the 
         # go live, nevertheless it should be re-enabled ASAP
         #'data/mail_template.xml',
+        'data/ir_cron.xml',
         'security/ir.model.access.csv',
         'views/digital_bonus.xml',
         'views/coupon_program.xml',
         'views/sale_order.xml',
+        'templates/template_offers.xml',
+        'templates/template_promotion.xml',
         # 'views/minimum.xml',
         # 'data/acl_minimum.xml'
     ],
