@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-	<template id="offer_template">
+	<template id="offer_template" t-attf-name="Offerta | Multiplayer.com">
 		<t t-call="website.layout">
 			<div>
 				<t t-if="offer_name">
