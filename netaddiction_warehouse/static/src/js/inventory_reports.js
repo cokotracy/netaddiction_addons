@@ -501,8 +501,6 @@ odoo.define('netaddiction_warehouse.inventory_reports', function (require) {
             var theadH = self.$el.find('#inventory_table thead').outerHeight();
             var topH = $('#oe_main_menu_navbar').outerHeight();
             self.$el.find('#inventory_top_block').css('top',topH);
-            self.$el.find('#inventory_table thead').css('position','fixed').css('width','100%').css('top',h+topH)
-            self.$el.find('#inventory_table').css('margin-top',h+theadH);
 
             var row = self.$el.find('#inventory_table tbody tr').first();
             $(row).find('td').each(function(i,v){

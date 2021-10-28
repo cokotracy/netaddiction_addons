@@ -2,7 +2,7 @@
 
 <templates id="template_inventory_reports" xml:space="preserve">
     <t t-name="inventory_reports_base">
-        <div class="oe-control-panel" id="inventory_top_block" style="position:fixed;width:100%">
+        <div class="o_control_panel" id="inventory_top_block">
             <div class="container-fluid">
                 <div class="row">
                     <div class="col-md-6 oe-cp-title">
@@ -34,31 +34,28 @@
                         </t>
                     </div>
                     <div class="col-md-10 oe-button-column">
-                        <div class="oe-cp-pager" style="position:fixed; right:10px">
-                            
-                            <select id="attributes" style="margin-right:10px"></select>
-                            <t t-if="!is_problematic">
-                                <select id="suppliers" style="margin-right:10px"></select>
-                            </t>
-                            <select id="categories" style="margin-right:10px"></select>
-                            
-                            <span>
-                                <div class="oe_pager_value" style="display: inline-block">
-                                    <span class="oe_list_pager_state"> <span id="from">0</span> - <span id="to">0</span> di <span id="all">0</span></span>
-                                </div>
-                                <div class="btn-group btn-group-sm oe-pager-buttons net_search_div" style="display: inline-block">
-                                    <a class="fa fa-chevron-left btn btn-default oe-pager-button prev_page"  type="button" ></a>
-                                                    
-                                    <a class="fa fa-chevron-right btn btn-default oe-pager-button next_page"  type="button" ></a>
-                                </div>
-                            </span>
-                        </div>
+                        <select id="attributes" style="margin-right:10px"></select>
+                        <t t-if="!is_problematic">
+                            <select id="suppliers" style="margin-right:10px"></select>
+                        </t>
+                        <select id="categories" style="margin-right:10px"></select>
+                        
+                        <span>
+                            <div class="oe_pager_value" style="display: inline-block">
+                                <span class="oe_list_pager_state"> <span id="from">0</span> - <span id="to">0</span> di <span id="all">0</span></span>
+                            </div>
+                            <div class="btn-group btn-group-sm oe-pager-buttons net_search_div" style="display: inline-block">
+                                <a class="fa fa-chevron-left btn btn-default oe-pager-button prev_page"  type="button" ></a>
+                                                
+                                <a class="fa fa-chevron-right btn btn-default oe-pager-button next_page"  type="button" ></a>
+                            </div>
+                        </span>
                     </div>
                 </div>
             </div>
         </div>
         <div id="inventory_table">
-
+            <!-- Template InventoryTableProducts will be render here -->
         </div>
     </t>
 
@@ -71,37 +68,39 @@
     </t>
 
     <t t-name="InventoryTableProducts">
-        <table class="oe_list_content">
-            <thead >
-                <tr>
-                    <th id="th1">Categoria</th>
-                    <th id="th3">Prodotto</th>
-                    <th id="th2">Sku</th>
-                    <th id="th8">Barcode</th>
-                    <th id="th4">Qtà Allocata</th>
-                    <th id="th5">Qtà Disponibile</th>
-                    <th id="th9">Prezzo di Vendita</th>
-                    <th id="th7">Valore Totale</th>
-                    <th id="th17">Azione</th>
-                </tr>
-            </thead>
-            <tbody>
-                <t t-foreach="products" t-as="product">
+        <div class="table-responsive">
+            <table class="o_list_table table table-sm table-hover table-striped">
+                <thead>
                     <tr>
-                        <td style="width:15%" data-id="th1"><t t-esc="product.categ_id[1]"/></td>
-                        <td style="width:55" data-id="th3"><a href="#" class="open_product" t-attf-data-id="{{product.id}}"><b><t t-esc="product.display_name"/></b></a></td>
-                        <td style="width:5%" data-id="th2"><t t-esc="product.id"/></td>
-                        <td style="width:5%" data-id="th8"><t t-esc="product.barcode"/></td>
-                        <td style="width:5%" data-id="th4"><t t-esc="product.qty_available"/></td>
-                        <td style="width:5%" data-id="th5"><t t-esc="product.qty_available_now"/></td>
-                        <td style="width:5%" data-id="th9"><t t-esc="product.price"/></td>
-                        <td style="width:10%" data-id="th7"><t t-esc="product.total_inventory"/></td>
-                        <td style="width:10%" data-id="th17"><a href="#" class="activate_p">Accendi</a> - <a href="#" class="deactivate_p">Spegni</a></td>
+                        <th>Categoria</th>
+                        <th>Prodotto</th>
+                        <th>Sku</th>
+                        <th>Barcode</th>
+                        <th>Qtà Allocata</th>
+                        <th>Qtà Disponibile</th>
+                        <th>Prezzo di Vendita</th>
+                        <th>Valore Totale</th>
+                        <th>Azione</th>
                     </tr>
-                </t>
-            </tbody>
-            <tfoot><tr></tr></tfoot>
-        </table>
+                </thead>
+                <tbody>
+                    <t t-foreach="products" t-as="product">
+                        <tr>
+                            <td style="width:15%"><t t-esc="product.categ_id[1]"/></td>
+                            <td style="width:55"><a href="#" class="open_product" t-attf-data-id="{{product.id}}"><b><t t-esc="product.display_name"/></b></a></td>
+                            <td style="width:5%"><t t-esc="product.id"/></td>
+                            <td style="width:5%"><t t-esc="product.barcode"/></td>
+                            <td style="width:5%"><t t-esc="product.qty_available"/></td>
+                            <td style="width:5%"><t t-esc="product.qty_available_now"/></td>
+                            <td style="width:5%"><t t-esc="product.price"/></td>
+                            <td style="width:10%"><t t-esc="product.total_inventory"/></td>
+                            <td style="width:10%"><a href="#" class="activate_p">Accendi</a> - <a href="#" class="deactivate_p">Spegni</a></td>
+                        </tr>
+                    </t>
+                </tbody>
+                <tfoot><tr></tr></tfoot>
+            </table>
+        </div>
     </t>
 
     <t t-name="CategoriesSelect">
