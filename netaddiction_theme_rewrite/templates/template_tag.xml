@@ -28,7 +28,7 @@
             <br/>
             <t t-call="netaddiction_theme_rewrite.pagination"/>
             <div class="d-flex container">
-				<div id="products_grid_before" class="d-none d-lg-block col-lg-3 te_product_sticky_sidebar te_product_sidebar_scrollbar sticky-media mCustomScrollbar _mCS_1" style="position: sticky; top:110px; height: 781px;">
+				<div id="products_grid_before" class="d-none d-lg-block w-100 te_product_sticky_sidebar te_product_sidebar_scrollbar sticky-media mCustomScrollbar _mCS_1" style="position: sticky; top:110px; height: 781px; max-width:300px;">
 					<div id="mCSB_1" class="mCustomScrollBox mCS-dark-thin mCSB_vertical mCSB_inside" style="max-height: none; overflow:auto;" tabindex="0">
 						<div id="mCSB_1_container" class="mCSB_container" style="position: relative; top: 0px; left: 0px;" dir="ltr">
 							<div class="collapse d-lg-block border-0" id="wsale_products_categories_collapse">

@@ -5,6 +5,20 @@
         <field name="model">coupon.program</field>
         <field name="inherit_id" ref="coupon.coupon_program_view_form_common" />
         <field name="arch" type="xml">
+            <xpath expr="//div[hasclass('oe_button_box')]" position="inside">
+                <button type="object" name="open_website_url" class="oe_read_only" icon='fa-globe' attrs="{'invisible': [('active','=',False)]}" >Vai al Sito</button>
+            </xpath>
+            <xpath expr="//form//sheet" position="before">
+                <button name="update_products_ids" string="Aggiorna prodotti" type="object" class="btn btn-primary m-4 oe_read_only" attrs="{'invisible': ['|', '|', ('discount_apply_on', '!=', 'specific_products'),('discount_type', '!=', 'percentage'), ('reward_type', 'in', ('product', 'gift'))], 'required': [('reward_type', '=', 'discount'),('discount_apply_on', '=', 'specific_products'),('discount_type', '=', 'percentage')]}" />            
+            </xpath>
+            <xpath expr="/form/sheet/group/group[@name='conditions']" position="before">
+                <group name="web" string="Pagina Web">
+                    <field name="description" widget="text"/>
+                    <field name="active_frontend_filter"/>
+                    <field name="desktop_image" widget="image" options="{'accepted_file_extensions': '.png,.jpeg'}"/>
+                    <field name="mobile_image" widget="image" options="{'accepted_file_extensions': '.png,.jpeg'}"/>
+                </group>
+            </xpath>
             <xpath expr="/form/sheet/group/group/field[@name='reward_product_id']/.." position="attributes">
                 <attribute name="attrs">{'invisible': [('reward_type', '=', 'digital_bonus')]}</attribute>
             </xpath>

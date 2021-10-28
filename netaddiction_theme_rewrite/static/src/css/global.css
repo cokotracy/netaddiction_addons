@@ -39,26 +39,6 @@ button[data-target='#wsale_products_categories_collapse']{
     --extra-light-gray:#f5f5f5;
 }
 
-
-/*SCROLLBAR CUSTOM*/
-::-webkit-scrollbar {
-    width: 10px;
-}
-
-::-webkit-scrollbar-track {
-    box-shadow: inset 0 0 5px grey; 
-    border-radius: 10px;
-}
-
-::-webkit-scrollbar-thumb {
-    background: var(--primary); 
-    border-radius: 10px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-    background: var(--primary); 
-} 
-
 /*NAVBAR*/
 #wrapwrap > main{
     margin-top:44px;
@@ -122,9 +102,6 @@ button[data-target='#wsale_products_categories_collapse']{
     box-shadow: 0 6px 4px -4px rgb(0 0 0 / 20%);
 }
 
-header nav.navbar .header_middle .te_search_popover .input-group{
-    border:none !important;
-}
 header nav.navbar .header_middle .te_search_popover button.oe_search_button{
     background-color: transparent !important;
     outline: none !important;
@@ -236,6 +213,7 @@ header nav.navbar .header_middle .te_search_popover .input-group input.form-cont
     -webkit-box-orient: vertical;
     font-weight: 600 !important;
     height: initial !important;
+    min-height:50px;
 }
 
 .te_slider_4_content .te_prod_info_4 .btn{
@@ -257,12 +235,6 @@ header nav.navbar .header_middle .te_search_popover .input-group input.form-cont
     border-color:#cccccc !important;
     color:#000 !important;
 }
-
-.te_product_ind{
-    border:none !important;
-}
-
-
 
 /*carte prodotto*/
 .card{
@@ -417,8 +389,8 @@ header nav.navbar .header_middle{
 
 .special_price_label_container{
     position: absolute;
-    top: -5px;
-    right: 10px;
+    top:20px;
+    right: 20px;
 }
 .special_price_label{
     padding:2px 5px;
@@ -426,6 +398,10 @@ header nav.navbar .header_middle{
     color:#ffffff;
     background-color:var(--primary);
     border-radius:3px;
+}
+
+.product_name, .card-title{
+    color:#000 !important;
 }
 
 @media only screen and (min-width: 768px) {
@@ -486,6 +462,9 @@ header nav.navbar .header_middle{
     color:#ffffff !important;
 }
 
+.te_product_ind:hover, #products_grid .o_wsale_product_grid_wrapper:hover{
+    box-shadow: none !important;
+}
 @media only screen and (min-width: 768px) and (max-width: 1023px){
     #products_grid:not(.o_wsale_layout_list) table, #products_grid:not(.o_wsale_layout_list) tbody, #products_grid:not(.o_wsale_layout_list) tr{
         display: block !important;
@@ -529,4 +508,23 @@ header nav.navbar .header_middle{
     .navbar .te_bar_icon{
         display:none !important;
     }
+
+    /*SCROLLBAR CUSTOM*/
+    ::-webkit-scrollbar {
+        width: 10px;
+    }
+
+    ::-webkit-scrollbar-track {
+        box-shadow: inset 0 0 5px grey; 
+        border-radius: 10px;
+    }
+
+    ::-webkit-scrollbar-thumb {
+        background: var(--primary); 
+        border-radius: 10px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+        background: var(--primary); 
+    } 
 }

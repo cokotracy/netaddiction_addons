@@ -1,7 +1,14 @@
 # Copyright 2020 Openforce Srls Unipersonale (www.openforce.it)
 # License LGPL-3.0 or later (https://www.gnu.org/licenses/lgpl).
 
+import ast
+import logging
+from datetime import datetime
+
 from odoo import _, api, fields, models
+from odoo.exceptions import UserError
+
+_logger = logging.getLogger(__name__)
 
 
 class CouponProgram(models.Model):
@@ -11,6 +18,14 @@ class CouponProgram(models.Model):
         'sale.coupon.program.digital.bonus',
         string="Digital Bonus",
         readonly=True
+    )
+    # Web
+    website_url = fields.Char('Website URL', compute='_website_url', help='The full URL to access the document through the website.')
+    description = fields.Char("Descrizione")
+    desktop_image = fields.Image("Immagine Desktop")
+    mobile_image = fields.Image("Immagine Mobile")
+    active_frontend_filter = fields.Boolean(
+        "Attivare i filtri?", default=True, help="Attiva la barra laterale dei filtri nella pagina frontend dela tag"
     )
 
     def create_digital_bonus(self, name):
@@ -40,6 +55,34 @@ class CouponProgram(models.Model):
                     item.digital_bonus_id.active = False
             super().write(vals)
         return True
+
+    def open_website_url(self):
+        return {
+            'type': 'ir.actions.act_url',
+            'url': self.website_url,
+            'target': 'self',
+        }
+
+    def update_products_ids(self):
+        if self.rule_products_domain:
+            if not self.discount_apply_on == "specific_products":
+                raise UserError("Il campo 'Sconto applicato' non è impostato in 'Su prodotti specifici'")
+            domain = ast.literal_eval(self.rule_products_domain)
+            products = self.env["product.product"].sudo().search(domain)
+            if not products:
+                raise UserError("Nessun prodotto trovato per il seguente dominio")
+            self.write({'discount_specific_product_ids': [(6, 0, [p.id for p in products])]})
+
+    def cron_update_products_ids(self):
+        for program in self.search([("active", "=", True), ("rule_date_from", "<=", datetime.now()), ("rule_date_to", ">=", datetime.now())]):
+            try:
+                program.update_products_ids()
+            except Exception:
+                _logger.error(f"Impossibile aggiornare i prodotti per il programma: {program.name}")
+
+    def _website_url(self):
+        for program in self:
+            program.website_url = f"/promozioni/{self.id}"
 
 
 class SaleCouponReward(models.Model):
