@@ -102,9 +102,6 @@ button[data-target='#wsale_products_categories_collapse']{
     box-shadow: 0 6px 4px -4px rgb(0 0 0 / 20%);
 }
 
-/* header nav.navbar .header_middle .te_search_popover .input-group{
-    border:none !important;
-} */
 header nav.navbar .header_middle .te_search_popover button.oe_search_button{
     background-color: transparent !important;
     outline: none !important;
@@ -238,12 +235,6 @@ header nav.navbar .header_middle .te_search_popover .input-group input.form-cont
     border-color:#cccccc !important;
     color:#000 !important;
 }
-
-/* .te_product_ind{
-    border:none !important;
-} */
-
-
 
 /*carte prodotto*/
 .card{
