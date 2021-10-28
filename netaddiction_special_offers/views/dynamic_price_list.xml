@@ -5,11 +5,9 @@
         <field name="model">product.pricelist.dynamic.domain</field>
         <field name="inherit_id" ref="pricelist_dynamic_domain.product_pricelist_dynamic_domain_form"/>
         <field name="arch" type="xml">
-            <!-- <xpath expr="//div[hasclass('oe_button_box')]" position="inside">
-                <button type="object" name="open_website_url" class="oe_read_only" icon='fa-globe' attrs="{'invisible': [('active','=',False)]}" >Vai al Sito</button>
-            </xpath> -->
             <xpath expr="//form/sheet/group[@name='values']" position="after">
                 <group name="web" string="Pagina Web">
+                    <button type="object" name="open_website_url" class="oe_read_only" icon='fa-globe' >Vai al Sito</button>
                     <field name="description" widget="text"/>
                     <field name="active_frontend_filter"/>
                     <field name="desktop_image" widget="image" options="{'accepted_file_extensions': '.png,.jpeg'}"/>
