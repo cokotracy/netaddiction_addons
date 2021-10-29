@@ -81,16 +81,16 @@
             <t t-if="product.out_date">
                 <t t-set="out_date" t-value="datetime.datetime.strptime(str(product.out_date) + ' 00:00:00.00000', '%Y-%m-%d %H:%M:%S.%f')"/>
             </t>
-
-            <div t-attf-class="special_price_label_container {{'' if combination_info['has_discounted_price'] else 'd-none'}}">
-                <t t-set="difference" t-value="round(combination_info['list_price'] - combination_info['price'],2)"/>
-                <t t-set="discount"
-                t-value="round(difference*100/combination_info['list_price']) if combination_info['list_price'] &gt; 0 else 0"/>
-                <div class="special_price_label" t-if="discount">
-                    <span t-esc="'-'+ str(discount) + '%'"/>
+            <t t-if="combination_info">
+                <div t-attf-class="special_price_label_container {{'' if combination_info['has_discounted_price'] else 'd-none'}}">
+                    <t t-set="difference" t-value="round(combination_info['list_price'] - combination_info['price'],2)"/>
+                    <t t-set="discount"
+                    t-value="round(difference*100/combination_info['list_price']) if combination_info['list_price'] &gt; 0 else 0"/>
+                    <div class="special_price_label" t-if="discount">
+                        <span t-esc="'-'+ str(discount) + '%'"/>
+                    </div>
                 </div>
-            </div>
-
+            </t>
             <div class="product-label-container position-absolute">
                 <t t-if="product.product_variant_id.qty_available_now &lt;= 0 and out_date and out_date &gt; current and product.sudo().product_variant_id.inventory_availability in ['always', 'threshold']">
                     <strong class="label label-out">SOLD OUT</strong>
