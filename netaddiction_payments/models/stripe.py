@@ -112,7 +112,7 @@ class StripeAcquirer(models.Model):
                 },
             }
 
-        if self.env["payment.token"].sudo().search([("netaddiction_stripe_payment_method", "=", card["id"])]):
+        if self.env["payment.token"].sudo().search([("netaddiction_stripe_payment_method", "=", card["id"]),('partner_id','=', partner.id)]):
             return {
                 "result": False,
                 "error": {

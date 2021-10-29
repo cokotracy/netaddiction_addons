@@ -21,6 +21,7 @@
         "wk_variant_search",
         "affiliate_management",
         "website_seo_pro",
+        "website_sale_delivery",
     ],
     "data": [
         "templates/assets.xml",

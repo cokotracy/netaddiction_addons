@@ -469,16 +469,16 @@ class CustomCustomerPortal(Controller):
         # email validation
         if data.get("email") and not tools.single_email_re.match(data.get("email")):
             error["email"] = "error"
-            error_message.append(_("Invalid Email! Please enter a valid email address."))
+            error_message.append(_("Email non valida!"))
 
         # error message for empty required fields
         if [err for err in error.values() if err == "missing"]:
-            error_message.append(_("Some required fields are empty."))
+            error_message.append(_("Non hai inserito dei campi obbligatori!"))
 
         unknown = [k for k in data if k not in self.MANDATORY_BILLING_FIELDS + self.OPTIONAL_BILLING_FIELDS]
         if unknown:
             error["common"] = "Unknown field"
-            error_message.append("Unknown field '%s'" % ",".join(unknown))
+            error_message.append("Campo sconosciuto '%s'" % ",".join(unknown))
 
         return error, error_message
 
@@ -932,7 +932,7 @@ class WebsiteSaleCustomAddress(Controller):
         # email validation
         if data.get("email") and not tools.single_email_re.match(data.get("email")):
             error["email"] = "error"
-            error_message.append("Invalid Email! Please enter a valid email address.")
+            error_message.append("Email non valida!")
 
         # vat validation
         Partner = request.env["res.partner"]
@@ -947,7 +947,7 @@ class WebsiteSaleCustomAddress(Controller):
                 error_message.append(exception.args[0])
 
         if [err for err in error.values() if err == "missing"]:
-            error_message.append("Some required fields are empty.")
+            error_message.append("Non hai inserito dei campi obbligatori!")
 
         return error, error_message
 
