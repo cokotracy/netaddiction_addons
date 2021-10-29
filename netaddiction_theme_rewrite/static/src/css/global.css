@@ -474,6 +474,12 @@ header nav.navbar .header_middle{
     border-radius:10px;
 }
 
+@media (min-width: 576px){
+    #ajax_cart_model_shop .modal-dialog {
+        max-width: 600px !important;
+    }
+}
+
 @media only screen and (min-width: 768px) and (max-width: 1023px){
     #products_grid:not(.o_wsale_layout_list) table, #products_grid:not(.o_wsale_layout_list) tbody, #products_grid:not(.o_wsale_layout_list) tr{
         display: block !important;
