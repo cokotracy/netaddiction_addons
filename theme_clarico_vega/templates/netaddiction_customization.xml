@@ -1370,7 +1370,7 @@
     <template id="custom_slider_3" inherit_id="theme_clarico_vega.clarico_slider_styles_three_template">
         <xpath expr="//t[@t-foreach='filter_data']" position="replace">
             <t t-foreach="filter_data" t-as="product">
-                <div class="item te_product_ind custom_card col-12 col-md-6 col-lg-3 mb-2 mx-0 p-1 border-0">
+                <div class="item te_product_ind custom_card col-6 col-lg-3 mb-2 mx-0 p-1 border-0">
                     <form action="/shop/cart/update" method="post" class="p-0 border">
                         <t t-set="combination"
                             t-value="product._get_first_possible_combination()"/>
