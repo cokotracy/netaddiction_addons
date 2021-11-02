@@ -13,7 +13,9 @@
     "data": [
         "data/cron.xml",
         "views/web/homepage.xml",
-        "views/web/lego_shop.xml"
+        "views/web/lego_shop.xml",
+        "views/web/warner_shop.xml",
+        "views/web/offer_shop.xml"
     ],
     "installable": True,
     "application": False,

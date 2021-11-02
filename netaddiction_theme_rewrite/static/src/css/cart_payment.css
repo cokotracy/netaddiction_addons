@@ -73,3 +73,7 @@ input[data-provider=netaddiction_stripe] + span::before{
 input[data-provider=netaddiction_stripe] + span:hover:after, input[data-provider=netaddiction_stripe] + span:hover:before{
     opacity:1;
 }
+
+.o_payment_form .more_option{
+    display: none;
+}

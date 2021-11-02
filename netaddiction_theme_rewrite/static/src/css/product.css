@@ -17,6 +17,10 @@
 #product_option_block .te_theme_button:hover:before, #product_option_block .te_theme_button:hover:after{
     display: none !important;
 }
+.te_product_media, div.owl-stage>div.owl-item{
+    display:flex;
+    align-items:center;
+}
 
 /*azzero lo shift*/
 .te_product_media, div.owl-stage>div.owl-item>div>img.img{

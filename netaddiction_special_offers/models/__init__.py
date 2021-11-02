@@ -4,4 +4,6 @@
 from . import digital_bonus
 from . import coupon
 from . import sale_order
+from . import price_list
+
 # from . import minimum

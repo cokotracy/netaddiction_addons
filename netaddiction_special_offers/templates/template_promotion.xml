@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-	<template id="promotion_template">
+	<template id="promotion_template" name="Promozione | Multiplayer.com">
 		<t t-call="website.layout">
 			<div>
 				<t t-set="current_url" t-value="request.httprequest.full_path"/>

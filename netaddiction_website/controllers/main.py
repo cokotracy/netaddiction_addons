@@ -19,5 +19,13 @@ class CustomHome(Controller):
 
 class CustomCategoryPage(Controller):
     @route("/lego-shop", type="http", auth="public", website=True)
-    def controller(self):
+    def controllerLegoShop(self):
         return request.render("netaddiction_website.template_lego_shop", {})
+
+    @route("/warner-shop", type="http", auth="public", website=True)
+    def controllerWarnerShop(self):
+        return request.render("netaddiction_website.template_warner_shop", {})
+
+    @route("/offerte", type="http", auth="public", website=True)
+    def controllerOfferteShop(self):
+        return request.render("netaddiction_website.template_offer_shop", {})

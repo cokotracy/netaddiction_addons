@@ -95,10 +95,9 @@
 		<xpath expr="//div[@id='shipping_and_billing']" position="replace">
 			<div class="text-left mb-3 p-3 border" style="box-shadow:0 4px 8px 0 rgb(156 156 156 / 10%), 0 6px 20px 0 rgb(156 156 156 / 10%) !important;">
 				<div id="shipping_and_billing">
-					<div class="d-block text-right pb-3">
+					<div class="d-block text-right pb-0 mb-0">
 						<a class="adress_edit" href="/shop/checkout">
 							<i class="fa fa-pencil" />
-							Modifica
 						</a>
 					</div>
 					<t t-set="same_shipping" t-value="bool(order.partner_shipping_id==order.partner_id or only_services)" />
@@ -197,7 +196,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr t-foreach="website_sale_order.website_order_line" t-as="line">
+                                <tr class="border-bottom" t-foreach="website_sale_order.website_order_line" t-as="line">
 									<td class='' colspan="2" t-if="not line.product_id.product_tmpl_id"></td>
                                     <td class='td-img text-left' t-if="line.product_id.product_tmpl_id">
                                         <span t-field="line.product_id.image_128" t-options="{'widget': 'image', 'qweb_img_responsive': False, 'class': 'rounded o_image_64_max'}" />
@@ -207,8 +206,8 @@
                                             <small t-field="line.name_short" />
                                         </div>
                                     </td>
-                                    <td class='td-qty text-left'>
-                                        <div t-esc="line.product_uom_qty" />
+                                    <td class='td-qty text-center border-left border-right'>
+                                        <div t-esc="int(line.product_uom_qty)" />
                                     </td>
                                     <td class="text-center td-price text-primary">
                                         <span t-field="line.price_reduce_taxexcl" style="white-space: nowrap;" t-options="{'widget': 'monetary', 'display_currency': website_sale_order.currency_id}" groups="account.group_show_line_subtotals_tax_excluded" />
@@ -418,4 +417,62 @@
 			</t>
         </xpath>
 	</template>
+
+
+	<template id="website_sale_delivery.payment_delivery_methods">
+        <input t-att-value="delivery.id" t-att-id="'delivery_%i' % delivery.id" type="radio" name="delivery_type" t-att-checked="order.carrier_id and order.carrier_id.id == delivery.id and 'checked' or False" t-att-class="'d-none' if delivery_nb == 1 else ''"/>
+        <label class="label-optional" t-field="delivery.name"/>
+        <t t-set='badge_class' t-value="(delivery_nb != 1 and 'float-right ' or '') + 'badge badge-secondary'" />
+        <t t-if="delivery.delivery_type == 'fixed'">
+			<span t-if="delivery.fixed_price > 0.0" t-att-class="badge_class">
+				<t t-if="delivery.rate_shipment(website_sale_order)['price'] if delivery.free_over else delivery.fixed_price &gt; 0">
+					<t t-esc="delivery.rate_shipment(website_sale_order)['price'] if delivery.free_over else delivery.fixed_price"
+					t-options='{"widget": "monetary",
+								"from_currency": website_sale_order.currency_id if delivery.free_over else delivery.product_id.company_id.currency_id or website_sale_order.company_id.currency_id,
+								"display_currency": website_sale_order.currency_id}'/>
+				</t>
+				<t t-else="">
+					Free
+				</t>
+			</span>
+          	<span t-else="" t-att-class="badge_class">Free</span>
+        </t>
+        <t t-else="">
+            <span t-attf-class="#{badge_class} o_wsale_delivery_badge_price">Select to compute delivery rate</span>
+        </t>
+        <t t-if="delivery.website_description">
+            <div t-field="delivery.website_description" class="text-muted mt8"/>
+        </t>
+    </template>
+
+	<template id="website_sale.address_kanban" name="Kanban address">
+            <form action="/shop/checkout" method="POST" class="d-none">
+                <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()" />
+                <input type="hidden" name="partner_id" t-att-value="contact.id" />
+                <t t-if='edit_billing'>
+                    <input type="hidden" name="callback" value="/shop/checkout?use_billing" />
+                </t>
+                <input type='submit'/>
+            </form>
+            <div t-attf-class="#{selected and 'border border-primary' or 'js_change_shipping'}">
+                <div class='border p-3 d-flex position-relative' style='min-height: 130px; align-items:center;'>
+                    <a style="top:5px; right:5px;" t-if="not actual_partner or (ship.id in actual_partner.child_ids.ids)" href="#" class="position-absolute btn btn-link float-right p-0 js_edit_address no-decoration" role="button" title="Edit this address" aria-label="Edit this address"><i class='fa fa-pencil'/></a>
+					<t t-esc="contact.name"/>
+					<br/>
+					<t t-esc="contact.contact_address"/>
+				</div>
+                <div class='card-footer' t-if='not readonly'>
+                    <span class='btn-ship' t-att-style="'' if selected else 'display:none;'">
+                        <a class="btn btn-primary">
+                            <i class='fa fa-check'></i> Spedisci a questo indirizzo
+                        </a>
+                    </span>
+                    <span class='btn-ship' t-att-style="'' if not selected else 'display:none;'">
+                        <a role="button" href="#" class="btn btn-block btn-secondary">
+                            Seleziona indirizzo
+                        </a>
+                    </span>
+                </div>
+            </div>
+    </template>
 </odoo>

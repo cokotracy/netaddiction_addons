@@ -1,25 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-	<template id="offer_template">
+	<template id="offer_template" name="Offerta | Multiplayer.com">
 		<t t-call="website.layout">
 			<div>
-				<t t-if="offer_name">
+				<t t-set="current_url" t-value="request.httprequest.full_path"/>
+				<t t-if="not 'page=' in current_url">
+					<t t-if="offer.mobile_image">
+						<img class="d-md-none col-12 container-fluid p-0" t-attf-src="data:image/png;base64,{{offer.mobile_image}}"/>
+					</t>
+					<t t-if="offer.desktop_image">
+						<img class="d-none d-md-block col-12 container p-0" t-attf-src="data:image/png;base64,{{offer.desktop_image}}"/>
+					</t>
+				</t>
+				<t t-if="offer.name">
 					<div class="container nopadding" style="background-color: #f5f5f5;">
 						<div class="row nopadding">
-							<div class="img_category">
-								<!-- <t t-if="category.image_512">
-									<t t-if="not '/page/' in current_url">
-										<img class="w-100" t-attf-src="data:image/jpeg;base64,{{category.image_512}}" />
-									</t>
-								</t> -->
-							</div>
 							<div class="col-sm nopadding text-center">
-								<h1 class="d-inline py-3 d-block" t-esc="offer_name"></h1>
-								<!-- <t t-if="not '/page/' in current_url">
-									<t t-if="category.description">
-										<p class="pb-3" t-esc="category.description"></p>
-									</t>
-								</t> -->
+								<h1 class="d-inline py-3 d-block" t-esc="offer.name"></h1>
+								<t t-if="offer.description">
+									<p class="pb-3" t-esc="offer.description"></p>
+								</t>
 							</div>
 						</div>
 					</div>
@@ -28,23 +28,25 @@
 			<br />
 			<t t-call="netaddiction_special_offers.pagination_offer" />
 			<div class="d-flex container">
-				<div id="products_grid_before" class="d-none d-lg-block w-100 te_product_sticky_sidebar te_product_sidebar_scrollbar sticky-media mCustomScrollbar _mCS_1" style="position: sticky; top:110px; height: 781px; max-width:300px;">
-					<div id="mCSB_1" class="mCustomScrollBox mCS-dark-thin mCSB_vertical mCSB_inside" style="max-height: none; overflow:auto;" tabindex="0">
-						<div id="mCSB_1_container" class="mCSB_container" style="position: relative; top: 0px; left: 0px;" dir="ltr">
-							<ul class="list-unstyled mt-3">
-								<t t-set="custom_category" t-value="request.env['product.public.category'].sudo().search([('parent_id','=',1)])" />
-								<t t-foreach="custom_category" t-as="cat">
-									<li class="p-2 border-top">
-										<a class="text-secondary" t-attf-href="/shop/category/{{slug(cat)}}">
-											<small class="font-weight-bold" t-esc="cat.name">
-											</small>
-										</a>
-									</li>
-								</t>
-							</ul>
+				<t t-if="offer.active_frontend_filter">
+					<div id="products_grid_before" class="d-none d-lg-block w-100 te_product_sticky_sidebar te_product_sidebar_scrollbar sticky-media mCustomScrollbar _mCS_1" style="position: sticky; top:110px; height: 781px; max-width:300px;">
+						<div id="mCSB_1" class="mCustomScrollBox mCS-dark-thin mCSB_vertical mCSB_inside" style="max-height: none; overflow:auto;" tabindex="0">
+							<div id="mCSB_1_container" class="mCSB_container" style="position: relative; top: 0px; left: 0px;" dir="ltr">
+								<ul class="list-unstyled mt-3">
+									<t t-set="custom_category" t-value="request.env['product.public.category'].sudo().search([('parent_id','=',1)])" />
+									<t t-foreach="custom_category" t-as="cat">
+										<li class="p-2 border-top">
+											<a class="text-secondary" t-attf-href="/shop/category/{{slug(cat)}}">
+												<small class="font-weight-bold" t-esc="cat.name">
+												</small>
+											</a>
+										</li>
+									</t>
+								</ul>
+							</div>
 						</div>
 					</div>
-				</div>
+				</t>
 				<section class="container">
 					<t t-set="products_ids" t-value="''" />
 					<t t-foreach="product_list_id" t-as="prod">
@@ -70,10 +72,10 @@
 				</t>
 				<li t-attf-class="page-item {{active_prev}}">
 					<t t-if="status_filter">
-						<t t-set="link_prev" t-value="'/offerte/' + str(offer_id) + '?status-filter=' + status_filter" />
+						<t t-set="link_prev" t-value="'/offerte/' + str(offer.id) + '?status-filter=' + status_filter" />
 					</t>
 					<t t-else="">
-						<t t-set="link_prev" t-value="'/offerte/' + str(offer_id)" />
+						<t t-set="link_prev" t-value="'/offerte/' + str(offer.id)" />
 					</t>
 					<t t-if="current_page > 1">
 						<t t-if="status_filter">
@@ -99,18 +101,18 @@
 						<li t-attf-class="page-item {{active_link}}">
 							<t t-if="row_index == 0">
 								<t t-if="status_filter">
-									<a t-attf-href="/offerte/#{str(offer_id)}?status-filter={{status_filter}}" class="page-link" t-esc="(row_index + 1)"></a>
+									<a t-attf-href="/offerte/#{str(offer.id)}?status-filter={{status_filter}}" class="page-link" t-esc="(row_index + 1)"></a>
 								</t>
 								<t t-else="">
-									<a t-attf-href="/offerte/#{str(offer_id)}" class="page-link" t-esc="(row_index + 1)"></a>
+									<a t-attf-href="/offerte/#{str(offer.id)}" class="page-link" t-esc="(row_index + 1)"></a>
 								</t>
 							</t>
 							<t t-else="">
 								<t t-if="status_filter">
-									<a t-attf-href="/offerte/#{str(offer_id)}?page=#{(row_index + 1)}&amp;&amp;status-filter={{status_filter}}" class="page-link" t-esc="(row_index + 1)"></a>
+									<a t-attf-href="/offerte/#{str(offer.id)}?page=#{(row_index + 1)}&amp;&amp;status-filter={{status_filter}}" class="page-link" t-esc="(row_index + 1)"></a>
 								</t>
 								<t t-else="">
-									<a t-attf-href="/offerte/#{str(offer_id)}?page=#{(row_index + 1)}" class="page-link" t-esc="(row_index + 1)"></a>
+									<a t-attf-href="/offerte/#{str(offer.id)}?page=#{(row_index + 1)}" class="page-link" t-esc="(row_index + 1)"></a>
 								</t>
 							</t>
 						</li>
@@ -124,10 +126,10 @@
 					<t t-set="link_next" t-value="" />
 					<t t-if="current_page &lt; page_number">
 						<t t-if="status_filter">
-							<t t-set="link_next" t-value="'/offerte/' + str(offer_id) + '?page=' + str(current_page + 2) + '&amp;&amp;status-filter=' + status_filter" />
+							<t t-set="link_next" t-value="'/offerte/' + str(offer.id) + '?page=' + str(current_page + 2) + '&amp;&amp;status-filter=' + status_filter" />
 						</t>
 						<t t-else="">
-							<t t-set="link_next" t-value="'/offerte/' + str(offer_id) + '?page=' + str(current_page + 2)" />
+							<t t-set="link_next" t-value="'/offerte/' + str(offer.id) + '?page=' + str(current_page + 2)" />
 						</t>
 					</t>
 					<a data-oe-model="ir.ui.view" data-oe-id="1332" data-oe-field="arch" data-oe-xpath="/t[1]/ul[1]/li[2]/a[1]" t-attf-href="{{link_next}}" class="page-link ">
