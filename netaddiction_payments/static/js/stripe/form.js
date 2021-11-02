@@ -41,7 +41,7 @@ odoo.define('payment_netaddiction_stripe.payment_form', function (require) {
     _createCreditCard: function (stripe, formData, card) {
       return stripe.createToken(card).then((data) => {
         if (data.error) {
-          return data.error
+          return data
         } else {
           return this._rpc({
             route: '/payment/netaddiction-stripe/create-payment-token',
@@ -108,7 +108,7 @@ odoo.define('payment_netaddiction_stripe.payment_form', function (require) {
         }
         this.enableButton(button);
         let error_message = (error.message !== "") ? error.message : "Impossibile aggiungere la carta di credito."
-        this._displayError(`${error_message} Se il problema persiste contattare il servizio clienti`);
+        this._displayError(`${error_message} Se il problema persiste contattare il servizio clienti.`);
       });
     },
 
@@ -137,7 +137,7 @@ odoo.define('payment_netaddiction_stripe.payment_form', function (require) {
         }
         this.enableButton(button);
         if (error.message) {
-          this._displayError("Impossibile completare il pagamento, controllare i dati della carta di credito. Se il problema persiste contattare il servizio clienti");
+          this._displayError("Impossibile completare il pagamento, controllare i dati della carta di credito. Se il problema persiste contattare il servizio clienti.");
         }
       });
     },

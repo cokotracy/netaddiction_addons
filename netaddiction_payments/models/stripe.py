@@ -112,11 +112,15 @@ class StripeAcquirer(models.Model):
                 },
             }
 
-        if self.env["payment.token"].sudo().search([("netaddiction_stripe_payment_method", "=", card["id"]),('partner_id','=', partner.id)]):
+        if (
+            self.env["payment.token"]
+            .sudo()
+            .search([("netaddiction_stripe_payment_method", "=", card["id"]), ("partner_id", "=", partner.id)])
+        ):
             return {
                 "result": False,
                 "error": {
-                    "message": "La seguente carta è già presente nella lista delle dei tuoi metodi di pagamento.",
+                    "message": "La seguente carta è già presente nella lista dei tuoi metodi di pagamento.",
                 },
             }
         payment_token = (
