@@ -167,7 +167,7 @@ header nav.navbar .header_middle .te_search_popover .input-group input.form-cont
 .product-label-container{
     top:0;
     left:-5px;
-    max-width:100px;
+    max-width:110px;
     display: flex;
     flex-wrap: wrap;
     justify-content: left;
