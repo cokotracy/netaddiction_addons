@@ -112,20 +112,18 @@ class AffiliateRequest(models.Model):
 
     def action_aproove(self):
         if self.user_id:
-            if self.user_id.id == self.env.ref('base.user_admin').id:
-                raise UserError("Admin can't be an Affiliate")
-            affiliate_program = self.env['affiliate.program'].search([])
-            if not affiliate_program:
-                raise UserError("In Configuration settings Program is absent")
-            self.set_group_user(self.user_id.id)
-            self.state = 'aproove'
-            self.user_id.partner_id.is_affiliate = True
-            template_id = self.env.ref('affiliate_management.welcome_affiliate_email')
-            res = template_id.send_mail(self.id,force_send=True)
+            raise UserError("No user associated in the following request")
+        if self.user_id.id == self.env.ref('base.user_admin').id:
+            raise UserError("Admin can't be an Affiliate")
+        affiliate_program = self.env['affiliate.program'].search([])
+        if not affiliate_program:
+            raise UserError("In Configuration settings Program is absent")
+        self.set_group_user(self.user_id.id)
+        self.state = 'aproove'
+        self.user_id.partner_id.is_affiliate = True
+        template_id = self.env.ref('affiliate_management.welcome_affiliate_email')
+        template_id.send_mail(self.id, force_send=True)
         return True
-
-
-
 
     @api.model
     def _signup_create_user(self, values):
