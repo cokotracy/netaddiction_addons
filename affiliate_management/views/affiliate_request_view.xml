@@ -6,11 +6,11 @@
 			<field name="arch" type="xml">
 				<form create="false" edit="false" >
          	 		<header >
-							<field name="state" widget="statusbar" statusbar_visible="draft,register,cancel,aproove"/>
+						<field name="state" widget="statusbar" statusbar_visible="draft,register,cancel,aproove"/>
             			<button name="action_aproove"  string="Approve" type="object"
-						attrs="{'invisible':['|',('state','=','aproove'),('state','=','draft')]}"/>
+						attrs="{'invisible':[('state','in', ['aproove', 'cancel'])]}"/>
 						<button name="action_cancel"  string="Reject" type="object"
-						attrs="{'invisible':['|',('state','=','cancel'),('state','=','draft')]}"/>
+						attrs="{'invisible':[('state','in', ['aproove', 'cancel'])]}"/>
 					</header>
           			<sheet>
 				       	<group>
