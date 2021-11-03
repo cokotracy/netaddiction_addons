@@ -157,9 +157,6 @@ odoo.define('payment_netaddiction_stripe.payment_form', function (require) {
       var element = stripe.elements();
       var card = element.create('card', { hidePostalCode: true });
       card.mount('#card-element');
-      card.on('ready', function (ev) {
-        card.focus();
-      });
       card.addEventListener('change', function (event) {
         var displayError = document.getElementById('card-errors');
         displayError.textContent = '';

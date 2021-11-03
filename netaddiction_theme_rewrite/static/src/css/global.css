@@ -48,10 +48,11 @@ button[data-target='#wsale_products_categories_collapse']{
     display: none !important;
 }
 .navbar-brand{
-    margin-left:15px;
-    width:40px;
-    height: 45px;
     background-image:url(../img/logo-mcom.png);
+    margin-left: 10px;
+    margin-bottom: 3px;
+    width: 37px;
+    height: 45px;
     background-position: center;
     background-repeat: no-repeat;
     background-size: contain;
