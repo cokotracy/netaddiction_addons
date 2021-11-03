@@ -41,7 +41,7 @@ odoo.define('payment_netaddiction_stripe.payment_form', function (require) {
     _createCreditCard: function (stripe, formData, card) {
       return stripe.createToken(card).then((data) => {
         if (data.error) {
-          return data.error
+          return data
         } else {
           return this._rpc({
             route: '/payment/netaddiction-stripe/create-payment-token',
@@ -108,7 +108,7 @@ odoo.define('payment_netaddiction_stripe.payment_form', function (require) {
         }
         this.enableButton(button);
         let error_message = (error.message !== "") ? error.message : "Impossibile aggiungere la carta di credito."
-        this._displayError(`${error_message} Se il problema persiste contattare il servizio clienti`);
+        this._displayError(`${error_message} Se il problema persiste contattare il servizio clienti.`);
       });
     },
 
@@ -137,7 +137,7 @@ odoo.define('payment_netaddiction_stripe.payment_form', function (require) {
         }
         this.enableButton(button);
         if (error.message) {
-          this._displayError("Impossibile completare il pagamento, controllare i dati della carta di credito. Se il problema persiste contattare il servizio clienti");
+          this._displayError("Impossibile completare il pagamento, controllare i dati della carta di credito. Se il problema persiste contattare il servizio clienti.");
         }
       });
     },
@@ -157,9 +157,6 @@ odoo.define('payment_netaddiction_stripe.payment_form', function (require) {
       var element = stripe.elements();
       var card = element.create('card', { hidePostalCode: true });
       card.mount('#card-element');
-      card.on('ready', function (ev) {
-        card.focus();
-      });
       card.addEventListener('change', function (event) {
         var displayError = document.getElementById('card-errors');
         displayError.textContent = '';
@@ -187,42 +184,48 @@ odoo.define('payment_netaddiction_stripe.payment_form', function (require) {
         params: { 'acquirer_id': acquirer_id }
       }).then(function (data) {
         if (data != null) {
-          data.map((card, index) => {
-            var cards = $(qweb.render('stripe.cards', card));
-            cards.appendTo($('#cards-list'));
-            if (card.isDefault === true) {
-              $checkedRadio.value = card.id;
-            }
-            else {
-              $(`#card_template_${card.id} .card_default_change`).click(function () {
-                self._rpc({
-                  route: '/payment/netaddiction-stripe/set-default-payment',
-                  params: { 'acquirer_id': acquirer_id, 'token': card.id }
-                }).then(function (data) {
-                  $(acquirerForm).slideUp(() => {
-                    self._unloadCardView()
-                    self._unbindStripeCard();
-                    setTimeout(() => {
-                      self._bindStripeCard($checkedRadio);
-                      self._loadCardView($checkedRadio)
-                      $(acquirerForm).slideDown("slow")
-                    }, 1000);
+          if (data.length == 0) {
+            $(".or_cards_divider").addClass("d-none");
+            $("<strong class='text-center mx-auto'>Non hai ancora inserito carte di credito!</strong>").appendTo($('#cards-list'));
+          }
+          else {
+            data.map((card, index) => {
+              var cards = $(qweb.render('stripe.cards', card));
+              cards.appendTo($('#cards-list'));
+              if (card.isDefault === true) {
+                $checkedRadio.value = card.id;
+              }
+              else {
+                $(`#card_template_${card.id} .card_default_change`).click(function () {
+                  self._rpc({
+                    route: '/payment/netaddiction-stripe/set-default-payment',
+                    params: { 'acquirer_id': acquirer_id, 'token': card.id }
+                  }).then(function (data) {
+                    $(acquirerForm).slideUp(() => {
+                      self._unloadCardView()
+                      self._unbindStripeCard();
+                      setTimeout(() => {
+                        self._bindStripeCard($checkedRadio);
+                        self._loadCardView($checkedRadio)
+                        $(acquirerForm).slideDown("slow")
+                      }, 1000);
+                    });
                   });
                 });
+              }
+              $(`#card_template_${card.id}`).click(function () {
+                $('#cards-list > .card_stripe').each(function () {
+                  if (this.id == `card_template_${card.id}`) {
+                    this.querySelector('input').checked = true;
+                    $checkedRadio.value = card.id;
+                  }
+                  else {
+                    this.querySelector('input').checked = false;
+                  }
+                });
               });
-            }
-            $(`#card_template_${card.id}`).click(function () {
-              $('#cards-list > .card_stripe').each(function () {
-                if (this.id == `card_template_${card.id}`) {
-                  this.querySelector('input').checked = true;
-                  $checkedRadio.value = card.id;
-                }
-                else {
-                  this.querySelector('input').checked = false;
-                }
-              });
-            });
-          })
+            })
+          }
         }
       });
     },

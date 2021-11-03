@@ -159,15 +159,47 @@
 
     <template id="custom_order_consegna" inherit_id="sale_stock.sale_order_portal_content_inherit_sale_stock">
         <xpath expr="//div[hasclass('o_sale_stock_picking')]" position="replace">
+            <t t-set="current" t-value="datetime.date.today()"/>
+            <t t-set="existing_date" t-value="True"/>
+            <t t-foreach="sale_order.order_line" t-as="line">
+                <t t-if="line.product_id.out_date">
+                    <t t-set="out_date" t-value="line.product_id.out_date"/>
+                </t>
+                <t t-set="in_stock" t-value="False"/>
+                <t t-if="line.move_ids and  len(line.move_ids) &gt; 0">
+                    <t t-if="line.move_ids[-1].forecast_availability &gt; 0">
+                        <t t-if="line.move_ids[-1].forecast_expected_date">
+                            <t t-set="existing_date" t-value="False"/>
+                        </t>
+                    </t>
+                    <t t-else="">
+                        <t t-set="in_stock" t-value="True"/>
+                    </t>
+
+                    <t t-if="out_date and out_date &gt; current and not in_stock and not line.move_ids[-1].forecast_expected_date">
+                        <t t-if="line.product_id.out_date">
+                            <t t-set="existing_date" t-value="False"/>
+                        </t>
+                    </t>
+                </t>
+                <t t-else="">
+                    <t t-set="in_stock" t-value="False"/>
+                </t>
+            </t>
             <table class="w-100 mt-3">
                 <tbody>
                     <tr class="d-flex flex-wrap col-12 0 border-bottom mb-3">
                         <td class="p-2"><span>Ordine # </span><strong><span t-esc="sale_order.name"/></strong></td>
-                        <td class="p-2">
-                            <div class="small d-lg-inline-block">Spedizione pianificata il:
-                                <span class="text-muted" t-field="i.date_done" t-options="{'date_only': True}"/>
-                                <span t-if="i.state in ['draft', 'waiting', 'confirmed', 'assigned']" class="text-muted" t-field="i.scheduled_date" t-options="{'date_only': True}"/>
-                            </div>
+                        <td class="p-2"> 
+                            <t t-if="existing_date">
+                                <div class="small d-lg-inline-block">Spedizione pianificata il:
+                                    <span class="text-muted text-primary" t-field="i.date_done" t-options="{'date_only': True}"/>
+                                    <span t-if="i.state in ['draft', 'waiting', 'confirmed', 'assigned']" class="text-muted" t-field="i.scheduled_date" t-options="{'date_only': True}"/>
+                                </div>
+                            </t>
+                            <t t-else="">
+                                <div class="small d-lg-inline-block text-primary">Verrà spedito appena i prodotti saranno disponibile in magazzino</div>
+                            </t>
                         </td>
                         <td class="p-2">
                             <span t-if="i.state == 'done'" class="small badge badge-success orders_label_text_align" style="border-radius:3px;"><i class="fa fa-fw fa-truck"/> <b>Spedito</b></span>

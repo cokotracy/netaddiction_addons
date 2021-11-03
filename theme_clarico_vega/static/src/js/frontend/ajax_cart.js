@@ -227,7 +227,8 @@ odoo.define('theme_clarico_vega.ajax_cart', function (require) {
                 }
                 $('#ajax_cart_model, #ajax_cart_model_shop').removeClass('ajax-cart-item');
                 $('#ajax_cart_model, #ajax_cart_model_shop').addClass('ajax-sucess');
-
+                //NETADDICTION
+                $('#ajax_cart_model, #ajax_cart_model_shop').addClass('d-none');
             });
         }
     });

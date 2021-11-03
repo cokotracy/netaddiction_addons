@@ -144,3 +144,10 @@ class NetaddictionStripeController(http.Controller):
             kwargs = dict(kwargs, partner_id=request.env.user.partner_id)
         res = request.env["payment.acquirer"].browse(int(kwargs.get("acquirer_id"))).set_default_payment(kwargs)
         return res
+
+    @http.route(["/payment/netaddiction-stripe/delete-payment"], type="json", auth="public", csrf=False)
+    def disable_payment_method(self, **kwargs):
+        if not kwargs.get("partner_id"):
+            kwargs = dict(kwargs, partner_id=request.env.user.partner_id)
+        res = request.env["payment.acquirer"].browse(int(kwargs.get("acquirer_id"))).disable_payment(kwargs)
+        return res
