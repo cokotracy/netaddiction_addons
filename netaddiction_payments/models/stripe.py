@@ -239,7 +239,7 @@ class StripePaymentTransaction(models.Model):
 
     def _ns_validate_response(self, response):
         self.ensure_one()
-        if self.state not in ("draft", "pending"):
+        if self.state not in ("draft", "pending", "error"):
             return True
         status = response.get("status")
         tx_id = response.get("id")
