@@ -16,6 +16,8 @@ from odoo.addons.website.controllers.main import Website
 from odoo.addons.website.controllers.main import QueryURL
 from odoo.addons.http_routing.models.ir_http import slug
 from odoo.addons.sale.controllers.portal import CustomerPortal
+from odoo.addons.payment.controllers.portal import WebsitePayment
+
 import ast
 from odoo.osv import expression
 
@@ -1106,3 +1108,22 @@ class CustomCustomerPortal(CustomerPortal):
         order = request.env["sale.order"].browse([order_id])
         if not order.with_user(request.session.uid).exists():
             raise AccessError("Non hai i permessi per visualizzare questa pagina")
+
+
+class CustomWebsitePayment(WebsitePayment):
+    @route(["/my/payment_method"], type="http", auth="user", website=True)
+    def payment_method(self, **kwargs):
+        response = super(CustomWebsitePayment, self).payment_method(**kwargs)
+        try:
+            acquirer = request.env["payment.acquirer"].search(
+                [("provider", "=", "netaddiction_stripe"), ("state", "=", "enabled")]
+            )[0]
+        except IndexError:
+            pass
+        else:
+            response.qcontext["acquirer_id"] = acquirer.id
+            response.qcontext["stripe_key"] = acquirer.sudo().netaddiction_stripe_pk
+        response = http.Response(
+            template="netaddiction_theme_rewrite.custom_portal_my_payment_method", qcontext=response.qcontext
+        )
+        return response.render()

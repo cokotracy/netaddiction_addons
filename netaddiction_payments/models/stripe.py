@@ -112,11 +112,15 @@ class StripeAcquirer(models.Model):
                 },
             }
 
-        if self.env["payment.token"].sudo().search([("netaddiction_stripe_payment_method", "=", card["id"]),('partner_id','=', partner.id)]):
+        if (
+            self.env["payment.token"]
+            .sudo()
+            .search([("netaddiction_stripe_payment_method", "=", card["id"]), ("partner_id", "=", partner.id)])
+        ):
             return {
                 "result": False,
                 "error": {
-                    "message": "La seguente carta è già presente nella lista delle dei tuoi metodi di pagamento.",
+                    "message": "La seguente carta è già presente nella lista dei tuoi metodi di pagamento.",
                 },
             }
         payment_token = (
@@ -142,10 +146,7 @@ class StripeAcquirer(models.Model):
         ):
             payment_token.default_payment = True
 
-        return {
-            "result": True,
-            "token": payment_token.id,
-        }
+        return {"result": True, "token": payment_token.id}
 
     def set_default_payment(self, data):
         partner = data.get("partner_id")
@@ -154,11 +155,15 @@ class StripeAcquirer(models.Model):
             self.env["payment.token"].sudo().search([("partner_id", "=", partner.id), ("default_payment", "=", True)])
         )
         payments.default_payment = False
-        self.env["payment.token"].sudo().search([("id", "=", payment_token)]).default_payment = True
+        self.env["payment.token"].sudo().browse(payment_token).default_payment = True
 
-        return {
-            "result": True,
-        }
+        return {"result": True}
+
+    def disable_payment(self, data):
+        payment_token = data.get("token")
+        self.env["payment.token"].sudo().browse(payment_token).active = False
+
+        return {"result": True}
 
     def _get_or_create_customer(self, partner):
         stripe.api_key = self.sudo().netaddiction_stripe_sk
@@ -234,7 +239,7 @@ class StripePaymentTransaction(models.Model):
 
     def _ns_validate_response(self, response):
         self.ensure_one()
-        if self.state not in ("draft", "pending"):
+        if self.state not in ("draft", "pending", "error"):
             return True
         status = response.get("status")
         tx_id = response.get("id")
