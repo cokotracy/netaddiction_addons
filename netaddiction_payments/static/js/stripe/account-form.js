@@ -3,6 +3,8 @@ odoo.define('payment_netaddiction_stripe.payment_account_form', function (requir
 
   var ajax = require('web.ajax');
   var core = require('web.core');
+  var Dialog = require('web.Dialog');
+
   var qweb = core.qweb;
   var _t = core._t;
   var publicWidget = require('web.public.widget');
@@ -162,6 +164,32 @@ odoo.define('payment_netaddiction_stripe.payment_account_form', function (requir
                   }, 1500);
                 });
               });
+            });
+            $(`#card_template_${card.id} .card_delete`).show()
+            $(`#card_template_${card.id} .card_delete`).click(() => {
+              Dialog.confirm(
+                this,
+                "Sei sicuro di voler rimuovere il seguente metodo di pagamento ?",
+                {
+                  confirm_callback: () => {
+                    this._rpc({
+                      route: '/payment/netaddiction-stripe/delete-payment',
+                      params: { 'acquirer_id': this.acquirer_id, 'token': card.id }
+                    }).then(() => {
+                      $("#card-wrapper").slideUp(() => {
+                        this._unloadCardView();
+                        this._unbindStripeCard();
+
+                        this._loadCardView();
+                        this._bindStripeCard();
+                        setTimeout(() => {
+                          $("#card-wrapper").slideDown("slow")
+                        }, 1500);
+                      });
+                    });
+                  }
+                },
+              )
             });
           })
         }

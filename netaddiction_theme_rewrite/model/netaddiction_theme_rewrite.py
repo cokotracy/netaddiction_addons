@@ -1122,7 +1122,7 @@ class CustomWebsitePayment(WebsitePayment):
             pass
         else:
             response.qcontext["acquirer_id"] = acquirer.id
-            response.qcontext["stripe_key"] = acquirer.netaddiction_stripe_pk
+            response.qcontext["stripe_key"] = acquirer.sudo().netaddiction_stripe_pk
         response = http.Response(
             template="netaddiction_theme_rewrite.custom_portal_my_payment_method", qcontext=response.qcontext
         )

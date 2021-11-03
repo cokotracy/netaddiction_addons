@@ -146,10 +146,7 @@ class StripeAcquirer(models.Model):
         ):
             payment_token.default_payment = True
 
-        return {
-            "result": True,
-            "token": payment_token.id,
-        }
+        return {"result": True, "token": payment_token.id}
 
     def set_default_payment(self, data):
         partner = data.get("partner_id")
@@ -160,9 +157,13 @@ class StripeAcquirer(models.Model):
         payments.default_payment = False
         self.env["payment.token"].sudo().search([("id", "=", payment_token)]).default_payment = True
 
-        return {
-            "result": True,
-        }
+        return {"result": True}
+
+    def disable_payment(self, data):
+        payment_token = data.get("token")
+        self.env["payment.token"].sudo().search([("id", "=", payment_token)]).active = False
+
+        return {"result": True}
 
     def _get_or_create_customer(self, partner):
         stripe.api_key = self.sudo().netaddiction_stripe_sk
