@@ -218,17 +218,15 @@ odoo.define('theme_clarico_vega.ajax_cart', function (require) {
         ajaxCartSucess: function(product_id, product_product){
             /** Success popup */
             ajax.jsonRpc('/ajax_cart_sucess_data', 'call',{'product_id':product_id, 'product_product':product_product}).then(function(data) {
-                if($("#wrap").hasClass('js_sale')) {
-                    $("#ajax_cart_model_shop .modal-body").html(data);
-                    $("#ajax_cart_model_shop").modal({keyboard: true});
-                } else {
-                    $("#ajax_cart_model .modal-body").html(data);
-                    $("#ajax_cart_model").modal({keyboard: true});
-                }
-                $('#ajax_cart_model, #ajax_cart_model_shop').removeClass('ajax-cart-item');
-                $('#ajax_cart_model, #ajax_cart_model_shop').addClass('ajax-sucess');
-                //NETADDICTION
-                $('#ajax_cart_model, #ajax_cart_model_shop').addClass('d-none');
+              // if($("#wrap").hasClass('js_sale')) {
+              //     $("#ajax_cart_model_shop .modal-body").html(data);
+              //     $("#ajax_cart_model_shop").modal({keyboard: true});
+              // } else {
+              //     $("#ajax_cart_model .modal-body").html(data);
+              //     $("#ajax_cart_model").modal({keyboard: true});
+              // }
+              // $('#ajax_cart_model, #ajax_cart_model_shop').removeClass('ajax-cart-item');
+              // $('#ajax_cart_model, #ajax_cart_model_shop').addClass('ajax-sucess');
             });
         }
     });
