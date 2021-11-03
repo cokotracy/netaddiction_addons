@@ -155,13 +155,13 @@ class StripeAcquirer(models.Model):
             self.env["payment.token"].sudo().search([("partner_id", "=", partner.id), ("default_payment", "=", True)])
         )
         payments.default_payment = False
-        self.env["payment.token"].sudo().search([("id", "=", payment_token)]).default_payment = True
+        self.env["payment.token"].sudo().browse(payment_token).default_payment = True
 
         return {"result": True}
 
     def disable_payment(self, data):
         payment_token = data.get("token")
-        self.env["payment.token"].sudo().search([("id", "=", payment_token)]).active = False
+        self.env["payment.token"].sudo().browse(payment_token).active = False
 
         return {"result": True}
 
