@@ -144,54 +144,61 @@ odoo.define('payment_netaddiction_stripe.payment_account_form', function (requir
         params: { 'acquirer_id': this.acquirer_id }
       }).then((data) => {
         if (data != null) {
-          data.map((card) => {
-            var cards = $(qweb.render('stripe.cards', card));
-            $("input", cards).hide();
-            cards.appendTo($('#cards-list'));
-            $(`#card_template_${card.id} .card_default_change`).click(() => {
-              this._rpc({
-                route: '/payment/netaddiction-stripe/set-default-payment',
-                params: { 'acquirer_id': this.acquirer_id, 'token': card.id }
-              }).then(() => {
-                $("#card-wrapper").slideUp(() => {
-                  this._unloadCardView();
-                  this._unbindStripeCard();
-
-                  this._loadCardView();
-                  this._bindStripeCard();
-                  setTimeout(() => {
-                    $("#card-wrapper").slideDown("slow")
-                  }, 1500);
+          if(data.length == 0){
+            $(".or_cards_divider").addClass("d-none");
+            $("<strong class='text-center mx-auto'>Non hai ancora inserito carte di credito!</strong>" ).appendTo($('#cards-list'));
+          }
+          else{
+            $('.or_cards_divider').removeClass("d-none");
+            data.map((card) => {
+              var cards = $(qweb.render('stripe.cards', card));
+              $("input", cards).hide();
+              cards.appendTo($('#cards-list'));
+              $(`#card_template_${card.id} .card_default_change`).click(() => {
+                this._rpc({
+                  route: '/payment/netaddiction-stripe/set-default-payment',
+                  params: { 'acquirer_id': this.acquirer_id, 'token': card.id }
+                }).then(() => {
+                  $("#card-wrapper").slideUp(() => {
+                    this._unloadCardView();
+                    this._unbindStripeCard();
+  
+                    this._loadCardView();
+                    this._bindStripeCard();
+                    setTimeout(() => {
+                      $("#card-wrapper").slideDown("slow")
+                    }, 1500);
+                  });
                 });
               });
-            });
-            $(`#card_template_${card.id} .card_delete`).show()
-            $(`#card_template_${card.id} .card_delete`).click(() => {
-              Dialog.confirm(
-                this,
-                "Sei sicuro di voler rimuovere il seguente metodo di pagamento ?",
-                {
-                  confirm_callback: () => {
-                    this._rpc({
-                      route: '/payment/netaddiction-stripe/delete-payment',
-                      params: { 'acquirer_id': this.acquirer_id, 'token': card.id }
-                    }).then(() => {
-                      $("#card-wrapper").slideUp(() => {
-                        this._unloadCardView();
-                        this._unbindStripeCard();
-
-                        this._loadCardView();
-                        this._bindStripeCard();
-                        setTimeout(() => {
-                          $("#card-wrapper").slideDown("slow")
-                        }, 1500);
+              $(`#card_template_${card.id} .card_delete`).show()
+              $(`#card_template_${card.id} .card_delete`).click(() => {
+                Dialog.confirm(
+                  this,
+                  "Sei sicuro di voler rimuovere il seguente metodo di pagamento ?",
+                  {
+                    confirm_callback: () => {
+                      this._rpc({
+                        route: '/payment/netaddiction-stripe/delete-payment',
+                        params: { 'acquirer_id': this.acquirer_id, 'token': card.id }
+                      }).then(() => {
+                        $("#card-wrapper").slideUp(() => {
+                          this._unloadCardView();
+                          this._unbindStripeCard();
+  
+                          this._loadCardView();
+                          this._bindStripeCard();
+                          setTimeout(() => {
+                            $("#card-wrapper").slideDown("slow")
+                          }, 1500);
+                        });
                       });
-                    });
-                  }
-                },
-              )
-            });
-          })
+                    }
+                  },
+                )
+              });
+            })
+          }
         }
       });
     },

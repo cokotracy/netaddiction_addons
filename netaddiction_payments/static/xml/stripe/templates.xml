@@ -36,8 +36,8 @@
                         </tr>
                     </tbody>
                 </table>
+                <a href="javascript:void(0);" class="card_delete position-absolute px-2 py-0" style="display: none; bottom:10px; left:10px; color:#fff; border-radius:2px; border:0.5px solid #fff;"><i class="fa fa-trash"/></a>
             </div>
-            <a href="javascript:void(0);" class="card_delete w-100 mx-auto p-3 text-center" style="display: none;"><i class="fa fa-trash mr-1"/>Rimuovi</a>
             <t t-if="isDefault">
                 <a class="w-100 mx-auto p-3 text-center d-block"><i class="fa fa-check-square-o mr-1"/>Default</a>
             </t>
