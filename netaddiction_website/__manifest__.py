@@ -5,17 +5,18 @@
     """,
     "author": "Netaddiction",
     "category": "Custom Development",
-    "version": "14.0.1.4.0",
+    "version": "14.0.1.5.0",
     "description": """
         This module will enhance the odoo features
     """,
-    "depends": ["website_sale"],
+    "depends": ["website_sale", "fb_pixel"],
     "data": [
         "data/cron.xml",
+        "views/web/product.xml",
         "views/web/homepage.xml",
         "views/web/lego_shop.xml",
         "views/web/warner_shop.xml",
-        "views/web/offer_shop.xml"
+        "views/web/offer_shop.xml",
     ],
     "installable": True,
     "application": False,

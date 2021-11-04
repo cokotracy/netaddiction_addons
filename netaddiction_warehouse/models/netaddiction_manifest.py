@@ -255,6 +255,7 @@ class NetaddictionManifest(models.Model):
     @staticmethod
     def _get_delivery_amount(delivery, payment=None):
         amount = 0.0
+        sale = delivery.sale_id
         if delivery:
             amount += sum([
                 move.sale_line_id.price_total
@@ -262,13 +263,24 @@ class NetaddictionManifest(models.Model):
                 in delivery.move_ids_without_package
                 ])
             shipping_cost = 0
-            shipping_line = delivery.sale_id.order_line.filtered(
+            shipping_line = sale.order_line.filtered(
                 lambda l: l.is_delivery).sorted(key=lambda l: l.price_total)
             if shipping_line:
                 shipping_cost = shipping_line[-1].price_total
             amount += shipping_cost
         if payment:
             amount += payment.delivery_fees
+        # Remove rewards amount
+        # /|\ ATTENTION! DANGER! WARNING! CTHULHU!
+        # Andrea Alunni says there isn't separated delivery actually.
+        # So, to calculate discount, I remove from total
+        # the reward line amount
+        if amount:
+            reward_lines = sale.order_line.filtered(lambda l: l.is_reward_line)
+            if reward_lines:
+                reward_amount = abs(
+                    sum([rl.price_total for rl in reward_lines]))
+                amount -= reward_amount
         return round(amount, 2)
 
     def create_manifest(self):
@@ -895,10 +907,10 @@ class NetaddictionManifest(models.Model):
             manifest.manifest_file1_check = check_text
 
     def _check_manifest_data_bartolini(self, row):
-        line_amount = round(
-            float(
-                row[274:288].lstrip('0').replace(',', '.')),
-            2)
+        str_amount = row[274:288].lstrip('0').replace(',', '.')
+        if not str_amount:
+            str_amount = '0'
+        line_amount = round(float(str_amount), 2)
         customer = row[40:110].strip()
         return {
             'line_amount': line_amount,
@@ -906,10 +918,10 @@ class NetaddictionManifest(models.Model):
         }
 
     def _check_manifest_data_sda(self, row):
-        line_amount = round(
-            float(
-                row[501:510].lstrip('0').replace(',', '.')),
-            2)
+        str_amount = row[501:510].strip().lstrip('0').replace(',', '.')
+        if not str_amount:
+            str_amount = '0'
+        line_amount = round(float(str_amount), 2)
         customer = row[275:315].strip()
         return {
             'line_amount': line_amount,
