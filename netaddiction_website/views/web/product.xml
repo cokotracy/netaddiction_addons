@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+  <template id="product" inherit_id="website_sale.product" name="Custom Pixel product track" priority="210">
+    <xpath expr="//a[@id='add_to_cart']" position="attributes">
+      <t t-if="website and website.fb_pixel_key and not editable">
+        <script>
+          document.addEventListener('click', (e) => {
+            if(e.target &amp;&amp; ["add_to_cart", "buy_now"].includes(e.target.id)){
+              fbq('track', 'AddToCart', {
+                content_name: '<t t-esc="product.name"/>',
+                content_category: '<t t-esc="category.name if category else ''"/>',
+                content_ids: <t t-esc="combination_info['default_code']"/>,
+                content_type: 'Product',
+                value: <t t-esc="combination_info['price']"/>,
+                content_name: '<t t-esc="website.currency_id.name"/>',
+              });
+            }          
+          });
+        </script>
+      </t>
+    </xpath>
+  </template>
+</odoo>

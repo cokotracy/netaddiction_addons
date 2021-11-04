@@ -204,8 +204,9 @@ class StripePaymentTransaction(models.Model):
 
     def ns_do_transaction(self):
         self.ensure_one()
-        result = self._ns_create_payment_intent()
-        return self._ns_validate_response(result)
+        if self.state != "done":
+            result = self._ns_create_payment_intent()
+            return self._ns_validate_response(result)
 
     def get_ns_payment_from_order(self, order):
         for payment in order.transaction_ids:
