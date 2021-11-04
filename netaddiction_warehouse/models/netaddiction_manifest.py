@@ -895,10 +895,10 @@ class NetaddictionManifest(models.Model):
             manifest.manifest_file1_check = check_text
 
     def _check_manifest_data_bartolini(self, row):
-        line_amount = round(
-            float(
-                row[274:288].lstrip('0').replace(',', '.')),
-            2)
+        str_amount = row[274:288].lstrip('0').replace(',', '.')
+        if not str_amount:
+            str_amount = '0'
+        line_amount = round(float(str_amount), 2)
         customer = row[40:110].strip()
         return {
             'line_amount': line_amount,
@@ -906,10 +906,10 @@ class NetaddictionManifest(models.Model):
         }
 
     def _check_manifest_data_sda(self, row):
-        line_amount = round(
-            float(
-                row[501:510].lstrip('0').replace(',', '.')),
-            2)
+        str_amount = row[501:510].strip().lstrip('0').replace(',', '.')
+        if not str_amount:
+            str_amount = '0'
+        line_amount = round(float(str_amount), 2)
         customer = row[275:315].strip()
         return {
             'line_amount': line_amount,
