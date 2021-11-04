@@ -1,6 +1,10 @@
 # Copyright 2019 Openforce Srls Unipersonale (www.openforce.it)
 # License LGPL-3.0 or later (https://www.gnu.org/licenses/lgpl).
 
+import csv
+import io
+import base64
+
 from odoo import api, fields, models
 from odoo.exceptions import UserError
 
@@ -96,3 +100,16 @@ class AccountInvoiceLine(models.Model):
             line.tax_value = \
                 result['total_included'] - result['total_excluded']
             line.price_compute_tax = result['total_included']
+
+
+class AccountPaymentCashOnDelivery(models.TransientModel):
+    _name = "netaddiction.account.payment.cod"
+
+    cod_file = fields.Binary(string="Importa il file (*.csv)", attachment=False)
+
+    def check_csv_cod(self):
+        csv_data = base64.b64decode(self.cod_file)
+        data_file = io.StringIO(csv_data.decode("utf-8"))
+        csv_reader = csv.reader(data_file, delimiter=",")
+        for row in csv_reader:
+            print(row)
