@@ -1,7 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <odoo>
-  <template id="product" inherit_id="website_sale.product" name="Custom Pixel product track" priority="210">
-    <xpath expr="//a[@id='add_to_cart']" position="attributes">
+  <template id="fb_pixel.product" inherit_id="website_sale.product" name="Custom Pixel product track" priority="210">
+    <xpath expr="//input[@name='product_id']" position="after">
+      <input type="hidden" class="default_code" name="default_code" t-att-value="product_variant.default_code" />
+    </xpath>
+    <xpath expr="//div[@id='wrap']" position="after">
+      <t t-if="website and website.fb_pixel_key and not editable">
+        <t t-if="'default_code' in combination_info and 'price' in combination_info">
+          <script>
+            fbq('track', 'ViewContent', {
+              value: <t t-esc="combination_info['price']"/>,
+              currency: '<t t-esc="website.currency_id.name"/>',
+              content_ids: ['<t t-esc="combination_info['default_code']"/>'],
+              content_type: 'Product',
+            });
+          </script>
+        </t>
+      </t>
+    </xpath>
+    <xpath expr="//a[@id='add_to_cart']" position="after">
       <t t-if="website and website.fb_pixel_key and not editable">
         <script>
           document.addEventListener('click', (e) => {
