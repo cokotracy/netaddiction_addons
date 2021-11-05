@@ -554,6 +554,10 @@ header nav.navbar .header_middle{
 
 #o_shop_collapse_category > li > ul{
     padding-left:0 !important;
+    display: block !important;
+}
+#o_shop_collapse_category > li > i{
+    display: none !important;
 }
 
 #o_shop_collapse_category .active, #o_home_collapse_category .active{
