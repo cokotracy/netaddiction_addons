@@ -579,6 +579,10 @@ header nav.navbar .header_middle{
     top:10px;
 }
 
+#o_shop_collapse_category li{
+    border-bottom:1px solid #ededed !important
+}
+
 #o_home_collapse_category a:focus{
     background-color: #ffffff !important;
 }

@@ -87,10 +87,9 @@
 									</div>
 									<script>
 										function collapseMenu(el, cat_id){
-											var status = el[0].style.display == 'none'?false:true;
-										
+											var status = (el[0].style.display == 'none')?false:true;
 											el.forEach(item => {
-												item.style.display = status==false?'block':'none';
+												item.style.display = (status == false)?'block':'none';
 											});
 
 											document.querySelectorAll('.arrow_' + cat_id).forEach(item => {

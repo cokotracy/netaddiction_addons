@@ -473,7 +473,7 @@
     </template>
 
     <template id="products_categories_ept" inherit_id="website_sale.products_categories" name="Ecommerce Categories" priority="30">     
-        <xpath expr="//div[@id='wsale_products_categories_collapse']/ul" position="replace">
+        <xpath expr="//div[@id='wsale_products_categories_collapse']/ul" position="before">
             <strong class="d-block">Filtra per:</strong>
             <hr class="my-2"/>
             <div class="border-bottom">
@@ -523,42 +523,7 @@
                 </div>
                 <button onclick="checkFilter()" class="btn btn-primary btn-md a-submit d-block d-sm-inline-block te_theme_button w-100">Filtra</button>
             </div>
-            <t t-if="not '/tool/' in current_url and not '/search/' in current_url">
-                <div class="px-3 d-block">
-                    <t if="not categories">
-                        <t t-set="categories" t-value="request.env['product.public.category'].sudo().search([('parent_id','=',1)])" />
-                    </t>
-                    
-                    <t t-if="not category">
-                        <t t-set="category" t-value="request.env['product.public.category'].sudo().search([('id','=',1)])"/>
-                    </t>
-                    <ul class="nav nav-pills flex-column mb-2" id="o_home_collapse_category">
-                        <t t-foreach="categories" t-as="c">
-                            <t t-call="theme_clarico_vega.custom_category_recursive"/>
-                        </t>
-                    </ul>
-                </div>
-            </t>
             <script type="text/javascript">
-                function collapseMenu(el, cat_id){
-                    var status = el[0].style.display == 'none'?false:true;
-                
-                    el.forEach(item => {
-                        item.style.display = status==false?'block':'none';
-                    });
-
-                    document.querySelectorAll('.arrow_' + cat_id).forEach(item => {
-                        if(status == false){
-                            item.classList.remove('fa-chevron-right');
-                            item.classList.add('fa-chevron-down');
-                        }
-                        else{
-                            item.classList.add('fa-chevron-right');
-                            item.classList.remove('fa-chevron-down');
-                        }
-                    });
-                }
-
                 document.addEventListener("DOMContentLoaded", function() {
                     var urlParams = new URLSearchParams(window.location.search);
                     var myParam = urlParams.get('status-filter');
@@ -634,26 +599,6 @@
                                 </t>
                             </ul>
                         </div>
-                        <script>
-                            function collapseMenu(el, cat_id){
-                                var status = el[0].style.display == 'none'?false:true;
-                            
-                                el.forEach(item => {
-                                    item.style.display = status==false?'block':'none';
-                                });
-
-                                document.querySelectorAll('.arrow_' + cat_id).forEach(item => {
-                                    if(status == false){
-                                        item.classList.remove('fa-chevron-right');
-                                        item.classList.add('fa-chevron-down');
-                                    }
-                                    else{
-                                        item.classList.add('fa-chevron-right');
-                                        item.classList.remove('fa-chevron-down');
-                                    }
-                                });
-                            }
-                        </script>
                     </t>
                     <div class="d-none d-lg-flex">
                         <t t-foreach="website.menu_id.child_id" t-as="submenu">
@@ -725,10 +670,9 @@
                         </div>
                         <script>
                             function collapseMenu(el, cat_id){
-                                var status = el[0].style.display == 'none'?false:true;
-                            
+                                var status = (el[0].style.display == 'none')?false:true;
                                 el.forEach(item => {
-                                    item.style.display = status==false?'block':'none';
+                                    item.style.display = (status == false)?'block':'none';
                                 });
 
                                 document.querySelectorAll('.arrow_' + cat_id).forEach(item => {
