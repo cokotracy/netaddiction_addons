@@ -74,8 +74,9 @@ button[data-target='#wsale_products_categories_collapse']{
     position: absolute;
     top: 48px;
 }
-.navbar > .oe_structure{
-    display:none;
+header nav.navbar .header_top{
+    background-color: var(--primary) !important;
+    font-weight: bold;
 }
 .nav-link::before{
     display:none !important;
@@ -214,7 +215,7 @@ header nav.navbar .header_middle .te_search_popover .input-group input.form-cont
     -webkit-box-orient: vertical;
     font-weight: 600 !important;
     height: initial !important;
-    min-height:47px;
+    min-height:42px;
 }
 
 .te_slider_4_content .te_prod_info_4 .btn{
@@ -448,14 +449,6 @@ header nav.navbar .header_middle{
     .te_vertical_menu ul{
         overflow: initial !important;
     }
-    .te_menu_btn_close{
-        font-size: 30px !important;
-        color: var(--secondary) !important;
-        transition: 0.5s;
-    }
-    .te_menu_btn_close:hover{
-        transform:rotate(90deg)
-    }
 }
 
 .o_portal_my_details address i{
@@ -549,4 +542,43 @@ header nav.navbar .header_middle{
     ::-webkit-scrollbar-thumb:hover {
         background: var(--primary); 
     } 
+}
+
+#o_shop_collapse_category{
+    padding:20px 0 !important;
+}
+
+#o_shop_collapse_category > li:last-child > a, #o_shop_collapse_category > li:first-child{
+    display: none !important;
+}
+
+#o_shop_collapse_category > li > ul{
+    padding-left:0 !important;
+}
+
+#o_shop_collapse_category .active, #o_home_collapse_category .active{
+    background-color: #fff !important;
+    color:var(--primary) !important;
+}
+.nav-hierarchy > li{
+    position:relative;
+}
+
+#o_shop_collapse_category ul, #o_home_collapse_category ul{
+    padding-left:15px;
+}
+
+#o_shop_collapse_category li a, #o_home_collapse_category li a{
+    color:#000 !important;
+    padding:15px 0px !important; 
+    font-size: 12px !important;
+}
+#o_shop_collapse_category li i.fa, #o_home_collapse_category li i.fa{
+    position:absolute;
+    right:5px;
+    top:10px;
+}
+
+#o_home_collapse_category a:focus{
+    background-color: #ffffff !important;
 }

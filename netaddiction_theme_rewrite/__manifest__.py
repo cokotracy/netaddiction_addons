@@ -22,6 +22,7 @@
         "affiliate_management",
         "website_seo_pro",
         "website_sale_delivery",
+        "payment",
     ],
     "data": [
         "templates/assets.xml",
@@ -54,6 +55,7 @@
         "templates/login.xml",
         "templates/wallet_custom_parts.xml",
         "templates/google-snippet/product.xml",
+        "templates/category_menu.xml",
     ],
     # Technical
     "installable": True,

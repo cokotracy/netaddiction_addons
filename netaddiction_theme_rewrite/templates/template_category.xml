@@ -2,33 +2,6 @@
 <odoo>
 	<!-- FRONTEND -->
 	<template id="category_info" inherit_id="website_sale.products">
-		<!-- INSERISCO IL TITOLO DELLA CATEGORIA -->
-		<xpath expr="//div[hasclass('oe_website_sale')]" position="before">
-			<div>
-				<t t-if="category">
-					<t t-set="current_url" t-value="website._get_canonical_url(canonical_params=canonical_params).replace('/it_IT/', '/')"/>
-                    <div class="container nopadding" style="background-color: #f5f5f5;">
-                        <div class="row nopadding">
-                            <div t-attf-data-original-id="cat_{{category.id}}" class="img_category">
-                                <t t-if="category.image_512">
-									<t t-if="not '/page/' in current_url">
-                                    	<img class="w-100" t-attf-src="data:image/jpeg;base64,{{category.image_512}}" />
-									</t>
-								</t>
-                            </div>
-                            <div class="col-sm nopadding text-center">
-                                <h1 class="d-inline py-3 d-block" t-esc="category.name"></h1>
-								<t t-if="not '/page/' in current_url">
-									<t t-if="category.description">
-										<p class="pb-3" t-esc="category.description"></p>
-									</t>
-								</t>
-                            </div>
-                        </div>
-                    </div>
-				</t>
-			</div>
-		</xpath>
 		<xpath expr="//div[hasclass('products_pager')][2]" position="after">
 			<t t-if="category">
 				<div>
