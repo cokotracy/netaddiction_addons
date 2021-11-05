@@ -16,7 +16,7 @@
         </a>
         <ul t-if="c.child_id" t-attf-style="display:{{explose}}; padding-left:15px;" t-attf-class="nav nav-pills flex-column nav-hierarchy cat_{{c.id}}">
             <t t-foreach="c.child_id" t-as="c">
-                <t t-call="netaddiction_theme_rewrite.custom_category_recursive"/>
+                <t t-call="netaddiction_special_offers.custom_category_recursive"/>
             </t>
         </ul>
     </li>

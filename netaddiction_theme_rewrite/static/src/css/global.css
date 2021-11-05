@@ -590,3 +590,15 @@ header nav.navbar .header_middle{
 header nav.navbar .header_bottom #top_menu_collapse.header_menu_slide{
     height:100vh !important;
 }
+
+.te_s_variant_text{
+    display: none !important;
+}
+
+#product_details .te_s_hr_line{
+    display: none;
+}
+.quick_view_content #product_details .js_product .te_product_quantity, .ajax_cart_content #product_details .js_product .te_product_quantity {
+    border-top:1px solid #ededed;
+    padding-top:15px;
+}

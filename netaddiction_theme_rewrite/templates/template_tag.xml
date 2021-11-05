@@ -31,7 +31,7 @@
 				<div id="products_grid_before" class="d-none d-lg-block w-100 te_product_sticky_sidebar te_product_sidebar_scrollbar sticky-media mCustomScrollbar _mCS_1" style="position: sticky; top:110px; height: 781px; max-width:300px;">
 					<div id="mCSB_1" class="mCustomScrollBox mCS-dark-thin mCSB_vertical mCSB_inside" style="max-height: none; overflow:auto;" tabindex="0">
 						<div id="mCSB_1_container" class="mCSB_container" style="position: relative; top: 0px; left: 0px;" dir="ltr">
-							<div class="collapse d-lg-block border-0" id="wsale_products_categories_collapse">
+							<div class="p-0 collapse d-lg-block border-0" id="wsale_products_categories_collapse">
 								<strong class="d-block">
 									Filtra per:
 								</strong>
@@ -71,15 +71,15 @@
 
 								<t t-set="current_url" t-value="website._get_canonical_url(canonical_params=canonical_params).replace('/it_IT/', '/')"/>
 								<t t-if="not '/tool/' in current_url and not '/search/' in current_url">
-									<div class="px-3 d-block">
+									<div class="d-block">
 										<t if="not categories">
-											<t t-set="categories" t-value="request.env['product.public.category'].sudo().search([('parent_id','=',1)])" />
+											<t t-set="categories" t-value="request.env['product.public.category'].sudo().search([('parent_id.primary_category','=', True)])" />
 										</t>
 										
 										<t t-if="not category">
-											<t t-set="category" t-value="request.env['product.public.category'].sudo().search([('id','=',1)])"/>
+											<t t-set="category" t-value="request.env['product.public.category'].sudo().search([('primary_category','=', True)])"/>
 										</t>
-										<ul class="nav nav-pills flex-column mb-2" id="o_home_collapse_category">
+										<ul class="p-0 nav nav-pills flex-column mb-2" id="o_home_collapse_category">
 											<t t-foreach="categories" t-as="c">
 												<t t-call="netaddiction_theme_rewrite.custom_category_recursive"/>
 											</t>

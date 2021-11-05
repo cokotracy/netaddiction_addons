@@ -640,9 +640,7 @@
             </a>
             <ul t-if="c.child_id" t-attf-style="display:{{explose}}; padding-left:15px;" t-attf-class="nav nav-pills flex-column nav-hierarchy cat_{{c.id}}">
                 <t t-foreach="c.child_id" t-as="c">
-                    <t t-if="not search or c.id in search_categories_ids">
-                        <t t-call="theme_clarico_vega.custom_category_recursive"/>
-                    </t>
+                    <t t-call="theme_clarico_vega.custom_category_recursive"/>
                 </t>
             </ul>
         </li>
