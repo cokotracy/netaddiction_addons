@@ -587,11 +587,11 @@
                     <t t-if="not '/tool/' in current_url and not '/search/' in current_url">
                         <div class="px-3 d-block d-lg-none">
                             <t if="not categories">
-                                <t t-set="categories" t-value="request.env['product.public.category'].sudo().search([('parent_id','=',1)])" />
+                                <t t-set="categories" t-value="request.env['product.public.category'].sudo().search([('parent_id.primary_category','=', True)])" />
                             </t>
                             
                             <t t-if="not category">
-                                <t t-set="category" t-value="request.env['product.public.category'].sudo().search([('id','=',1)])"/>
+                                <t t-set="category" t-value="request.env['product.public.category'].sudo().search([('primary_category','=', True)])"/>
                             </t>
                             <ul class="nav nav-pills flex-column mb-2" id="o_home_collapse_category">
                                 <t t-foreach="categories" t-as="c">
@@ -656,11 +656,11 @@
                     <t t-if="not '/tool/' in current_url and not '/search/' in current_url">
                         <div class="px-3 d-block d-lg-none">
                             <t if="not categories">
-                                <t t-set="categories" t-value="request.env['product.public.category'].sudo().search([('parent_id','=',1)])" />
+                                <t t-set="categories" t-value="request.env['product.public.category'].sudo().search([('parent_id.primary_category','=', True)])" />
                             </t>
                             
                             <t t-if="not category">
-                                <t t-set="category" t-value="request.env['product.public.category'].sudo().search([('id','=',1)])"/>
+                                <t t-set="category" t-value="request.env['product.public.category'].sudo().search([('primary_category','=', True)])"/>
                             </t>
                             <ul class="nav nav-pills flex-column mb-2" id="o_home_collapse_category">
                                 <t t-foreach="categories" t-as="c">
@@ -1609,7 +1609,7 @@
                             <t t-set="primary_cat" t-value="True"/>
                             <t t-foreach="categ" t-as="c">
                                 <t t-set="rec"
-                                   t-value="request.env['product.public.category'].sudo().search([('id', '=', c)])"/>
+                                   t-value="request.env['product.public.category'].browse(c)"/>
                                 <li class="breadcrumb-item">
                                     <a t-att-href="'/shop/category/%s' %slug(rec)">
                                         <t t-if="primary_cat">

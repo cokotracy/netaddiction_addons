@@ -586,3 +586,7 @@ header nav.navbar .header_middle{
 #o_home_collapse_category a:focus{
     background-color: #ffffff !important;
 }
+
+header nav.navbar .header_bottom #top_menu_collapse.header_menu_slide{
+    height:100vh !important;
+}
