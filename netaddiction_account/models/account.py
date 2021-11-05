@@ -122,7 +122,7 @@ class AccountPaymentCashOnDelivery(models.TransientModel):
                 self.payment_not_found = "<br/>".join(map(str, warning_list["payment_not_found"]))
                 self.error = "<br/>".join(map(str, warning_list["error"]))
             else:
-                self.return_text = "Okone"
+                self.return_text = "Registrazione avvenuta con successo!"
 
     def _check_line(self, line, key, money_key, is_brt, cod_id, warning_list):
         found = False
