@@ -5,8 +5,14 @@
         <field name="model">netaddiction.account.payment.cod</field>
         <field name="arch" type="xml">
             <form>
-                <group>
+                <group string="Caricamento file" name="cod_file">
                     <field name="cod_file" options="{'accepted_file_extensions': '.csv'}"/>
+                </group>
+                <group string="Risultato" name="result">
+                    <field name="return_text" widget="html" readonly="1"/>
+                    <field name="order_not_found" widget="html" readonly="1"/>
+                    <field name="payment_not_found" widget="html" readonly="1"/>
+                    <field name="error" widget="html" readonly="1"/>
                 </group>
                 <footer>
                     <button string="Conferma" name="check_csv_cod" type="object" class="oe_highlight"/>
@@ -20,7 +26,13 @@
         <field name="name">Verifica contrassegni</field>
         <field name="res_model">netaddiction.account.payment.cod</field>
         <field name="view_mode">form</field>
-        <field name="target">new</field>
-        <field name="binding_model_id" ref="account.model_account_payment"/>
+        <field name="target">inline</field>
     </record>
+
+    <menuitem id="menu_check_csv_cod"
+        name="Registra Contrassegni"
+        parent="account.menu_finance_entries_actions"
+        action= "check_csv_cod_action"
+    />
+
 </odoo>
