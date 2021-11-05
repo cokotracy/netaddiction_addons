@@ -48,10 +48,10 @@ button[data-target='#wsale_products_categories_collapse']{
     display: none !important;
 }
 .navbar-brand{
-    background-image:url(../img/logo-mcom.png);
+    background-image:url(../img/logo.png);
     margin-left: 10px;
     margin-bottom: 3px;
-    width: 37px;
+    width: 150px;
     height: 45px;
     background-position: center;
     background-repeat: no-repeat;
@@ -468,6 +468,17 @@ header nav.navbar .header_middle{
     border-radius:10px;
 }
 
+@media only screen and (min-width: 321px){
+    .navbar-brand{
+        width:190px;
+    }
+}
+@media only screen and (min-width: 376px){
+    .navbar-brand{
+        width:200px;
+    }
+}
+
 @media (min-width: 576px){
     #ajax_cart_model_shop .modal-dialog {
         max-width: 600px !important;
@@ -510,8 +521,6 @@ header nav.navbar .header_middle{
     .navbar-brand{
         margin-left:30px;
         width:310px;
-        height: 45px;
-        background-image:url(../img/logo.png);
     }
     .te_cart_wizard_main{
         display:block;
