@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>        
+        <record id="receipt_register_form" model="ir.ui.view">
+            <field name="name">receipt.register.form</field>
+            <field name="model">receipt.register</field>
+            <field name="arch" type="xml">
+                <form>
+                    <header>
+                        <button name="get_receipt" class="btn-primary" type="object" string="Genera Corrispettivi" />
+                    </header>  
+                    <sheet>  
+                        <group>
+                            <field name="date_start"/>
+                            <field name="date_end"/>
+                        </group>
+                        <group>
+                            <field name="output_filename" invisible="1"/>
+                            <field name="output_file" readonly="1" filename="output_filename"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="view_receipt_register_tree" model="ir.ui.view">
+            <field name="name">receipt.register.tree</field>
+            <field name="model">receipt.register</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="name"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="receipt_register_action" model="ir.actions.act_window">
+            <field name="name">Registro Corrispettivi</field>
+            <field name="res_model">receipt.register</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_id" ref="view_receipt_register_tree"/>
+        </record>
+        
+        <menuitem id="menu_receipt" sequence="0" name="Corrispettivi" parent="account.menu_finance_entries_accounting_journals" action="receipt_register_action" groups="account.group_account_user"/>
+    </data>
+</odoo>
