@@ -150,7 +150,7 @@
                     <t t-if="out_date &gt; current">
                         <div class="d-block mb-3">
                             <t t-if="product.product_variant_id.out_date_approx_type != 'accurate'">
-                                <small class="text-primary font-weight-bold">Prenota ora potresti riceverlo a <t t-esc="out_date.strftime('%B %Y')"/></small>
+                                <small class="text-primary font-weight-bold">Prenota ora potresti riceverlo a </small><small class="text-primary font-weight-bold" id="out_date_converted"></small>
                             </t>
                             <t t-else="">
                                 <small class="text-primary font-weight-bold">Prenota ora e lo ricevi il <t t-esc="out_date.strftime('%d / %m / %Y')"/></small>

@@ -175,7 +175,9 @@
 
     <template id="custom_close_btn" inherit_id="theme_clarico_vega.vertical_menu_ept_10">
         <xpath expr="//a[hasclass('te_menu_btn_close')]" position="replace">
-            <a href="#" class="te_menu_btn_close fa fa-times-circle te_menu_icon_close"></a>
+            <div class="te_filter_close te_filter_btn_close te_menu_btn_close te_menu_icon_close border-0" data-oe-id="3351" data-oe-xpath="/data/xpath[8]/div" data-oe-model="ir.ui.view" data-oe-field="arch">
+                <span class="te_filter_icon_close">x</span>
+            </div>
         </xpath>
     </template>
 
@@ -471,7 +473,7 @@
     </template>
 
     <template id="products_categories_ept" inherit_id="website_sale.products_categories" name="Ecommerce Categories" priority="30">     
-        <xpath expr="//div[@id='wsale_products_categories_collapse']/ul" position="replace">
+        <xpath expr="//div[@id='wsale_products_categories_collapse']/ul" position="before">
             <strong class="d-block">Filtra per:</strong>
             <hr class="my-2"/>
             <div class="border-bottom">
@@ -482,23 +484,23 @@
                 <div class="collapse show" id="collapse_status" style="max-height:400px; overflow:auto;">
                     <div class="card card-body pb-0" id="status_filter_list">
                         <div class="d-flex mb-2">
-                            <input style="margin-top:5px;" type="checkbox" id="status_stock" value="stock"/>
+                            <input onClick="removeCombo('stock')" style="margin-top:5px;" type="checkbox" id="status_stock" value="stock"/>
                             <label class="ml-1" for="status_1">Disponibile</label>
                         </div>
                         <div class="d-flex mb-2">
-                            <input style="margin-top:5px;" type="checkbox" id="status_preorder" value="preorder"/>
+                            <input onClick="removeCombo('preorder')" style="margin-top:5px;" type="checkbox" id="status_preorder" value="preorder"/>
                             <label class="ml-1" for="status_2">Prenotazione</label>
                         </div>
                         <div class="d-flex mb-2">
-                            <input style="margin-top:5px;" type="checkbox" id="status_new" value="new"/>
+                            <input onClick="removeCombo('new')" style="margin-top:5px;" type="checkbox" id="status_new" value="new"/>
                             <label class="ml-1" for="status_3">Novità</label>
                         </div>
                         <div class="d-flex mb-2">
-                            <input style="margin-top:5px;" type="checkbox" id="status_order" value="order"/>
+                            <input onClick="comboFilter('order')" style="margin-top:5px;" type="checkbox" id="status_order" value="order"/>
                             <label class="ml-1" for="status_4">Spedito in 72 ore</label>
                         </div>
                         <div class="d-flex mb-2">
-                            <input style="margin-top:5px;" type="checkbox" id="status_unavailable" value="unavailable"/>
+                            <input onClick="comboFilter('unavailable')" style="margin-top:5px;" type="checkbox" id="status_unavailable" value="unavailable"/>
                             <label class="ml-1" for="status_5">Esaurito</label>
                         </div>
                     </div>
@@ -521,104 +523,77 @@
                 </div>
                 <button onclick="checkFilter()" class="btn btn-primary btn-md a-submit d-block d-sm-inline-block te_theme_button w-100">Filtra</button>
             </div>
-            <t t-set="current_url" t-value="website._get_canonical_url(canonical_params=canonical_params).replace('/it_IT/', '/')"/>
-            <t t-if="not '/tool/' in current_url and not '/search/' in current_url">
-                <t t-if="category.parent_id">
-                    <t t-set="related_category" t-value="request.env['product.public.category'].sudo().search([('parent_id','=',category.parent_id.id)])"/>
-                </t>
-                <t t-else="">
-                    <t t-if="category.id">
-                        <t t-set="related_category" t-value="request.env['product.public.category'].sudo().search([('parent_id','=',category.id)])"/>
-                    </t>
-                    <t t-else="">
-                        <t t-set="related_category" t-value="request.env['product.public.category'].sudo().search([('parent_id','=',1)])"/>
-                    </t>
-                </t>
-                
-                <t t-if="related_category">
-                    <ul class="list-unstyled mt-3">
-                        <t t-foreach="related_category" t-as="cat">
-                            <t t-set="subcat" t-value="request.env['product.public.category'].sudo().search([('parent_id','=',cat.id)])"/>
-                            <t t-if="category.id == cat.id">
-                                <li class="p-2 border-top">
-                                    <a style="color:var(--black);" t-attf-href="{{keep('/shop/category/' + slug(cat), category=0)}}">
-                                        <small class="font-weight-bold" t-esc="cat.name"></small>
-                                    </a>
-                                </li>
-                            </t>
-                            <t t-else="">
-                                <li class="p-2 border-top">
-                                    <a class="text-secondary" t-attf-href="{{keep('/shop/category/' + slug(cat), category=0)}}">
-                                        <small class="font-weight-bold" t-esc="cat.name"></small>
-                                    </a>
-                                </li>
-                            </t>
-                            <t t-if="category.id == cat.id">
-                                <ul class="pl-3 list-unstyled">
-                                    <t t-foreach="subcat" t-as="sub">
-                                        <li class="p-2 border-top">
-                                            <a class="font-weight-bold" t-attf-href="{{keep('/shop/category/' + slug(sub), category=0)}}">
-                                                <small t-esc="sub.name"></small>
-                                            </a>
-                                        </li>
-                                    </t>
-                                </ul>
-                            </t>
-                        </t>
-                    </ul>
-                </t>
-                <script type="text/javascript">
+            <script type="text/javascript">
+                document.addEventListener("DOMContentLoaded", function() {
+                    var urlParams = new URLSearchParams(window.location.search);
+                    var myParam = urlParams.get('status-filter');
+                    if(myParam != null){
+                        var selected = myParam.split(',')
+                        selected.forEach(element =>{
+                            document.querySelector('#status_' + element).checked = true;
+                        });
+                    }
+                });
 
-                    document.addEventListener("DOMContentLoaded", function() {
-                        var urlParams = new URLSearchParams(window.location.search);
-                        var myParam = urlParams.get('status-filter');
-                        if(myParam != null){
-                            var selected = myParam.split(',')
-                            selected.forEach(element =>{
-                                document.querySelector('#status_' + element).checked = true;
-                            });
+                function removeCombo(val){
+                    var statusSelected = document.querySelector('#status_' + val);
+                    if(statusSelected.checked){
+                        document.querySelector('#status_' + 'order').checked = false;
+                        document.querySelector('#status_' + 'unavailable').checked = false;
+                    }
+                }
+
+                function comboFilter(val){
+                    var allFilter = document.querySelectorAll('#status_filter_list input');
+                    allFilter.forEach(element =>{
+                        if(element.id == ('status_' + val)){
+                            element.checked = true;
+                        }
+                        else{
+                            element.checked = false;
                         }
                     });
-                    
+                } 
 
-                    function checkFilter(){
-                        var url = new URL(window.location.href);
+                function checkFilter(){
+                    var url = new URL(window.location.href);
 
-                        var status_filter = ''
-                        var status_list = document.querySelectorAll('#status_filter_list > div > input:checked');
-                        status_list.forEach(element =>{
-                            status_filter += element.value + ','
-                        });
-                        url.searchParams.delete('status-filter')
-                        if(status_filter != ''){
-                            status_filter = status_filter.slice(0, -1);
-                            url.searchParams.append('status-filter', status_filter);
-                        }
-
-
-                        var tag_filter = ''
-                        var tag_list = document.querySelectorAll('#collapse_tag > div input:checked');
-                        tag_list.forEach(element =>{
-                            tag_filter += element.value + ','
-                        });
-
-                        url.searchParams.delete('tag-filter')
-                        if(tag_filter != ''){
-                            tag_filter = tag_filter.slice(0, -1);
-                            url.searchParams.append('tag-filter', tag_filter);
-                        }
-                    
-                        window.location.href = url;
+                    var status_filter = ''
+                    var status_list = document.querySelectorAll('#status_filter_list > div > input:checked');
+                    status_list.forEach(element =>{
+                        status_filter += element.value + ','
+                    });
+                    url.searchParams.delete('status-filter')
+                    if(status_filter != ''){
+                        status_filter = status_filter.slice(0, -1);
+                        url.searchParams.append('status-filter', status_filter);
                     }
-                </script>  
-            </t>      
+
+
+                    var tag_filter = ''
+                    var tag_list = document.querySelectorAll('#collapse_tag > div input:checked');
+                    tag_list.forEach(element =>{
+                        tag_filter += element.value + ','
+                    });
+
+                    url.searchParams.delete('tag-filter')
+                    if(tag_filter != ''){
+                        tag_filter = tag_filter.slice(0, -1);
+                        url.searchParams.append('tag-filter', tag_filter);
+                    }
+                
+                    window.location.href = url;
+                }
+            </script>      
         </xpath>
     </template>
 
     <template id="custom_navigation" inherit_id="theme_clarico_vega.customize_header_style_10" priority="30">
         <xpath expr="//div[@id='top_menu_collapse']" position="replace">
             <div id="top_menu_collapse" class="collapse navbar-collapse">
-                <i style="font-size:30px;" class="fa fa-times-circle close_top_menu border-0"></i>
+                <div class="te_filter_close te_filter_btn_close close_top_menu border-0" data-oe-id="3351" data-oe-xpath="/data/xpath[8]/div" data-oe-model="ir.ui.view" data-oe-field="arch">
+                    <span class="te_filter_icon_close">x</span>
+                </div>
                 <t t-call="website.navbar_nav">
                     <t t-if="request.website.viewref('website.template_header_default_align_center').active">
                         <t t-set="_nav_class" t-value="'mx-auto'"/>
@@ -630,61 +605,18 @@
                     <t t-set="current_url" t-value="website._get_canonical_url(canonical_params=canonical_params).replace('/it_IT/', '/')"/>
                     <t t-if="not '/tool/' in current_url and not '/search/' in current_url">
                         <div class="px-3 d-block d-lg-none">
-                            <t t-if="category">
-                                <t t-if="category.parent_id">
-                                    <t t-set="related_category" t-value="request.env['product.public.category'].sudo().search([('parent_id','=',category.parent_id.id)])"/>
-                                </t>
-                                <t t-else="">
-                                    <t t-if="category.id">
-                                        <t t-set="related_category" t-value="request.env['product.public.category'].sudo().search([('parent_id','=',category.id)])"/>
-                                    </t>
-                                    <t t-else="">
-                                        <t t-set="related_category" t-value="request.env['product.public.category'].sudo().search([('parent_id','=',1)])"/>
-                                    </t>
-                                </t>
-                                <t t-if="related_category">
-                                    <ul class="list-unstyled mt-3">
-                                        <t t-foreach="related_category" t-as="cat">
-                                            <t t-set="subcat" t-value="request.env['product.public.category'].sudo().search([('parent_id','=',cat.id)])"/>
-                                            <t t-if="category.id == cat.id">
-                                                <li class="p-2 border-top">
-                                                    <a style="color:var(--black);" t-attf-href="{{keep('/shop/category/' + slug(cat), category=0)}}">
-                                                        <small class="font-weight-bold" t-esc="cat.name"></small>
-                                                    </a>
-                                                </li>
-                                            </t>
-                                            <t t-else="">
-                                                <li class="p-2 border-top">
-                                                    <a class="text-secondary" t-attf-href="{{keep('/shop/category/' + slug(cat), category=0)}}">
-                                                        <small class="font-weight-bold" t-esc="cat.name"></small>
-                                                    </a>
-                                                </li>
-                                            </t>
-                                            <t t-if="category.id == cat.id">
-                                                <ul class="pl-3 list-unstyled">
-                                                    <t t-foreach="subcat" t-as="sub">
-                                                        <li class="p-2 border-top">
-                                                            <a class="font-weight-bold" t-attf-href="{{keep('/shop/category/' + slug(sub), category=0)}}">
-                                                                <small t-esc="sub.name"></small>
-                                                            </a>
-                                                        </li>
-                                                    </t>
-                                                </ul>
-                                            </t>
-                                        </t>
-                                    </ul>
-                                </t>
+                            <t if="not categories">
+                                <t t-set="categories" t-value="request.env['product.public.category'].sudo().search([('parent_id.primary_category','=', True)])" />
                             </t>
-                            <t t-else="">
-                                <t t-set="category" t-value="request.env['product.public.category'].sudo().search([('parent_id','=',1)])"/>
-                                <t t-foreach="category" t-as="cat">
-                                    <li class="p-2 border-top">
-                                        <a class="font-weight-bold" t-attf-href="/shop/category/{{slug(cat)}}">
-                                            <small t-esc="cat.name"></small>
-                                        </a>
-                                    </li>
-                                </t>
+                            
+                            <t t-if="not category">
+                                <t t-set="category" t-value="request.env['product.public.category'].sudo().search([('primary_category','=', True)])"/>
                             </t>
+                            <ul class="nav nav-pills flex-column mb-2" id="o_home_collapse_category">
+                                <t t-foreach="categories" t-as="c">
+                                    <t t-call="theme_clarico_vega.custom_category_recursive"/>
+                                </t>
+                            </ul>
                         </div>
                     </t>
                     <div class="d-none d-lg-flex">
@@ -711,67 +643,67 @@
         </xpath>
     </template>
 
+    <template id="custom_category_recursive">
+        <li class="nav-item position-relative border-bottom">
+            <t t-set="explose" t-value="'none'"/>
+            <t t-set="icon" t-value="'fa-chevron-right'"/>
+            <t t-if="category and ('/' + str(c.id) + '/') in category.parent_path">
+                <t t-set="explose" t-value="'block'"/>
+                <t t-set="icon" t-value="'fa-chevron-down'"/>
+            </t>
+            <t t-if="c.child_id">
+                <i role="img" t-attf-onClick="collapseMenu(document.querySelectorAll('.cat_{{c.id}}'), {{c.id}});" t-attf-class="text-primary fa {{icon}} arrow_{{c.id}}" title="Fold" aria-label="Fold"></i>
+            </t>
+            <a t-attf-href="/shop/category/{{slug(c)}}" style="margin-right:30px;" t-attf-class="nav-link #{'active' if c.id == category.id else ''}">
+                <span t-field="c.name"/>
+            </a>
+            <ul t-if="c.child_id" t-attf-style="display:{{explose}}; padding-left:15px;" t-attf-class="nav nav-pills flex-column nav-hierarchy cat_{{c.id}}">
+                <t t-foreach="c.child_id" t-as="c">
+                    <t t-call="theme_clarico_vega.custom_category_recursive"/>
+                </t>
+            </ul>
+        </li>
+    </template>
+
     <template id="custom_navigation_vertical" inherit_id="theme_clarico_vega.menu_vertical" priority="30">
         <xpath expr="//section[hasclass('menu_vertical_option')]" position="replace">
             <section class="s_rating menu_vertical_option">
                 <div class="te_side_bar">
                     <t t-set="current_url" t-value="website._get_canonical_url(canonical_params=canonical_params).replace('/it_IT/', '/')"/>
                     <t t-if="not '/tool/' in current_url and not '/search/' in current_url">
-                        <t t-if="category">
-                            <t t-if="category.parent_id">
-                                <t t-set="related_category" t-value="request.env['product.public.category'].sudo().search([('parent_id','=',category.parent_id.id)])"/>
+                        <div class="px-3 d-block d-lg-none">
+                            <t if="not categories">
+                                <t t-set="categories" t-value="request.env['product.public.category'].sudo().search([('parent_id.primary_category','=', True)])" />
                             </t>
-                            <t t-else="">
-                                <t t-if="category.id">
-                                    <t t-set="related_category" t-value="request.env['product.public.category'].sudo().search([('parent_id','=',category.id)])"/>
+                            
+                            <t t-if="not category">
+                                <t t-set="category" t-value="request.env['product.public.category'].sudo().search([('primary_category','=', True)])"/>
+                            </t>
+                            <ul class="nav nav-pills flex-column mb-2" id="o_home_collapse_category">
+                                <t t-foreach="categories" t-as="c">
+                                    <t t-call="theme_clarico_vega.custom_category_recursive"/>
                                 </t>
-                                <t t-else="">
-                                    <t t-set="related_category" t-value="request.env['product.public.category'].sudo().search([('parent_id','=',1)])"/>
-                                </t>
-                            </t>
-                            <t t-if="related_category">
-                                <ul class="list-unstyled mt-3">
-                                    <t t-foreach="related_category" t-as="cat">
-                                        <t t-set="subcat" t-value="request.env['product.public.category'].sudo().search([('parent_id','=',cat.id)])"/>
-                                        <t t-if="category.id == cat.id">
-                                            <li class="p-2 border-top">
-                                                <a style="color:var(--black);" t-attf-href="{{keep('/shop/category/' + slug(cat), category=0)}}">
-                                                    <small class="font-weight-bold" t-esc="cat.name"></small>
-                                                </a>
-                                            </li>
-                                        </t>
-                                        <t t-else="">
-                                            <li class="p-2 border-top">
-                                                <a class="text-secondary" t-attf-href="{{keep('/shop/category/' + slug(cat), category=0)}}">
-                                                    <small class="font-weight-bold" t-esc="cat.name"></small>
-                                                </a>
-                                            </li>
-                                        </t>
-                                        <t t-if="category.id == cat.id">
-                                            <ul class="pl-3 list-unstyled">
-                                                <t t-foreach="subcat" t-as="sub">
-                                                    <li class="p-2 border-top">
-                                                        <a class="font-weight-bold" t-attf-href="{{keep('/shop/category/' + slug(sub), category=0)}}">
-                                                            <small t-esc="sub.name"></small>
-                                                        </a>
-                                                    </li>
-                                                </t>
-                                            </ul>
-                                        </t>
-                                    </t>
-                                </ul>
-                            </t>
-                        </t>
-                        <t t-else="">
-                            <t t-set="category" t-value="request.env['product.public.category'].sudo().search([('parent_id','=',1)])"/>
-                            <t t-foreach="category" t-as="cat">
-                                <li class="p-2 border-top">
-                                    <a class="font-weight-bold" t-attf-href="/shop/category/{{slug(cat)}}">
-                                        <small t-esc="cat.name"></small>
-                                    </a>
-                                </li>
-                            </t>
-                        </t>
+                            </ul>
+                        </div>
+                        <script>
+                            function collapseMenu(el, cat_id){
+                                var status = (el[0].style.display == 'none')?false:true;
+                                el.forEach(item => {
+                                    item.style.display = (status == false)?'block':'none';
+                                });
+
+                                document.querySelectorAll('.arrow_' + cat_id).forEach(item => {
+                                    if(status == false){
+                                        item.classList.remove('fa-chevron-right');
+                                        item.classList.add('fa-chevron-down');
+                                    }
+                                    else{
+                                        item.classList.add('fa-chevron-right');
+                                        item.classList.remove('fa-chevron-down');
+                                    }
+                                });
+                            }
+                        </script>
                     </t>
                 </div>
             </section>
@@ -1676,4 +1608,216 @@
         </xpath>
     </template>
 
+    <template id="theme_clarico_vega.products_ept" inherit_id="website_sale.products" priority="30">
+        <!-- Category Wise Landing Page -->
+        <xpath expr="//div[hasclass('oe_website_sale')]" position="before">
+            <div t-if="category" class="te_shop_breadcrumb">
+                <t t-set="categ_value" t-value="website.get_product_categs_path(category.id)"/>
+                <t t-set="categ" t-value="categ_value.get('categ_set',False)"/>
+                <t t-set="web_url" t-value="categ_value.get('web_url',False)"/>
+                <ol class="breadcrumb">
+                    <div class="container">
+                        <li class="breadcrumb-item">
+                            <a href="/shop">
+                                <i class="fa fa-home"></i>
+                            </a>
+                        </li>
+                        <t t-if="categ">
+                            <t t-set="primary_cat" t-value="True"/>
+                            <t t-foreach="categ" t-as="c">
+                                <t t-set="rec"
+                                   t-value="request.env['product.public.category'].browse(c)"/>
+                                <li class="breadcrumb-item">
+                                    <a t-att-href="'/shop/category/%s' %slug(rec)">
+                                        <t t-if="primary_cat">
+                                            <t t-set="primary_cat" t-value="False"/>
+                                            <span class="product_catg_breadcrumb">Negozio</span>
+                                        </t>
+                                        <t t-else="">
+                                            <span class="product_catg_breadcrumb" t-esc="rec.name"></span>
+                                        </t>
+                                    </a>
+                                </li>
+                            </t>
+                        </t>
+                    </div>
+                </ol>
+            </div>
+            <t t-if="category">
+                <t t-set="current_url" t-value="website._get_canonical_url(canonical_params=canonical_params).replace('/it_IT/', '/')"/>
+                <div class="container nopadding" style="background-color: #f5f5f5;">
+                    <div class="row nopadding">
+                        <div t-attf-data-original-id="cat_{{category.id}}" class="img_category">
+                            <t t-if="category.image_512">
+                                <t t-if="not '/page/' in current_url">
+                                    <img class="w-100" t-attf-src="data:image/jpeg;base64,{{category.image_512}}" />
+                                </t>
+                            </t>
+                        </div>
+                        <div class="col-sm nopadding text-center">
+                            <h1 class="d-inline py-3 d-block" t-esc="category.name"></h1>
+                            <t t-if="not '/page/' in current_url">
+                                <t t-if="category.description">
+                                    <p class="pb-3" t-esc="category.description"></p>
+                                </t>
+                            </t>
+                        </div>
+                    </div>
+                </div>
+            </t>
+        </xpath>
+        <xpath expr="//div[hasclass('products_pager')][1]/t[@t-call='website_sale.pricelist_list']"
+               position="replace"/>
+        <xpath expr="//div[hasclass('text-muted')]" position="replace">
+            <t t-if="not bins">
+                <div class="text-center">
+                    <img class="img img-responsive col-xs-12 w-100 w-md-50 w-md-50 mb-3" src="/netaddiction_theme_rewrite/static/src/img/no-results.png"/>
+                    <t t-if="not search">
+                        <div class="text-muted te_no_products">
+                            <h3 class="css_editable_display mt8">Nessun prodotto trovato.</h3>
+                            <t t-if="search">
+                                <p>
+                                    Nessun risultato per "
+                                    <strong t-esc='search'/>
+                                    ".
+                                </p>
+                            </t>
+                        </div>
+                    </t>
+                    <t t-else="">
+                        <h3 class="mt8">Nessun risultato</h3>
+                        <p>Nessun risultato per "<strong t-esc='search'/>"
+                            <t t-if="category">nella categoria "<strong t-esc="category.display_name"/>"
+                            </t>
+                            .
+                        </p>
+                    </t>
+                    <a class="btn btn-primary mt16 te_theme_button" href="/shop">Torna allo shop</a>
+                </div>
+            </t>
+        </xpath>
+        <xpath expr="//div[hasclass('products_pager')][1]" position="attributes">
+            <attribute name="class">products_pager form-inline te_shop_pager
+                te_shop_pager_top
+            </attribute>
+        </xpath>
+        <xpath expr="//div[hasclass('products_pager')][2]" position="attributes">
+            <attribute name="class">products_pager form-inline justify-content-end mt-3 mb-3
+                te_shop_pager
+            </attribute>
+        </xpath>
+        <xpath expr="//div[hasclass('products_pager')][1]" position="inside">
+            <div class="te_view_all_filter_div">
+                <div class="te_product_filters my-3">
+                    <!-- Shop Products Details counts -->
+                    <t t-if="pager and search_count">
+                        <span class="mr-1 align-middle" t-esc="search_count"/>
+                        <span class="align-middle te_prod_fltr_count" style="padding-right: 8px;">Prodotto/i trovati
+                        </span>
+                    </t>
+                    <div class="te_view_all_filter_inner attr-inline d-inline">
+                        <a class="te_clear_all_form_selection attr-remove position-relative">Rimuovi filtri</a>
+                        <span class="attr_filters"></span>
+                    </div>
+                </div>
+            </div>
+        </xpath>
+        <xpath expr="//t[@t-call='website_sale.search']" position="before">
+            <t t-if="(request.website.viewref('website_sale.products_categories').active) or (request.website.viewref('website_sale.products_attributes').active)">
+                <div class="te_shop_filter_resp">
+                    <div class="position-relative">
+                        <!-- Filter count in mobile view -->
+                        <t t-set="attrib_list" t-value="request.httprequest.args.getlist('attrib')"/>
+                        <t t-set="attrib_values" t-value="[[int(x) for x in v.split('-')] for v in attrib_list if v]"/>
+                        <t t-set="attrib_count" t-value="{v[0] for v in attrib_values}"/>
+                        <span class="te_mb_filter_parent position-relative fa fa-filter">
+                            <t t-if="len(attrib_count) > 0">
+                                <sup class="te_mb_filter_count badge badge-primary">
+                                    <t t-esc="len(attrib_count)"/>
+                                </sup>
+                            </t>
+                        </span>
+                        <span class="filters-title-ept">Filtri</span>
+                    </div>
+                </div>
+            </t>
+        </xpath>
+        <xpath expr="//div[@id='products_grid_before']" position="inside">
+            <div class="te_filter_close te_filter_btn_close">
+                <span class="te_filter_icon_close">x</span>
+            </div>
+        </xpath>
+        <xpath expr="//t[@t-if='td_product']//td" position="attributes">
+            <!--<attribute name="t-attf-class">oe_product #{td_product['class']} te_shop_grid</attribute>-->
+            <attribute name="t-attf-class">oe_product te_shop_grid</attribute>
+        </xpath>
+        <xpath expr="//div[hasclass('products_pager')][1]" position="inside">
+            <div class="te_quick_filter_main_div mt-3 ml-md-2">
+                <span class="te_quick_filter_dropdown btn te_sort_btn">Quick Filter</span>
+            </div>
+        </xpath>
+        <xpath expr="//div[hasclass('products_pager')][1]/t[@t-call='website.pager']/t[@t-set='_classes']"
+                position="attributes">
+            <attribute name="t-valuef">mt-3 ml-md-2</attribute>
+        </xpath>
+        <xpath expr="//div[hasclass('oe_website_sale')]//div[hasclass('o_wsale_products_main_row')]"
+               position="attributes">
+            <attribute name="t-attf-class">row o_wsale_products_main_row
+                #{'enabled' if (request.website.viewref('website_sale.products_categories').active or request.website.viewref('website_sale.products_attributes').active) else ''}
+            </attribute>
+        </xpath>
+        <!--============= Load more feature =================-->
+        <xpath expr="//div[hasclass('oe_website_sale')]" position="before">
+            <t t-set="is_shop" t-value="1"/>
+            <t t-if="website.is_load_more">
+                <input type="hidden" class="load_more_next_page" t-att-pager="pager"
+                       t-att-first-page-url="pager['page_first']['url']" t-att-last-page-url="pager['page_last']['url']"
+                       t-att-prev-page-url="pager['page_previous']['url']"
+                       t-att-next-page-url="pager['page_next']['url']"
+                       t-att-prev-page-num="pager['page_previous']['num']"
+                       t-att-next-page-num="pager['page_next']['num']"
+                       t-att-total-page="pager['page_count']" t-att-page-number="pager['page']['num']"
+                       t-att-current-page-number="pager['page']['num']" t-att-current-page-url="pager['page']['url']"
+                       t-att-button-scroll="website.button_or_scroll"/>
+            </t>
+        </xpath>
+        <!--================== Load more buttons ======================-->
+        <!--======= Load more previous button =======-->
+        <xpath expr="//div[@id='products_grid']//div[hasclass('o_wsale_products_grid_table_wrapper')]"
+               position="before">
+            <t t-if="website.is_load_more and bins">
+                <div class="d-none cus_theme_loader_layout_prev">
+                    <div class="cus_theme_loader_div_layout">
+                        <img t-attf-src="/web/image/website/#{website.id}/load_more_image"
+                             class="img img-fluid"/>
+                    </div>
+                </div>
+            </t>
+            <t t-if="website.is_load_more and website.button_or_scroll == 'button' and bins">
+                <div class="load_more_button_top_main">
+                    <button t-attf-class="load_more_button_top btn te_theme_button #{'active' if pager['page']['num'] > 1 else ''} ">
+                        <span t-field="website.prev_button_label"/>
+                    </button>
+                </div>
+            </t>
+        </xpath>
+        <!--======= Load more next button =======-->
+        <xpath expr="//div[@id='products_grid']//div[hasclass('o_wsale_products_grid_table_wrapper')]" position="after">
+            <t t-if="website.is_load_more and website.button_or_scroll == 'button' and bins">
+                <div class="load_more_button_top_main">
+                    <button t-attf-class="load_more_button btn te_theme_button #{'active' if pager['page']['num'] &gt;= 1 and pager['page']['num'] &lt; pager['page_count'] else 'test'}">
+                        <span t-field="website.next_button_label"/>
+                    </button>
+                </div>
+            </t>
+            <t t-if="website.is_load_more and bins">
+                <div class="d-none cus_theme_loader_layout_next">
+                    <div class="cus_theme_loader_div_layout">
+                        <img t-attf-src="/web/image/website/#{website.id}/load_more_image"
+                             class="img img-fluid"/>
+                    </div>
+                </div>
+            </t>
+        </xpath>
+    </template>
 </odoo>

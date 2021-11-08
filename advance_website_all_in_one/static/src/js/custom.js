@@ -39,16 +39,16 @@ odoo.define('advance_website_all_in_one.custom', function(require) {
 				$("#redeem_modal").modal("hide");
 			}
 			else if(!entered_points){
-				alert("Please enter valid points amount")
+				alert("Inserisci un numero valido di punti")
 			}
 			else if(entered_points < 0){
-				alert("Please enter valid points amount")
+				alert("Inserisci un numero valido di punti")
 			}
 			else if(entered_points > points){
-				alert("Please enter valid points amount")
+				alert("Inserisci un numero valido di punti")
 			}
 			else if(redeem_amount > amount_total){
-				alert("You can not redeem more than total amount")
+				alert("Non puoi riscattare una somma maggiore del prezzo totale!")
 			}
 			else{
 				$.ajax({
