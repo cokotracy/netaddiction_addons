@@ -192,7 +192,7 @@
 						</t>
 					</t>
 					<a data-oe-model="ir.ui.view" data-oe-id="1332" data-oe-field="arch" data-oe-xpath="/t[1]/ul[1]/li[1]/a[1]" t-attf-href="{{link_prev}}" class="page-link ">
-						Prev
+						Prec
 					</a>
 				</li>
 				<t t-set="button_index" t-value="0" />
@@ -239,7 +239,7 @@
 						</t>
 					</t>
 					<a data-oe-model="ir.ui.view" data-oe-id="1332" data-oe-field="arch" data-oe-xpath="/t[1]/ul[1]/li[2]/a[1]" t-attf-href="{{link_next}}" class="page-link ">
-						Next
+						Succ
 					</a>
 				</li>
 			</ul>
