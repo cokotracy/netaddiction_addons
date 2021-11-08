@@ -467,6 +467,9 @@ header nav.navbar .header_middle{
 .s_company_team img {
     border-radius:10px;
 }
+.te_product_brand_desc{
+    line-height:1.5 !important;
+}
 
 @media only screen and (min-width: 321px){
     .navbar-brand{
