@@ -484,23 +484,23 @@
                 <div class="collapse show" id="collapse_status" style="max-height:400px; overflow:auto;">
                     <div class="card card-body pb-0" id="status_filter_list">
                         <div class="d-flex mb-2">
-                            <input style="margin-top:5px;" type="checkbox" id="status_stock" value="stock"/>
+                            <input onClick="removeCombo('stock')" style="margin-top:5px;" type="checkbox" id="status_stock" value="stock"/>
                             <label class="ml-1" for="status_1">Disponibile</label>
                         </div>
                         <div class="d-flex mb-2">
-                            <input style="margin-top:5px;" type="checkbox" id="status_preorder" value="preorder"/>
+                            <input onClick="removeCombo('preorder')" style="margin-top:5px;" type="checkbox" id="status_preorder" value="preorder"/>
                             <label class="ml-1" for="status_2">Prenotazione</label>
                         </div>
                         <div class="d-flex mb-2">
-                            <input style="margin-top:5px;" type="checkbox" id="status_new" value="new"/>
+                            <input onClick="removeCombo('new')" style="margin-top:5px;" type="checkbox" id="status_new" value="new"/>
                             <label class="ml-1" for="status_3">Novità</label>
                         </div>
                         <div class="d-flex mb-2">
-                            <input style="margin-top:5px;" type="checkbox" id="status_order" value="order"/>
+                            <input onClick="comboFilter('order')" style="margin-top:5px;" type="checkbox" id="status_order" value="order"/>
                             <label class="ml-1" for="status_4">Spedito in 72 ore</label>
                         </div>
                         <div class="d-flex mb-2">
-                            <input style="margin-top:5px;" type="checkbox" id="status_unavailable" value="unavailable"/>
+                            <input onClick="comboFilter('unavailable')" style="margin-top:5px;" type="checkbox" id="status_unavailable" value="unavailable"/>
                             <label class="ml-1" for="status_5">Esaurito</label>
                         </div>
                     </div>
@@ -534,7 +534,26 @@
                         });
                     }
                 });
-                
+
+                function removeCombo(val){
+                    var statusSelected = document.querySelector('#status_' + val);
+                    if(statusSelected.checked){
+                        document.querySelector('#status_' + 'order').checked = false;
+                        document.querySelector('#status_' + 'unavailable').checked = false;
+                    }
+                }
+
+                function comboFilter(val){
+                    var allFilter = document.querySelectorAll('#status_filter_list input');
+                    allFilter.forEach(element =>{
+                        if(element.id == ('status_' + val)){
+                            element.checked = true;
+                        }
+                        else{
+                            element.checked = false;
+                        }
+                    });
+                } 
 
                 function checkFilter(){
                     var url = new URL(window.location.href);
