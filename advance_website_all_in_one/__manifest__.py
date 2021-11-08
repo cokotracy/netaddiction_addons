@@ -3,7 +3,7 @@
 
 {
     "name" : "Advance Website eCommerce All in One Bundle - Odoo",
-    "version" : "14.0.1.0.4",
+    "version" : "14.0.1.1.0",
     "category" : "Website",
     "depends" : ['website_all_in_one'],
     "author": "BrowseInfo",

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+<template id="custom_category_recursive">
+    <li class="nav-item position-relative border-bottom">
+        <t t-set="explose" t-value="'none'"/>
+        <t t-set="icon" t-value="'fa-chevron-right'"/>
+        <t t-if="category and ('/' + str(c.id) + '/') in category.parent_path">
+            <t t-set="explose" t-value="'block'"/>
+            <t t-set="icon" t-value="'fa-chevron-down'"/>
+        </t>
+        <t t-if="c.child_id">
+            <i role="img" t-attf-onClick="collapseMenu(document.querySelectorAll('.cat_{{c.id}}'), {{c.id}});" t-attf-class="text-primary fa {{icon}} arrow_{{c.id}}" title="Fold" aria-label="Fold"></i>
+        </t>
+        <a t-attf-href="/shop/category/{{slug(c)}}" style="margin-right:30px;" t-attf-class="nav-link #{'active' if c.id == category.id else ''}">
+            <span t-field="c.name"/>
+        </a>
+        <ul t-if="c.child_id" t-attf-style="display:{{explose}}; padding-left:15px;" t-attf-class="nav nav-pills flex-column nav-hierarchy cat_{{c.id}}">
+            <t t-foreach="c.child_id" t-as="c">
+                <t t-call="netaddiction_special_offers.custom_category_recursive"/>
+            </t>
+        </ul>
+    </li>
+</template>
+</odoo>

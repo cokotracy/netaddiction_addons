@@ -31,7 +31,7 @@
 				<div id="products_grid_before" class="d-none d-lg-block w-100 te_product_sticky_sidebar te_product_sidebar_scrollbar sticky-media mCustomScrollbar _mCS_1" style="position: sticky; top:110px; height: 781px; max-width:300px;">
 					<div id="mCSB_1" class="mCustomScrollBox mCS-dark-thin mCSB_vertical mCSB_inside" style="max-height: none; overflow:auto;" tabindex="0">
 						<div id="mCSB_1_container" class="mCSB_container" style="position: relative; top: 0px; left: 0px;" dir="ltr">
-							<div class="collapse d-lg-block border-0" id="wsale_products_categories_collapse">
+							<div class="p-0 collapse d-lg-block border-0" id="wsale_products_categories_collapse">
 								<strong class="d-block">
 									Filtra per:
 								</strong>
@@ -68,18 +68,44 @@
 								<button onclick="checkFilter()" class="btn btn-primary btn-md a-submit d-block d-sm-inline-block te_theme_button w-100">
 									Filtra
 								</button>
-							</div>
-							<ul class="list-unstyled mt-3">
-								<t t-set="custom_category" t-value="request.env['product.public.category'].sudo().search([('parent_id','=',1)])" />
-								<t t-foreach="custom_category" t-as="cat">
-									<li class="p-2 border-top">
-										<a class="text-secondary" t-attf-href="/shop/category/{{slug(cat)}}">
-											<small class="font-weight-bold" t-esc="cat.name">
-											</small>
-										</a>
-									</li>
+
+								<t t-set="current_url" t-value="website._get_canonical_url(canonical_params=canonical_params).replace('/it_IT/', '/')"/>
+								<t t-if="not '/tool/' in current_url and not '/search/' in current_url">
+									<div class="d-block">
+										<t if="not categories">
+											<t t-set="categories" t-value="request.env['product.public.category'].sudo().search([('parent_id.primary_category','=', True)])" />
+										</t>
+										
+										<t t-if="not category">
+											<t t-set="category" t-value="request.env['product.public.category'].sudo().search([('primary_category','=', True)])"/>
+										</t>
+										<ul class="p-0 nav nav-pills flex-column mb-2" id="o_home_collapse_category">
+											<t t-foreach="categories" t-as="c">
+												<t t-call="netaddiction_theme_rewrite.custom_category_recursive"/>
+											</t>
+										</ul>
+									</div>
+									<script>
+										function collapseMenu(el, cat_id){
+											var status = (el[0].style.display == 'none')?false:true;
+											el.forEach(item => {
+												item.style.display = (status == false)?'block':'none';
+											});
+
+											document.querySelectorAll('.arrow_' + cat_id).forEach(item => {
+												if(status == false){
+													item.classList.remove('fa-chevron-right');
+													item.classList.add('fa-chevron-down');
+												}
+												else{
+													item.classList.add('fa-chevron-right');
+													item.classList.remove('fa-chevron-down');
+												}
+											});
+										}
+									</script>
 								</t>
-							</ul>
+							</div>
 							<script type="text/javascript">
 								document.addEventListener("DOMContentLoaded", function() {
 								var urlParams = new URLSearchParams(window.location.search);
@@ -166,7 +192,7 @@
 						</t>
 					</t>
 					<a data-oe-model="ir.ui.view" data-oe-id="1332" data-oe-field="arch" data-oe-xpath="/t[1]/ul[1]/li[1]/a[1]" t-attf-href="{{link_prev}}" class="page-link ">
-						Prev
+						Prec
 					</a>
 				</li>
 				<t t-set="button_index" t-value="0" />
@@ -213,7 +239,7 @@
 						</t>
 					</t>
 					<a data-oe-model="ir.ui.view" data-oe-id="1332" data-oe-field="arch" data-oe-xpath="/t[1]/ul[1]/li[2]/a[1]" t-attf-href="{{link_next}}" class="page-link ">
-						Next
+						Succ
 					</a>
 				</li>
 			</ul>

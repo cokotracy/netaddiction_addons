@@ -253,10 +253,19 @@ class StockPicking(models.Model):
         qty_sale = 0
         for line in self.sale_id.order_line:
             if not line.is_delivery and not line.is_payment:
-                qty_sale += line.product_uom_qty
+                # If the product it's a bundle, get the complete quantities
+                if line.product_id.pack_ids:
+                    line_quantities = sum([
+                        lpp.qty_uom * line.product_uom_qty
+                        for lpp in line.product_id.pack_ids
+                        ])
+                else:
+                    line_quantities = line.product_uom_qty
+                qty_sale += line_quantities
 
         qty_pick = 0
-        for pick in self.sale_id.picking_ids:
+        for pick in self.sale_id.picking_ids.filtered(
+                lambda p: p.state in ('assigned', 'confirmed')):
             if pick.picking_type_id == out_pick_type:
                 for line in pick.move_lines:
                     qty_pick += line.product_qty

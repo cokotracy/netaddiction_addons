@@ -37,9 +37,12 @@ odoo.define('netaddiction_theme_rewrite.VariantMixin', function (require) {
       },
     }).then(function (data) {
       if (data != null) {
-        // $('a#buy_now').each(function () {
-        //   this.dataset.product = combination.product_id
-        // })
+        var $exposed_out_date = $('#out_date_converted');
+        if($exposed_out_date != null){
+          var date = new Date(data.out_date);
+          var exposed_date = date.toLocaleString('it-it', {month: 'long',}) + ' ' + date.getFullYear();
+          $exposed_out_date.text(exposed_date)
+        }
 
         xml_load_label.then(function () {
           var $infoLabel = $(QWeb.render(
