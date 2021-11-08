@@ -4,7 +4,7 @@
 
 {
     'name': 'Netaddiction Orders',
-    'version': '14.0.1.6.1',
+    'version': '14.0.1.6.2',
     'category': 'Sale',
     'author': 'Openforce',
     'license': 'LGPL-3',

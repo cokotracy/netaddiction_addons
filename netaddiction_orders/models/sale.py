@@ -96,6 +96,9 @@ class SaleOrder(models.Model):
         # the state in `cancel` or sale with a problem
         if self.env.context.get('ignore_pickup_check'):
             return res
+        # Bypass check for portal token
+        if 'access_token' in values and len(values.keys()) == 1:
+            return res
         if ('problem' in values or values.get('state', '') == 'cancel') \
                 and len(values.keys()) == 1:
             return res
