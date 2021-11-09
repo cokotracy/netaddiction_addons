@@ -104,7 +104,7 @@ class ReceiptRegister(models.Model):
                         if origin:
                             move = self.env["stock.move"].search(
                                 [
-                                    ("procurement_id.sale_line_id.order_id.id", "=", origin),
+                                    ("sale_line_id.order_id.id", "=", origin),
                                     ("product_id", "=", line.product_id.id),
                                 ]
                             )
@@ -171,7 +171,7 @@ class ReceiptRegister(models.Model):
 
         return delivery_picks, tax_names
 
-    def _create_sheet(self, tax_names, delivery_sheet, delivery_picks, numberdays):
+    def _create_sheet(self, tax_names, sheet, picks, numberdays):
         # excel styles
         headStyle = xlwt.easyxf("font: name Arial, color-index black, bold on")
         totalStyle = xlwt.easyxf("font: name Arial, color-index green, bold on")
@@ -183,40 +183,40 @@ class ReceiptRegister(models.Model):
         n = 1
 
         for tax_name in tax_names:
-            delivery_sheet.write(0, n, f"Fatturato {tax_name}", headStyle)
+            sheet.write(0, n, f"Fatturato {tax_name}", headStyle)
             position_tax[tax_name] = [n]
             n += 1
-            delivery_sheet.write(0, n, f"Tasse {tax_name}", headStyle)
+            sheet.write(0, n, f"Tasse {tax_name}", headStyle)
             position_tax[tax_name].append(n)
             n += 2
 
         total_horizontal = []
-        delivery_sheet.write(0, n, "Totale Fatturato", totalStyle)
+        sheet.write(0, n, "Totale Fatturato", totalStyle)
         total_horizontal.append(n)
         n += 1
-        delivery_sheet.write(0, n, "Totale Tasse", totalStyle)
+        sheet.write(0, n, "Totale Tasse", totalStyle)
         total_horizontal.append(n)
 
         # write data
         n = 1
-        for line in delivery_picks:
-            delivery_sheet.write(n, 0, line, dateStyle)
+        for line in picks:
+            sheet.write(n, 0, line, dateStyle)
             for tax_name in tax_names:
-                res = delivery_picks[line].get(tax_name, False)
+                res = picks[line].get(tax_name, False)
                 index = position_tax.get(tax_name, False)
 
                 if res:
-                    delivery_sheet.write(n, index[0], res["value"], numStyle)
-                    delivery_sheet.write(n, index[1], res["tax_value"], numStyle)
+                    sheet.write(n, index[0], res["value"], numStyle)
+                    sheet.write(n, index[1], res["tax_value"], numStyle)
                 else:
-                    delivery_sheet.write(n, index[0], 0, numStyle)
-                    delivery_sheet.write(n, index[1], 0, numStyle)
+                    sheet.write(n, index[0], 0, numStyle)
+                    sheet.write(n, index[1], 0, numStyle)
             n += 1
 
         # put the totals, first those on column then those on row
-        total_index = len(delivery_picks) + 2
+        total_index = len(picks) + 2
 
-        delivery_sheet.write(total_index, 0, "Totale", totalStyle)
+        sheet.write(total_index, 0, "Totale", totalStyle)
 
         letters = []
         for x, y in zip(range(0, 26), string.ascii_lowercase):
@@ -225,13 +225,13 @@ class ReceiptRegister(models.Model):
         horizontal = {0: [], 1: []}
         for tax_name in tax_names:
             index = position_tax.get(tax_name, False)
-            delivery_sheet.write(
+            sheet.write(
                 total_index,
                 index[0],
                 xlwt.Formula(f"SUM({letters[index[0]].upper()}1:{letters[index[0]].upper()}{total_index - 1})"),
                 totalStyle,
             )
-            delivery_sheet.write(
+            sheet.write(
                 total_index,
                 index[1],
                 xlwt.Formula(f"SUM({letters[index[1]].upper()}1:{letters[index[1]].upper()}{total_index - 1})"),
@@ -242,19 +242,19 @@ class ReceiptRegister(models.Model):
 
         for i in numberdays:
             try:
-                delivery_sheet.write(
+                sheet.write(
                     i,
                     total_horizontal[0],
                     xlwt.Formula(f"SUM({horizontal[0][0]}{i + 1};{horizontal[0][1]}{i + 1})"),
                 )
-                delivery_sheet.write(
+                sheet.write(
                     i,
                     total_horizontal[1],
                     xlwt.Formula(f"SUM({horizontal[1][0]}{i + 1};{horizontal[1][1]}{i + 1})"),
                 )
             except IndexError:
-                delivery_sheet.write(i, total_horizontal[0], xlwt.Formula(f"SUM({horizontal[0][0]}{i + 1})"))
-                delivery_sheet.write(i, total_horizontal[1], xlwt.Formula(f"SUM({horizontal[1][0]}{i + 1})"))
+                sheet.write(i, total_horizontal[0], xlwt.Formula(f"SUM({horizontal[0][0]}{i + 1})"))
+                sheet.write(i, total_horizontal[1], xlwt.Formula(f"SUM({horizontal[1][0]}{i + 1})"))
 
     def get_receipt(self):
         numberdays = monthrange(self.date_end.year, self.date_end.month)[1]
@@ -274,24 +274,26 @@ class ReceiptRegister(models.Model):
         delivery_domain = domain + [("picking_type_id.id", "in", delivery_picking_type_ids)]
         pickings = self.env["stock.picking"].search(delivery_domain)
 
-        delivery_picks, tax_names = self._create_subdivision(pickings, numberdays, self.date_end)
-        # delivery_picks: sales and taxes divided by day
-        self._create_sheet(tax_names, delivery_sheet, delivery_picks, numberdays)
+        if pickings:
+            delivery_picks, tax_names = self._create_subdivision(pickings, numberdays, self.date_end)
+            # delivery_picks: sales and taxes divided by day
+            self._create_sheet(tax_names, delivery_sheet, delivery_picks, numberdays)
 
-        # # returns
-        # refund_domain = domain + [("picking_type_id.id", "in", refund_picking_type_ids)]
-        # pickings = self.env["stock.picking"].search(refund_domain)
+        # returns
+        refund_domain = domain + [("picking_type_id.id", "in", refund_picking_type_ids)]
+        pickings = self.env["stock.picking"].search(refund_domain)
 
-        # refund_picks, tax_names = self._create_subdivision(
-        #     pickings,
-        #     numberdays,
-        #     self.date_end,
-        #     check_sale_id=False,
-        #     check_sale_origin=True,
-        #     refund_delivery_cost=self._get_refund_delivery_cost(),
-        # )
-        # # refund_picks: sales and taxes divided by day
-        # self._create_sheet(tax_names, refund_sheet, refund_picks, numberdays)
+        if pickings:
+            refund_picks, tax_names = self._create_subdivision(
+                pickings,
+                numberdays,
+                self.date_end,
+                check_sale_id=False,
+                check_sale_origin=True,
+                refund_delivery_cost=self._get_refund_delivery_cost(),
+            )
+            # refund_picks: sales and taxes divided by day
+            self._create_sheet(tax_names, refund_sheet, refund_picks, numberdays)
 
         # generate and save the file
         fp = BytesIO()
