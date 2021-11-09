@@ -40,7 +40,20 @@
             <field name="view_mode">tree,form</field>
             <field name="view_id" ref="view_receipt_register_tree"/>
         </record>
+
+        <record id="receipt_detail_action" model="ir.actions.client">
+            <field name="name">Dettaglio Corrispettivi</field>
+            <field name="tag">netaddiction_receipt_register.receiptdetail</field>
+        </record>
+
+        <template id="netaddiction_receipt_register_assets_backend" name="netaddiction_receipt_register_assets_backend" inherit_id="web.assets_backend">
+            <xpath expr="." position="inside">
+                <script type="text/javascript" src="/netaddiction_receipt_register/static/js/receiptdetail.js"/>
+            </xpath>
+        </template>
         
-        <menuitem id="menu_receipt" sequence="0" name="Corrispettivi" parent="account.menu_finance_entries_accounting_journals" action="receipt_register_action" groups="account.group_account_user"/>
+        <menuitem id="menu_receipt" sequence="0" name="Corrispettivi" parent="account.menu_finance_entries_accounting_journals" groups="account.group_account_user"/>
+        <menuitem id="menu_receipt_receipt_register" sequence="1" name="Registra Corrispettivi" parent="menu_receipt" action="receipt_register_action" groups="account.group_account_user"/>
+        <menuitem id="menu_receipt_receipt_detail" sequence="2" name="Dettaglio Corrispettivi" parent="menu_receipt" action="receipt_detail_action" groups="account.group_account_user"/>
     </data>
 </odoo>

@@ -3,7 +3,7 @@ import string
 from ast import literal_eval
 from calendar import monthrange
 from collections import OrderedDict
-from datetime import datetime
+from datetime import date, datetime
 from io import BytesIO
 
 import xlwt
@@ -300,6 +300,101 @@ class ReceiptRegister(models.Model):
         wb.save(fp)
         self.output_file = base64.b64encode(fp.getvalue())
         fp.close()
+
+
+class ReceiptRegisterPicking(models.Model):
+    _inherit = "stock.picking"
+
+    @api.model
+    def get_picking_from_date(self, year, month):
+        results = {"done": [], "refund": []}
+
+        tax_inc = self.env["account.tax"].search([("description", "=", "4v INC")])
+        out_type = self.env.ref("stock.picking_type_out").id
+        refund_type = self.env["stock.picking.type"].search([("name", "=", "Reso Rivendibile")]).id
+        scraped_type = self.env["stock.picking.type"].search([("name", "=", "Reso Difettati")]).id
+
+        last = monthrange(year, month)
+        date_from = datetime(year, month, 1)
+        date_to = date_from.replace(day=last[1], hour=23, minute=59, second=59)
+
+        pickings = self.search(
+            [
+                ("date_done", ">=", date_from),
+                ("date_done", "<=", date_to),
+                ("picking_type_id", "in", [out_type]),
+                ("state", "=", "done"),
+            ]
+        )
+
+        for pick in pickings:
+            if pick.sale_id:
+                for line in pick.move_lines:
+                    attr = {
+                        "product_id": line.sale_line_id.product_id.with_context(
+                            {"lang": "it_IT", "tz": "Europe/Rome"}
+                        ).display_name,
+                        "categ": line.sale_line_id.product_id.categ_id.name,
+                        "pid": line.sale_line_id.product_id.id,
+                        "barcode": line.sale_line_id.product_id.barcode,
+                        "qty": line.sale_line_id.product_uom_qty,
+                        "total_price": line.sale_line_id.price_total,
+                        "price_tax": line.sale_line_id.price_tax,
+                        "picking_id": pick.name,
+                        "date_done": pick.date_done,
+                        "payment_method": pick.sale_order_payment_method.name,
+                        "state": pick.state,
+                        "picking_type_id": pick.picking_type_id.name,
+                        "sale_id": pick.origin,
+                        "tax_id": line.sale_line_id.tax_id.name,
+                        "edizioni": 0,
+                    }
+                    results["done"].append(attr)
+
+        refunds = self.search(
+            [
+                ("date_done", ">=", date_from),
+                ("date_done", "<=", date_to),
+                ("picking_type_id", "in", [refund_type, scraped_type]),
+                ("state", "=", "done"),
+            ]
+        )
+        for pick in refunds:
+            for line in pick.move_lines:
+                attr = {
+                    "product_id": line.sale_line_id.product_id.with_context(
+                        {"lang": "it_IT", "tz": "Europe/Rome"}
+                    ).display_name,
+                    "categ": line.sale_line_id.product_id.categ_id.name,
+                    "pid": line.sale_line_id.product_id.id,
+                    "barcode": line.sale_line_id.product_id.barcode,
+                    "qty": line.sale_line_id.product_uom_qty,
+                    "picking_id": pick.name,
+                    "date_done": pick.date_done,
+                    "payment_method": pick.sale_order_payment_method.name,
+                    "state": pick.state,
+                    "picking_type_id": pick.picking_type_id.name,
+                    "sale_id": pick.origin,
+                    "edizioni": 0,
+                }
+                order = self.env["sale.order"].search([("name", "=", pick.origin)])
+                for pid in order.order_line:
+                    if pid.product_id.id == line.product_id.id:
+                        attr["total_price"] = pid.price_unit * line.sale_line_id.product_uom_qty
+                        amount = pid.product_id.taxes_id.compute_all(attr["total_price"])
+                        tax = amount["total_included"] - amount["total_excluded"]
+                        attr["price_tax"] = tax
+                        attr["tax_id"] = pid.tax_id.name
+                        for attribute in pid.product_template_attribute_value_ids:
+                            if "Multiplayer.it Edizioni" in attribute.name:
+                                tax_value = tax_inc.compute_all(attr["total_price"])
+                                attr["edizioni"] += tax_value["total_included"] - tax_value["total_excluded"]
+                attr["edizioni"] = round(attr["edizioni"], 2)
+                attr["price_tax"] = round(attr["price_tax"], 2)
+                attr["total_price"] = round(attr["total_price"], 2)
+                results["refund"].append(attr)
+
+        return results
 
 
 class ReceiptRegisterConfig(models.TransientModel):
