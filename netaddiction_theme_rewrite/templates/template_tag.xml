@@ -14,7 +14,7 @@
 								</t> -->
 							</div>
 							<div class="col-sm nopadding text-center">
-								<h1 class="d-inline py-3 d-block" t-esc="tag_name"></h1>
+								<h1 class="d-inline py-3 d-block" t-esc="tag_name.name"></h1>
 								<!-- <t t-if="not '/page/' in current_url">
 									<t t-if="category.description">
 										<p class="pb-3" t-esc="category.description"></p>
@@ -26,49 +26,25 @@
 				</t>
 			</div>
             <br/>
-            <t t-call="netaddiction_theme_rewrite.pagination"/>
+			<t t-call="netaddiction_theme_rewrite.mobile_filters"/>
             <div class="d-flex container">
-				<div id="products_grid_before" class="d-none d-lg-block w-100 te_product_sticky_sidebar te_product_sidebar_scrollbar sticky-media mCustomScrollbar _mCS_1" style="position: sticky; top:110px; height: 781px; max-width:300px;">
+				<div id="products_grid_before" class="custom_filter_container w-0 w-lg-100 te_product_sticky_sidebar te_product_sidebar_scrollbar sticky-media mCustomScrollbar _mCS_1" style="max-width:250px;">
 					<div id="mCSB_1" class="mCustomScrollBox mCS-dark-thin mCSB_vertical mCSB_inside" style="max-height: none; overflow:auto;" tabindex="0">
 						<div id="mCSB_1_container" class="mCSB_container" style="position: relative; top: 0px; left: 0px;" dir="ltr">
-							<div class="p-0 collapse d-lg-block border-0" id="wsale_products_categories_collapse">
-								<strong class="d-block">
-									Filtra per:
-								</strong>
-								<hr class="my-2" />
-								<div class="border-bottom">
-									<a class="d-block px-3 mb-2 text-primary position-relative" data-toggle="collapse" href="#collapse_status" role="button" aria-expanded="true" aria-controls="collapseExample">
-										Stato
-										<i class="fa fa-sort-desc position-absolute" style="right:10px; top:50%; transform:translateY(-50%) !important">
-										</i>
-									</a>
-									<div class="collapse show" id="collapse_status" style="max-height:400px; overflow:auto;">
-										<div class="card card-body pb-0" id="status_filter_list">
-											<div class="d-flex mb-2">
-												<input style="margin-top:5px;" type="checkbox" id="status_stock" value="stock" />
-												<label class="ml-1" for="status_1">
-													Disponibile
-												</label>
-											</div>
-											<div class="d-flex mb-2">
-												<input style="margin-top:5px;" type="checkbox" id="status_preorder" value="preorder" />
-												<label class="ml-1" for="status_2">
-													Prenotazione
-												</label>
-											</div>
-											<div class="d-flex mb-2">
-												<input style="margin-top:5px;" type="checkbox" id="status_new" value="new" />
-												<label class="ml-1" for="status_3">
-													Novità
-												</label>
-											</div>
+							<div class="border-0 px-0" id="wsale_products_categories_collapse">
+								<div id="filters_panel" class="w-100 d-none d-lg-block" style="z-index:9999; top:0; left:0; background-color:rgba(0,0,0,0.7)">
+									<div class="p-3 px-lg-0 filter-panel-animation position-relative">
+										<div onclick="openFilterPanel();" style="top:5px; right:5px;" class="d-lg-none te_filter_close te_filter_btn_close te_menu_btn_close te_menu_icon_close border-0" data-oe-id="3351" data-oe-xpath="/data/xpath[8]/div" data-oe-model="ir.ui.view" data-oe-field="arch">
+											<span class="te_filter_icon_close">x</span>
 										</div>
+										<t t-call="netaddiction_theme_rewrite.custom_filters">
+											<t t-set="status" t-value="true"/>
+											<t t-set="full_status" t-value="false"/>
+											<t t-set="price" t-value="true"/>
+											<t t-set="tag" t-value="false"/>
+										</t>
 									</div>
 								</div>
-								<button onclick="checkFilter()" class="btn btn-primary btn-md a-submit d-block d-sm-inline-block te_theme_button w-100">
-									Filtra
-								</button>
-
 								<t t-set="current_url" t-value="website._get_canonical_url(canonical_params=canonical_params).replace('/it_IT/', '/')"/>
 								<t t-if="not '/tool/' in current_url and not '/search/' in current_url">
 									<div class="d-block">
@@ -79,9 +55,9 @@
 										<t t-if="not category">
 											<t t-set="category" t-value="request.env['product.public.category'].sudo().search([('primary_category','=', True)])"/>
 										</t>
-										<ul class="p-0 nav nav-pills flex-column mb-2" id="o_home_collapse_category">
+										<ul class="nav nav-pills flex-column mb-2" id="o_home_collapse_category">
 											<t t-foreach="categories" t-as="c">
-												<t t-call="netaddiction_theme_rewrite.custom_category_recursive"/>
+												<t t-call="netaddiction_special_offers.custom_category_recursive"/>
 											</t>
 										</ul>
 									</div>
@@ -106,49 +82,6 @@
 									</script>
 								</t>
 							</div>
-							<script type="text/javascript">
-								document.addEventListener("DOMContentLoaded", function() {
-								var urlParams = new URLSearchParams(window.location.search);
-								var myParam = urlParams.get('status-filter');
-								if(myParam != null){
-								var selected = myParam.split(',')
-								selected.forEach(element =>{
-								document.querySelector('#status_' + element).checked = true;
-								});
-								}
-								});
-								
-								
-								function checkFilter(){
-								var url = new URL(window.location.href);
-								
-								var status_filter = ''
-								var status_list = document.querySelectorAll('#status_filter_list > div > input:checked');
-								status_list.forEach(element =>{
-								status_filter += element.value + ','
-								});
-								url.searchParams.delete('status-filter')
-								if(status_filter != ''){
-								status_filter = status_filter.slice(0, -1);
-								url.searchParams.append('status-filter', status_filter);
-								}
-								
-								
-								var tag_filter = ''
-								var tag_list = document.querySelectorAll('#collapse_tag > div input:checked');
-								tag_list.forEach(element =>{
-								tag_filter += element.value + ','
-								});
-								
-								url.searchParams.delete('tag-filter')
-								if(tag_filter != ''){
-								tag_filter = tag_filter.slice(0, -1);
-								url.searchParams.append('tag-filter', tag_filter);
-								}
-								
-								window.location.href = url;
-								}
-							</script>
 						</div>
 					</div>
 				</div>
@@ -158,6 +91,9 @@
                         <t t-set="products_ids" t-value="products_ids + str(product['id']) + ','" />
                     </t>
                     <t t-set="products_ids" t-value="products_ids[:-1]"/>
+					<div class="d-none d-lg-block">
+						<t t-call="netaddiction_theme_rewrite.pagination"/>
+					</div>
                     <section class="pt8 pb8 o_colored_level tag_product_list" data-snippet="p_slider" data-name="Product Snippet Builder">
                         <div class="js_slider_snippet" name="manual-configuration" data-isemipro="true" data-name="manual-configuration" t-attf-data-item_ids="{{products_ids}}" data-style="7" data-ui_option="shopping_cart,wishlist,quick_view,sale_label,ratings" data-slider_type="slider" t-attf-data-limit="{{str(page_size)}}"/>
                     </section>
@@ -170,26 +106,22 @@
     <!-- PAGINAZIONE -->
     <template id="pagination">
 		<div class="container d-flex custom_pager products_pager form-inline mt-3 mb-3 te_shop_pager">
+			<select onchange="setOrder(this.value);" id="order_filter_dk" class="d-none d-lg-block mr-2" style="width:150px;">
+				<option value="">ordina per..</option>
+				<!-- <option value="fix_price-desc">Prezzo crescente</option>
+				<option value="fix_price-asc">Prezzo decrescente</option> -->
+				<option value="name-desc">Nome A-Z</option>
+				<option value="name-asc">Nome Z-A</option>
+			</select>
 			<ul class="pagination m-0 ">
-				<t t-set="status_filter" t-value="request.params.get('status-filter')"/>
 				<t t-set="active_prev" t-value="" />
 				<t t-if="current_page == 0">
 					<t t-set="active_prev" t-value="'disabled'" />
 				</t>
 				<li t-attf-class="page-item {{active_prev}}">
-					<t t-if="status_filter">
-						<t t-set="link_prev" t-value="'/tag/' + tag_name + '?status-filter=' + status_filter" />
-					</t>
-					<t t-else="">
-						<t t-set="link_prev" t-value="'/tag/' + tag_name" />
-					</t>
+					<t t-set="link_prev" t-value="'/tag/' + str(tag_name.id) + '?' + query" />
 					<t t-if="current_page > 1">
-						<t t-if="status_filter">
-							<t t-set="link_prev" t-value="link_prev + '?page=' + str(current_page) + '&amp;&amp;status-filter=' + status_filter" />
-						</t>
-						<t t-else="">
-							<t t-set="link_prev" t-value="link_prev + '?page=' + str(current_page)" />
-						</t>
+						<t t-set="link_prev" t-value="link_prev + '?page=' + str(current_page) + '&amp;&amp;' + query" />
 					</t>
 					<a data-oe-model="ir.ui.view" data-oe-id="1332" data-oe-field="arch" data-oe-xpath="/t[1]/ul[1]/li[1]/a[1]" t-attf-href="{{link_prev}}" class="page-link ">
 						Prec
@@ -206,20 +138,10 @@
 						</t>
 						<li t-attf-class="page-item {{active_link}}">
 							<t t-if="row_index == 0">
-								<t t-if="status_filter">
-									<a t-attf-href="/tag/#{tag_name}?status-filter={{status_filter}}" class="page-link" t-esc="(row_index + 1)"></a>
-								</t>
-								<t t-else="">
-									<a t-attf-href="/tag/#{tag_name}" class="page-link" t-esc="(row_index + 1)"></a>
-								</t>
+								<a t-attf-href="/tag/#{str(tag_name.id) + '?' + query}" class="page-link" t-esc="(row_index + 1)"></a>
 							</t>
 							<t t-else="">
-								<t t-if="status_filter">
-									<a t-attf-href="/tag/#{tag_name}?page=#{(row_index + 1)}&amp;&amp;status-filter={{status_filter}}" class="page-link" t-esc="(row_index + 1)"></a>
-								</t>
-								<t t-else="">
-									<a t-attf-href="/tag/#{tag_name}?page=#{(row_index + 1)}" class="page-link" t-esc="(row_index + 1)"></a>
-								</t>
+								<a t-attf-href="/tag/#{str(tag_name.id)}?page=#{str(row_index + 1) + '&amp;&amp;' + query}" class="page-link" t-esc="(row_index + 1)"></a>
 							</t>
 						</li>
 					</t>
@@ -231,12 +153,7 @@
 				<li t-attf-class="page-item {{active_next}}">
 					<t t-set="link_next" t-value="" />
 					<t t-if="current_page &lt; page_number">
-						<t t-if="status_filter">
-							<t t-set="link_next" t-value="'/tag/' + tag_name + '?page=' + str(current_page + 2) + '&amp;&amp;status-filter=' + status_filter" />
-						</t>
-						<t t-else="">
-							<t t-set="link_next" t-value="'/tag/' + tag_name + '?page=' + str(current_page + 2)" />
-						</t>
+						<t t-set="link_next" t-value="'/tag/' + str(tag_name.id) + '?page=' + str(current_page + 2) + '&amp;&amp;' + query" />
 					</t>
 					<a data-oe-model="ir.ui.view" data-oe-id="1332" data-oe-field="arch" data-oe-xpath="/t[1]/ul[1]/li[2]/a[1]" t-attf-href="{{link_next}}" class="page-link ">
 						Succ
