@@ -22,7 +22,10 @@ class ReceiptRegister(models.Model):
     def name_get(self):
         res = []
         for receipt in self:
-            name = f"Corrispettivi di {receipt.date_end.strftime('%B %Y')}"
+            try:
+                name = f"Corrispettivi di {receipt.date_end.strftime('%B %Y')}"
+            except Exception:
+                name = "Corrispettivo non valido"
             res.append((receipt.id, name))
         return res
 
@@ -92,13 +95,10 @@ class ReceiptRegister(models.Model):
                     for line in pick.move_lines:
                         tax = delivery_picks[date_done].get(line.product_id.taxes_id.name, False)
                         if not tax:
-                            delivery_picks[date_done][line.product_id.taxes_id.name] = {}
-                            delivery_picks[date_done][line.product_id.taxes_id.name][
-                                "value"
-                            ] = line.sale_line_id.price_total
-                            delivery_picks[date_done][line.product_id.taxes_id.name][
-                                "tax_value"
-                            ] = line.sale_line_id.price_tax
+                            delivery_picks[date_done][line.product_id.taxes_id.name] = {
+                                "value": line.sale_line_id.price_total,
+                                "tax_value": line.sale_line_id.price_tax,
+                            }
                         else:
                             delivery_picks[date_done][line.product_id.taxes_id.name][
                                 "value"
@@ -130,13 +130,11 @@ class ReceiptRegister(models.Model):
 
                     tax = delivery_picks[date_done].get(line.product_id.taxes_id.name, False)
                     if not tax:
-                        delivery_picks[date_done][line.product_id.taxes_id.name] = {}
-                        delivery_picks[date_done][line.product_id.taxes_id.name][
-                            "value"
-                        ] = line.sale_line_id.price_total
-                        delivery_picks[date_done][line.product_id.taxes_id.name][
-                            "tax_value"
-                        ] = line.sale_line_id.price_tax
+                        delivery_picks[date_done][line.product_id.taxes_id.name] = {
+                            "value": line.sale_line_id.price_total,
+                            "tax_value": line.sale_line_id.price_tax,
+                        }
+
                     else:
                         delivery_picks[date_done][line.product_id.taxes_id.name][
                             "value"
@@ -152,16 +150,15 @@ class ReceiptRegister(models.Model):
                 if multidelivery and pick.carrier_price > 0:
                     carrier_price = pick.carrier_price
                 else:
-                    origin = pick.sale_id
-                    if check_sale_origin:
+                    if check_sale_origin and not pick.sale_id:
                         try:
                             origin = self.env["sale.order"].search([("name", "=", pick.origin)])
                         except Exception:
                             origin = False
-                    if origin:
-                        for line in origin.order_line:
-                            if line.is_delivery:
-                                carrier_price = line.price_total
+                        if origin:
+                            for line in origin.order_line:
+                                if line.is_delivery:
+                                    carrier_price = line.price_total
 
                 del_pick = delivery_picks[date_done].get(pick.carrier_id.product_id.taxes_id.name, False)
                 if del_pick:
@@ -172,19 +169,22 @@ class ReceiptRegister(models.Model):
 
                 # cash on delivery charges
                 cod_product_id = self.get_product_cod_id()
-                origin = pick.sale_id
-                if check_sale_origin:
+                if check_sale_origin and not pick.sale_id:
                     try:
                         origin = self.env["sale.order"].search([("name", "=", pick.origin)])
                     except Exception:
                         origin = False
-                if origin:
-                    for line in origin.order_line:
-                        if line.product_id.id == cod_product_id:
-                            del_pick = delivery_picks[date_done].get(line.product_id.taxes_id.name, False)
-                            if del_pick:
-                                delivery_picks[date_done][line.product_id.taxes_id.name]["value"] += line.price_total
-                                delivery_picks[date_done][line.product_id.taxes_id.name]["tax_value"] += line.price_tax
+                    if origin:
+                        for line in origin.order_line:
+                            if line.product_id.id == cod_product_id:
+                                del_pick = delivery_picks[date_done].get(line.product_id.taxes_id.name, False)
+                                if del_pick:
+                                    delivery_picks[date_done][line.product_id.taxes_id.name][
+                                        "value"
+                                    ] += line.price_total
+                                    delivery_picks[date_done][line.product_id.taxes_id.name][
+                                        "tax_value"
+                                    ] += line.price_tax
 
         return delivery_picks, tax_names
 
