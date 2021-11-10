@@ -25,9 +25,25 @@
                     <div class="col-12 col-lg-6 o_setting_box" groups="account.group_account_user">
                         <div class="o_setting_left_pane">
                         </div>
-                        <div class="o_setting_right_pane" id="budget_management">
+                        <div class="o_setting_right_pane">
                             <label for="product_cod_id"/>
                             <field name="product_cod_id"/>
+                        </div>
+                    </div>
+                    <div class="col-12 col-lg-6 o_setting_box" groups="account.group_account_user">
+                        <div class="o_setting_left_pane">
+                        </div>
+                        <div class="o_setting_right_pane">
+                            <label for="tax_income_id"/>
+                            <field name="tax_income_id"/>
+                        </div>
+                    </div>
+                    <div class="col-12 col-lg-6 o_setting_box" groups="account.group_account_user">
+                        <div class="o_setting_left_pane">
+                        </div>
+                        <div class="o_setting_right_pane">
+                            <label for="edizioni_brand_id"/>
+                            <field name="edizioni_brand_id"/>
                         </div>
                     </div>
                 </div>

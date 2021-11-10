@@ -16,19 +16,21 @@ class ReceiptRegister(models.Model):
 
     date_start = fields.Datetime(string="Data Inizio")
     date_end = fields.Datetime(string="Data Fine")
-    name = fields.Char(string="Nome", compute="_get_my_name")
     output_file = fields.Binary(string="File generato")
-    output_filename = fields.Char(string="Nome File", compute="_get_output_filename")
+    output_filename = fields.Char(string="Nome File", compute="_compute_output_filename")
 
-    def _get_my_name(self):
+    def name_get(self):
+        res = []
         for receipt in self:
-            receipt.name = f"Corrispettivi di {receipt.date_end.strftime('%B %Y')}"
+            name = f"Corrispettivi di {receipt.date_end.strftime('%B %Y')}"
+            res.append((receipt.id, name))
+        return res
 
-    def _get_output_filename(self):
+    def _compute_output_filename(self):
         for receipt in self:
             receipt.output_filename = f"corrispettivi_{receipt.date_end.strftime('%B_%Y').lower()}.xls"
 
-    def _get_delivery_picking_type_ids(self):
+    def get_delivery_picking_type_ids(self):
         params = self.env["ir.config_parameter"].sudo()
         ids = params.get_param("receipt.register.delivery_picking_type_ids")
         if not ids:
@@ -37,22 +39,36 @@ class ReceiptRegister(models.Model):
             )
         return literal_eval(ids)
 
-    def _get_refund_picking_type_ids(self):
+    def get_refund_picking_type_ids(self):
         params = self.env["ir.config_parameter"].sudo()
         ids = params.get_param("receipt.register.refund_picking_type_ids")
         if not ids:
             raise UserError("Non hai impostato nessuna tipologia di 'Resi'")
         return literal_eval(ids)
 
-    def _get_refund_delivery_cost(self):
+    def get_refund_delivery_cost(self):
         params = self.env["ir.config_parameter"].sudo()
         return params.get_param("receipt.register.refund_delivery_cost")
 
-    def _get_product_cod_id(self):
+    def get_product_cod_id(self):
         params = self.env["ir.config_parameter"].sudo()
         id = params.get_param("receipt.register.product_cod_id")
         if not id:
             raise UserError("Non hai impostato il prodotto di tipo 'Contrassegno'")
+        return int(id)
+
+    def get_tax_income_id(self):
+        params = self.env["ir.config_parameter"].sudo()
+        id = params.get_param("receipt.register.tax_income_id")
+        if not id:
+            raise UserError("Non hai impostato l'imposta")
+        return int(id)
+
+    def get_edizioni_brand_id(self):
+        params = self.env["ir.config_parameter"].sudo()
+        id = params.get_param("receipt.register.edizioni_brand_id")
+        if not id:
+            raise UserError("Non hai impostato il brand collegato a Multiplayer Edizioni")
         return int(id)
 
     def _create_subdivision(
@@ -96,7 +112,7 @@ class ReceiptRegister(models.Model):
             else:
                 # group by day and fee
                 for line in pick.move_lines:
-                    if check_sale_origin:
+                    if check_sale_origin and not pick.sale_id:
                         try:
                             origin = self.env["sale.order"].search([("name", "=", pick.origin)]).id
                         except Exception:
@@ -106,10 +122,11 @@ class ReceiptRegister(models.Model):
                                 [
                                     ("sale_line_id.order_id.id", "=", origin),
                                     ("product_id", "=", line.product_id.id),
-                                ]
+                                ],
+                                limit=1,
                             )
-                            if len(move) > 0:
-                                line = move[0]
+                            if move:
+                                line = move
 
                     tax = delivery_picks[date_done].get(line.product_id.taxes_id.name, False)
                     if not tax:
@@ -154,7 +171,7 @@ class ReceiptRegister(models.Model):
                     ] += pick.carrier_id.product_id.taxes_id.compute_all(carrier_price)["taxes"][0]["amount"]
 
                 # cash on delivery charges
-                cod_product_id = self._get_product_cod_id()
+                cod_product_id = self.get_product_cod_id()
                 origin = pick.sale_id
                 if check_sale_origin:
                     try:
@@ -260,8 +277,8 @@ class ReceiptRegister(models.Model):
         numberdays = monthrange(self.date_end.year, self.date_end.month)[1]
         numberdays = list(range(1, numberdays + 1))
 
-        delivery_picking_type_ids = self._get_delivery_picking_type_ids()
-        refund_picking_type_ids = self._get_refund_picking_type_ids()
+        delivery_picking_type_ids = self.get_delivery_picking_type_ids()
+        refund_picking_type_ids = self.get_refund_picking_type_ids()
 
         domain = [("state", "=", "done"), ("date_done", ">=", self.date_start), ("date_done", "<=", self.date_end)]
 
@@ -290,7 +307,7 @@ class ReceiptRegister(models.Model):
                 self.date_end,
                 check_sale_id=False,
                 check_sale_origin=True,
-                refund_delivery_cost=self._get_refund_delivery_cost(),
+                refund_delivery_cost=self.get_refund_delivery_cost(),
             )
             # refund_picks: sales and taxes divided by day
             self._create_sheet(tax_names, refund_sheet, refund_picks, numberdays)
@@ -309,10 +326,11 @@ class ReceiptRegisterPicking(models.Model):
     def get_picking_from_date(self, year, month):
         results = {"done": [], "refund": []}
 
-        tax_inc = self.env["account.tax"].search([("description", "=", "4v INC")])
-        out_type = self.env.ref("stock.picking_type_out").id
-        refund_type = self.env["stock.picking.type"].search([("name", "=", "Reso Rivendibile")]).id
-        scraped_type = self.env["stock.picking.type"].search([("name", "=", "Reso Difettati")]).id
+        tax_income_id = self.env["receipt.register"].get_tax_income_id()
+        tax_income_id = self.env["account.tax"].browse(tax_income_id)
+        delivery_picking_type_ids = self.env["receipt.register"].get_delivery_picking_type_ids()
+        refund_picking_type_ids = self.env["receipt.register"].get_refund_picking_type_ids()
+        edizioni_brand_id = self.env["receipt.register"].get_edizioni_brand_id()
 
         last = monthrange(year, month)
         date_from = datetime(year, month, 1)
@@ -322,7 +340,7 @@ class ReceiptRegisterPicking(models.Model):
             [
                 ("date_done", ">=", date_from),
                 ("date_done", "<=", date_to),
-                ("picking_type_id", "in", [out_type]),
+                ("picking_type_id", "in", delivery_picking_type_ids),
                 ("state", "=", "done"),
             ]
         )
@@ -349,13 +367,19 @@ class ReceiptRegisterPicking(models.Model):
                         "tax_id": line.sale_line_id.tax_id.name,
                         "edizioni": 0,
                     }
+                    if line.sale_line_id.product_id.product_brand_ept_id.id == edizioni_brand_id:
+                        tax_value = tax_income_id.compute_all(attr["total_price"])
+                        attr["edizioni"] += tax_value["total_included"] - tax_value["total_excluded"]
+                    attr["edizioni"] = round(attr["edizioni"], 2)
+                    attr["price_tax"] = round(attr["price_tax"], 2)
+                    attr["total_price"] = round(attr["total_price"], 2)
                     results["done"].append(attr)
 
         refunds = self.search(
             [
                 ("date_done", ">=", date_from),
                 ("date_done", "<=", date_to),
-                ("picking_type_id", "in", [refund_type, scraped_type]),
+                ("picking_type_id", "in", refund_picking_type_ids),
                 ("state", "=", "done"),
             ]
         )
@@ -385,10 +409,9 @@ class ReceiptRegisterPicking(models.Model):
                         tax = amount["total_included"] - amount["total_excluded"]
                         attr["price_tax"] = tax
                         attr["tax_id"] = pid.tax_id.name
-                        for attribute in pid.product_template_attribute_value_ids:
-                            if "Multiplayer.it Edizioni" in attribute.name:
-                                tax_value = tax_inc.compute_all(attr["total_price"])
-                                attr["edizioni"] += tax_value["total_included"] - tax_value["total_excluded"]
+                        if pid.product_id.product_brand_ept_id.id == edizioni_brand_id:
+                            tax_value = tax_income_id.compute_all(attr["total_price"])
+                            attr["edizioni"] += tax_value["total_included"] - tax_value["total_excluded"]
                 attr["edizioni"] = round(attr["edizioni"], 2)
                 attr["price_tax"] = round(attr["price_tax"], 2)
                 attr["total_price"] = round(attr["total_price"], 2)
@@ -405,7 +428,15 @@ class ReceiptRegisterConfig(models.TransientModel):
     )
     refund_picking_type_ids = fields.Many2many("stock.picking.type", "refund_picking", string="Resi")
     refund_delivery_cost = fields.Boolean(string="Contare le spese di spedizione nei resi")
-    product_cod_id = fields.Many2one("product.product", string="Prodotto contrassegno")
+    product_cod_id = fields.Many2one(
+        "product.product", string="Prodotto contrassegno", config_parameter="receipt.register.product_cod_id"
+    )
+    tax_income_id = fields.Many2one(
+        "account.tax", string="Imposta (debito)", config_parameter="receipt.register.tax_income_id"
+    )
+    edizioni_brand_id = fields.Many2one(
+        "product.brand.ept", string="Brand di Edizioni", config_parameter="receipt.register.edizioni_brand_id"
+    )
 
     @api.model
     def get_values(self):
@@ -413,7 +444,6 @@ class ReceiptRegisterConfig(models.TransientModel):
         icp = self.env["ir.config_parameter"].sudo()
         delivery_picking_type_ids = icp.get_param("receipt.register.delivery_picking_type_ids")
         refund_picking_type_ids = icp.get_param("receipt.register.refund_picking_type_ids")
-        product_cod_id = icp.get_param("receipt.register.product_cod_id")
         res.update(
             delivery_picking_type_ids=[(6, 0, literal_eval(delivery_picking_type_ids))]
             if delivery_picking_type_ids
@@ -421,7 +451,6 @@ class ReceiptRegisterConfig(models.TransientModel):
             refund_picking_type_ids=[(6, 0, literal_eval(refund_picking_type_ids))]
             if refund_picking_type_ids
             else False,
-            product_cod_id=int(product_cod_id) or False,
         )
         return res
 
@@ -431,5 +460,4 @@ class ReceiptRegisterConfig(models.TransientModel):
         icp = self.env["ir.config_parameter"].sudo()
         icp.set_param("receipt.register.delivery_picking_type_ids", self.delivery_picking_type_ids.ids)
         icp.set_param("receipt.register.refund_picking_type_ids", self.refund_picking_type_ids.ids)
-        icp.set_param("receipt.register.product_cod_id", self.product_cod_id.id)
         return res
