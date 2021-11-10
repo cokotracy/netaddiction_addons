@@ -4,9 +4,9 @@
     "description": """
     """,
     "author": "Netaddiction",
-    "website": "http://www.netaddiction.it",
-    "category": "Technical Settings",
-    "version": "1.0",
+    "website": "https://www.netaddiction.it",
+    "category": "Account",
+    "version": "14.0.0.0.0",
     "depends": [
         "account",
         "sale",
