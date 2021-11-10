@@ -68,7 +68,7 @@
   </t>
 
   <t t-name="table_vatregister_total">
-    <h3 style="padding:5px">SPEDITI</h3>
+    <h3 style="padding: 15px; height: 50px; background-color: #875A7B; color: white;">SPEDITI</h3>
     <table class="table table-bordered" id="vatregister">
       <thead>
         <tr class="oe_list_header_columns">
@@ -103,7 +103,7 @@
         </t>
       </tbody>
     </table>
-    <h3 style="padding:5px">RESI</h3>
+    <h3 style="padding: 15px; height: 50px; background-color: #875A7B; color: white;">RESI</h3>
     <table class="table table-bordered" id="vatregister_refund">
       <thead>
         <tr class="oe_list_header_columns">
@@ -141,7 +141,7 @@
   </t>
 
   <t t-name="table_vatregister_products">
-    <h3 style="padding:5px">SPEDITI</h3>
+    <h3 style="padding: 15px; height: 50px; background-color: #875A7B; color: white;">SPEDITI</h3>
     <table class="table table-bordered" id="vatregister">
       <thead>
         <tr class="oe_list_header_columns">
@@ -210,7 +210,7 @@
         </tr>
       </tbody>
     </table>
-    <h3 style="padding:5px">RESI</h3>
+    <h3 style="padding: 15px; height: 50px; background-color: #875A7B; color: white;">RESI</h3>
     <table class="table table-bordered" id="vatregister_refund">
       <thead>
         <tr class="oe_list_header_columns">
@@ -282,7 +282,7 @@
   </t>
 
   <t t-name="table_vatregister_days">
-    <h3 style="padding:5px">SPEDITI</h3>
+    <h3 style="padding: 15px; height: 50px; background-color: #875A7B; color: white;">SPEDITI</h3>
     <table class="table table-bordered" id="vatregister">
       <thead>
         <tr class="oe_list_header_columns">
@@ -341,7 +341,7 @@
         </tr>
       </tbody>
     </table>
-    <h3 style="padding:5px">RESI</h3>
+    <h3 style="padding: 15px; height: 50px; background-color: #875A7B; color: white;">RESI</h3>
     <table class="table table-bordered" id="vatregister_refund">
       <thead>
         <tr class="oe_list_header_columns">
@@ -403,7 +403,7 @@
   </t>
 
   <t t-name="table_vatregister_categ">
-    <h3 style="padding:5px">SPEDITI</h3>
+    <h3 style="padding: 15px; height: 50px; background-color: #875A7B; color: white;">SPEDITI</h3>
     <table class="table table-bordered" id="vatregister">
       <thead>
         <tr class="oe_list_header_columns">
@@ -462,7 +462,7 @@
         </tr>
       </tbody>
     </table>
-    <h3 style="padding:5px">RESI</h3>
+    <h3 style="padding: 15px; height: 50px; background-color: #875A7B; color: white;">RESI</h3>
     <table class="table table-bordered" id="vatregister_refund">
       <thead>
         <tr class="oe_list_header_columns">
