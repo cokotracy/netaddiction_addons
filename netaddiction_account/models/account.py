@@ -87,7 +87,7 @@ class AccountPaymentCashOnDelivery(models.TransientModel):
     return_text = fields.Text("Messaggio di ritorno")
     order_not_found = fields.Text("Ordini non trovati")
     payment_not_found = fields.Text("Pagamenti non trovati")
-    error = fields.Text("Errori generici")
+    generic_error = fields.Text("Errori generici")
 
     def check_csv_cod(self):
         if self.cod_file:
@@ -114,13 +114,13 @@ class AccountPaymentCashOnDelivery(models.TransientModel):
                     line = {k.strip(): v for (k, v) in line.items()}
                     self._check_line(line, key, money_key, is_brt, cod_journal.id, warning_list)
                 except Exception as e:
-                    warning_list["error"].append("Problema con questa linea %s per questo motivo %s" % (line, e))
+                    warning_list["error"].append(f"Problema con {line} | Motivazione: {e}")
 
             if warning_list:
-                self.return_text = "Non sono stati trovati pagamenti in contrassegno per i seguenti ordini nel file"
+                self.return_text = "Non sono stati trovati pagamenti in contrassegno per i seguenti ordini"
                 self.order_not_found = "<br/>".join(map(str, warning_list["order_not_found"]))
                 self.payment_not_found = "<br/>".join(map(str, warning_list["payment_not_found"]))
-                self.error = "<br/>".join(map(str, warning_list["error"]))
+                self.generic_error = "<br/>".join(map(str, warning_list["error"]))
             else:
                 self.return_text = "Registrazione avvenuta con successo!"
 
@@ -147,7 +147,9 @@ class AccountPaymentCashOnDelivery(models.TransientModel):
                         found = True
                         break
                 if not found:
-                    warning_list["payment_not_found"].append((order.name, line[key], amount_str))
+                    warning_list["payment_not_found"].append(
+                        f"Ordine: <b>{order.name}</b> | ID: <b>{line[key]}</b> | Importo: <b>{amount_str} €</b>"
+                    )
                 else:
                     all_paid = True
                     for p in order.transaction_ids:
@@ -155,4 +157,4 @@ class AccountPaymentCashOnDelivery(models.TransientModel):
                     if all_paid:
                         order.date_done = fields.Datetime.now()
             else:
-                warning_list["order_not_found"].append((None, line[key], None))
+                warning_list["order_not_found"].append(f"ID: <b>{line[key]}</b>")

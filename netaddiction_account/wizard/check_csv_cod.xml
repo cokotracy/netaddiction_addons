@@ -8,11 +8,12 @@
                 <group string="Caricamento file" name="cod_file">
                     <field name="cod_file" options="{'accepted_file_extensions': '.csv'}"/>
                 </group>
+                <hr/>
                 <group string="Risultato" name="result">
                     <field name="return_text" widget="html" readonly="1"/>
                     <field name="order_not_found" widget="html" readonly="1"/>
                     <field name="payment_not_found" widget="html" readonly="1"/>
-                    <field name="error" widget="html" readonly="1"/>
+                    <field name="generic_error" widget="html" readonly="1"/>
                 </group>
                 <footer>
                     <button string="Conferma" name="check_csv_cod" type="object" class="oe_highlight"/>
