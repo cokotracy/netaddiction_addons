@@ -112,7 +112,7 @@ class CustomPageOffer(Controller):
 
                 order = ""
                 if "order" in request.params:
-                    price = request.params["order"]
+                    order = request.params["order"]
 
                 query = "tag-filter=" + tag + "&&max-price=" + price + "&&order=" + order
 
@@ -229,7 +229,7 @@ class CustomPageOffer(Controller):
 
                 order = ""
                 if "order" in request.params:
-                    price = request.params["order"]
+                    order = request.params["order"]
 
                 query = "tag-filter=" + tag + "&&max-price=" + price + "&&order=" + order
 

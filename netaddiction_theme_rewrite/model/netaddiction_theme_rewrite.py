@@ -683,7 +683,7 @@ class CustomListPage(Controller):
 
             order = ""
             if "order" in request.params:
-                price = request.params["order"]
+                order = request.params["order"]
 
             query = "status-filter=" + status + "&&max-price=" + price + "&&order=" + order
 
