@@ -108,8 +108,8 @@
 		<div class="container d-flex custom_pager products_pager form-inline mt-3 mb-3 te_shop_pager">
 			<select onchange="setOrder(this.value);" id="order_filter_dk" class="d-none d-lg-block mr-2" style="width:150px;">
 				<option value="">ordina per..</option>
-				<!-- <option value="fix_price-desc">Prezzo crescente</option>
-				<option value="fix_price-asc">Prezzo decrescente</option> -->
+				<option value="list_price-desc">Prezzo crescente</option>
+				<option value="list_price-asc">Prezzo decrescente</option>
 				<option value="name-desc">Nome A-Z</option>
 				<option value="name-asc">Nome Z-A</option>
 			</select>

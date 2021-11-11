@@ -5,6 +5,7 @@
 
 from werkzeug.exceptions import Forbidden, NotFound
 from datetime import date, timedelta, datetime
+from odoo.addons.netaddiction_special_offers.controller.main import MAX_PRICE_RANGE
 from odoo.http import request, route, Controller
 from odoo import models, fields, tools, http, _
 from odoo.exceptions import AccessError, ValidationError
@@ -325,11 +326,11 @@ class WebsiteSaleCustom(WebsiteSale):
             for tag in tag_filter:
                 tag_list.append(int(tag))
 
-            tag_prod = request.env["product.template.tag"].sudo().search([("id", "in", tag_list)]).product_tmpl_ids
+            tag_prod = request.env["product.template.tag"].sudo().browse(tag_list).product_tmpl_ids
             search_product = search_product.sudo().filtered_domain([("id", "in", tag_prod.ids)])
 
         if max_price:
-            if int(max_price) < 950:
+            if int(max_price) < MAX_PRICE_RANGE:
                 search_product = search_product.sudo().filtered_domain(
                     [("product_variant_ids.price", "<=", float(max_price))]
                 )
@@ -642,7 +643,7 @@ class CustomListPage(Controller):
                 start_element = page_size * (int(kw.get("page")) - 1)
 
             if max_price:
-                if int(max_price) < 950:
+                if int(max_price) < MAX_PRICE_RANGE:
                     prod_list = prod_list.sudo().filtered_domain(
                         [("product_variant_ids.fix_price", "<=", float(max_price))]
                     )

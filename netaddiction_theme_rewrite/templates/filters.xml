@@ -263,16 +263,16 @@
 						</span>
 					</div>
                     <div id="order_list" class="dropdown-menu dropdown-menu-right" role="menu">
-                        <!-- <button onclick="setOrder('fix_price-desc');" role="menuitem" rel="noindex,nofollow" class="dropdown-item">
+                        <button onclick="setOrder('list_price-desc');" role="menuitem" rel="noindex,nofollow" class="dropdown-item">
                             <span>
                                 Prezzo di catalogo: crescente
                             </span>
                         </button>
-                        <button onclick="setOrder('fix_price-asc');" role="menuitem" rel="noindex,nofollow" class="dropdown-item">
+                        <button onclick="setOrder('list_price-asc');" role="menuitem" rel="noindex,nofollow" class="dropdown-item">
                             <span>
                                 Prezzo di catalogo: decrescente
                             </span>
-                        </button> -->
+                        </button>
                         <button onclick="setOrder('name-desc');" role="menuitem" rel="noindex,nofollow" class="dropdown-item">
                             <span>
                                 Nome: da A a Z

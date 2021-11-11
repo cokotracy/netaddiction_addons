@@ -4,6 +4,7 @@ from datetime import date, datetime
 import ast
 from operator import itemgetter
 
+MAX_PRICE_RANGE = 950
 
 class CustomPageOffer(Controller):
     @http.route(
@@ -61,12 +62,12 @@ class CustomPageOffer(Controller):
                         tag_list.append(int(tag))
 
                     tag_prod = (
-                        request.env["product.template.tag"].sudo().search([("id", "in", tag_list)]).product_tmpl_ids
+                        request.env["product.template.tag"].sudo().browse(tag_list).product_tmpl_ids
                     )
                     prod_list = prod_list.sudo().filtered_domain([("id", "in", tag_prod.ids)])
 
                 if max_price:
-                    if int(max_price) < 950:
+                    if int(max_price) < MAX_PRICE_RANGE:
                         prod_list = prod_list.sudo().filtered_domain(
                             [("product_variant_ids.fix_price", "<=", float(max_price))]
                         )
@@ -178,12 +179,12 @@ class CustomPageOffer(Controller):
                         tag_list.append(int(tag))
 
                     tag_prod = (
-                        request.env["product.template.tag"].sudo().search([("id", "in", tag_list)]).product_tmpl_ids
+                        request.env["product.template.tag"].sudo().browse(tag_list).product_tmpl_ids
                     )
                     prod_list = prod_list.sudo().filtered_domain([("id", "in", tag_prod.ids)])
 
                 if max_price:
-                    if int(max_price) < 950:
+                    if int(max_price) < MAX_PRICE_RANGE:
                         prod_list = prod_list.sudo().filtered_domain(
                             [("product_variant_ids.fix_price", "<=", float(max_price))]
                         )

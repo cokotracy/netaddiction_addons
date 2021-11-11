@@ -23,6 +23,7 @@
         "website_seo_pro",
         "website_sale_delivery",
         "payment",
+        "netaddiction_special_offers",
     ],
     "data": [
         "templates/assets.xml",
