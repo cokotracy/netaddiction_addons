@@ -13,7 +13,6 @@
     ],
     'data': [
         'views/res_partner.xml',
-        # 'views/account_views.xml',
         'security/ir.model.access.csv',
         'wizard/check_csv_cod.xml',
     ],
