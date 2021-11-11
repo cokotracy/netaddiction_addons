@@ -79,7 +79,7 @@ class ReceiptRegister(models.Model):
     ):
         delivery_picks = {}
         tax_names = []
-        multidelivery = False
+        multidelivery = True
 
         for i in numberdays:
             delivery_picks[month_date.replace(day=i).strftime("%Y-%m-%d")] = {}
@@ -348,26 +348,26 @@ class ReceiptRegisterPicking(models.Model):
         for pick in pickings:
             if pick.sale_id:
                 for line in pick.move_lines:
+                    sale_line_id = line.sale_line_id
+                    product_id = sale_line_id.product_id
                     attr = {
-                        "product_id": line.sale_line_id.product_id.with_context(
-                            {"lang": "it_IT", "tz": "Europe/Rome"}
-                        ).display_name,
-                        "categ": line.sale_line_id.product_id.categ_id.name,
-                        "pid": line.sale_line_id.product_id.id,
-                        "barcode": line.sale_line_id.product_id.barcode,
-                        "qty": line.sale_line_id.product_uom_qty,
-                        "total_price": line.sale_line_id.price_total,
-                        "price_tax": line.sale_line_id.price_tax,
+                        "product_id": product_id.with_context({"lang": "it_IT", "tz": "Europe/Rome"}).display_name,
+                        "categ": product_id.categ_id.name,
+                        "pid": product_id.id,
+                        "barcode": product_id.barcode,
+                        "qty": sale_line_id.product_uom_qty,
+                        "total_price": sale_line_id.price_total,
+                        "price_tax": sale_line_id.price_tax,
                         "picking_id": pick.name,
                         "date_done": pick.date_done,
                         "payment_method": pick.sale_order_payment_method.name,
                         "state": pick.state,
                         "picking_type_id": pick.picking_type_id.name,
                         "sale_id": pick.origin,
-                        "tax_id": line.sale_line_id.tax_id.name,
+                        "tax_id": sale_line_id.tax_id.name,
                         "edizioni": 0,
                     }
-                    if line.sale_line_id.product_id.product_brand_ept_id.id == edizioni_brand_id:
+                    if product_id.product_brand_ept_id.id == edizioni_brand_id:
                         tax_value = tax_income_id.compute_all(attr["total_price"])
                         attr["edizioni"] += tax_value["total_included"] - tax_value["total_excluded"]
                     attr["edizioni"] = round(attr["edizioni"], 2)
@@ -385,14 +385,14 @@ class ReceiptRegisterPicking(models.Model):
         )
         for pick in refunds:
             for line in pick.move_lines:
+                sale_line_id = line.sale_line_id
+                product_id = sale_line_id.product_id
                 attr = {
-                    "product_id": line.sale_line_id.product_id.with_context(
-                        {"lang": "it_IT", "tz": "Europe/Rome"}
-                    ).display_name,
-                    "categ": line.sale_line_id.product_id.categ_id.name,
-                    "pid": line.sale_line_id.product_id.id,
-                    "barcode": line.sale_line_id.product_id.barcode,
-                    "qty": line.sale_line_id.product_uom_qty,
+                    "product_id": product_id.with_context({"lang": "it_IT", "tz": "Europe/Rome"}).display_name,
+                    "categ": product_id.categ_id.name,
+                    "pid": product_id.id,
+                    "barcode": product_id.barcode,
+                    "qty": sale_line_id.product_uom_qty,
                     "picking_id": pick.name,
                     "date_done": pick.date_done,
                     "payment_method": pick.sale_order_payment_method.name,
@@ -404,7 +404,7 @@ class ReceiptRegisterPicking(models.Model):
                 order = self.env["sale.order"].search([("name", "=", pick.origin)])
                 for pid in order.order_line:
                     if pid.product_id.id == line.product_id.id:
-                        attr["total_price"] = pid.price_unit * line.sale_line_id.product_uom_qty
+                        attr["total_price"] = pid.price_unit * sale_line_id.product_uom_qty
                         amount = pid.product_id.taxes_id.compute_all(attr["total_price"])
                         tax = amount["total_included"] - amount["total_excluded"]
                         attr["price_tax"] = tax

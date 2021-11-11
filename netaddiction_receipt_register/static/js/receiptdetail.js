@@ -248,7 +248,7 @@ odoo.define('netaddiction_receipt_register.receiptdetail', function (require) {
         total_price = total_price + parseFloat(value.total_price);
         price_tax = price_tax + parseFloat(value.price_tax);
         edizioni = edizioni + parseFloat(value.edizioni);
-        var day = parseDate(value.date_done)
+        var day = parseInt(parseDate(value.date_done))
         if (day in picks['done']) {
           picks['done'][day]['qty'] = picks['done'][day]['qty'] + parseInt(value.qty)
           picks['done'][day]['total_price'] = parseFloat(picks['done'][day]['total_price']) + parseFloat(value.total_price)
@@ -270,9 +270,15 @@ odoo.define('netaddiction_receipt_register.receiptdetail', function (require) {
         picks['done'][day]['price_tax'] = parseFloat(picks['done'][day]['price_tax']).toFixed(2)
         picks['done'][day]['edizioni'] = parseFloat(picks['done'][day]['edizioni']).toFixed(2)
       });
-      this.total_price = total_price;
-      this.price_tax = price_tax;
-      this.edizioni = edizioni;
+
+      // Sort picks 'done' by day
+      picks['done'] = Object.keys(picks['done']).sort().reduce((acc, key) => ({
+        ...acc, [key]: picks['done'][key]
+      }), {})
+
+      this.total_price = total_price.toFixed(2);
+      this.price_tax = price_tax.toFixed(2);
+      this.edizioni = edizioni.toFixed(2);
 
       total_price = 0
       price_tax = 0
@@ -282,7 +288,7 @@ odoo.define('netaddiction_receipt_register.receiptdetail', function (require) {
         total_price = total_price + parseFloat(value.total_price);
         price_tax = price_tax + parseFloat(value.price_tax);
         edizioni = edizioni + parseFloat(value.edizioni);
-        var day = parseDate(value.date_done)
+        var day = parseInt(parseDate(value.date_done))
         if (day in picks['refund']) {
           picks['refund'][day]['qty'] = picks['refund'][day]['qty'] + parseInt(value.qty)
           picks['refund'][day]['total_price'] = parseFloat(picks['refund'][day]['total_price']) + parseFloat(value.total_price)
@@ -303,12 +309,17 @@ odoo.define('netaddiction_receipt_register.receiptdetail', function (require) {
         picks['refund'][day]['total_price'] = parseFloat(picks['refund'][day]['total_price']).toFixed(2)
         picks['refund'][day]['price_tax'] = parseFloat(picks['refund'][day]['price_tax']).toFixed(2)
         picks['refund'][day]['edizioni'] = parseFloat(picks['refund'][day]['edizioni']).toFixed(2)
-
-
       });
-      this.refund_total_price = total_price;
-      this.refund_price_tax = price_tax;
-      this.refund_edizioni = edizioni;
+
+      // Sort picks 'refund' by day
+      picks['refund'] = Object.keys(picks['refund']).sort().reduce((acc, key) => ({
+        ...acc, [key]: picks['refund'][key]
+      }), {})
+
+      this.refund_total_price = total_price.toFixed(2);
+      this.refund_price_tax = price_tax.toFixed(2);
+      this.refund_edizioni = edizioni.toFixed(2);
+
     }
 
   });
