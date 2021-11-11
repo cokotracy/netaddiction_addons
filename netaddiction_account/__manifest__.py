@@ -3,7 +3,7 @@
 
 {
     'name': 'Netaddiction Account',
-    'version': '14.0.1.0.0',
+    'version': '14.0.1.1.0',
     'category': 'Account',
     'author': 'Openforce',
     'license': 'LGPL-3',
@@ -12,7 +12,8 @@
         'l10n_it_fiscalcode',
     ],
     'data': [
-         'views/res_partner.xml',
-#        'views/account_views.xml',
+        'views/res_partner.xml',
+        'security/ir.model.access.csv',
+        'wizard/check_csv_cod.xml',
     ],
 }

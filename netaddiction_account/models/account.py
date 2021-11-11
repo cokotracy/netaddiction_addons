@@ -9,54 +9,41 @@ class AccountInvoice(models.Model):
 
     _inherit = "account.move"
 
-    create_credit_note = fields.Boolean(
-        'Crea una nota di credito'
-    )
+    create_credit_note = fields.Boolean("Crea una nota di credito")
 
-    is_customer_invoice = fields.Boolean(
-        string="Invoice"
-    )
+    is_customer_invoice = fields.Boolean(string="Invoice")
 
-    customer_number_identifier = fields.Char(
-        'Customer Number identifier',
-        compute='_get_customer_number_identifier'
-    )
+    customer_number_identifier = fields.Char("Customer Number identifier", compute="_get_customer_number_identifier")
 
     @api.model
     def create(self, values):
-        create_credit_note = values.get('create_credit_note', False)
+        create_credit_note = values.get("create_credit_note", False)
         if create_credit_note:
-            values['type'] = 'in_refund'
+            values["type"] = "in_refund"
         return super().create(values)
 
     def write(self, values):
-        is_customer_invoice = values.get('is_customer_invoice', False)
+        is_customer_invoice = values.get("is_customer_invoice", False)
         if not is_customer_invoice:
             return super().write(values)
         for invoice in self:
             if not (invoice.partner_id.fiscalcode or invoice.partner_id.vat):
-                raise UserError(
-                    'Define VAT or Fiscalcode for customer {name}'.format(
-                        name=self.partner_id.name))
+                raise UserError("Define VAT or Fiscalcode for customer {name}".format(name=self.partner_id.name))
         return super().write(values)
 
-    @api.depends('is_customer_invoice')
+    @api.depends("is_customer_invoice")
     def _get_customer_number_identifier(self):
         for invoice in self:
-            invoice.customer_number_identifier = '.1' \
-                if invoice.is_customer_invoice else ''
+            invoice.customer_number_identifier = ".1" if invoice.is_customer_invoice else ""
 
     def action_move_create(self):
         res = super().action_move_create()
         for invoice in self:
-            if invoice.is_customer_invoice and \
-                    not invoice.move_name.endswith('.1'):
-                complete_number = '{number}.1'.format(
-                    number=invoice.move_name)
+            if invoice.is_customer_invoice and not invoice.move_name.endswith(".1"):
+                complete_number = "{number}.1".format(number=invoice.move_name)
                 invoice.move_name = complete_number
                 invoice.move_id.name = complete_number
-            elif not invoice.is_customer_invoice and \
-                    invoice.move_name.endswith('.1'):
+            elif not invoice.is_customer_invoice and invoice.move_name.endswith(".1"):
                 complete_number = invoice.move_name[:-2]
                 invoice.move_name = complete_number
                 invoice.move_id.name = complete_number
@@ -67,32 +54,18 @@ class AccountInvoiceLine(models.Model):
 
     _inherit = "account.move.line"
 
-    invoice_date = fields.Date(
-        string="Invoice Date",
-        related="move_id.invoice_date",
-        store=True
-    )
+    invoice_date = fields.Date(string="Invoice Date", related="move_id.invoice_date", store=True)
 
     price_compute_tax = fields.Float(
-        string="Price Total",
-        store=True,
-        compute="_compute_tax_price",
-        digits='Product Price'
+        string="Price Total", store=True, compute="_compute_tax_price", digits="Product Price"
     )
 
-    tax_value = fields.Float(
-        string="VAT Amount",
-        store=True,
-        compute="_compute_tax_price",
-        digits='Product Price'
-    )
+    tax_value = fields.Float(string="VAT Amount", store=True, compute="_compute_tax_price", digits="Product Price")
 
-    @api.depends('product_id', 'price_unit', 'tax_ids',
-                 'quantity')
+    @api.depends("product_id", "price_unit", "tax_ids", "quantity")
     def _compute_tax_price(self):
         for line in self:
-            result = line.tax_ids.compute_all(
-                line.price_unit * line.quantity)
-            line.tax_value = \
-                result['total_included'] - result['total_excluded']
-            line.price_compute_tax = result['total_included']
+            result = line.tax_ids.compute_all(line.price_unit * line.quantity)
+            line.tax_value = result["total_included"] - result["total_excluded"]
+            line.price_compute_tax = result["total_included"]
+

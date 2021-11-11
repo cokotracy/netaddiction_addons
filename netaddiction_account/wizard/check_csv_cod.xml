@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <record id="check_csv_cod" model="ir.ui.view">
+        <field name="name">check.csv.cod.wizard</field>
+        <field name="model">netaddiction.account.payment.cod</field>
+        <field name="arch" type="xml">
+            <form>
+                <group string="Caricamento file" name="cod_file">
+                    <field name="cod_file" options="{'accepted_file_extensions': '.csv'}"/>
+                </group>
+                <hr/>
+                <group string="Risultato" name="result">
+                    <field name="return_text" widget="html" readonly="1"/>
+                    <field name="order_not_found" widget="html" readonly="1"/>
+                    <field name="payment_not_found" widget="html" readonly="1"/>
+                    <field name="generic_error" widget="html" readonly="1"/>
+                </group>
+                <footer>
+                    <button string="Conferma" name="check_csv_cod" type="object" class="oe_highlight"/>
+                    <button string="Annulla" class="btn btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+    
+    <record id="check_csv_cod_action" model="ir.actions.act_window">
+        <field name="name">Verifica contrassegni</field>
+        <field name="res_model">netaddiction.account.payment.cod</field>
+        <field name="view_mode">form</field>
+        <field name="target">inline</field>
+    </record>
+
+    <menuitem id="menu_check_csv_cod"
+        name="Registra Contrassegni"
+        parent="account.menu_finance_entries_actions"
+        action= "check_csv_cod_action"
+    />
+
+</odoo>

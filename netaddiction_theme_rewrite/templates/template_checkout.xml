@@ -233,6 +233,12 @@
                     <div class="col-md-10 text-center mx-auto">
                         <img class="img img-responsive col-xs-12 w-100 w-md-50 mt-3 mb-3" src="/netaddiction_theme_rewrite/static/src/img/empty-cart.png"  alt="Odoo CMS - a big picture" style="max-width:100%"/>
                         <h2>Il tuo carrello è vuoto!</h2>
+						<t t-if="request.env.user.id == request.env.ref('base.public_user').id">
+							<a href="/web/login"><strong class="text-primary">Accedi per recuperare il tuo carrello!</strong></a>
+							<br/>
+							<small>oppure</small>
+							<br/>
+						</t>
                         <a role="button" class="button-rounded mt-3 d-inline-block" href="/shop">
                             Torna allo shop
                         </a>

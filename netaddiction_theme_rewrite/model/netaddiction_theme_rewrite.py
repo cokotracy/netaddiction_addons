@@ -5,6 +5,7 @@
 
 from werkzeug.exceptions import Forbidden, NotFound
 from datetime import date, timedelta, datetime
+from odoo.addons.netaddiction_special_offers.controller.main import MAX_PRICE_RANGE
 from odoo.http import request, route, Controller
 from odoo import models, fields, tools, http, _
 from odoo.exceptions import AccessError, ValidationError
@@ -17,6 +18,7 @@ from odoo.addons.website.controllers.main import QueryURL
 from odoo.addons.http_routing.models.ir_http import slug
 from odoo.addons.sale.controllers.portal import CustomerPortal
 from odoo.addons.payment.controllers.portal import WebsitePayment
+from operator import itemgetter
 
 import ast
 from odoo.osv import expression
@@ -195,6 +197,7 @@ class WebsiteSaleCustom(WebsiteSale):
         status_filter = request.params.get("status-filter")
         search = request.params.get("search")
         tag_filter = request.params.get("tag-filter")
+        max_price = request.params.get("max-price")
 
         Category = request.env["product.public.category"]
 
@@ -298,9 +301,6 @@ class WebsiteSaleCustom(WebsiteSale):
 
         Product = request.env["product.template"].with_context(bin_size=True)
 
-        if tag_filter:
-            tag_filter = tag_filter.split(",")
-
         if request.website.isB2B and not status_filter:
             domain = expression.AND([[("product_variant_ids.qty_available_now", ">", 0)], domain])
         elif not status_filter:
@@ -314,9 +314,30 @@ class WebsiteSaleCustom(WebsiteSale):
         if status_filter:
             status_filter = status_filter.split(",")
             domain = self._filters_pre_products(filters=status_filter, domain=domain)
+
         search_product = Product.search(domain, order=self._custom_get_search_order(post))
+
         if status_filter:
             search_product = self._filters_post_products(filters=status_filter, products=search_product)
+
+        if tag_filter:
+            tag_list = []
+            tag_filter = tag_filter.split(",")
+            for tag in tag_filter:
+                tag_list.append(int(tag))
+
+            tag_prod = request.env["product.template.tag"].sudo().browse(tag_list).product_tmpl_ids
+            search_product = search_product.sudo().filtered_domain([("id", "in", tag_prod.ids)])
+
+        if max_price:
+            if int(max_price) < MAX_PRICE_RANGE:
+                search_product = search_product.sudo().filtered_domain(
+                    [("product_variant_ids.price", "<=", float(max_price))]
+                )
+            else:
+                search_product = search_product.sudo().filtered_domain(
+                    [("product_variant_ids.price", ">=", float(max_price))]
+                )
 
         website_domain = request.website.website_domain()
         categs_domain = [("parent_id", "=", False)] + website_domain
@@ -353,8 +374,9 @@ class WebsiteSaleCustom(WebsiteSale):
 
         tableComp = TableCompute()
         bins = tableComp.process(products, ppg, ppr)
-
+        tags_list = request.env["product.template.tag"].sudo().search([("product_tmpl_ids", "in", search_product.ids)])
         values = {
+            "tags": tags_list,
             "preorder_list": preorder_list,
             "newest_list": newest_list,
             "bestseller_list": bestseller_list,
@@ -572,10 +594,13 @@ class CustomShipping(Controller):
 
 
 class CustomListPage(Controller):
-    @route(["/tag/<string:tag_name>"], type="http", auth="public", website=True)
+    @route(['/tag/<model("product.template.tag"):tag_name>'], type="http", auth="public", website=True)
     def controllerTag(self, tag_name, **kw):
         current_website = request.website
         current_url = request.httprequest.full_path
+        max_price = request.params.get("max-price")
+        status_filter = request.params.get("status-filter")
+        order = request.params.get("order")
 
         if not "/web/login" in current_url:
             if current_website.isB2B and request.env.user.id == request.env.ref("base.public_user").id:
@@ -589,11 +614,9 @@ class CustomListPage(Controller):
                     request.session.logout()
                     return request.redirect("https://multiplayer.com")
 
-        status_filter = request.params.get("status-filter")
-        tag = request.env["product.template.tag"].sudo().search([("name", "=", tag_name)], limit=1)
-        domain = [("tag_ids", "=", tag.id)]
+        domain = []
 
-        if not tag.id:
+        if not tag_name.id:
             page = request.website.is_publisher() and "website.page_404" or "http_routing.404"
             return request.render(page, {})
 
@@ -613,22 +636,59 @@ class CustomListPage(Controller):
             start_element = 0
             current_page = 0
 
+            prod_list = tag_name.product_tmpl_ids.filtered_domain(domain)
+
             if kw.get("page"):
                 current_page = int(kw.get("page")) - 1
                 start_element = page_size * (int(kw.get("page")) - 1)
 
-            product_count = request.env["product.template"].sudo().search_count(domain)
+            if max_price:
+                if int(max_price) < MAX_PRICE_RANGE:
+                    prod_list = prod_list.sudo().filtered_domain(
+                        [("product_variant_ids.fix_price", "<=", float(max_price))]
+                    )
+                else:
+                    prod_list = prod_list.sudo().filtered_domain(
+                        [("product_variant_ids.fix_price", ">=", float(max_price))]
+                    )
 
-            product_list_id = (
-                request.env["product.template"].sudo().search(domain, limit=page_size, offset=start_element)
-            )
+            if order:
+                order = order.split("-")
+                rev = False
+                if order[1] == "asc":
+                    rev = True
+
+                prod_list = sorted(prod_list, key=itemgetter(order[0]), reverse=rev)
+
+            product_count = len(prod_list)
+            end = page_size * (current_page + 1)
+            if end > product_count:
+                end = product_count
+
+            product_list_id = prod_list[start_element:end]
 
             page_number = product_count / page_size
 
             if page_number > int(page_number):
                 page_number = page_number + 1
 
+            query = ""
+            status = ""
+            if "status-filter" in request.params:
+                status = request.params["status-filter"]
+
+            price = ""
+            if "max-price" in request.params:
+                price = request.params["max-price"]
+
+            order = ""
+            if "order" in request.params:
+                order = request.params["order"]
+
+            query = "status-filter=" + status + "&&max-price=" + price + "&&order=" + order
+
             values = {
+                "query": query,
                 "tag_name": tag_name,
                 "page_number": int(page_number),
                 "current_page": current_page,

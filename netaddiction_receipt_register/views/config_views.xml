@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="receipt_register_config_inherit_view" model="ir.ui.view">
+        <field name="name">res.config.settings.view.form.inherit.receipt.register</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="account.res_config_settings_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[@id='account_reports_settings']" position="after">
+                <h2>Registro Corrispettivi</h2>
+                <div class="row mt16 o_settings_container" id="receipt_register">
+                    <div class="col-12 o_setting_box" groups="account.group_account_user">
+                        <label for="delivery_picking_type_ids"/>
+                        <field name="delivery_picking_type_ids"/>
+                        <label for="refund_picking_type_ids"/>
+                        <field name="refund_picking_type_ids"/>
+                    </div>
+                    <div class="col-12 col-lg-6 o_setting_box" groups="account.group_account_user">
+                        <div class="o_setting_left_pane">
+                            <field name="refund_delivery_cost"/>
+                        </div>
+                        <div class="o_setting_right_pane">
+                            <label for="refund_delivery_cost"/>
+                        </div>
+                    </div>
+                    <div class="col-12 col-lg-6 o_setting_box" groups="account.group_account_user">
+                        <div class="o_setting_left_pane">
+                        </div>
+                        <div class="o_setting_right_pane">
+                            <label for="product_cod_id"/>
+                            <field name="product_cod_id"/>
+                        </div>
+                    </div>
+                    <div class="col-12 col-lg-6 o_setting_box" groups="account.group_account_user">
+                        <div class="o_setting_left_pane">
+                        </div>
+                        <div class="o_setting_right_pane">
+                            <label for="tax_income_id"/>
+                            <field name="tax_income_id"/>
+                        </div>
+                    </div>
+                    <div class="col-12 col-lg-6 o_setting_box" groups="account.group_account_user">
+                        <div class="o_setting_left_pane">
+                        </div>
+                        <div class="o_setting_right_pane">
+                            <label for="edizioni_brand_id"/>
+                            <field name="edizioni_brand_id"/>
+                        </div>
+                    </div>
+                </div>
+            </xpath>
+        </field>
+    </record>    
+</odoo>
