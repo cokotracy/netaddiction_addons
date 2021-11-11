@@ -1,0 +1,3 @@
+"id","name","model_id:id","group_id:id","perm_read","perm_write","perm_create","perm_unlink"
+access_check_csv_cod_wizard,netaddiction_account.check.csv.cod.wizard,model_netaddiction_account_payment_cod,base.group_user,1,1,1,1
+
