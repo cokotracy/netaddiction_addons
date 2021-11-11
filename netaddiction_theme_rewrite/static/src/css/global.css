@@ -672,6 +672,17 @@ header nav.navbar .header_bottom #top_menu_collapse.header_menu_slide{
 .custom_filter_container{
     position:relative;
 }
+
+@media (max-width: 767.98px){
+    .oe_website_sale .td-img {
+        display: block !important;
+    }
+    .oe_website_sale .td-product_name > div{
+        visibility: hidden;
+        height:0;
+    }
+}
+
 @keyframes slide-in-left {
     0% {
       -webkit-transform: translateX(-1000px);
