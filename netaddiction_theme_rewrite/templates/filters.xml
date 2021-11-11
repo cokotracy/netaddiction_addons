@@ -1,0 +1,353 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+	<template id="custom_filters">
+		<strong class="d-block">
+			Filtra per:
+		</strong>
+		<hr class="my-2" />
+		<div class="border-bottom">
+			<t t-if="price">
+				<button onclick="closePanel('collapse_price');" class="d-block px-3 mb-2 text-primary position-relative w-100 border" style="background-color:#fff;">
+					Prezzo
+					<i class="fa fa-sort-desc position-absolute" style="right:10px; top:50%; transform:translateY(-65%) !important;">
+					</i>
+				</button>
+				<div t-attf-class="collapse mb-3 {{'show' if not status else ''}}" id="collapse_price" style="max-height:400px; overflow:auto;">
+					<div class="card card-body pb-0">
+						<div class="range-input">
+							<div class="d-flex justify-content-center mb-3" style="align-items:center;">
+								<small class="mx-2">
+									0
+								</small>
+								<input id="price_range" class="w-100" type="range" min="0" max="1000" value="0" step="1" />
+								<small class="mx-2">
+									950+
+								</small>
+							</div>
+							<div class="mx-auto d-flex justify-content-center" style="align-items:center;">
+								<span class="mr-2 font-weigt-bold mb-0 h4">
+									max
+								</span>
+								<input type="number" id="range_value" style="width:80px; float:left;" value="0" />
+								<span class="ml-2 font-weigt-bold h3 mb-0">
+									€
+								</span>
+							</div>
+						</div>
+					</div>
+				</div>
+			</t>
+			<t t-if="status">
+				<button onclick="closePanel('collapse_status');" class="d-block px-3 mb-2 text-primary position-relative w-100 border" style="background-color:#fff;">
+					Stato
+					<i class="fa fa-sort-desc position-absolute" style="right:10px; top:50%; transform:translateY(-65%) !important;">
+					</i>
+				</button>
+				<div class="collapse show" id="collapse_status" style="max-height:400px; overflow:auto;">
+					<div class="card card-body pb-0" id="status_filter_list">
+						<div class="d-flex mb-2">
+							<input onclick="removeCombo('stock')" style="margin-top:5px;" type="checkbox" id="status_stock" value="stock" />
+							<label class="ml-1" for="status_stock">
+								Disponibile
+							</label>
+						</div>
+						<div class="d-flex mb-2">
+							<input onclick="removeCombo('preorder')" style="margin-top:5px;" type="checkbox" id="status_preorder" value="preorder" />
+							<label class="ml-1" for="status_preorder">
+								Prenotazione
+							</label>
+						</div>
+						<div class="d-flex mb-2">
+							<input onclick="removeCombo('new')" style="margin-top:5px;" type="checkbox" id="status_new" value="new" />
+							<label class="ml-1" for="status_new">
+								Novità
+							</label>
+						</div>
+						<t t-if="full_status">
+							<div class="d-flex mb-2">
+								<input onclick="comboFilter('order')" style="margin-top:5px;" type="checkbox" id="status_order" value="order" />
+								<label class="ml-1" for="status_order">
+									Spedito in 72 ore
+								</label>
+							</div>
+							<div class="d-flex mb-2">
+								<input onclick="comboFilter('unavailable')" style="margin-top:5px;" type="checkbox" id="status_unavailable" value="unavailable" />
+								<label class="ml-1" for="status_unavailable">
+									Esaurito
+								</label>
+							</div>
+						</t>
+					</div>
+				</div>
+			</t>
+			<t t-if="tag">
+				<button onclick="closePanel('collapse_tag');" class="d-block px-3 text-primary position-relative w-100 border" style="background-color:#fff;">
+					Tag
+					<i class="fa fa-sort-desc position-absolute" style="right:10px; top:50%; transform:translateY(-65%) !important;">
+					</i>
+				</button>
+				<div class="collapse mb-3" id="collapse_tag" style="max-height:250px; overflow:auto;">
+					<div class="card card-body pb-0" id="tag_filter_list">
+						<t t-foreach="tags" t-as="tag">
+							<div class="d-flex mb-2">
+								<input style="margin-top:5px;" type="checkbox" t-attf-id="tag_{{tag.id}}" t-attf-value="{{tag.id}}" />
+								<label style="font-size:12px;" class="ml-1" t-attf-for="tag_{{tag.id}}">
+									<t t-esc="tag.name" />
+								</label>
+							</div>
+						</t>
+					</div>
+				</div>
+			</t>
+			<div class="d-flex">
+				<button onclick="checkFilter()" class="btn btn-primary mt-3 btn-md a-submit d-block d-sm-inline-block w-50">
+					Filtra
+				</button>
+				<button onclick="resetFilter()" class="btn btn-secondary mt-3 btn-md a-submit d-block d-sm-inline-block w-50">
+					Reset
+				</button>
+			</div>
+		</div>
+		<script type="text/javascript">
+			document.addEventListener("DOMContentLoaded", function() {
+                var urlParams = new URLSearchParams(window.location.search);
+                var myParam = urlParams.get('status-filter');
+                var myTag = urlParams.get('tag-filter');
+                var myPrice = urlParams.get('max-price');
+                var myOrder = urlParams.get('order');
+
+                if(myParam != null){
+                    var selected = myParam.split(',')
+                    if(selected.length &gt; 0){
+                        document.getElementById('collapse_status').classList.add('show');
+                    }
+                    selected.forEach(element =>{
+                        document.querySelector('#status_' + element).checked = true;
+                    });
+			    }
+                if(myTag != null){
+                    var selected = myTag.split(',')
+                    if(selected.length &gt; 0){
+                        document.getElementById('collapse_tag').classList.add('show');
+                    }
+                    selected.forEach(element =>{
+                        document.querySelector('#tag_' + element).checked = true;
+                    });
+			    }
+                if(myPrice != null){
+                    document.querySelector('#price_range').value =  myPrice;
+                    document.querySelector("#range_value").value = myPrice;
+                    document.getElementById('collapse_price').classList.add('show');
+                }
+
+                if(myOrder != null){
+                    document.querySelector('#order_filter_dk').value = myOrder;
+                }
+                
+                document.querySelector('#price_range').addEventListener("change", function() {
+                    document.querySelector("#range_value").value = document.querySelector('#price_range').value;
+                });
+                document.querySelector('#range_value').addEventListener("change", function() {
+                    document.querySelector("#price_range").value = document.querySelector('#range_value').value;
+                });
+			});
+			
+			function closePanel(val){
+                if(val == 'collapse_price'){
+                    if(document.getElementById('collapse_tag'))
+                        document.getElementById('collapse_tag').classList.remove('show');
+                    if(document.getElementById('collapse_status'))
+                        document.getElementById('collapse_status').classList.remove('show');
+                }
+                if(val == 'collapse_status'){
+                    if(document.getElementById('collapse_tag'))
+                        document.getElementById('collapse_tag').classList.remove('show');
+                    if(document.getElementById('collapse_price'))
+                        document.getElementById('collapse_price').classList.remove('show');
+                }
+                if(val == 'collapse_tag'){
+                    if(document.getElementById('collapse_price'))
+                        document.getElementById('collapse_price').classList.remove('show');
+                    if(document.getElementById('collapse_status'))
+                        document.getElementById('collapse_status').classList.remove('show');
+			    }
+			
+			    document.getElementById(val).classList.add('show');
+			}
+			
+			function removeCombo(val){
+                var statusSelected = document.querySelector('#status_' + val);
+                if(statusSelected.checked){
+                    if(document.querySelector('#status_' + 'order'))
+                        document.querySelector('#status_' + 'order').checked = false;
+                    if(document.querySelector('#status_' + 'unavailable'))
+                        document.querySelector('#status_' + 'unavailable').checked = false;
+                }
+			}
+			
+			function comboFilter(val){
+                var allFilter = document.querySelectorAll('#status_filter_list input');
+                allFilter.forEach(element =>{
+                    if(element.id == ('status_' + val))
+                        element.checked = true;
+                    else
+                        element.checked = false;
+                });
+			}
+			
+			function checkFilter(){
+			    var url = new URL(window.location.href);
+			
+			    var status_filter = ''
+			    var status_list = document.querySelectorAll('#status_filter_list > div > input:checked');
+                status_list.forEach(element =>{
+                    status_filter += element.value + ','
+                });
+                url.searchParams.delete('status-filter')
+                if(status_filter != ''){
+                    status_filter = status_filter.slice(0, -1);
+                    url.searchParams.append('status-filter', status_filter);
+                }
+			
+                if(document.querySelector('#collapse_tag')){
+                    var tag_filter = ''
+                    var tag_list = document.querySelectorAll('#collapse_tag > div input:checked');
+                    tag_list.forEach(element =>{
+                        tag_filter += element.value + ','
+                    });
+                    url.searchParams.delete('tag-filter')
+                    if(tag_filter != ''){
+                        tag_filter = tag_filter.slice(0, -1);
+                        url.searchParams.append('tag-filter', tag_filter);
+                    }
+			    }
+			
+                url.searchParams.delete('max-price')
+                if(document.querySelector('#range_value').value > 0){
+                    url.searchParams.append('max-price', document.querySelector('#range_value').value);
+			    }
+
+                url.searchParams.delete('page')
+			    window.location.href = url;
+			}
+			
+			function resetFilter(){
+			    var url = new URL(window.location.href);
+			    url.searchParams.delete('status-filter')
+			    url.searchParams.delete('tag-filter')
+			    url.searchParams.delete('max-price')
+                url.searchParams.delete('page')
+                url.searchParams.delete('order')
+			    window.location.href = url;
+			}
+		</script>
+	</template>
+	<template id="mobile_filters">
+		<div class="px-3 pb-3 d-block d-lg-none">
+			<div class="mx-auto d-flex col-12 col-md-6" style="box-shadow:0px 1px 12px 0px #ddd; border-bottom:2px solid #ddd;">
+				<div class="te_shop_filter_resp col-6 text-center mt-0 border-right" onclick="openFilterPanel();">
+					<div class="position-relative">
+						<span class="te_mb_filter_parent position-relative fa fa-filter">
+						</span>
+						<span class="filters-title-ept" data-oe-model="ir.ui.view" data-oe-id="3351" data-oe-field="arch" data-oe-xpath="/data/xpath[7]/t/div[1]/div[1]/span[2]">
+							Filtri
+						</span>
+					</div>
+				</div>
+                <div onclick="orderBy();" class="te_shop_filter_resp col-6 text-center mt-0 border-right-0">
+					<div class="position-relative">
+						<span class="te_mb_filter_parent position-relative fa fa-sort-amount-asc">
+						</span>
+						<span class="filters-title-ept ml-2" data-oe-model="ir.ui.view" data-oe-id="3351" data-oe-field="arch" data-oe-xpath="/data/xpath[7]/t/div[1]/div[1]/span[2]">
+							Ordina
+						</span>
+					</div>
+                    <div id="order_list" class="dropdown-menu dropdown-menu-right" role="menu">
+                        <button onclick="setOrder('list_price-desc');" role="menuitem" rel="noindex,nofollow" class="dropdown-item">
+                            <span>
+                                Prezzo di catalogo: crescente
+                            </span>
+                        </button>
+                        <button onclick="setOrder('list_price-asc');" role="menuitem" rel="noindex,nofollow" class="dropdown-item">
+                            <span>
+                                Prezzo di catalogo: decrescente
+                            </span>
+                        </button>
+                        <button onclick="setOrder('name-desc');" role="menuitem" rel="noindex,nofollow" class="dropdown-item">
+                            <span>
+                                Nome: da A a Z
+                            </span>
+                        </button>
+                        <button onclick="setOrder('name-asc');" role="menuitem" rel="noindex,nofollow" class="dropdown-item">
+                            <span>
+                                Nome: da Z ad A
+                            </span>
+                        </button>
+                    </div>
+				</div>
+			</div>
+		</div>
+        <script>
+            function openFilterPanel(){
+                if(document.querySelector('#filters_panel').classList.contains('d-none')){
+                    document.querySelector('#filters_panel').classList.add('position-fixed');
+                    document.querySelector('#filters_panel').classList.remove('d-none');
+                }
+                else{
+                    document.querySelector('#filters_panel').classList.add('d-none');
+                    document.querySelector('#filters_panel').classList.remove('position-fixed');
+                }    
+            }
+
+            function orderBy(){
+                document.querySelector('#order_list').style.display = (document.querySelector('#order_list').style.display == 'block')?'none':'block';
+            }
+            
+            function setOrder(val){
+                if(val != ''){
+                    var url = new URL(window.location.href);
+			
+                    var status_filter = ''
+                    var status_list = document.querySelectorAll('#status_filter_list > div > input:checked');
+                    status_list.forEach(element =>{
+                        status_filter += element.value + ','
+                    });
+                    url.searchParams.delete('status-filter')
+                    if(status_filter != ''){
+                        status_filter = status_filter.slice(0, -1);
+                        url.searchParams.append('status-filter', status_filter);
+                    }
+                
+                    if(document.querySelector('#collapse_tag')){
+                        var tag_filter = ''
+                        var tag_list = document.querySelectorAll('#collapse_tag > div input:checked');
+                        tag_list.forEach(element =>{
+                            tag_filter += element.value + ','
+                        });
+                        url.searchParams.delete('tag-filter')
+                        if(tag_filter != ''){
+                            tag_filter = tag_filter.slice(0, -1);
+                            url.searchParams.append('tag-filter', tag_filter);
+                        }
+                    }
+                
+                    url.searchParams.delete('max-price')
+                    if(document.querySelector('#range_value').value > 0){
+                        url.searchParams.append('max-price', document.querySelector('#range_value').value);
+                    }
+
+                    url.searchParams.delete('page');
+
+                    url.searchParams.delete('order');
+                    url.searchParams.append('order', val);
+                    window.location.href = url;
+                }
+                else{
+                    var url = new URL(window.location.href);
+                    url.searchParams.delete('order');
+                    window.location.href = url;
+                }
+            }
+        </script>
+	</template>
+</odoo>

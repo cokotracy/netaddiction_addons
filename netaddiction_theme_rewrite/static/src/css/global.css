@@ -393,6 +393,7 @@ header nav.navbar .header_middle{
     position: absolute;
     top:20px;
     right: 20px;
+    z-index:1;
 }
 .special_price_label{
     padding:2px 5px;
@@ -409,7 +410,12 @@ header nav.navbar .header_middle{
 .oe_product_image .img{
     padding-top:10px !important;
 }
-
+#products_grid .te_shop_grid .te_product_info .o_wsale_product_btn{
+    z-index:2;
+}
+.o_wsale_product_grid_wrapper .te_percentage{
+    display:none;
+}
 @media only screen and (min-width: 768px) {
     #wrapwrap > main{
         margin-top:0px;
@@ -471,6 +477,31 @@ header nav.navbar .header_middle{
     line-height:1.5 !important;
 }
 
+
+.range-input #price_range{
+    -webkit-appearance: none;
+    height: 2px;
+    background-color: var(--secondary);
+    outline: none;
+}
+.range-input #price_range::-webkit-slider-thumb{
+    -webkit-appearance: none;
+    width: 20px;
+    height: 20px;
+    background-color: #ffffff;
+    border: 2px solid var(--primary);
+    border-radius:50%;
+    outline: none;
+}
+.range-input #price_range::-webkit-slider-thumb:hover{
+    background-color: var(--primary);
+}
+
+#o_shop_collapse_category{
+    display: none;
+}
+
+
 @media only screen and (min-width: 321px){
     .navbar-brand{
         width:190px;
@@ -518,6 +549,19 @@ header nav.navbar .header_middle{
 }
 
 @media only screen and (min-width: 1024px){
+    .custom_filter_container{
+        position:sticky !important;
+        top:110px;
+        height: 781px;
+    }
+    .filter-panel-animation{
+        animation: none !important;
+        height:initial !important;
+        width:initial !important;
+    }
+    #o_shop_collapse_category{
+        display: block;
+    }
     header .middle_first{
         display: initial !important;
     }
@@ -617,4 +661,26 @@ header nav.navbar .header_bottom #top_menu_collapse.header_menu_slide{
 .quick_view_content #product_details .js_product .te_product_quantity, .ajax_cart_content #product_details .js_product .te_product_quantity {
     border-top:1px solid #ededed;
     padding-top:15px;
+}
+
+.filter-panel-animation{
+    animation: slide-in-left 0.5s cubic-bezier(0.250, 0.460, 0.450, 0.940) both;
+    height:100vh;
+    background-color:#fff; 
+    width:300px;
+}
+.custom_filter_container{
+    position:relative;
+}
+@keyframes slide-in-left {
+    0% {
+      -webkit-transform: translateX(-1000px);
+              transform: translateX(-1000px);
+      opacity: 0;
+    }
+    100% {
+      -webkit-transform: translateX(0);
+              transform: translateX(0);
+      opacity: 1;
+    }
 }

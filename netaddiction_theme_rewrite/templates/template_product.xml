@@ -7,7 +7,7 @@
             <t t-if="tags">
                 <div class="d-block mt-2">
                     <t t-foreach="tags" t-as="tag">
-                        <a class="tag-item" t-esc="tag.name" t-attf-href="/tag/#{tag.name}"></a>
+                        <a class="tag-item" t-esc="tag.name" t-attf-href="/tag/#{tag.id}"></a>
                     </t>
                 </div>
             </t>

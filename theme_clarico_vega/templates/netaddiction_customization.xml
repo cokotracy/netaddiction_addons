@@ -474,117 +474,12 @@
 
     <template id="products_categories_ept" inherit_id="website_sale.products_categories" name="Ecommerce Categories" priority="30">     
         <xpath expr="//div[@id='wsale_products_categories_collapse']/ul" position="before">
-            <strong class="d-block">Filtra per:</strong>
-            <hr class="my-2"/>
-            <div class="border-bottom">
-                <a class="d-block px-3 mb-2 text-primary position-relative" data-toggle="collapse" href="#collapse_status" role="button" aria-expanded="true" aria-controls="collapseExample">
-                    Stato
-                    <i class="fa fa-sort-desc position-absolute" style="right:10px; top:50%; transform:translateY(-50%) !important"></i>
-                </a>
-                <div class="collapse show" id="collapse_status" style="max-height:400px; overflow:auto;">
-                    <div class="card card-body pb-0" id="status_filter_list">
-                        <div class="d-flex mb-2">
-                            <input onClick="removeCombo('stock')" style="margin-top:5px;" type="checkbox" id="status_stock" value="stock"/>
-                            <label class="ml-1" for="status_1">Disponibile</label>
-                        </div>
-                        <div class="d-flex mb-2">
-                            <input onClick="removeCombo('preorder')" style="margin-top:5px;" type="checkbox" id="status_preorder" value="preorder"/>
-                            <label class="ml-1" for="status_2">Prenotazione</label>
-                        </div>
-                        <div class="d-flex mb-2">
-                            <input onClick="removeCombo('new')" style="margin-top:5px;" type="checkbox" id="status_new" value="new"/>
-                            <label class="ml-1" for="status_3">Novità</label>
-                        </div>
-                        <div class="d-flex mb-2">
-                            <input onClick="comboFilter('order')" style="margin-top:5px;" type="checkbox" id="status_order" value="order"/>
-                            <label class="ml-1" for="status_4">Spedito in 72 ore</label>
-                        </div>
-                        <div class="d-flex mb-2">
-                            <input onClick="comboFilter('unavailable')" style="margin-top:5px;" type="checkbox" id="status_unavailable" value="unavailable"/>
-                            <label class="ml-1" for="status_5">Esaurito</label>
-                        </div>
-                    </div>
-                </div>
-                <!-- <hr class="my-0"/>
-                <a class="d-block p-3 text-primary position-relative" data-toggle="collapse" href="#collapse_tag" role="button" aria-expanded="false" aria-controls="collapseExample">
-                    Tag
-                    <i class="fa fa-sort-desc position-absolute" style="right:10px; top:50%; transform:translateY(-50%)"></i>
-                </a> -->
-                <div class="collapse" id="collapse_tag" style="max-height:400px; overflow:auto;">
-                    <div class="card card-body" id="tag_filter_list">
-                        <t t-set="tags" t-value="request.env['product.template.tag'].sudo().search([])"/>
-                        <t t-foreach="tags" t-as="tag">
-                            <div class="d-flex mb-2">
-                                <input style="margin-top:5px;" type="checkbox" t-attf-id="tag_{{tag.id}}" t-attf-value="{{tag.id}}"/>
-                                <label class="ml-1" t-attf-for="tag_{{tag.id}}"><t t-esc="tag.name"/></label>
-                            </div>
-                        </t>
-                    </div>
-                </div>
-                <button onclick="checkFilter()" class="btn btn-primary btn-md a-submit d-block d-sm-inline-block te_theme_button w-100">Filtra</button>
-            </div>
-            <script type="text/javascript">
-                document.addEventListener("DOMContentLoaded", function() {
-                    var urlParams = new URLSearchParams(window.location.search);
-                    var myParam = urlParams.get('status-filter');
-                    if(myParam != null){
-                        var selected = myParam.split(',')
-                        selected.forEach(element =>{
-                            document.querySelector('#status_' + element).checked = true;
-                        });
-                    }
-                });
-
-                function removeCombo(val){
-                    var statusSelected = document.querySelector('#status_' + val);
-                    if(statusSelected.checked){
-                        document.querySelector('#status_' + 'order').checked = false;
-                        document.querySelector('#status_' + 'unavailable').checked = false;
-                    }
-                }
-
-                function comboFilter(val){
-                    var allFilter = document.querySelectorAll('#status_filter_list input');
-                    allFilter.forEach(element =>{
-                        if(element.id == ('status_' + val)){
-                            element.checked = true;
-                        }
-                        else{
-                            element.checked = false;
-                        }
-                    });
-                } 
-
-                function checkFilter(){
-                    var url = new URL(window.location.href);
-
-                    var status_filter = ''
-                    var status_list = document.querySelectorAll('#status_filter_list > div > input:checked');
-                    status_list.forEach(element =>{
-                        status_filter += element.value + ','
-                    });
-                    url.searchParams.delete('status-filter')
-                    if(status_filter != ''){
-                        status_filter = status_filter.slice(0, -1);
-                        url.searchParams.append('status-filter', status_filter);
-                    }
-
-
-                    var tag_filter = ''
-                    var tag_list = document.querySelectorAll('#collapse_tag > div input:checked');
-                    tag_list.forEach(element =>{
-                        tag_filter += element.value + ','
-                    });
-
-                    url.searchParams.delete('tag-filter')
-                    if(tag_filter != ''){
-                        tag_filter = tag_filter.slice(0, -1);
-                        url.searchParams.append('tag-filter', tag_filter);
-                    }
-                
-                    window.location.href = url;
-                }
-            </script>      
+            <t t-call="netaddiction_theme_rewrite.custom_filters">
+                <t t-set="status" t-value="true"/>
+                <t t-set="full_status" t-value="true"/>
+                <t t-set="price" t-value="true"/>
+                <t t-set="tag" t-value="true"/>
+            </t>
         </xpath>
     </template>
 
