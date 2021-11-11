@@ -494,8 +494,9 @@
 
 	<template id="custom_cart_suggested" inherit_id="website_sale.suggested_products_list">
 		<xpath expr="//h5" position="replace">
-			<h5>Ti consigliamo anche</h5>
+			<h5 class="title_suggested d-none">Ti consigliamo anche</h5>
 		</xpath>
+		
 		<xpath expr="//tr[@t-foreach='suggested_products']" position="replace">
 			<tr t-foreach="suggested_products" t-as="product">
 				<t t-set="combination_info" t-value="product._get_combination_info_variant(pricelist=website_sale_order.pricelist_id)"/>
