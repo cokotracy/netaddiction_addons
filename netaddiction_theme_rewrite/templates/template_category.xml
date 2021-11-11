@@ -83,7 +83,16 @@
 	<template id="custom_prod_item" inherit_id="website_sale.products_item">
 		<xpath expr="//div[hasclass('oe_product_image')]" position="replace" priority="30">
 			<t t-set="image_holder" t-value="product._get_image_holder()"/>
-
+			<t t-if="combination_info">
+                <div t-attf-class="special_price_label_container {{'' if combination_info['has_discounted_price'] else 'd-none'}}">
+                    <t t-set="difference" t-value="round(combination_info['list_price'] - combination_info['price'],2)"/>
+                    <t t-set="discount"
+                    t-value="round(difference*100/combination_info['list_price']) if combination_info['list_price'] &gt; 0 else 0"/>
+                    <div class="special_price_label" t-if="discount">
+                        <span t-esc="'-'+ str(discount) + '%'"/>
+                    </div>
+                </div>
+            </t>
 			<t t-if="product.product_variant_ids and category and len(product.product_variant_ids) &gt; 1">
 				<t t-set="variant_array" t-value="[]"/>
 				<t t-foreach="product.product_variant_ids" t-as="variant">
