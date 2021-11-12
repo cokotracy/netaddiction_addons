@@ -166,13 +166,27 @@
                     </t>
                 </t>
                 <t t-if="category">
-                    <t t-if="category.name">
-                        <title><t t-esc="category.name"/> | Multiplayer.com</title>
+                    <t t-if="any(path_part in current_url for path_part in ['/tag/','/offerte/','/promozioni/'])">
+                        <t t-if="offer">
+                            <title><t t-esc="offer.name"/> | Multiplayer.com</title>
+                        </t>
+                        <t t-if="promo">
+                            <title><t t-esc="promo.name"/> | Multiplayer.com</title>
+                        </t>
+                        <t t-if="tag_name">
+                            <title><t t-esc="tag_name.name"/> | Multiplayer.com</title>
+                        </t>
                     </t>
                     <t t-else="">
-                        <title>Negozio | Multiplayer.com</title>
+                        <t t-if="category.name">
+                            <title><t t-esc="category.name"/> | Multiplayer.com</title>
+                        </t>
+                        <t t-else="">
+                            <title>Negozio | Multiplayer.com</title>
+                        </t>
                     </t>
                 </t>
+
                 <t t-if="not category and not product">
                     <title>Vendita Figure, Funko Pop, Lego, Model Kit, Gadget Nerd e Videogiochi Online | Multiplayer.com</title>
                 </t>

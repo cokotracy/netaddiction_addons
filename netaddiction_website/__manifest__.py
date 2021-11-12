@@ -5,11 +5,11 @@
     """,
     "author": "Netaddiction",
     "category": "Custom Development",
-    "version": "14.0.1.5.0",
+    "version": "14.0.1.6.0",
     "description": """
         This module will enhance the odoo features
     """,
-    "depends": ["website_sale", "fb_pixel"],
+    "depends": ["website_sale", "fb_pixel", "facebook_ads_feeds"],
     "data": [
         "data/cron.xml",
         "views/web/product.xml",

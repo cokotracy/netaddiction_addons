@@ -26,7 +26,9 @@
 				</t>
 			</div>
 			<br />
-			<t t-call="netaddiction_theme_rewrite.mobile_filters"/>
+			<t t-if="offer.active_frontend_filter">
+				<t t-call="netaddiction_theme_rewrite.mobile_filters"/>
+			</t>
 			<div class="d-flex container">
 				<t t-if="offer.active_frontend_filter">
 				<div id="products_grid_before" class="custom_filter_container w-0 w-lg-100 te_product_sticky_sidebar te_product_sidebar_scrollbar sticky-media mCustomScrollbar _mCS_1" style="max-width:250px;">
@@ -120,7 +122,7 @@
 					<t t-set="active_prev" t-value="'disabled'" />
 				</t>
 				<li t-attf-class="page-item {{active_prev}}">
-					<t t-set="link_prev" t-value="'/offerte/' + str(offer.id) + '?' + query" />
+					<t t-set="link_prev" t-value="'/offerte/' + str(offer.id)" />
 					<t t-if="current_page > 1">
 						<t t-set="link_prev" t-value="link_prev + '?page=' + str(current_page) + '&amp;&amp;' + query" />
 					</t>
