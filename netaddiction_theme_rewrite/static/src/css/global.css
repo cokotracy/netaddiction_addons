@@ -672,6 +672,26 @@ header nav.navbar .header_bottom #top_menu_collapse.header_menu_slide{
 .custom_filter_container{
     position:relative;
 }
+
+.oe_cart .title_suggested:first-of-type{
+    display: block !important;
+}
+
+#suggested_products{
+    margin-bottom:30px !important;
+    border-bottom:1px solid #e8e8e8;
+}
+
+@media (max-width: 767.98px){
+    .oe_website_sale .td-img {
+        display: block !important;
+    }
+    .oe_website_sale .td-product_name > div{
+        visibility: hidden;
+        height:0;
+    }
+}
+
 @keyframes slide-in-left {
     0% {
       -webkit-transform: translateX(-1000px);

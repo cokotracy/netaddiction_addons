@@ -1028,8 +1028,11 @@
         <xpath expr="//a[@t-att-href='keep(category=0)']" position="replace">
             <a t-att-href="keep(category=0)">Negozio</a>
         </xpath>
-        <xpath expr="//h3[hasclass('te_product_alt_h3')]" position="replace">
-            <h3 class="te_product_alt_h3">Prodotti Alternativi</h3>
+        <xpath expr="//div[@id='myCarousel_alt_prod']/h3[hasclass('te_product_alt_h3')]" position="replace">
+            <h3 class="te_product_alt_h3">Prodotti Correlati</h3>
+        </xpath>
+        <xpath expr="//div[@id='myCarousel_acce_prod']/h3[hasclass('te_product_alt_h3')]" position="replace">
+            <h3 class="te_product_alt_h3">Ti consigliamo anche</h3>
         </xpath>
     </template>
     
