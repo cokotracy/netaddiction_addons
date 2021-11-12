@@ -6,6 +6,7 @@
             <link href="/netaddiction_theme_rewrite/static/src/css/global.css" rel="stylesheet"/>
         </xpath>
         <xpath expr="//script[last()]" position="after">
+            <script type="text/javascript" src="/netaddiction_theme_rewrite/static/src/js/custom_search_variant.js"/>
             <script type="text/javascript" src="/netaddiction_theme_rewrite/static/src/js/check_limit.js"/>
             <script type="text/javascript" src="/netaddiction_theme_rewrite/static/src/js/custom_button_buy_now.js"/>
             <script type="text/javascript" src="/netaddiction_theme_rewrite/static/src/js/custom_button_buy.js"/>
