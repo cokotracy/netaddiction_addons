@@ -56,10 +56,10 @@
             <button class="btn " id="days" style="float:left;margin-top:14px">Per Giorno</button>
           </div>
           <div style="float:left;margin-left:20px;">
-            <button class="btn " id="multiplayer" style="float:left;margin-top:14px">Multiplayer.it Edizioni</button>
+            <button class="btn " id="categ_group" style="float:left;margin-top:14px">Per Categoria</button>
           </div>
           <div style="float:left;margin-left:20px;">
-            <button class="btn " id="categ_group" style="float:left;margin-top:14px">Categoria</button>
+            <button class="btn " id="multiplayer" style="float:left;margin-top:14px">Multiplayer.it Edizioni</button>
           </div>
         </div>
       </div>
