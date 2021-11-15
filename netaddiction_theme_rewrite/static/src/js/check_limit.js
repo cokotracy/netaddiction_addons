@@ -59,19 +59,30 @@ odoo.define('netaddiction_theme_rewrite.limit_product_payment', function (requir
         var self = this;
 
         this._rpc({
-          route: "/shop/cart/check_limit_order",
+          route: "/shop/cart/check_limit_order?payment=1",
         }).then(function (data) {
           if (data != null) {
-            if (data['order_limit'] != null)
-              message = `<span class="text-primary mb-3 d-block">Non Puoi ordinare più di ${data['order_limit']} unità per questo prodotto:</span> ${data['product_name']}`;
-            else if (data['order_limit_total'] != null)
-              message = `<span class="text-primary mb-3 d-block">Questo prodotto non è più vendibile:</span> ${data['product_name']}`;
-            else if (data.out_of_stock)
-              message = `<span class="text-primary mb-3 d-block">Questo prodotto non è più disponibile:</span> ${data['product_name']}`;
-
+            if (data.empty_cart != null)
+              message = 'Si è verificato un problema con il tuo carrello, ti chiediamo gentilmente di ricontrollare la tua lista di prodotti, o di crearla nuovamente, grazie.';
+            else{
+              if (data['order_limit'] != null)
+                message = `<span class="text-primary mb-3 d-block">Non Puoi ordinare più di ${data['order_limit']} unità per questo prodotto:</span> ${data['product_name']}`;
+              else if (data['order_limit_total'] != null)
+                message = `<span class="text-primary mb-3 d-block">Questo prodotto non è più vendibile:</span> ${data['product_name']}`;
+              else if (data.out_of_stock)
+                message = `<span class="text-primary mb-3 d-block">Questo prodotto non è più disponibile:</span> ${data['product_name']}`;
+            }
+            
             if (message != null) {
               var button = document.querySelector('#error_modal');
-              document.querySelector('#modal_message .modal-body .img-error').innerHTML = `<img src="data:image/png;base64,${data.image}"/>`;
+              if(data.empty_cart == null){
+                document.querySelector('#modal_message .modal-body .img-error').classList.remove('d-none')
+                document.querySelector('#modal_message .modal-body .img-error').innerHTML = `<img src="data:image/png;base64,${data.image}"/>`;
+              }
+              else{
+                document.querySelector('#modal_message .modal-body .img-error').classList.add('d-none')
+              }
+
               document.querySelector('#modal_message .modal-body .text-error').innerHTML = `<p class="h5">${message}</p>`;
               button.click();
 
