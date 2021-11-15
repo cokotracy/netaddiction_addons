@@ -43,6 +43,13 @@
                             <strong class="label label-request">SPEDITO IN 72 ORE</strong>
                         </t>
                     </t>
+                    <strong class="label label-free-shipping">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                        <i class="fa fa-truck mr-2" style="font-size:15px"/>GRATIS
+                    </strong>
                 </t>
             </div>
         </t>

@@ -169,7 +169,7 @@ header nav.navbar .header_middle .te_search_popover .input-group input.form-cont
 .product-label-container{
     top:0;
     left:-5px;
-    max-width:110px;
+    max-width:120px;
     display: flex;
     flex-wrap: wrap;
     justify-content: left;
@@ -197,6 +197,93 @@ header nav.navbar .header_middle .te_search_popover .input-group input.form-cont
 .product-label-container > .label-request{
     background-color: var(--primary);
 }
+
+
+
+.product-label-container > .label-free-shipping{
+    color:#ffffff;
+    transition:0.5s;
+    padding:3px 5px;
+    overflow:hidden;
+    position:relative;
+    background-color: #3d3d3d;
+    transform:skew(0turn, 0deg);
+  }
+
+  .product-label-container > .label-free-shipping > span{
+    position:absolute;
+    display:block;
+  /*   background:linear-gradient(90deg,transparent,rgb(155,0,255)); */
+  }
+  .product-label-container > .label-free-shipping span:nth-of-type(1){
+    background: linear-gradient(0.25turn, #3f87a6, #ebf8e1, #f69d3c);
+    height:3px;
+    width:100%;
+    top:0;
+    left:-100%;
+    animation:animate1 1s linear infinite;
+    animation-delay:0.5s;
+  }
+  .product-label-container > .label-free-shipping span:nth-of-type(2){
+    background: linear-gradient(0.25turn, #f69d3c,#ebf8e1,#3f87a6);
+    bottom:0;
+    right:-100%;
+    height:3px;
+    width:100%;
+    animation:animate2 1s linear infinite;
+  }
+  .product-label-container > .label-free-shipping span:nth-of-type(3){
+    background-color:#3f87a6;
+    left:0;
+    bottom:-100%;
+    height:100%;
+    width:3px;
+    animation:animate3 1s linear infinite;
+    animation-delay:0.3s;
+  }
+  .product-label-container > .label-free-shipping span:nth-of-type(4){
+    background-color:#f69d3c;
+    right:0;
+    top:-100%;
+    height:100%;
+    width:3px;
+    animation:animate4 1s linear infinite;
+    animation-delay:0.72s;
+  }
+  
+  @keyframes animate1{
+    0%{
+      left:-100%;
+    }
+    50%,100%{
+      left:100%;
+    }
+  }
+  @keyframes animate2{
+    0%{
+      right:-100%;
+    }
+    50%,100%{
+      right:100%;
+    }
+  }
+  @keyframes animate3{
+    0%{
+      bottom:-100%;
+    }
+    50%,100%{
+      bottom:100%;
+    }
+  }
+  @keyframes animate4{
+    0%{
+      top:-100%;
+    }
+    50%,100%{
+     top:100%;
+    }
+  }
+
 
 .te_prod_info_sub .oe_currency_value, .o_carousel_product_card_footer .oe_currency_value{
     font-size: 28px;
