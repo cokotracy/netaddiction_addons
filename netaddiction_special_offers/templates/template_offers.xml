@@ -92,7 +92,8 @@
 				<section class="container">
 					<t t-set="products_ids" t-value="''" />
 					<t t-foreach="product_list_id" t-as="prod">
-						<t t-set="products_ids" t-value="products_ids + str(prod.id) + ','" />
+						<t t-esc="prod.name"/>
+						<!-- <t t-set="products_ids" t-value="products_ids + str(prod.id) + ','" /> -->
 					</t>
 					<t t-set="products_ids" t-value="products_ids[:-1]" />
 					<div class="d-none d-lg-block">
