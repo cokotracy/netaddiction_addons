@@ -3,7 +3,7 @@ import string
 from ast import literal_eval
 from calendar import monthrange
 from collections import OrderedDict
-from datetime import date, datetime
+from datetime import datetime
 from io import BytesIO
 
 import xlwt
@@ -264,16 +264,15 @@ class ReceiptRegister(models.Model):
                 sheet.write(
                     i,
                     total_horizontal[0],
-                    xlwt.Formula(f"SUM({horizontal[0][0]}{i + 1};{horizontal[0][1]}{i + 1})"),
+                    xlwt.Formula(f"SUM({';'.join([f'{x}{i+1}' for x in horizontal[0]])})"),
                 )
                 sheet.write(
                     i,
                     total_horizontal[1],
-                    xlwt.Formula(f"SUM({horizontal[1][0]}{i + 1};{horizontal[1][1]}{i + 1})"),
+                    xlwt.Formula(f"SUM({';'.join([f'{x}{i+1}' for x in horizontal[1]])})"),
                 )
-            except IndexError:
-                sheet.write(i, total_horizontal[0], xlwt.Formula(f"SUM({horizontal[0][0]}{i + 1})"))
-                sheet.write(i, total_horizontal[1], xlwt.Formula(f"SUM({horizontal[1][0]}{i + 1})"))
+            except Exception as e:
+                raise UserError(e)
 
     def get_receipt(self):
         numberdays = monthrange(self.date_end.year, self.date_end.month)[1]
@@ -520,8 +519,3 @@ class ReceiptRegisterConfig(models.TransientModel):
         icp.set_param("receipt.register.delivery_picking_type_ids", self.delivery_picking_type_ids.ids)
         icp.set_param("receipt.register.refund_picking_type_ids", self.refund_picking_type_ids.ids)
         return res
-
-
-# TODO
-# Inserire +3 euro nei contrassegni senza calcolo iva (Sia nella registrazione sia nei dettagli)
-# Categoria: Visualizzare il padre
