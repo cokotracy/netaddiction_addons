@@ -30,7 +30,7 @@
 							<t t-else="">
 								<t t-set="request_status" t-value="request.env['affiliate.request'].sudo().search([('name', '=', request.env.user.email)])"/>
 								<div class="aff_box" style="padding-bottom:15px;">
-									<t t-if="request_status.state == 'draft'">
+									<t t-if="request_status.state == 'register'">
 										<div class="alert_msg_banner_1" style="background-color:#ffffff !important;">
 											<p class="mb-5">
 												La tua richiesta è ancora sotto osservazione, otterrai un Feedback appena possibile.
@@ -86,12 +86,17 @@
 											Ti basterà registrarti al nostro sito e inviare la richiesta.
 										</p>
 										<div class="d-block text-center mt-3">
-											<form role="form" class="form-inline justify-content-center">
-												<input class="d-none" type="email" name="email" t-attf-value="{{request.env.user.email}}" id="register_login" required="required"/>
-												<button type="submit" id="join-btn" class="btn btn-primary te_theme_button">
-													Diventa Affiliato!
-												</button>
-											</form>
+											<t t-if="not website.user_id == user_id ">
+												<t t-if="not user_id.partner_id.is_affiliate and ( not request.env['affiliate.request'].sudo().checkRequestExists(user_id))">
+													<div id="aff_req_btn" style="padding-bottom: 15px;margin-top:10px;">
+														<center>
+															<button t-att-id="'yes_btn_uid_%s'%(user_id.id)" class="btn btn-primary te_theme_button">
+																Diventa Affiliato!
+															</button>
+														</center>
+													</div>
+												</t>
+											</t>
 										</div>
 									</t>
 								</div>

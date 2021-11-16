@@ -111,7 +111,7 @@ class AffiliateRequest(models.Model):
         return True
 
     def action_aproove(self):
-        if self.user_id:
+        if not self.user_id:
             raise UserError("No user associated in the following request")
         if self.user_id.id == self.env.ref('base.user_admin').id:
             raise UserError("Admin can't be an Affiliate")
