@@ -1,50 +1,79 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <!--PRODOTTI CATEGORIE-->
-    <template id="custom_products_label_category" inherit_id="website_sale.products_item" priority="23" active="True">
-        <xpath expr="//div[hasclass('oe_product_image')]/a" position="inside">
-            <t t-call="netaddiction_theme_rewrite.custom_label_check" />
-        </xpath>
-    </template>
-
-    <template id="custom_label_check">
-        <t t-if="product">
-            <t t-set="current" t-value="datetime.datetime.now()"/>
-            <t t-set="current_reduced" t-value="(datetime.datetime.now() - datetime.timedelta(days = 20))"/>
-            <t t-if="product.out_date">
-                <t t-set="out_date" t-value="datetime.datetime.strptime(str(product.out_date) + ' 00:00:00.00000', '%Y-%m-%d %H:%M:%S.%f')"/>
-            </t>
-
-            <div class="product-label-container position-absolute">
-                <t t-if="product.product_variant_id.qty_available_now &lt;= 0 and out_date and out_date &gt; current and product.sudo().product_variant_id.inventory_availability in ['always', 'threshold']">
-                    <strong class="label label-out">SOLD OUT</strong>
-                </t>
-                <t t-else="">
-                    <t t-if="current_reduced &lt;= product.create_date">
-                        <strong class="label label-news">NOVITÀ</strong>
-                    </t>
-                    <t t-if="out_date">
-                        <t t-if="out_date &gt; current">
-                            <t t-if="product.product_variant_id.qty_available_now &lt;= 0 and product.sudo().product_variant_id.qty_sum_suppliers &lt;= 0">
-                                <strong class="label label-preorder">PRENOTAZIONE</strong>
-                            </t>
-                        </t>
-                    </t>
-                    <t t-if="product.product_variant_id.qty_available_now &lt;= 0 and product.sudo().product_variant_id.qty_sum_suppliers &lt;= 0">
-                        <t t-if="not out_date or out_date &lt; current">
-                            <strong class="label label-out">ESAURITO</strong>
-                        </t>
-                    </t>
-                    <t t-if="product.product_variant_id.qty_available_now &gt; 0">
-                        <strong class="label label-in">DISPONIBILE</strong>
-                    </t>
-                    <t t-if="product.product_variant_id.qty_available_now &lt;= 0">
-                        <t t-if="product.product_variant_id.qty_available_now &lt;= 0 and product.sudo().product_variant_id.qty_sum_suppliers &gt; 0">
-                            <strong class="label label-request">SPEDITO IN 72 ORE</strong>
-                        </t>
-                    </t>
-                </t>
-            </div>
-        </t>
-    </template>
+	<!-- PRODOTTI CATEGORIE -->
+	<template id="custom_products_label_category" inherit_id="website_sale.products_item" priority="23" active="True">
+		<xpath expr="//div[hasclass('oe_product_image')]/a" position="inside">
+			<t t-call="netaddiction_theme_rewrite.custom_label_check" />
+		</xpath>
+	</template>
+	<template id="custom_label_check">
+		<t t-if="product">
+			<t t-set="current" t-value="datetime.datetime.now()" />
+			<t t-set="current_reduced" t-value="(datetime.datetime.now() - datetime.timedelta(days = 20))" />
+			<t t-if="product.out_date">
+				<t t-set="out_date" t-value="datetime.datetime.strptime(str(product.out_date) + ' 00:00:00.00000', '%Y-%m-%d %H:%M:%S.%f')" />
+			</t>
+			<div class="product-label-container position-absolute">
+				<t t-if="product.product_variant_id.qty_available_now &lt;= 0 and out_date and out_date &gt; current and product.sudo().product_variant_id.inventory_availability in ['always', 'threshold']">
+					<strong class="label label-out">
+						SOLD OUT
+					</strong>
+				</t>
+				<t t-else="">
+					<t t-if="current_reduced &lt;= product.create_date">
+						<strong class="label label-news">
+							NOVITÀ
+						</strong>
+					</t>
+					<t t-if="out_date">
+						<t t-if="out_date &gt; current">
+							<t t-if="product.product_variant_id.qty_available_now &lt;= 0 and product.sudo().product_variant_id.qty_sum_suppliers &lt;= 0">
+								<strong class="label label-preorder">
+									PRENOTAZIONE
+								</strong>
+							</t>
+						</t>
+					</t>
+					<t t-if="product.product_variant_id.qty_available_now &lt;= 0 and product.sudo().product_variant_id.qty_sum_suppliers &lt;= 0">
+						<t t-if="not out_date or out_date &lt; current">
+							<strong class="label label-out">
+								ESAURITO
+							</strong>
+						</t>
+					</t>
+					<t t-if="product.product_variant_id.qty_available_now &gt; 0">
+						<strong class="label label-in">
+							DISPONIBILE
+						</strong>
+					</t>
+					<t t-if="product.product_variant_id.qty_available_now &lt;= 0">
+						<t t-if="product.product_variant_id.qty_available_now &lt;= 0 and product.sudo().product_variant_id.qty_sum_suppliers &gt; 0">
+							<strong class="label label-request">
+								SPEDITO IN 72 ORE
+							</strong>
+						</t>
+					</t>
+					<t t-set="all_program" t-value="request.env['coupon.program'].sudo()._get_program_from_products(product.product_variant_id)" />
+					<t t-set="free_shipping" t-value="False" />
+					<t t-if="all_program">
+						<t t-foreach="all_program[product.product_variant_id]" t-as="program">
+							<t t-if="program.reward_id.reward_type == 'free_shipping'">
+								<t t-if="not free_shipping">
+									<t t-set="free_shipping" t-value="True" />
+									<strong class="label label-free-shipping">
+										<span></span>
+										<span></span>
+										<span></span>
+										<span></span>
+										<i class="fa fa-truck mr-2" style="font-size:15px" />
+										GRATIS
+									</strong>
+								</t>
+							</t>
+						</t>
+					</t>
+				</t>
+			</div>
+		</t>
+	</template>
 </odoo>

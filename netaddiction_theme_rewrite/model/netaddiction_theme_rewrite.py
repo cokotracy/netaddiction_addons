@@ -105,6 +105,17 @@ class WebsiteCustom(Website):
             if prod_out_date > current:
                 out_over_current = True
 
+        if current_reduced <= prod.create_date:
+            its_new = True
+
+        all_program = request.env['coupon.program'].sudo()._get_program_from_products(prod.product_variant_id)
+        free_shipping = False
+        if all_program:
+            for program in all_program[prod.product_variant_id]:
+                if program.reward_id.reward_type == 'free_shipping':
+                    if not free_shipping:
+                        free_shipping = True
+
         return {
             "current": current,
             "current_reduced": (current_reduced <= prod.create_date),
@@ -118,6 +129,7 @@ class WebsiteCustom(Website):
             "user_email": "" if not request.env.user.email else request.env.user.email,
             "out_over_current": out_over_current,
             "its_new": its_new,
+            "free_shipping":free_shipping
         }
 
 

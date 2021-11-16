@@ -33,6 +33,15 @@
                     <strong class="label label-request mr-2 mb-2 px-2">SPEDITO IN 72 ORE</strong>
                 </t>
             </t>
+            <t t-if="free_shipping">
+                <strong class="label label-free-shipping mr-2 mb-2 px-2" style="transform: skew(-0.06turn, 0deg); box-sizing:content-box;">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                    SPEDIZIONE GRATUITA!
+                </strong>
+            </t>
         </t>
     </t>
 
