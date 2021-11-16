@@ -302,13 +302,13 @@ class WebsiteSaleCustom(WebsiteSale):
 
         if request.website.isB2B and not status_filter:
             domain = expression.AND([[("product_variant_ids.qty_available_now", ">", 0)], domain])
-        elif not status_filter:
-            new_dom = [
-                "|",
-                ("product_variant_ids.out_date", ">", date.today()),
-                ("product_variant_ids.qty_available_now", ">", 0),
-            ]
-            domain = expression.AND([new_dom, domain])
+        # elif not status_filter:
+        #     new_dom = [
+        #         "|",
+        #         ("product_variant_ids.out_date", ">", date.today()),
+        #         ("product_variant_ids.qty_available_now", ">", 0),
+        #     ]
+        #     domain = expression.AND([new_dom, domain])
 
         if status_filter:
             status_filter = status_filter.split(",")
