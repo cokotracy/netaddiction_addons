@@ -4,7 +4,7 @@
 			<field name="name">affiliate.request.form</field>
 			<field name="model">affiliate.request</field>
 			<field name="arch" type="xml">
-				<form create="false" edit="false" >
+				<form>
          	 		<header >
 						<field name="state" widget="statusbar" statusbar_visible="draft,register,cancel,aproove"/>
             			<button name="action_aproove"  string="Approve" type="object"

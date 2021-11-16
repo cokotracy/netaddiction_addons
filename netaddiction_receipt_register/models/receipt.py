@@ -3,7 +3,7 @@ import string
 from ast import literal_eval
 from calendar import monthrange
 from collections import OrderedDict
-from datetime import date, datetime
+from datetime import datetime
 from io import BytesIO
 
 import xlwt
@@ -67,12 +67,26 @@ class ReceiptRegister(models.Model):
             raise UserError("Non hai impostato l'imposta")
         return int(id)
 
+    def get_main_category(self):
+        params = self.env["ir.config_parameter"].sudo()
+        id = params.get_param("receipt.register.main_category")
+        if not id:
+            raise UserError("Non hai impostato la categoria principale")
+        return int(id)
+
     def get_edizioni_brand_id(self):
         params = self.env["ir.config_parameter"].sudo()
         id = params.get_param("receipt.register.edizioni_brand_id")
         if not id:
             raise UserError("Non hai impostato il brand collegato a Multiplayer Edizioni")
         return int(id)
+
+    def get_origin_sale_order(self, origin):
+        try:
+            origin = self.env["sale.order"].search([("name", "=", origin)])
+        except Exception:
+            origin = False
+        return origin
 
     def _create_subdivision(
         self, pickings, numberdays, month_date, check_sale_id=True, check_sale_origin=False, refund_delivery_cost=True
@@ -113,14 +127,11 @@ class ReceiptRegister(models.Model):
                 # group by day and fee
                 for line in pick.move_lines:
                     if check_sale_origin and not pick.sale_id:
-                        try:
-                            origin = self.env["sale.order"].search([("name", "=", pick.origin)]).id
-                        except Exception:
-                            origin = False
+                        origin = self.get_origin_sale_order(pick.origin)
                         if origin:
                             move = self.env["stock.move"].search(
                                 [
-                                    ("sale_line_id.order_id.id", "=", origin),
+                                    ("sale_line_id.order_id.id", "=", origin.id),
                                     ("product_id", "=", line.product_id.id),
                                 ],
                                 limit=1,
@@ -151,10 +162,7 @@ class ReceiptRegister(models.Model):
                     carrier_price = pick.carrier_price
                 else:
                     if check_sale_origin and not pick.sale_id:
-                        try:
-                            origin = self.env["sale.order"].search([("name", "=", pick.origin)])
-                        except Exception:
-                            origin = False
+                        origin = self.get_origin_sale_order(pick.origin)
                         if origin:
                             for line in origin.order_line:
                                 if line.is_delivery:
@@ -169,22 +177,16 @@ class ReceiptRegister(models.Model):
 
                 # cash on delivery charges
                 cod_product_id = self.get_product_cod_id()
-                if check_sale_origin and not pick.sale_id:
-                    try:
-                        origin = self.env["sale.order"].search([("name", "=", pick.origin)])
-                    except Exception:
-                        origin = False
-                    if origin:
-                        for line in origin.order_line:
-                            if line.product_id.id == cod_product_id:
-                                del_pick = delivery_picks[date_done].get(line.product_id.taxes_id.name, False)
-                                if del_pick:
-                                    delivery_picks[date_done][line.product_id.taxes_id.name][
-                                        "value"
-                                    ] += line.price_total
-                                    delivery_picks[date_done][line.product_id.taxes_id.name][
-                                        "tax_value"
-                                    ] += line.price_tax
+                origin = pick.sale_id
+                if check_sale_origin and not origin:
+                    origin = self.get_origin_sale_order(pick.origin)
+                if origin:
+                    for line in origin.order_line:
+                        if line.product_id.id == cod_product_id:
+                            del_pick = delivery_picks[date_done].get(line.product_id.taxes_id.name, False)
+                            if del_pick:
+                                delivery_picks[date_done][line.product_id.taxes_id.name]["value"] += line.price_total
+                                delivery_picks[date_done][line.product_id.taxes_id.name]["tax_value"] += line.price_tax
 
         return delivery_picks, tax_names
 
@@ -262,16 +264,15 @@ class ReceiptRegister(models.Model):
                 sheet.write(
                     i,
                     total_horizontal[0],
-                    xlwt.Formula(f"SUM({horizontal[0][0]}{i + 1};{horizontal[0][1]}{i + 1})"),
+                    xlwt.Formula(f"SUM({';'.join([f'{x}{i+1}' for x in horizontal[0]])})"),
                 )
                 sheet.write(
                     i,
                     total_horizontal[1],
-                    xlwt.Formula(f"SUM({horizontal[1][0]}{i + 1};{horizontal[1][1]}{i + 1})"),
+                    xlwt.Formula(f"SUM({';'.join([f'{x}{i+1}' for x in horizontal[1]])})"),
                 )
-            except IndexError:
-                sheet.write(i, total_horizontal[0], xlwt.Formula(f"SUM({horizontal[0][0]}{i + 1})"))
-                sheet.write(i, total_horizontal[1], xlwt.Formula(f"SUM({horizontal[1][0]}{i + 1})"))
+            except Exception as e:
+                raise UserError(e)
 
     def get_receipt(self):
         numberdays = monthrange(self.date_end.year, self.date_end.month)[1]
@@ -322,6 +323,11 @@ class ReceiptRegister(models.Model):
 class ReceiptRegisterPicking(models.Model):
     _inherit = "stock.picking"
 
+    def _get_parent_category_name(self, cat_id, main_cat_id):
+        if not cat_id.parent_id or cat_id.parent_id.id == main_cat_id:
+            return cat_id.name
+        return cat_id.parent_id.name
+
     @api.model
     def get_picking_from_date(self, year, month):
         results = {"done": [], "refund": []}
@@ -330,6 +336,7 @@ class ReceiptRegisterPicking(models.Model):
         tax_income_id = self.env["account.tax"].browse(tax_income_id)
         delivery_picking_type_ids = self.env["receipt.register"].get_delivery_picking_type_ids()
         refund_picking_type_ids = self.env["receipt.register"].get_refund_picking_type_ids()
+        main_category = self.env["receipt.register"].get_main_category()
         edizioni_brand_id = self.env["receipt.register"].get_edizioni_brand_id()
 
         last = monthrange(year, month)
@@ -348,11 +355,13 @@ class ReceiptRegisterPicking(models.Model):
         for pick in pickings:
             if pick.sale_id:
                 for line in pick.move_lines:
+                    attr = {}
                     sale_line_id = line.sale_line_id
                     product_id = sale_line_id.product_id
+                    parent_category_name = self._get_parent_category_name(product_id.categ_id, main_category)
                     attr = {
                         "product_id": product_id.with_context({"lang": "it_IT", "tz": "Europe/Rome"}).display_name,
-                        "categ": product_id.categ_id.name,
+                        "categ": parent_category_name,
                         "pid": product_id.id,
                         "barcode": product_id.barcode,
                         "qty": sale_line_id.product_uom_qty,
@@ -375,6 +384,38 @@ class ReceiptRegisterPicking(models.Model):
                     attr["total_price"] = round(attr["total_price"], 2)
                     results["done"].append(attr)
 
+                # cash on delivery charges
+                attr = {}
+                cod_product_id = self.env["receipt.register"].get_product_cod_id()
+                origin = pick.sale_id
+                if not origin:
+                    origin = self.env["receipt.register"].get_origin_sale_order(pick.origin)
+                if origin:
+                    for line in origin.order_line:
+                        if line.product_id.id == cod_product_id:
+                            attr = {
+                                "product_id": line.product_id.with_context(
+                                    {"lang": "it_IT", "tz": "Europe/Rome"}
+                                ).display_name,
+                                "categ": "Contrassegno",
+                                "pid": line.product_id.id,
+                                "barcode": line.product_id.barcode,
+                                "qty": 1,
+                                "total_price": line.price_total,
+                                "price_tax": line.price_tax,
+                                "picking_id": pick.name,
+                                "date_done": pick.date_done,
+                                "payment_method": pick.sale_order_payment_method.name,
+                                "state": pick.state,
+                                "picking_type_id": pick.picking_type_id.name,
+                                "sale_id": pick.origin,
+                                "tax_id": line.tax_id.name,
+                                "edizioni": 0,
+                            }
+                            attr["price_tax"] = round(attr["price_tax"], 2)
+                            attr["total_price"] = round(attr["total_price"], 2)
+                            results["done"].append(attr)
+
         refunds = self.search(
             [
                 ("date_done", ">=", date_from),
@@ -385,11 +426,25 @@ class ReceiptRegisterPicking(models.Model):
         )
         for pick in refunds:
             for line in pick.move_lines:
+                attr = {}
+                if not pick.sale_id:
+                    origin = self.env["receipt.register"].get_origin_sale_order(pick.origin)
+                    if origin:
+                        move = self.env["stock.move"].search(
+                            [
+                                ("sale_line_id.order_id.id", "=", origin.id),
+                                ("product_id", "=", line.product_id.id),
+                            ],
+                            limit=1,
+                        )
+                        if move:
+                            line = move
                 sale_line_id = line.sale_line_id
                 product_id = sale_line_id.product_id
+                parent_category_name = self._get_parent_category_name(product_id.categ_id, main_category)
                 attr = {
                     "product_id": product_id.with_context({"lang": "it_IT", "tz": "Europe/Rome"}).display_name,
-                    "categ": product_id.categ_id.name,
+                    "categ": parent_category_name,
                     "pid": product_id.id,
                     "barcode": product_id.barcode,
                     "qty": sale_line_id.product_uom_qty,
@@ -433,6 +488,9 @@ class ReceiptRegisterConfig(models.TransientModel):
     )
     tax_income_id = fields.Many2one(
         "account.tax", string="Imposta (debito)", config_parameter="receipt.register.tax_income_id"
+    )
+    main_category = fields.Many2one(
+        "product.category", string="Categoria principale (All)", config_parameter="receipt.register.main_category"
     )
     edizioni_brand_id = fields.Many2one(
         "product.brand.ept", string="Brand di Edizioni", config_parameter="receipt.register.edizioni_brand_id"

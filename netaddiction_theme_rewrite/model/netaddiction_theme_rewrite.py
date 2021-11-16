@@ -27,10 +27,25 @@ from odoo.osv import expression
 class WebsiteCustom(Website):
     @route(["/shop/cart/check_limit_order"], type="json", auth="public", methods=["POST"], website=True, csrf=False)
     def cart_update_json(self):
+        is_payment = request.params.get("payment")
+
         if request.env.user.id == request.env.ref("base.public_user").id:
             return request.redirect("/web/login")
 
         order = request.website.sale_get_order(force_create=1)
+
+        if is_payment and not order.order_line:
+            return {"empty_cart": True}
+        else:
+            if len(order.order_line) == 1:
+                if order.order_line[0].product_id.type == 'service':
+                    if 'wallet_product_id' in request.env['website'].sudo()._fields:
+                        wallet_product = request.website.wallet_product_id
+                        if order.order_line[0].product_id.id != wallet_product.id:
+                            return {"empty_cart": True}
+                    else:
+                        return {"empty_cart": True}
+
         for order_line in order.order_line:
             prod = order_line.product_id
 
@@ -90,6 +105,17 @@ class WebsiteCustom(Website):
             if prod_out_date > current:
                 out_over_current = True
 
+        if current_reduced <= prod.create_date:
+            its_new = True
+
+        all_program = request.env['coupon.program'].sudo()._get_program_from_products(prod.product_variant_id)
+        free_shipping = False
+        if all_program:
+            for program in all_program[prod.product_variant_id]:
+                if program.reward_id.reward_type == 'free_shipping':
+                    if not free_shipping:
+                        free_shipping = True
+
         return {
             "current": current,
             "current_reduced": (current_reduced <= prod.create_date),
@@ -103,6 +129,7 @@ class WebsiteCustom(Website):
             "user_email": "" if not request.env.user.email else request.env.user.email,
             "out_over_current": out_over_current,
             "its_new": its_new,
+            "free_shipping":free_shipping
         }
 
 
@@ -136,34 +163,6 @@ class WebsiteSaleStockCustom(WebsiteSaleStock, WebsiteSale):
 
 
 class WebsiteSaleCustom(WebsiteSale):
-    #     @route(['/shop/payment'], type='http', auth="public", website=True)
-    #     def payment(self, **post):
-    #         prod_id = request.params.get("buynow")
-
-    #         if prod_id:
-    #             if request.env.user.id == request.env.ref('base.public_user').id:
-    #                 return request.redirect('/web/login')
-
-    #             order = request.env['sale.order'].sudo().create({
-    #                 'partner_id': request.env.user.id,
-    #                 'website_id': request.website.id,
-    #             })
-    #             request.env['sale.order.line'].sudo().create({
-    #                 "order_id":order.id,
-    #                 "product_id":int(prod_id),
-    #                 "product_uom_qty":1,
-    #             })
-
-    #             render_values = self._get_shop_payment_values(order, **post)
-    #             render_values['only_services'] = order and order.only_services or False
-
-    #             if render_values['errors']:
-    #                 render_values.pop('acquirers', '')
-    #                 render_values.pop('tokens', '')
-
-    #             return request.render("website_sale.payment", render_values)
-
-    #         return super(WebsiteSaleCustom, self).payment(**post)
     @route(
         [
             """/shop""",

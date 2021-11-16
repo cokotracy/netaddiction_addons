@@ -119,6 +119,25 @@
                             <strong class="label label-request">SPEDITO IN 72 ORE</strong>
                         </t>
                     </t>
+
+                    <t t-set="all_program" t-value="request.env['coupon.program'].sudo()._get_program_from_products(product.product_variant_id)"/>
+                    <t t-set="free_shipping" t-value="False"/>
+                    <t t-if="all_program">
+                        <t t-foreach="all_program[product.product_variant_id]" t-as="program">
+                            <t t-if="program.reward_id.reward_type == 'free_shipping'">
+                                <t t-if="not free_shipping">
+                                    <t t-set="free_shipping" t-value="True"/>
+                                    <strong class="label label-free-shipping">
+                                        <span></span>
+                                        <span></span>
+                                        <span></span>
+                                        <span></span>
+                                        <i class="fa fa-truck mr-2" style="font-size:15px"/>GRATIS
+                                    </strong>
+                                </t>
+                            </t>
+                        </t>
+                    </t>
                 </t>
             </div>
         </t>
@@ -1099,6 +1118,38 @@
                     Acquista ora
                 </a>
             </t>
+        </xpath>
+    </template>
+    
+    <template id="theme_clarico_vega.product_price_ept" inherit_id="website_sale.product_price">
+        <xpath expr="//div[hasclass('product_price')]" position="replace">
+            <div itemprop="offers" itemscope="itemscope" itemtype="http://schema.org/Offer"
+                 class="product_price mt16 te_prod_bottom_margin">
+                <t t-set="difference"
+                   t-value="round(combination_info['list_price'] - combination_info['price'],2) "/>
+                <t t-set="discount"
+                   t-value="round(difference*100/combination_info['list_price']) if combination_info['list_price'] &gt; 0 else 0"/>
+                <h4 class="oe_price_h4 css_editable_mode_hidden">
+                    <b class="oe_price" style="white-space: nowrap;" t-esc="combination_info['price']"
+                       t-options="{'widget': 'monetary', 'display_currency': website.currency_id}"/>
+                    <span t-attf-class="text-danger oe_default_price {{'' if combination_info['has_discounted_price'] else 'd-none'}}"
+                          style="text-decoration: line-through; white-space: nowrap;"
+                          t-esc="combination_info['list_price']"
+                          t-options="{'widget': 'monetary', 'display_currency': website.currency_id}"/>
+                    <span itemprop="price" style="display:none;" t-esc="combination_info['price']"/>
+                    <span itemprop="priceCurrency" style="display:none;" t-esc="website.currency_id.name"/>
+                </h4>
+                <h4 class="css_non_editable_mode_hidden decimal_precision"
+                    t-att-data-precision="str(website.currency_id.decimal_places)">
+                    <span t-field="product.list_price"
+                          t-options='{ "widget": "monetary", "display_currency": product.currency_id, }'/>
+                </h4>
+                <div t-attf-class="te_discount {{'d-inline-block ml-2' if combination_info['has_discounted_price'] else 'd-none'}}">
+                    <div class="special_price_label">
+                        <span t-esc="'-'+ str(discount) + '%'"/>
+                    </div>
+                </div>
+            </div>
         </xpath>
     </template>
 
