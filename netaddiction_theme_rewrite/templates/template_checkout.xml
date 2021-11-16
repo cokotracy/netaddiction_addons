@@ -433,11 +433,13 @@
 			<t t-set="free_shipping" t-value="False"/>
 			<t t-foreach="order.order_line" t-as="line">
 				<t t-set="all_program" t-value="request.env['coupon.program'].sudo()._get_program_from_products(line.product_id)"/>
-				<t t-if="line.product_id.type != 'service'">
-					<t t-foreach="all_program[line.product_id]" t-as="program">
-						<t t-if="program.reward_id.reward_type == 'free_shipping'">
-							<t t-if="not free_shipping">
-								<t t-set="free_shipping" t-value="True"/>
+				<t t-if="all_program">
+					<t t-if="line.product_id.type != 'service'">
+						<t t-foreach="all_program[line.product_id]" t-as="program">
+							<t t-if="program.reward_id.reward_type == 'free_shipping'">
+								<t t-if="not free_shipping">
+									<t t-set="free_shipping" t-value="True"/>
+								</t>
 							</t>
 						</t>
 					</t>
