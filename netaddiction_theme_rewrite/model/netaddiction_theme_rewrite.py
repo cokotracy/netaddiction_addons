@@ -95,10 +95,11 @@ class WebsiteCustom(Website):
 
         all_program = request.env['coupon.program'].sudo()._get_program_from_products(prod.product_variant_id)
         free_shipping = False
-        for program in all_program[prod.product_variant_id]:
-            if program.reward_id.reward_type == 'free_shipping':
-                if not free_shipping:
-                    free_shipping = True
+        if all_program:
+            for program in all_program[prod.product_variant_id]:
+                if program.reward_id.reward_type == 'free_shipping':
+                    if not free_shipping:
+                        free_shipping = True
 
         return {
             "current": current,
