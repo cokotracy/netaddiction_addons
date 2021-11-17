@@ -91,15 +91,13 @@
 				</t>
 				<section class="container">
 					<t t-set="products_ids" t-value="''" />
-					<t t-foreach="product_list_id" t-as="prod">
-						<t t-set="products_ids" t-value="products_ids + str(prod.id) + ','" />
-					</t>
-					<t t-set="products_ids" t-value="products_ids[:-1]" />
 					<div class="d-none d-lg-block">
 						<t t-call="netaddiction_special_offers.pagination_offer" />
 					</div>
-					<section class="pt8 pb8 o_colored_level offer_product_list" data-snippet="p_slider" data-name="Product Snippet Builder">
-						<div class="js_slider_snippet" name="manual-configuration" data-isemipro="true" data-name="manual-configuration" t-attf-data-item_ids="{{products_ids}}" data-style="7" data-ui_option="shopping_cart,wishlist,quick_view,sale_label,ratings" data-slider_type="slider" t-attf-data-limit="{{str(page_size)}}" />
+					<section class="pt8 pb8 px-0 px-md-3 o_colored_level promo_product_list d-flex flex-wrap s_wsale_products_recently_viewed" data-snippet="p_slider" data-name="Product Snippet Builder">
+						<t t-call="netaddiction_special_offers.custom_product_product_layout">
+							<t t-set="filter_data" t-value="product_list_id"/>
+						</t>
 					</section>
 				</section>
 			</div>

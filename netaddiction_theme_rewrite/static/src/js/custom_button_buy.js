@@ -34,6 +34,8 @@ odoo.define('netaddiction_theme_rewrite.VariantMixin', function (require) {
       route: "/get_product_from_id",
       params: {
         product_id: combination.product_id,
+        list_price: combination.list_price,
+        price: combination.price
       },
     }).then(function (data) {
       if (data != null) {
@@ -42,6 +44,15 @@ odoo.define('netaddiction_theme_rewrite.VariantMixin', function (require) {
           var date = new Date(data.out_date);
           var exposed_date = date.toLocaleString('it-it', {month: 'long',}) + ' ' + date.getFullYear();
           $exposed_out_date.text(exposed_date)
+        }
+
+        if(data.discount > 0){
+          document.querySelector('.special_price_label > span').style.opacity = 1;
+          document.querySelector('.special_price_label > span').innerHTML = '-' + data.discount + '%'
+        }
+        else{
+          document.querySelector('.special_price_label > span').style.opacity = 0;
+          document.querySelector('.special_price_label > span').innerHTML = '0%'
         }
 
         xml_load_label.then(function () {

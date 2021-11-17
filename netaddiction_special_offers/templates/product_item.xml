@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="custom_product_product_layout">
+        <t t-foreach="filter_data" t-as="product">
+            <div style="overflow:initial!important;" class="card item te_product_ind custom_card col-6 col-lg-3 mb-2 mx-0 p-1 border-0">
+                <form action="/shop/cart/update" method="post" class="p-0 border">
+                    <t t-set="combination"
+                        t-value="product.product_template_attribute_value_ids"/>
+                    <t t-set="combination_info"
+                        t-value="product.product_tmpl_id._get_combination_info(combination, add_qty=add_qty or 1, pricelist=pricelist)"/>
+                    <input type="hidden" name="csrf_token"
+                            t-att-value="request.csrf_token()"/>
+                    <input type="hidden" class="product_id" name="product_id"
+                            t-att-value="product.id"/>
+                    <input type="hidden" class="product_template_id"
+                            name="product_template_id"
+                            t-att-value="product.id"/>
+                    
+                    <t t-call="netaddiction_special_offers.custom_label_check_product_product"/>
+
+                    <t t-if="combination_info">
+                        <div t-attf-class="special_price_label_container {{'' if combination_info['has_discounted_price'] else 'd-none'}}">
+                            <t t-set="difference" t-value="round(combination_info['list_price'] - combination_info['price'],2)"/>
+                            <t t-set="discount"
+                            t-value="round(difference*100/combination_info['list_price']) if combination_info['list_price'] &gt; 0 else 0"/>
+                            <div class="special_price_label" t-if="discount">
+                                <span t-esc="'-'+ str(discount) + '%'"/>
+                            </div>
+                        </div>
+                    </t>
+                    
+                    <section class="te_slider_img dd_slider_prod_bg">
+                        <a t-att-href="product.website_url">
+                            <t t-if="website.is_lazy_load">
+                                <img class="o_carousel_product_card_img_top card-img-top lazyload"
+                                        t-attf-src="/web/image/website/#{website.id}/lazy_load_image"
+                                        t-attf-data-src="/web/image/product.product/#{product.id}/image_512"
+                                        t-att-alt="product.name"/>
+                            </t>
+                            <t t-else="">
+                                <img class="o_carousel_product_card_img_top card-img-top"
+                                        t-attf-src="/web/image/product.product/#{product.id}/image_512"
+                                        t-att-alt="product.name"/>
+                            </t>
+                        </a>
+                    </section>
+                    <div class="te_prod_info_2">
+                        <section class="d-block position-relative p-2 te_prod_info_sub">
+                            <a t-att-href="product.website_url"
+                                class="text-decoration-none">
+                                <h6
+                                        t-attf-class="product_name #{'te_2_line' if (website.number_of_product_line == '2') else 'te_3_line' if (website.number_of_product_line == '3') else ''}"
+                                        t-raw="product.name"/>
+                            </a>
+                            <div class="product_price" itemprop="offers" itemscope="itemscope" itemtype="http://schema.org/Offer">
+                                <span t-if="combination_info['price']" t-esc="combination_info['price']" class="te_p_sm"
+                                    t-options="{'widget': 'monetary', 'display_currency': website.currency_id}"/>
+                                <del t-attf-class="text-danger mr-1 te_p_disc {{'' if combination_info['has_discounted_price'] else 'd-none'}}"
+                                    style="white-space: nowrap;" t-esc="combination_info['list_price']"
+                                    t-options="{'widget': 'monetary', 'display_currency': website.currency_id}"/>
+                                <span itemprop="price" style="display:none;" t-esc="combination_info['price']"/>
+                                <span itemprop="priceCurrency" style="display:none;" t-esc="website.currency_id.name"/>
+                            </div>
+                            <div class="add_to_cart_button">
+                                <input type="hidden" name="product-id" t-attf-data-product-id="{{product.id}}"/>
+                                <a id="add_to_cart" style="font-size:14px;" role="button" class="btn btn-primary btn-block js_add_cart py-1" href="#">
+                                    <i class="fa fa-shopping-cart"></i> Aggiungi
+                                </a>
+                            </div>
+                        </section>
+                    </div>
+                </form>
+            </div>
+        </t>
+    </template>
+    <template id="custom_label_check_product_product">
+		<t t-if="product">
+			<t t-set="current" t-value="datetime.datetime.now()" />
+			<t t-set="current_reduced" t-value="(datetime.datetime.now() - datetime.timedelta(days = 20))" />
+			<t t-if="product.out_date">
+				<t t-set="out_date" t-value="datetime.datetime.strptime(str(product.out_date) + ' 00:00:00.00000', '%Y-%m-%d %H:%M:%S.%f')" />
+			</t>
+			<div class="product-label-container position-absolute" style="z-index:1 !important;">
+				<t t-if="product.qty_available_now &lt;= 0 and out_date and out_date &gt; current and product.sudo().inventory_availability in ['always', 'threshold']">
+					<strong class="label label-out">
+						SOLD OUT
+					</strong>
+				</t>
+				<t t-else="">
+					<t t-if="current_reduced &lt;= product.create_date">
+						<strong class="label label-news">
+							NOVITÀ
+						</strong>
+					</t>
+					<t t-if="out_date">
+						<t t-if="out_date &gt; current">
+							<t t-if="product.qty_available_now &lt;= 0 and product.sudo().qty_sum_suppliers &lt;= 0">
+								<strong class="label label-preorder">
+									PRENOTAZIONE
+								</strong>
+							</t>
+						</t>
+					</t>
+					<t t-if="product.qty_available_now &lt;= 0 and product.sudo().qty_sum_suppliers &lt;= 0">
+						<t t-if="not out_date or out_date &lt; current">
+							<strong class="label label-out">
+								ESAURITO
+							</strong>
+						</t>
+					</t>
+					<t t-if="product.qty_available_now &gt; 0">
+						<strong class="label label-in">
+							DISPONIBILE
+						</strong>
+					</t>
+					<t t-if="product.qty_available_now &lt;= 0">
+						<t t-if="product.qty_available_now &lt;= 0 and product.sudo().qty_sum_suppliers &gt; 0">
+							<strong class="label label-request">
+								SPEDITO IN 72 ORE
+							</strong>
+						</t>
+					</t>
+				</t>
+			</div>
+		</t>
+	</template>
+</odoo>
