@@ -34,12 +34,12 @@
                             <t t-if="website.is_lazy_load">
                                 <img class="o_carousel_product_card_img_top card-img-top lazyload"
                                         t-attf-src="/web/image/website/#{website.id}/lazy_load_image"
-                                        t-attf-data-src="/web/image/product.template/#{product.id}/image_512"
+                                        t-attf-data-src="/web/image/product.product/#{product.id}/image_512"
                                         t-att-alt="product.name"/>
                             </t>
                             <t t-else="">
                                 <img class="o_carousel_product_card_img_top card-img-top"
-                                        t-attf-src="/web/image/product.template/#{product.id}/image_512"
+                                        t-attf-src="/web/image/product.product/#{product.id}/image_512"
                                         t-att-alt="product.name"/>
                             </t>
                         </a>
@@ -80,7 +80,7 @@
 			<t t-if="product.out_date">
 				<t t-set="out_date" t-value="datetime.datetime.strptime(str(product.out_date) + ' 00:00:00.00000', '%Y-%m-%d %H:%M:%S.%f')" />
 			</t>
-			<div class="product-label-container position-absolute">
+			<div class="product-label-container position-absolute" style="z-index:1 !important;">
 				<t t-if="product.qty_available_now &lt;= 0 and out_date and out_date &gt; current and product.sudo().inventory_availability in ['always', 'threshold']">
 					<strong class="label label-out">
 						SOLD OUT
