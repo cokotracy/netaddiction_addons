@@ -289,6 +289,10 @@ h1.te_product_name{
     max-width:70px !important;
 }
 
+.te_discount{
+    display: inline-block !important;
+}
+
 @keyframes scale-in-center {
     0% {
       -webkit-transform: scale(0);

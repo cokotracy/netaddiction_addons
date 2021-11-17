@@ -92,7 +92,7 @@ class WebsiteCustom(Website):
                     return {"image": prod.image_512, "out_of_stock": True, "product_name": prod.name}
 
     @route(["/get_product_from_id"], type="json", auth="public", website=True, csrf=False)
-    def get_product_from_id(self, product_id=None):
+    def get_product_from_id(self, product_id=None, list_price=None, price=None):
         prod = request.env["product.product"].search([("id", "=", product_id)])
         current = date.today()
         current_reduced = datetime.now() - timedelta(days=20)
@@ -116,6 +116,11 @@ class WebsiteCustom(Website):
                     if not free_shipping:
                         free_shipping = True
 
+        discount = 0
+        if list_price and price:
+            difference = round(list_price - price,2)
+            discount = round(difference*100/list_price) if list_price > 0 else 0
+
         return {
             "current": current,
             "current_reduced": (current_reduced <= prod.create_date),
@@ -129,7 +134,8 @@ class WebsiteCustom(Website):
             "user_email": "" if not request.env.user.email else request.env.user.email,
             "out_over_current": out_over_current,
             "its_new": its_new,
-            "free_shipping":free_shipping
+            "free_shipping":free_shipping,
+            "discount":discount
         }
 
 
