@@ -620,14 +620,15 @@ class CustomListPage(Controller):
             return request.render(page, {})
 
         else:
-            if not status_filter:
-                new_dom = [
-                    "|",
-                    ("product_variant_ids.out_date", ">", date.today()),
-                    ("product_variant_ids.qty_available_now", ">", 0),
-                ]
-                domain = expression.AND([new_dom, domain])
-            else:
+            # if not status_filter:
+            #     new_dom = [
+            #         "|",
+            #         ("product_variant_ids.out_date", ">", date.today()),
+            #         ("product_variant_ids.qty_available_now", ">", 0),
+            #     ]
+            #     domain = expression.AND([new_dom, domain])
+            # else:
+            if status_filter:
                 status_filter = status_filter.split(",")
                 domain = self._filters_pre_products(filters=status_filter, domain=domain)
 
