@@ -54,7 +54,7 @@
                 </div>
             <!-- </div> -->
         </div>
-        <div id="inventory_table">
+        <div id="inventory_table" class="o_content">
             <!-- Template InventoryTableProducts will be render here -->
         </div>
     </t>
