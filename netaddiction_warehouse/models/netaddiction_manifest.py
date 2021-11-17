@@ -197,60 +197,60 @@ class NetaddictionManifest(models.Model):
 
     def send_manifest(self):
         self.ensure_one()
-        # brt = self.env.ref('netaddiction_warehouse.carrier_brt')
+        brt = self.env.ref('netaddiction_warehouse.carrier_brt')
 
-        # params = self.env['ir.config_parameter'].sudo()
-        # prefix1 = params.get_param('bartolini_prefix_file1')
-        # prefix2 = params.get_param('bartolini_prefix_file2')
+        params = self.env['ir.config_parameter'].sudo()
+        prefix1 = params.get_param('bartolini_prefix_file1')
+        prefix2 = params.get_param('bartolini_prefix_file2')
 
-        # now = datetime.datetime.now()
+        now = datetime.datetime.now()
 
-        # try:
-        #     ftp = FTP(self.carrier_id.manifest_ftp_url)
-        #     ftp.login(
-        #         self.carrier_id.manifest_ftp_user,
-        #         self.carrier_id.manifest_ftp_password,
-        #         )
-        #     ftp.cwd(self.carrier_id.manifest_ftp_path)
-        # except Exception as e:
-        #     raise ValidationError(
-        #         f'Impossibile connettersi al server FTP '
-        #         f'per il seguente motivo:\n'
-        #         f'{str(e)}'
-        #         )
+        try:
+            ftp = FTP(self.carrier_id.manifest_ftp_url)
+            ftp.login(
+                self.carrier_id.manifest_ftp_user,
+                self.carrier_id.manifest_ftp_password,
+                )
+            ftp.cwd(self.carrier_id.manifest_ftp_path)
+        except Exception as e:
+            raise ValidationError(
+                f'Impossibile connettersi al server FTP '
+                f'per il seguente motivo:\n'
+                f'{str(e)}'
+                )
 
-        # if brt == self.carrier_id:
-        #     if not self.manifest_file1 or not self.manifest_file2:
-        #         raise ValidationError("Non hai ancora creato il manifest")
-        #     try:
-        #         name = now.strftime("%Y%m%d")
-        #         name1 = '%s%s.txt' % (prefix1, name)
-        #         name2 = '%s%s.txt' % (prefix2, name)
-        #         bio1 = io.BytesIO(base64.b64decode(self.manifest_file1))
-        #         ftp.storbinary('STOR %s' % name1, bio1)
-        #         sem1 = io.BytesIO(b'')
-        #         sem_name1 = '%s%s.chk' % (prefix1, name)
-        #         ftp.storbinary('STOR %s' % sem_name1, sem1)
-        #         bio2 = io.BytesIO(base64.b64decode(self.manifest_file2))
-        #         ftp.storbinary('STOR %s' % name2, bio2)
-        #         sem2 = io.BytesIO(b'')
-        #         sem_name2 = '%s%s.chk' % (prefix2, name)
-        #         ftp.storbinary('STOR %s' % sem_name2, sem2)
-        #         self.date_sent = now
-        #     except Exception as e:
-        #         raise ValidationError(str(e))
-        # else:
-        #     if self.manifest_file1 is False:
-        #         raise ValidationError("Non hai ancora creato il manifest")
-        #     try:
-        #         bio = io.BytesIO(base64.b64decode(self.manifest_file1))
-        #         name = now.strftime("%Y%m%d%H%M")
-        #         ftp.storbinary('STOR %s.clidati.dat' % name, bio)
-        #         semaforo = io.BytesIO(b'')
-        #         ftp.storbinary('STOR %s.clidati.dis' % name, semaforo)
-        #         self.date_sent = now
-        #     except Exception as e:
-        #         raise ValidationError(str(e))
+        if brt == self.carrier_id:
+            if not self.manifest_file1 or not self.manifest_file2:
+                raise ValidationError("Non hai ancora creato il manifest")
+            try:
+                name = now.strftime("%Y%m%d")
+                name1 = '%s%s.txt' % (prefix1, name)
+                name2 = '%s%s.txt' % (prefix2, name)
+                bio1 = io.BytesIO(base64.b64decode(self.manifest_file1))
+                ftp.storbinary('STOR %s' % name1, bio1)
+                sem1 = io.BytesIO(b'')
+                sem_name1 = '%s%s.chk' % (prefix1, name)
+                ftp.storbinary('STOR %s' % sem_name1, sem1)
+                bio2 = io.BytesIO(base64.b64decode(self.manifest_file2))
+                ftp.storbinary('STOR %s' % name2, bio2)
+                sem2 = io.BytesIO(b'')
+                sem_name2 = '%s%s.chk' % (prefix2, name)
+                ftp.storbinary('STOR %s' % sem_name2, sem2)
+                self.date_sent = now
+            except Exception as e:
+                raise ValidationError(str(e))
+        else:
+            if self.manifest_file1 is False:
+                raise ValidationError("Non hai ancora creato il manifest")
+            try:
+                bio = io.BytesIO(base64.b64decode(self.manifest_file1))
+                name = now.strftime("%Y%m%d%H%M")
+                ftp.storbinary('STOR %s.clidati.dat' % name, bio)
+                semaforo = io.BytesIO(b'')
+                ftp.storbinary('STOR %s.clidati.dis' % name, semaforo)
+                self.date_sent = now
+            except Exception as e:
+                raise ValidationError(str(e))
 
         try:
             self._notify_product_shipping()
