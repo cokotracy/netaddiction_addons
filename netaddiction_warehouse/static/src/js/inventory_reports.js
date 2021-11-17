@@ -277,8 +277,8 @@ odoo.define('netaddiction_warehouse.inventory_reports', function (require) {
                 model: 'stock.quant',
                 method: 'search_read',
                 fields: [
-                    'inventory_value',
-                    'qty'
+                    'value',
+                    'quantity'
                 ],
                 domain: filter,
                 group_by: ['product_id'],
