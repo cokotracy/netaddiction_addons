@@ -1,7 +1,7 @@
 # Copyright 2019 Openforce Srls Unipersonale (www.openforce.it)
 # License LGPL-3.0 or later (https://www.gnu.org/licenses/lgpl).
 
-from datetime import date, timedelta
+from datetime import date
 
 from odoo import api, fields, models
 
@@ -43,9 +43,9 @@ class ProductTemplate(models.Model):
         "Mensile: qualsiasi data inserita prende solo il mese e l'anno"
         " (es: in uscita nel mese di Dicembre 2019)\n"
         "Trimestrale: prende l'anno e mese e calcola il trimestre"
-         " (es:in uscita nel terzo trimestre 2019)\n"
+        " (es:in uscita nel terzo trimestre 2019)\n"
         "Quadrimestrale: prende anno e mese e calcola il quadrimestre"
-         " (es:in uscita nel primo quadrimestre del 2019)\n"
+        " (es:in uscita nel primo quadrimestre del 2019)\n"
         "Annuale: prende solo l'anno (es: in uscita nel 2019)",
         string="Approssimazione Data",
     )
@@ -252,6 +252,16 @@ class ProductProduct(models.Model):
             product.default_code = str(product.id).rjust(7, '0')
         return res
 
+    def write(self, values):
+        res = super().write(values)
+        new_out_date = values.get('out_date', False)
+        if new_out_date:
+            try:
+                self._notify_product_out_date_change()
+            except Exception:
+                pass
+        return res
+
     def manage_product_seller_ids(self):
         self.ensure_one()
         action = self.env.ref(
@@ -328,6 +338,7 @@ class ProductProduct(models.Model):
             item.qty_sum_suppliers = sum(
                 [int(sup.avail_qty) for sup in item.seller_ids]
             )
+
     # TODO this search attribute was removed, check if it's necessary
     def _search_available_now(self, operator, value):
         domain = []
@@ -581,7 +592,44 @@ class ProductProduct(models.Model):
             'res_ids': programs.ids,
             })
         return action
-
+    
+    def _notify_product_out_date_change(self):
+        template = self.env.ref('netaddiction_products.notify_product_out_date_change')
+        
+        # utenti preorder
+        domain = [
+            ("is_delivery", "=", False),
+            ("is_payment", "=", False),
+            ("state", "in", ["sale"]),
+            ("product_id.sale_ok", "=", True),
+            ("product_id.id", "=", self.id),
+            ("product_id.out_date", ">", date.today()),
+        ]
+        orders = self.env['sale.order.line'].search(domain)
+        for order in orders:
+            template = template.sudo().with_context({
+                "user_id": order.order_partner_id.id,
+                "email": order.order_partner_id.email,
+                "label": f"È cambiata la data di uscita di un prodotto che hai prenotato. Ricorda che, se hai prenotato un prodotto diverso dalla categoria Videogiochi, la data di arrivo è sempre IPOTETICA",
+                "out_date": self.out_date.strftime('%d-%m-%Y')
+            })
+            template.send_mail(self.id, force_send=False, raise_exception=False)
+                
+        # utenti wishlist
+        domain = [
+            ("product_id.sale_ok", "=", True),
+            ("product_id.id", "=", self.id),
+            ("product_id.out_date", ">", date.today()),
+        ]
+        wish_list = self.env['product.wishlist'].search(domain)
+        for wish in wish_list:
+            template = template.sudo().with_context({
+                "user_id": wish.partner_id.id,
+                "email": wish.partner_id.email,
+                "label": f"È cambiata la data di uscita di un prodotto presente nella tua Lista dei Desideri.",
+                "out_date": self.out_date.strftime('%d-%m-%Y')
+            })
+            template.send_mail(self.id, force_send=False, raise_exception=False)
 
 class SupplierInfo(models.Model):
 
