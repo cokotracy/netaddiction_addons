@@ -53,7 +53,7 @@ class CustomPageOffer(Controller):
 
                 domain = ast.literal_eval(domain)
 
-                prod_list = request.env["product.product"].sudo().search(domain).product_tmpl_id
+                prod_list = request.env["product.product"].sudo().search(domain)
 
                 if tag_filter:
                     tag_list = []
@@ -64,20 +64,20 @@ class CustomPageOffer(Controller):
                     tag_prod = (
                         request.env["product.template.tag"].sudo().browse(tag_list).product_tmpl_ids
                     )
-                    prod_list = prod_list.sudo().filtered_domain([("id", "in", tag_prod.ids)])
+                    prod_list = prod_list.sudo().filtered_domain([("product_tmpl_id", "in", tag_prod.ids)])
 
                 if max_price:
                     if int(max_price) < MAX_PRICE_RANGE:
                         prod_list = prod_list.sudo().filtered_domain(
-                            [("product_variant_ids.fix_price", "<=", float(max_price))]
+                            [("fix_price", "<=", float(max_price))]
                         )
                     else:
                         prod_list = prod_list.sudo().filtered_domain(
-                            [("product_variant_ids.fix_price", ">=", float(max_price))]
+                            [("fix_price", ">=", float(max_price))]
                         )
 
                 tags_list = (
-                    request.env["product.template.tag"].sudo().search([("product_tmpl_ids", "in", prod_list.ids)])
+                    request.env["product.template.tag"].sudo().search([("product_tmpl_ids", "in", prod_list.product_tmpl_id.ids)])
                 )
 
                 if order:
