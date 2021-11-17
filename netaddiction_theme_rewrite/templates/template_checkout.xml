@@ -515,7 +515,9 @@
 
 	<template id="custom_cart_suggested" inherit_id="website_sale.suggested_products_list">
 		<xpath expr="//h5" position="replace">
-			<h5 class="title_suggested d-none">Ti consigliamo anche</h5>
+			<t t-if="suggested_products">
+				<h5 class="title_suggested d-none">Ti consigliamo anche</h5>
+			</t>
 		</xpath>
 		
 		<xpath expr="//tr[@t-foreach='suggested_products']" position="replace">
