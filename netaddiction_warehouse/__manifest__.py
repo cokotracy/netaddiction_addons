@@ -4,7 +4,7 @@
     'author': "NetAddiction",
     'website': "http://www.netaddiction.it",
     'category': 'Warehouse Management',
-    'version': '14.0.1.8.5',
+    'version': '14.0.1.10.5',
     'depends': [
         'base',
         'advance_website_all_in_one',
@@ -33,6 +33,7 @@
         'data/delivery_carriers.xml',
         'data/ir_cron.xml',
         'data/mail_message_subtype.xml',
+        'data/mail_template.xml',
         'data/stock_location.xml',
         'reports/report.xml',
         'reports/template/bolla_di_spedizione.xml',

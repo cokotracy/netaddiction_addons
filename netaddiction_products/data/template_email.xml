@@ -40,6 +40,105 @@
             ]]>
         </field>
     </record>
+    
+    <record id="notify_product_out_date_change" model="mail.template">
+            <field name="name">Out date change notification: Send by email</field>
+            <field name="model_id" ref="product.model_product_product"/>
+            <field name="subject">${ctx.get('label')}</field>
+            <field name="email_from">Multiplayer.com &lt;no-reply@multiplayer.com&gt;</field>
+            <field name="partner_to">${ctx.get('user_id')}</field>
+            <field name="email_to">${ctx.get('email')}</field>
+            <field name="body_html" type="html">
+                <table border="0" cellpadding="0" cellspacing="0" style="padding-top:16px; padding-bottom:16px;background-color: #F1F1F1; font-family:Verdana, Arial,sans-serif; color: #454748; width: 100%; border-collapse:separate;">
+                    <tbody>
+                        <tr>
+                        <td align="center">
+                            <table border="0" cellpadding="0" cellspacing="0" width="750"
+                            style="background-color: black; padding: 10px; color: #454748; border-collapse:separate;">
+                                <tr>
+                                    <td>
+                                    <a href="https://multiplayer.com/" target="_blank">
+                                        <img src="https://s3-eu-west-1.amazonaws.com/topolio/uploads/614c6c5a69c71/1632398664.jpg" width="250"
+                                        alt="" />
+                                    </a>
+                                    </td>
+                                    <td class="text-align:right;">
+                                    <a href="https://t.me/multiplayershop" target="_blank" style="display: block; text-align: right;">
+                                        <img src="https://s3-eu-west-1.amazonaws.com/topolio/uploads/614c6c5a69c71/1632400337.jpg" width="300"
+                                        alt="" />
+                                    </a>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                        </tr>
+                        <tr>
+                        <td align="center">
+                            <table border="0" cellpadding="0" cellspacing="0" width="700"
+                            style="padding:16px;background-color: white; color: #454748; border-collapse:separate;">
+                                <tbody>
+                                    <tr>
+                                        <td align="center" style="min-width:700px;">
+                                            <table border="0" cellpadding="0" cellspacing="0" width="700"
+                                            style="min-width:700px;background-color: white; padding: 0px 8px 0px 8px; border-collapse:separate;">
+                                                <tbody>
+                                                    <tr>
+                                                        <td valign="top" style="font-size:13px;">
+                                                            <div>
+                                                                <br /><span style="font-size: 14px">Gentile cliente,<br />${ctx.get('label')}</span>                                                            
+                                                            </div>
+                                                            <div style="margin-top: 20px; padding: 0px;">
+                                                                <table width="700px" style="color: #454748; font-size: 12px; border-collapse: collapse;">
+                                                                    <thead>
+                                                                        <tr style="border-bottom:2px solid #dee2e6;">
+                                                                            <td width="18%"><strong>Prodotto</strong></td>
+                                                                            <td></td>
+                                                                            <td><strong>Nuova data di uscita</strong></td>
+                                                                        </tr>
+                                                                    </thead>
+                                                                    <tbody>
+                                                                        <tr>
+                                                                            <td style="width:150px;">
+                                                                                <img src="https://multiplayer.com/web/image/product.product/${object.id}/image_128" style="width: 64px; height: 64px; object-fit: contain;" alt="Product image"/>
+                                                                            </td>
+                                                                            <th scope="row">${object.display_name}</th>
+                                                                            <td style="text-align: center; color:green; font-size:16px;"><strong><span>${ctx.get('out_date')}</span></strong></td>
+                                                                        </tr>
+                                                                    </tbody>
+                                                                </table>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table><br /><br />
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </td>
+                        </tr>
+                        <tr>
+                        <td align="center">
+                            <table border="0" cellpadding="10" cellspacing="0" width="750"
+                            style="background-color: black; padding: 10px; color: #454748; border-collapse:separate;">
+                            <tr>
+                                <td>
+                                <p style="font-size: 11px; color: #FFF;">Multiplayer.com 
+                                    <span>è parte del gruppo editoriale NetAddiction s.r.l.</span>
+                                </p>
+                                <p style="font-size: 11px; color: #FFF;">
+                                    <a href="mailto:shopping@multiplayer.com" style="color: #FFF;">shopping@multiplayer.com</a>
+                                    | <a href="//multiplayer.com" style="color: #FFF;">www.multiplayer.com</a>
+                                </p>
+                                </td>
+                            </tr>
+                            </table>
+                        </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </field>
+    	</record>
 
 </data>
 </odoo>

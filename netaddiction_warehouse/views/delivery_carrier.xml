@@ -8,6 +8,7 @@
         <field name="arch" type="xml">
             <xpath expr="/form/sheet/group/group/div/field[@name='delivery_type']/.." position="after">
                 <field name="time_to_shipping"/>
+                <field name="base_tracking_url"/>
             </xpath>
             <xpath expr="//notebook/page[last()]" position="after">
                 <page name="manifest" string="Manifest">
