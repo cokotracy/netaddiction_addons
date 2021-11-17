@@ -14,6 +14,8 @@ class DeliveryCarrier(models.Model):
         string="Tempo di Consegna",
     )
 
+    base_tracking_url = fields.Char(string="URL base per il tracciamento")
+
     manifest_ftp_url = fields.Char()
 
     manifest_ftp_user = fields.Char()
@@ -26,3 +28,8 @@ class DeliveryCarrier(models.Model):
         'payment.acquirer',
         string='Sistema di Pagamento Contrassegno',
     )
+
+    def get_tracking_url(self, code=""):
+        if not self.base_tracking_url:
+            return "#"
+        return self.base_tracking_url % code

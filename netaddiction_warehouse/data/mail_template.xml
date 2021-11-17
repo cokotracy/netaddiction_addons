@@ -49,7 +49,7 @@
                                                     il suo ordine, <b>${object.sale_id.display_name}</b>, è stato spedito. Da questo momento non è più possibile apportare alcuna modifica.</span><br />
                                                 <br /><span style="font-size: 14px">
                                                     Ricordati che potrai visualizzarne i dettagli e tracciare la spedizione entrando nell'apposita sezione: <a style="color: #f58220; text-decoration: underline;" href="https://multiplayer.com/my/orders/${object.sale_id.id}"><b>I MIEI ORDINI</b></a> o direttamente
-                                                    sul sito del corriere tramite il seguente link: <a style="color: #f58220; text-decoration: underline;" href="${ctx.get('tracking_code')}"><b>TRACCIA IL MIO PACCO</b></a>
+                                                    sul sito del corriere tramite il seguente link: <a style="color: #f58220; text-decoration: underline;" href="${ctx.get('tracking_url')}"><b>TRACCIA IL MIO PACCO</b></a>
                                                 </span><br />
                                                 <br /><span style="font-size: 12px; color: gray">
                                                     Non riesci a tracciarlo? A volte possono servire fino a 24 ore: riprova tra un po´.
