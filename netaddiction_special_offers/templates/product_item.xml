@@ -120,6 +120,25 @@
 							</strong>
 						</t>
 					</t>
+                    <t t-set="all_program" t-value="request.env['coupon.program'].sudo()._get_program_from_products(product)" />
+					<t t-set="free_shipping" t-value="False" />
+					<t t-if="all_program">
+						<t t-foreach="all_program[product]" t-as="program">
+							<t t-if="program.reward_id.reward_type == 'free_shipping'">
+								<t t-if="not free_shipping">
+									<t t-set="free_shipping" t-value="True" />
+									<strong class="label label-free-shipping">
+										<span></span>
+										<span></span>
+										<span></span>
+										<span></span>
+										<i class="fa fa-truck mr-2" style="font-size:15px" />
+										GRATIS
+									</strong>
+								</t>
+							</t>
+						</t>
+					</t>
 				</t>
 			</div>
 		</t>
