@@ -93,7 +93,7 @@ class WebsiteCustom(Website):
 
     @route(["/get_product_from_id"], type="json", auth="public", website=True, csrf=False)
     def get_product_from_id(self, product_id=None, list_price=None, price=None):
-        prod = request.env["product.product"].search([("id", "=", product_id)])
+        prod = request.env["product.product"].browse(product_id)
         current = date.today()
         current_reduced = datetime.now() - timedelta(days=20)
         prod_out_date = ""
@@ -108,10 +108,10 @@ class WebsiteCustom(Website):
         if current_reduced <= prod.create_date:
             its_new = True
 
-        all_program = request.env['coupon.program'].sudo()._get_program_from_products(prod.product_variant_id)
+        all_program = request.env['coupon.program'].sudo()._get_program_from_products(prod)
         free_shipping = False
         if all_program:
-            for program in all_program[prod.product_variant_id]:
+            for program in all_program[prod]:
                 if program.reward_id.reward_type == 'free_shipping':
                     if not free_shipping:
                         free_shipping = True
