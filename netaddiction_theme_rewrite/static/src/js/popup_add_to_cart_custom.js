@@ -26,7 +26,7 @@ odoo.define('netaddiction_theme_rewrite.custom_popup_add_to_cart', function (req
           if($button != null){
             var $prod_image = $card.find('.o_carousel_product_card_img_top').attr('src');
             var $prod_name = $card.find('.product_name').text();
-            $('#modal_message .modal-body .img_custom_add_to_cart').html(`<img src="${$prod_image}"/>`);
+            $('#modal_message .modal-body .img_custom_add_to_cart').html(`<img style="max-height:200px;" class="mb-3 mx-auto" src="${$prod_image}"/>`);
             $('#modal_message .modal-body .text_custom_add_to_cart').html(`<p class="h5"><span class="text-primary">${$prod_name}</span><br/><br/>Prodotto aggiunto al carrello!</p>`);
             $button.click();
             setTimeout(() => {
