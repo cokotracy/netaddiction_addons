@@ -205,7 +205,7 @@ header nav.navbar .header_middle .te_search_popover .input-group input.form-cont
     transition:0.5s;
     padding:3px 5px;
     overflow:hidden;
-    position:relative;
+    position:sticky;
     background-color: #3d3d3d;
     transform:skew(0turn, 0deg);
   }
