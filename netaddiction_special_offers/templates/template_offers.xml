@@ -102,8 +102,34 @@
 				</section>
 			</div>
 			<t t-call="netaddiction_special_offers.pagination_offer" />
+			<t t-call="netaddiction_special_offers.custom_popup_add_to_cart" />
 		</t>
 	</template>
+
+	<template id="custom_popup_add_to_cart">
+		<button id="custom_popup_add_to_cart" type="button" class="btn btn-primary d-none" data-toggle="modal" data-target="#modal_message"></button>
+			<!-- Modal -->
+		<div class="modal fade close_modal_custom_add_to_cart" id="modal_message" tabindex="-1" role="dialog" aria-labelledby="modal_messageLabel" aria-hidden="true">
+			<div class="modal-dialog" role="document">
+				<div class="modal-content">
+					<div class="modal-body">
+						<div class="container-fluid">
+							<div class="row">
+								<div class="col-sm img_custom_add_to_cart">
+								
+								</div>
+								<div class="col-sm text_custom_add_to_cart text-center">
+								
+								</div>
+							</div>
+						</div>
+					</div>
+					<button type="button" class="d-none btn btn-secondary  close_modal_custom_add_to_cart" data-dismiss="modal"></button>
+				</div>
+			</div>
+		</div>
+	</template>
+
 	<!-- PAGINAZIONE -->
 	<template id="pagination_offer">
 		<div class="container d-flex custom_pager products_pager form-inline mt-3 mb-3 te_shop_pager">

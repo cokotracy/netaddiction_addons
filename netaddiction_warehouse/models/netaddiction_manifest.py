@@ -252,6 +252,11 @@ class NetaddictionManifest(models.Model):
             except Exception as e:
                 raise ValidationError(str(e))
 
+        try:
+            self._notify_product_shipping()
+        except Exception as e:
+            pass
+
     @staticmethod
     def _get_delivery_amount(delivery, payment=None):
         amount = 0.0
@@ -927,3 +932,12 @@ class NetaddictionManifest(models.Model):
             'line_amount': line_amount,
             'customer': customer,
         }
+
+    def _notify_product_shipping(self):
+        for delivery in self.delivery_ids:
+            template = self.env.ref('netaddiction_warehouse.notify_product_shipping', raise_if_not_found=False)
+            tracking_url = self.carrier_id.get_tracking_url(delivery.delivery_barcode)
+            context = {
+                "tracking_url": tracking_url
+            }
+            template.with_context(context).send_mail(delivery.id)

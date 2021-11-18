@@ -9,12 +9,43 @@
         <!--PRENDO TUTTI I RATINGS-->
         <t t-if="product" t-set="all_ratings" t-value="request.env['rating.rating'].sudo().search([('res_id', '=', product.id)])"/>
         <t t-if="product">
+
+            <t t-set="current" t-value="datetime.datetime.now()" />
+			<t t-set="current_reduced" t-value="(datetime.datetime.now() - datetime.timedelta(days = 20))" />
+			<t t-if="product.out_date">
+				<t t-set="out_date" t-value="datetime.datetime.strptime(str(product.out_date) + ' 00:00:00.00000', '%Y-%m-%d %H:%M:%S.%f')" />
+			</t>
+				<t t-if="product.product_variant_id.qty_available_now &lt;= 0 and out_date and out_date &gt; current and product.sudo().product_variant_id.inventory_availability in ['always', 'threshold']">
+					<t t-set="status" t-value="'discontinued'"/>
+				</t>
+				<t t-else="">
+					<t t-if="out_date">
+						<t t-if="out_date &gt; current">
+							<t t-if="product.product_variant_id.qty_available_now &lt;= 0 and product.sudo().product_variant_id.qty_sum_suppliers &lt;= 0">
+								<t t-set="status" t-value="'preorder'"/>
+							</t>
+						</t>
+					</t>
+					<t t-if="product.product_variant_id.qty_available_now &lt;= 0 and product.sudo().product_variant_id.qty_sum_suppliers &lt;= 0">
+						<t t-if="not out_date or out_date &lt; current">
+							<t t-set="status" t-value="'out of stock'"/>
+						</t>
+					</t>
+					<t t-if="product.product_variant_id.qty_available_now &lt;= 0">
+						<t t-if="product.product_variant_id.qty_available_now &lt;= 0 and product.sudo().product_variant_id.qty_sum_suppliers &gt; 0">
+							<t t-set="status" t-value="'available for order'"/>
+						</t>
+					</t>
+                    <t t-if="product.product_variant_id.qty_available_now &gt; 0">
+						<t t-set="status" t-value="'in stock'"/>
+					</t>
+				</t>
             <script type="application/ld+json">
-                
                 {
                     "@context": "https://schema.org/",
                     "@type": "Product",
                     "name": "<t t-esc="product.name"/>",
+                    "availability":"<t t-esc="status"/>",
                     "image": [
                         <t t-if="product_variant">
                             <t t-set="img_index" t-value="0"/>
