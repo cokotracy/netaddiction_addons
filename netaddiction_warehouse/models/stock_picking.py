@@ -123,7 +123,7 @@ class StockPicking(models.Model):
 
         partial = any(p.state != 'done' for p in pick.sale_id.picking_ids)
         if not partial:
-            pick.sale_id.with_context(ignore_pickup_check=True).state = 'done'
+            pick.sale_id.with_context(ignore_pickup_check=True).action_done()
 
         # a questo punto metto spedita e da fatturare anche la riga spedizioni
         shipping_line = self.env['sale.order.line'].search(
