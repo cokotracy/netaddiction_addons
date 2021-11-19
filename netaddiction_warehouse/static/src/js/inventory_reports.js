@@ -253,7 +253,7 @@ odoo.define('netaddiction_warehouse.inventory_reports', function (require) {
                 self.attribute_filter=false;
                 self.get_products();
             }else{
-                self.attribute_filter = ['attribute_value_ids','=',value];
+                self.attribute_filter = ['product_template_attribute_value_ids.attribute_line_id.value_ids','=',value];
                 self.attribute = value;
                 self.get_products();
             }
@@ -277,8 +277,8 @@ odoo.define('netaddiction_warehouse.inventory_reports', function (require) {
                 model: 'stock.quant',
                 method: 'search_read',
                 fields: [
-                    'inventory_value',
-                    'qty'
+                    'value',
+                    'quantity'
                 ],
                 domain: filter,
                 group_by: ['product_id'],

@@ -498,10 +498,3 @@ class Product(models.Model):
     #             }
     #     return product_data
 
-    def _search(self, args, offset=0, limit=None, order=None, count=False, access_rights_uid=None):
-        print('-------------------------------------------------')
-        print('self, args, offset, limit, order, count, access_rights_uid')
-        print(self, args, offset, limit, order, count, access_rights_uid)
-        print('-------------------------------------------------')
-        # import pdb;pdb.set_trace()
-        return super()._search(args, offset=offset, limit=limit, order=order, count=count, access_rights_uid=access_rights_uid)
