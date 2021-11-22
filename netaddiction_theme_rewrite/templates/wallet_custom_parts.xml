@@ -39,7 +39,7 @@
 				</div>
 			</div>
 		</t> -->
-		<t t-if='order.get_portal_last_transaction()'>
+		<!-- <t t-if='order.get_portal_last_transaction()'>
 			<div class="oe_website_sale_tx_status mt-3" t-att-data-order-id="order.id">
 				<t t-set="payment_tx_id" t-value="order.get_portal_last_transaction()"/>
 				<div class="card">
@@ -91,6 +91,6 @@
 					</div>
 				</div>
 			</div>
-		</t>
+		</t> -->
 	</template>
 </odoo>
