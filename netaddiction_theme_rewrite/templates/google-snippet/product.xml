@@ -16,28 +16,28 @@
 				<t t-set="out_date" t-value="datetime.datetime.strptime(str(product.out_date) + ' 00:00:00.00000', '%Y-%m-%d %H:%M:%S.%f')" />
 			</t>
 				<t t-if="product.product_variant_id.qty_available_now &lt;= 0 and out_date and out_date &gt; current and product.sudo().product_variant_id.inventory_availability in ['always', 'threshold']">
-					<t t-set="status" t-value="'discontinued'"/>
+					<t t-set="status" t-value="'https://schema.org/Discontinued'"/>
 				</t>
 				<t t-else="">
 					<t t-if="out_date">
 						<t t-if="out_date &gt; current">
 							<t t-if="product.product_variant_id.qty_available_now &lt;= 0 and product.sudo().product_variant_id.qty_sum_suppliers &lt;= 0">
-								<t t-set="status" t-value="'preorder'"/>
+								<t t-set="status" t-value="'https://schema.org/PreOrder'"/>
 							</t>
 						</t>
 					</t>
 					<t t-if="product.product_variant_id.qty_available_now &lt;= 0 and product.sudo().product_variant_id.qty_sum_suppliers &lt;= 0">
 						<t t-if="not out_date or out_date &lt; current">
-							<t t-set="status" t-value="'out of stock'"/>
+							<t t-set="status" t-value="'https://schema.org/OutOfStock'"/>
 						</t>
 					</t>
 					<t t-if="product.product_variant_id.qty_available_now &lt;= 0">
 						<t t-if="product.product_variant_id.qty_available_now &lt;= 0 and product.sudo().product_variant_id.qty_sum_suppliers &gt; 0">
-							<t t-set="status" t-value="'available for order'"/>
+							<t t-set="status" t-value="'https://schema.org/InStock'"/>
 						</t>
 					</t>
                     <t t-if="product.product_variant_id.qty_available_now &gt; 0">
-						<t t-set="status" t-value="'in stock'"/>
+						<t t-set="status" t-value="'https://schema.org/InStock'"/>
 					</t>
 				</t>
             <script type="application/ld+json">
@@ -45,7 +45,6 @@
                     "@context": "https://schema.org/",
                     "@type": "Product",
                     "name": "<t t-esc="product.name"/>",
-                    "availability":"<t t-esc="status"/>",
                     "image": [
                         <t t-if="product_variant">
                             <t t-set="img_index" t-value="0"/>
@@ -97,6 +96,7 @@
                     </t>
                     "offers": {
                         "@type": "Offer",
+                        "availability":"<t t-esc="status"/>",
                         "url": "<t t-esc="request.httprequest.url"/>",
                         "priceCurrency": "EUR",
                         "price": "<t t-esc="combination_info['price']"/>"
