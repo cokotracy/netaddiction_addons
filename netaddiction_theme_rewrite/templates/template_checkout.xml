@@ -328,31 +328,44 @@
 					<t t-set="count" t-value="1"/>
 				</div>
 				</t>
-				<t t-if="count==1">
-					<div class="website-wallet border p-3" style="box-shadow:0 4px 8px 0 rgb(156 156 156 / 10%), 0 6px 20px 0 rgb(156 156 156 / 10%) !important;" t-if="website.wallet_product_id">
-						<div class="checkbox">
-							<t t-if="not website_sale_order.is_wallet">
-								<div id="not_wallet" style="font-size: 16px;margin-right: 5px;">
-									<span><i class="fa fa-square-o"></i></span>
-									<label class="text-primary" style="font-size: 18px;">Utilizza il credito del Wallet</label>
-								</div>
-							</t>
-							<t t-else="">
-								<div id="wallet_checked" style="font-size: 16px;margin-right: 5px;">
-									<span><i class="fa fa-check-square-o"></i></span>
-									<label class="text-primary" style="font-size: 18px;">Utilizza il credito del Wallet</label>
-								</div>
-							</t>
+				<t t-set="partner_wallet" t-value="website.sudo().get_wallet_balance(website.currency_id)"/>
+				<t t-if="partner_wallet &gt; 0">
+					<t t-if="count==1">
+						<div class="website-wallet border p-3" style="box-shadow:0 4px 8px 0 rgb(156 156 156 / 10%), 0 6px 20px 0 rgb(156 156 156 / 10%) !important;" t-if="website.wallet_product_id">
+							<div class="checkbox">
+								<t t-if="not website_sale_order.is_wallet">
+									<div id="not_wallet" style="font-size: 16px;margin-right: 5px;">
+										<span><i class="fa fa-square-o"></i></span>
+										<label class="text-primary" style="font-size: 18px;">Utilizza il credito del Wallet</label>
+									</div>
+								</t>
+								<t t-else="">
+									<div id="wallet_checked" style="font-size: 16px;margin-right: 5px;">
+										<span><i class="fa fa-check-square-o"></i></span>
+										<label class="text-primary" style="font-size: 18px;">Utilizza il credito del Wallet</label>
+									</div>
+									<script>
+										document.addEventListener("DOMContentLoaded", function() {
+											var payment_method = document.querySelectorAll('.o_payment_form > .card > .card-body');
+											payment_method.forEach(element => {
+												if(!element.querySelectorAll("input[data-provider='netaddiction_stripe']").length > 0)
+													element.style.display = 'none';
+												else
+													element.querySelector("input[data-provider='netaddiction_stripe']").checked = true;
+											});
+										});
+									</script>
+								</t>
+							</div>
+							<div>
+								<b>Disponi di: </b> 
+								<span class="text-primary" style="font-size: 18px;" t-esc="partner_wallet"/>
+								<span class="text-primary" style="font-size: 18px;" t-esc="website.currency_id.symbol"/>
+								<hr/>
+								<small class="pt-2">Selezionando questo metodo pagherai solo in caso ci fosse una differenza tra il tuo wallet e il prezzo dell'ordine, è richiesta una carta di credito.</small>
+							</div>
 						</div>
-						<div>
-							<b>Disponi di: </b> 
-							<t t-set="partner_wallet" t-value="website.sudo().get_wallet_balance(website.currency_id)"/>
-							<span class="text-primary" style="font-size: 18px;" t-esc="partner_wallet"/>
-							<span class="text-primary" style="font-size: 18px;" t-esc="website.currency_id.symbol"/>
-							<hr/>
-							<small class="pt-2">Selezionando questo metodo pagherai solo in caso ci fosse una differenza tra il tuo wallet e il prezzo dell'ordine.</small>
-						</div>
-					</div>
+					</t>
 				</t>
 			</div>
 			<t t-call="netaddiction_theme_rewrite.error_modal"/>

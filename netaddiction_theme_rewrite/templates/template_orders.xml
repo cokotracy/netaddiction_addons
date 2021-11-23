@@ -198,7 +198,7 @@
                                 </div>
                             </t>
                             <t t-else="">
-                                <div class="small d-lg-inline-block text-primary">Verrà spedito appena i prodotti saranno disponibile in magazzino</div>
+                                <div class="small d-lg-inline-block text-primary">Verrà spedito appena i prodotti saranno disponibili in magazzino</div>
                             </t>
                         </td>
                         <td class="p-2">
@@ -252,5 +252,14 @@
         <xpath expr="//div[@t-if='invoices']" position="replace">
             
         </xpath>
-    </template>    
+    </template>   
+
+
+    <template id="custom_payment_info_wallet" inherit_id="sale.sale_order_portal_content_totals_table">
+        <xpath expr="//table" position="before">
+            <t t-if="sale_order.is_wallet">
+                <strong class="text-primary">Credito Utilizzato: </strong><strong><t t-esc="sale_order.wallet_used"/> €</strong>
+            </t>
+        </xpath>
+    </template>
 </odoo>
