@@ -19,11 +19,13 @@ class NetaddictionStripeSuper(WebsiteSale):
 
         :param int pm_id: id of the payment.token that we want to use to pay.
         """
+
+        # Check if there are specific modules installed
         affiliate_module = request.env["ir.module.module"].sudo().search([("name", "=", "affiliate_management")])
         odoo_wallet = request.env["ir.module.module"].sudo().search([("name", "=", "odoo_website_wallet")])
 
         order = request.website.sale_get_order()
-        # do not crash if the user has already paid and try to pay again
+        # Do not crash if the user has already paid and try to pay again
         if not order:
             return request.redirect("/shop/?error=no_order")
 
@@ -38,13 +40,16 @@ class NetaddictionStripeSuper(WebsiteSale):
         if not request.env["payment.token"].sudo().search_count([("id", "=", pm_id)]):
             return request.redirect("/shop/?error=token_not_found")
 
+        # If the wallet module is active and the following order has wallet as payment method
         if odoo_wallet and odoo_wallet.state == "installed":
             if order.is_wallet == True:
                 web_currency = request.website.get_current_pricelist().currency_id
                 wallet_balance = request.website.get_wallet_balance(web_currency)
+                # If the balance of the wallet is greater than the total amount of the order, set the total to 0
                 if wallet_balance >= order.amount_total:
                     order.write({"amount_total": 0.0})
 
+                # Calculate the difference between the money in the wallet and the money in the order
                 if order.amount_total > wallet_balance:
                     deduct_amount = order.amount_total - wallet_balance
                     order.write({"amount_total": deduct_amount})
@@ -72,6 +77,7 @@ class NetaddictionStripeSuper(WebsiteSale):
 
             if odoo_wallet and odoo_wallet.state == "installed":
                 if order.is_wallet == True:
+                    # Executes the wallet transaction
                     order = self._do_wallet_transaction(order, tx)
 
             order.with_context(send_email=True).action_confirm()
@@ -86,6 +92,7 @@ class NetaddictionStripeSuper(WebsiteSale):
             return request.redirect("/payment/process")
 
     def _do_wallet_transaction(self, order, tx):
+        # INDIA CODE
         wallet_obj = request.env["website.wallet.transaction"]
         partner = request.env["res.partner"].search([("id", "=", order.partner_id.id)])
         wallet_balance = order.partner_id.wallet_balance
