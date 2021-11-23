@@ -147,7 +147,7 @@
 
     <!--MENU HEADER-->
     <template id="custom_menu_dropdown" inherit_id="theme_clarico_vega.customize_header_style_10" priority="23" active="True">
-        <xpath expr="//div[hasclass('js_usermenu')]" position="inside">
+        <xpath expr="//div[hasclass('js_usermenu')]/a[@id='o_logout']" position="before">
             <a href="/wallet" role="menuitem" class="dropdown-item">
                 <span class="fa fa-money"/>
                 <span class="te_user_drop_item">Wallet
