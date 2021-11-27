@@ -549,4 +549,41 @@
 			</tr>
 		</xpath>
 	</template>
+
+
+
+
+
+	<template id="lego_gtag_events" inherit_id="website_sale.confirmation">
+		<xpath expr="//h1" position="after">
+			
+					<!--
+					Event snippet for IT_Lego-MikMak_Thy-Page-Retailers on https://lego.mikmak.com/retailers/thaypage: Please do not remove.
+					Place this snippet on pages with events you’re tracking. 
+					Creation date: 11/22/2021
+					-->
+					<script>
+						<t t-foreach="order.order_line" t-as="line">
+							<t t-if="line.product_id.product_tmpl_id.public_categ_ids.ids and line.product_id.product_tmpl_id.public_categ_ids.ids[0] in [51, 44, 38, 53, 50]">
+								gtag("event", "purchase", {
+									"allow_custom_scripts": true,
+									"value": "<t t-esc="line.price_unit"/>",
+									"transaction_id": "<t t-esc="order.name"/>",
+									"u14": "<t t-esc="line.product_id.website_url"/>",
+									"u19": "Multiplayer.com",
+									"u8": "<t t-esc="line.product_id.barcode"/>",
+									"u9": "<t t-esc="line.product_id.name"/>",
+									"send_to": "DC-8342968/it-th00/it_le0+transactions"
+								});
+							</t>
+						</t>
+					</script>
+					<noscript>
+					<img src="https://ad.doubleclick.net/ddm/activity/src=8342968;type=it-th00;cat=it_le0;qty=1;cost=[Revenue];u8=[[product_id]];u9=[[product_name]];u14=[URL];u19=[retailer];dc_lat=;dc_rdid=;tag_for_child_directed_treatment=;tfua=;npa=;gdpr=${GDPR};gdpr_consent=${GDPR_CONSENT_755};ord=[OrderID]?" width="1" height="1" alt=""/>
+					</noscript>
+					<!-- End of event snippet: Please do not remove -->
+
+		</xpath>
+    </template>
+
 </odoo>

@@ -73,6 +73,21 @@ odoo.define('theme_clarico_vega.ajax_cart', function (require) {
                 ajax.jsonRpc('/shop/cart/update_custom', 'call',{'product_id':product_product,'add_qty':quantity, 'product_custom_attribute_values':product_custom_attribute_values,'no_variant_attribute_values':no_variant_attribute_values}).then(function(data) {
                     var ajaxCart = new publicWidget.registry.ajax_cart();
                     if(data) {
+
+                        ajax.jsonRpc('/get_product_from_id', 'call',{'product_id':parseInt(product_product)})
+                        .then(function(data) {
+                            if(data.category.length > 0 && [51, 44, 38, 53, 50].includes(data.category[0])){
+                              window.gtag('event', 'conversion', {
+                                'allow_custom_scripts': true,
+                                'u14': data.url,
+                                'u19': 'Multiplayer.com',
+                                'u8': data.barcode,
+                                'u9': data.name,
+                                'send_to': 'DC-8342968/it-mi0/it_le000+standard'
+                              });
+                            }
+                        });
+
                         $('.ajax_cart_modal > .cart_close').trigger('click');
                         $('.quick_view_modal > .quick_close').trigger('click');
                         var $quantity = $(".my_cart_quantity");
