@@ -34,3 +34,9 @@
 [submodule "OCA/server-auth"]
 	path = OCA/server-auth
 	url = https://github.com/OCA/server-auth.git
+[submodule "OCA/connector"]
+	path = OCA/connector
+	url = https://github.com/OCA/connector.git
+[submodule "OCA/rest-framework"]
+	path = OCA/rest-framework
+	url = https://github.com/OCA/rest-framework.git

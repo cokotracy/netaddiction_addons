@@ -39,6 +39,11 @@
                                     </div>
                                     <div class="w-100 w-md-50 p-3">
                                         <div class="text-left">
+                                            <t t-if="order.is_wallet">
+                                                <div class="py-2 d-block">
+                                                    <strong class="text-primary h5">Credito Utilizzato:</strong><strong class="ml-2 h5"><t t-esc="order.wallet_used"/> €</strong>
+                                                </div>
+                                            </t>
                                             <div class="d-block mb-2 pt-2 border-top">
                                                 <small class="mr-2">Effettuato il: </small> <i style="font-size:13px;" t-field="order.date_order" t-options="{'widget': 'date', 'format':'dd/MM/YYYY'}"/>
                                             </div>
