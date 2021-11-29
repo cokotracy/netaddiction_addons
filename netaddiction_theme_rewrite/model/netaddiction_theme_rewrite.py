@@ -105,8 +105,9 @@ class WebsiteCustom(Website):
             if prod_out_date > current:
                 out_over_current = True
 
-        if current_reduced <= prod.create_date:
+        if prod.create_date and current_reduced <= prod.create_date:
             its_new = True
+
 
         all_program = request.env['coupon.program'].sudo()._get_program_from_products(prod)
         free_shipping = False
@@ -123,7 +124,7 @@ class WebsiteCustom(Website):
 
         return {
             "current": current,
-            "current_reduced": (current_reduced <= prod.create_date),
+            "current_reduced": current_reduced,
             "prod_out_date": prod_out_date,
             "qty_sum_suppliers": prod.sudo().qty_sum_suppliers,
             "sale_ok": prod.sale_ok,
@@ -135,7 +136,11 @@ class WebsiteCustom(Website):
             "out_over_current": out_over_current,
             "its_new": its_new,
             "free_shipping":free_shipping,
-            "discount":discount
+            "discount":discount,
+            "name":prod.name,
+            "barcode":prod.barcode,
+            "url":prod.website_url,
+            "category":prod.product_tmpl_id.public_categ_ids.ids
         }
 
 
