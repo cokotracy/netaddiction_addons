@@ -26,6 +26,10 @@ class CustomCategoryPage(Controller):
     def controllerWarnerShop(self):
         return request.render("netaddiction_website.template_warner_shop", {})
 
+    @route("/harry-potter", type="http", auth="public", website=True)
+    def controllerHarryPotterShop(self):
+        return request.render("netaddiction_website.template_harry_potter_shop", {})
+
     @route("/offerte", type="http", auth="public", website=True)
     def controllerOfferteShop(self):
         return request.render("netaddiction_website.template_offer_shop", {})
