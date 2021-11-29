@@ -21,6 +21,20 @@
             <script type="text/javascript" src="//cdn.iubenda.com/cs/iubenda_cs.js" charset="UTF-8" async="async"></script>
         </xpath>
         <xpath expr="//meta[last()]" position="after">
+            <!-- 
+            Start of global snippet: Please do not remove
+            Place this snippet between the <head> and </head> tags on every page of your site.
+            -->
+            <!-- Global site tag (gtag.js) - Google Marketing Platform -->
+            <script async="async" src="https://www.googletagmanager.com/gtag/js?id=DC-8342968"></script>
+            <script>
+                window.dataLayer = window.dataLayer || [];
+                function gtag(){dataLayer.push(arguments);}
+                gtag('js', new Date());
+
+                gtag('config', 'DC-8342968');
+            </script>
+            <!-- End of global snippet: Please do not remove -->
             <t t-if="request.website.isB2B">
                 <meta name="robots" content="noindex, nofollow" />
             </t>

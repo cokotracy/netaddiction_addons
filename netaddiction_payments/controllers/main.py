@@ -19,8 +19,9 @@ class NetaddictionStripeSuper(WebsiteSale):
 
         :param int pm_id: id of the payment.token that we want to use to pay.
         """
+
         order = request.website.sale_get_order()
-        # do not crash if the user has already paid and try to pay again
+        # Do not crash if the user has already paid and try to pay again
         if not order:
             return request.redirect("/shop/?error=no_order")
 
@@ -34,6 +35,19 @@ class NetaddictionStripeSuper(WebsiteSale):
         # We retrieve the token the user want to use to pay
         if not request.env["payment.token"].sudo().search_count([("id", "=", pm_id)]):
             return request.redirect("/shop/?error=token_not_found")
+
+        # If the wallet module is active and the following order has wallet as payment method
+        if order.is_wallet == True:
+            web_currency = request.website.get_current_pricelist().currency_id
+            wallet_balance = request.website.get_wallet_balance(web_currency)
+            # If the balance of the wallet is greater than the total amount of the order, set the total to 0
+            if wallet_balance >= order.amount_total:
+                order.write({"amount_total": 0.0})
+
+            # Calculate the difference between the money in the wallet and the money in the order
+            if order.amount_total > wallet_balance:
+                deduct_amount = order.amount_total - wallet_balance
+                order.write({"amount_total": deduct_amount})
 
         # Create transaction
         vals = {"payment_token_id": pm_id, "return_url": "/shop/payment/validate"}
@@ -56,16 +70,56 @@ class NetaddictionStripeSuper(WebsiteSale):
             tx.write(vals)
             tx.payment_token_id.verified = True
 
+            if order.is_wallet == True:
+                # Executes the wallet transaction
+                order = self._do_wallet_transaction(order, tx)
+
             order.with_context(send_email=True).action_confirm()
             order._send_order_confirmation_mail()
             request.website.sale_reset()
             result = request.render("website_sale.confirmation", {"order": order})
-            affiliate_module = request.env["ir.module.module"].sudo().search([("name", "=", "affiliate_management")])
-            if affiliate_module and affiliate_module.state == "installed":
-                return self._update_affiliate_visit_cookies(order, result)
-            return result
+            return self._update_affiliate_visit_cookies(order, result)
         else:
             return request.redirect("/payment/process")
+
+    def _do_wallet_transaction(self, order, tx):
+        # INDIA CODE
+        wallet_obj = request.env["website.wallet.transaction"]
+        wallet_balance = order.partner_id.wallet_balance
+        amount_total = order.amount_untaxed + order.amount_tax
+
+        company_currency = request.website.company_id.currency_id
+        web_currency = order.pricelist_id.currency_id
+        price = float(amount_total)
+
+        if company_currency.id != web_currency.id:
+            new_rate = (price * company_currency.rate) / web_currency.rate
+            price = round(new_rate, 2)
+
+        wallet_create = wallet_obj.sudo().create(
+            {
+                "wallet_type": "debit",
+                "partner_id": order.partner_id.id,
+                "sale_order_id": order.id,
+                "reference": "sale_order",
+                "amount": price,
+                "currency_id": company_currency.id,
+                "status": "done",
+            }
+        )
+
+        if wallet_balance >= price:
+            amount = wallet_balance - price
+            order.write({"wallet_used": float(amount_total), "wallet_transaction_id": wallet_create.id})
+            order.partner_id.sudo().write({"wallet_balance": round(amount, 2)})
+            tx.state = "done"
+
+        if price > wallet_balance:
+            p_wlt = request.website.get_wallet_balance(web_currency)
+            order.write({"wallet_used": p_wlt, "wallet_transaction_id": wallet_create.id})
+            order.partner_id.sudo().write({"wallet_balance": 0.0})
+            order.wallet_transaction_id.update({"amount": p_wlt})
+        return order
 
     def _update_affiliate_visit_cookies(self, sale_order_id, result):
         """update affiliate.visit from cokkies data i.e created in product and shop method"""

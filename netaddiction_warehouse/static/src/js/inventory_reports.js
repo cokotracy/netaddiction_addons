@@ -268,26 +268,26 @@ odoo.define('netaddiction_warehouse.inventory_reports', function (require) {
             self.suppliers_results[value]['pids'] = [];
             self.suppliers_results[value]['products'] = {};
             var filter = [
-                ['company_id','=',self.company_id],['location_id','=',self.wh],
-                // FIXME: history_ids non esiste più
-                // ['history_ids.picking_id.partner_id.id','=',value]
+                ['company_id','=',self.company_id],['location_id','=',self.wh],['product_id.seller_ids.name.id', '=', value]
             ];
 
             this._rpc({
                 model: 'stock.quant',
-                method: 'search_read',
-                fields: [
-                    'value',
-                    'quantity'
-                ],
-                domain: filter,
-                group_by: ['product_id'],
-            }).then(function (results) {
+                method: 'read_group',
+                kwargs: {
+                    domain: filter,
+                    fields: [
+                        'value',
+                        'quantity'
+                    ],
+                    groupby: ['product_id'],
+                },
+	    }).then(function (results) {
                 var total_inventory = 0;
                 $.each(results,function(i,v){
-                    total_inventory = total_inventory + v.attributes.aggregates.inventory_value;
-                    self.suppliers_results[value]['pids'].push(v.attributes.value[0]);
-                    self.suppliers_results[value]['products'][v.attributes.value[0]] = {'qty': v.attributes.aggregates.qty, 'inventory_value': v.attributes.aggregates.inventory_value};
+                    total_inventory = total_inventory + v.value;
+                    self.suppliers_results[value]['pids'].push(v.product_id[0]);
+                    self.suppliers_results[value]['products'][v.product_id[0]] = {'quantity': v.quantity, 'value': v.value};
                 });
                 self.suppliers_pids = self.suppliers_results[value]['pids'];
                 self.get_products();
@@ -474,8 +474,8 @@ odoo.define('netaddiction_warehouse.inventory_reports', function (require) {
                         // }
                         product.price = "0";
                         if(self.suppliers_pids){
-                            product.qty_available = self.suppliers_results[self.supplier]['products'][product.id]['qty'];
-                            product['total_inventory'] = self.suppliers_results[self.supplier]['products'][product.id]['inventory_value'].toLocaleString();
+                            product.qty_available = self.suppliers_results[self.supplier]['products'][product.id]['quantity'];
+                            product['total_inventory'] = self.suppliers_results[self.supplier]['products'][product.id]['value'].toLocaleString();
                         }
                     });
                     self.$el.find('#inventory_table').html(QWeb.render("InventoryTableProducts", {products: products}));
