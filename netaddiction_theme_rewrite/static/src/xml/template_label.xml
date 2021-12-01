@@ -30,7 +30,7 @@
             </t>
             <t t-if="qty_available_now &lt;= 0">
                 <t t-if="qty_available_now &lt;= 0 and qty_sum_suppliers &gt; 0">
-                    <strong class="label label-request mr-2 mb-2 px-2">SPEDITO IN 72 ORE</strong>
+                    <strong class="label label-in mr-2 mb-2 px-2">DISPONIBILE</strong>
                 </t>
             </t>
             <t t-if="free_shipping">
@@ -41,6 +41,14 @@
                     <span></span>
                     SPEDIZIONE GRATUITA!
                 </strong>
+            </t>
+        </t>
+
+        <t t-if="qty_available_now &lt;= 0">
+            <t t-if="qty_available_now &lt;= 0 and qty_sum_suppliers &gt; 0">
+                <div class="d-block w-100">
+                    <small class="text-primary"><strong>Il prodotto verrà spedito in 72 ore</strong></small>
+                </div>
             </t>
         </t>
     </t>

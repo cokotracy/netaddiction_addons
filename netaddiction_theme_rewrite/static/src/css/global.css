@@ -589,6 +589,11 @@ header nav.navbar .header_middle{
 }
 
 
+.o_wsale_product_grid_wrapper{
+    height:360px;
+}
+
+
 @media only screen and (min-width: 321px){
     .navbar-brand{
         width:190px;
@@ -629,6 +634,10 @@ header nav.navbar .header_middle{
 }
 
 @media only screen and (min-width: 768px) {
+    .o_wsale_product_grid_wrapper{
+        height:initial;
+    }
+
     .te_search_popover{
         box-shadow: none;
         background-color: transparent;
