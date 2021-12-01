@@ -654,11 +654,6 @@
                         </t>
                     </t>
                 </div>
-                <div class="image-zoom-custom" id="image-zoom-custom">
-                    <i class="fa fa-window-close text-primary" 
-                        onClick="document.querySelector('#image-zoom-custom').style.display='none'"></i>
-                    <img alt="Zoom immagine corrente" src=""/>
-                </div>
             </div>
             <div t-ignore="True" id="thumbnailSlider" class="">
                 <input id="len-ept-image" type="hidden" t-attf-value="#{len(product_images)}"/>
@@ -875,6 +870,11 @@
                 </div>
             </div>
         </section> -->
+        <div class="image-zoom-custom" id="image-zoom-custom">
+            <i class="fa fa-window-close text-primary" 
+                onClick="document.querySelector('#image-zoom-custom').style.display='none'"></i>
+            <img alt="Zoom immagine corrente" src=""/>
+        </div>
         <section class="product_tabs_ept s_tabs container">
             <t t-set="review_active" t-value="'false'"/>
             <t t-set="review_active_tab" t-value="''"/>
