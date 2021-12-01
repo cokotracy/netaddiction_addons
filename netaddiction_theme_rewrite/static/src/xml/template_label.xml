@@ -47,7 +47,7 @@
         <t t-if="qty_available_now &lt;= 0">
             <t t-if="qty_available_now &lt;= 0 and qty_sum_suppliers &gt; 0">
                 <div class="d-block w-100">
-                    <small class="text-primary"><strong>Il prodotto verrà spedito in 72 ore</strong></small>
+                    <small class="text-primary"><strong>Il prodotto sarà spedito in 72 ore</strong></small>
                 </div>
             </t>
         </t>
