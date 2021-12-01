@@ -115,8 +115,8 @@
 					</t>
 					<t t-if="product.qty_available_now &lt;= 0">
 						<t t-if="product.qty_available_now &lt;= 0 and product.sudo().qty_sum_suppliers &gt; 0">
-							<strong class="label label-request">
-								SPEDITO IN 72 ORE
+							<strong class="label label-in">
+								DISPONIBILE
 							</strong>
 						</t>
 					</t>

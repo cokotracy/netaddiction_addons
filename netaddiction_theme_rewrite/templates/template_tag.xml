@@ -39,7 +39,7 @@
 										</div>
 										<t t-call="netaddiction_theme_rewrite.custom_filters">
 											<t t-set="status" t-value="true"/>
-											<t t-set="full_status" t-value="false"/>
+											<t t-set="full_status" t-value="true"/>
 											<t t-set="price" t-value="true"/>
 											<t t-set="tag" t-value="false"/>
 										</t>
