@@ -21,11 +21,18 @@
             <script type="text/javascript" src="//cdn.iubenda.com/cs/iubenda_cs.js" charset="UTF-8" async="async"></script>
         </xpath>
         <xpath expr="//meta[last()]" position="after">
-            <!-- 
-            Start of global snippet: Please do not remove
-            Place this snippet between the <head> and </head> tags on every page of your site.
-            -->
-            <!-- Global site tag (gtag.js) - Google Marketing Platform -->
+     
+            <!-- Global site tag (gtag.js) Multiplayer.com -->
+            <script async="async" src="https://www.googletagmanager.com/gtag/js?id=GTM-554WF2X"></script>
+            <script>
+                window.dataLayer = window.dataLayer || [];
+                function gtag(){dataLayer.push(arguments);}
+                gtag('js', new Date());
+
+                gtag('config', 'GTM-554WF2X');
+            </script>
+
+            <!-- Global site tag (gtag.js) LEGO -->
             <script async="async" src="https://www.googletagmanager.com/gtag/js?id=DC-8342968"></script>
             <script>
                 window.dataLayer = window.dataLayer || [];
@@ -34,6 +41,7 @@
 
                 gtag('config', 'DC-8342968');
             </script>
+
             <!-- End of global snippet: Please do not remove -->
             <t t-if="request.website.isB2B">
                 <meta name="robots" content="noindex, nofollow" />
@@ -121,6 +129,26 @@
                 <link href="/netaddiction_theme_rewrite/static/src/css/product.css" rel="stylesheet"/>
                     <!-- AGGIUNGE LO SNIPPET PER PRODOTTI -->
                 <t t-call="netaddiction_theme_rewrite.product_snippet"/>
+
+                <t t-if="product">
+                    <t t-if="product.public_categ_ids">
+                        <t t-if="product.public_categ_ids.ids and product.public_categ_ids.ids[0] in [51, 44, 38, 53, 50]">
+                            <script>
+                                gtag("event", "conversion", {
+                                    'allow_custom_scripts': true,
+                                    "u14": "<t t-esc="product.website_url"/>",
+                                    "u19": "Multiplayer.com",
+                                    "u8": "<t t-esc="product.barcode"/>",
+                                    "u9": "<t t-esc="product.name"/>",
+                                    "send_to": "DC-8342968/it-mi0/it_le000+standard"
+                                });
+                            </script>
+                            <noscript>
+                                <img src="https://ad.doubleclick.net/ddm/activity/src=8342968;type=it-mi0;cat=it_le000;u8=[[product_id]];u9=[[product_name]];u14=[URL];u19=[retailer];dc_lat=;dc_rdid=;tag_for_child_directed_treatment=;tfua=;npa=;gdpr=${GDPR};gdpr_consent=${GDPR_CONSENT_755};ord=1?" width="1" height="1" alt=""/>
+                            </noscript>
+                        </t>
+                    </t>
+                </t>
 
                 <t t-if="product_variant">
                     <t t-set="product_images" t-value="product_variant._get_images() if product_variant else product._get_images()"/>

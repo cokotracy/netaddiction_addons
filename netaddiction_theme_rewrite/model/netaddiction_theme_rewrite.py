@@ -415,52 +415,52 @@ class WebsiteSaleCustom(WebsiteSale):
     def _custom_get_search_order(self, post):
         # OrderBy will be parsed in orm and so no direct sql injection
         # id is added to be sure that order is a unique sort key
-        order = post.get("order") or "create_date desc"
+        order = post.get("order") or "id desc"
         return "is_published desc, %s" % order
 
     def _filters_pre_products(self, filters, domain):
-        if len(filters) == 1:
-            for filter in filters:
-                if filter == "stock":
-                    domain = expression.AND([[("product_variant_ids.qty_available_now", ">", 0)], domain])
-
-                if filter == "preorder":
-                    domain = expression.AND([[("product_variant_ids.out_date", ">", date.today())], domain])
-
-                if filter == "new":
-                    domain = expression.AND([[("create_date", ">", (date.today() - timedelta(days=20)))], domain])
-        else:
-            if len(filters) > 1:
-                new_domain = ["|"]
+        if filters:
+            if len(filters) == 1:
                 for filter in filters:
-                    if filter == "stock":
-                        new_domain.append(("product_variant_ids.qty_available_now", ">", 0))
-
                     if filter == "preorder":
-                        new_domain.append(("product_variant_ids.out_date", ">", date.today()))
+                        domain = expression.AND([[("product_variant_ids.out_date", ">", date.today())], domain])
 
                     if filter == "new":
-                        new_domain.append(("create_date", ">", (date.today() - timedelta(days=20))))
+                        domain = expression.AND([[("create_date", ">", (date.today() - timedelta(days=20)))], domain])
+            else:
+                if len(filters) > 1:
+                    new_domain = ["|"]
+                    for filter in filters:
+                        if filter == "preorder":
+                            new_domain.append(("product_variant_ids.out_date", ">", date.today()))
 
-                domain = expression.AND([new_domain, domain])
+                        if filter == "new":
+                            new_domain.append(("create_date", ">", (date.today() - timedelta(days=20))))
+
+                    domain = expression.AND([new_domain, domain])
 
         return domain
 
     def _filters_post_products(self, filters, products):
-        for filter in filters:
-            if filter == "order":
-                products = products.sudo().filtered_domain([("product_variant_ids.qty_sum_suppliers", ">", 0)])
-            if filter == "unavailable":
-                products = products.sudo().filtered_domain(
-                    [
-                        ("product_variant_ids.qty_sum_suppliers", "<=", 0),
-                        ("product_variant_ids.qty_available_now", "<=", 0),
-                        "|",
-                        ("product_variant_ids.out_date", "=", ""),
-                        ("product_variant_ids.out_date", "<", date.today()),
-                    ],
-                )
-        return products
+        if filters:
+            for filter in filters:
+                if filter == "stock":
+                    dom = []
+                    dom = expression.OR([[("product_variant_ids.qty_sum_suppliers", ">", 0)], dom])
+                    dom = expression.OR([[("product_variant_ids.qty_available_now", ">", 0)], dom])
+                    products = products.sudo().filtered_domain(dom).sorted(key=lambda r: r.id, reverse=True)
+
+                if filter == "unavailable":
+                    products = products.sudo().filtered_domain(
+                        [
+                            ("product_variant_ids.qty_sum_suppliers", "<=", 0),
+                            ("product_variant_ids.qty_available_now", "<=", 0),
+                            "|",
+                            ("product_variant_ids.out_date", "=", ""),
+                            ("product_variant_ids.out_date", "<", date.today()),
+                        ],
+                    )
+            return products
 
 
 # AGGIUNGE LA PAGINA PRIVACY
@@ -648,6 +648,7 @@ class CustomListPage(Controller):
             current_page = 0
 
             prod_list = tag_name.product_tmpl_ids.filtered_domain(domain)
+            prod_list = self._filters_post_products(filters=status_filter, products=prod_list)
 
             if kw.get("page"):
                 current_page = int(kw.get("page")) - 1
@@ -709,32 +710,48 @@ class CustomListPage(Controller):
             return request.render("netaddiction_theme_rewrite.template_tag", values)
 
     def _filters_pre_products(self, filters, domain):
-        if len(filters) == 1:
-            for filter in filters:
-                if filter == "stock":
-                    domain = expression.AND([[("product_variant_ids.qty_available_now", ">", 0)], domain])
-
-                if filter == "preorder":
-                    domain = expression.AND([[("product_variant_ids.out_date", ">", date.today())], domain])
-
-                if filter == "new":
-                    domain = expression.AND([[("create_date", ">", (date.today() - timedelta(days=20)))], domain])
-        else:
-            if len(filters) > 1:
-                new_domain = ["|"]
+        if filters:
+            if len(filters) == 1:
                 for filter in filters:
-                    if filter == "stock":
-                        new_domain.append(("product_variant_ids.qty_available_now", ">", 0))
-
                     if filter == "preorder":
-                        new_domain.append(("product_variant_ids.out_date", ">", date.today()))
+                        domain = expression.AND([[("product_variant_ids.out_date", ">", date.today())], domain])
 
                     if filter == "new":
-                        new_domain.append(("create_date", ">", (date.today() - timedelta(days=20))))
+                        domain = expression.AND([[("create_date", ">", (date.today() - timedelta(days=20)))], domain])
+            else:
+                if len(filters) > 1:
+                    new_domain = ["|"]
+                    for filter in filters:
+                        if filter == "preorder":
+                            new_domain.append(("product_variant_ids.out_date", ">", date.today()))
 
-                domain = expression.AND([new_domain, domain])
+                        if filter == "new":
+                            new_domain.append(("create_date", ">", (date.today() - timedelta(days=20))))
+
+                    domain = expression.AND([new_domain, domain])
 
         return domain
+    
+    def _filters_post_products(self, filters, products):
+        if filters:
+            for filter in filters:
+                if filter == "stock":
+                    dom = []
+                    dom = expression.OR([[("product_variant_ids.qty_sum_suppliers", ">", 0)], dom])
+                    dom = expression.OR([[("product_variant_ids.qty_available_now", ">", 0)], dom])
+                    products = products.sudo().filtered_domain(dom).sorted(key=lambda r: r.id, reverse=True)
+
+                if filter == "unavailable":
+                    products = products.sudo().filtered_domain(
+                        [
+                            ("product_variant_ids.qty_sum_suppliers", "<=", 0),
+                            ("product_variant_ids.qty_available_now", "<=", 0),
+                            "|",
+                            ("product_variant_ids.out_date", "=", ""),
+                            ("product_variant_ids.out_date", "<", date.today()),
+                        ],
+                    )
+        return products
 
 
 # ESTENDE LA WALLET BALANCE PAGE
