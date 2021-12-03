@@ -503,6 +503,20 @@ header nav.navbar .header_middle{
 .o_wsale_product_grid_wrapper .te_percentage{
     display:none;
 }
+
+
+.te_bgimage{
+    opacity: 1 !important;
+    background-size: contain !important;
+}
+
+
+
+header nav.navbar .header_bottom #top_menu_collapse.header_menu_slide{
+    height:calc(100vh - 40px) !important;
+}
+
+
 @media only screen and (min-width: 768px) {
     #wrapwrap > main{
         margin-top:0px;
@@ -743,9 +757,6 @@ header nav.navbar .header_middle{
     background-color: #ffffff !important;
 }
 
-header nav.navbar .header_bottom #top_menu_collapse.header_menu_slide{
-    height:100vh !important;
-}
 
 .te_s_variant_text{
     display: none !important;

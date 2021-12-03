@@ -66,11 +66,15 @@ odoo.define('netaddiction_theme_rewrite.VariantMixin', function (require) {
           ));
           $('div#label_info_product').html($infoLabel);
 
-          var $notifyField = $(QWeb.render(
-            'netaddiction_theme_rewrite.product_notify',
-            data
-          ));
-          $('div#notify-my-mail').html($notifyField);
+          if (data.qty_available_now <= 0 && data.qty_sum_suppliers <= 0) {
+            if (data.prod_out_date == "" || !data.out_over_current) {
+              $(".o_product_notify").removeClass("d-none");
+            } else {
+              $(".o_product_notify").addClass("d-none");
+            }
+          } else {
+            $(".o_product_notify").addClass("d-none");
+          }
         });
 
         if (data.qty_sum_suppliers > 0 || data.qty_available_now > 0) return;
