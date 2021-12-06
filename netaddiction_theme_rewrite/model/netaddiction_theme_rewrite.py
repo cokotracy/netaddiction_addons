@@ -1063,11 +1063,11 @@ class WebsiteSaleCustomAddress(Controller):
 
     def _get_mandatory_billing_fields(self):
         # deprecated for _get_mandatory_fields_billing which handle zip/state required
-        return ["name", "email", "street", "city", "country_id"]
+        return ["name", "email", "street", "street2", "city", "country_id"]
 
     def _get_mandatory_shipping_fields(self):
         # deprecated for _get_mandatory_fields_shipping which handle zip/state required
-        return ["name", "street", "city", "country_id"]
+        return ["name", "street", "street2", "city", "country_id"]
 
     def _checkout_form_save(self, mode, checkout, all_values):
         Partner = request.env["res.partner"]
