@@ -7,7 +7,7 @@ from werkzeug.exceptions import Forbidden, NotFound
 from datetime import date, timedelta, datetime
 from odoo.addons.netaddiction_special_offers.controller.main import MAX_PRICE_RANGE
 from odoo.http import request, route, Controller
-from odoo import models, fields, tools, http, _
+from odoo import tools, http, _
 from odoo.exceptions import AccessError, ValidationError
 from odoo.addons.odoo_website_wallet.controllers.main import WebsiteWallet as Wallet
 from odoo.addons.website_sale.controllers.main import WebsiteSale, TableCompute
@@ -24,6 +24,37 @@ import ast
 from odoo.osv import expression
 
 
+def get_product_available_ids():
+    request.env.cr.execute(
+        """SELECT
+                product_supplierinfo.product_tmpl_id AS template_id
+            FROM
+                product_supplierinfo
+                LEFT JOIN product_public_category_product_template_rel ON product_public_category_product_template_rel.product_template_id = product_supplierinfo.product_tmpl_id
+            GROUP BY
+                (product_supplierinfo.product_tmpl_id)
+            HAVING
+                sum(product_supplierinfo.avail_qty) > 0
+            UNION
+            SELECT
+                product_product.product_tmpl_id
+            FROM
+                netaddiction_wh_locations_line
+                LEFT JOIN product_product ON product_product.id = netaddiction_wh_locations_line.product_id
+                FULL JOIN sale_order_line ON sale_order_line.product_id = product_product.id
+                    AND sale_order_line.state in('sale', 'pending', 'problem', 'partial_done')
+                LEFT JOIN product_template ON product_template.id = product_product.product_tmpl_id
+            WHERE
+                netaddiction_wh_locations_line.qty > 0
+                AND product_template.type = 'product'
+                AND (netaddiction_wh_locations_line.qty - coalesce(sale_order_line.product_uom_qty, 0)) > 0
+            """
+    )
+    dict_ids = request.env.cr.dictfetchall()
+    list_ids = [d["template_id"] for d in dict_ids if "template_id" in d]
+    return list_ids
+
+
 class WebsiteCustom(Website):
     @route(["/shop/cart/check_limit_order"], type="json", auth="public", methods=["POST"], website=True, csrf=False)
     def cart_update_json(self):
@@ -38,8 +69,8 @@ class WebsiteCustom(Website):
             return {"empty_cart": True}
         else:
             if len(order.order_line) == 1:
-                if order.order_line[0].product_id.type == 'service':
-                    if 'wallet_product_id' in request.env['website'].sudo()._fields:
+                if order.order_line[0].product_id.type == "service":
+                    if "wallet_product_id" in request.env["website"].sudo()._fields:
                         wallet_product = request.website.wallet_product_id
                         if order.order_line[0].product_id.id != wallet_product.id:
                             return {"empty_cart": True}
@@ -108,19 +139,18 @@ class WebsiteCustom(Website):
         if prod.create_date and current_reduced <= prod.create_date:
             its_new = True
 
-
-        all_program = request.env['coupon.program'].sudo()._get_program_from_products(prod)
+        all_program = request.env["coupon.program"].sudo()._get_program_from_products(prod)
         free_shipping = False
         if all_program:
             for program in all_program[prod]:
-                if program.reward_id.reward_type == 'free_shipping':
+                if program.reward_id.reward_type == "free_shipping":
                     if not free_shipping:
                         free_shipping = True
 
         discount = 0
         if list_price and price:
-            difference = round(list_price - price,2)
-            discount = round(difference*100/list_price) if list_price > 0 else 0
+            difference = round(list_price - price, 2)
+            discount = round(difference * 100 / list_price) if list_price > 0 else 0
 
         return {
             "current": current,
@@ -135,12 +165,12 @@ class WebsiteCustom(Website):
             "user_email": "" if not request.env.user.email else request.env.user.email,
             "out_over_current": out_over_current,
             "its_new": its_new,
-            "free_shipping":free_shipping,
-            "discount":discount,
-            "name":prod.name,
-            "barcode":prod.barcode,
-            "url":prod.website_url,
-            "category":prod.product_tmpl_id.public_categ_ids.ids
+            "free_shipping": free_shipping,
+            "discount": discount,
+            "name": prod.name,
+            "barcode": prod.barcode,
+            "url": prod.website_url,
+            "category": prod.product_tmpl_id.public_categ_ids.ids,
         }
 
 
@@ -324,9 +354,7 @@ class WebsiteSaleCustom(WebsiteSale):
         if status_filter:
             status_filter = status_filter.split(",")
             domain = self._filters_pre_products(filters=status_filter, domain=domain)
-
         search_product = Product.search(domain, order=self._custom_get_search_order(post))
-
         if status_filter:
             search_product = self._filters_post_products(filters=status_filter, products=search_product)
 
@@ -427,10 +455,16 @@ class WebsiteSaleCustom(WebsiteSale):
 
                     if filter == "new":
                         domain = expression.AND([[("create_date", ">", (date.today() - timedelta(days=20)))], domain])
+
+                    if filter == "stock":
+                        domain = expression.AND([[("id", "in", get_product_available_ids())], domain])
             else:
                 if len(filters) > 1:
                     new_domain = ["|"]
                     for filter in filters:
+                        if filter == "stock":
+                            new_domain.append(("id", "in", get_product_available_ids()))
+
                         if filter == "preorder":
                             new_domain.append(("product_variant_ids.out_date", ">", date.today()))
 
@@ -444,17 +478,10 @@ class WebsiteSaleCustom(WebsiteSale):
     def _filters_post_products(self, filters, products):
         if filters:
             for filter in filters:
-                if filter == "stock":
-                    dom = []
-                    dom = expression.OR([[("product_variant_ids.qty_sum_suppliers", ">", 0)], dom])
-                    dom = expression.OR([[("product_variant_ids.qty_available_now", ">", 0)], dom])
-                    products = products.sudo().filtered_domain(dom).sorted(key=lambda r: r.id, reverse=True)
-
                 if filter == "unavailable":
                     products = products.sudo().filtered_domain(
                         [
-                            ("product_variant_ids.qty_sum_suppliers", "<=", 0),
-                            ("product_variant_ids.qty_available_now", "<=", 0),
+                            ("id", "not in", get_product_available_ids()),
                             "|",
                             ("product_variant_ids.out_date", "=", ""),
                             ("product_variant_ids.out_date", "<", date.today()),
@@ -718,10 +745,16 @@ class CustomListPage(Controller):
 
                     if filter == "new":
                         domain = expression.AND([[("create_date", ">", (date.today() - timedelta(days=20)))], domain])
+
+                    if filter == "stock":
+                        domain = expression.AND([[("id", "in", get_product_available_ids())], domain])
             else:
                 if len(filters) > 1:
                     new_domain = ["|"]
                     for filter in filters:
+                        if filter == "stock":
+                            new_domain.append(("id", "in", get_product_available_ids()))
+
                         if filter == "preorder":
                             new_domain.append(("product_variant_ids.out_date", ">", date.today()))
 
@@ -731,21 +764,14 @@ class CustomListPage(Controller):
                     domain = expression.AND([new_domain, domain])
 
         return domain
-    
+
     def _filters_post_products(self, filters, products):
         if filters:
             for filter in filters:
-                if filter == "stock":
-                    dom = []
-                    dom = expression.OR([[("product_variant_ids.qty_sum_suppliers", ">", 0)], dom])
-                    dom = expression.OR([[("product_variant_ids.qty_available_now", ">", 0)], dom])
-                    products = products.sudo().filtered_domain(dom).sorted(key=lambda r: r.id, reverse=True)
-
                 if filter == "unavailable":
                     products = products.sudo().filtered_domain(
                         [
-                            ("product_variant_ids.qty_sum_suppliers", "<=", 0),
-                            ("product_variant_ids.qty_available_now", "<=", 0),
+                            ("id", "not in", get_product_available_ids()),
                             "|",
                             ("product_variant_ids.out_date", "=", ""),
                             ("product_variant_ids.out_date", "<", date.today()),
