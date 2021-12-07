@@ -11,7 +11,7 @@
 							Elenco ordini
 						</h3>
 						<div class="pb-4 w-100 d-flex flex-wrap justify-content-end align-items-end">
-							<div class="mx-2">
+							<div class="mx-2 col-12 col-md-auto my-2 my-md-0">
 								<label class="d-block"><strong>Stato</strong></label>
 								<select class="h-50 d-block" id="affiliate_order_status">
 									<option value="confirm">Confermati</option>
@@ -20,21 +20,21 @@
 									<option value="cancel">Annullati</option>
 								</select>
 							</div>
-							<div class="mx-2">
+							<div class="mx-2 col-12 col-md-auto my-2 my-md-0">
 								<label class="d-block"><strong>Categoria</strong></label>
 								<t t-set="category_list" t-value="request.env['product.public.category'].sudo().search([],order='name')"/>
-								<select class="h-50 d-block" id="affiliate_order_category">
+								<select class="h-50 d-block" id="affiliate_order_category" style="max-width:250px;">
 									<option value="">Seleziona categoria..</option>
 									<t t-foreach="category_list" t-as="cat">
 										<option t-attf-value="{{cat.id}}"><t t-esc="cat.name"/></option>
 									</t>
 								</select>
 							</div>
-							<div class="mx-2">
+							<div class="mx-2 col-12 col-md-auto my-2 my-md-0">
 								<label class="d-block"><strong>Dal</strong></label>
 								<input id="affiliate_order_from_date" class="h-50 d-block" type="date"/>
 							</div>
-							<div class="mx-2">
+							<div class="mx-2 col-12 col-md-auto my-2 my-md-0">
 								<label class="d-block"><strong>Al</strong></label>
 								<input id="affiliate_order_to_date" class="h-50 d-block" type="date"/>
 							</div>
