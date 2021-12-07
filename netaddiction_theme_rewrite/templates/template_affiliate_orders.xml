@@ -7,13 +7,64 @@
 					<t t-call="netaddiction_theme_rewrite.affiliate_menu" />
 					<!-- add form here tree view -->
 					<div class="container mt16">
-						<h3 class="page-header">
+						<h3 class="page-header border-bottom mb-3">
 							Elenco ordini
 						</h3>
+						<div class="pb-4 w-100 d-flex flex-wrap justify-content-end align-items-end">
+							<div class="mx-2">
+								<label class="d-block"><strong>Stato</strong></label>
+								<select class="h-50 d-block" id="affiliate_order_status">
+									<option value="confirm">Confermati</option>
+									<option value="draft">In attesa</option>
+									<option value="paid">Pagati</option>
+									<option value="cancel">Annullati</option>
+								</select>
+							</div>
+							<div class="mx-2">
+								<label class="d-block"><strong>Categoria</strong></label>
+								<t t-set="category_list" t-value="request.env['product.public.category'].sudo().search([],order='name')"/>
+								<select class="h-50 d-block" id="affiliate_order_category">
+									<option value="">Seleziona categoria..</option>
+									<t t-foreach="category_list" t-as="cat">
+										<option t-attf-value="{{cat.id}}"><t t-esc="cat.name"/></option>
+									</t>
+								</select>
+							</div>
+							<div class="mx-2">
+								<label class="d-block"><strong>Dal</strong></label>
+								<input id="affiliate_order_from_date" class="h-50 d-block" type="date"/>
+							</div>
+							<div class="mx-2">
+								<label class="d-block"><strong>Al</strong></label>
+								<input id="affiliate_order_to_date" class="h-50 d-block" type="date"/>
+							</div>
+							<button class="h-50 mx-3 btn-primary" id="affiliate_filter_btn"><strong>FILTRA</strong></button>
+						</div>
+						<script>
+							document.addEventListener("DOMContentLoaded", function() {
+								var url = new URL(window.location.href)
+								var status = url.searchParams.get('status');
+								var category = url.searchParams.get('category');
+								var from_date = url.searchParams.get('from');
+								var to_date = url.searchParams.get('to');
+
+								console.log(from_date)
+								console.log(to_date)
+
+								if(status != null)
+									document.querySelector('#affiliate_order_status').value = status
+								if(category != null)
+									document.querySelector('#affiliate_order_category').value = category
+								if(from_date != null)
+									document.querySelector('#affiliate_order_from_date').value = from_date
+								if(to_date != null)
+									document.querySelector('#affiliate_order_to_date').value = to_date
+							});
+						</script>
 						<t t-if="not traffic">
-							<p>
-								Attualmente non ci sono ordini da mostrare.
-							</p>
+							<div class="alert alert-danger" role="alert">
+								La ricerca non ha portato alcun tipo di risultato.
+							</div>
 						</t>
 						<t t-if="traffic">
 							<table class="table table-hover o_my_status_table">
@@ -26,7 +77,7 @@
 											Nome prodotto
 										</th>
 										<th>
-											Tipologia
+											Categoria
 										</th>
 										<th>
 											Data
@@ -54,7 +105,9 @@
 											</a>
 										</td>
 										<td>
-											<span t-field="t.affiliate_type" />
+											<t t-if="t.sales_order_line_id.product_id.public_categ_ids">
+												<span t-field="t.sales_order_line_id.product_id.public_categ_ids[0].name" />
+											</t>
 										</td>
 										<td>
 											<span t-field="t.convert_date" />
@@ -64,7 +117,18 @@
 											<span t-field="t.commission_amt" t-options="{'widget': 'monetary', 'display_currency': t.currency_id}" />
 										</td>
 										<td>
-											<span t-field="t.state" />
+											<t t-if="t.state == 'confirm'">
+												<span>Confermato</span>
+											</t>
+											<t t-elif="t.state == 'paid'">
+												<span>Pagato</span>
+											</t>
+											<t t-elif="t.state == 'cancel'">
+												<span>Annullato</span>
+											</t>
+											<t t-elif="t.state == 'draft'">
+												<span>In attesa</span>
+											</t>
 										</td>
 									</tr>
 								</t>

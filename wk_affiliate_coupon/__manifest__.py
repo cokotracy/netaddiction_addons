@@ -17,7 +17,7 @@
     "name"                 : "wk_affiliate_coupon",
     "summary"              :  """The module allows you to create discount coupons for Affiliate Management module""",
     "category"             :  "Website",
-    "version"              :  "14.0.1.0.0",
+    "version"              :  "14.0.1.1.0",
     "sequence"             :  1,
     "author"               :  "Webkul Software Pvt. Ltd.",
     "license"              :  "Other proprietary",

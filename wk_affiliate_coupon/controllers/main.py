@@ -21,6 +21,7 @@ _logger = logging.getLogger(__name__)
 from odoo.addons.affiliate_management.controllers.main   import WebsiteSale
 from odoo.addons.affiliate_management.controllers.affiliate_website import website_affiliate
 from datetime import datetime, timedelta, date
+from odoo.osv import expression
 
 
 class WebsiteSale(WebsiteSale):
@@ -89,16 +90,33 @@ class website_affiliate(website_affiliate):
 
     @http.route(['/my/order','/my/order/page/<int:page>'], type='http', auth="user", website=True)
     def aff_order(self, page=1, date_begin=None, date_end=None, **kw):
+        status = request.params.get("status")
+        category = request.params.get("category")
+        from_date = request.params.get("from")
+        to_date = request.params.get("to")
+        
         values={}
         partner = request.env.user.partner_id
         visits = request.env['affiliate.visit'].sudo()
-        domain = [('commission_type','=','d'),('affiliate_partner_id','=',partner.id),('affiliate_method','=','pps'),'|',('state','=','invoice'),('state','=','confirm')]
-        if date_begin and date_end:
-            domain += [('create_date', '>', date_begin), ('create_date', '<=', date_end)]
+        if not status:
+            domain = [('affiliate_partner_id','=',partner.id),('affiliate_method','=','pps'),'|',('state','=','invoice'),('state','=','confirm')]
+        else:
+            domain = [('affiliate_partner_id','=',partner.id),('affiliate_method','=','pps'),'|',('state','=','invoice'),('state','=', status)]
+        
+        if category:
+            domain = expression.AND([[('sales_order_line_id.product_id.public_categ_ids', 'in', int(category))],domain])
+
+        if from_date:
+            domain = expression.AND([[('create_date', '>=', from_date)],domain])
+        
+        if to_date:
+            domain = expression.AND([[('create_date', '<=', to_date)],domain])
+
+
         traffic_count = visits.search_count(domain)
         pager = request.website.pager(
             url='/my/order',
-            url_args={'date_begin': date_begin, 'date_end': date_end},
+            url_args={'status': status, 'category': category, 'from':from_date, 'to':to_date},
             total=traffic_count,
             page=page,
             step=10
