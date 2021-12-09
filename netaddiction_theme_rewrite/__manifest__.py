@@ -3,7 +3,7 @@
 {
     "name": "Netaddiction Theme Rewrite",
     "category": "eCommerce",
-    "version": "14.0.2.42.0",
+    "version": "14.0.2.44.0",
     "author": "Netaddiction",
     "license": "LGPL-3",
     "depends": [

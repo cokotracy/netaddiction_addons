@@ -20,6 +20,32 @@ odoo.define('affiliate_management.validation', function (require) {
 
 
   $(document).ready(function () {
+    if($('#affiliate_filter_btn') != null){
+      $('#affiliate_filter_btn').on('click', function () {
+        var status =  $('#affiliate_order_status').val();
+        var category =  $('#affiliate_order_category').val();
+        var from =  $('#affiliate_order_from_date').val();
+        var to =  $('#affiliate_order_to_date').val();
+
+        var url = new URL(`${window.location.origin}/my/order`)
+        if(status != null && status != '')
+          url.searchParams.set('status', status)
+        if(category != null && category != '')
+          url.searchParams.set('category', category)
+        if(from != null && from != '')
+          url.searchParams.set('from', from)
+        if(to != null && to != '')
+          url.searchParams.set('to', to)
+
+        if((from != null && from != '') && (to != null && to != '')){
+          if(new Date(from) > new Date(to))
+            return alert('La data di fine non può esere inferiore a quella di inizio!')
+        }
+
+        window.location.href = url;
+      });
+    }
+
     $('.signup-btn').on('click', function () {
       var c = $('#tc-signup-checkbox').is(':checked');
       if (c == false) {
