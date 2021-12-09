@@ -32,16 +32,6 @@
                 gtag('config', 'GTM-554WF2X');
             </script>
 
-            <!-- Global site tag (gtag.js) LEGO -->
-            <script async="async" src="https://www.googletagmanager.com/gtag/js?id=DC-8342968"></script>
-            <script>
-                window.dataLayer = window.dataLayer || [];
-                function gtag(){dataLayer.push(arguments);}
-                gtag('js', new Date());
-
-                gtag('config', 'DC-8342968');
-            </script>
-
             <!-- End of global snippet: Please do not remove -->
             <t t-if="request.website.isB2B">
                 <meta name="robots" content="noindex, nofollow" />
@@ -124,6 +114,32 @@
                 <link href="/netaddiction_theme_rewrite/static/src/css/wallet.css" rel="stylesheet"/>
             </t>
 
+            <t t-if="'/shop/payment/validate' in current_url or '/shop/confirmation' in current_url or '/shop/payment/token' in current_url">
+                <t t-if="order">
+                    <t t-set="lego_tag" t-value="False"/>
+                    <t t-foreach="order.order_line" t-as="line">
+                        <t t-if="line.product_id.product_tmpl_id.public_categ_ids">
+                            <t t-if="line.product_id.product_tmpl_id.public_categ_ids.ids and line.product_id.product_tmpl_id.public_categ_ids.ids[0] in [51, 44, 38, 53, 50, 32] or line.product_id.product_tmpl_id.id in [440525, 435418]">
+                                <t t-set="lego_tag" t-value="True"/>
+                            </t>
+                        </t>
+                    </t>
+                    <t t-if="lego_tag == True">
+                        <script async="async" src="https://www.googletagmanager.com/gtag/js?id=DC-8342968"></script>
+                        <script>
+                            window.dataLayer = window.dataLayer || [];
+                            function gtag(){dataLayer.push(arguments);}
+                            gtag('js', new Date());
+
+                            gtag('config', 'DC-8342968');
+                        </script>
+                        <noscript>
+                            <img src="https://ad.doubleclick.net/ddm/activity/src=8342968;type=it-th00;cat=it_le0;qty=1;cost=[Revenue];u8=[[product_id]];u9=[[product_name]];u14=[URL];u19=[retailer];dc_lat=;dc_rdid=;tag_for_child_directed_treatment=;tfua=;npa=;gdpr=${GDPR};gdpr_consent=${GDPR_CONSENT_755};ord=[OrderID]?" width="1" height="1" alt=""/>
+                        </noscript>
+                    </t>
+                </t>
+            </t>
+
             <!-- AGGIUNGE IN HEAD PER I PRODOTTI --> 
             <t t-if="'/shop/' in current_url">
                 <link href="/netaddiction_theme_rewrite/static/src/css/product.css" rel="stylesheet"/>
@@ -132,8 +148,16 @@
 
                 <t t-if="product">
                     <t t-if="product.public_categ_ids">
-                        <t t-if="product.public_categ_ids.ids and product.public_categ_ids.ids[0] in [51, 44, 38, 53, 50]">
+                        <t t-if="product.public_categ_ids.ids and product.public_categ_ids.ids[0] in [38, 53, 50] or product.id in [440525, 435418]">
+                            <!-- Global site tag (gtag.js) LEGO -->
+                            <script async="async" src="https://www.googletagmanager.com/gtag/js?id=DC-8342968"></script>
                             <script>
+                                window.dataLayer = window.dataLayer || [];
+                                function gtag(){dataLayer.push(arguments);}
+                                gtag('js', new Date());
+
+                                gtag('config', 'DC-8342968');
+
                                 gtag("event", "conversion", {
                                     'allow_custom_scripts': true,
                                     "u14": "<t t-esc="product.website_url"/>",
@@ -227,6 +251,40 @@
                         <t t-else="">
                             <title>Negozio | Multiplayer.com</title>
                         </t>
+                    </t>
+    
+                    <t t-if="category.id in [51, 44, 32]">
+                        <t t-set="lego_cat" t-value="''"/>
+                        <t t-if="category.id == 51">
+                            <t t-set="lego_cat" t-value="'DOTS'"/>
+                        </t>
+                        <t t-elif="category.id == 44">
+                            <t t-set="lego_cat" t-value="'SuperMario'"/>
+                        </t>
+                        <t t-else="">
+                            <t t-set="lego_cat" t-value="'ADULT'"/>
+                        </t>
+                        <script async="async" src="https://www.googletagmanager.com/gtag/js?id=DC-8342968"></script>
+                        <script>
+                            window.dataLayer = window.dataLayer || [];
+                            function gtag(){dataLayer.push(arguments);}
+                            gtag('js', new Date());
+
+                            gtag('config', 'DC-8342968');
+
+                            gtag("event", "conversion", {
+                                "allow_custom_scripts": true,
+                                "u8": "<t t-esc="category.id"/>",
+                                "u9": "<t t-esc="lego_cat"/>",
+                                "u14": window.location.href,
+                                "u19": "Multiplayer.com",
+                                "send_to": "DC-8342968/it-mi0/it_le000+standard"
+                            });
+                        </script>
+                        <!-- End of event snippet: Please do not remove -->
+                        <noscript>
+                            <img src="https://ad.doubleclick.net/ddm/activity/src=8342968;type=it-mi0;cat=it_le000;u8=[[product_id]];u9=[[product_name]];u14=[URL];u19=[retailer];dc_lat=;dc_rdid=;tag_for_child_directed_treatment=;tfua=;npa=;gdpr=${GDPR};gdpr_consent=${GDPR_CONSENT_755};ord=1?" width="1" height="1" alt=""/>
+                        </noscript>
                     </t>
                 </t>
 
