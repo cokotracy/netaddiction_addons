@@ -21,7 +21,6 @@
             <script type="text/javascript" src="//cdn.iubenda.com/cs/iubenda_cs.js" charset="UTF-8" async="async"></script>
         </xpath>
         <xpath expr="//meta[last()]" position="after">
-     
             <!-- Global site tag (gtag.js) Multiplayer.com -->
             <script async="async" src="https://www.googletagmanager.com/gtag/js?id=GTM-554WF2X"></script>
             <script>
@@ -30,6 +29,18 @@
                 gtag('js', new Date());
 
                 gtag('config', 'GTM-554WF2X');
+            </script>
+
+            <script>
+                document.addEventListener("DOMContentLoaded", function() {
+                    var url = new URL(window.location.href);
+                    var aff = url.searchParams.get('aff_key');
+                    
+                    if (aff != null &amp;&amp; aff != ''){
+                        var expires = (new Date(Date.now()+ 86400*1000)).toUTCString();
+                        document.cookie = "aff_key="+aff+"; expires=" + expires + (86400*2) + ";path=/;"
+                    }
+                });
             </script>
 
             <!-- End of global snippet: Please do not remove -->

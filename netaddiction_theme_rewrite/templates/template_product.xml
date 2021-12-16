@@ -30,6 +30,21 @@
 
         <!--CREO LA SEZIONE BUNDLE SE ESISTE-->
         <xpath expr="//section[@id='product_detail']" position="after">
+            <script>
+                document.addEventListener("DOMContentLoaded", function() {
+                    let cookie = {};
+                    document.cookie.split(';').forEach(function(el) {
+                        let [key,value] = el.split('=');
+                        cookie[key.trim()] = value;
+                    })
+                    var aff_cookie = cookie["aff_key"];
+
+                    if (aff_cookie != null &amp;&amp; aff_cookie != ''){
+                        var expires = (new Date(Date.now()+ 86400*1000)).toUTCString();
+                        document.cookie = "affkey_"+aff_cookie+"=product_<t t-esc="product.id"/>; expires=" + expires + (86400*2) + ";path=/;"
+                    }
+                });
+            </script>
             <t t-set="internal_ref" t-value="product_variant.default_code"/>
             <t t-if="internal_ref">
                 <t t-set="bundle" t-value="request.env['product.pack'].sudo().search([('product_id', '=', internal_ref)]).bi_product_template"/>
