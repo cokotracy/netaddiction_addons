@@ -3,6 +3,7 @@
 
 from datetime import date
 from odoo import fields, models
+from odoo.http import request
 
 
 class NetaddictionWebsitePreorder(models.TransientModel):
@@ -27,7 +28,11 @@ class Website(models.Model):
         # to the order. In netaddiction ecommerce this is wrong because
         # I can create a cart today and I can come back tommorrow to check
         # my cart. In this case I want to receive discount created meanwhile.
-        if sale:
+        if sale \
+                and sale.date_order.date() != date.today() \
+                and sale.partner_id \
+                and self.env.user != self.env.ref("base.public_user") \
+                and '/cart' in request.httprequest.path:
             sale.date_order = fields.Datetime.now()
             sale.update_prices()
         return sale
