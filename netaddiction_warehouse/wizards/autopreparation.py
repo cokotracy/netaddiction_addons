@@ -111,18 +111,24 @@ class AutoPreparation(models.TransientModel):
             #         f'Correggere il pagamento nell\'ordine originale.'
             #     )
 
-            # Controllo se e' un pagamento di Stripe. Se si, eseguo la richiesta di pagamento.
-            stripe_payment = self.env["payment.transaction"].get_ns_payment_from_order(pick.sale_id)
-            if stripe_payment:
+            # Controllo se e' un pagamento di Stripe.
+            # Se si, controllo lo stato.
+            # Nel caso servisse, eseguo la richiesta di pagamento.
+            stripe_payment = self.env["payment.transaction"].\
+                get_ns_payment_from_order(pick.sale_id)
+            if stripe_payment and \
+                    stripe_payment.acquirer_id.provider == \
+                    "netaddiction_stripe":
                 if not pick.payment_id:
                     pick.write({"payment_id": stripe_payment.payment_id})
-                if stripe_payment.state != "posted" and stripe_payment.acquirer_id.provider == "netaddiction_stripe":
-                    tx = self.env["payment.transaction"].browse(stripe_payment.id)
-                    tx.ns_do_transaction()
-                    if tx.state != "done":
+                if stripe_payment.state != "done":
+                    stripe_payment.ns_do_transaction()
+                    if stripe_payment.state != "done":
                         error_stock.append(pick.id)
                         note.append(
-                            "Stripe: Impossibile completare il pagamento, per maggiori info, controllare nelle note della transazione."
+                            "Stripe: Impossibile completare il pagamento, "
+                            "per maggiori info, controllare nelle note "
+                            "della transazione."
                         )
             if note:
                 mail_obj.create({
@@ -135,6 +141,7 @@ class AutoPreparation(models.TransientModel):
                 })
             else:
                 pick.write({'batch_id': self.batch_id.id})
+            self.env.cr.commit()
 
         if len(error_stock) > 0:
             act = self.env.ref('stock.action_picking_tree_all').read()[0]
