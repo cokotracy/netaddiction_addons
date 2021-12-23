@@ -6,7 +6,7 @@
     "author": "Netaddiction",
     "website": "https://www.netaddiction.it",
     "category": "Account",
-    "version": "14.0.1.1.1",
+    "version": "14.0.1.1.2",
     "depends": [
         "account",
         "sale",

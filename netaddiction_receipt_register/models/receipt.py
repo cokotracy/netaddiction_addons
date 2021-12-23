@@ -456,7 +456,10 @@ class ReceiptRegisterPicking(models.Model):
                     "sale_id": pick.origin,
                     "edizioni": 0,
                 }
-                order = self.env["sale.order"].search([("name", "=", pick.origin)])
+                if not pick.sale_id:
+                    order = origin
+                else:
+                    order = pick.sale_id
                 for pid in order.order_line:
                     if pid.product_id.id == line.product_id.id:
                         attr["total_price"] = pid.price_unit * sale_line_id.product_uom_qty
